@@ -1,5 +1,5 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass article
@@ -7,18 +7,26 @@
 \begin_modules
 hanging
 \end_modules
+\maintain_unincluded_children false
 \language english
+\language_package default
 \inputencoding auto
+\fontencoding global
 \font_roman default
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -26,21 +34,32 @@ hanging
 \use_geometry false
 \use_amsmath 1
 \use_esint 1
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
-\defskip medskip
+\paragraph_indentation default
 \quotes_language english
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes false
-\output_changes false
-\author "" 
-\author "" 
+\tracking_changes true
+\output_changes true
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\author 1934758928 "Al Cooper" cooperw@ucar.edu
 \end_header
 
 \begin_body
@@ -50,15 +69,39 @@ VARIABLES RELATED TO TIME
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted 1934758928 1318777010
 The data in all modern output files are referenced to Coordinated Universal
- Time (UTC), although there are some exceptions in old archived data files.
- The system time and date are synchronized to the Global Positioning System
- (GPS) at the beginning of each flight, and for data acquired by the present
- ADS-3 (NIDAS) data acquisition system time is synchronized continuously
- with the GPS time.
- Time variables are often different for older archived data files; some
- of the following are obsolete, but are included here for reference because
- they are important to those wanting to use those archives.
+ Time (UTC), a
+\change_inserted 1934758928 1318777011
+A
+\change_unchanged
+lthough there are some exceptions in old archived data files
+\change_inserted 1934758928 1318777020
+, the data in all modern output files are referenced to Coordinated Universal
+ Time (UTC)
+\change_unchanged
+.
+ The 
+\change_deleted 1934758928 1318777044
+system 
+\change_unchanged
+time and date 
+\change_inserted 1934758928 1318777059
+of the data acquisition system 
+\change_unchanged
+are synchronized to the Global Positioning System (GPS) at the beginning
+ of each flight, and for data acquired by the present ADS-3 (NIDAS) data
+ acquisition system time is synchronized continuously with the GPS time.
+ Time variables 
+\change_deleted 1934758928 1318777087
+are often different
+\change_inserted 1934758928 1318777088
+vary
+\change_unchanged
+ for older archived data files; some of the following are obsolete, but
+ are included here for reference because they are important to those wanting
+ to use those archives.
 \begin_inset Newline newline
 \end_inset
 
@@ -74,7 +117,7 @@ Time
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -128,6 +171,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -215,7 +259,7 @@ base_time
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -228,12 +272,79 @@ base time
 \begin_inset Newline newline
 \end_inset
 
-This is the reference time for the NETCDF output data files (data system
- versions before ADS-3).
+
+\change_inserted 1934758928 1318777286
+
+\series bold
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\series default
+\emph on
+ (versions before ADS-3 only)
+\emph default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\change_unchanged
+This is the reference time for the NETCDF output data files 
+\change_deleted 1934758928 1318777145
+(
+\change_inserted 1934758928 1318777149
+for 
+\change_unchanged
+data system versions before ADS-3
+\change_deleted 1934758928 1318777153
+)
+\change_unchanged
+.
  It represents the time of the first data record.
  Its format is Unix time (elapsed seconds after midnight 1 January 1970).
- Use this measurement and add time_offset to obtain the time for each data
- record.
+ Use this measurement and add time_offset
+\change_inserted 1934758928 1318777192
+ (below)
+\change_unchanged
+ to obtain the time for each data record.
  (Note: base_time is a single scalar, not a 
 \begin_inset Quotes eld
 \end_inset
@@ -254,7 +365,7 @@ time_offset
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -267,6 +378,61 @@ time offset
 \begin_inset Newline newline
 \end_inset
 
+
+\change_inserted 1934758928 1318777294
+
+\series bold
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\series default
+\emph on
+ (versions before ADS-3 only)
+\emph default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\change_unchanged
 This is the time offset from base_time of each data record used for the
  NETCDF output files produced by data system versions before ADS-3.
  It starts at zero (0) and increments each second, so it can also be thought
@@ -283,7 +449,7 @@ Raw Tape Time (hour, minute, s):
 HOUR
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -299,7 +465,7 @@ HOUR
 MINUTE
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -315,7 +481,7 @@ MINUTE
 SECOND
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -412,7 +578,7 @@ Date (m, d, y):
 MONTH
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -428,7 +594,7 @@ MONTH
 DAY
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -446,7 +612,7 @@ YEAR
 \emph on
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -533,6 +699,31 @@ Time:units
 \end_inset
 
  attribute of that variable.
+\change_inserted 1934758928 1318777508
+
+\end_layout
+
+\begin_layout Hanging
+
+\change_inserted 1934758928 1318777512
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1318777564
+Consider adding a section, here or elsewhere, on how data are modified to
+ sampling frequencies other than the original in order to process all at
+ the same rates.
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+
 \end_layout
 
 \end_body

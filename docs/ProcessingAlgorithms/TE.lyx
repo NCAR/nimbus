@@ -1,0 +1,2350 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+% Added by lyx2lyx
+%  for proper underlining
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+\let\cite@rig\cite
+\newcommand{\b@xcite}[2][\%]{\def\def@pt{\%}\def\pas@pt{#1}
+  \mbox{\ifx\def@pt\pas@pt\cite@rig{#2}\else\cite@rig[#1]{#2}\fi}}
+\renewcommand{\underbar}[1]{{\let\cite\b@xcite\uline{#1}}}
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Aircraft Algorithm Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\RAFAlgorithmMemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Research Aviation Facility}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Algorithm Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.2truein \leftline{\hskip\longindent Al Cooper}
+\leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding default
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={Equivalent Potential Temperature}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+RAFAlgorithmMemo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Background
+\end_layout
+
+\begin_layout Standard
+A quantity often called the equivalent potential temperature is used to
+ represent stability for adiabatic wet processes and to correspond to wet
+ adiabats on thermodynamic diagrams.
+ Potential temperatures are generally defined to correspond to specific
+ entropy (i.e., entropy per mass of dry air) via the relationship 
+\begin_inset Formula $c_{px}d\ln\Theta_{x}=ds$
+\end_inset
+
+ where 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Formula $x$
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+ indicates that various kinds of potential temperatures can be defined that
+ satisfy this relationship for different processes.
+ The AMS glossary restricts the term equivalent potential temperature to
+ true adiabatic processes, where any condensed water remains in the parcel,
+ but the term is often used (and has been used in Bulletin 9 Appendix B)
+ to refer instead to the modified pseudo-adiabatic form (sometimes called
+ pseudo-equivalent potential temperature or pseudo-adiabatic equivalent
+ potential temperature) in which the specific heat capacity of any condensed
+ water is neglected in the adiabatic process.
+ This is equivalent to assuming that any condensed water falls from or is
+ otherwise removed from the parcel as it condenses.
+ In this memo, I will refer to the former potential temperature as the wet-equiv
+alent potential temperature (symbol 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+) and the latter as the pseudo-adiabatic equivalent potential temperature
+ (symbol 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+For 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, a problem that arises is that the latent heat 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+ must vary with temperature 
+\begin_inset Formula $T$
+\end_inset
+
+, even if the specific heats are constant, as specified by the Kirchhoff
+ equation: 
+\begin_inset Formula $dL_{V}=(c_{pv}-c_{w})dT$
+\end_inset
+
+ where 
+\begin_inset Formula $c_{pv}$
+\end_inset
+
+ is the specific heat of water vapor at constant pressure, 
+\begin_inset Formula $c_{w}$
+\end_inset
+
+ is the specific heat of liquid water.
+ Some generalized equations have been developed that treat this variation
+ in various ways, mostly by using an adjusted value of 
+\begin_inset Formula $L_{V}$
+\end_inset
+
+ that produces the least compromise in accuracy.
+ See esp.
+\begin_inset space ~
+\end_inset
+
+Bolton (1980) and Davies-Jones (2009).
+ Emanuel (1994) and the preceding two references present derivations of
+ the pseudo-adiabatic equivalent potential temperature.
+\end_layout
+
+\begin_layout Section*
+Present Processing Code
+\end_layout
+
+\begin_layout Standard
+The code from subroutine thetae.c includes the following code (where atx
+ is converted to units of kelvin earlier in the code):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+  tlcl = (2840.0 / (3.5 * log((double)atx) - log((double)edpc) - 4.805)) +
+ 55.0;
+\end_layout
+
+\begin_layout LyX-Code
+  ...
+\end_layout
+
+\begin_layout LyX-Code
+  theta = atx * pow((double)1000.0 / psxc, (double)0.28571);
+\end_layout
+
+\begin_layout LyX-Code
+  exparg = ((3.376 / tlcl) - 0.00254) * (mr * (1.0 + (0.00081 * mr)));
+\end_layout
+
+\begin_layout LyX-Code
+  ...
+\end_layout
+
+\begin_layout LyX-Code
+  PutSample(varp, theta * exp((double)exparg)); 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is based on equation (38) from Bolton (1980):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\Theta_{E}=\Theta\exp\left\{ \left(\frac{3.376}{T_{L}}-0.00254\right)r(1+0.81\times10^{-3}r)\right\} \label{eq:Bolton38}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\begin_inset Formula \begin{equation}
+T_{L}=\frac{2840}{3.5\ln T_{K}-\ln e-4.805}+55\label{eq:Bolton21}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+is the temperature at the LCL (Bolton 1980, Eq.
+\begin_inset space ~
+\end_inset
+
+(21)).
+ 
+\end_layout
+
+\begin_layout Section*
+Reasons For Proposing Changes
+\end_layout
+
+\begin_layout Enumerate
+The equation selected from Bolton (1980) is the less accurate of several
+ alternatives presented there.
+ Davies-Jones (2009) has pointed out that the form given as equation (39)
+ in Bolton is more accurate, and Bolton also notes that.
+ His more accurate formula is:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+\Theta_{p}=\Theta_{DL}\exp\left\{ \left(\frac{3.036}{T_{L}}-0.00178\right)r\left(1+0.448\times10^{-3}r\right)\right\} \label{eq:Bolton39}\end{equation}
+
+\end_inset
+
+where
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+\Theta_{DL}=T_{k}\left(\frac{1000}{p_{d}}\right)^{0.2854}\left(\frac{T_{K}}{T_{L}}\right)^{0.28\times10^{-3}r}\label{eq:ThetaDL}\end{equation}
+
+\end_inset
+
+is the potential temperature of dry air at the lifting condensation level
+ (LCL) and 
+\begin_inset Formula $T_{L}$
+\end_inset
+
+ is the temperature at the LCL as given by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton21"
+
+\end_inset
+
+).
+ Equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton39"
+
+\end_inset
+
+ takes into account the effect of humidity on the ratio of specific heats
+ of the water-saturated air parcel.
+ This form appears to be a better choice than the one now in use.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Because Bolton used fits to adjust coefficients in this formula and in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton38"
+
+\end_inset
+
+), coefficients should be adjusted to modern values only with care.
+ Davies-Jones (2009) has provided updated coefficients based on a similar
+ but more extensive procedure.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The Bolton fits were based on a representation of the equilibrium water
+ vapor pressure that is different from the one now entering use in the RAF
+ processing code.
+ Bolton determined a fit to the data of Wexler (1976), all of which were
+ for temperature higher than 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ He used extrapolation of the measurements to lower temperature, but did
+ not test his new fit for temperatures below -35
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ Because there are now more reliable representations of the water vapor
+ pressure (esp.
+\begin_inset space ~
+\end_inset
+
+Murphy and Koop 2005), it is important to check if the Bolton formula (Bolton,
+ 1980, equation (10)) is an adequate representation of equivalent potential
+ temperatures calculated with the new data.
+ 
+\end_layout
+
+\begin_layout Enumerate
+More significantly, the Murphy and Koop formula is based on estimates of
+ the specific heat of liquid water in the supercooled region that vary significa
+ntly, while previous analyses like those of Bolton and of Davies-Jones (describe
+d in the next paragraph) have used constant specific heats.
+ Some justification for use of whatever formula is used for processing is
+ therefore needed.
+\end_layout
+
+\begin_layout Enumerate
+Davies-Jones (2009) presents a new formula that appears to be slightly more
+ accurate than the formulas of Bolton (1980), and he also optimized a large
+ set of candidate expressions by adjusting the coefficients (including those
+ of Bolton) to match results from exact integrations of the entropy formulas.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+However, he has also used an approximate equation from Bolton (1980) to
+ represent the vapor pressure.
+\end_layout
+
+\end_inset
+
+ His new formula (Davies-Jones, 2009, Eq.
+\begin_inset space ~
+\end_inset
+
+(6.5)) is
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+\Theta_{p}^{[DJ\}}=\Theta_{DL}\exp\left\{ \frac{(L_{0}^{*}-L_{1}^{*}(T_{L}-T_{0})+K_{2}r)\, r}{c_{pd}T_{L}}\right\} \label{eq:DJThetaP}\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $\Theta_{DL}$
+\end_inset
+
+ is as defined by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ThetaDL"
+
+\end_inset
+
+), 
+\begin_inset Formula $L_{0}^{*}=2.56313\times10^{6}J\, kg^{-1}$
+\end_inset
+
+, 
+\begin_inset Formula $L_{1}^{*}=1754$
+\end_inset
+
+ J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, and 
+\begin_inset Formula $K_{2}=1.137\times10^{6}$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+.
+ The asterisks on 
+\begin_inset Formula $L_{0}^{*}$
+\end_inset
+
+ and 
+\begin_inset Formula $L_{1}^{*}$
+\end_inset
+
+ indicate that these are the result of his optimization procedure and therefore
+ depart slightly from the coefficients that would provide the best match
+ to the latent heat of vaporization.
+\end_layout
+
+\begin_layout Enumerate
+The name of the variable 
+\begin_inset Quotes eld
+\end_inset
+
+THETAE
+\begin_inset Quotes erd
+\end_inset
+
+ should be changed to be consistent with usage recommendations of the AMS
+ Glossary.
+ 
+\end_layout
+
+\begin_layout Enumerate
+It may be useful to include a new variable, the wet-equivalent potential
+ temperature 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+, in the data files.
+ This is easier to calculate and less controversial than 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, and it enters analyses that have become widely used like the analyses
+ of Paluch (1978).
+\end_layout
+
+\begin_layout Standard
+Perhaps arguing against change is that, as long as we state clearly what
+ the basis for the calculation is, users are always able to calculate a
+ different variable of their choice from the basic measurements that are
+ in the data set, so the variable in the data files does not constrain users.
+ It may be preferable to retain the current equation or make small changes
+ to represent the best values in the Bolton (1980) paper, rather than make
+ a change, because use of the Bolton formulas has become the common convention.
+ However, I still recommend a change to either the higher-accuracy version
+ from Bolton (1980) or, preferably, to the Davies-Jones (2009) formula.
+ This makes our data files consistent with what appears to be the most accurate
+ equation available, and it moves closer to the goal of producing a value
+ that is conserved during pseudo-adiabatic processes.
+ 
+\end_layout
+
+\begin_layout Section*
+Analysis
+\end_layout
+
+\begin_layout Standard
+The desired relationship between entropy and 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ is 
+\begin_inset Formula $ds=c_{pt}d\ln\Theta_{q}$
+\end_inset
+
+ where 
+\begin_inset Formula $c_{pt}=c_{pd}+r_{t}c_{w}$
+\end_inset
+
+.
+ The integral of this relationship involves an integration constant, which
+ can be selected so that 
+\begin_inset Formula $s$
+\end_inset
+
+ is relative to a state with 
+\begin_inset Formula $T=1\,$
+\end_inset
+
+K, 
+\begin_inset Formula $r=0$
+\end_inset
+
+, 
+\begin_inset Formula $r_{w}=0$
+\end_inset
+
+, and 
+\begin_inset Formula $p_{d}=p_{0}$
+\end_inset
+
+where 
+\begin_inset Formula $p_{0}$
+\end_inset
+
+ is the reference pressure, 1000 hPa.
+ In the case where the specific heats are constant (but 
+\begin_inset Formula $L_{V}$
+\end_inset
+
+ still varies in accord with the Kirchhoff equation), the equation for the
+ wet-equivalent potential temperature is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\Theta_{q}=T(\frac{p_{0}}{p_{d}})^{R_{d/c_{pt}}}\exp\left\{ \frac{L_{v}r}{c_{pt}T}\right\} \left(\frac{e}{e_{s}(T)}\right)^{-rRw/c_{pt}}\label{eq:ThetaQEquation}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where the last term, often not included, arises in case of a subsaturated
+ parcel (below its LCL).
+ (See the derivation in Emanuel, 1994, leading to his equation (4.5.11).) This
+ equation arises from expressing the entropy of the parcel in terms of its
+ temperature, pressure, and mixing ratio, and then rearranging the result
+ into an integrable form.
+\end_layout
+
+\begin_layout Standard
+In the case of 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, the result is not integrable even with constant specific heats because,
+ with neglect of the heat capacity of the water carried with the parcel,
+ the replacement for 
+\begin_inset Formula $c_{pt}$
+\end_inset
+
+ is 
+\begin_inset Formula $c_{pt}^{\dagger}=c_{pd}+rc_{w}$
+\end_inset
+
+ and this depends on 
+\begin_inset Formula $r$
+\end_inset
+
+, unlike 
+\begin_inset Formula $c_{pt}$
+\end_inset
+
+ which is a constant.
+ This is the reason that various approximate formulas have been developed
+ to represent 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, including those of Bolton (1980) and Davies-Jones (2009).
+ 
+\end_layout
+
+\begin_layout Standard
+Despite this advantage of 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+, it has the disadvantage that it cannot be plotted on a thermodynamic diagram
+ because it does not depend uniquely on 
+\begin_inset Formula $T$
+\end_inset
+
+ and 
+\begin_inset Formula $p$
+\end_inset
+
+ as do the conventional definition of potential temperature (
+\begin_inset Formula $\Theta)$
+\end_inset
+
+ and pseudo-adiabatic equivalent potential temperature (which is a unique
+ function of 
+\begin_inset Formula $T$
+\end_inset
+
+ and 
+\begin_inset Formula $p$
+\end_inset
+
+ along saturated adiabats because the condensed water is removed so the
+ dependence on history, which would lead to variable liquid water content
+ in the case of 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+, is lost).
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+ the Rossby form
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The Rossby form is 
+\begin_inset Formula $\Theta_{p}^{[Rossby]}=\Theta_{D}\exp\left\{ \frac{L_{v}r}{c_{pd}T}\right\} $
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ of 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, on which thermodynamic diagrams are usually based.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The question to be addressed here is this: To what extent do relationships
+ based on various equations for 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+ and 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ depart from the representation of the entropy that arises from direct integrati
+on of the expression for entropy relative to the reference state? Some of
+ the mathematical development of this argument is included in the long form
+ of this note.
+ This question can be addressed by evaluating the extent to which constant
+ values of 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+ or 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ represent true pseudoadiabats or wet adiabats during vertical motion of
+ air parcels.
+ Davies-Jones (2009) has addressed this question for the Bolton formulas,
+ a new alternative he proposed, and some others.
+ However, two considerations not discussed there are relevant to RAF application
+s:
+\end_layout
+
+\begin_layout Itemize
+
+\bar under
+What is the effect of introduction of the Murphy and Koop (2005) representation
+ of equilibrium water vapor pressure?
+\bar default
+ This will result in small shifts in results but should not affect the analysis
+ of accuracy as presented by Davies-Jones (2009) because the formulas have
+ vapor pressure as an input.
+ The Davies-Jones analysis adjusts of coefficients in the formulas to compensate
+ for factors like the variation in latent heat with temperature, and those
+ coefficients have been minimized by comparison to numerical integrations
+ that use old representations of vapor pressure.
+ However, this does not seem likely to have much effect on the results because
+ the vapor-pressure formula used is close to the revised form presented
+ by Murphy and Koop (2005) and because the vapor pressure would enter both
+ the parametrized formula and the exact integration in compensating ways.
+\end_layout
+
+\begin_layout Itemize
+
+\bar under
+What is the effect of temperature dependence of the specific heats, esp.
+\begin_inset space ~
+\end_inset
+
+that of supercooled water?
+\bar default
+ The temperature dependence of the specific heats is neglected, both in
+ the parametrized formulas and in the exact integration as done by Davies-Jones,
+ Bolton, and others.
+ However, the vapor-pressure formulas offered by Murphy and Koop (2005)
+ are based on a representation of the specific heat of supercooled water
+ that has significant variation, of order 50% overall.
+ This applies to the wet-equivalent potential temperature as well as the
+ pseudo-adiabatic equivalent potential temperature.
+\end_layout
+
+\begin_layout Standard
+One approach to both questions is to integrate 
+\begin_inset Formula $dT=(dT/dp_{d})\, dp_{d}$
+\end_inset
+
+ using the exact relationship for entropy and compare the result to that
+ obtained from the formulas that were obtained with constant specific heats.
+ For example, consider a case where the temperature and dry-air pressure
+ are 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{d,1}$
+\end_inset
+
+ and the parcel is saturated.
+ One can obtain the temperature at a low pressure 
+\begin_inset Formula $p_{d,2}$
+\end_inset
+
+ (e.g., 100 hPa) by evaluating the appropriate formula for 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ or 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, then inverting that formula to obtain the temperature at 
+\begin_inset Formula $p_{d,2}$
+\end_inset
+
+ that gives the same corresponding equivalent potential temperature.
+ For comparison, one can integrate to obtain the same temperature.
+ If the temperature dependence of the specific heats is included in the
+ latter integration, the difference between results will provide a measure
+ of the error in equivalent potential temperature obtained from the formula
+ used for its evaluation.
+\end_layout
+
+\begin_layout Standard
+To do this, the temperature dependence of the specific heats must be represented.
+ The accompanying long-form note contains an Appendix that specifies the
+ data available and used for the integrations.
+ The most important variation is that of the specific heat of liquid water
+ (including in the supercooled region), which varies quite significantly
+ (more than 50%) in the supercooled region.
+ Because the water vapor pressure becomes quite low for substantial supercooling
+, it is not clear that even this very large variation has a significant
+ effect, but this is likely to be the dominant term causing a departure
+ from constant-
+\begin_inset Formula $c_{p}$
+\end_inset
+
+ formulas.
+ The specific heat of dry air, in contrast, varies little (less than 0.1%
+ from -50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C to +40
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, and less than 0.4% from -100 to +60
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C), so that variation will be neglected here.
+ The specific heat of water vapor does not enter the formulas for pseudo-adiabat
+ic or wet equivalent potential temperature, but it does enter indirectly
+ through the Kirchhoff equation, which relates the temperature dependence
+ of 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+ to the difference between the specific heats of water vapor and liquid
+ water.
+ At 
+\begin_inset Formula $p_{d,2}=100$
+\end_inset
+
+ hPa, inversion of these formulas give the respective temperatures 178.69
+\begin_inset space \thinspace{}
+\end_inset
+
+K and 175.66
+\begin_inset space \thinspace{}
+\end_inset
+
+K.
+ For comparison, integrations from point 1 to point 2 using direct integration
+ as developed in the accompanying long-form note or the analog with 
+\begin_inset Formula $c_{pt}^{\dagger}=c_{pd}+rc_{w}$
+\end_inset
+
+ give the respective values 178.71
+\begin_inset space \thinspace{}
+\end_inset
+
+K and 175.69
+\begin_inset space \thinspace{}
+\end_inset
+
+K, both quite close to the values obtained by the respective equations.
+\end_layout
+
+\begin_layout Standard
+The following table gives these and a few more values, where 
+\begin_inset Formula $T_{q}$
+\end_inset
+
+ and 
+\begin_inset Formula $T_{p}$
+\end_inset
+
+ are the temperatures determined at the final pressure 
+\begin_inset Formula $p_{2}$
+\end_inset
+
+ from inversion of the formulas for 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ and 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, and the corresponding primed quantities are the temperatures determined
+ by numerical integration that incorporates the variation in specific heat.:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="9" columns="7">
+<features>
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+T [
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+p [hPa]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+final 
+\begin_inset Formula $p_{2}$
+\end_inset
+
+ [hPa]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{q}[K]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{q}^{\prime}[K]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{p}[K]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{p}^{\prime}[K]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+850
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+206.50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+207.69
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+200.73
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+200.76
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+750
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+189.34
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+189.73
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+185.39
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+185.42
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+750
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+178.69
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+178.71
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+175.66
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+175.69
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+167.05
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+166.90
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+165.39
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+165.41
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+163.54
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+163.44
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+162.68
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+162.70
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+850
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+222.59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+222.69
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+222.27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+222.29
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+750
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+239.43
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+239.46
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+238.52
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+238.51
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+226.46
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+226.59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+225.82
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+225.84
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Although the evaluation is not exhaustive, it appears to support these conclusio
+ns:
+\end_layout
+
+\begin_layout Enumerate
+Comparison of the last two columns suggests that the formula (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DJThetaP"
+
+\end_inset
+
+) represents the pseudo-adiabats with good accuracy, even when they are
+ calculated using the strong variations in the specific heat of liquid water
+ estimated by Murphy and Koop (2005) and using the Murphy and Koop vapor
+ pressures.
+\end_layout
+
+\begin_layout Enumerate
+Even for the reversible adiabatic equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ThetaQEquation"
+
+\end_inset
+
+), there is only minor deviation from true adiabats when the temperature
+ variation of the specific heats is represented accurately.
+ The variations from the temperature on a true wet adiabat are only a few
+ tenths degree in most cases, but over 1
+\begin_inset space \thinspace{}
+\end_inset
+
+K in the extreme case.
+ One might expect more variation, because high liquid water content can
+ be carried upward where the variation in specific heat of liquid water
+ can affect the answer.
+ These are unrealistic situations, however, because high liquid water content
+ cannot exist at temperatures as low as the extremes of this integration.
+\end_layout
+
+\begin_layout Standard
+One additional issue is the representation in cases where the parcel is
+ unsaturated.
+ Equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DJThetaP"
+
+\end_inset
+
+) represents the pseudo-adiabatic equivalent potential temperature in terms
+ that involve the saturation temperature, the temperature at the LCL.
+ This is now done using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton21"
+
+\end_inset
+
+) from Bolton (1980), but if the specific heats are functions of temperature
+ and vapor pressure is changed to the representation of Murphy and Koop
+ (2005), it is not clear that this choice remains valid.
+\end_layout
+
+\begin_layout Standard
+Alternately, one can determine the temperature of the lifted parcel at the
+ LCL from the conserved values of mixing ratio and moist potential temperature,
+ iteratively evaluated for the temperature that gives the equilibrium vapor
+ pressure.
+ To evaluate how well the Bolton formula for 
+\begin_inset Formula $T_{L}$
+\end_inset
+
+ represents exact values, a set of calculations were performed where the
+ LCL was determined by this iterative procedure.
+ More detail regarding the procedure is included in the long-form note.
+ A short list of checks, shown in the following table, suggested that the
+ Bolton formula (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton21"
+
+\end_inset
+
+) for 
+\begin_inset Formula $T_{L}$
+\end_inset
+
+ performs well, giving values within 0.05
+\begin_inset space \thinspace{}
+\end_inset
+
+K of those determined by the numerical solution.
+ Because this is a published equation in common use, there does not appear
+ to be any need for a change.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="5">
+<features>
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Temperature [
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Pressure [hPa]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RH [%]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton21"
+
+\end_inset
+
+) -- Bolton
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Numerical
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+850
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+280.074
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+280.067
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+275.42
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+275.43
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+290.94
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+290.92
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+80
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+279.14
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+279.14
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+271.12
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+271.24
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+247.54
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+247.58
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+80
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+269.45
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+269.48
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+40
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+258.79
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+258.84
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+249.13
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+249.18
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\emph on
+Recommendations:
+\end_layout
+
+\begin_layout Enumerate
+Change to (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DJThetaP"
+
+\end_inset
+
+), and change the variable name to 
+\begin_inset Quotes eld
+\end_inset
+
+pseudo-adiabatic equivalent potential temperature
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton21"
+
+\end_inset
+
+) to determine the saturation temperature 
+\begin_inset Formula $T_{L}$
+\end_inset
+
+.
+ (There will need to be some protection against the relative humidity exceeding
+ 100%; if it does, set it to 100% for this calculation.)
+\end_layout
+
+\begin_layout Enumerate
+Add a new variable 
+\begin_inset Quotes eld
+\end_inset
+
+wet equivalent potential temperature
+\begin_inset Quotes erd
+\end_inset
+
+ and use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ThetaQEquation"
+
+\end_inset
+
+) for its evaluation.
+ A caution should be included to warn users that there may be inaccuracies
+ in 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ of a few tenths kelvin that arise from variation and uncertainty in the
+ specific heat of supercooled water.
+ 
+\end_layout
+
+\begin_layout Subsection*
+REFERENCES:
+\end_layout
+
+\begin_layout Standard
+Bolton, David, 1980: The computation of equivalent potential temperature.
+ 
+\emph on
+Monthly Weather Review, 
+\series bold
+\emph default
+108, 
+\series default
+1046--1053.
+\end_layout
+
+\begin_layout Standard
+Davies-Jones, Robert, 2009: On formulas for equivalent potential temperature.
+ 
+\emph on
+Monthly Weather Review, 
+\series bold
+\emph default
+137, 
+\series default
+3137--3148.
+ 
+\end_layout
+
+\begin_layout Standard
+Emanuel, K.
+ A.,1994: Atmospheric Convection.
+ Chapter 4 (Moist Thermodynamic processes), Oxford University Press, New
+ York, 580 pp.
+\end_layout
+
+\begin_layout Standard
+Murphy, D.
+ M., and T.
+ Koop, 2005: Review of the vapour pressures of ice and supercooled water
+ for atmospheric applications.
+ 
+\emph on
+Q.
+ J.
+ R.
+ Meteorol.
+ Soc., 
+\series bold
+\emph default
+131, 
+\series default
+1539--1565
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centerline{
+\backslash
+textcolor{blue}{---- END ----}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

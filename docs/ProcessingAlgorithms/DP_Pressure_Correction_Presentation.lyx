@@ -1,0 +1,1697 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass beamerWAC
+\begin_preamble
+\usetheme{Warsaw}
+% or ...
+
+\setbeamercovered{transparent}
+% or whatever (possibly just delete it)
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 2
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{normal text}{bg=yellow!10}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Correcting Dew Point Measurements for Pressure
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+DP pressure
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional, use only with long paper titles
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Al Cooper
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Give the names in the same order as the appear in the paper.
+ 
+\end_layout
+
+\begin_layout Itemize
+Use the 
+\begin_inset Quotes eld
+\end_inset
+
+Institute mark
+\begin_inset Quotes erd
+\end_inset
+
+ inset (
+\family sans
+Insert\SpecialChar \menuseparator
+Custom Insets\SpecialChar \menuseparator
+InstituteMark
+\family default
+) only if the authors have different affiliations.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+Al Cooper
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+- optional, use only with lots of authors
+\end_layout
+
+\begin_layout Plain Layout
+- if there are really lots of authors, use 
+\begin_inset Quotes eld
+\end_inset
+
+Author et al.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Institute
+RAF Algorithm Review
+\end_layout
+
+\begin_layout Date
+10/12/2011
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Either use conference name or its abbreviation.
+ 
+\end_layout
+
+\begin_layout Itemize
+Not really informative to the audience, more for people (including yourself)
+ who are reading the slides online
+\end_layout
+
+\end_inset
+
+
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+Algorithm Review
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional, should be abbreviation of conference name
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If you have a file called "institution-logo-filename.xxx", where xxx is a
+ graphic format that can be processed by latex or pdflatex, resp., then you
+ can add a logo by uncommenting the following:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+pgfdeclareimage[height=0.5cm]{institution-logo}{institution-logo-filename}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+logo{
+\backslash
+pgfuseimage{institution-logo}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If you wish to uncover everything in a step-wise fashion, uncomment the
+ following command:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+beamerdefaultoverlayspecification{<+->}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Background
+\end_layout
+
+\begin_layout BeginFrame
+WHY MEASURE HOUSING PRESSURE?
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5 cm
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1-|visible@1->{
+\end_layout
+
+\end_inset
+
+The Housing
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Chilled mirror inside 
+\end_layout
+
+\begin_layout Itemize
+Note small hole
+\end_layout
+
+\begin_layout Itemize
+Accelerated airflow around nose and housing
+\end_layout
+
+\end_deeper
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2-|visible@2->{
+\end_layout
+
+\end_inset
+
+Dew Point Definition:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2-|alert@2>
+\end_layout
+
+\end_inset
+
+Temperature at which ambient vapor pressure is in equilibrium w/ water
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<3-|visible@3-|alert@3>
+\end_layout
+
+\end_inset
+
+Vapor pressure change: proportional to total pressure
+\end_layout
+
+\end_deeper
+\begin_layout Column
+5 cm
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename DewPointHousing2.png
+	lyxscale 25
+	width 6cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+SENSITIVITY TO PRESSURE
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+6 cm
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Vapor Pressure at Equilibrium
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Change in vapor pressure of -50% or +100%:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+near 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, dew point changes by approx.
+\begin_inset space ~
+\end_inset
+
+10
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C
+\end_layout
+
+\begin_layout Itemize
+near -50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, dew point changes by approx.
+\begin_inset space ~
+\end_inset
+
+6
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C error in dewpoint for 8% change in vapor pressure @
+\begin_inset Formula $T_{DP}=0$
+\end_inset
+
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C; 
+\end_layout
+
+\begin_layout Standard
+for 12% change @ 
+\begin_inset Formula $T_{DP}=-50$
+\end_inset
+
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ 
+\begin_inset Formula $\pm$
+\end_inset
+
+10% errors are significant
+\end_layout
+
+\end_deeper
+\begin_layout Column
+6 cm
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename VaporPressureVsDP.png
+	lyxscale 50
+	width 6cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Importance of the Correction
+\end_layout
+
+\begin_layout BeginFrame
+HOW LARGE IS THE PRESSURE DEVIATION?
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+4.5 cm
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip4.7cm
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fcolorbox{black}{yellow!40}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+PSXC (yellow) compared to PSDP{R,L} (cyan, green) -
+\begin_inset Newline newline
+\end_inset
+
+Note ca.
+\begin_inset space ~
+\end_inset
+
+100 mb difference at max altitude
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "5col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+\size larger
+\color red
+\begin_inset Formula ${\color{red}\rightarrow}$
+\end_inset
+
+
+\series default
+\size default
+\color inherit
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<3>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip3.0cm
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fcolorbox{black}{yellow!40}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+Extreme deviations run up to 180 mb, with a pressure 
+\emph on
+deficit
+\emph default
+ at high altitude.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "5col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+\size giant
+\color red
+\begin_inset Formula ${\color{red}\rightarrow}$
+\end_inset
+
+
+\series default
+\size default
+\color inherit
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<4>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-3.0cm
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{normal text}{bg=yellow!30}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fcolorbox{black}{yellow!40}{
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+Pressure correction will 
+\emph on
+increase 
+\emph default
+the dew point.
+ Comparison with VCSEL (cyan trace) is already fairly good, may get worse?
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "5col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+\size larger
+\color red
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+
+\series default
+\size default
+\color inherit
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Column
+8 cm
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename DPPressureMeasurements.png
+	lyxscale 50
+	width 6.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginPlainFrame
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename HIPPO4DPP.png
+	lyxscale 50
+	width 9cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-3.3cm
+\backslash
+hskip3.5cm
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fcolorbox{black}{yellow!50}{
+\backslash
+color{red}{Note valleys, L only}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Processing Considerations
+\end_layout
+
+\begin_layout BeginFrame
+ALGORITHM WHEN PSDPx IS AVAILABLE
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1->{Modified DPXC}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Enumerate
+Obtain vapor pressure from measured DPx
+\end_layout
+
+\begin_layout Enumerate
+Correct for 
+\begin_inset Quotes eld
+\end_inset
+
+enhancement factor
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+
+\family roman
+\color red
+Scale vapor pressure by F={PSXC}/{PSDPx}
+\end_layout
+
+\begin_layout Enumerate
+Get DPXC via interpolation table, e to DPXC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2->{Available since DC3-TEST, May 2011}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Includes HIPPO-4, HIPPO-5, ICEBRIDGE
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+OLD DATA
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{alerted text}{fg=red}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5 cm
+\end_layout
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1-><visible@1->{Errors}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+beamerdefaultoverlayspecification{<+-|visible@+->}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Errors range from slightly high to 6C too low
+\end_layout
+
+\begin_layout Itemize
+Plateau at low DP is moved from around -70C to around -65C 
+\end_layout
+
+\begin_layout Itemize
+Where VCSEL measures about -80C, DP now is between -60C and -65C
+\end_layout
+
+\end_deeper
+\begin_layout Column
+7 cm
+\end_layout
+
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Are Errors Important?}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename DPCORR.png
+	lyxscale 50
+	width 7cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout BeginFrame
+POSSIBLE CORRECTION PROCEDURE
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{alerted text}{fg=blue}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+6.5 cm
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1-|alert@1>
+\end_layout
+
+\end_inset
+
+Find which aspects of flight conditions determine the pressure deficit
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2-|visible@2-|alert@2>
+\end_layout
+
+\end_inset
+
+From exploring these possibilities, found PSXC, XMACH2, QCRC seem to be
+ best
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<3-|visible@3-|alert@3>
+\end_layout
+
+\end_inset
+
+Fit determined for HIPPO-4 RF01.
+ (Coefficients in memo)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Column
+6.5 cm
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1-|alert@1>
+\end_layout
+
+\end_inset
+
+Possible dependence on PSXC, Mach No, TAS, QCRC, ATTACK, SSLIP.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2-|visible@2-|alert@2>
+\end_layout
+
+\end_inset
+
+Best fit, for PSDPL:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-0.8cm
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Formula 
+\[
+P_{DP}=P_{a}a(a_{0}+a_{1}\mbox{\Delta p}+a_{2}M^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<3-|visible@3-|alert@3>
+\end_layout
+
+\end_inset
+
+Test: apply to DC3-TEST (RF03), different project and different flight profile
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+FIT RESULTS
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+4 cm
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Ovalbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+Black Line: 
+\end_layout
+
+\begin_layout Plain Layout
+Measured PSDPL
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Ovalbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\color red
+Thin red line: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\color red
+Results of fit 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip2cm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+Fit RMS: 7.9 mb
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Column
+7 cm
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename Phousing.png
+	lyxscale 50
+	width 7cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout BeginFrame
+APPLICATION TO A DIFFERENT FLIGHT
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename DC3RF3.png
+	lyxscale 50
+	width 11cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Recommendations
+\end_layout
+
+\begin_layout BeginFrame
+CONCLUSIONS
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{alerted text}{fg=blue}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Recommendations:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1-|visible@1-|alert@1>
+\end_layout
+
+\end_inset
+
+Add processing to include the effect of the measured pressure, as follows:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Calculate the pressure ratio PSXC/PSDPx =Rx
+\end_layout
+
+\begin_layout Enumerate
+Multiply the vapor pressure by Rx after converting from measured dew point
+ to vapor pressure.
+\end_layout
+
+\begin_layout Enumerate
+Use this modified vapor pressure as the output variable EDPC.
+\end_layout
+
+\begin_layout Enumerate
+Use the interpolation table to find the dew point temperature.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2-|visible@2-|alert@2>
+\end_layout
+
+\end_inset
+
+For old GV data, consider reprocessing with the pressure determined from
+ (1) to correct for rather large errors in the dew point measurements, which
+ can be 5-10
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<3-|visible@3-|alert@3>
+\end_layout
+
+\end_inset
+
+Change the 
+\begin_inset Quotes eld
+\end_inset
+
+long_name
+\begin_inset Quotes erd
+\end_inset
+
+ of DPLC and DPRC to distinguish them from DPLS/DPRS.
+\end_layout
+
+\end_deeper
+\begin_layout EndFrame
+
+\end_layout
+
+\end_body
+\end_document

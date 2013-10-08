@@ -1,0 +1,1029 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding default
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\use_mhchem 0
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={trailing-cone information}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This note documents what I think I have learned from the trailing-cone flight
+ of the GV.
+ 
+\end_layout
+
+\begin_layout Standard
+I assumed that the variable TCONE is the pressure of the trailing-cone reference
+d to the research static sources; i.e., TCONE positive means the trailing-cone
+ system provides a higher pressure than the static buttons.
+ The flight (from 14 Sept 2006) was long because it apparently included
+ over-ocean segments to reach levels near sea level.
+ It also extended to very high levels, FL490 near the end of the flight.
+ There are a range of airspeeds and angles-of-attack at each altitude, so
+ the flight has very good information for this study.
+\end_layout
+
+\begin_layout Standard
+If the measurements from the trailing cone are considered reference values,
+ the measured difference is then a correction to be applied to the measured
+ pressure.
+ A fit to the measurements revealed a complicated dependence, with all the
+ terms in the following table making significant contributions to the fit
+ when expressed non-dimensionally as 
+\begin_inset Formula $\Delta p/p=a_{i}y_{i}$
+\end_inset
+
+ where 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ is the measured difference between the trailing-cone pressure and the static-po
+rt pressure, 
+\begin_inset Formula $p$
+\end_inset
+
+ is the static-port pressure, and the contributing terms (
+\begin_inset Formula $y_{i}$
+\end_inset
+
+) and coefficients 
+\begin_inset Formula $a_{i}$
+\end_inset
+
+ are given in the following table.:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Term 
+\begin_inset Formula $y_{i}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Coefficient 
+\begin_inset Formula $a_{i}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Standard Error of Fit
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(intercept, factor=1)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.01015
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ 0.00035
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $M$
+\end_inset
+
+ = Mach Number
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.0495
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0020
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $M^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0877
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0034
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $M^{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.0441
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Delta p_{\alpha}/q_{r}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.02432
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.00032
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $(\Delta p_{\alpha}/q_{r})^{4}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.707
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.017
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $(\Delta p_{\alpha}/q_{r})M^{4}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.18200
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.00092
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this table, 
+\begin_inset Formula $\Delta p_{\alpha}$
+\end_inset
+
+ is the pressure difference measured between radome ports that reflects
+ the angle of attack and is normalized by the pressure 
+\begin_inset Formula $q_{r}$
+\end_inset
+
+ measured at the center port of the radome; this is the ratio normally used
+ to determine the angle of attack.
+ The standard error of this fit was about 0.0006, corresponding to a pressure
+ error of about 0.3 hPa at 500 hPa ambient pressure.
+ The correlation coefficient between the trailing-cone measurements and
+ this fit was 0.98 for all the measurements on this flight.
+ The results are shown in the Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:TCfit"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/Test/PCORRfit.png
+	lyxscale 59
+	width 8cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:TCfit"
+
+\end_inset
+
+The fit result (
+\begin_inset Formula $P_{c}$
+\end_inset
+
+=
+\begin_inset Formula $p\sum a_{i}y_{i}$
+\end_inset
+
+) plotted against the corresponding pressure difference measured between
+ the trailing-cone source and the static-pressure source on the GV.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There are some subtleties involved in this calculation: q and p are corrected
+ first by use of the trailing-cone measurements and Mach No is calculated
+ from the corrected values.
+ In a practical application, this correction is not available except as
+ a function of variables like M and q, initially known only in uncorrected
+ form, so an iteration will be necessary.
+ In addition, the revision in airspeed resulting from assuming that the
+ change in measured dynamic pressure is the same, except for reversed sign,
+ as the change in measured ambient pressure results in a mean increase in
+ temperature of about 0.3
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C (because of the change in calculated airspeed), compared to the processed
+ file.
+ 
+\end_layout
+
+\begin_layout Standard
+With the trailing-cone values for 
+\begin_inset Formula $P_{c}$
+\end_inset
+
+, it is possible to determine temperature directly from the LAMS measurements
+ with no reference to any temperature sensor on the aircraft.
+ I did this for PREDICT ferry flight #1 (from Colorado to St.l Croix, 12
+ Aug 2010).
+ That flight also had a good series of flight legs at various altitudes
+ and airspeeds with LAMS operational and so provides a good dataset for
+ LAMS analyses.
+ The procedure to obtain temperatures for this flight were as follows:
+\end_layout
+
+\begin_layout Enumerate
+Calculate Mach number 
+\begin_inset Formula $M$
+\end_inset
+
+ from the uncorrected measurements of pressure and total pressure (
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{t}=p+q$
+\end_inset
+
+ where PSF is used for 
+\begin_inset Formula $p$
+\end_inset
+
+ and QCF for 
+\begin_inset Formula $q$
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+M=\left\{ \left(\frac{2c_{v}}{R_{a}}\right)\left[\left(\frac{p_{t}}{\mathrm{p}}\right)^{R_{a}/c_{p}}-1\right]\right\} ^{1/2}\,\,.\label{eq:MachNo}
+\end{equation}
+
+\end_inset
+
+Use humidity-corrected values of the specific heats and gas constant because,
+ especially at low levels, the effect is significant at the accuracy level
+ of these calculations.
+ The assumption made here (with good justification, which I have documented
+ separately) is that 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+is measured accurately and does not need correction, to a level of 0.1 mb.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Use the above fit for 
+\begin_inset Formula $P_{c}$
+\end_inset
+
+ (which also depends on ADIFR and QCR) to find the correction factor to
+ be applied to pressure, and calculate a new estimate of the correct pressure
+ 
+\begin_inset Formula $p^{\prime}=p+P_{c}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Iterate steps 1 and 2 using successive approximations to the corrected pressure
+ 
+\begin_inset Formula $p^{\prime}$
+\end_inset
+
+ to improve the estimate of the Mach number.
+ (Five iterations give machine-precision convergence in the examples that
+ I checked, so I used five iterations.
+ This is much more precision than is needed for these results but at least
+ obtains results consistent with the calibration derived from the trailing-cone
+ data.
+\end_layout
+
+\begin_layout Enumerate
+Once a final corrected value for pressure (
+\begin_inset Formula $p^{\prime})$
+\end_inset
+
+ is obtained, calculate the temperature from the following equation, derived
+ by re-arranging the standard equation for obtaining TAS from 
+\begin_inset Formula $p$
+\end_inset
+
+, 
+\begin_inset Formula $q$
+\end_inset
+
+ and 
+\begin_inset Formula $T$
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+T_{L}=\frac{v_{L}^{2}}{2c_{p}\left[\left(\frac{p_{t}}{p}\right)^{Ra/cp}-1\right]}\label{eq:TfromVL}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $v_{L}$
+\end_inset
+
+ is the airspeed measured by LAMS.
+ 
+\end_layout
+
+\begin_layout Standard
+If ATL=
+\begin_inset Formula $T_{L}-273.15$
+\end_inset
+
+, the result is a temperature that can be compared to ATX.
+ The following figure shows the result.
+ The temperature obtained in this way is significantly different from that
+ in the archived file for this flight.
+ It is surprising that this result differs so much from the standard processing,
+ and this is worth more investigation.
+ I don't know what cals were used for this original processing, but it will
+ be worth determining best values for this flight and reprocessing if they
+ differ from those used originally.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/PREDICT/ATLvsATX.png
+	lyxscale 50
+	width 8cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ATLvsATX"
+
+\end_inset
+
+The temperature calculated using the LAMS-measured airspeed in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TfromVL"
+
+\end_inset
+
+), plotted as a function of the corresponding direct temperature measurement
+ 'ATX', for PREDICT flight from Colorado to St.
+ Croix on 12 August 2010.
+ The best linear fit is ATL=3.61+1.033
+\begin_inset space \thinspace{}
+\end_inset
+
+ATX (orange line, hard to see over black dots).
+ A 1:1 reference line (red) is also shown.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+It is worth mentioning that I have applied one correction to the file that
+ I have for this flight.
+ The pressure was apparently processed with an incorrect calibration, and
+ I have re-calculated all values of PSF with cal coefficients of (0.,1.) instead
+ as is appropriate for a digital sensor.
+ I don't know why the processing used (-0.809, 1.0014) instead, but that appears
+ to be an error in calibration that was inserted into processing.
+ It is very unlikely that this sensor changed calibration by this much.
+\end_layout
+
+\begin_layout Standard
+Here is an addition from Feb 20 2013:
+\end_layout
+
+\begin_layout Standard
+Comments from Jorgen and Dick reminded me that the ATX value was the avionics
+ value for this flight and that there were some problems with the temperature
+ sensors.
+ Nevertheless, I repeated the above for each of the four sensors available,
+ finding that all looked quite bad in comparison to the deduced ATL.
+ The only values that looked reasonable were the ATA values at low T (perhaps
+ consistent with the analysis of MJ Mahoney and Julie that argued for the
+ validity of that measurement in PREDICT).
+ The plots for each sensor are below:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename ATFH1vsATL.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+ATFH1 vs ATL
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename ATFH2vsATL.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+ATFH2 vs ATL
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename ATHR1vsATL.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+ATHR1 vs ATL
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename ATHR2vsATL.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+ATHR2 vs ATL
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

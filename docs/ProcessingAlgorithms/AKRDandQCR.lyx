@@ -1,0 +1,1469 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding default
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\use_mhchem 0
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={angle of attack, PCORS for the new radome, and QCR}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+See R including .Rhistory in file ~/Xanadu/SAANGRIA.
+ The following document was written into ~/Bulletin9 but the figure references
+ are to figures stored in ~/Xanadu/SAANGRIA, so these would have to be changed
+ in the document is moved.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Angle of Attack
+\end_layout
+
+\begin_layout Standard
+The first-order expression for the vertical wind 
+\begin_inset Formula $w$
+\end_inset
+
+ is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+w=V\sin(\alpha-\phi)+w_{p}\label{eq:VWind}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $V$
+\end_inset
+
+ is the true airspeed, 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ the angle of attack, 
+\begin_inset Formula $\phi$
+\end_inset
+
+ the pitch, and 
+\begin_inset Formula $w_{p}$
+\end_inset
+
+ the vertical motion or rate-of-climb of the aircraft.
+ The solution for the angle-of-attack is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\alpha=\phi+\arcsin\frac{w-w_{p}}{V}\label{eq:SolvedForAOA}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If it is reasonable to assume that 
+\begin_inset Formula $w$
+\end_inset
+
+ is zero, or that it averages to zero, then 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\alpha=\phi-\arcsin\frac{w_{p}}{V}\label{eq:alphaWithwZero}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+can be used to determine the angle-of-attack from the measurements of pitch,
+ rate-of-climb, and true airspeed.
+ Even in the presence of waves, fitting to this as functions of the radome
+ measurements and other flight characteristics should average any real effects
+ of vertical wind as long as the vertical wind over the flight segments
+ used averages to zero.
+\end_layout
+
+\begin_layout Subsubsection
+Old Radome (before SAANGRIA-TEST, so prior to 2013)
+\end_layout
+
+\begin_layout Standard
+The simplest result is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\alpha=a_{0}+a_{1}\frac{ADIFR}{QCR}\label{eq:OldRadome2term}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where, for the radome in use prior to 2013, the coefficients (determined
+ by fitting to the PREDICT ferry flight from BJC to St.
+ Croix) are {5.529309, 20.427622}.
+ Note that ADIFR is normally negative and a normal range for ADIFR/QCR is
+ about (-0.1 -- 0.0).
+ The code in use for this radome has coefficients (5.44, 21.17}, with an additiona
+l adjustment for dependence on Mach number.
+ I didn't find any significant dependence on MACH, MACH**2, or MACH**3.
+ 
+\end_layout
+
+\begin_layout Standard
+A slightly improved result over (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:OldRadome2term"
+
+\end_inset
+
+) is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\alpha=a_{0}+a_{1}\frac{ADIFR}{QCR}+a_{2}VSPD\label{eq:AOAfit3term}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with coefficients {5.52103486, 20.39866922, 0.01964274}, as plotted in the
+ following figure:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename AOAvsAOAC.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The standard error for (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:AOAfit3term"
+
+\end_inset
+
+) is 0.15
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+, vs 0.16
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ for (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:OldRadome2term"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Subsubsection
+New Radome (beginning in 2013):
+\end_layout
+
+\begin_layout Standard
+Since 2013, beginning with the SAANGRIA test flights, a new radome was used.
+ The calibration of this is evidently different from the old radome, so
+ it is necessary to determine a new calibration for angle-of-attack.
+ The best data for this appear to be from four flights, with maneuvers as
+ shown in the following table (thanks, Allen S.):
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+PROJECT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Date
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Times
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Nature of flight segments
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SAANGRIA-TEST
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+130213 (rf01)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+221300--221800
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+speed run at 25k ft
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+224050--224700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+speed run, 35k ft
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+244500--245000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+level segment at 12k ft
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SPRITES-II
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+130806 (rf05)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+55100--55500
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+pitch maneuvers
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+130812 (rf06)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+63600--64200
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+speed run
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+82500--83000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+83200--83650
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+130813 (rf07)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+85900--90500
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+90800--91400
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The best fits arise from using only the data for these time segments, but
+ it is also possible to use all the data from these flights (excluding cases
+ where the low airspeed indicates that flaps might have been deployed and
+ also excluding cases where there might be questionable data).
+ The latter has the advantage that a large part of the flight envelope is
+ covered, including climbs and descents, but flight transitions in power
+ settings or climb rate might be expected to increase the scatter in the
+ measurements.
+ Therefore both approaches are shown here.
+\end_layout
+
+\begin_layout Standard
+The measurements from all the flight segments in the above table were used
+ with the following fit:
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+I have used QCF instead of QCR because QCF is more reliable while QCR more
+ often has problems caused by plugging of the port by ice or water freezing
+ in the lines.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\alpha^{\prime}=c_{0}+\frac{ADIFR}{QCF}\left(c_{1}+c_{2}M\right)\label{eq:NewRadome3coefFit}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $M$
+\end_inset
+
+ is the Mach number.
+ The best-fit coefficients are {4.604, 18.67, 6.49}, and the standard error
+ vs 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ determined from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:SolvedForAOA"
+
+\end_inset
+
+) is 0.11
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+.
+ Adding additional terms dependent on pressure, true airspeed, density,
+ higher powers of Mach number, QCF, QCR, PSF, VSPD, etc., could only reduce
+ this standard error by less than 10%, so the added complexity and danger
+ of invalid extrapolation seemed reasons to keep the simpler form above.
+ The following figure shows the angle-of-attack calculated from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:NewRadome3coefFit"
+
+\end_inset
+
+), labeled AOAC7, vs that measured (assuming 
+\begin_inset Formula $w=0$
+\end_inset
+
+) using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:alphaWithwZero"
+
+\end_inset
+
+).
+ The red line in that figure indicates 1:1 prediction.
+ The figure is consistent with the low standard error and indicates that
+ there is no systematic departure from the fit, at least for these data.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/SAANGRIA/FigAOA2.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If the calculation is repeated for all the data from the four flights in
+ the table above, without restraining the data to the periods of maneuvers,
+ the resulting fit coefficients applicable to (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:NewRadome3coefFit"
+
+\end_inset
+
+) are {4.533, 19.787, 3.856} and the resulting standard error is about 0.14
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+.
+ The same standard error applies to the difference between the angle-of-attack
+ determined from the fit to the maneuvers, and both plots look like the
+ graph below:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/SAANGRIA/FigAOA4.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Part of the reason that the scatterplot looks broader than the one based
+ on the maneuvers, despite having only 30% higher standard error, is that
+ there are many more points in the second plot so the concentration of points
+ along the red line is harder to detect.
+ Nevertheless, there is enough scatter, especially at high angle of attack,
+ that it is worth exploring if the scatter can be reduced by including additiona
+l terms in the fits.
+ As before, more complex fits only reduce the standard error by <10%, but
+ they do reduce the apparent scatter at high angle-of-attack slightly.
+ 
+\end_layout
+
+\begin_layout Standard
+Measurements at flight speeds less than 130 m/s have been excluded here
+ to avoid periods of possible flap deployment.
+ If measurements at slow speed and high angle of attack are desired, perhaps
+ for boundary-layer measurements, a different approach may produce better
+ results.
+ One might be to do a running fit to (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:OldRadome2term"
+
+\end_inset
+
+) based on exponentially decaying formulas for the coefficients, so that
+ the mean vertical wind will stay near zero.
+ The approach would be as follows:
+\end_layout
+
+\begin_layout Enumerate
+For a fit of the form 
+\begin_inset Formula $y=y_{0}+bx$
+\end_inset
+
+, the best-fit values for the coefficients are:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+b=\frac{\overline{xy}-\overline{x}\,\overline{y}}{\overline{x^{2}}-\overline{x}^{2}}\label{eq:b equation}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+y_{0}=\overline{y}-b\overline{x}\label{eq:yzero equation}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Initialize the sums to realistic values to avoid problems when the updating
+ starts.
+ I found that these values worked well: 
+\begin_inset Formula $\overline{x}=-0.0811$
+\end_inset
+
+, 
+\begin_inset Formula $\overline{y}=2.705$
+\end_inset
+
+, 
+\begin_inset Formula $\overline{x^{2}}=0.00684$
+\end_inset
+
+, 
+\begin_inset Formula $\overline{xy}=-0.214$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Exponentially updating values for the mean values, with time constant 
+\begin_inset Formula $\tau$
+\end_inset
+
+ of perhaps 300--900 s, can be accumulated using formulas of the following
+ form, for each of the four mean values needed:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\overline{xy}^{\prime}\leftarrow\overline{xy}+(xy_{i}-\overline{xy})/\tau\label{eq:updateFormula}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Use the values of 
+\begin_inset Formula $y_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ so obtained to calculate angle-of-attack (y) from the ratio 
+\begin_inset Formula $ADIFR/QCF$
+\end_inset
+
+ (x).
+ 
+\end_layout
+
+\begin_layout Standard
+For example, with a time constant of 300 s, the predicted angle of attack
+ vs that expected from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:alphaWithwZero"
+
+\end_inset
+
+) is shown in the following figure:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/SAANGRIA/FigAOA5.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The standard error in the prediction is reduced to about 0.10
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ with this procedure.
+ This approach therefore would reduce the offset in vertical wind, at the
+ expense of falsely reducing the amplitude of real vertical-wind features
+ that extend over a significant part of the updating time period (here 5
+ min).
+ It would compensate for problems like disturbance of flow near the radome
+ ports by accumulation of ice or insect debris, but might mask real problems
+ with the measuring system by removing them as part of the updating.
+ Perhaps the best way to use an updated sensitivity like this would be to
+ include another variable, rather than replacing the standard angle-of-attack
+ with this measurement.
+ While it would remove visible-offset problems, it doesn't seem to be a
+ preferred way to process this variable.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Alternately, it may be preferable to update only the constant term, because
+ the range in angle-of-attack may be low for large periods of level flight.
+ In this case, the updated constant term would just be (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:yzero equation"
+
+\end_inset
+
+) where 
+\begin_inset Formula $x=$
+\end_inset
+
+ADIFR/QCF and 
+\begin_inset Formula $y$
+\end_inset
+
+ is given by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:alphaWithwZero"
+
+\end_inset
+
+).
+ -- I WASN'T ABLE TO GET THIS TO WORK
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+LAMS-based PCORS with the new radome
+\end_layout
+
+\begin_layout Standard
+The new radome is quite different from the old one, offset by about -1.3
+ deg and showing different dependences, a Mach number dependence as the
+ dominant effect vs a dependence on vertical speed of the aircraft as the
+ dominant effect with the old radome.
+ It is still possible to find the value of ADIFR/QCR that would have been
+ measured by the old radome, in terms of the measurement from the new radome,
+ by equating the formulas for the two radomes and solving for the old value
+ in terms of the new value, If the simplest formulas are used,
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\alpha=a_{0}+a_{1}\left(\frac{ADIFR}{QCF}\right)_{old}=c_{0}^{\prime}+\left(\frac{ADIFR}{QCF}\right)_{new}(c_{1}^{\prime}+c_{2}^{\prime}M)\label{eq:OldRfromNew}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+or
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\left(\frac{ADIFR}{QCF}\right)_{old}=\frac{1}{a_{1}}\left(c_{0}^{\prime}-a_{0}+\left(\frac{ADIFR}{QCF}\right)_{new}(c_{1}^{\prime}+c_{2}^{\prime}M)\right)\label{eq:OldRfromNew-2}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This would then give the value to use in the old determination of PCORS
+ from LAMS, pending repeat of the calibration with LAMS and the new radome.
+\end_layout
+
+\begin_layout Subsection*
+Recommendations, New Radome
+\end_layout
+
+\begin_layout Enumerate
+For standard angle-of-attack (AKRD), use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:NewRadome3coefFit"
+
+\end_inset
+
+) with the coefficients listed following that equation.
+ The Mach number used for this should be calculated from QCF and PSF, the
+ measurements before correction for 'PCORS', and ADIFR/QCF should be calculated
+ similarly using the original measurements.
+\end_layout
+
+\begin_layout Enumerate
+A new variable for angle-of-attack can be calculated using formulas (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:b equation"
+
+\end_inset
+
+--
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:updateFormula"
+
+\end_inset
+
+) and would be used for a new vertical-wind variable.
+ The name and identification for this variable need to highlight that it
+ is the result of a running update of the sensitivity coefficients for the
+ radome.
+ This new variable needs further study before it should be implemented for
+ general use, but this approach should provide good stability of the baseline
+ for the vertical wind.
+\end_layout
+
+\begin_layout Enumerate
+We need yaw maneuvers and reverse-heading maneuvers to calibrate the sideslip
+ sensitivity in the same way.
+\end_layout
+
+\begin_layout Enumerate
+When the LAMS-based PCORS are implemented for the new radome, the variable
+ to use in place of ADIFR/QCR in the equation for 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ (see separate memo and paper draft) is the revised value given by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:OldRfromNew-2"
+
+\end_inset
+
+), with the following coefficients: {
+\begin_inset Formula $a_{0}$
+\end_inset
+
+, 
+\begin_inset Formula $a_{1}$
+\end_inset
+
+}={5.5293, 20.4276} and {
+\begin_inset Formula $c_{0}$
+\end_inset
+
+, 
+\begin_inset Formula $c_{1}$
+\end_inset
+
+, 
+\begin_inset Formula $c_{2}$
+\end_inset
+
+}={4.533, 19.787, 3.856}.
+ The Mach number 
+\begin_inset Formula $M$
+\end_inset
+
+ entering (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:OldRfromNew-2"
+
+\end_inset
+
+) should be calculated from the raw measurements QCF and PSF.
+\end_layout
+
+\begin_layout Subsection*
+Correcting QCR
+\end_layout
+
+\begin_layout Subsubsection*
+Old Radome (before 2013)
+\end_layout
+
+\begin_layout Standard
+To duplicate QCW, the best estimate of QCF from the PCORS, based on measurements
+ from PREDICT FF01:
+\end_layout
+
+\begin_layout Enumerate
+QCR should be corrected by the same difference needed to correct QCF (because
+ both arise from errors in the static source): QCRP = QCR - PC with PC given
+ by the PCOR formula for the GV.
+ This however doesn't take into account that the pitot-tube value QCF is
+ relatively insensitive to angle of attack while the radome port used for
+ QCR is known to be sensitive to angle of attack.
+\end_layout
+
+\begin_layout Enumerate
+The expression 
+\begin_inset Formula $QCW\sim d_{0}+QCRP(d_{1}+d_{2}QCRP+d_{3}\frac{ADIFR}{QCR}$
+\end_inset
+
+ was then used to find the best-fit coefficients {
+\begin_inset Formula $d_{i}$
+\end_inset
+
+}.
+ 
+\begin_inset Formula $QCW$
+\end_inset
+
+ is QCF-PC or the corrected value for QCF.
+ This correction then takes into account possible dependence of QCR on angle
+ of attack and also possible differences in calibration or in flow-distortion
+ effects between QCR and QCF.
+ This leads to the following new variable based on QCR:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+QCRP=QCR-PC
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+QCRCC=d_{0}+QCRP(d_{1}+d_{2}QCRP+d_{3}\frac{ADIFR}{QCR}\label{eq:NewQCR}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The result was that the mean difference between QCW and QCRCC is 0., with
+ standard deviation 0.25 hPa.
+ This new variable could then serve as a backup QC measurement, with about
+ 0.25 hPa uncertainty.
+\end_layout
+
+\begin_layout Standard
+Best-fit coefficients are {1.052, 9.750e-01, -5.58e-05, -1.817e-01}, all indicated
+ to be significant.
+ However, omitting the quadratic term in QCRP makes little difference in
+ the results (changing the standard deviation from 0.25 to 0.26), so this
+ fit may be preferable: {1.860, 0.96164, 0., -0.1783}.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+New Radome (beginning in 2013)
+\end_layout
+
+\begin_layout Enumerate
+In the above equation, determine 'PC' using the substitution (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:OldRfromNew-2"
+
+\end_inset
+
+) -- necessary because there are no calibration data with the new radome
+ and LAMS.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Then find QCRP using this revised PC.
+\end_layout
+
+\begin_layout Enumerate
+Use QCRP in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:NewQCR"
+
+\end_inset
+
+) and use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:OldRfromNew-2"
+
+\end_inset
+
+) to substitute values measured using the new radome for the values that
+ would have been measured by the old radome.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

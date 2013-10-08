@@ -1,0 +1,691 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding default
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\use_mhchem 0
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={UV hygrometer data processing}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+UV Hygrometer
+\end_layout
+
+\begin_layout Standard
+This note records what I found in a quick look at the UV hygrometer processing
+ and recommends how this can be updated to current vapor-pressure processing.
+\end_layout
+
+\begin_layout Subsection*
+Processing in use:
+\end_layout
+
+\begin_layout Standard
+The processing chain in use is this:
+\end_layout
+
+\begin_layout Enumerate
+The voltage from the UVH is converted to water vapor density via cal coefficient
+s.
+ For IDEAS-4, the netCDF header says they are {38,-11,0}.
+ Incidentally, the units in that header are wrong; it says 
+\begin_inset Quotes eld
+\end_inset
+
+deg_C
+\begin_inset Quotes erd
+\end_inset
+
+, should be g/m^3
+\end_layout
+
+\begin_layout Enumerate
+Then, after validity checks , a 300-s running average of (rhodp-rhouv) is
+ calculated.
+\end_layout
+
+\begin_layout Enumerate
+rhouv is then corrected by adding this difference, 
+\emph on
+multiplied by the first cal coefficient,
+\emph default
+ to rhouv.
+ 
+\end_layout
+
+\begin_layout Enumerate
+rhouv is then used to calculate the water vapor pressure.
+ This is based on the Magnus-Tetens equation for vapor pressure:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+e=e_{0}\exp\left(\frac{aT_{DP}}{b+T_{DP}}\right)\label{eq:TetensEq}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $e_{o}=6.105$
+\end_inset
+
+mb and 
+\begin_inset Formula $a$
+\end_inset
+
+=17.27, 
+\begin_inset Formula $b$
+\end_inset
+
+=237.7.
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+I think this number is correct and perhaps somewhere a typo has changed
+ the value being used to 237.3
+\end_layout
+
+\end_inset
+
+ Because the vapor pressure is related to the vapor density via 
+\begin_inset Formula $e=\rho R_{w}T$
+\end_inset
+
+, this can be rewritten as
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\frac{aT_{DP}}{b+T_{DP}}=\ln\frac{e}{e_{0}}=\ln\left(\frac{\rho R_{w}T}{e_{0}}\right)\label{eq:VaporPressure}
+\end{equation}
+
+\end_inset
+
+The processing code that implements this uses 
+\begin_inset Quotes eld
+\end_inset
+
+ela
+\begin_inset Quotes erd
+\end_inset
+
+ for 
+\begin_inset Formula $e/e_{0}.$
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+I calculate 1322.8 instead of 1322.3
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+ela=\frac{rhouv*T_{k}}{1322.3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+This vapor pressure (ela) is then converted from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TetensEq"
+
+\end_inset
+
+):
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+T_{DP}=\frac{237.3\log(ela)}{17.27-\log(ela)}
+\]
+
+\end_inset
+
+which gives the dew point in Celsius units.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vfill
+\backslash
+eject
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Comments:
+\end_layout
+
+\begin_layout Enumerate
+I suspect an error has entered the processing chain in step 3, where the
+ first calibration coefficient multiplies the feedback term.
+ It may be a clue that the default value for this coefficient is 1 and other
+ coefficients are zero; as interpreted now, that would suppress all response
+ to the measurements, so that is not a meaningful default and suggests that
+ the use of these coefficients has perhaps changed from their original intent.
+ The first calibration coefficient is the constant term in the polynomial
+ calibration, so I can't see why this should enter here.
+ It leads to two problems:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+The feedback has a time constant much faster than 300 s, but 300 s or longer
+ might be a reasonable time for this feedback.
+ The first coefficient in use now is 38, so I think the feedback is 38 times
+ more than is desired.
+ This risks instability in the feedback to have the feedback term this large.
+\end_layout
+
+\begin_layout Enumerate
+As implemented, 38/300 of the signal is lost at 1 Hz from having the feedback
+ this large.
+ This means that measureThis note records what I found in a quick look at
+ the UV hygrometer processing and recommends how this can be updated to
+ current vapor-pressure processing.ments like fluxes would have only 87%
+ the amplitude that is measured from a 1-Hz fluctuation to which the dewpoint
+ sensor does not respond.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Would it be better, in the data-quality checks, to compare diff to some
+ fraction of rhouv, like 
+\begin_inset Quotes eld
+\end_inset
+
+if (fabsf(diff) > rhouv*0.5) {diff=copysignf(rhouv*0.5,diff);}
+\begin_inset Quotes erd
+\end_inset
+
+? Using an absolute value here seems puzzling for a variable with as large
+ a range as is normal for rhouv.
+\end_layout
+
+\begin_layout Enumerate
+The Tetens or Magnus-Tetens equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TetensEq"
+
+\end_inset
+
+) is not a good choice for general use because, as originally developed,
+ it applies above the freezing point.
+ It departs significantly from the dew point at low temperature.
+ That is a good reason for changing the algorithm in use.
+ Note that this may be important if, as Chris thought, the UVH was used
+ as the primary humidity reference for ICE-T: The sub-zero values there
+ are quite important for the project.
+\end_layout
+
+\begin_layout Enumerate
+The processing chain is analogous to what is used for the chilled-mirror
+ sensors: From the original measurement, determine 
+\begin_inset Formula $e$
+\end_inset
+
+, and from that determine 
+\begin_inset Formula $T_{DP}$
+\end_inset
+
+.
+ In the case of the UVH, the determination of 
+\begin_inset Formula $e$
+\end_inset
+
+ is via the perfect gas law (the last equality is (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:VaporPressure"
+
+\end_inset
+
+)) while for the chilled-mirror instruments it is via either Goff-Gratch
+ or Murphy-Koop applied to the mirror temperature, with correction for the
+ enhancement factor.
+ Then, for the chilled-mirror instruments, the determination of 
+\begin_inset Formula $T_{DP}$
+\end_inset
+
+ is via an interpolation table based on Murphy-Koop (or, in the past, an
+ equation based on Goff-Gratch), while for the UVH the conversion is based
+ on the Magnus-Tetens equation.
+\end_layout
+
+\begin_layout Enumerate
+The running average is implemented in awkward code and could be made much
+ simpler and clearer.
+ Still better, in my opinion, would be an exponential update; this has better
+ spectral characteristics, is easier to adjust, and can be implemented in
+ simple and obvious code.
+ See 
+\begin_inset Quotes eld
+\end_inset
+
+Recommendations.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vfill
+\backslash
+eject
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Suggestions / Recommendations
+\end_layout
+
+\begin_layout Enumerate
+Consider making the code consistent with the processing chain for the chilled-mi
+rror hygrometers, as follows:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Calculate rhouv as at present, perhaps with substitution of exponential
+ updating for block averaging as suggested below.
+\end_layout
+
+\begin_layout Enumerate
+Calculate vapor pressure from the perfect gas equation, using rhouv and
+ ATX:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\{\mathrm{EDP}\}=\{\mathrm{RHOUV}\}*(\{\mathrm{ATX\}}+273.15\})*R_{w}/(C_{mb2Pa}*C_{kg2g})
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $R_{w}=8.314472\times1\mathrm{0^{3}J\, kmo}l^{-1}K^{-1}/18.0153\,\mathrm{kg\, kmole}^{-1}=461.5228$
+\end_inset
+
+ J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, 
+\begin_inset Formula $C_{mb2Pa}=100$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+Pa
+\begin_inset space ~
+\end_inset
+
+mb
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, and 
+\begin_inset Formula $C_{kg2g}=10^{3}$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+g
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, so that the net result is
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\{\mathrm{EDP}\}=4.615228\times10^{-3}\{\mathrm{RHOUV}\}*(\{\mathrm{ATX\}}+273.15\})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+If a dew point is desired, use the Murphy-Koop interpolation table
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Fix the updating code.
+ Options are:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+remove the cal coefficient term from the update term.
+ In addition, if you keep block averaging: this is very awkwardly coded
+ now, so Chris could clean it up.
+ There is value in that beyond esthetics: Someone else reading this will
+ have an easier time grasping quickly what is happening.
+ For example, I like to do these something like this, or even combine the
+ two statements into one line with a comma so that the entire circular-buffer
+ handling is isolated to that one line.
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+uv_sum += diff-uv_buffer[buffIndex = ++buffIndex%300];
+\end_layout
+
+\begin_layout LyX-Code
+uv_buffer[buffIndex] = diff;
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+change to exponential updating, as follows (perhaps with Tau=300 to give
+ a 300-s time constant for 1 Hz processing).
+ Maybe something like:
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+offset += (rhodt-rhouv-offset)/Tau;
+\end_layout
+
+\begin_layout LyX-Code
+rhouv += offset;
+\end_layout
+
+\begin_layout Standard
+These statements can be separated, as in the present code, so that the update
+ only occurs when the validity checks are true but the offset is applied
+ to all measurements.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+
+\noun on
+NOTE: I haven't tested any of this! Values like 300 s or 0.5 would need re-testin
+g if redefined as suggested here.
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

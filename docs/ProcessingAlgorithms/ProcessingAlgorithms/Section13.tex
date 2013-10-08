@@ -1,0 +1,141 @@
+
+\section{AIR CHEMISTRY MEASUREMENTS}
+\begin{hangparagraphs}
+\textbf{Raw Carbon Monoxide Concentration (ppb): }\textbf{\uline{CO}}\index{CO}\\
+CO is the uncorrected output of the TECO model 48 CO analyzer. This
+instrument measures the concentration of CO by gas filter correlation.
+The optics of the version operated by the RAF have been modified to
+increase the light through the absorption cell, and a zero trap has
+been added that periodically removes CO from the sample air stream
+to obtain an accurate zero. This permits correction for the significant
+temperature-dependent drift of the zero level of the meaasurement.
+
+
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{Carbon Monoxide Analyzer Status (V): }\textbf{\uline{CMODE}}\index{CMODE},\\
+\textbf{Carbon Monoxide Baseline Zero Signal (V): }\textbf{\uline{COZRO}}\textbf{\index{COZRO}}\\
+\textbf{Raw Carbon Monoxide, Baseline Corrected (V): }\textbf{\uline{COCOR\index{COCOR}}}%
+\end{minipage}\\
+CMODE records if the CO analyzer is supplied with air from which CO
+has been removed and so is recording its zero level. When CMODE is
+less than 0.2 V, the instrument is in the normal operational mode,
+and when CMODE is greater than 8.0 V the instrument is in the ``zero''
+mode. When measurements are processed, the zero-mode signals are represented
+by a cubic spline to obtain a reference baseline for the signal (COZRO),
+and this baseline is subtracted from the measured value (CO) to obtain
+COCOR. This variable still jumps to zero periodically and does not
+include the calibration that enters the following variable, COCAL. 
+
+\textbf{Corrected Carbon Monoxide Concentration (ppmv): COCAL}\index{COCAL}\\
+COCAL is the calibrated signal after correction for drift of the baseline
+and after application of the appropriate calibration coefficients
+to produce units of ppmv. The quality of the baseline fit can be judged
+by examining the offset at the zero points. If there are relatively
+small changes in the baseline, the zero offset will be only a few
+ppbv. If there have been rapid changes in the baseline, the zero offset
+can be up to 50 ppbv. The magnitude of the offset at the zero values
+gives a good measure of uncertainty in the data set. The detection
+limit is 10 ppbv, with an uncertainty of $\pm15\%$. At 1 Hz, data
+will have considerable variability, so 10-s averaging is often useful
+when the measurements are used for analysis. 
+
+\textbf{Raw TECO Ozone Output (ppb): }\textbf{\uline{TEO3}}\index{TEO3}\\
+TEO3 is the uncorrected output of the TECO 49 UV ozone analyzer. This
+commercial instrument has been modified to record the temperature
+and pressure inside the ozone absorption cell.
+
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{Internal TECO Ozone Sampling Pressure (mb): }\textbf{\uline{TEP}}\textbf{\index{TEP},
+}\textbf{\uline{TEO3P}}\index{TEO3P}\\
+\textbf{Internal TECO Ozone Sampling Temperature ($^{\circ}C$): }\textbf{\uline{TET\index{TET}}}%
+\end{minipage}
+
+~~~~~~~~~TEP (or TEO3P) is the pressure inside the detection
+cell of the TECO 49 UV ozone analyzer, and TET is the cell temperature.
+These are used to convert the measurements from the instrument to
+units of ppbv.
+
+\textbf{Corrected TECO Ozone Concentration (ppbv): }\textbf{\uline{TEO3C}}\index{TEO3C}\\
+TEO3C is the measurement from the TECO 49 UV ozone analyzer after
+correction for the pressure and temperature in the cell. The instrument
+provides output only each ten seconds, and measurements are collected
+in the 3 s preceding the update. The measurements may be artificially
+high or low when rapid changes in humidity are present, as may occur
+when crossing the top of the boundary layer or when going through
+clouds. In operation on the ground prior to takeoff or immediately
+after landing, a high concentration of hydrocarbons can cause spuriously
+high measurements. The detection limit is 1 ppbv with an uncertainty
+of $\pm$5\%.
+
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{NO Raw Counts (counts per sample interval): }\textbf{\uline{XNO}}\textbf{\index{XNO}}\\
+\textbf{NOy Raw Counts (counts per sample interval): }\textbf{\uline{XNOY\index{XNOY}}}\\
+\textbf{NO Calibration Flow (slpm): }\textbf{\uline{XNOCF}}\textbf{\index{XNOCF}}\\
+\textbf{NOy Calibration Flow (slpm): }\textbf{\uline{XNCLF}}\textbf{\index{XNCLF}}\\
+\textbf{NO, NOy Measurement Status (dimensionless): }\textbf{\uline{XNST}}\textbf{\index{XNST}}\\
+\textbf{NO Zero Air Flow (slpm): }\textbf{\uline{XNOZA}}\textbf{\index{XNOZA}}\\
+\textbf{NOy Zero Air Flow (slpm): }\textbf{\uline{XNZAF}}\textbf{\index{XNZAF}}\\
+\textbf{NO Sample Flow (slpm): }\textbf{\uline{XNOSF}}\textbf{\index{XNOSF}}\\
+\textbf{NOy Sample Flow (slpm): }\textbf{\uline{XNSAF}}\textbf{\index{XNSAF}}\\
+\textbf{NOy Reaction Chamber Pressure (mb): }\textbf{\uline{XNOYP}}\textbf{\index{XNOYP}}\\
+\textbf{Gold NOy Converter Temperature ($\text{º}$C): }\textbf{\uline{XNMBT\index{XNMBT}}}%
+\end{minipage}\\
+XNO and XNOY are the raw data counts from the NO and NO$_{y}$ instruments,
+respectively, and XNCLF and XNOCF are the respective calibration flows
+for these instruments.  XNST records the status for both instruments:
+In measurement mode, XNST is 0, while XNST is 5 when the instruments
+are in zero mode and 10 when the instruments are in calibraation mode.
+the NOy and NO instruments. The instrument is in the measure mode
+for XNST of 0. For a XNST reading of 5 the instruments are in the
+zero mode. XNST value of 10 is the calibration mode. XNOZA and XNZAF
+are flow rates for zero air used to back flush inlets, typically at
+takeoff and landing, and for calibration using ``zero'' air. Even
+if the status, XNST, is 0, indicating the instrument is in the measurement
+mode, when XNOZA and XNZAF are approximately 1 slpm the instrument
+is measuring zero air and not ambient air.  XNOSF and XNSAF are the
+sample flow rates through the NO and NO$_{y}$ instruments respectively.
+These values are typically about 1 slpm. XNMBT is the temperature
+of the gold NO$_{y}$ converter.
+
+\begin{minipage}[t]{1\columnwidth}%
+C\textbf{orrected NO Concentration (ppbv): }\textbf{\uline{XNOCAL}}\textbf{\index{XNOCAL}}\\
+\textbf{Corrected NOy Concentration (ppbv): }\textbf{\uline{XNYCAL\index{XNYCAL}}}%
+\end{minipage}\\
+XNOCAL and XNYCAL are the calibrated NO and NO$_{y}$ concentrations,
+respectively, with units of ppbv. The NO and NOy data are represented
+by a cubic spline for baseline subtraction, and then the calibration
+coefficients are applied and the measurements are converted to units
+of ppbv. The quality of the data can be assessed by examining the
+accuracy of the zero correction. This instrument  adds water vapor
+to the sample stream to reduce the effect of ambient water on the
+final signal. The water vapor addition is not sufficient to saturate
+the sample stream, but enough to remove much of the interference.
+The detection limits of the NO,NO$_{y}$ instruments are 50 ppbv for
+a one-second averaging time. The uncertainty is $\pm$ 5\%.
+
+\textbf{Raw Chemiluminescent Ozone Signal (V): }\textbf{\uline{O3FS}}\index{O3FS}\\
+Raw output from the reverse chemiluminescence ozone instrument, which
+operates on the basis of reacting nitric oxide with ozone and detecting
+the resulting chemiluminescence.
+
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{Chemiluminescent Ozone Sample Flow Rate (sccm): }\textbf{\uline{O3FF}}\textbf{\index{O3FF}}\\
+\textbf{Chemiluminescent Ozone Nitric Oxide Flow Rate (sccm): }\textbf{\uline{O3FN}}\textbf{\index{O3FN}}\\
+\textbf{Chemiluminescent Ozone Sample Pressure (mb): }\textbf{\uline{O3FP\index{O3FP}}}%
+\end{minipage}
+
+~~~~~~~~~These variables characterize conditions within the
+chemiluminescence ozone sensor. The sample rate, in standard $cm^{3}/s$,
+is O3FF, while O3FN gives the NO flow rate in the same units and O3FP
+is the pressure in the ozone sample cell.
+
+\textbf{Chemiluminescent Ozone Concentration (ppbv): }\textbf{\uline{O3FC}}\index{O3FC}\\
+This is the corrected ozone concentration, with units of ppbv. This
+instrument is calibrated both on the ground and in flight by comparison
+with the TECO 49 UV instrument. The final data are corrected for
+the influence of water vapor on the signal. The detection limit is
+0.1 ppbv and the uncertainty is about 10\% for a one-second sample.\\
+\end{hangparagraphs}
+

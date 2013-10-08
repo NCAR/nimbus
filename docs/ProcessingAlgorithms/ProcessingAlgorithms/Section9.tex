@@ -1,0 +1,396 @@
+
+\section{WIND\label{sec:WIND}}
+
+\href{http://www.eol.ucar.edu/raf/Bulletins/bulletin23.html}{RAF Bulletin 23}\index{Bulletin 23}
+documents the calculation of wind components, both with respect to
+the earth (UI, VI, WI, WS and WD) and with respect to the aircraft
+(UX and VY). In data processing, a separate function (GUSTO in GENPRO,
+gust in NIMBUS) is used to derive these wind components. That function
+uses the Inertial Reference Unit (IRU\index{IRU}) measurements as
+well as aircraft true airspeed, aircraft angle of attack, and aircraft
+sideslip angle. The wind components calculated in GUSTO/gust are used
+to derive the wind direction (WD) and wind speed (WS). Additional
+variables UIC, VIC, WSC, WDC, UXC, and VYC are also calculated based
+on the variables VNSC, VEWC discussed in section \ref{sub:IRS/GPS},
+which combine IRU and GPS information to obtain improved measurements
+of the aircraft motion that combine the high-frequency response of
+the IRU measurements with the long-term accuracy of the GPS measurements.
+
+The details contained in Bulletin 23 will not be repeated here; the
+description there still describes the wind calculations in use, so
+please consult that bulletin for the processing algorithms. The variables
+pertaining to the relative wind are described in the next subsection,
+and the variables characterizing the wind are then described briefly
+in the last subsection. Some additional detail is included in cases
+where procedures are not documented in that earlier bulletin.
+
+
+\subsection{Relative Wind}
+
+Wind\index{wind!relative} is measured by adding two vectors: (1)
+the measured air motion relative to the aircraft (called the relative
+wind), and (2) the motion of the aircraft relative to the Earth. The
+following are the measurements used to determine the relative wind.
+The motion of the aircraft relative to the ground is discussed in
+the next section, and the combination of these two vectors to measure
+the wind is described in \href{http://www.eol.ucar.edu/raf/Bulletins/bulletin23.html}{RAF Bulletin 23}.
+The radome gust-sensing system is discussed briefly \vpageref{radome gust-sensing system}.
+\begin{hangparagraphs}
+\textbf{Dynamic Pressure (mb): }\textbf{\uline{QCx}}\textbf{\sindex[var]{QCx}\index{QCx},
+}\textbf{\uline{QCxC}}\sindex[var]{QCxC}\index{QCxC}\\
+Dynamic pressure\index{pressure!dynamic} is the difference between
+the pitot (total) pressure\index{pressure!total}\index{pressure!pitot|see {pressure, total}}
+resulting from the flight speed of the aircraft and the static pressure\index{pressure!ambient}\index{pressure!static|see {pressure ambient}}
+that would be present in the absence of motion. The QCxC value is
+corrected for local flow-field distortion, as described in\href{http://www.eol.ucar.edu/raf/Bulletins/bulletin21.html}{RAF Bulletin 21}\index{Bulletin 21}.
+A Rosemount Model 1221 differential pressure transducer is used for
+all measurements of dynamic pressure. This measurement enters the
+calculation of true airspeed\index{true airspeed} and Mach number\index{Mach number}
+and so is needed to calculate many derived variables. 
+
+\textbf{Aircraft True Airspeed (m/s): }\textbf{\uline{TASx}}\index{TASx}\\
+This derived measurement of the flight speed\index{flight speed|see{true airspeed}}
+of the aircraft relative to the atmosphere is based on the Mach number
+calculated from both the dynamic pressure at location x and the static
+pressure\index{pressure!ambient}. See the derivation for ATx \vpageref{ambient temperature and TAS calculation}.
+The different variables for TASx (TASF, TASR, etc) use different measurements
+of QCxC in the calculation of Mach number.\\
+\\
+\framebox{\begin{minipage}[t]{0.95\textwidth}%
+(see box for ATx\index{ATx} and MACHx\index{MACHx})\\
+Note dependence of MACHx on choices for QCxC\index{QCxC} and PSXC\index{PSXC}\\
+TASx\index{TASx} depends on QCxC, PSXC\index{PSXC}, ATX\index{ATX}\\
+~~~~~where PSXC and ATX are the preferred choices\\
+\\
+\\
+\rule[0.5ex]{1\columnwidth}{1pt}
+
+\begin{equation}
+\mathrm{TASx}=\mathrm{\{MACHx\}}\sqrt{\gamma R_{d}\mathrm{\,(\{ATX\}}+T_{0})}\label{eq:8.10-1}
+\end{equation}
+%
+\end{minipage}}\\
+\\
+
+
+\textbf{Aircraft True Airspeed (Humidity Corrected) (m/s): }\textbf{\uline{TASHC}}\sindex[var]{TASHC}\index{TASHC}\\
+ This derived measurement of \index{true airspeed}true airspeed takes
+into account the deviations of the specific heats of moist air from
+those of dry air. See List, 1971, pp 295, 331-339, and Khelif, et
+al., 1999. The present form of this equation, from Khelif et al.~1999%
+\footnote{Khelif, D., S.P. Burns, and C.A. Friehe, 1999: Improved wind measurements
+on research aircraft. \emph{Journal of Atmospheric and Oceanic Technology,}
+\textbf{16,} 860--875.%
+}, adds a moisture correction to a true airspeed derived for dry air:\\
+\\
+ %
+\framebox{\begin{minipage}[t]{0.95\columnwidth}%
+SPHUM\index{SPHUM} = specific humidity\index{humidity!specific},
+g/kg\\
+\\
+\\
+\rule[0.5ex]{1\columnwidth}{1pt}
+\begin{lyxcode}
+TASHC~=~TASX~{*}~(1.0~+~0.000304~{*}~SPHUM)\end{lyxcode}
+%
+\end{minipage}}\\
+
+
+\textbf{Attack Angle Differential Pressure (mb): }\textbf{\uline{ADIFR}}\sindex[var]{ADIFR}%
+\footnote{\begin{hangparagraphs}
+\textbf{Obsolete variable }\textbf{\uline{ADIF}}\textbf{\index{ADIF}
+is a similar variable used for old gust-boom systems or for Rosemount
+Model 858AJ flow-angle sensors.}\end{hangparagraphs}
+%
+}\index{ADIFR}\\
+\index{attack, angle of}This variable records the pressure difference
+between the top and bottom pressure ports of the \index{radome gust-sensing system}radome
+gust-sensing system. 
+
+\textbf{Sideslip Angle Differential Pressure (mb): }\textbf{\uline{BDIFR}}\sindex[var]{BDIFR}%
+\footnote{\begin{hangparagraphs}
+\textbf{Obsolete variable }\textbf{\uline{BDIF}}\textbf{\index{BDIF}
+is a similar variable used for old gust-boom systems or for Rosemount
+Model 858AJ flow-angle sensors.}\end{hangparagraphs}
+%
+}\index{BDIFR}\\
+\index{sideslip, angle of}This variable records the pressure difference
+between starboard and port pressure inlets of the radome gust-sensing
+system\index{radome gust-sensing system}, in the horizontal plane
+of the aircraft's flow-angle sensor system. 
+
+\textbf{Attack Angle, Radome (}$\text{º}$\textbf{): }\textbf{\uline{AKRD}}\sindex[var]{AKRD}\index{AKRD}\\
+This derived output represents the angle of attack\index{attack, angle of}
+of the aircraft. It is obtained from ADIFR\index{ADIFR} and a dynamic
+pressure\index{pressure!dynamic} using a sensitivity function that
+has been determined empirically for each aircraft.\\
+\framebox{\begin{minipage}[t]{0.95\textwidth}%
+ADIFR\index{ADIFR} = attack differential pressure, radome\\
+QCXC\index{QCXC} = reference dynamic pressure\\
+XMACH2\index{XMACH2} = square of the Mach number\\
+$c_{0},\, c_{1}$ = sensitivity coefficients determined empirically\\
+\-\-\-\-\-\-\-\-\- = \{0.3843, (1/0.06653) $\text{º}$\}
+for the C-130\\
+~~~~~~~~~ = \{0.2571, (1/0.04724) $\text{º}$\} for the GV\\
+$c_{3},\, c_{4}$ = additional coefficients for the GV \\
+~~~~~~~~~ = \{0.6195$\text{º}$, -1.02758$\text{º}$\} for
+XMACH2 > 0.194\\
+~~~~~~~~~ = \{0.42$\text{º}$, 0\} for XMACH2 $\leq$ 0.194
+
+\noindent \rule[0.5ex]{1\linewidth}{1pt}
+
+For the C-130:
+
+\[
+\mathrm{AKRD}=c_{1}\left(\frac{\{\mathrm{ADIFR}\}}{\{\mathrm{QCXC}\}}+c_{0}\right)
+\]
+
+
+For the GV:
+
+\[
+\mathrm{AKRD}=c_{1}\left(\frac{\{\mathrm{ADIFR}\}}{\{\mathrm{QCXC}\}}+c_{0}\right)+c_{3}+c_{4}\{\mathrm{XMACH2}\}
+\]
+%
+\end{minipage}}
+
+\textbf{}%
+\begin{comment}
+Old Bulletin-9 code: omitted now
+
+\textbf{Attack Angle, 858 (}$\text{º}$\textbf{): }\textbf{\uline{AKDF}}\index{AKDF}\\
+This is a derived output of the aircraft's angle of attack obtained
+from ADIF (the vertical differential pressure measured by a Rosemount
+858AJ flow-angle sensor) and a dynamic pressure (Qc) using an empirically
+determined sensitivity function. For the Rosemount 858AJ, the sensitivity
+function (GR) is a constant 0.079 for Mach numbers less than 0.515.
+For larger Mach numbers the sensitivity decreases as a function of
+Mach number.\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+MACH = Aircraft Mach Number\\
+GR = sensitivity function (given below)\\
+Qc = dynamic pressure, mb
+
+\begin{eqnarray*}
+\mathrm{for\, MACH} & \leq & 0.515:\\
+ &  & \mathrm{GR}=0.079\\
+\mathrm{otherwise}:\\
+ & \mathrm{GR} & =0.086577797-0.03560256\, MACH\\
+ &  & +0.00006143\, MACH^{2}
+\end{eqnarray*}
+
+
+\noindent \rule[[0.5ex]]{1.0\linewidth}{1pt}
+
+\noindent 
+\[
+\mathrm{AKDF=\frac{ADIF}{GR\, Qc}}
+\]
+%
+\end{minipage}}
+\end{comment}
+
+
+\textbf{Reference Attack Angle (}$\text{º}$\textbf{): }\textbf{\uline{ATTACK}}\sindex[var]{ATTACK}\index{ATTACK}\\
+This variable is the reference selected from other measurements of
+angle of attack in the data set. In most projects, it is equal to
+AKRD\index{AKRD}. It is used where attack angle is needed for other
+derived calculations (e.g., wind measurements).
+
+\textbf{Sideslip Angle (Differential Pressure) (}$\text{º}$\textbf{):
+}\textbf{\uline{SSRD}}\sindex[var]{SSRD}\index{SSRD}\\
+This variable is derived from BDIFR\index{BDIFR} and a dynamic pressure\index{pressure!dynamic}
+using a sensitivity function that has been determined empirically
+for each aircraft. \\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+BDIFR = differential pressure between sideslip pressure ports, radome
+(mb)\\
+QCXC = dynamic pressure (mb)\\
+$b_{0},\, b{}_{1}$ = empirical coefficients dependent on the aircraft
+and radome configuration\\
+~~~~~~~~~~ = \{-0.000983, (1/0.09189)$\text{º}$ \} for
+the C-130\\
+\_\_\_\_\_\_ = \{-0.0023, (1/0.04727)$\text{º}$\} for the GV
+
+\noindent \rule[0.5ex]{1\linewidth}{1pt}
+
+\[
+\mathrm{SSRD=}b_{1}(\frac{\{BDIFR\}}{\{\mathrm{QCXC}\}}-b_{0})
+\]
+%
+\end{minipage}}
+
+\textbf{}%
+\begin{comment}
+The following is from old Bulletin 9:
+
+\textbf{Sideslip Angle (Differential Pressure) (}$\text{º}$\textbf{):
+}\textbf{\uline{SSDF}}\index{SSDF}\\
+This variable is derived from BDIF and a dynamic pressure using an
+empirically determined sensitivity function, as expressed in the following:\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+$M$ = Aircraft Mach Number\\
+BDIF = differential pressure between sideslip pressure ports, 858
+probe (mb)\\
+QC = dynamic pressure from the 858 probe (mb)\\
+$g_{r}$ = dimensionless sensitivity function (given below)
+\begin{eqnarray*}
+\mathrm{for\, M} & \leq & 0.515:\\
+ & g_{r} & =0.079\\
+\mathrm{otherwise}:\\
+ & g_{r} & =0.086577797-0.03560256\, M\\
+ &  & +0.00006143\, M^{2}
+\end{eqnarray*}
+
+
+\noindent \rule[0.5ex]{1\linewidth}{1pt}
+
+\[
+\mathrm{SSDF=}\frac{\mathrm{\{BDIF\}}}{g_{r}\mathrm{\{QC\}}}
+\]
+%
+\end{minipage}}
+\end{comment}
+
+
+\textbf{Reference Sideslip Angle (}$\text{º}$\textbf{): }\textbf{\uline{SSLIP}}\sindex[var]{SSLIP}\index{SSLIP}\\
+This variable is the reference selected from other measurements of
+sideslip angle\index{sideslip, angle of} in the data set. In most
+projects, it is equal to SSRD\index{SSRD}. It is used where sideslip
+angle is needed for other derived calculations (e.g., wind measurements). 
+
+\textbf{}
+\end{hangparagraphs}
+
+\subsection{Wind Components and the Wind Vector}
+\begin{hangparagraphs}
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\begin{hangparagraphs}
+\textbf{Wind Vector East Component (m/s): }\textbf{\uline{UI\sindex[var]{UI}\index{UI}}}
+
+\textbf{Wind Vector North Component (m/s): }\textbf{\uline{VI\sindex[var]{VI}\index{VI}}}
+
+\textbf{Wind Vector Vertical Gust Component (m/s): }\textbf{\uline{WI\sindex[var]{WI}\index{WI}}}\end{hangparagraphs}
+%
+\end{minipage}\textbf{\uline{}}\\
+\textbf{\uline{}}\\
+These measurements comprise the three-dimensional wind\index{wind}\index{wind!vector}\index{wind!components}
+vector with respect to the earth. UI is the east-west component with
+positive values toward the east, VI is the north-south component with
+positive values toward the north, and WI is the vertical component
+with positive values toward the zenith.\\
+
+
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\begin{hangparagraphs}
+\textbf{Wind Speed (m/s): WS\sindex[var]{WS}\index{WS}}
+
+\textbf{Wind Direction (}$\text{º}$\textbf{): WD}\sindex[var]{WD}\index{WD}\end{hangparagraphs}
+%
+\end{minipage}\\
+\\
+These variables\index{wind!speed}\index{wind!direction} are obtained
+in a straightforward manner from UI and VI. The resulting wind direction
+is relative to true north.\\
+\\
+\framebox{\begin{minipage}[t]{0.95\textwidth}%
+UI = easterly component of the horizontal wind\\
+VI = northerly component of the horizontal wind\\
+atan2 = 4-quadrant arc-tangent function producing output in radians
+from -$\pi$ to $\pi$\\
+$C_{rd}$\sindex[lis]{Crd@$C_{rd}$= conversion factor, radians to degrees (180/$\pi$)}
+= conversion factor, radians to degrees, = 180/$\pi$ {[}units: $^{\circ}/radian${]}\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt} 
+\begin{eqnarray}
+\mathrm{WS} & = & \sqrt{\mathrm{\{UI\}}^{2}+\{\mathrm{VI\}}^{2}}\nonumber \\
+\mathrm{WD} & = & C_{rd}\mathrm{\, atan2(\{UI\},\,\{VI\})}+180^{\circ}\label{eq:9.1}
+\end{eqnarray}
+%
+\end{minipage}}\\
+
+
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\begin{hangparagraphs}
+\textbf{Wind Vector Longitudinal Component (m/s): }\textbf{\uline{UX\sindex[var]{UX}\index{UX}}}
+
+\textbf{Wind Vector Lateral Component (m/s): }\textbf{\uline{VY}}\sindex[var]{VY}\index{VY}\end{hangparagraphs}
+%
+\end{minipage}\textbf{}\\
+\textbf{}\\
+These measurements represent the horizontal wind\index{wind!vector}
+vector relative to the frame of reference attached to the aircraft
+and moving with the aircraft. UX is parallel to the longitudinal axis,
+and positive is toward the nose. VY is the component normal to the
+longitudinal axis; positive is toward the port (or left) wing.\\
+
+
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\begin{hangparagraphs}
+\textbf{GPS-Corrected Wind Vector, East Component (m/s): }\textbf{\uline{UIC\sindex[var]{UIC}\index{UIC}}}
+
+\textbf{GPS-Corrected Wind Vector, North Component (m/s): }\textbf{\uline{VIC}}\sindex[var]{VIC}\index{VIC}\end{hangparagraphs}
+%
+\end{minipage}\\
+\\
+These measurements\index{wind!GPS-corrected} give the horizontal
+wind\index{wind!vector} components respectively toward the east and
+toward the north. They are derived from measurements from an inertial
+reference unit (IRU) and a Global Positioning System (GPS), as described
+in the discussion of VEW and VNS above. They are calculated just as
+for UX and VY except that the GPS-corrected values for the aircraft
+groundspeed are used in place of the IRU-based values. They are considered
+``corrected'' from the original measurements from the IRU or GPS,
+as described in section \ref{sub:IRS/GPS}.\\
+
+
+\textbf{Wind Vector, Vertical Component (m/s): }\textbf{\uline{WIC}}\sindex[var]{WIC}\index{WIC}\\
+\\
+\marginpar{change 2011}This is the standard calculation of vertical
+wind\index{wind!vertical}.\textbf{}%
+\footnote{This variable is named ``GPS-Corrected Wind Vector'' in some output
+prior to 2011, but that name was incorrect because the algorithm does
+not involve measurements from a GPS.%
+} It is based on measurements from the IRU, including the measurement
+VSPD that is the direct measurement of vertical speed of the aircraft
+as discussed in section \ref{sec:INS}. This should be used in preference
+to WI if the latter is present; see the discussion of WP3 in section
+\ref{sec:INS}. Positive values are toward the zenith.\\
+
+
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\begin{hangparagraphs}
+\textbf{GPS-Corrected Wind Speed (m/s): }\textbf{\uline{WSC\sindex[var]{WSC}}}\index{WSC}
+
+\textbf{GPS-Corrected Wind Direction (}$\text{º}$\textbf{): }\textbf{\uline{WDC}}\sindex[var]{WDC}\index{WDC}\end{hangparagraphs}
+%
+\end{minipage}\\
+\\
+These variables\index{wind!GPS-corrected} are obtained in a straightforward
+manner from UIC and VIC, using equations analogous to (\ref{eq:9.1})
+but with UIC and VIC as input measurements. They are expected to be
+the best measurements of wind because they combine the best features
+of the IRU and GPS measurements.\\
+
+
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\begin{hangparagraphs}
+\textbf{GPS-Corrected Wind Vector, Longitudinal Component (m/s): }\textbf{\uline{UXC\sindex[var]{UXC}\index{UXC}}}
+
+\textbf{GPS-Corrected Wind Vector, Lateral Component (m/s): }\textbf{\uline{VYC}}\sindex[var]{VYC}\index{VYC}\end{hangparagraphs}
+%
+\end{minipage}\\
+\\
+These measurements give the longitudinal and lateral components of
+the three-dimensional wind\index{wind!lateral component}\index{wind!longitudinal component},
+similar to UX and VY, but corrected by the complementary-filter algorithm
+that combines IRU and GPS measurements, as discussed in Section \ref{sub:IRS/GPS}.
+The components UXC and VYC are toward the front of the aircraft and
+toward the port (left) wing, respectively. \end{hangparagraphs}
+

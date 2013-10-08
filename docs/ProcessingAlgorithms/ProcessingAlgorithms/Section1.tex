@@ -1,0 +1,454 @@
+
+\section{Introduction\label{sub:General-Comments}}
+
+This technical report defines the variables used in data sets that
+are collected by the research aircraft operated by the Research Aviation
+Facility (RAF) of the National Center for Atmospheric Research. Where
+appropriate, it also documents the equations that are used by the
+processing software (currently ``nimbus''\index{nimbus}) to calculate
+the derived measurements that result from the use of one or more other
+basic measurements (e.g., potential temperature). Since 1993, data
+from research flights have been archived in NetCDF format\index{NetCDF!format}
+(cf. \url{http://www.unidata.ucar.edu/software/netcdf/docs/}), and
+the NetCDF header\index{NetCDF!header} for recent projects includes
+detailed information on the measurements present in the file, how
+they depend on other measurements, units, etc.
+
+Before 1993, data were processed by a different program, ``GENPRO,''\index{GENPRO}
+and a different output format (also named GENPRO) was used for archived
+datasets. Appendix E in \href{http://www.eol.ucar.edu/raf/Bulletins/bulletin9.html}{RAF Bulletin 9}\index{Bulletin 9},
+the previous description of RAF data products that is now superseded
+by this technical note, describes that format. Some variable names
+in this document, esp.~in section \ref{sec:OBSOLETE-VARIABLES},
+refer to obsolete variable names, some used with GENPRO and others
+referring to instruments that are now retired. These names are included
+here so that this report can be a reference for older archived data
+as well as for current data files.
+
+In some cases redundant measurements are present, often for key measurements
+like pressure or temperature.\index{variable names} When these are
+used in subsequent calculation of derived variables like potential
+temperature, some choice is usually made regarding which measurement
+is considered most reliable for a particular project or flight, and
+a single derived variable is calculated on the basis of the chosen
+input variable(s). To record which measurements were so designated,
+a reference measurement chosen from a group of redundant measurements
+usually has a variable name ending with the letter(s) X or XC. %
+\footnote{Some that do not follow this convention are ATTACK, SSLIP and EDPC;
+see the individual descriptions that follow.%
+}
+
+The data system used to record most measurements from research flights
+is currently the NCAR In situ Data Acquisition System (NIDAS\index{NIDAS}).
+The data system has changed several times over the history of RAF.
+For a discussion of the history of the data systems, see \url{ADShistory.pdf},
+written by Richard Friesen. The versions of data systems that produced
+most of the data still available were, approximately, as given in
+the following table:
+
+\begin{minipage}[t]{1\columnwidth}%
+\noindent \begin{center}
+\begin{tabular}{|c|c|c|>{\centering}p{2.3in}|}
+\hline 
+\textbf{Data System} & \textbf{start} & \textbf{end} & \textbf{Aircraft}\tabularnewline
+\hline 
+\hline 
+ADS I & 1984 & 1992 & King Air 200T, Sabreliner (1987), Electra (1991)\tabularnewline
+\hline 
+ADS II & 1992 & 2007 & C-130\tabularnewline
+\hline 
+ADS III (NIDAS)%
+\footnote{ADS III is the name given to the full data system, which includes
+these components: NIDAS (for data acquisition and recording); NIMBUS
+(for data processing,(both in flight and after the flight); AEROS
+(for data display in flight); and the Mission Coordinator Station
+and satellite communications system (for transmission of data to and
+from the aircraft, display of such data for mission decisions, and
+support for written ``chat'' communications among project participants
+both on the aircraft and on the ground).%
+} & 2005 &  & GV, C-130 (2007)\tabularnewline
+\hline 
+\end{tabular}
+\par\end{center}%
+\end{minipage}
+
+
+\section[GENERAL INFORMATION]{GENERAL INFORMATION ABOUT DATA FILES}
+
+
+\subsection{Alphabetical List of Variables }
+
+At the end of this section, on page \vpageref{List of Variables},
+there is a list of all the variable names\index{variable names} that
+appear in standard data files along with links to the primary discussion
+of those variables. The \url{index} to this technical report (\vpageref{IndexReference})
+also includes all variables described here, and also some variables
+not discussed in detail in this document. Where possible, reference
+to those variables and information on the project(s) where they were
+used have been included also. In cases with multiple references, the
+bold entry is the primary discussion of the variable.
+
+
+\subsection{System of Units\label{sub:System-of-Units}}
+
+This report will use the SI system of units\index{system of units},
+but with many exceptions. Among them are the following:
+\begin{enumerate}
+\item The millibar\index{millibar} (mb), equal to one hectopascal (hPa),
+is sometimes used for pressure. 
+\item Many variables are presented in the units most often used for that
+variable, even when they involve CGS units or mixed CGS-MKS units,
+as for example {[}$\mathrm{g\, m}{}^{-3}]$ for liquid water content
+or {[}$\mathrm{cm}{}^{-3}${]} for droplet concentration. 
+\item Flow rates\index{Flow rates} are often quoted in liters per minute
+(LPM) or standard liters per minute (SLPM) because those terms are
+linked to properties of commercially available instruments with flow
+control. One liter is $10^{-3}\,\mathrm{m}^{3}$. Because there is
+considerable ambiguity in the definition of ``standard'' conditions
+(regarding choice of the reference pressure and temperature), the
+particular usage will be documented when this term is used.
+\item \label{enu:ppmv}The International Bureau of Weights and Measures
+recommends against use of units like percent or parts per million,
+but these are in common use in atmospheric chemistry and elsewhere
+so data files continue to use those units for relative humidity or
+the concentration of chemical species. Typical units are ppmv\index{ppmv}
+or ppbv\index{ppbv} for parts per million by volume or parts per
+billion by volume. Care must be taken to interpret ppbv especially,
+because ``billion'' has different meaning in different languages
+and different countries; herein, 1 ppbv means a volumetric ratio of
+1:10$^{9}$. Many measurements produce native results in terms of
+a mass ratio, often described as a mixing ratio $r_{m}$ in terms
+of mass of the measured gas per unit mass of ``air'' (where the
+weight of the ``air'' does not include the variable constituents,
+usually only significant for water vapor). The perfect gas law relates
+the density ratio of two gases ($\rho_{1}:\rho_{2})$ to the ratio
+of their partial pressures ($p_{1}:p_{2}$) or number densities ($n_{1}:n_{2}$),
+as follows:\\
+\[
+r_{m}=\frac{\rho_{1}}{\rho_{2}}=\frac{p_{1}M_{1}}{p_{2}M_{2}}=\frac{n_{1}M_{1}}{n_{2}M_{2}}
+\]
+where $M_{1}$ and $M_{2}$ are respective molecular weights for the
+two gases. The ratio of number densities or, equivalently, partial
+pressures, denoted here as $r_{v}$ because it is also the volumetric
+mixing ratio, is related to the mass mixing ratio as follows:\\
+\[
+r_{v}=\frac{n_{1}}{n_{2}}=\left(\frac{M_{2}}{M_{1}}\right)r_{m}
+\]
+\\
+When concentrations are recorded with units of ``ppmv'', ``ppbv''
+or ``pptv'', these units refer respectively to $10^{6}r_{v}$, $10^{9}r_{v}$,
+or $10^{12}r_{v}$ with $r_{v}$ given by the above equation.\\
+
+\item The unit ``hertz'' (abbreviation Hz) is the proper unit for a periodic
+sampling frequency and will be used here in place of the more awkward
+``samples per second.''\index{samples per second} This usage is
+favored by the International Bureau of Weights and Measures (cf.~\url{http://www.bipm.org/en/si/si_brochure/chapter2/2-2/table3.html#notes})
+when the frequency represented refers to the rate of sampling. 
+\item In some cases, particularly for older data files, speed has been recorded
+in units of knot\index{knot}s (= 0.514444 m/s) and distance in nautical
+mile\index{nautical mile}s (= 1852 m).
+\end{enumerate}
+There is a list of symbols used in this report, on page \pageref{sub:List of Symbols}.%
+\footnote{ Some symbols used only once and defined where they are used are omitted
+from this list%
+}. The next table defines some abbreviations and symbols used in this
+report, in addition to the standard abbreviations for the mks system
+of units:
+
+\begin{center}
+\begin{minipage}[t]{1\columnwidth}%
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline 
+\textbf{abbreviation/symbol} & \textbf{definition}%
+\footnote{where the symbol $\equiv$ is used, the relationship is exact by definition%
+}\tabularnewline
+\hline 
+\hline 
+º & degree, angle measurement $\equiv$ ($\pi$/180) radian\tabularnewline
+\hline 
+ft & foo\index{foo}t $\equiv$ 0.3048 m\tabularnewline
+\hline 
+mb & millibar $\equiv$ 100 Pa $\equiv$ 1 hPa\tabularnewline
+\hline 
+ppmv & parts per million by volume (see subsection \ref{sub:System-of-Units}
+item \ref{enu:ppmv})\tabularnewline
+\hline 
+ppbv & parts per billion ($10^{9})$ by volume (see subsection \ref{sub:System-of-Units}
+item\ref{enu:ppmv})\tabularnewline
+\hline 
+pptv & parts per trillion ($10^{12})$ by volume (see subsection \ref{sub:System-of-Units}
+item\ref{enu:ppmv})\tabularnewline
+\hline 
+n~mi & nautical mile $\equiv$1852 m\tabularnewline
+\hline 
+kt & knot (n~mi/hour) $\equiv$ (1852/3600) m/s = 0.514444... m/s\tabularnewline
+\hline 
+\end{tabular}
+\par\end{center}%
+\end{minipage}
+\par\end{center}
+
+
+\subsection{Variables Used To Denote Time\index{Time Variables}}
+
+Although there are some exceptions in old archived data files, the
+data in all modern output files are referenced to Coordinated Universal
+Time (UTC). The time and date of the data acquisition system are synchronized
+to the Global Positioning System (GPS) at the beginning of each flight,
+and for data acquired by the present ADS-3 (NIDAS) data acquisition
+system time is synchronized continuously with the GPS time. Time variables
+vary for older archived data files; some of the following are obsolete,
+but are included here for reference because they are important to
+those wanting to use those archives.\\
+
+\begin{hangparagraphs}
+\textbf{Time (s): }\textbf{\uline{Time}}\sindex[var]{Time}\index{Time}\label{han:Time-(s):-TimeThis-1}\\
+This is the reference-time \emph{counter }for the output \index{time variable in data files}data
+files, used by data system versions beginning with ADS-3. It is an
+integer output at 1 sample per second \emph{and has an initial value
+of zero at the start of the flight}. Add this to the ``Time:units''
+attribute found in the NETCDF header section for this variable to
+obtain the UTC measurement time.\\
+ \\
+\begin{minipage}[t]{0.9\textwidth}%
+Example attribute: \texttt{\small }~\\
+\texttt{\hspace*{1cm}}\texttt{\small Time:units = ``seconds since
+2006-04-26 12:55:00 +0000'' };
+
+For code examples that show how to use ``Time'' see:\\
+\texttt{\hspace*{1cm}}\url{http://www.eol.ucar.edu/raf/Software/TimeExamp.html}%
+\end{minipage}
+
+~
+
+\textbf{Reference Start Time (s): }\textbf{\uline{base\_time}}\index{base time}
+(\emph{Obsolete; versions before ADS-3 only})\\
+This is the reference time for the NETCDF output data files for data
+system versions before ADS-3. It represents the time of the first
+data record. Its format is Unix time (elapsed seconds after midnight
+1 January 1970). Use this measurement and add time\_offset (below)
+to obtain the time for each data record. (Note: base\_time is a single
+scalar, not a ``record'' variable, so it occurs just once in the
+output file.) 
+
+\textbf{Time Offset from Reference Start Time (s): }\textbf{\uline{time\_offset}}\index{time offset}
+(\emph{Obsolete)} \\
+This is the time offset from base\_time of each data record used for
+the NETCDF output files produced by data system versions before ADS-3.
+It starts at zero (0) and increments each second, so it can also be
+thought of as a record counter. Use this measurement and add base\_time
+to obtain the time for each data record.
+
+\textbf{Raw Tape Time (hour, minute, s): }\textbf{\uline{HOUR}}\textbf{\index{HOUR},
+}\textbf{\uline{MINUTE}}\textbf{\index{MINUTE}, }\textbf{\uline{SECOND}}\textbf{\index{SECOND}
+}(\emph{Obsolete})\\
+These three time variables are recorded directly from the aircraft's
+data system. Since ADS-3, this information is replaced by the ``Time''
+variable and the ``Time:units'' attribute of that variable.
+
+\textbf{Date (m, d, y): }\textbf{\uline{MONTH}}\textbf{\index{MONTH},
+}\textbf{\uline{DAY}}\textbf{\index{DAY}, }\textbf{\uline{YEAR}}\emph{\index{YEAR}
+}(\emph{Obsolete})\\
+These three variables represent the date when the aircraft's data
+system began recording data. They are repeated as 1 Hz variables but
+are NOT incremented if the time rolls over to the next day. Use base\_time
+and time\_offset for reference timing. Since ADS-3, this information
+is replaced by the ``Time'' variable and the ``Time:units'' attribute
+of that variable.
+
+
+\end{hangparagraphs}
+
+\subsection{Other Comments On Terminology}
+
+
+\subsubsection{Variable Names In Equations}
+
+This report often uses variable names in equations, and sometimes
+there is potential for confusion because the variable names consist
+of multiple characters. In many cases, to denote that the variable
+name is the variable in the equation (as opposed to each of the letters
+in the variable name representing quantities to be multiplied together),
+the variable name has been enclosed in brackets, as in \{TASX\}. In
+addition, variable names are displayed with upright Roman character
+sets, while other nomenclature in equations is represented by slanted
+(script) character sets as is conventional for mathematical equations.
+In cases where code segments (usually expressed in C code) are included
+to document how calculations are performed, typewriter character sets
+indicate that the segment is a representation of how the processing
+could be coded. Such a code segment is not always a direct copy of
+the code in use, but such code is often the most convenient way to
+express the algorithm in use.
+
+
+\subsubsection{Distinction Between Original Measurements and Derived Measurements}
+
+Many of the variables in the data files and in this report are derived
+from combinations of measurements. The terms ``raw'' or ``original''
+measurement\index{measurement!raw}\index{measurement!original}\index{measurement!derived}
+are sometimes used for a minimally processed output received directly
+from a sensor or instrument. Such measurements may be converted to
+engineering units via calibration coefficients, but otherwise they
+are a direct representation of the output from a sensor.%
+\footnote{Calibration coefficients, e.g. those used to convert from voltage
+output from an analog sensor to a measured quantity with physical
+units like $\text{º}$C), are not included or discussed in this report
+but are part of project reports and, in recent years, are included
+in the header of the NETCDF file.%
+} In contrast, derived variables\index{derived variables} (e.g., potential
+temperature) depend on one or more ``raw'' measurements and are
+not direct results of output from an instrument. For most derived
+measurements, a box that follows an introductory comment is used in
+this report to document the processing algorithm. The box has a line
+dividing top from bottom; in the top are definitions used and explanations
+regarding variables that enter the calculation, while the bottom portion
+contains the equation, algorithm, or code segment that documents how
+the variable is calculated.
+
+
+\subsubsection{Dimensions in Equations}
+
+An effort has been made to avoid dimensions\index{dimensionless equations}
+in equations except where it would be awkward otherwise. Some scale
+factors are introduced for only this purpose (e.g., to avoid dimensions
+in arguments to logarithmic or exponential functions), and some effort
+was made to isolate dimensions to defined constants rather than requiring
+that variables in equations be used with specific units. However,
+some exceptions remain to be consistent with historical usage.
+
+
+\subsection{Constants Used in Data Processing}
+
+The following box contains values used for some constants in this
+document. For reference, the symbols used here also appear at the
+start of the index along with their meanings and links to where they
+are defined. Where references are to the ``NIST Chemistry WebBook'',
+the associated URL is \url{http://webbook.nist.gov}. References to
+the CODATA Internationally recommended values of the Fundamental Physical
+Constants are available at \url{http://physics.nist.gov/.cuu/.Constants}.
+The optimization involved in adjustment of these coefficients is documented
+in Mohr et al., 2008a and 2008b, referenced at that URL.%
+\footnote{P. J. Mohr, B. N. Taylor, and D. B. Newell, Rev. Mod. Phys 80(2),
+633-730(2008); P. J. Mohr, B. N. Taylor, and D. B. Newell, J. Phys.
+Chem. Ref. Data 37(3), 1187-1284(2008).%
+}\\
+\framebox{\begin{minipage}[t]{1.05\textwidth}%
+\label{ConstantsBox}\centerline{\bf\underbar{Table of Constants}}\index{constants!table}\index{constants|see{symbols}}
+
+$g$ = \sindex[lis]{g@$g$= acceleration of gravity}acceleration of
+gravity%
+\footnote{In the International Standard Atmosphere $g$ is specified as 9.80665
+m\,s$^{-2}$, $M_{w}=28.9644$ , and $R_{0}$=8.31432\texttimes{}103
+J kmol\textminus{}1 K\textminus{}1 %
+} at latitude $\lambda$ \sindex[lis]{lambda
+= latitude@$\lambda$= latitude}and altitude\sindex[lis]{z@$z$ = height} $z$ above the WRS-80 \index{WRS-80 Geoid}geoid,%
+\footnote{cf., e.g., Moritz, H., 1988: Geodetic Reference System 1980, Bulletin
+Geodesique, Vol. 62 , no. 3. %
+} \\
+\begin{equation}
+g_{\lambda}=g_{e}\left(\frac{1+g_{1}\sin^{2}(\lambda)}{(1-g_{2}\sin^{2}\lambda)^{1/2}}\right)-a_{z}z\label{eq:g_lambda}
+\end{equation}
+\hskip2em%
+\parbox[t]{0.95\textwidth}{%
+where $g_{e}=9.780327$\,m\,s$^{-2}$ is the reference value at
+the surface and equator,\\
+~~~~~~~~~~$g_{1}=0.001931851$\, $g_{2}=0.006694380$,
+and $a_{z}=3.086\times10^{-6}$\,m$^{-1}$.%
+} \\
+$T_{0}$ = temperature in kelvin\sindex[lis]{T_{0}
+= 273.15 K@$T_{0}$= 273.15\,K} corresponding to $0{}^{\circ}C$ = 273.15\,K\\
+$T_{3}$ = temperature\sindex[lis]{T_{3}
+= 273.16 K@$T_{3}$= 273.16\,K} corresponding to the triple point of water\index{triple point of water}
+= 273.16\,K\\
+$M_{a}$= \sindex[lis]{Md@$M_{d}$= molecular weight of dry air}molecular
+weight of dry air$^{a}$\index{molecular weight of dry air}, 28.9637
+kg\,kmol$^{-1}$~~~%
+\footnote{Jones, F. E., 1978: J. Res. Natl. Bur. Stand., 83(5), 419, as quoted
+by Lemmon, E. W., R. T. Jacobsen, S. G. Penoncello, and D. G., Friend,
+J. Phys. Chem. Ref. Data, Vol. 29, No. 3, 2000, pp. 331-385. The quoted
+values of mole fraction from Jones (1978) and the calculation of mean
+molecular weight are tabulated below using values of molecular weights
+taken from the NIST Standard Reference Database 69: NIST Chemistry
+WebBook as of March 2011. However, CO$_{2}$ should be increased to
+about 0.00039 and others decreased proportionately, leading to a mean
+of 28.9637.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Gas & mole fraction $x$ & molecular weight $M$ & $x*M$\tabularnewline
+\hline 
+\hline 
+N$_{2}$ & 0.78102 & 28.01340 & 21.87903\tabularnewline
+\hline 
+O$_{2}$ & 0.20946 & 31.99880 & 6.70247\tabularnewline
+\hline 
+Ar & 0.00916 & 39.94800 & 0.36592\tabularnewline
+\hline 
+CO$_{2}$ & 0.00033 & 44.00950 & 0.01452\tabularnewline
+\hline 
+Mean: &  &  & 28.96194\tabularnewline
+\hline 
+\end{tabular}
+\par\end{center}%
+}\\
+$M_{w}$ = \sindex[lis]{Mw@$M_{w}$= molecular weight of water}molecular
+weight of water\index{molecular weight of water}, 18.0153 kg\,kmol$^{-1}$~~~%
+\footnote{NIST Standard Reference Database 69: NIST Chemistry WebBook as of
+March 2011%
+}\\
+$R_{0}$ = \sindex[lis]{R@$R_{0}$= universal gas constant}universal
+gas constant$^{a}$\index{universal gas constant} = 8.314472$\times10^{3}$
+J\,kmol$^{-1}$K$^{-1}$~~~%
+\footnote{2006 CODATA%
+}\\
+$R_{d}=(R_{0}/M_{d}$) = \sindex[lis]{Rd@$R_{d}=$gas constant for dry air}gas
+constant for dry air\index{gas constant for dry air}\\
+$R_{w}$ = ($R_{0}/M_{w})$ = \sindex[lis]{Rw@$R_{W}$= gas constant for water vapor}gas
+constant for water vapor\index{gas constant for water vapor}\\
+$R_{E}$ = \sindex[lis]{Re@$R_{E}$= radius of the Earth}radius of
+the Earth\index{radius of the Earth} = 6.371229$\times$10$^{6}$
+m ~~~%
+\footnote{matching the value used by the inertial reference systems discussed
+in \prettyref{sec:INS}%
+} \\
+$c{}_{p}$ = \sindex[lis]{cp@$c_{p}$= specific head of dry air at constant pressure}specific
+heat of dry air at constant pressure\index{specific heat of dry air at constant pressure}
+= $\frac{7}{2}R_{d}=$1.00473$\times10^{3}$ J$\,$kg$^{-1}$K$^{-1}$~~~%
+\footnote{The specific heat of dry air at 1013 hPa and 250--280 K as given by
+Lemmon et al. (2000) is 29.13 J/(mol-K), which translates to 1005.8$\pm0.3$
+J/(kg-K). However, the uncertainty limit associated with values of
+specific heat is quoted as 1\%, and the experimental data cited in
+that paper show scatter that is at least comparable to several tenths
+percent, so the ideal-gas value cited here is well within the range
+of uncertainty. For this reason, and because this value is in widespread
+use, the ideal-gas value is used throughout the algorithms described
+here.%
+}\\
+~~~~~~~~~~(value at 0$^{\circ}C$; small variations with
+temperature are not included here)\\
+$c{}_{v}$ = \sindex[lis]{cv@$c_{v}$= specific heat of dry air at constant volume}specific
+heat at constant volume\index{specific heat of dry air at constant volume}
+= $\frac{5}{2}R_{d}=$0.71766$\times10^{3}$ J$\,$kg$^{-1}$K$^{-1}$\\
+~~~~~~~~~~(value at 0$^{\circ}C$; small variations with
+temperature are not included here)\\
+$\gamma$ = \sindex[lis]{gamma
+= ratio of specific heats of air, c_{p}/c_{v}
+@$\gamma$= ratio of specific heats of air, $c_{p}/c_{v}$}ratio of specific heats\index{specific heat ratio, dry air}, $c_{p}/c_{v}$,
+taken to be 1.4 (dimensionless) for dry air\\
+$\Omega$ = \sindex[lis]{Omega
+= angular rotation rate of the Earth@$\Omega$= angular rotation rate of the Earth}angular rotation rate of the Earth\index{Earth, angular rotation rate}
+= 7.292115$\times10^{-5}$ radians/s\\
+$\Omega_{Sch}$ = \sindex[lis]{Omega_{Sch}
+= angular frequency of the Schuler oscillation@$\Omega_{Sch}$= angular frequency of the Schuler oscillation}angular frequency of the Schuler oscillation\index{Schuler oscillation}
+= $\sqrt{\frac{g}{R_{E}}}$\\
+$\sigma$ = \sindex[lis]{sigma
+= Stephan-Boltzmann constant@$\sigma$= Stephan-Boltzmann constant}Stephan-Boltzmann Constant\index{Stephan-Boltzmann Constant} = 5.6704$\times10^{-8}$W\,m$^{-2}\mathrm{K}^{-4}$~~~%
+\footnote{2006 CODATA%
+} %
+\end{minipage}}
+
+\label{sub:List of Symbols}\index{symbols!table of}\printindex[lis]{}
+
+\label{List of Variables}\index{variable names!table of}\printindex[var]{}

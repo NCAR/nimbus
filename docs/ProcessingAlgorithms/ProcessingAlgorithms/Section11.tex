@@ -1,0 +1,573 @@
+
+\section{CLOUD PHYSICS VARIABLES}
+
+
+\subsection{Measurements of Liquid Water Content}
+\begin{hangparagraphs}
+\textbf{Raw Output PMS/CSIRO (KING) Liquid Water Content (W): }\textbf{\uline{PLWC}}\textbf{\sindex[var]{PLWC}\index{PLWC},
+}\textbf{\uline{PLWC1}}\index{PLWC1}\\
+This variable\index{King probe} is the output of a PMS/CSIRO (King)
+liquid water probe (in watts). PLWC is the power required to maintain
+constant temperature in a heated element as that element is cooled
+by convection and evaporation of impinging liquid water. The convective
+heat losses are determined by calibration in dry air over a range
+of airspeeds and temperatures, so that the remaining power can be
+related to the liquid water content. The instrument is described in
+\href{http://www.eol.ucar.edu/raf/Bulletins/bulletin24.html}{RAF Bulletin 24}\index{Bulletin 24}.
+See PLWCC (which follows) for processing.\\
+
+
+\textbf{Corrected PMS/CSIRO (KING) Liquid Water Content (g/m$^{3}$):
+}\textbf{\uline{PLWCC}}\textbf{\sindex[var]{PLWCC}\index{PLWCC},
+}\textbf{\uline{PLWCC1}}\index{PLWCC1}\\
+\marginpar{change 2011}This is the corrected liquid water content\index{liquid water content!King probe}
+obtained from relating the power consumption required to maintain
+a constant temperature to the liquid water content, taking into account
+the effect of convective heat losses. The instrument and processing
+are described by King et al. (1978)%
+\footnote{King, W. D., D. A. Parkin and R. J. Handsworth, 1978 A hot-wire liquid
+water device having fully calculable response characteristics. J.
+Appl. Meteorol., 17, 1809--1813. See also Bradley, S. G., and W. D.
+King, 1979 Frequency response of the CSIRO Liquid Water Probe. J.
+Appl. Meteorol., 18, 361--366.%
+} and in a note available at this URL: XXX. Because the temperature
+of the sensing wire is typically well above the boiling point of water\index{water!boiling point},
+the assumption made in processing is that the water collected on the
+sensing wire is vaporized at the boiling point $T_{b}$. The boiling
+point is represented as a function of pressure as described below.
+ \\
+\\
+\framebox{\begin{minipage}[t]{0.95\textwidth}%
+PLWC = total power dissipated by the probe (W)\\
+$P_{D}$ = power dissipated\index{King probe!power dissipated} by
+the cooling effect of dry air alone\\
+$P_{W}$ = power needed to heat and vaporize the liquid water that
+hits the probe element\\
+$L$ = length of the probe sensitive element\index{King Probe!element dimensions},
+typically 0.021\,m\\
+$d$= diameter of the probe sensitive element, typically 1.805$\times10^{-3}$m\\
+$T_{s}$= sensor temperature\index{King probe!sensor temperature}
+(K)\\
+$T_{a}$= ambient temperature (K) = ATX+273.15\\
+$T_{b}$\sindex[lis]{Tb@$T_{b}$= boiling temperature of water} =
+boiling temperature of water (dependent on pressure): 
+
+~~~~~~~~~with $x=\log_{10}(p/(1$hPa)) and $B=1^{\circ}C$,
+$T_{b}=B\times10^{(b_{0}+b_{1}x+b_{2}x^{2}+b_{3}x^{3})}$\\
+$T_{m}=(T_{a}+T_{s})/2$ = mean temperature for air properties\\
+$L_{v}(T_{b})$ = latent heat of vaporization of water\sindex[lis]{Lv@$L_{V}$= latent heat of vaporization of water}
+= (2.501+0.00237($T_{a}-T_{0})$)$\times10^{6}$J\,kg$^{-1}$\\
+$c_{w}$\sindex[lis]{cw@$c_{w}$= specific heat of liquid water} =
+specific heat of water=1875\,J\,kg$^{-1}$K$^{-1}$\\
+$U_{a}$ = true airspeed (m/s) = TASX\\
+$\lambda_{c}$\sindex[lis]{lambda_{c}
+= thermal conductivity, dry air@$\lambda_{c}$= thermal conductivity, dry air} = thermal conductivity\index{thermal conductivity} of dry air (2.38+0.0071($T_{m}-T_{0}$))$\times10^{-2}$J\,m$^{-1}$s$^{-1}$K$^{-1}$\\
+$\mu$\sindex[lis]{mu_{a}
+= dynamic viscosity of air@$\mu_{a}$= dynamic viscosity of air} =viscosity of air =\index{viscosity} (1.718+0.0049($T_{m}-T_{0}))\times10^{-5}$
+kg\,~m$^{-1}$s$^{-1}$\\
+$\rho_{a}$\sindex[lis]{rhoa@$\rho_{a}$= density of air} = density
+of air = $p/(R_{d}T_{a})$\\
+Re\sindex[lis]{Re= Reynolds number} = Reynolds number = $\rho_{a}U_{a}d/\mu_{a}$\\
+Nu\sindex[lis]{Nu= Nusselt number} = Nusselt Number relating conduction
+heat loss to the total heat loss for dry air: 
+
+~~~~~~~~~~typically Nu=$a_{0}\mathrm{Re}^{a_{1}}$\\
+$C_{kg2g}=1000$\sindex[lis]{Ckg2g@$C_{kg2g}$= conversion factor, g to kg}
+= grams per kilogram 
+
+~~~~~~~~~~(unit conversion to conventional units for liquid
+water content)\\
+$\chi$ \sindex[lis]{chi
+= liquid water content@$\chi$= liquid water content}= liquid water content (g/m$^{3}$) = PLWCC
+
+\noindent \rule[0.5ex]{1\linewidth}{1pt}
+\[
+\mathrm{PLWC}=P_{D}+P_{W}
+\]
+where
+\[
+P_{D}=\pi\mathrm{Nu}\, L\lambda_{c}(T_{s}-T_{a})
+\]
+\[
+P_{W}=L\, d[L_{v}(T_{b})+c_{w}(T_{b}-T_{a})]\, U_{a}\chi
+\]
+Result:
+\[
+\mathrm{PLWCC}=\chi=\frac{C_{kg2g}(\mathrm{\{PLWC\}}-P_{D})}{L\, d\, U_{a}[L_{v}(T_{b})+c_{w}(T_{b}-T_{a})]}
+\]
+%
+\end{minipage}}\\
+\\
+
+
+\textbf{Raw Output Rosemount Icing Detector (V): }\textbf{\uline{RICE}}\sindex[var]{RICE}\index{RICE}\\
+A Rosemount 871F\index{Rosemount 871F icing probe} ice-accretion
+probe consists of a rod set in vibration by a piezoelectric crystal.
+The oscillation frequency of the probe changes with ice loading, so
+in supercooled cloud ice accumulates on the sensor, and the change
+in oscillation frequency is transmitted as a DC voltage.. When the
+probe loads to a trigger point, the probe heats the rod to remove
+the ice. Its output voltage is a measure of the mass of the accreted
+ice. The rate of voltage change is converted to an estimate of the
+supercooled liquid water content\index{liquid water content}, as
+described in the next paragraph. \\
+
+
+\textbf{Derived Supercooled Liquid Water Content (g/m$^{3}$): }\textbf{\uline{SCLWC}}\sindex[var]{SCLWC}\index{SCLWC}
+\{obsolete? Couldn't find code\}\\
+This variable is the supercooled liquid water content obtained from
+the change in accreted mass on the Rosemount 871F ice-accretion probe
+over one second. Note that the output is not valid during the probe
+deicing cycle. This cycle is apparent in the RICE output (a peak followed
+by a decrease to near zero). Supercooled liquid water content is determined
+by first calculating a water drop impingement rate which is a function
+of the effective surface area, the collection efficiency, the true
+airspeed, and the supercooled liquid water content. The impingement
+rate obtained is equated to the accreted mass of ice collected by
+the probe in one second (empirical voltage/mass relationship). The
+resulting equation is solved for supercooled water content.\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+A = effective surface area of the probe (m$^{2}$)\\
+$\Delta t$ = time interval during which an increment of mass accretes
+(s)\\
+$\Delta m$ = mass of ice accreted on the probe in the time interval
+$\Delta t$ (g)\\
+$U_{a}$ = true airspeed (m/s)\\
+\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+
+\[
+\mathrm{SCLWC}=AU_{a}\frac{\Delta m}{\Delta t}
+\]
+%
+\end{minipage}}
+\end{hangparagraphs}
+
+\subsection{Sensors of Individual Particles (1-D Probes)}
+
+The RAF operates a set of hydrometeor detectors\index{hydrometeor detector}
+that provide single-dimension measurements (i.e., not images) of individual
+particle sizes. \href{http://www.eol.ucar.edu/raf/Bulletins/bulletin24.html}{RAF Bulletin 24}
+contains extensive information on the operating principles and characteristics
+of some of the older instruments. Here the focus will be on the meanings
+of the variables in the archived data files.
+
+Four- and five-character variable names\index{variable names!hydrometeor probes}
+shown in this section are generic. The actual names appearing in NIMBUS-generated
+production output data sets have appended to them an underscore (\_)
+and three more characters which indicate a probe's specific aircraft
+mounting location. For example, AFSSP\_RPI is the Total Accumulation
+from an FSSP-100 probe mounted on the inboard, right-side pod. The
+codes presently in use are given in the following table. For the GV,
+there are 12 locations available, characterized by three letters.
+The first is the wing (\{L,R\} for \{port,starboard\}), the second
+is the pylon (\{I,M,O\} for inboard, middle, outboard\}), the third
+is which of the two possible canister locations at the pylon is used
+(\{I,O\} for \{inboard, outboard\}).
+
+\noindent \begin{center}
+\begin{tabular}{|c|c|c|}
+\hline 
+\textbf{Code} & \textbf{Location} & \textbf{Aircraft}\tabularnewline
+\hline 
+\hline 
+OBL  & Outboard Left  & C-130Q \tabularnewline
+\hline 
+IBL  & Inboard Left  & C-130Q \tabularnewline
+\hline 
+OBR  & Outboard Right  & C-130Q \tabularnewline
+\hline 
+IBR  & Inboard Right  & C-130Q \tabularnewline
+\hline 
+LPO  & Left Pod Outboard  & C-130Q \tabularnewline
+\hline 
+LPI  & Left Pod Inboard  & C-130Q \tabularnewline
+\hline 
+LPC  & Left Pod Center  & C-130Q \tabularnewline
+\hline 
+RPO  & Right Pod Outboard  & C-130Q \tabularnewline
+\hline 
+RPI  & Right Pod Inboard  & C-130Q \tabularnewline
+\hline 
+RPC  & Right Pod Center  & C-130Q \tabularnewline
+\hline 
+OBL  & Left Wing  & Electra \tabularnewline
+\hline 
+IBL  & Left Pylon  & Electra \tabularnewline
+\hline 
+WDL  & Window Left  & Electra \tabularnewline
+\hline 
+OBR  & Right Wing  & Electra \tabularnewline
+\hline 
+IBR  & Right Pylon  & Electra \tabularnewline
+\hline 
+WDR  & Window Right  & Electra \tabularnewline
+\hline 
+\{L,R\}\{I,M,O\}\{I,O\} & see discussion above & GV\tabularnewline
+\hline 
+\end{tabular}
+\par\end{center}
+
+The probe type also is coded into each variable's name, sometimes
+using four characters, sometimes only one: FSSP-100 (FSSP or F), FSSP-300
+(F300 or 3), CDP (CDP or D), UHSAS (UHSAS or U), PCAS (PCAS or P),
+OAP-200X (200X or X), OAP-260X (260X or 6) and OAP-200Y (200Y or Y).
+Prefix letters are used to identify the type of measurement (A=accumulated
+particle counts per time interval per channel, C = concentration per
+channel, CONC = Concentration from all channels, DBAR = Mean Diameter,
+DISP = Dispersion, PLWC =Liquid Water Content, DBZ = Radar Reflectivity
+Factor).\index{hydrometeor probes!table of}
+
+\noindent \begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline 
+\textbf{\small Generic Name} &  & \textbf{\small Probe} & \textbf{\small Channels} & \textbf{\small Usable} & \textbf{\small Diameter Range} & \textbf{\small Bin Width}\tabularnewline
+\hline 
+\hline 
+{\small FSSP} & {\small F} & {\small FSSP-100} & {\small 0-15} & {\small 1-16} & \multicolumn{2}{c|}{{\small (See FRNG below)}}\tabularnewline
+\hline 
+UHSAS & U & UHSAS & 0-63 & ?? & \multicolumn{1}{c||}{} & \tabularnewline
+\hline 
+CDP & D & CDP &  &  & \multicolumn{1}{c||}{} & \tabularnewline
+\hline 
+{\small F300} & {\small 3} & {\small FSSP-300} & {\small 0-31} & {\small 1-31} & {\small 0.3--20.0 $\mu m$} & {\small variable}\tabularnewline
+\hline 
+{\small PCAS} & {\small P} & {\small PCAS} & {\small 0-15} & {\small 1-15} & {\small 0.1--3.0 $\mu m$} & {\small variable}\tabularnewline
+\hline 
+{\small 200X} & {\small X} & {\small OAP-200X} & {\small 0-15} & {\small 1-15} & {\small 40--280 $\mu m$} & {\small 10 $\mu m$}\tabularnewline
+\hline 
+{\small 260X} & {\small 6} & {\small OAP-260X} & {\small 0-63} & {\small 3-62} & {\small 40-620 $\mu m$} & {\small 10 $\mu m$}\tabularnewline
+\hline 
+{\small 200Y} & {\small Y} & {\small OAP-200Y} & {\small 0-15} & {\small 1-15} & {\small 300--4500 $\mu m$} & {\small 300 $\mu m$}\tabularnewline
+\hline 
+\end{tabular}\\
+
+\par\end{center}
+\begin{hangparagraphs}
+\textbf{Total Accumulation (counts per time interval): }\textbf{\uline{}}\\
+\textbf{\uline{AFSSP}}\textbf{\sindex[var]{AFSSP}\index{AFSSP},
+}\textbf{\uline{AF300}}\sindex[var]{AF300}\textbf{\index{AF300},
+}\textbf{\uline{APCAS}}\textbf{\sindex[var]{APCAS}\index{APCAS},
+}\textbf{\uline{A200X}}\textbf{\sindex[var]{A200X}\index{A200X},
+}\textbf{\uline{A260X}}\textbf{\sindex[var]{A260X}\index{A260X},
+}\textbf{\uline{A200Y}}\sindex[var]{A200Y}\index{A200Y}, \textbf{\uline{ACDP}}\sindex[var]{ACDP}\index{ACDP},
+\textbf{\uline{AUHSAS\sindex[var]{AUHSAS}\index{AUHSAS}}}\\
+\\
+This measurement is the total number of particles detected by a PMS-1D
+probe per unit time. These measurements have ``vector'' character
+in the NetCDF\index{NetCDF} output files, with dimension equal to
+the number of usable channels in the table above and one entry per
+channel. 
+
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{Concentration (per channel) ($cm^{-3}$): }\textbf{\uline{CFSSP}}\textbf{\index{CFSSP},
+}\textbf{\uline{CF300}}\textbf{\index{CF300}, }\textbf{\uline{CPCAS\index{CPCAS},
+CCDP\index{CCDP}, CUHSAS\index{CUHSAS}}}\\
+\textbf{Concentration (per channel) ($liter^{-1}$): }\textbf{\uline{C200X}}\textbf{\index{C200X},
+}\textbf{\uline{C260X}}\textbf{\index{C260X}, }\textbf{\uline{C200Y\index{C200Y}}}%
+\end{minipage}\textbf{}\\
+\textbf{}\\
+These measurements give the particle concentrations\index{concentration!hydrometeor}\index{FSSP-100!size distribution}
+in each usable bin of the probe. They have ``vector'' character
+is the NETCDF output files, with dimension equal to the number of
+usable channels in the table above and with one entry per channel.
+For the scattering spectrometer\index{spectrometer!hydrometeor}\index{hydrometeor spectrometer}
+probes (FSSP-100, FSSP-300\index{FSSP-300}, PCAS\index{PCAS}, CDP\index{CDP},
+UHSAS\index{UHSAS}) the concentration value is modified by the probe
+activity (FACT, PACT) as described below.\index{200X 1D probe}\index{260X 1D probe}\index{200Y 1D probe}
+The concentration is obtained from the total number of particles detected
+and a calculated, probe-dependent sample volume. For details, see
+\href{http://www.eol.ucar.edu/raf/Bulletins/bulletin24.html}{RAF Bulletin 24}\index{Bulletin 24}.
+
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{Concentration, sum over all channels ($cm^{-3}$): }\textbf{\uline{CONCF}}\textbf{\sindex[var]{CONCF}\index{CONCF},
+}\textbf{\uline{CONC3}}\sindex[var]{CONC3}\textbf{\index{CONC3},
+}\textbf{\uline{CONCP\sindex[var]{CONCP}\index{CONCP}, CONCD\sindex[var]{CONCD}\index{CONCD},
+CONCU\sindex[var]{CONCU}\index{CONCU}}}\\
+\textbf{Concentration, sum over all channels ($liter^{-1}$): }\textbf{\uline{CONCX}}\textbf{\sindex[var]{CONCX}\index{CONCX},
+}\textbf{\uline{CONC6}}\sindex[var]{CONC6}\textbf{\index{CONC6},
+}\textbf{\uline{CONCY\sindex[var]{CONCY}\index{CONCY}}}%
+\end{minipage}\textbf{}\\
+\textbf{}\\
+These measurements are the particle concentrations\index{FSSP-100!concentration}
+summed over all channels to give the total particle concentration
+in the size range of the probe. For details, see \href{http://www.eol.ucar.edu/raf/Bulletins/bulletin24.html}{RAF Bulletin 24}.\\
+
+
+\textbf{Mean Diameter ($\mu m$): }\textbf{\uline{DBARF}}\textbf{\index{DBARF},
+}\textbf{\uline{DBAR3}}\textbf{\index{DBAR3}, }\textbf{\uline{DBARP}}\textbf{\index{DBARP},
+}\textbf{\uline{DBARX}}\textbf{\index{DBARX}, }\textbf{\uline{DBAR6}}\textbf{\index{DBAR6},
+}\textbf{\uline{DBARY}}\index{DBARY}, \textbf{\uline{DBARD}}\index{DBARD},
+\textbf{\uline{DBARU}}\index{DBARU}\\
+The mean diameter\index{diameter!mean}\index{FSSP-100!mean diameter}
+is the arithmetic average of all particle diameters. It is calculated
+as follows: \\
+\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+\{Cy$_{i}$\} = concentration\sindex[lis]{Cyi@$Cy_{i}$= concentration from hydrometeor probe y in channel i}
+from probe y in channel i\\
+\hspace*{0.6cm}(e.g., y=FSSP to calculate DBARF)\\
+i1 = lowest usable channel for the probe\\
+i2 = highest usable channel for the probe\\
+$d_{i}$\sindex[lis]{di@$d_{i}$= diameter of hydrometeor in channel $i$}
+= mean diameter of particles in channel i for this probe ($\mu m$)\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+
+\[
+\mathrm{DBARx}=\frac{{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}}}}{\sum_{i=i1}^{i2}\left\{ \mathrm{Cy}_{i}\right\} }
+\]
+%
+\end{minipage}}\\
+
+
+\textbf{Dispersion (dimensionless): }\textbf{\uline{DISPF}}\textbf{\sindex[var]{DISPF}\index{DISPF},
+}\textbf{\uline{DISP3}}\textbf{\sindex[var]{DISP3}\index{DISP3},
+}\textbf{\uline{DISPP}}\textbf{\sindex[var]{DISPP}\index{DISPP},
+}\textbf{\uline{DISPX}}\textbf{\sindex[var]{DISPX}\index{DISPX},
+}\textbf{\uline{DISP6}}\textbf{\sindex[var]{DISP6}\index{DISP6},
+}\textbf{\uline{DISPY}}\sindex[var]{DISPY}\index{DISPY}, \textbf{\uline{DISPD}}\sindex[var]{DISPD}\index{DISPD},
+\textbf{\uline{DISPU}}\sindex[var]{DISPU}\index{DISPU}\\
+The dispersion\index{dispersion} is the ratio of the standard deviation
+of particle diameters to the mean particle diameter.\index{FSSP-100!dispersion}
+\\
+\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+\{DBARx\} = mean particle diameter ($\mu m$)\\
+\{Cy$_{i}$\} = concentration from probe y in channel i\\
+\hspace*{0.6cm}(e.g., y=FSSP to calculate DISPF)\\
+$d_{i}$ = diameter measured in channel $i$ of probe y\\
+i1 = lowest usable channel for the probe\\
+i2 = highest usable channel for the probe\\
+\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+
+\[
+\mathrm{DISPx}==\frac{1}{\{\mathrm{DBARx}\}}\,\left\{ \frac{{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}^{2}}}}{\sum_{i=i1}^{i2}\left\{ \mathrm{Cy}_{i}\right\} }-\{\mathrm{DBARx}\}^{2}\right\} ^{1/2}
+\]
+%
+\end{minipage}}\\
+
+
+\textbf{Liquid/Ice Water Content ($g/m{}^{3}$): }\textbf{\uline{}}\\
+\textbf{\uline{PLWCF}}\textbf{\sindex[var]{PLWCF}\index{PLWCF},
+}\textbf{\uline{PLWCX}}\textbf{\sindex[var]{PLWCX}\index{PLWCX},
+}\textbf{\uline{PLWC6}}\textbf{\sindex[var]{PLWC6}\index{PLWC6},
+}\textbf{\uline{PLWCY}}\sindex[var]{PLWCY}\index{PLWCY}, \textbf{\uline{PLWCD}}\sindex[var]{PLWCD}\index{PLWCD}\\
+\index{liquid water content}\index{FSSP-100!liquid water content}These
+variables are derived from the measured concentration (CONCx) and
+the third moment of the equivalent droplet diameter. The equivalent
+droplet diameter\index{diameter!equivalent} is the diameter that
+represents the mass in the detected particle. The equivalent droplet
+diameter is normally the measured diameter for liquid hydrometeors,
+but some processing has used other assumptions and this is a choice
+that can be made based on project needs. Using this definition allows
+for the approximate estimation of \index{ice water content}ice water
+content in cases where it is known that all hydrometeors are ice.
+\\
+\\
+:\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+$d_{e,i}$\sindex[lis]{dei@$d_{e,i}$= equivalent melted diameter for channel i of a hydrometeor
+spectrometer} = equivalent melted diameter for channel $i$ of probe x\\
+\{Cy$_{i}$\} = concentration from probe y in channel i\\
+\hspace*{0.6cm}(e.g., y=FSSP to calculate DISPx for x=F)\\
+$\varrho_{w}$\sindex[lis]{rhow@$\rho_{w}$= density of liquid water}
+= density of water ( $10{}^{3}kg/m^{3}$)\\
+i1 = lowest usable channel for the probe\\
+i2 = highest usable channel for the probe\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+\[
+\mathrm{PLWCx}=\frac{\pi\varrho_{w}}{6}{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{e,i}^{3}}}
+\]
+(units and a scale factor are selected so that the output variable
+is in units of $g/m^{3}$)%
+\end{minipage}}\\
+
+
+\textbf{Radar Reflectivity Factor (dbZ): }\textbf{\uline{DBZF}}\textbf{\sindex[var]{DBZF}\index{DBZF},
+}\textbf{\uline{DBZX}}\textbf{\sindex[var]{DBZX}\index{DBZX},
+}\textbf{\uline{DBZ6}}\textbf{\sindex[var]{DBZ6}\index{DBZ6},
+}\textbf{\uline{DBZY}}\sindex[var]{DBZY}\index{DBZY}, \textbf{\uline{DBZD\sindex[var]{DBZD}\index{DBZD}}}\\
+The radar reflectivity factor\index{reflectivity factor}\index{dBz}\index{FSSP-100!radar reflectivity factor}
+for water is a measure of the product of the concentration and the
+sixth moment of the droplet diameter. An equivalent radar reflectivity
+factor can be calculated from the hydrometeor size distribution if
+an assumption about composition of the particles is made, but this
+variable is not part of normal data files. The radar reflectivity
+factor is a characteristic only of the hydrometeor size distribution;
+it is \emph{not }a measure of radar reflectivity, because the latter
+also depends on wavelength, dielectric constant, and other characteristics
+of the hydrometeors. The normally used radar reflectivity factor is
+measured on a logarithmic scale that depends on a particular choice
+of units, so (although it is not conventionally included) an appropriate
+scale factor $Z_{r}$ is included in the following equation to satisfy
+the convention that arguments of logarithms should be dimensionless\index{dimensionless equations}.
+\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+$d_{i}$ = diameter for channel $i$ of probe x\\
+\{Cy$_{i}$\} = concentration from probe y in channel i\\
+\hspace*{0.6cm}(e.g., y=FSSP to calculate DISPx for x=F)\\
+i1 = lowest usable channel for the probe\\
+i2 = highest usable channel for the probe\\
+$Z_{r}$ = reference factor for units = $1\, mm^{6}/m^{3}$\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+
+\[
+\mathrm{DBZx}=10\log_{10}\left({\textstyle \frac{1}{Z_{r}}\sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}^{6}}}\right)
+\]
+%
+\end{minipage}}
+
+
+
+\textbf{FSSP-100 Range (dimensionless): }\textbf{\uline{FRNG}}\textbf{\sindex[var]{FRNG}\index{FRNG},
+}\textbf{\uline{FRANGE}}\sindex[var]{FRANGE}\index{FRANGE}\\
+This variable records the size range in use for the FSSP-100\index{FSSP-100!range}
+probe\\
+
+
+\noindent %
+\begin{minipage}[t]{0.9\textwidth}%
+\noindent \hspace*{0.7in}%
+\begin{tabular}{|c|c|c|}
+\hline 
+Range & \textbf{Nominal Size Range} & \textbf{Nominal Bin Width}\tabularnewline
+\hline 
+\hline 
+0 & 2--47 $\mu m$ & 3 $\mu m$\tabularnewline
+\hline 
+1 & 2--32 $\mu m$ & 2 $\mu m$\tabularnewline
+\hline 
+2 & 1--15 $\mu m$ & 1 $\mu m$\tabularnewline
+\hline 
+3 & 0.5--7.5 $\mu m$ & 0.5 $\mu m$\tabularnewline
+\hline 
+\end{tabular}%
+\end{minipage}\\
+\\
+In recent NETCDF data files, the actual bin boundaries used for processing
+are recorded in the header. That header should be consulted because
+processing sometimes uses non-standard sizes selected to adjust for
+Mie scattering, which causes departures from the nominal linear bins.
+\\
+
+
+\textbf{FSSP-100 Fast Resets (number per sample interval): }\textbf{\uline{FRST}}\textbf{\sindex[var]{FRST}\index{FRST},
+}\textbf{\uline{FRESET}}\textbf{\sindex[var]{FRESET}\index{FRESET}}\\
+The FSSP\index{FSSP-100!fast resets} records events called ``fast
+resets'' that occur when a particle traverses the beam outside the
+depth-of-field and therefore is not accepted for sizing. To avoid
+the processing time associated with sizing, the probe resets quickly
+in this case, but there is still some dead time\index{FSSP-100!dead time}
+when the probe cannot record another event. Fast resets consume a
+time determined by circuit characteristics, so that time is determined
+in laboratory tests of the FSSP circuitry. This variable is needed
+in addition to the ``Total Stobes'' to determine what fraction of
+the time the probe is unable to accept another particle, and this
+``dead time'' enters calculation of the concentration. \\
+
+
+\textbf{FSSP-100 Total Strobes (number per sample interval): }\textbf{\uline{FSTB}}\textbf{\sindex[var]{FSTB}\index{FSTB},
+}\textbf{\uline{FSTROB}}\sindex[var]{FSTROB}\index{FSTROB}\\
+A ``strobe'' is generated in the FSSP\index{FSSP-100!total strobes}
+whenever a particle is detected within its depth-of-field. Not all
+such particles are accepted for inclusion in the size distribution,
+however, because some pass through the outer regions of the illuminating
+laser beam and therefore produce shorter and smaller-amplitude pulses
+than those passing through the center of the beam. The probe maintains
+a running estimate of the average transit time and rejects particles
+with transit times shorter than this average. The total number of
+strobes recorded is therefore more than the number of sized particles,
+and the ratio of strobes to accepted particles can indicate quality
+of operation of the probe. Also, the strobes require processing and
+so contribute to the dead time of the probe, affecting the concentration
+unless a correction is made. See \href{http://www.eol.ucar.edu/raf/Bulletins/bulletin24.html}{RAF Bulletin 24}\index{Bulletin 24}
+for more discussion on the operation of the FSSP.\\
+
+
+\textbf{FSSP-100 Beam Fraction (dimensionless): }\textbf{\uline{FBMFR}}\sindex[var]{FBMFR}\index{FBMFR}\\
+This variable\index{FSSP-100!beam fraction} records the ratio of
+the number of velocity-accepted particles (particles that pass through
+the effective beam diameter) to the total number of particles detected
+in the depth-of-field of the beam (the total strobes). See the discussion
+of Total Strobes for more information.\\
+ \\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+AFSSP = valid particles sized per sample interval\\
+FSTROB = strobes generated by particles in the depth-of-field, \\
+\hspace*{0.7in}per sample interval\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+\[
+\mathrm{FBMFR=\{AFSSP\}/\{FSTROB\}}
+\]
+%
+\end{minipage}}\\
+
+
+\textbf{FSSP-100 Calculated Activity Fraction (dimensionless): }\textbf{\uline{FACT}}\index{FACT}\\
+This variable\index{FSSP-100!activity} represents the fraction of
+the time that the FSSP is unable to count and size particles (its
+``dead time\index{dead time!FSSP}\index{FSSP-100!dead time}'').
+The activity fraction is not measured directly but is estimated from
+fast resets and total strobes along with measurements of the dead
+times associated with each (as determined in laboratory tests). The
+characteristic times are in the NetCDF header (for recent projects).
+.\\
+\framebox{\begin{minipage}[t]{1\columnwidth}%
+FSTROB = strobes generated by particles in the depth-of-field, \\
+\hspace*{0.7in}per sample interval\\
+FRESET = ``fast resets'' generated per sample interval\\
+$t_{1}$ = slow reset time (for each strobe)\\
+$t_{2}$ - fast reset time (for each fast reset)\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+
+\[
+FACT=\{FSTROB\}\, t_{1}+\mathrm{\{FRESET\}}\, t_{2}
+\]
+%
+\end{minipage}}\\
+\\
+
+
+\textbf{PCAS Raw Activity (dimensionless); }\textbf{\uline{AACT}}\uline{\sindex[var]{AACT}\index{AACT},
+}\textbf{\uline{PACT}}\sindex[var]{PACT}\index{PACT}\\
+The PCAS probe provides this measure of dead time, the time that the
+probe is unable to sample particles because the electronics are occupied
+with processing particles. The manufacturer suggests that the actual
+dead time ($f_{PCAS}$) is given by the following formula, which is
+used in determining concentrations for the PCAS:\\
+\[
+f_{PCAS}=0.52\frac{\mathrm{\{PACT\}}}{F_{PCAS}}
+\]
+\\
+where $F_{PCAS}=1024\, s^{-1}$. However, PACT (or AACT) is the variable
+archived in the data files. \\
+
+
+\textbf{PMS-2D Cloud Probe Particle Concentration ($L^{-1}$): }\textbf{\uline{CON2C1\index{CON2C1}}}
+\\
+This concentration of all particles sensed by the PMS-2D Cloud Probe
+is based on the ``shadow-or'' count (SDWC1,SHDORC) from the probe.
+This counter is triggered each time a particle passes through the
+laser beam, so the rate at which these counts are produced can be
+used with the sample volume of the probe and the flight speed to determine
+this upper estimate of the particle concentration. \\
+
+
+\textbf{PMS-2D Precip Probe Particle Concentration ($L^{-1}$): }\textbf{\uline{CON2P1}}\index{CON2P1}\\
+This measurement is based on SDWP1 or SHDORP and is analogous to CON2C1
+but for the PMS-2D Precip Probe. 
+\end{hangparagraphs}
+
+\subsection{Hydrometeor Imaging Probes}
+
+-- NEEDED: 2DC, 2DP, CPI, etc

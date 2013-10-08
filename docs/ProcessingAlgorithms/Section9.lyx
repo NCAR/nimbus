@@ -1,5 +1,5 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass article
@@ -7,18 +7,26 @@
 \begin_modules
 hanging
 \end_modules
+\maintain_unincluded_children false
 \language english
+\language_package default
 \inputencoding auto
+\fontencoding global
 \font_roman default
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -26,27 +34,37 @@ hanging
 \use_geometry false
 \use_amsmath 1
 \use_esint 1
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
-\defskip medskip
+\paragraph_indentation default
 \quotes_language english
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
-\author "" 
-\author "" 
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
 \end_header
 
 \begin_body
 
-\begin_layout Section
-WIND
+\begin_layout Subsection
+Wind
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:WIND"
@@ -57,37 +75,1911 @@ name "sec:WIND"
 \end_layout
 
 \begin_layout Standard
-Bulletin No.
-\begin_inset space ~
+\begin_inset CommandInset href
+LatexCommand href
+name "RAF Bulletin 23"
+target "http://www.eol.ucar.edu/raf/Bulletins/bulletin23.html"
+
 \end_inset
 
-23 documents the calculation of wind components, both with respect to the
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Bulletin 23
+\end_layout
+
+\end_inset
+
+ documents the calculation of wind components, both with respect to the
  earth (UI, VI, WI, WS and WD) and with respect to the aircraft (UX and
  VY).
- In the data processing, a separate function (GUSTO in GENPRO, gust in NIMBUS)
+ In data processing, a separate function (GUSTO in GENPRO, gust in NIMBUS)
  is used to derive these wind components.
- That function uses the Inertial Reference System measurements as well as
- aircraft true airspeed, aircraft angle of attack, and aircraft sideslip
- angle.
- The wind components calculated in GUSTO/gust are used to derive two additional
- components: wind direction (WD and wind speed (WS).
-  
+ That function uses the measurements from an Inertial Reference Unit (IRU
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IRU
+\end_layout
+
+\end_inset
+
+) as well as aircraft true airspeed, aircraft angle of attack, and aircraft
+ sideslip angle.
+ The wind components calculated in GUSTO/gust are used to derive the wind
+ direction (WD) and wind speed (WS).
+ Additional variables UIC, VIC, WSC, WDC, UXC, and VYC are also calculated
+ based on the variables VNSC, VEWC discussed in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:IRS/GPS"
+
+\end_inset
+
+, which combine IRU and GPS information to obtain improved measurements
+ of the aircraft motion.
+ Those are usually the highest-quality measurements of wind because the
+ merged IRU/GPS variables combine the high-frequency response of the IRU
+ with the long-term accuracy of the GPS.
 \end_layout
 
 \begin_layout Standard
-The details contained in Bulletin No.
+The details contained in Bulletin 23 will not be repeated here; the description
+ there still describes the wind calculations in use, so please consult that
+ bulletin for the processing algorithms.
+ The variables pertaining to the relative wind are described in the next
+ subsection, and the variables characterizing the wind are then described
+ briefly in the last subsection.
+ Some additional detail is included in cases where procedures are not documented
+ in that earlier bulletin.
+\end_layout
+
+\begin_layout Subsubsection
+Relative Wind
+\end_layout
+
+\begin_layout Standard
+Wind
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+wind!relative
+\end_layout
+
+\end_inset
+
+ is measured by adding two vectors: (1) the measured air motion relative
+ to the aircraft (called the relative wind), and (2) the motion of the aircraft
+ relative to the Earth.
+ The following are the measurements used to determine the relative wind.
+ The motion of the aircraft relative to the ground was discussed in Section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:INS"
+
+\end_inset
+
+, and the combination of these two vectors to measure the wind is described
+ in 
+\begin_inset CommandInset href
+LatexCommand href
+name "RAF Bulletin 23"
+target "http://www.eol.ucar.edu/raf/Bulletins/bulletin23.html"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+RAF uses the radome
+\begin_inset CommandInset label
+LatexCommand label
+name "radome gust-sensing system"
+
+\end_inset
+
+ gust-sensing
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+radome gust-sensing
+\end_layout
+
+\end_inset
+
+ technique
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Brown, E.
 \begin_inset space ~
 \end_inset
 
-23 will not be repeated here; please consult that bulletin for the processing
- algorithms.
- Instead, the output variables are only described briefly here, along with
- some additional detail in some cases where procedures are not documented
- in that bulletin.
+N, C.
+\begin_inset space ~
+\end_inset
+
+A.
+\begin_inset space ~
+\end_inset
+
+Friehe, and D.
+\begin_inset space ~
+\end_inset
+
+H.
+\begin_inset space ~
+\end_inset
+
+Lenschow, 1983:
+\emph on
+ Journal of Climate and Applied Meteorology,
+\emph default
+ 
+\series bold
+22, 
+\series default
+171--180
+\end_layout
+
+\end_inset
+
+ to measure incidence angles of the relative wind (i.e., angles of attack
+ and sideslip).
+ The pressure difference between sensing ports above and below the center
+ line of the radome is used, along with the dynamic pressure
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+dynamic pressure
+\end_layout
+
+\end_inset
+
+ measured at a port on the centerline and referenced to the static pressure,
+ to determine the angle of attack.
+ The sideslip angle is determined similarly using the pressure ports on
+ the starboard and port sides of the radome.
+ A Rosemount Model 858AJ gust probe
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+858AJ gust probe
+\end_layout
+
+\end_inset
+
+ has occasionally been used for specialized measurements.
+ The radome measurements are made by differential pressure sensors located
+ in the nose area of the aircraft and connected to the radome by semi-rigid
+ tubing.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Mach Number (dimensionless): MACHx
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+MACHx
+\end_layout
+
+\end_inset
+
+
+\series default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+MACHx
+\end_layout
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
 
+\emph on
+The Mach Number that characterizes the flight speed.
+
+\emph default
+ The Mach number is defined as the ratio of the flight speed (or the magnitude
+ of the relative wind) to the speed of sound.
+ See Eq.
+\begin_inset space ~
+\end_inset
+
+(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:8.8-1"
+
+\end_inset
+
+) in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:State Variables"
+
+\end_inset
+
+ for the algorithm used.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft True Airspeed (m/s): 
+\bar under
+TASx
+\series default
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+TASx
+\end_layout
+
+\end_inset
+
+
+\series bold
+, 
+\bar under
+TASxD
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+TASxD
+\end_layout
+
+\end_inset
+
+
+\series default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+TASxD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The flight speed of the aircraft relative to the atmosphere.
+
+\emph default
+ This derived measurement of the flight speed
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+flight speed|see
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{true airspeed}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ of the aircraft relative to the atmosphere is based on the Mach number
+ calculated from both the dynamic pressure at location x and the static
+ pressure
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+pressure!ambient
+\end_layout
+
+\end_inset
+
+.
+ See the derivation for ATx 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "ambient temperature and TAS calculation"
+
+\end_inset
+
+.
+ The different variables for TASx (TASF, TASR, etc) use different measurements
+ of QCxC in the calculation of Mach number.
+ The variable TASxD is the result of calculations for which the Mach number,
+ air temperature, and true airspeed are determined for dry instead of humid
+ air.
+ See the discussion of ATX on page 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "ATX discussion"
+
+\end_inset
+
+ for an explanation of how humidity is handled in the calculation of true
+ airspeed.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+(see box for ATx
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ATx
+\end_layout
+
+\end_inset
+
+ and MACHx
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+MACHx
+\end_layout
+
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+Note dependence of MACHx on choices for QCxC
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+QCxC
+\end_layout
+
+\end_inset
+
+ and PSXC
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+PSXC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TASx
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+TASx
+\end_layout
+
+\end_inset
+
+ depends on QCxC, PSXC
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+PSXC
+\end_layout
+
+\end_inset
+
+, ATX
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ATX
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+where PSXC and ATX are the preferred choices
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\gamma^{\prime}$
+\end_inset
+
+, 
+\begin_inset Formula $R^{\prime}$
+\end_inset
+
+, and 
+\begin_inset Formula $T_{0}$
+\end_inset
+
+: See the List of Symbols on p.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:List of Symbols"
+
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\begin{equation}
+\mathrm{TASx}=\mathrm{\{MACHx\}}\sqrt{\gamma^{\prime}R^{\prime}\mathrm{\,(\{ATX\}}+T_{0})}\label{eq:8.10-1}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+note that there is complex dependence here on choices for QCXC, TTX, and
+ PSXC)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft True Airspeed (Humidity Corrected) (m/s): 
+\bar under
+TASHC
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+TASHC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+TASHC
+\end_layout
+
+\end_inset
+
+ -- 
+\emph on
+obsolete
+\emph default
+
+\begin_inset Newline newline
+\end_inset
+
+ This derived measurement of 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+true airspeed
+\end_layout
+
+\end_inset
+
+true airspeed accounted for deviations of specific heats of moist air from
+ those of dry air.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I reworded this; I think this is correct, because it is not a departure
+ from perfect-gas behavior but a departure in (both) specific heats.
+ -- CHECK
+\end_layout
+
+\end_inset
+
+ See List, 1971, pp 295, 331-339, and Khelif, et al., 1999.
+ The equation used for this variable, given by Khelif et al.
+\begin_inset space ~
+\end_inset
+
+1999,
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Khelif, D., S.P.
+ Burns, and C.A.
+ Friehe, 1999: Improved wind measurements on research aircraft.
+ 
+\emph on
+Journal of Atmospheric and Oceanic Technology,
+\emph default
+ 
+\series bold
+16,
+\series default
+ 860--875.
+\end_layout
+
+\end_inset
+
+ added a moisture correction to the true airspeed derived for dry air, as
+ follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ 
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "95col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $q$
+\end_inset
+
+ = specific humidity (dimensionless) = SPHUM/1000.
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+SPHUM
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+humidity!specific
+\end_layout
+
+\end_inset
+
+ for SPHUM expressed in g/kg
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $c=0.000304\,\mathrm{kg\, g^{-1}}=0.304$
+\end_inset
+
+ (dimensionless)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout LyX-Code
+TASHC = TASX * (1.0 + 
+\begin_inset Formula $c$
+\end_inset
+
+ * 
+\begin_inset Formula $q$
+\end_inset
+
+)
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TASX was TASx in B9
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Attack Angle Differential Pressure (mb): 
+\bar under
+ADIFR
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+ADIFR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ADIFR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The pressure difference between the top and bottom pressure ports of a radome
+ gust-sensing system.
+ 
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+attack, angle of
+\end_layout
+
+\end_inset
+
+This measurement is used to determine the angle of attack.
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+radome gust-sensing system
+\end_layout
+
+\end_inset
+
+
+\series bold
+ 
+\series default
+Obsolete variable 
+\bar under
+ADIF
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ADIF
+\end_layout
+
+\end_inset
+
+ is a similar variable used for old gust-boom systems or for Rosemount Model
+ 858AJ flow-angle sensors.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Sideslip Angle Differential Pressure (mb): 
+\bar under
+BDIFR
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+BDIFR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+BDIFR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The pressure difference between starboard and port pressure inlets of a
+ radome gust-sensing system.
+ 
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+sideslip, angle of
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+radome gust-sensing system
+\end_layout
+
+\end_inset
+
+ This measurement is used to determine the sideslip angle.
+ Obsolete variable 
+\bar under
+BDIF
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+BDIF
+\end_layout
+
+\end_inset
+
+ is a similar variable used for old gust-boom systems or for Rosemount Model
+ 858AJ flow-angle sensors.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Attack Angle, Radome (
+\series default
+
+\begin_inset Formula $\text{º}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+AKRD
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+AKRD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+AKRD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The angle of attack of the aircraft.
+ 
+\emph default
+This derived measurement represents the angle between the relative wind
+ vector and the plane determined by the longitudinal and lateral axes of
+ the aircraft.
+ Positive values indicate flow moving upward relative to that plane.
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+attack, angle of
+\end_layout
+
+\end_inset
+
+ The calculation is based on ADIFR
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ADIFR
+\end_layout
+
+\end_inset
+
+ and a measurement of dynamic pressure, and so is the measurement produced
+ by a radome gust-sensing system.
+ Empirical sensitivity coefficients for each aircraft, determined from special
+ flight maneuvers, are used; see 
+\begin_inset CommandInset href
+LatexCommand href
+name "RAF Bulletin 23"
+target "http://www.eol.ucar.edu/raf/Bulletins/bulletin23.html"
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Bulletin 23
+\end_layout
+
+\end_inset
+
+ for more information.
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ADIFR!sensitivity coefficient
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+ADIFR
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ADIFR
+\end_layout
+
+\end_inset
+
+ = attack differential pressure, radome (hPa)
+\begin_inset Newline newline
+\end_inset
+
+QCXC
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+QCXC
+\end_layout
+
+\end_inset
+
+ = reference dynamic pressure (hPa)
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+not QCR?
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+MACHX
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+MACHX
+\end_layout
+
+\end_inset
+
+ = reference Mach number
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $c_{0},\, c_{1}$
+\end_inset
+
+ = sensitivity coefficients determined empirically
+\begin_inset Newline newline
+\end_inset
+
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+ = {0.3843, (1/0.06653) 
+\begin_inset Formula $\text{º}$
+\end_inset
+
+} for the C-130
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ = {0.2571, (1/0.04724) 
+\begin_inset Formula $\text{º}$
+\end_inset
+
+} for the GV
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $c_{3},\, c_{4}$
+\end_inset
+
+ = additional coefficients for the GV 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ = {0.6195
+\begin_inset Formula $\text{º}$
+\end_inset
+
+, -1.02758 
+\begin_inset Formula $\text{º}$
+\end_inset
+
+} for MACHX**2 > 0.194
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ = {0.42 
+\begin_inset Formula $\text{º}$
+\end_inset
+
+, 0} for MACHX**2 
+\begin_inset Formula $\leq$
+\end_inset
+
+ 0.194
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+For the C-130:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+\mathrm{AKRD}=c_{1}\left(\frac{\{\mathrm{ADIFR}\}}{\{\mathrm{QCXC}\}}+c_{0}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+For the GV:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+\mathrm{AKRD}=c_{1}\left(\frac{\{\mathrm{ADIFR}\}}{\{\mathrm{QCXC}\}}+c_{0}\right)+c_{3}+c_{4}\{\mathrm{MACHX}\}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+Old Bulletin-9 code: omitted now
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Attack Angle, 858 (
+\series default
+
+\begin_inset Formula $\text{º}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+AKDF
+\series default
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+AKDF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is a derived output of the aircraft's angle of attack obtained from
+ ADIF (the vertical differential pressure measured by a Rosemount 858AJ
+ flow-angle sensor) and a dynamic pressure (Qc) using an empirically determined
+ sensitivity function.
+ For the Rosemount 858AJ, the sensitivity function (GR) is a constant 0.079
+ for Mach numbers less than 0.515.
+ For larger Mach numbers the sensitivity decreases as a function of Mach
+ number.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+there is a problem with GR: these formulas are discontinuous as 0.515, giving
+ 0.068...
+ for 0.515+eps
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+MACH = Aircraft Mach Number
+\begin_inset Newline newline
+\end_inset
+
+GR = sensitivity function (given below)
+\begin_inset Newline newline
+\end_inset
+
+Qc = dynamic pressure, mb
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\begin{eqnarray*}
+\mathrm{for\, MACH} & \leq & 0.515:\\
+ &  & \mathrm{GR}=0.079\\
+\mathrm{otherwise}:\\
+ & \mathrm{GR} & =0.086577797-0.03560256\, MACH\\
+ &  & +0.00006143\, MACH^{2}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+rule[[0.5ex]]{1.0
+\backslash
+linewidth}{1pt}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\begin_inset Formula 
+\[
+\mathrm{AKDF=\frac{ADIF}{GR\, Qc}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Reference Attack Angle (
+\series default
+
+\begin_inset Formula $\text{º}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+ATTACK
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+ATTACK
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ATTACK
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+consider different name convention
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The reference angle of attack used to calculate derived variables.
+ 
+\emph default
+This variable is the reference selected from other measurements of angle
+ of attack in the data set.
+ In most projects, it is equal to AKRD
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+AKRD
+\end_layout
+
+\end_inset
+
+.
+ It is used where attack angle is needed for other derived calculations
+ (e.g., wind measurements).
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Sideslip Angle (Differential Pressure) (
+\series default
+
+\begin_inset Formula $\text{º}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+SSRD
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+SSRD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+SSRD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The angle of sideslip of the aircraft.
+ 
+\emph default
+This derived measurement represents the angle between the longitudinal axis
+ of the aircraft and the projection of the relative wind onto the plane
+ determined by the longitudinal and lateral axes.
+ Positive values indicate airflow from the starboard side.
+ This variable is derived from BDIFR
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+BDIFR
+\end_layout
+
+\end_inset
+
+ and a dynamic pressure
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+pressure!dynamic
+\end_layout
+
+\end_inset
+
+ using a sensitivity function that has been determined empirically for each
+ aircraft.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+BDIFR = differential pressure between sideslip pressure ports, radome (mb)
+\begin_inset Newline newline
+\end_inset
+
+QCXC = dynamic pressure (mb)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $b_{0},\, b{}_{1}$
+\end_inset
+
+ = empirical coefficients dependent on the aircraft and radome configuration
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace*{}
+\length 1cm
+\end_inset
+
+ 
+\begin_inset space ~
+\end_inset
+
+ = {-0.000983, (1/0.09189) 
+\begin_inset Formula $\text{º}$
+\end_inset
+
+ } for the C-130
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace*{}
+\length 1cm
+\end_inset
+
+ 
+\begin_inset space ~
+\end_inset
+
+ = {-0.0023, (1/0.04727) 
+\begin_inset Formula $\text{º}$
+\end_inset
+
+} for the GV
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+\mathrm{SSRD=}b_{1}(\frac{\{BDIFR\}}{\{\mathrm{QCXC}\}}-b_{0})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+The following is from old Bulletin 9:
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Sideslip Angle (Differential Pressure) (
+\series default
+
+\begin_inset Formula $\text{º}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+SSDF
+\series default
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+SSDF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable is derived from BDIF and a dynamic pressure using an empirically
+ determined sensitivity function, as expressed in the following:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $M$
+\end_inset
+
+ = Aircraft Mach Number
+\begin_inset Newline newline
+\end_inset
+
+BDIF = differential pressure between sideslip pressure ports, 858 probe
+ (mb)
+\begin_inset Newline newline
+\end_inset
+
+QC = dynamic pressure from the 858 probe (mb)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $g_{r}$
+\end_inset
+
+ = dimensionless sensitivity function (given below)
+\begin_inset Formula 
+\begin{eqnarray*}
+\mathrm{for\, M} & \leq & 0.515:\\
+ & g_{r} & =0.079\\
+\mathrm{otherwise}:\\
+ & g_{r} & =0.086577797-0.03560256\, M\\
+ &  & +0.00006143\, M^{2}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+\mathrm{SSDF=}\frac{\mathrm{\{BDIF\}}}{g_{r}\mathrm{\{QC\}}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Reference Sideslip Angle (
+\series default
+
+\begin_inset Formula $\text{º}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+SSLIP
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+SSLIP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+SSLIP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The reference sideslip angle used to calculate derived variables
+\emph default
+.
+ This variable is the reference selected from other measurements of sideslip
+ angle
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+sideslip, angle of
+\end_layout
+
+\end_inset
+
+ in the data set.
+ In most projects, it is equal to SSRD
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+SSRD
+\end_layout
+
+\end_inset
+
+.
+ It is used where sideslip angle is needed for other derived calculations
+ (e.g., wind measurements).
+ 
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+PCAB? used to be here...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Wind Components and the Wind Vector
 \end_layout
 
 \begin_layout Hanging
@@ -99,6 +1991,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -111,7 +2004,20 @@ status open
 Wind Vector East Component (m/s): 
 \bar under
 UI
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+UI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -132,7 +2038,20 @@ UI
 Wind Vector North Component (m/s): 
 \bar under
 VI
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+VI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -153,7 +2072,20 @@ VI
 Wind Vector Vertical Gust Component (m/s): 
 \bar under
 WI
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+WI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -177,20 +2109,115 @@ WI
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \series default
+\emph on
 \bar default
-These measurements comprise the three-dimensional wind vector with respect
- to the earth.
- UI is the east-west component with positive values toward the east.
- VI is the north-south component with positive values toward the north.
- WI is the vertical component with positive values toward the zenith.
+The three-dimensional wind
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\emph off
+wind
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\emph off
+wind!vector
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\emph off
+wind!components
+\end_layout
+
+\end_inset
+
+ vector with respect to the earth.
+
+\emph default
+ UI is the east-west component with positive values 
+\bar under
+toward
+\bar default
+ the east, VI is the north-south component with positive values 
+\bar under
+toward
+\bar default
+ the north, and WI is the vertical component with positive values toward
+ the zenith.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+check these sign conventions
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
 
 \series bold
-Wind Speed (m/s): WS
-\begin_inset Index
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Hanging
+
+\series bold
+Wind Speed (m/s): 
+\bar under
+WS
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+WS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -210,15 +2237,18 @@ WS
 Wind Direction (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
 \series bold
-): WD
+): 
+\bar under
+WD
 \series default
+\bar default
 
-\begin_inset Index
+\begin_inset Index var
 status open
 
 \begin_layout Plain Layout
@@ -228,11 +2258,66 @@ WD
 \end_inset
 
 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+WD
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\series default
+
 \begin_inset Newline newline
 \end_inset
 
-These variables are obtained in a straightforward manner from UI and VI.
- The resulting wind direction is relative to true north.
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The magnitude and direction of the horizontal wind.
+ 
+\emph default
+These variables
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+wind!speed
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+wind!direction
+\end_layout
+
+\end_inset
+
+ are obtained in a straightforward manner from UI and VI.
+ The resulting wind direction is relative to true north and represents the
+ direction 
+\bar under
+from which
+\bar default
+ the wind blows; that is the reason that 180
+\begin_inset Formula $\text{º}$
+\end_inset
+
+ appears in the following algorithm.
 \begin_inset Note Note
 status open
 
@@ -248,13 +2333,18 @@ check the angle algorithm actually used -- this doesn't look right.
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Box Boxed
 position "t"
 hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "90text%"
+use_makebox 0
+width "95text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -286,30 +2376,61 @@ atan2 = 4-quadrant arc-tangent function producing output in radians from
 \begin_inset Formula $C_{rd}$
 \end_inset
 
+
+\begin_inset Index con
+status open
+
+\begin_layout Plain Layout
+Crd@
+\begin_inset Formula $C_{rd}$
+\end_inset
+
+= conversion factor, radians to degrees (180/
+\begin_inset Formula $\pi$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+
  = conversion factor, radians to degrees, = 180/
 \begin_inset Formula $\pi$
 \end_inset
 
- {units 
+ [units: 
 \begin_inset Formula $^{\circ}/radian$
 \end_inset
 
-
+]
 \begin_inset Newline newline
 \end_inset
 
 
-\lyxline
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
 
-\begin_inset Formula \begin{eqnarray}
+\end_inset
+
+ 
+\begin_inset Formula 
+\begin{eqnarray}
 \mathrm{WS} & = & \sqrt{\mathrm{\{UI\}}^{2}+\{\mathrm{VI\}}^{2}}\nonumber \\
-\mathrm{WD} & = & C_{rd}\mathrm{\, atan2(\{UI\},\,\{VI\})}+180^{\circ}\label{eq:9.1}\end{eqnarray}
+\mathrm{WD} & = & C_{rd}\mathrm{\, atan2(\{UI\},\,\{VI\})}+180^{\circ}\label{eq:9.1}
+\end{eqnarray}
 
 \end_inset
 
 
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -324,6 +2445,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -336,7 +2458,7 @@ status open
 Wind Vector Longitudinal Component (m/s): 
 \bar under
 UX
-\begin_inset Index
+\begin_inset Index var
 status open
 
 \begin_layout Plain Layout
@@ -349,18 +2471,41 @@ UX
 \end_inset
 
 
-\begin_inset Newline newline
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+UX
+\end_layout
+
 \end_inset
 
 
-\bar default
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
 Wind Vector Lateral Component (m/s): 
 \bar under
 VY
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VY
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -375,16 +2520,40 @@ VY
 \end_inset
 
 
-\series default
+\begin_inset Newline newline
+\end_inset
+
 
 \begin_inset Newline newline
 \end_inset
 
-These measurements describe the horizontal wind vector relative to the frame
- of reference attached to the aircraft (and moving with the aircraft).
- UX is parallel to the longitudinal axis, and positive is toward the nose.
- The variable VY is the component normal to the longitudinal axis; positive
+
+\series default
+\emph on
+The horizontal wind
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+wind!vector
+\end_layout
+
+\end_inset
+
+
+\emph on
+ vector relative to the frame of reference attached to the aircraft.
+
+\emph default
+ UX is parallel to the longitudinal axis and positive toward the nose.
+ VY is along the lateral axis and normal to the longitudinal axis; positive
  is toward the port (or left) wing.
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -396,6 +2565,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -408,7 +2578,20 @@ status open
 GPS-Corrected Wind Vector, East Component (m/s): 
 \bar under
 UIC
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+UIC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -432,7 +2615,17 @@ VIC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VIC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -452,12 +2645,52 @@ VIC
 \begin_inset Newline newline
 \end_inset
 
-Horizontal wind components respectively toward the east and toward the north.
- The components combine measurements from an inertial reference system (IRS)
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+wind!GPS-corrected
+\end_layout
+
+\end_inset
+
+ 
+\emph on
+The horizontal wind
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+wind!vector
+\end_layout
+
+\end_inset
+
+ c
+\emph on
+omponents respectively 
+\bar under
+toward
+\bar default
+ the east and 
+\bar under
+toward
+\bar default
+ the north.
+
+\emph default
+ They are derived from measurements from an inertial reference unit (IRU)
  and a Global Positioning System (GPS), as described in the discussion of
  VEW and VNS above.
  They are calculated just as for UX and VY except that the GPS-corrected
- values for the aircraft groundspeed are used in place of the IRS-based
+ values for the aircraft groundspeed are used in place of the IRU-based
  values.
  They are considered 
 \begin_inset Quotes eld
@@ -467,20 +2700,41 @@ corrected
 \begin_inset Quotes erd
 \end_inset
 
- from the original measurements from the INS or GPS.
+ from the original measurements from the IRU or GPS, as described in section
  
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:IRS/GPS"
+
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
 
 \series bold
-GPS-Corrected Wind Vector, Vertical Component (m/s): 
+Wind Vector, Vertical Component (m/s): 
 \bar under
 WIC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+WIC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -493,16 +2747,72 @@ WIC
 \begin_inset Newline newline
 \end_inset
 
-This variable is actually misnamed.
- The GPS-correction algorithm does no vertical corrections, so this measurement
- does the same calculation as WI with the option of using a different vertical
- airplane velocity.
+
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+change 2011
+\end_layout
+
+\end_inset
+
+
+\emph on
+The component of the wind in the vertical direction.
+ 
+\emph default
+This is the standard calculation of vertical wind
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+wind!vertical
+\end_layout
+
+\end_inset
+
+, obtained from the difference between the measured vertical component of
+ the relative wind and the vertical motion of the aircraft (VSPD) as determined
+ from an IRU.
+\series bold
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+This variable is named 
+\begin_inset Quotes eld
+\end_inset
+
+GPS-Corrected Wind Vector
+\begin_inset Quotes erd
+\end_inset
+
+ in some output prior to 2011, but that name was incorrect because the algorithm
+ does not involve measurements from a GPS.
+\end_layout
+
+\end_inset
+
+
+\series default
+ This should be used in preference to WI if the latter is present; see the
+ discussion of WP3 in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:INS"
+
+\end_inset
+
+.
  Positive values are toward the zenith.
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-should we change to use the same kind of complementary filter?
+should we change to use the same kind of complementary filter? See WP3/VSPD
+ study, still not resolved as of Jan 2011
 \end_layout
 
 \end_inset
@@ -523,6 +2833,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -532,10 +2843,49 @@ status open
 \begin_layout Hanging
 
 \series bold
+GPS-Corrected Wind Direction (
+\series default
+
+\begin_inset Formula $\text{º}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+WDC
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+WDC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+WDC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
 GPS-Corrected Wind Speed (m/s): 
 \bar under
 WSC
-\begin_inset Index
+\begin_inset Index var
 status open
 
 \begin_layout Plain Layout
@@ -548,30 +2898,14 @@ WSC
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
-
-
-\bar default
-GPS-Corrected Wind Direction (
-\series default
-
-\begin_inset Formula $^{\circ}$
-\end_inset
-
-
-\series bold
-): 
-\bar under
-WDC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
-WDC
+WSC
 \end_layout
 
 \end_inset
@@ -587,17 +2921,36 @@ WDC
 \begin_inset Newline newline
 \end_inset
 
-These variables are obtained in a straightforward manner from UIC and VIC,
- using equations analogous to (
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The direction and magnitude of the wind vector, 
+\emph default
+obtained by combining measurements from GPS and IRU units.
+ These variables
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+wind!GPS-corrected
+\end_layout
+
+\end_inset
+
+ are obtained in a straightforward manner from UIC and VIC, using equations
+ analogous to (
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:9.1"
 
 \end_inset
 
-) but with UIC and VIC as input measurements..
- They are expected to be the best measurements of wind because they combine
- the best features of the IRS and GPS measurements.
+) but with UIC and VIC as input measurements.
+ They are expected to be the preferred measurements of wind because they
+ combine the best features of the IRU and GPS measurements.
 \begin_inset Note Note
 status open
 
@@ -639,6 +2992,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -651,7 +3005,23 @@ status open
 GPS-Corrected Wind Vector, Longitudinal Component (m/s): 
 \bar under
 UXC
-\begin_inset Index
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+UXC
+\end_layout
+
+\end_inset
+
+
+\series bold
+\bar under
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -664,18 +3034,28 @@ UXC
 \end_inset
 
 
-\bar default
+\end_layout
 
-\begin_inset Newline newline
-\end_inset
+\begin_layout Hanging
 
+\series bold
 GPS-Corrected Wind Vector, Lateral Component (m/s): 
 \bar under
 VYC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VYC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -695,9 +3075,48 @@ VYC
 \begin_inset Newline newline
 \end_inset
 
-Longitudinal and lateral components of the three-dimensional wind, similar
- to UX and VY, but corrected by the complementary-filter algorithm that
- combines IRS and GPS measurements.
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The longitudinal and lateral components of the three-dimensional wind
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+wind!lateral component
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+wind!longitudinal component
+\end_layout
+
+\end_inset
+
+
+\emph on
+, similar to UX and VY, but corrected by the complementary-filter algorithm
+ that combines IRU and GPS measurements
+\emph default
+.
+ See the discussion in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:IRS/GPS"
+
+\end_inset
+
+.
  The components UXC and VYC are toward the front of the aircraft and toward
  the port (left) wing, respectively.
  

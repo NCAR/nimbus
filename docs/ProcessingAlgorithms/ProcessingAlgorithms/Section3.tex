@@ -1,0 +1,745 @@
+
+\section{THE STATE OF THE AIRCRAFT\label{sec:INS}}
+
+The primary sources of information on the location and motion of the
+aircraft are from inertial reference systems\index{IRU}\index{inertial reference unit|see {IRU}}\index{inertial reference system|see {IRU}}\index{INS|see {IRU}}
+and from global positioning systems\index{GPS}. Both are described
+in this section, as well as combined results that merge the best features
+of each into composite variables for location and motion.
+
+
+\subsection{Inertial Reference Systems}
+
+An Inertial Reference System (IRS) or Inertial Reference Unit (IRU)
+provides measurements of aircraft position, velocity relative to the
+Earth, acceleration and attitude or orientation. For the GV, the system
+is a\index{IRU!GV} Honeywell Laseref III/IV Inertial Reference System.
+Data from the IRS come via a serial digital bit stream (the ARINC
+digital bus) to the ADS\index{ADS=aircraft data system} (Aircraft
+Data System). Because there is some delay in transmission and recording
+of these variables, adjustments for this delay are made when the measurements
+are merged into the processed data files, as documented in the NetCDF\index{NetCDF!header}
+header files. Some of the variables are recorded only on the original
+``raw'' data tapes and are not usually included on final archived
+data files; these are discussed at the end of this section.  See
+also Section XXX for information on results from inertial systems
+that were used prior to installation of the present Honeywell systems.
+
+An Inertial Reference System\index{IRU!alignment} ``aligns'' while
+the aircraft is stationary by measurement of the variations in its
+reference frame caused by the rotation of the Earth. Small inaccuracy
+in that alignment lead to a ``Schuler oscillation''\index{Schuler oscillation}
+that produces oscillatory errors in position and other measurements,
+with a period $\tau_{Sch}$ of about 84 minutes ($\tau_{Sch}=2\pi\sqrt{R_{e}/g}$).
+Position errors of less than 1.0 n mi/hr are within normal operating
+specifications. See Section \ref{sub:IRS/GPS} for discussion of additional
+variables, similar to the following, for which corrections are made
+for these errors via reference to data from a Global Positioning System.
+\begin{hangparagraphs}
+\textbf{Latitude (}$\text{º}$\textbf{): }\textbf{\uline{LAT}}\sindex[var]{LAT}\index{LAT}\\
+This is the aircraft latitude\index{latitude}, output from the IRS
+at 10 Hz. Positive values are north of the equator; negative values
+are south. The resolution is 0.00017$^{\circ}$ and the accuracy is
+reported by the manufacturer to be 0.164$^{\circ}$ after 6 h of flight.
+
+\textbf{Longitude (}$\text{º}$\textbf{): }\textbf{\uline{LON}}\sindex[var]{LON}\textbf{\uline{\index{LON}}}\\
+This is the aircraft longitude\index{longitude}, output from the
+IRS at 10 Hz. Positive values are east of the prime meridian; negative
+values are west. The resolution is 0.00017$^{\circ}$ and the accuracy
+is reported by the manufacturer to be 0.164$^{\circ}$ after 6 h of
+flight.
+
+\textbf{Aircraft True Heading (}$^{\circ}$\textbf{): }\textbf{\uline{THDG}}\index{THDG}\\
+This is the aircraft's true heading\index{heading!true}, output from
+the IRS at 25 Hz. The resolution is 0.00017$\text{º}$ and the accuracy
+is quoted by the manufacturer as 0.2$\text{º}$ after 6 h of flight.
+``True'' distinguishes the heading from the magnetic heading\index{heading!magnetic},
+the heading that would be measured by a magnetic-compass needle.
+
+\textbf{Aircraft Pitch Attitude Angle (}$\text{º}$\textbf{): }\textbf{\uline{PITCH}}\sindex[var]{PITCH}\index{PITCH}\\
+This is the aircraft's pitch\index{pitch} angle, provided from the
+IRS at 50 Hz. Positive values correspond to the nose of the aircraft
+pointing above the horizon. The resolution is 0.00017$\text{º}$ and
+the accuracy is quoted by the manufacturer as 0.05$\text{º}$ after
+6 h of flight.
+
+\textbf{Aircraft Roll Attitude Angle (}$\text{º}$\textbf{): }\textbf{\uline{ROLL}}\sindex[var]{ROLL}\index{ROLL}\\
+This is the aircraft's roll\index{roll} angle, output from the IRS
+at 50 Hz. Positive angles occur with the starboard (right) wing down
+((i.e., a clockwise rotation from level when facing forward in the
+aircraft). The resolution is 0.00017$\text{º}$ and the accuracy is
+quoted by the manufacturer as 0.05$\text{º}$ after 6 h of flight..
+
+\textbf{Aircraft Vertical Acceleration (m\,s$^{-2}$): }\textbf{\uline{ACINS}}\sindex[var]{ACINS}\index{ACINS}\\
+This\index{acceleration!vertical} is the output from the IRS vertical
+accelerometer with its internal drift removed via pressure damping\index{pressure damping}.%
+\footnote{For earlier projects using the Litton LTN-51 INS, this is a direct
+measurement without adjustment for changes in gravity during flight
+and without pressure-damping. Previous use employed a baro-inertial
+loop to compensate for drift in the integrated measurement. See the
+discussion of WP3 below.%
+} Positive values are upward. The sample rate is 50 Hz and the resolution
+is 0.0024 m\,s$^{-2}$. 
+
+\textbf{Computed Aircraft Vertical Velocity (m/s): }\textbf{\uline{VSPD}}\sindex[var]{VSPD}\index{VSPD}\\
+This is the upward velocity\index{velocity!aircraft vertical} of
+the aircraft provided directly by the IRS. It is determined in the
+IRS by integration of the vertical acceleration, with damping based
+on measured pressure to correct for accumulated errors in the integration
+of acceleration. The sample rate is 50 Hz with a resolution of 0.00016
+m/s. The Honeywell Laseref IRS employs a baro-inertial loop\index{baro-inertial loop},
+similar to that described below for WP3\index{WP3} and the Litton
+LTN-51\index{IRU!Litton LTN-51}, to update the value of the acceleration.
+It is also filtered within the IRS so that there is little variance
+with frequency higher than 0.1 Hz. 
+
+\textbf{Pressure-Damped Aircraft Vertical Velocity (m/s): }\textbf{\uline{WP3}}\sindex[var]{WP3}\index{WP3}
+(obsolete)\\
+\label{WP3 algorithm}This was a derived output incorporating a third-order
+damping feedback loop to remove the drift from the inertial system's
+vertical accelerometer (ACINS or VZI) using pressure altitude (PALT)
+as a long-term, stable reference. Positive values are up. The Honeywell
+IRS now in use provides its own version of this measurement, VSPD\index{VSPD},
+and WP3 is now considered obsolete (and in any case should not be
+calculated from ACINS as provided by the Honeywell Laseref IRS\index{IRU!Honeywell}
+because that ACINS already incorporates pressure damping). Documentation
+is included here because many old data files include this variable.
+Note that ``pressure altitude\index{altitude!pressure}'' is not
+a true altitude but an altitude equivalent to the ambient pressure
+in a standard atmosphere, so updating a variable integrated from inertial
+measurements to this value can introduce errors vs.~the true altitude..
+WP3 was calculated by the data-processing software as follows (with
+coefficients in historical use and not updated to the recommendations
+elsewhere in this technical note):%
+\footnote{Regarding signs, note that ACINS is a number near zero, not near g,
+and so already has the estimated acceleration of gravity removed.
+The assumption made in the following is that the INS will report values
+adjusted for the gravitational acceleration \emph{at the point of
+alignment}, which would be $G_{L}$. If $g_{F}$, the estimate for
+gravity at the flight altitude (palt) and latitude (lat), is \emph{smaller}
+than $G_{L}$ then the difference ($G_{L}-g_{f}$) will be positive;
+this will correct for the reference value for ACINS being the gravity
+measured at alignment ($G_{L}$) when it should actually be the sensed
+gravity ($g_{f}$) at the measurement point, so to obtain (sensed
+acceleration - $g_{f}$) it is necessary to add ($G_{L}-g_{f}$) to
+ACINS, \emph{increasing }``acz'' in this case. However, the situation
+with ``vcorac'' is reversed: ``vcorac'' is a positive term for
+all eastward flight, for example, but in that case the motion of the
+aircraft makes objects seem lighter (i.e., they experience less acceleration
+of gravity) than without such flight. ACINS is positive upward so
+it represents a net acceleration of the aircraft upward (as imposed
+by the combination of gravity and the lift force of the aircraft).
+To accomplish level flight in these circumstances, the aircraft must
+actually accelerate downward so the accelerometer will experience
+a negative excursion relative to slower flight. To compensate, ``vcorac''
+must make a positive contribution to remove that negative excursion
+from ``acz''. In the conceptual extreme that the aircraft flies
+fast enough for the interior to appear weightless, ACINS would reduce
+to -1{*}$G_{L}$ and vcorac would increase to +$G_{L}$, leaving acz
+near zero as required if the aircraft were to remain in level flight
+in the rotating frame%
+}\\
+\framebox{\begin{minipage}[t]{0.95\textwidth}%
+$g_{1}$ = 9.780356 m\,s$^{-2}$ ~~~%
+\footnote{this and several other values are those used in past processing; this
+is not the current value%
+}\\
+$a_{1}$ = 0.31391116$\times$10$^{-6}$ s$^{-2}$\\
+$a_{2}$ = .0052885 (dimensionless)\\
+VEW = eastward groundspeed of the aircraft (see below)\\
+VNS = northward groundspeed of the aircraft (see below)\\
+LAT = latitude measured by the IRS {[}$\text{º}${]}\\
+$C_{dr}=\pi/180^{\circ}$ = conversion factor, degrees to radians\\
+PALT = pressure altitude of the aircraft\\
+$\Omega$ = angular rotation of the earth = 7.292116$\times10^{6}$
+radians/s\\
+$R_{E}$ = radius of the Earth = 6.371229$\times10^{6}$ m\\
+$g_{f}$ = local gravity corrected for latitude and altitude\\
+$V_{c}$ = correction to gravity for the motion of the aircraft\\
+$G_{L}$ = local gravity at the location of IRU alignment, corrected
+to zero altitude\\
+$\{C[0],C[1],C[2]\}$ = feedback coefficients, \{0.15, 0.0075, 0.000125\}
+for 125-s response
+
+\noindent \rule[0.5ex]{1\linewidth}{1pt}
+\begin{enumerate}
+\item From the pressure altitude PALT (in m) and the latitude LAT (converted
+to radians), estimate the acceleration of gravity:\\
+\[
+g_{f}=g_{1}\left(1+a_{2}\sin^{2}(\mathrm{C_{dr}\{LAT\})}+a_{1}\mathrm{\{PALT\}}\right)
+\]
+
+\item Determine corrections for Coriolis acceleration\index{Coriolis acceleration}
+and centrifugal acceleration\index{centrifugal acceleration}, based
+on motion of the aircraft:\\
+\[
+a_{c}=2\Omega\mathrm{\{VEW\}}\cos(C_{r}\mathrm{\{LAT\}})+\frac{\mathrm{\{VEW\}}^{2}+\mathrm{\{VNS\}}^{2}}{R_{E}}
+\]
+
+\item Estimate the acceleration experienced by the aircraft as follows:\\
+\[
+\mathrm{acz}=a_{z}=\mathrm{\{ACINS\}}+G_{L}-g_{f}+a_{c}
+\]
+ 
+\item Use a feedback loop to update the integrated value of the acceleration
+and obtain a new value of the vertical motion of the aircraft. The
+following code segment uses \emph{acz}=$a_{z}$, \emph{deltaT{[}{]}}
+to represent the time between updates, and \emph{hi3, hx,} and \emph{hxx}
+to store the feedback terms:\\
+\begin{minipage}[t]{1\columnwidth}%
+\begin{lyxcode}
+wp3{[}FeedBack{]}~+=~(acz~-~C{[}1{]}~{*}~hx{[}FeedBack{]}~~\\
+~~~-~C{[}2{]}~{*}~hxx{[}FeedBack{]})~{*}~deltaT{[}FeedBack{]};\end{lyxcode}
+%
+\end{minipage}
+\item Update the feedback terms:\\
+\begin{minipage}[t]{1\columnwidth}%
+\begin{lyxcode}
+hi3{[}FeedBack{]}~=~hi3{[}FeedBack{]}~+~(wp3{[}FeedBack{]}~~\\
+~~~~-~C{[}0{]}~{*}~hx{[}FeedBack{]})~{*}~deltaT{[}FeedBack{]};~\\
+hx{[}FeedBack{]}~~=~hi3{[}FeedBack{]}~-~palt;~\\
+hxx{[}FeedBack{]}~=~hxx{[}FeedBack{]}~~\\
+~~~~~~~~~~~~~~+~hx{[}FeedBack{]}~{*}~deltaT{[}FeedBack{]};~\end{lyxcode}
+%
+\end{minipage}
+\item Set WP3 to the average of the last wp3 result and the current wp3
+result.\end{enumerate}
+%
+\end{minipage}}
+
+\textbf{Inertial Altitude (m): }\textbf{\uline{ALT}}\sindex[var]{ALT}\index{ALT}\\
+This is the altitude of the aircraft as provided by the IRS, with
+pressure damping applied within the IRU to the integrated aircraft
+vertical velocity to avoid the accumulation of errors. The value therefore
+is updated to the pressure altitude, not the geometric altitude, and
+should be regarded as a measurement of pressure altitude where short-term
+variations are provided by the IRU in a way that uses the pressure
+altitude as a baseline for longer-term updating.The sample rate is
+25 Hz with a resolution of 0.038 m.
+
+\textbf{Aircraft Ground Speed (m/s): }\textbf{\uline{GSF}}\sindex[var]{GSF}\index{GSF}\\
+This is the ground speed of the aircraft as provided by the IRU (at
+10 Hz). The resolution is 0.0020 m/s.
+
+\textbf{Aircraft Ground Speed East Component (m/s): }\textbf{\uline{VEW}}\sindex[var]{VEW}\index{VEW}\\
+The IRU provides this measurement of the east-directed component of
+ground speed, at a rate of 10 Hz. The resolution is 0.0020 m/s.
+
+\textbf{Aircraft Ground Speed North Component (m/s) }\textbf{\uline{VNS}}\sindex[var]{VNS}\index{VNS}\\
+The IRU provides this measurement of the north-directed component
+of ground speed, at a rate of 10 Hz. The resolution is 0.0020 m/s.
+
+\textbf{Distance East/North of a Reference (km): }\textbf{\uline{DEI}}\textbf{\sindex[var]{DEI}\index{DEI@DE\textbf{I}}/}\textbf{\uline{DNI}}\sindex[var]{DNI}\index{DNI}\\
+These are derived outputs obtained by subtracting a fixed reference
+position from the current position. The values are determined from
+measurements of latitude and longitude and converted from degrees
+to distance in a rectilinear coordinate system. The reference position
+can be either the starting location of the flight or a user-defined
+reference point (e.g., the location of a project radar). The accuracy
+of these values is dependent on the accuracy of the source of latitude
+and longitude measurements (see LAT and LON), and the calculations
+are only appropriate for short distances because they do not take
+into account the spherical geometry of the Earth..\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+LON$_{ref}$ = reference longitude ($\text{º}$)\\
+LAT$_{ref}$ = reference latitude ($\text{º}$)\\
+SF$_{ref}$ = reference scale factor = 111.12 km /$\text{º}$\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+
+\[
+\mathrm{DEI}=(\mathrm{\{LON\}}-\{\mathrm{LON}_{ref}\})\mathrm{SF}_{ref}\cos(\mathrm{\{LAT\}})
+\]
+\[
+\mathrm{DNI=(\mathrm{\{LAT\}}=\{\mathrm{LAT}_{ref}\})\mathrm{SF}_{ref}}
+\]
+%
+\end{minipage}}
+
+\textbf{Radial Azimuth/Distance from Fixed Reference: }\textbf{\uline{FXAZIM}}\textbf{\sindex[var]{FXAZIM}\index{FXAZIM},
+}\textbf{\uline{FXDIST}}\sindex[var]{FXDIST}\index{FXDIST}\\
+Derived calculations of the radial azimuth ($\text{º})$ and distance
+(km) from a fixed reference position (a user-specified reference latitude
+and longitude) to the aircraft's location, as discussed in the preceding
+paragraph. These are calculated by rectangular-to-polar conversion
+of DEI/DNI. 
+\end{hangparagraphs}
+
+\subsubsection*{\noun{--Raw IRS Variables Not Included In Normal Data Files}:--}
+
+The following IRS variables\index{IRU variables!raw}\index{IRU measurements!not in normal data files}
+are not normally included in archived data files, but their values
+are recorded by the ADS and can be obtained from the original ``raw''
+data files: \\
+
+\begin{hangparagraphs}
+\textbf{Raw Lateral Body Acceleration (m/s$^{2}$): }\textbf{\uline{BLATA}}\sindex[var]{BLATA}\index{BLATA}\\
+The raw output from the IRU lateral accelerometer. Positive values
+are toward the starboard, normal to the aircraft center line. The
+sample rate is 50 Hz with a resolution of 0.0024 m\,s$^{-2}$.
+
+\textbf{Raw Longitudinal Body Acceleration (m/s$^{2}$): }\textbf{\uline{BLONA}}\sindex[var]{BLONA}\index{BLONA}\\
+The raw output from the IRU longitudinal accelerometer. Positive values
+are in the direction of the nose of the aircraft and parallel to the
+aircraft center line. The sample rate is 50 Hz with a resolution of
+0.0024 m\,s$^{-2}$.
+
+\textbf{Raw Normal Body Acceleration (m/s$^{2}$): }\textbf{\uline{BNORMA}}\sindex[var]{BNORMA}\index{BNORMA}\\
+The raw output from the IRU vertical accelerometer. Positive values
+are upward in the reference frame of the aircraft, normal to the aircraft
+center line and lateral axis. The sample rate is 50 Hz with a resolution
+of 0.0024 m\,s$^{-2}$.
+
+\textbf{Raw Body Pitch Rate (}$\text{º}$\textbf{/s): }\textbf{\uline{BPITCHR}}\sindex[var]{BPITCHR}\index{BPITCHR}\\
+The raw output of the IRU pitch rate gyro. Positive values indicate
+the nose moving upward and refer to rotation about the aircraft's
+lateral axis. The sample rate is 50 Hz with a resolution of 0.0039$\text{º}$/s.
+
+\textbf{Raw Body Roll Rate (}$\text{º}$\textbf{/s): }\textbf{\uline{BROLLR}}\sindex[var]{BROLLR}\index{BROLLR}\\
+The raw output of the IRU roll rate gyro. Positive values indicate
+starboard wing moving down and refer to rotation about the aircraft
+center line. The sample rate is 50 Hz with a resolution of 0.0039$\text{º}$/s.
+
+\textbf{Raw Body Yaw Rate (}$\text{º}$\textbf{/s): }\textbf{\uline{BYAWR}}\sindex[var]{BYAWR}\index{BYAWR}\\
+The raw output of the IRU yaw rate. Positive values represent the
+nose turning to the starboard and refer to rotation about the aircraft's
+vertical axis. The sample rate is 50 Hz with a resolution of 0.0039$\text{º}$/s. 
+\end{hangparagraphs}
+
+\subsection{Global Positioning Systems}
+
+GPS\index{global positioning system|see{GPS}}\index{GPS} variables
+aboard RAF aircraft are provided by a Trimble TANS-III GPS\index{GPS!Trimble TANS-III}
+receiver. It has the ability to track up to 6 satellites at a time
+but needs only 4 to provide 3-dimensional position and velocity data
+(3 satellites for 2-dimensions). The accuracy of the position measurements
+is stated to be 25 meters (horizontal) and 35 meters (vertical) under
+``steady-state conditions.''%
+\footnote{Note: The GPS signals at one time suffered from ``selective availability,''
+a US DOD term for a dithered signal that degrades GPS absolute accuracy
+to 100 meters. This was especially noticeable in the altitude measurement,
+so GALT normally was not useful. As of 1 May 2000, selective availability
+was deactivated to allow everyone to obtain better position measurements.
+(See the Interagency GPS Executive Board web site for more information.) %
+} Likewise, velocity measurements are within 0.2 m/s for all axes.
+Measurement resolution is that of 4-byte IEEE format (about 6 significant
+digits). All variables are output at a sample rate of 1 Hz.
+
+Some of the following variables are also available from a second unit
+and are qualified by the name of that unit; e.g., GGLAT\_GMN for GGLAT
+as measured by a Garmin GPS\index{GPS!Garmin} unit. In addition,
+some of the measurements from the GPS\index{GPS!aircraft avionics unit}
+units that are part of the aircraft avionics systems are recorded;
+these are denoted by a suffix ``\_G'' or ``\_A''.\\
+ 
+\begin{hangparagraphs}
+\textbf{GPS Latitude (}$\text{º}$\textbf{): }\textbf{\uline{GGLAT}}\sindex[var]{GGLAT}\index{GGLAT},
+\textbf{\uline{LAT\_G\sindex[var]{G}\index{LAT_G@\textbf{LAT\_G}}}};
+also formerly \textbf{\uline{GLAT\sindex[var]{GLAT} \index{GLAT}}}\\
+The aircraft latitude output from the GPS. Positive values are north
+of the equator; negative values are south. GGLAT is provided by the
+data-system GPS; LAT\_G and LATF\_G are from the avionics system GPS.
+LATF\_G is a fine-resolution measurement that requires special processing. 
+
+\textbf{GPS Longitude (}$\text{º}$\textbf{): }\textbf{\uline{GGLON}}\sindex[var]{GGLON}\index{GGLON},
+\textbf{\uline{LON\_G\sindex[var]{G}\index{LON_G@\textbf{LON\_G}}}};
+also formerly \textbf{\uline{GLON\sindex[var]{GLON}\index{GLON@\textbf{GLON}}}}\\
+The aircraft longitude output from the GPS. Positive values are east
+of the prime meridian; negative are west. GGLON is provided by the
+(or a) data-system GPS; LON\_G and LONF\_G are from the avionics system
+GPS. LONF\_G is a fine-resolution measuremen that requires special
+processingt. 
+
+\textbf{GPS Ground Speed (m/s): }\textbf{\uline{GSF}}\textbf{\_}\textbf{\uline{G}}\textbf{\sindex[var]{G}\index{GSF_G@GSF\_G},
+}\textbf{\uline{GGSPD}}\sindex[var]{GGSPD}\index{GGSPD}\\
+The aircraft ground speed output from the GPS. GSF\_G originates from
+an avionics-system GPS; GGSPD originates from a data-system GPS.
+
+\textbf{GPS Ground Speed Vector East Component (m/s): }\textbf{\uline{GGVEW}}\sindex[var]{GGVEW}\index{GGVEW},
+\textbf{\uline{VEW\_G}}\sindex[var]{G}\index{VEW_G@VEW\_G}\\
+The east component of ground speed as measured by the GPS . VEW\_G
+originates from an avionics-system GPS; GGVEW originates from a data-system
+GPS.
+
+\textbf{GPS Ground Speed Vector North Component (m/s): }\textbf{\uline{GGVNS}}\sindex[var]{GGVNS}\index{GGVNS},
+\textbf{\uline{VNS\_G}}\uline{\sindex[var]{G}\index{VNS_G@VNS\_G}}\\
+The northward component of ground speed as measured by a GPS unit.
+VNS\_G originates from an avionics-system GPS; GGVNS originates from
+a data-system GPS.
+
+\textbf{GPS-Computed Aircraft Vertical Velocity (m/s): }\textbf{\uline{VSPD\_G\sindex[var]{G}\index{VSPD_G@\textbf{VSPD\_G}}}}\textbf{,
+}(obsolete) \textbf{\uline{GVZI}}\sindex[var]{GVZI (obsolete)}\index{GVZI}\\
+The aircraft vertical velocity provided by a GPS unit. Positive values
+are upward.
+
+\textbf{GPS Altitude (m): }\textbf{\uline{GGALT}}\sindex[var]{GGALT}\index{GGALT},
+\textbf{\uline{ALT\_G\sindex[var]{G}\index{ALT_G@ALT\_G}}}\\
+The aircraft altitude\index{altitude!aircraft!GPS} output from the
+GPS. The measurement is with respect to a geopotential surface (MSL)
+defined by the GPS's built-in earth model. Positive values are above
+the reference surface. GGALT originates from a data-system GPS; ALT\_G
+originates from an avionics-system GPS.
+
+\textbf{GPS Aircraft Track Angle ($\text{º}$): }\textbf{\uline{GGTRK\sindex[var]{GGTRK}\index{GGTRK@\textbf{GGTRK}}}}\textbf{,}\textbf{\uline{
+TKAT\_G\sindex[var]{G}\index{TKAT_G@\textbf{TKAT\_G}}}}\\
+The direction of the aircraft track (degrees clockwise from true north)
+as measured by a data-system GPS (GGTRK) or an avionics-system GPS
+(TKAT\_G).
+
+\textbf{GPS Height of the Geoid (m): }\textbf{\uline{GGEOIDHT\sindex[var]{GGEOIDHT}\index{GGEOIDHT@\textbf{GGEOIDHT}}}}\\
+Height of geoid (MSL) above the WGS84 ellipsoid. 
+
+\textbf{GPS Satellites Tracked: }\textbf{\uline{GGNSAT}}\textbf{\sindex[var]{GGNSAT}\index{GGNSAT@\textbf{GGNSAT}}}\\
+The number of satellites tracked by the GPS unit.
+
+\textbf{GPS Mode: }\textbf{\uline{GGQUAL}}\sindex[var]{GGQUAL}\index{GGQUAL}\\
+Quality flag: 0, 1, 2 for invalid, normal GPS, and differential GPS,
+respectively.
+
+\textbf{GPS Mode: }\textbf{\uline{GMODE\sindex[var]{GMODE (obsolete)}\index{GMODE@\textbf{GMODE}}
+}}(obsolete)\\
+This is the former output from the GPS indicating the mode of operation.
+The normal value is 4, indicating automatic (not manual) mode and
+that the receiver is operating in 4-satellite (as opposed to fewer)
+mode.
+
+\textbf{GPS Status: }\textbf{\uline{GGSTATUS}}\sindex[var]{GGSTATUS}\index{GGSTATUS},
+\textbf{\uline{GSTAT\_G}}\textbf{\sindex[var]{G}}\textbf{\uline{\index{GSTAT_G@\textbf{GSTAT\_G}}}},
+(obsolete) \textbf{\uline{GSTAT}}\sindex[var]{GSTAT}\index{GSTAT}\\
+The status of the GPS receiver. A value of 1 indicates that the receiver
+is operating normally; a value of 0 indicates a warning regarding
+data quality. GGSTATUS indicates the status of the data-system GPS;
+GSTAT\_G indicates the status of the avionics-system GPS. The obsolete
+variable GSTAT, formerly used for the same purpose, has the reverse
+meaning: A value of 0 indicates normal operation and any other code
+indicates a malfunction or warning regarding poor data accuracy. 
+
+
+\end{hangparagraphs}
+
+\subsection{Other Measurements of Aircraft Altitude}
+\begin{hangparagraphs}
+\textbf{Altitude, Reference (MSL): }\textbf{\uline{ALTX}}\textbf{\sindex[var]{ALTX}\index{ALTX},
+}\textbf{\uline{GALTC}}\sindex[var]{GALTC}\index{GALTC}\\
+\marginpar{revise this as described in the GGALTC algorithm note of 10 Dec}This
+is the derived altitude above the geopotential surface obtained primarily
+from GALT, the GPS\index{GPS} altitude, with help from another reference
+altitude, typically ALT, the inertial altitude. The GPS signals at
+times are degraded, most often during aircraft turns. Two GPS status
+measurements are used to detect this, but sometimes the information
+comes too late. A 10-second running average is calculated of the difference
+between the GPS altitude and the reference altitude. When the sample-to-sample
+altitude difference changes more than 50 meters or when the GPS status
+detects a degraded signal, the altitude from this measurement changes
+from GPS altitude to an adjusted reference altitude (defined as reference
+altitude plus the running difference average). When the GPS altitude
+is again ``good'' and to avoid a sudden altitude transition, the
+output linearly steps back to the GPS altitude over the next 10 seconds.
+{*}{*}{*} \emph{REVISE THIS, NEW ALGORITHM}
+
+\textbf{ISA Pressure Altitude (m): }\textbf{\uline{PALT}}\sindex[var]{PALT}\index{PALT}\\
+\marginpar{Revised Nov 2010}This derived altitude\index{altitude!pressure}
+is obtained from the reference barometric (static or ambient) pressure
+measurement using the International Standard Atmosphere\index{International Standard Atmosphere}
+(\index{ISA|see {International Standard Atmosphere}}ISA), equivalent
+to the reference atmosphere for aviation operations worldwide.%
+\footnote{See ``U.S. Standard Atmosphere, 1976'', NASA-TM-A-74335, available
+for download at \href{http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19770009539_1977009539.pdf}{this URL}.%
+} The pressure altitude is best interpreted as a variable equivalent
+to the measured pressure, not as a geometric altitude. In the following
+description of the algorithm, some constants (identified by the symbol
+$\dagger$) are specified as part of the ISA and so should not be
+``improved'' to more modern values such as those given in the table
+in section \ref{ConstantsBox} (e.g., $R_{0}^{\prime}).$%
+\footnote{Prior to and including some projects in 2010, processing used slightly
+different coefficients: for aircraft other than the GV, $T_{0}/\lambda$
+was represented by -43308.83, the reference pressure $p_{0}$ was
+taken to be 1013.246, and the exponent $x$ was represented numerically
+by 0.190284. For the GV, the value of $T_{0}/\lambda$ was taken to
+be 44308.0, the transition pressure $p_{T}$ was 226.1551 hPa, $x$
+= 0.190284, and coefficient $\frac{R_{0}^{\prime}T_{T}}{gM_{d}}$
+was taken to be 6340.70 m instead of 6341.620 m as obtained below.
+The difference between these older values and the ones recommended
+below is everywhere less than 10 m and so is small compared to the
+expected uncertainty in pressure measurements, because 1 hPa change
+in pressure leads to a change in pressure altitude that varies from
+about 8--40 m over the altitude range of the GV .)%
+} A note at \href{http://wiki.eol.ucar.edu/rafscience/ProcessingAlgorithms?action=AttachFile&do=view&target=PressureAltitude.pdf}{this URL}
+describes the pressure altitude in more detail and documents the change
+that was implemented in November 2010.\\
+\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+$T_{0}$= 288.15 K, reference temperature$\dagger$\\
+$\lambda$ \sindex[lis]{lambda@$\lambda$= tropospheric lapse rate, standard atmosphere}=
+-0.0065 K/m = the lapse rate\index{International Standard Atmosphere!lapse rate}
+for the troposphere$\dagger$\\
+$p$ = measured static (ambient) pressure, hPa, usually from PSXC\\
+$p_{a}$\sindex[lis]{Pa@$p_{a}$= reference pressure for zero altitude, ISA}
+= 1013.25 hPa, reference pressure for PALT=0$\dagger$\\
+$M_{d}^{\prime}$ = 28.9644 $kg/kmol$= molecular weight of dry air,
+ISA definition$\dagger$\\
+$g^{\prime}$ = 9.80665 m\,s$^{-2}$, acceleration of gravity$\dagger$\\
+$R_{0}^{\prime}$ = universal gas constant, defined$\dagger$ as 8.31432$\times10^{3}$
+$J\,\mathrm{kmol}^{-1}\,\mathrm{K}^{-1}$\\
+$z_{T}$ = altitude of the ISA tropopause = 11,000 m$\dagger$ \\
+$x=R_{0}^{\prime}\lambda/(M_{d}^{\prime}g^{\prime})$ $\approx$ 0.1902632
+(dimensionless)%
+\footnote{This is the value, rounded to seven significant figures, that is used
+for data processing.%
+}\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+
+For pressure > 226.3206 hPa (equivalent to a pressure altitude < $z_{T}$):\\
+\[
+\mathrm{PALT}=-\left(\frac{T_{0}}{\lambda}\right)\left(1-\left(\frac{p}{p_{a}}\right)^{x}\right)
+\]
+otherwise, if $T_{T}$\sindex[lis]{Tt@$T_{T}$= temperature at the ISA tropopause}
+and $p_{T}$\sindex[lis]{pT@$p_{T}$= pressure at the ISA tropopause}
+are respectively the temperature and pressure at the altitude\index{International Standard Atmosphere!tropopause}
+$z_{T}$:\\
+\[
+T_{T}=T_{0}+\lambda z_{T}=216.65\,\mathrm{K}
+\]
+\[
+p_{T}=p_{a}\Bigl(\frac{T_{0}}{T_{T}}\Bigr)^{\frac{g^{\prime}M_{d}^{\prime}}{\lambda R_{0}^{\prime}}}=226.3206\,\mathrm{hPa}
+\]
+\[
+\mathrm{PALT}=z_{T}+\frac{R_{0}^{\prime}T_{T}}{g^{\prime}M_{d}^{\prime}}\ln\left(\frac{p{}_{T}}{p}\right)
+\]
+which, after conversion from natural to base-10 logarithm, is coded
+to be equivalent to the following:\\
+
+\begin{lyxcode}
+~~~~~~~~~~//~transition~pressure~at~the~assumed~ISA~tropopause:
+
+\#define~ISAP1~226.3206
+
+~~~~~~~~~~//~reference~pressure~for~standard~atmosphere:
+
+\#define~ISAP0~1013.25
+
+if~(psxc~>~ISAP1)
+\begin{lyxcode}
+palt~=~44330.77~{*}~(1.0~-~pow(psxc/ISAP0,~0.1902632));
+\end{lyxcode}
+else
+\begin{lyxcode}
+palt~=~11000.0~+~14602.12~{*}~log10(ISAP1/psxc);\end{lyxcode}
+\end{lyxcode}
+%
+\end{minipage}}
+
+\textbf{Geometric Radio Altitude (m): }\textbf{\uline{HGM}}\sindex[var]{HGM}\index{HGM}\\
+This is the distance to the surface below the aircraft, measured by
+a radio altimeter\index{altimeter!radio}. The maximum range is 762m
+(2,500 ft). The instrument changes in accuracy at an altitude of 152
+m: The estimated error from 152 m to 762 m is 7\%, while the estimated
+error for altitudes below 152 m is 1.5 m or 5\%, whichever is greater.
+
+\textbf{Geometric Radar Altitude (Extended Range) (APN-159) (m): }\textbf{\uline{HGME}}\sindex[var]{HGME}\index{HGME}\\
+There are two outputs from an APN-159 radar altimeter\index{altimeter!radar}\index{APN-159},
+one with coarse resolution (CHGME) and one with fine resolution (HGME).
+Both raw outputs cycle through the range 0-360 degrees, where one
+cycle corresponds to 4,000 feet for HGME and to 100,000 feet for CHGME.
+To resolve the ambiguity arising from these cycles, 4,000-foot increments
+are added to HGME to maintain agreement with CHGME. This preserves
+the fine resolution of HGME (1.86 m) throughout the altitude range
+of the APN-159.
+
+\textbf{Geometric Radar Altitude (Extended Range) (APN-232) (m): }\textbf{\uline{HGM232}}\sindex[var]{HGM232}\index{HGM232}\\
+Altitude above ground as measured by an APN-232 radar altimeter.
+
+\textbf{Pressure-Damped Inertial Altitude (m): }\textbf{\uline{HI3}}\sindex[var]{HI3 (obsolete)}\index{HI3}
+(obsolete)\\
+The aircraft altitude obtained from the twice-integrated IRU acceleration
+(ACINS), pressure-adjusted to obtain long-term agreement with PALT.
+Note that this variable has mixed character, producing short-term
+variations that accurately track the inertial system changes but with
+adjustment to the pressure altitude, which is not a true altitude.
+The variable is not appropriate for estimates of true altitude, but
+proves useful in the updating algorithm used with the LTN-51 IRU for
+vertical wind. See the discussion of WP3 \vpageref{WP3 algorithm}.
+This variable is now obsolete.
+\end{hangparagraphs}
+
+\subsection{\label{sub:IRS/GPS}Combining IRS and GPS Measurements}
+
+Measurements from the global positioning\index{GPS} and inertial
+reference systems\index{IRU} are combined to produce new variables
+that take advantage of the strengths of each, so that the resulting
+variables have the long-term stability of the GPS and the short-term
+resolution of the IRU. This section describes some variables that
+result from this blending of variables. These corrected variables
+are usually the best available when the GPS and IRS are both functioning. 
+
+One can determine if the GPS is functioning by examining the GPS status
+variables described in the previous section or by looking for spikes
+or ``flat-lines'' in the data. If the GPS data are missing for a
+short time (a few seconds to a minute), accuracy is not affected.
+However, longer dropouts will result in accuracies degrading toward
+those of the IRU. Without the GPS or another ground reference, the
+IRS error cannot be determined empirically, and one should assume
+that it is within the manufacturer's specification (1 nautical mile
+of error per hour of flight, 90\% CEP). When the GPS is active, RAF
+estimates that the correction algorithm produces a position with an
+error less than 100 meters. Due to the nature of the algorithm, the
+error will increase fromabout 100 meters to the IRU specification
+in about one-half hour after GPS information is lost.\medskip{}
+
+\begin{hangparagraphs}
+\textbf{GPS-Corrected Inertial Ground Speed Vector, (m/s): }\textbf{\uline{VEWC}}\textbf{\sindex[var]{VEWC}\index{VEWC},
+}\textbf{\uline{VNSC}}\sindex[var]{VNSC}\index{VNSC}\\
+These variables result from combining GPS and IRU output of the east
+and north components of ground speed from a complementary-filter\index{filter, complementary (for wind)}
+algorithm. Positive values are toward the east and north, respectively.
+The smooth, high-resolution, continuous measurements from the inertial
+navigation system, \{VNS, VEW\}, which can slowly accumulate errors
+over time, are combined with the measurements from the GPS, \{GVNS,
+GVEW\}, which have good long-term stability, via an approach based
+on a complementary filter. A low-pass filter, $F_{L}(\{\mathrm{GVNS,GVEW\}})$\sindex[lis]{FL@$F_{L}$= digital low-pass filter},
+is applied to the GPS measurements of groundspeed, which are assumed
+to be valid for frequencies at or lower than the cutoff frequency
+$f_{c}$\sindex[lis]{fc@$f_{c}$= cutoff frequency fo the filter $F_{L}$}
+of the filter. Then the complementary high-pass filter, denoted ($1-F_{L}$)($\{\mathrm{VNS,VEW\}}$),
+is applied to the IRS measurements of groundspeed, which are assumed
+valid for frequencies at or higher than $f_{c}$. Ideally, the transition
+frequency would be selected where the GPS errors (increasing with
+frequency) are equal to the IRS errors (decreasing with frequency).
+The filter used is a three-pole Butterworth lowpass filter\index{filter!Butterworth},
+coded following the algorithm described in Bosic, S.~M., 1980: \emph{Digital
+and Kalman filtering : An Introduction to Discrete-Time Filtering
+and Optimum Linear Estimation, }p. 49. The digital filter used is
+recursive, not centered, to permit calculation during a single pass
+through the data. If the cutoff frequency lies where both the GPS
+and IRU measurements are almost the same, then the detailed characteristics
+of the filter (e.g., phase shift) in the transition region do not
+matter because the complementary filters have cancelling effects when
+applied to the same signal. The transition frequency $f_{c}$ was
+chosen to be (1/600) Hz. The Butterworth filter was chosen because
+it provides flat response away from the transition. The net result
+then is the sum of these two filtered signals, calculated as described
+in the following box:\\
+\framebox{\begin{minipage}[t]{0.95\textwidth}%
+VEW\index{VEW} = IRS-measured east component of the aircraft ground
+speed\\
+VNS\index{VNS} = IRS-measured north component of the aircraft ground
+speed\\
+GGVEW\index{GGVEW} = GPS-measured east component of the aircraft
+ground speed\\
+GGVNS\index{GGVNS} = GPS-measured north component of the aircraft
+ground speed\\
+$F_{L}()$ = three-pole Butterworth lowpass recursive digital filter\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+
+\[
+\{\mathrm{VNSC}\}=F_{L}(\mathrm{\{GGVNS\})}+(1-F_{L})(\{\mathrm{VNS\}})
+\]
+\[
+\{\mathrm{VEWC}\}=F_{L}(\mathrm{\{GGVEW\})}+(1-F_{L})(\{\mathrm{VEW\}})
+\]
+%
+\end{minipage}}\\
+\\
+This result is used as long as the GPS signals are continuous and
+flagged as being valid. When that is not the case, some means is needed
+to avoid sudden discontinuities in velocity (and hence windspeed),
+which would introduce spurious effects into variance spectra and other
+properties dependent on a continuously valid measurement of wind.
+To extrapolate measurements through periods when the GPS signals are
+lost (as sometimes occurs, for example, in turns) a fit is determined
+to the difference between the best-estimate variables \{VNSC,VEWC\}
+and the IRS variables \{VNS,VEW\} for the period before GPS reception
+was lost, and that fit is used to extrapolate through periods when
+GPS reception is not available. The procedure is as follows:\\
+\begin{minipage}[t]{1\columnwidth}%
+\begin{enumerate}
+\item If GPS reception has never been valid earlier in the flight, use the
+IRU values without correction. 
+\item If GPS reception is lost after a valid complementary-filter\index{complementary filter (for wind)}
+correction has been obtained earlier using the procedure described
+above, but no valid Schuler-oscillation\index{Schuler oscillation}
+fit has been accumulated as described in {[}3.{]} below, use the correction
+factors from the complementary filter reduced by a factor of 0.997
+each second, producing an exponential decay back toward the IRS values
+with decay time constant of about 5.6 min.
+\item When GPS\index{GPS} reception is good, update a least-squares fit
+to the difference between the GPS and IRU groundspeeds, for each component.
+The errors are assumed to result primarily from a Schuler oscillation\index{Schuler oscillation},
+so the three-term fit is of the form $\Delta=a_{1}+a_{2}\sin(\Omega_{Sch}t)+a_{3}\cos(\Omega_{Sch}t)$
+, where $\Omega_{Sch}$ is the angular frequency of the Schuler oscillation
+(taken to be $2\pi/(5067\, s))$ and $t$ is the time since the start
+of the flight. A separate fit is used for each component of the velocity
+and each component of the position (discussed below under LATC and
+LONC). The fit matrix\index{fit matrix, wind correction} used to
+determine these coefficients is updated each time step but the accumulated
+fit factors decay exponentially with a 30-min decay constant, so the
+terms used to determine the fit are exponentially weighted over the
+period of valid data with a time constant that decays exponentially
+into the past with a characteristic time of 30 min. This is long enough
+to determine a significant portion of the Schuler oscillation but
+short enough to emphasize recent measurements of the correction.
+\item When GPS data become invalid, if sufficient data (spanning 30 min)
+have been accumulated, invert the accumulated fit matrices to determine
+the coefficients $\{a_{1},a_{2},a_{3}\}$ and then use the formula
+for $\Delta$ in the preceding step to extrapolate the correction
+to the IRS measurements while the GPS measurements remain invalid.
+Doing so immediately would introduce a discontinuity in \{VNSC,VEWC\},
+however, so the correction $\Delta$ is introduced smoothly by adjusting
+\{VNSC,VEWC\} smoothly as follows: $\Delta^{\prime}$=$(1-\eta)$(VNSC$_{0}$-GVNS$_{0}$)$+\eta\Delta$
+where $\Delta^{\prime}$ is the sequentially adjusted correction,
+(VNSC$_{0}$-GVNS$_{0}$) is the difference preserved from the last
+time the GPS groundspeed was valid, and\sindex[lis]{eta@$\eta=$update constant for exponential updating}
+$\eta=0.997\, s^{-1}$ is chosen to give a decaying transition with
+a time constant of about 5.5 min. This has the potential to introduce
+some artificial variance at this scale and so should be considered
+in cases where variance spectra are analyzed in detail, but it has
+much less influence on such spectra than would introducing a discontinuous
+transition. Ideally, the current fit and the last filtered discrepancy
+(VNSC$_{0}$-GVNS$_{0}$) should be about equal, so this should not
+introduce a significant change.\end{enumerate}
+%
+\end{minipage}
+
+\medskip{}
+
+
+\textbf{GPS-Corrected Inertial Latitude and Longitude (}$\text{º}$\textbf{):
+}\textbf{\uline{LATC}}\textbf{\sindex[var]{LATC}\index{LATC},
+}\textbf{\uline{LONC}}\sindex[var]{LONC}\index{LONC}\\
+Combined GPS and IRS output of latitude and longitude. Positive values
+are north and east, respectively. These variables are the best estimate
+of position, obtained by the following approach:\\
+\framebox{\begin{minipage}[t]{0.95\textwidth}%
+LAT\index{LAT} = latitude measured by the IRS\\
+LON\index{LON} = longitude measured by the IRS\\
+GGLAT\index{GGLAT} = latitude measured by the GPS\\
+GGLON\index{GGLON} = longitude measured by the GPS\\
+VNSC\index{VNSC} = aircraft ground speed, north component, corrected
+\\
+VEWC\index{VEWC} = aircraft ground speed, east component, corrected\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+\begin{enumerate}
+\item Initialize the corrected position at the IRS position at the start
+of the flight or after any large change (>5$\text{º}$) in the IRS
+position.
+\item Integrate forward from that position using the aircraft groundspeed
+with components \{VNSC,VEWC\}. Note that in the absence of GPS information
+this will introduce long-term errors because it does not account for
+the Earth's spherical geometry. It provides good short-term accuracy,
+but the GPS updating in the next step is needed to compensate for
+the difference between a rectilinear frame and the Earth's spherical
+coordinate frame and provides a smooth yet accurate track.
+\item Use an exponential adjustment to the GPS position, with time constant
+that is typically about 100 s.%
+\footnote{specifically, LATC += $\eta$(GLAT-LATC) with $\eta=2\pi/(600\,\mathrm{s})$%
+}
+\item To handle periods when the GPS becomes invalid, use an approach analogous
+to that for groundspeed, whereby a Schuler-oscillation fit to the
+difference between the GPS and IRS measurements is developed and used
+to extrapolate through periods when the GPS is invalid. \end{enumerate}
+%
+\end{minipage}}\end{hangparagraphs}
+

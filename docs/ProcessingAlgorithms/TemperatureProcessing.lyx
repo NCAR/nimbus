@@ -1,0 +1,3785 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Aircraft Algorithm Memo re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\RAFAlgorithmMemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Research Aviation Facility}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Algorithm Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.2truein\leftline{\textcolor{blue}{\textsf{Subject: \the\topicofnote}}}
+\leftline{\textcolor{blue}{\textsf{Al Cooper}}}
+\leftline{\textcolor{blue}{\textsf{\datetoday}}} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding default
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={Temperature Measurements}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+RAFAlgorithmMemo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Background
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+usually, definition of the variable, uses, history, math expressions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+On RAF aircraft, the primary temperature measurements are produced by platinum-r
+esistance thermometers carried in housings just outside the skin of the
+ aircraft.
+ The housing protects the sensing elements from damage by hydrometeors and
+ other objects while channeling outside air past the sensing wires.
+ The measured variables have names like TTx where x describes the measurement
+ with characteristics like HR1 for the heated sensor #1 mounted on the right
+ side of the fuselage.
+ These measurements undergo considerable processing in order to produce
+ variables characterizing the actual air temperature, with names like ATx
+ where x has a similar meaning and will be the same as used for TTx for
+ a given sensor.
+ That processing takes into account that the air temperature as sensed has
+ been heated from the temperature in the ambient atmosphere and so a correction
+ to the measured temperature must be made to obtain a measurement of the
+ ambient temperature.
+\end_layout
+
+\begin_layout Section*
+The Present Processing Chain:
+\end_layout
+
+\begin_layout Standard
+The processing chain from sensor to archived variable includes the following
+ steps:
+\end_layout
+
+\begin_layout Enumerate
+Determine the resistance-temperature relationship for the sensor.
+ This has historically been done by immersing the sensor in a stirred bath
+ along with a high-quality stem PRT, setting the bath at a series of different
+ temperatures (as indicated by the PRT), and at each temperature measuring
+ the resistance of the sensor.
+ The result is a calibration that consists of a set of corresponding measurement
+s of temperature and resistance, {
+\begin_inset Formula $T_{i},$
+\end_inset
+
+ 
+\begin_inset Formula $R_{i}$
+\end_inset
+
+}.
+\end_layout
+
+\begin_layout Enumerate
+Calibrate the onboard data-acquisition system.
+ That system consists of a special circuit to pass a known current through
+ the sensor and to pre-amplify the resulting voltage.
+ That voltage is then digitized by an A-D board and recorded.
+ For this calibration, to substitute for the need to subject the sensors
+ to various temperatures, the sensor is removed and a resistance box is
+ placed at its place in the circuit.
+ Calibration consists of setting the resistances from step 1 {
+\begin_inset Formula $R_{i}$
+\end_inset
+
+} into the resistance box and recording the corresponding voltages that
+ are provided by the data system.
+ This calibrates the entire data-acquisition chain including exciter-preamp
+ and A-D conversion.
+ The result is a set of corresponding measurements of resistance and voltage
+ {
+\begin_inset Formula $R_{i}$
+\end_inset
+
+, 
+\begin_inset Formula $V_{i}$
+\end_inset
+
+} or, using the correspondence from step 1, a set of correspondong measurements
+ of temperature and voltage {
+\begin_inset Formula $T_{i}$
+\end_inset
+
+, 
+\begin_inset Formula $V_{i}$
+\end_inset
+
+}.
+\end_layout
+
+\begin_layout Enumerate
+A quadratic fit to these measurements, in the form 
+\begin_inset Formula $T=c_{0}+c_{1}V+c_{2}V^{2}$
+\end_inset
+
+, then is the calibration used to deduce temperature from recorded voltage
+ for measurements acquired in flight.
+ These fits are often of marginal quality, with standard errors of >0.1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C and clear evidence in the residuals of a need for higher-order terms in
+ the polynomial.
+ However, this magnitude of error has been deemed acceptable because other
+ sources of error make larger contributions to the net uncertainty.
+ The temperature 
+\begin_inset Formula $T$
+\end_inset
+
+ determined as above is a measurement of TTx, the total temperature sensed
+ by the sensor.
+ The resulting temperatures are the values archived in final data sets and
+ used for subsequent calculation of the ambient temperature.
+ 
+\end_layout
+
+\begin_layout Section*
+Reasons For Proposing Changes
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+summarize why present code should be changed: weaknesses, errors, improvements,
+ accuracy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There are some weaknesses in the historical approach, especially as applied
+ to the GV:
+\end_layout
+
+\begin_layout Subsection*
+1.
+ Weaknesses in the bath calibrations:
+\end_layout
+
+\begin_layout Standard
+The bath cals have come into question as we compared results from the RAF
+ cals to those obtained by ISF, NIST, and DLR.
+ The HARCO and Goodrich (formerly Rosemount) heated sensors are high-quality
+ platinum resistance thermometers (PRTs) that should seldom need recalibration
+ and that should conform to known properties of PRTs even without calibration,
+ unless the probe is damaged or stressed, in which case the element should
+ be discarded rather than recalibrated.
+\end_layout
+
+\begin_layout Standard
+HARCO and Goodrich state that their probe conforms to MIL-P-27723E.
+ 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+see http://mil-spec.tpub.com/MIL-P/MIL-P-27723E/MIL-P-27723E00006.htm
+\end_layout
+
+\end_inset
+
+ The specification states that the temperature-resistance relationship shall
+ be as given by the following equation, called the Callendar - Van Dusen
+ equation,
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Van Dusen, M.
+ S., 1925: 
+\emph on
+J.
+ Am.
+ Chem.
+ Soc., 
+\series bold
+\emph default
+47, 
+\series default
+326-332
+\end_layout
+
+\end_inset
+
+ 
+\emph on
+with the following coefficients: 
+\begin_inset Formula $\alpha=0.003925$
+\end_inset
+
+, 
+\begin_inset Formula $\delta=1.45,$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta=0.1$
+\end_inset
+
+ for T<0 but 0 otherwise:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{R_{T}}{R_{0}}=1+\alpha\left[T-\delta\left(\frac{T}{100}-1\right)\left(\frac{T}{100}\right)-\beta\left(\frac{T}{100}-1\right)\left(\frac{T}{100}\right)^{3}\right]\label{eq:CVDeq}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The tolerance allowed by the MIL spec is 
+\begin_inset Formula $\Delta T=\pm(0.25+0.005\left|T\right|)$
+\end_inset
+
+; i.e., 0.25
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C at 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C increasing to 0.5 at -50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ This specification applies to the normal flight environment, not just to
+ lab tests.
+ Thus even without calibration the sensor should satisfy (1) to this level
+ of accuracy.
+ Once calibrated, the sensor should be capable of lower uncertainty than
+ this, and unstressed platinum has very stable resistance, so one could
+ argue that calibrations should only be used when it is expected that their
+ accuracy exceeds the tolerance of the MIL SPEC.
+\end_layout
+
+\begin_layout Standard
+As an example of a calibration that shows all indications of providing the
+ highest quality, consider the calibration of sensor S/N 630393 by ISF in
+ 2012 in the ISF stirred bath, with calibration points shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ISFcal2012FullFit"
+
+\end_inset
+
+.
+ For the fit shown in this figure, all the parameters in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:CVDeq"
+
+\end_inset
+
+) were allowed to vary (with the restriction that 
+\begin_inset Formula $\beta=0$
+\end_inset
+
+ for T>0).
+ The fit is exceptionally good, matching the measured points to a degree
+ that appears higher than reasonable expected accuracy of the temperature
+ measurement.
+ This is strong support both for the validity of the calibration and for
+ the representativeness of the Callendar-Van Dusen equation.
+ There are much more accurate interpolation formulas in use for precise
+ work, including 9th-order and 12-th order polynomials, but the high accuracy
+ achieved with (1) argues that for our work the added complexity is unnecessary.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+This conclusion may need further consideration because the comparison is
+ between two PRTs that can have the same inaccuracies while agreeing with
+ each other to high precision.
+ It will be worth revisiting the ITS-90 temperature scale and associated
+ interpolation formulas at some point, but all indications and some specific
+ guidelines from NIST suggest that within 0.1C there won't be any important
+ differences.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename ../../../Spyder/TCal/Fig2a.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ISFcal2012FullFit"
+
+\end_inset
+
+ISF calibration of sensor 630393, 2012.
+ The blue line is the fit for which all four parameters in the Callendar-Van
+ Dusen equation were allowed to vary.
+ The red dots show the deviations multiplied by 1000; even with this amplificati
+on factor, the residuals from the fit are negligible, as is consistent with
+ the very small standard error for the fit (0.0004
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename ../../../Spyder/TCal/Fig2b.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ISFcal2012twoparfit"
+
+\end_inset
+
+ISF calibration as shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ISFcal2012FullFit"
+
+\end_inset
+
+ but with a fit in which the parameters 
+\begin_inset Formula $\delta$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta$
+\end_inset
+
+ in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:CVDeq"
+
+\end_inset
+
+) were restricted to the nominal values of 
+\begin_inset Formula $\delta=1.45$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta=0.1$
+\end_inset
+
+for T<0 and 0 otherwise.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+The second figure shows the result for a fit in which the parameters 
+\begin_inset Formula $\delta$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta$
+\end_inset
+
+ in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:CVDeq"
+
+\end_inset
+
+) were fixed at the nominal values and only 
+\begin_inset Formula $R_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ were allowed to vary.
+ The standard error remains very small, about 0.001
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, so the results are quite insensitive to these small changes in the values
+ of the parameters 
+\begin_inset Formula $\delta$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta$
+\end_inset
+
+.
+ Even if the nominal value of 
+\begin_inset Formula $\alpha,$
+\end_inset
+
+ 0.003925, is used, the resulting fit to 
+\begin_inset Formula $R_{0}$
+\end_inset
+
+ alone gives a maximum error of only about 0.03
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ Thus this calibration is quite consistent with expected values for a high-quali
+ty PRT, and the results can be represented quite well either with the unadjusted
+ Callendar-Van Dusen equation using nominal coefficients or with a fit that
+ slightly improves the representation of the measurements by adjusting the
+ coefficient of thermal resistivity.
+ 
+\end_layout
+
+\begin_layout Standard
+This result suggests a way to characterize the various bath calibrations
+ that have been performed in terms of just one parameter, the value of 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ obtained from a fit of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:CVDeq"
+
+\end_inset
+
+) to the measurements with 
+\begin_inset Formula $R_{0}$
+\end_inset
+
+ adjusted to match the particular sensor and 
+\begin_inset Formula $\delta$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta$
+\end_inset
+
+ held at their nominal values.
+ Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Coefficients-of-thermal"
+
+\end_inset
+
+ shows a summary of the coefficients of thermal resistivity obtained from
+ such fits to many of the recent bath calibrations.
+\end_layout
+
+\begin_layout Standard
+The consistency among the ISF 2012, ISF TORERO, and DLR 2011-6 calibrations,
+ and also their consistency with the expected nominal values, strongly suggests
+ that these are reliable calibrations.
+ Conversely, the low values of the RAF calibrations suggests that these
+ are not reliable.
+ A likely explanation is that heat losses through the supporting structure
+ during calibration and inadequate stirring reaching the sensing element
+ is responsible, because the coefficient of thermal resistivity would then
+ be too low as the sensor is actually exposed to a warmer temperature (for
+ the low-T points) than measured by the calibrating PRT immersed alongside
+ the sensor in the bath.
+ It is not clear why the ISF-2011 or NIST-2011 calibrations are not consistent
+ with the top group, but at least in the NIST case there is some suspicion
+ that the immersion of the probes was not adequate.
+ The test set-up they used is designed for stem PRTs, not our sensor configurati
+on.
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Coefficients-of-thermal"
+
+\end_inset
+
+Coefficients of thermal resistivity (multiplied by 1000) for some of the
+ bath calibrations.
+ HARCO
+\emph default
+ 
+\emph on
+S/N 630393 unless otherwise specified.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="26" columns="2">
+<features islongtable="true" longtabularalignment="center">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Bath Calibration
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\begin_inset Formula $\alpha$
+\end_inset
+
+
+\begin_inset Formula $\times$
+\end_inset
+
+1000
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+nominal 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.925
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ISF 2012
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.914
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+DLR 2011-6 S/N 708904 #1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.916
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+ #2 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.916
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ISF TORERO 708094 #1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.917
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+ #2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.912
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ISF TORERO 708094 #1 post-cal
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.918
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+ #2 post-cal
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.913
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ISF Rosemount 2884 TORERO pre-cal
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.919
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+ post-cal
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.920
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+NIST S/N 708904 2011-11
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.813
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ISF 2011
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.754
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ISF 2011-3 Rosemount Heated #1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.615
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+ #2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.635
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+DLR Rosemount E102AL S/N 2603 (unheated)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.744
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+ S/N 2943
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.748
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+ S/N 2980
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.741
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+ S/N 3109
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.745
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+ S/N 3241
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.774
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RAF Low-T bath 2011-3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.665
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RAF Low-T bath 2010-6
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+used for PREDICT
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.683
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RAF Low-T bath 2010-6 RSMT heated #1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.615
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+ #2 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.635
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RAF old bath 2010-6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.715
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RAF old bath 2009-03
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.708
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+2.
+ Temperature-dependence performance of the Analog-to-Digital conversion
+ boards
+\end_layout
+
+\begin_layout Standard
+It was learned in 2010 that the A-D boards used for digitizing signals have
+ a significant temperature dependence, and this is particularly important
+ for boards like those sampling the temperature probes because they are
+ located where they encounter significant temperature changes.
+ This is difficult to remove for early projects because each board has its
+ own calibration and there is enough board-to-board variability to be significan
+t.
+ However, it appears that the variation with temperature is universal among
+ boards, so if it can be determines which boards were used for sampling
+ in each project these corrections can be made.
+\end_layout
+
+\begin_layout Subsection*
+3.
+ Record-keeping for calibrations
+\end_layout
+
+\begin_layout Standard
+A recent system has been built to enable routine recording and archiving
+ of calibrations.
+ This is an opportunity to incorporate old calibrations, often recorded
+ in technician log books, into a central repository and to try to recover
+ as much old data into that archive as possible.
+\end_layout
+
+\begin_layout Subsection*
+4.
+ Extreme GV flight conditions
+\end_layout
+
+\begin_layout Standard
+Procedures appropriate for the C-130 may not be for the GV because of its
+ high flight speed (creating 20-25
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C of dynamic heating) and the low temperature in the upper parts of the
+ troposphere or the lower stratosphere where the GV can fly.
+ Calibration procedures appropriate for 
+\begin_inset Formula $\pm20^{\circ}$
+\end_inset
+
+C can fail when the total temperature is -50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, as is common during GV flight.
+ More attention to calibration and recovery factors is needed, and there
+ is evidence that the recovery factor will change with Mach number within
+ the flight envelope of the GV.
+\end_layout
+
+\begin_layout Subsection*
+5.
+ Recovery-factor dependence on Mach number
+\end_layout
+
+\begin_layout Standard
+At Mach numbers typical of GV flight, studies documented in Goodrich Technical
+ Report 5755 indicate that, for the heated probe, the recovery factor can
+ be dependent on Mach number.
+ The recovery factor is defined from
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\alpha_{R}=\frac{T_{r}-T_{0}}{T_{t}-T_{0}}\label{eq:1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $T_{r}$
+\end_inset
+
+ is the recovery temperature (i.e., the measurement, apart from errors that
+ might arise from self-heating and similar causes of deviation from the
+ accurate value), 
+\begin_inset Formula $T_{t}$
+\end_inset
+
+ is the total temperature (if the air were slowed to rest), and 
+\begin_inset Formula $T_{0}$
+\end_inset
+
+ is the true ambient temperature.
+ From this definition,
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+T_{r}=T_{0}(1+\alpha_{R}\frac{(\gamma-1)}{2}M^{2})\label{eq:2}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ is the ratio of specific heats for air (1.4 for dry air, only slightly lower
+ for moist air) and 
+\begin_inset Formula $M$
+\end_inset
+
+ is the Mach number.
+ If 
+\begin_inset Formula $\alpha_{R}$
+\end_inset
+
+ is constant, it is straightforward to fit to speed runs, but if it depends
+ on Mach number then the approach is more complicated.
+ There is evidence that it does, especially near Mach 1, where separation
+ changes the flow through the housing.
+\end_layout
+
+\begin_layout Standard
+This is sometimes handled through definition of a 
+\begin_inset Quotes eld
+\end_inset
+
+recovery correction,
+\begin_inset Quotes erd
+\end_inset
+
+ defined as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\eta(M)=\frac{T_{t}-T_{r}}{T_{t}}\label{eq:RecCorr}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then the recovery temperature is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+T_{r}=T_{0}\left[1+\left(\frac{\gamma-1}{2}\right)M^{2}(1-\eta)-\eta\right]\label{eq:TrFromRecCorr}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which also could be used to fit to speed runs to find 
+\begin_inset Formula $\eta$
+\end_inset
+
+, although the fit is more complicated than the usual approach to determine
+ the recovery factor.
+ An advantage of this form is that the recovery correction is available,
+ for some sensors, from wind-tunnel tests, e.g., for the Rosemount 101 non-deiced
+ and the Rosemount 102 deiced sensor.
+ Two plots that show such calibration, taken from the Goodrich descriptions
+ (Technical Report 5755, 2003), are shown below:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset CommandInset label
+LatexCommand label
+name "Fig:101"
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/cooperw/Research/Instrumentation/BathCals/MachDep101.pdf
+	width 6.5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset CommandInset label
+LatexCommand label
+name "Fig: 102"
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/cooperw/Research/Instrumentation/BathCals/MachDep102.pdf
+	width 6.5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These generally show quadratic behavior at low Mach number but level out
+ to a constant correction at high Mach number.
+ The HARCO probe differs slightly in geometry from the Rosemount probe,
+ so use of this information for the HARCO probes may introduce an error,
+ but similar information is not available for the HARCO geometry.
+ It may be that the best approach is to use the Goodrich/Rosemount information
+ as guidance to the functional form expected but fit to flight data to determine
+ or check the details.
+\end_layout
+
+\begin_layout Standard
+The following equations provide conversion between the recovery factor 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ and the recovery correction 
+\begin_inset Formula $\eta$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\alpha_{R}=1-\eta\left(1+\frac{2}{(\gamma-1)M^{2}}\right)\label{eq:RFfromRC}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\eta=\frac{(1-\alpha_{R})\frac{\gamma-1}{2}M^{2}}{1+\frac{\gamma-1}{2}M^{2}}\,\,.\label{eq:RCfromRF}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Normally 
+\begin_inset Formula $\alpha_{R}$
+\end_inset
+
+ is near unity and 
+\begin_inset Formula $\eta$
+\end_inset
+
+ is small (<1%).
+\end_layout
+
+\begin_layout Standard
+Alternate approaches using this information include:
+\end_layout
+
+\begin_layout Enumerate
+Apply the recovery-correction (
+\begin_inset Formula $\eta(M)$
+\end_inset
+
+) data from the wind-tunnel tests, using checks vs our speed-run data;
+\end_layout
+
+\begin_layout Enumerate
+Fit the recovery factor 
+\begin_inset Formula $\alpha_{R}$
+\end_inset
+
+ to a functional form like 
+\begin_inset Formula $\alpha_{R}=\alpha_{0}+\alpha_{1}M+\ldots$
+\end_inset
+
+ and check that this form matches the wind-tunnel data adequately.
+ This has the advantage of simplicity in the low-Mach-number range, where
+ a constant recovery factor is expected to provide a good representation
+ of the needed correction.
+ However, this form will not extrapolate well through the range spanning
+ 
+\begin_inset Formula $M\approx1$
+\end_inset
+
+, so a different functional form may work better.
+\end_layout
+
+\begin_layout Enumerate
+Fit instead to a functional form expected to give the observed leveling
+ of 
+\begin_inset Formula $\eta$
+\end_inset
+
+ above 
+\begin_inset Formula $M=1$
+\end_inset
+
+, for example by using inverse powers of 
+\begin_inset Formula $M$
+\end_inset
+
+ or more complicated functions.
+\end_layout
+
+\begin_layout Standard
+To help determine which approach to take, first consider fits to the available
+ data (Figs.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Fig:101"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Fig: 102"
+
+\end_inset
+
+), either as presented (
+\begin_inset Formula $\eta(M)$
+\end_inset
+
+) or converted to 
+\begin_inset Formula $\alpha_{R}(M)$
+\end_inset
+
+.
+ For this purpose, the data from these plots were used to determine tabular
+ relationships, and from those the recovery factor was determined as a function
+ of Mach number, as shown in figures 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:101RF"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:102RF"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename ../FigRF101.pdf
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:101RF"
+
+\end_inset
+
+Recovery factor for the Rosemount 101 (unheated) sensor
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename ../FigRF102a.pdf
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:102RF"
+
+\end_inset
+
+Recovery factor for the Rosemount 102a (heated) sensor.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These figures suggest that the unheated probe has, within the accuracy of
+ this determination, a recovery factor that can be taken as constant with
+ Mach number, with the approximate value of 0.97 throughout the normal GV
+ flight range.
+ However, the heated probe (102, configuration a) shows a substantial dependence
+ of recovery factor on Mach number, such that neglect of this dependence
+ would introduce an error.
+ As shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:logMfit102"
+
+\end_inset
+
+, the dependence is represented well by the following equation, where 
+\begin_inset Formula $M$
+\end_inset
+
+ is the Mach number:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\alpha_{R}=0.988+0.053\log_{10}M+0.090(\log_{10}M)^{2}+0.091(\log_{10}M)^{3}\label{eq:RFheatedProbesFnM}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Research/Instrumentation/BathCals/RecoveryFactorVsM.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:logMfit102"
+
+\end_inset
+
+Fit to recovery factor for the Rosemount 102a (heated) sensor.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Magnitude of Errors: PREDICT as an Example
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Spyder/TCal/Fig7.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:RAFcalColdT2010-6PREDICT"
+
+\end_inset
+
+RAF calibration of 2010-6 in the low-T RAF bath, as used for PREDICT (red
+ dots), in comparison to the ISF-2012 calibration (blue dots).
+ The blue line represents 10 times the error that results if the ISF-2012
+ calibration is correct and the RAF calibration is used instead; e.g., a typical
+ error at -50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C is about 3
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ The sign is such that the temperature produced by the RAF calibration would
+ be too low by the indicated amount.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+In table 1, the bath calibration that was the basis for the PREDICT on-board
+ calibrations is marked by a footnote.
+ The error introduced by this calibration, if it is assumed that the 2012
+ ISF calibration is correct, is shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:RAFcalColdT2010-6PREDICT"
+
+\end_inset
+
+.
+ The errors are substantial at low T, amounting to about 3
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C at typical low GV total temperature around -50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ The errors at higher temperature are dependent on how the fit is propagated
+ through the system via the onboard calibration because there are no measurement
+s above 10
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C in the RAF calibration so the onboard fit will have to be extrapolated
+ to higher temperature, with associated extrapolation errors likely because
+ the assumed coefficient of thermal resistivity is too low.
+\end_layout
+
+\begin_layout Section*
+Further Analysis: Connection to Pressure Corrections and LAMS Temperature
+ Measurement
+\end_layout
+
+\begin_layout Standard
+The measured temperature enters the calculation of pressure corrections
+ because the connection between the airspeed and the Mach Number involves
+ the temperature.
+ The Mach number 
+\begin_inset Formula $M$
+\end_inset
+
+ can be measured with reference only to the pressure measurements, but the
+ airspeed can be obtained from 
+\begin_inset Formula $M$
+\end_inset
+
+ only through use of the speed of sound, which depends on temperature:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+v=M\sqrt{\gamma R_{a}T}\label{eq:vEq}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following form for 
+\begin_inset Formula $M$
+\end_inset
+
+ makes it clear that, if temperature is known and 
+\begin_inset Formula $P_{t}$
+\end_inset
+
+ is measured accurately, it is possible to determine the pressure:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+M=\left\{ \left(\frac{2c_{v}}{R_{a}}\right)\left[\left(\frac{p_{t}}{\mathrm{p}}\right)^{R_{a}/c_{p}}-1\right]\right\} ^{1/2}\label{eq:MachNo}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Alternately, if pressure corrections are determined so that they can be
+ calculated from properties like 
+\begin_inset Formula $M$
+\end_inset
+
+, it is possible to use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:vEq"
+
+\end_inset
+
+) to determine 
+\begin_inset Formula $T$
+\end_inset
+
+ from 
+\begin_inset Formula $v$
+\end_inset
+
+.
+ This must be done in a consistent way, however, because accurate temperature
+ is needed to determine the pressure correction function.
+\end_layout
+
+\begin_layout Standard
+An approach followed to obtain consistent results was as follows:
+\end_layout
+
+\begin_layout Enumerate
+Determine pressure corrections from an old trailing-cone flight.
+\end_layout
+
+\begin_layout Enumerate
+Use those pressure corrections to find appropriate Mach numbers to use for
+ the Mach-dependent recovery factors.
+\end_layout
+
+\begin_layout Enumerate
+Apply them to find ambient temperature as in this note.
+\end_layout
+
+\begin_layout Enumerate
+Using those temperatures, find the pressure corrections required by the
+ LAMS measurements to match measurements of airspeed.
+\end_layout
+
+\begin_layout Enumerate
+Find parameterized forms of those pressure corrections.
+ (The functional form was third order in 
+\begin_inset Formula $M$
+\end_inset
+
+ with additional terms dependent on (ADIFR/QCR), (ADIFR/QCR)
+\begin_inset Formula $^{4}$
+\end_inset
+
+, and (ADIFR/QCR)
+\begin_inset Formula $M^{4}$
+\end_inset
+
+.) 
+\end_layout
+
+\begin_layout Enumerate
+Use those pressure corrections with (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:vEq"
+
+\end_inset
+
+) to find the temperature.
+ That temperature is called ATL in the following figure, and the mean difference
+ between the temperature so measured and ATHR1C is -0.06
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Research/Instrumentation/BathCals/ATL.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+The temperature determined from LAMS (ATL) iwithout reference to any temperature
+ sensor but only using the LAMS airspeed and the ambient and total pressure
+ measurements, in comparison to the corrected temperature from the HARCO
+ heated sensor #1 (ATHR1C) as corrected following the procedures in this
+ note.
+ The mean difference is -0.08
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C and the standard deviation is 0.85
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Recommendations
+\end_layout
+
+\begin_layout Subsection*
+Bath and on-board calibrations
+\end_layout
+
+\begin_layout Enumerate
+The evidence seems clear that the calibrations in RAF baths are not adequate
+ and probably cannot be improved to the degree needed.
+ We should cease doing these calibrations and, when calibration is necessary,
+ we should rely on the ISF calibration facility.
+ NIST also does not appear to be a reliable option.
+ However, the calibrations are expected to be stable so calibrations should
+ be repeated only as occasional checks or in cases where there is suspicion
+ that the probe has been damaged.
+\end_layout
+
+\begin_layout Enumerate
+Onboard calibrations are valuable checks and should be continued.
+ However, resistance values taken from reference calibrations fitted to
+ the Callendar - Van Dusen equation should be used.
+ For example, Table 2 lists corresponding values based on a fit to the ISF
+ 2012 calibration.
+ The values in this table are the resistance values that result from (1)
+ at the specific temperatures listed and with 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ as determined by ISF 2012, so these resistance values can be set into the
+ calibrating resistance box attached to the sensor location on the aircraft
+ and the corresponding voltages read by the data system to provide the desired
+ onboard calibration.
+ This appears to be applicable to heated HARCO and heated Rosemount temperature
+ probes but not to the unheated Rosemount probe, which DLR found to have
+ a value of 
+\begin_inset Formula $\alpha\approx0.0037$
+\end_inset
+
+ (see Table 1) but exhibiting enough probe-to-probe variability to be worth
+ including the probe-specific calibration.
+\end_layout
+
+\begin_layout Quote
+
+\emph on
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Quote
+
+\emph on
+Table 2: Corresponding values of temperature and resistance determined from
+ Eq.
+\begin_inset space ~
+\end_inset
+
+(1) using the fit parameters determined from the 2012 ISF calibration.
+ These would be appropriate values to use during on-board calibration.
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="13" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Temperature, 
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Resistance, 
+\begin_inset Formula $\Omega$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-70
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+35.968
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-60
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+37.991
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+40.008
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-40
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+42.020
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+44.025
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+46.025
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+48.020
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+50.008
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+51.991
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+53.968
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+55.939
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+40
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+57.905
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Recovery factor
+\end_layout
+
+\begin_layout Standard
+For unheated Rosemount probes, use a constant recovery factor of 0.97.
+ For heated Rosemount or HARCO probes, use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:RFheatedProbesFnM"
+
+\end_inset
+
+).
+ Check these using speed-run data.
+\end_layout
+
+\begin_layout Subsection*
+Reprocessing
+\end_layout
+
+\begin_layout Standard
+Reprocessing archived datasets, or evaluation to determine if reprocessing
+ is necessary, requires a different approach.
+ The easiest is to tabulate the resistances used for the project onboard
+ calibration, use (1) to determine the correct temperatures that should
+ have been used with those resistances, and repeat the quadratic fit to
+ the resulting values.
+ For example, for PREDICT the RAF low-T bath cal of 2010-6 was used to determine
+ the resistances used for the onboard calibration, and the temperatures
+ and resistances as determined in that calibration are as listed in the
+ first two columns of Table 3.
+ However, from (1) with the coefficients as determined from the ISF 2012
+ calibration, the actual temperatures for those resistances are as listed
+ in the 3rd column labeled 
+\begin_inset Quotes eld
+\end_inset
+
+corrected temperature
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The voltages measured during the onboard calibration before the project
+ are listed in the fourth column; for these voltages and the temperatures
+ in the first column, the quadratic calibration coefficients were (-89.225,
+ 25.933, -0.07941).
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Strangely, the archived files list (-89.2, 25.923, -0.07941) which differs
+ from both the pre-project calibration and the post-project calibration,
+ which was (-89.235, 25.925, -0.08888).
+ I haven't yet learned the source of the calibration used for production
+ processing.
+\end_layout
+
+\end_inset
+
+ However, when a quadratic fit is performed instead to the corrected temperature
+ vs voltages, the result is (-82.44, 22.71, 0.297) with a standard error of
+ 0.024
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ This standard error is much smaller than that of the original calibration,
+ which was 0.12
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ This is an indication of a problem with the functional form of the fit
+ in the original calibration, for which a much higher order polynomial would
+ have been needed; even cubic still gave a standard error larger than that
+ from the new calibration.
+ This new quadratic calibration is then the one that should be used for
+ PREDICT re-processing, if it is accepted that the ISF-2012 values should
+ be used.
+ Alternately, of course, the archived temperature values can be used with
+ the calibration used in processing to determine the original voltages,
+ from which the corrected temperature can be obtained using the new calibration.
+\end_layout
+
+\begin_layout Quote
+
+\emph on
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Quote
+
+\emph on
+Table 3: The RAF bath calibration of 2010-6 in the low-T bath, as used for
+ PREDICT pre-project and post-project calibrations, with the pre-project
+ voltages and the corrected temperatures determined from the resistances
+ under the assumption that the ISF-2012 calibration is correct.
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="18" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+bath temperature as set
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+measured resistance
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+corrected temperature
+\begin_inset Foot
+status open
+
+\begin_layout Quote
+The calculation of the corrected temperatures in Table 3 is not immediately
+ straightforward because (1) provides resistance as a function of temperature
+ while the inverse is needed to determine temperature from resistance.
+ Numerical methods can be used for this, but rewriting (1) in the following
+ form provides a good basis for iteration:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+T=\left(\frac{R_{T}}{R_{0}}-1\right)\frac{1}{\alpha\left(1+(\delta/1.e2)\right)}+\frac{1}{(1+\delta/1.e2)}\left\{ \frac{\delta}{1.e4}T^{2}-\frac{\beta}{1.e6}T^{3}+\frac{\beta}{1.e8}T^{4}\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+Using the first term on the right side as an initial estimate and then iterating
+ quickly converged, to machine double-precision in six iterations, so this
+ is a practical equation to use iteratively for calculating temperature
+ from resistance.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+voltages
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+51.983
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9.961
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.8709
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+51.010
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+50.024
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.080
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.4764
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+49.033
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+48.086
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-9.667
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.0807
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+47.174
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+46.229
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-18.981
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.6988
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+45.294
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+44.331
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-28.473
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.3061
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-35
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+43.395
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-40
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+42.404
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-38.082
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9042
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-45
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+41.453
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+40.532
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-47.389
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.5124
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-55
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+39.618
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-60
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+38.725
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-56.344
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.130
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-65
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+37.815
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-70
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+36.919
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-65.267
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.74733
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip0.5truein 
+\backslash
+centerline{
+\backslash
+textcolor{blue}{---- END ----}}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this is just a closing line to note end of the memo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+uncomment to include a list of attachments according to the model in the
+ TeX example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional list of people to include in cc list (beyond algorithm committee,
+ who always should get these)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

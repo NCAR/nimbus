@@ -1,21 +1,32 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass article
 \use_default_options true
+\begin_modules
+hanging
+\end_modules
+\maintain_unincluded_children false
 \language english
+\language_package default
 \inputencoding auto
+\fontencoding global
 \font_roman default
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -23,21 +34,31 @@
 \use_geometry false
 \use_amsmath 1
 \use_esint 1
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
-\defskip medskip
+\paragraph_indentation default
 \quotes_language english
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
-\author "" 
-\author "" 
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
 \end_header
 
 \begin_body
@@ -55,7 +76,7 @@ CO
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -89,7 +110,7 @@ This instrument measures the concentration of CO by gas filter correlation.
  of the zero level of the meaasurement.
  
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Quotes eld
@@ -117,6 +138,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -132,7 +154,7 @@ CMODE
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -152,7 +174,7 @@ Carbon Monoxide Baseline Zero Signal (V):
 COZRO
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -170,7 +192,7 @@ COZRO
 Raw Carbon Monoxide, Baseline Corrected (V): 
 \bar under
 COCOR
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -220,7 +242,7 @@ zero
 Corrected Carbon Monoxide Concentration (ppmv): COCAL
 \series default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -244,14 +266,7 @@ COCAL is the calibrated signal after correction for drift of the baseline
  up to 50 ppbv.
  The magnitude of the offset at the zero values gives a good measure of
  uncertainty in the data set.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-The detection limit is 10 ppbv, with an uncertainty of 
+ The detection limit is 10 ppbv, with an uncertainty of 
 \begin_inset Formula $\pm15\%$
 \end_inset
 
@@ -280,7 +295,7 @@ TEO3
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -305,6 +320,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -319,7 +335,7 @@ Internal TECO Ozone Sampling Pressure (mb):
 TEP
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -336,7 +352,7 @@ TEO3P
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -358,7 +374,7 @@ Internal TECO Ozone Sampling Temperature (
 ): 
 \bar under
 TET
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -375,10 +391,59 @@ TET
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Hanging
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
 TEP (or TEO3P) is the pressure inside the detection cell of the TECO 49
  UV ozone analyzer, and TET is the cell temperature.
  These are used to convert the measurements from the instrument to units
  of ppbv.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+fix indentation for this paragraph
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -390,7 +455,7 @@ TEO3C
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -438,6 +503,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -452,7 +518,7 @@ NO Raw Counts (counts per sample interval):
 XNO
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -470,7 +536,7 @@ XNO
 NOy Raw Counts (counts per sample interval): 
 \bar under
 XNOY
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -493,7 +559,7 @@ NO Calibration Flow (slpm):
 XNOCF
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -513,7 +579,7 @@ NOy Calibration Flow (slpm):
 XNCLF
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -533,7 +599,7 @@ NO, NOy Measurement Status (dimensionless):
 XNST
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -553,7 +619,7 @@ NO Zero Air Flow (slpm):
 XNOZA
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -573,7 +639,7 @@ NOy Zero Air Flow (slpm):
 XNZAF
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -593,7 +659,7 @@ NO Sample Flow (slpm):
 XNOSF
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -613,7 +679,7 @@ NOy Sample Flow (slpm):
 XNSAF
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -633,7 +699,7 @@ NOy Reaction Chamber Pressure (mb):
 XNOYP
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -649,13 +715,13 @@ XNOYP
 \end_inset
 
 Gold NOy Converter Temperature (
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 C): 
 \bar under
 XNMBT
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -744,6 +810,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -758,7 +825,7 @@ orrected NO Concentration (ppbv):
 XNOCAL
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -776,7 +843,7 @@ XNOCAL
 Corrected NOy Concentration (ppbv): 
 \bar under
 XNYCAL
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -815,7 +882,7 @@ status open
 \begin_inset Quotes eld
 \end_inset
 
-has the provision forhe addition of water vapor 
+has the provision for the addition of water vapor 
 \begin_inset Quotes erd
 \end_inset
 
@@ -832,12 +899,12 @@ has the provision forhe addition of water vapor
 \begin_inset Formula $_{y}$
 \end_inset
 
- instruments are 50 ppmv 
+ instruments are 50 ppbv 
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-is this right? Should it be ppbv?
+is this right? said ppmv before?
 \end_layout
 
 \end_inset
@@ -848,6 +915,16 @@ for a one-second averaging time.
 \end_inset
 
  5%.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+fix hanging-indent problem, this paragraph
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -859,7 +936,7 @@ O3FS
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -884,6 +961,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -898,7 +976,7 @@ Chemiluminescent Ozone Sample Flow Rate (sccm):
 O3FF
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -918,7 +996,7 @@ Chemiluminescent Ozone Nitric Oxide Flow Rate (sccm):
 O3FN
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -936,7 +1014,7 @@ O3FN
 Chemiluminescent Ozone Sample Pressure (mb): 
 \bar under
 O3FP
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -953,6 +1031,45 @@ O3FP
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Hanging
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
 These variables characterize conditions within the chemiluminescence ozone
  sensor.
  The sample rate, in standard 
@@ -961,6 +1078,16 @@ These variables characterize conditions within the chemiluminescence ozone
 
 , is O3FF, while O3FN gives the NO flow rate in the same units and O3FP
  is the pressure in the ozone sample cell.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+fix indentation problem, hanging indent
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -972,7 +1099,7 @@ O3FC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout

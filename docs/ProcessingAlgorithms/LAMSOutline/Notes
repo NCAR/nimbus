@@ -1,0 +1,5 @@
+First use 'pdftk File.pdf burst' to get individual pages.
+Then use batch file to convert to png pages at high resolution.
+(or learn how to convert resolution via 'convert' instead of 'gs')
+Import into libreoffice using position/size settings of 0,0,11.0
+Finally, export as .ppt (have had some problems with pptx recently)

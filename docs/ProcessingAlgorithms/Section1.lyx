@@ -1,5 +1,5 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass article
@@ -7,18 +7,26 @@
 \begin_modules
 hanging
 \end_modules
+\maintain_unincluded_children false
 \language english
+\language_package default
 \inputencoding auto
+\fontencoding global
 \font_roman default
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command makeindex
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -26,53 +34,56 @@ hanging
 \use_geometry false
 \use_amsmath 1
 \use_esint 1
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices true
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
-\defskip medskip
+\paragraph_indentation default
 \quotes_language english
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
-\output_changes false
-\author "" 
+\output_changes true
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
 \end_header
 
 \begin_body
 
 \begin_layout Section
 INTRODUCTION
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:General-Comments"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
-Alphabetical List of Variables 
+Background Information
 \end_layout
 
 \begin_layout Standard
-The index to this appendix includes all variables described in this Appendix,
- with links to where they are discussed.
- The index also includes some variables not discussed here; where possible,
- reference to those variables and information on the project(s) where they
- were used has been included also.
- 
-\end_layout
-
-\begin_layout Standard
-It will be useful to understand the RAF naming conventions as described
- in the next sub-section to be able to use this index effectively.
-\end_layout
-
-\begin_layout Subsection
-General Comments
-\end_layout
-
-\begin_layout Standard
-This Appendix describes the basic measurements made on RAF aircraft and,
- where appropriate, includes the equations used by the RAF's 
+This technical report defines the variables used in data sets that are collected
+ by the research aircraft operated by the Research Aviation Facility (RAF)
+ of the National Center for Atmospheric Research.
+ Where appropriate, it also documents the equations that are used by the
+ processing software (currently 
 \begin_inset Quotes eld
 \end_inset
 
@@ -80,78 +91,265 @@ nimbus
 \begin_inset Quotes erd
 \end_inset
 
- software to calculate the derived measurements -- those resulting from
- the use of one or more other measurements (raw and/or derived).
- Since 1993, data from research flights have been archived in NETCDF format,
- and the NETCDF header for recent projects will include detailed information
- on the measurements present in the file, how they depend on other measurements,
- units, etc.
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+nimbus
+\end_layout
+
+\end_inset
+
+) to calculate the derived measurements that result from the use of one
+ or more other basic measurements (e.g., potential temperature).
+ Since 1993, data from research flights have been archived in NetCDF format
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+NetCDF!format
+\end_layout
+
+\end_inset
+
+ (cf.
+ 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.unidata.ucar.edu/software/netcdf/docs/
+\end_layout
+
+\end_inset
+
+), and the NetCDF header
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+NetCDF!header
+\end_layout
+
+\end_inset
+
+ for recent projects includes detailed information on the measurements present
+ in the file, how they depend on other measurements, units, etc.
+ The conventions that the RAF uses for NetCDF data files are documented
+ at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+ http://www.eol.ucar.edu/raf/Software/netCDF.html 
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-Before 1993, data were processed by a different program, 
+Currently, the data acquisition process on the research aircraft of the
+ Research Aviation Facility, Earth Observing Laboratory, proceeds as 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+processing!data
+\end_layout
+
+\end_inset
+
+follows:
+\end_layout
+
+\begin_layout Enumerate
+Analog or digital outputs from instruments are sampled at regular intervals,
+ typically 50 Hz when possible.
+ Analog outputs are converted to digital values via analog-to-digital converters.
+ The investigator's handbooks for each aircraft describe this process in
+ detail, including resolution of the sampling and handling of the results.
+ Often, signals from user-supplied instruments are also included in the
+ measured values that are handled by the data system.
+\end_layout
+
+\begin_layout Enumerate
+The digital outputs are then recorded by the data system on the aircraft.
+ Currently, this is a task of the 
+\emph on
+
 \begin_inset Quotes eld
 \end_inset
 
-GENPRO,
+
+\emph default
+
+\begin_inset CommandInset href
+LatexCommand href
+name "NIDAS"
+target "http://www.eol.ucar.edu/data/software/nidas"
+
+\end_inset
+
+
 \begin_inset Quotes erd
 \end_inset
 
- and a different output format (also named GENPRO) was used for archived
- datasets.
- Some variable names shown below, esp.
-\begin_inset space ~
-\end_inset
 
-in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:OBSOLETE-VARIABLES"
+\begin_inset Index idx
+status collapsed
+
+\begin_layout Plain Layout
+NIDAS
+\end_layout
 
 \end_inset
 
-, refer to obsolete variable names, some used with GENPRO and others referring
- to instruments that are now retired.
- These names are included here so that this Appendix can be a reference
- for older archived data as well as for current data files.
+ system described below.
+ That system also controls the sampling, time stamps, and other aspects
+ of data recording.
+\end_layout
+
+\begin_layout Enumerate
+In flight, the data are processed by the 
+\emph on
+
+\begin_inset Quotes eld
+\end_inset
+
+nimbus
+\begin_inset Quotes erd
+\end_inset
+
+
+\emph default
+ data processing program, which makes them available for display via 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset CommandInset href
+LatexCommand href
+name "aeros"
+target "http://www.eol.ucar.edu/raf/Software/aeros_dnld.html"
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+ for real-time monitoring of measurements.
+\end_layout
+
+\begin_layout Enumerate
+Following the flight, 
+\emph on
+nimbus
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+nimbus
+\end_layout
+
+\end_inset
+
+
+\emph default
+ again processes the data.
+ At this stage, measurements can be re-sampled with averaging and/or interpolati
+on to produce different time frequencies, and known lags in measurements
+ can be introduced to adjust measurements to a common time basis.
+ As part of this processing, 
+\emph on
+nimbus
+\emph default
+ applies calibration coefficients where appropriate to convert recorded
+ values (e.g., voltage) to engineering units (e.g., 
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C).
+ Determining or checking these calibration coefficients is part of the pre-fligh
+t and post-flight procedures for each project.
+\end_layout
+
+\begin_layout Enumerate
+The output from 
+\emph on
+nimbus
+\emph default
+ is the data file that is the permanent archive from the experiment, often
+ after merging in additional data sets from users that are not recorded
+ in the original data file produced by 
+\emph on
+NIDAS.
+
+\emph default
+ These files, in NetCDF format, have headers that contain metadata on each
+ measurement (such as the calibration coefficients, the instrument that
+ produced the measurement, etc.).
+ Many of the variables in these files are discussed in this technical note,
+ but the files may also include additional project-specific measurements
+ for which the NetCDF header and the project reports will be the only documentat
+ion.
 \end_layout
 
 \begin_layout Standard
-There are some cases where redundant measurements are present, often for
- key measurements like pressure or temperature.
- When these are used in subsequent calculation of derived variables like
- potential temperature, some choice is often made regarding which measurement
- is considered most reliable.
- It is useful to record which measurement was so designated, so a reference
- measurement, chosen from a group of redundant measurements, usually has
- a variable name ending with the letter(s) X or XC.
- Some do not follow that convention: base_time, time_offset, ATTACK, SSLIP
- and EDPC.
- (See their individual descriptions below.)
+The data system has changed several times over the history of RAF.
+ For a discussion of the history of the data systems, see 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+ADShistory.pdf
+\end_layout
+
+\end_inset
+
+, written by Richard Friesen.
+ The versions of data systems that produced most of the data still available
+ were, approximately, as given in the following table:
 \end_layout
 
 \begin_layout Standard
-There are references in the following descriptions to the data system in
- use, because this has changed several times.
- The data systems in use were, approximately, as given in the following
- table:
-\end_layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \noindent
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="5" columns="3">
-<features>
+<lyxtabular version="3" rows="4" columns="4">
+<features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="2.3in">
 <row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-data system
+
+\series bold
+Data System
 \end_layout
 
 \end_inset
@@ -160,7 +358,20 @@ data system
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 start
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+end
 \end_layout
 
 \end_inset
@@ -169,7 +380,9 @@ start
 \begin_inset Text
 
 \begin_layout Plain Layout
-end
+
+\series bold
+Aircraft
 \end_layout
 
 \end_inset
@@ -180,7 +393,7 @@ end
 \begin_inset Text
 
 \begin_layout Plain Layout
-ADS-1
+ADS I
 \end_layout
 
 \end_inset
@@ -189,7 +402,16 @@ ADS-1
 \begin_inset Text
 
 \begin_layout Plain Layout
+1984
+\end_layout
 
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1992
 \end_layout
 
 \end_inset
@@ -198,7 +420,7 @@ ADS-1
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+King Air 200T, Sabreliner (1987), Electra (1991)
 \end_layout
 
 \end_inset
@@ -209,7 +431,7 @@ ADS-1
 \begin_inset Text
 
 \begin_layout Plain Layout
-ADS-2
+ADS II
 \end_layout
 
 \end_inset
@@ -218,7 +440,16 @@ ADS-2
 \begin_inset Text
 
 \begin_layout Plain Layout
+1992
+\end_layout
 
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2007
 \end_layout
 
 \end_inset
@@ -227,36 +458,7 @@ ADS-2
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-ADS-3
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
+C-130
 \end_layout
 
 \end_inset
@@ -267,7 +469,31 @@ ADS-3
 \begin_inset Text
 
 \begin_layout Plain Layout
-NIDAS
+ADS III (NIDAS)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+ADS III is the name given to the full data system, which includes these
+ components: NIDAS (for data acquisition and recording); NIMBUS (for data
+ processing,(both in flight and after the flight); AEROS (for data display
+ in flight); and the Mission Coordinator Station and satellite communications
+ system (for transmission of data to and from the aircraft, display of such
+ data for mission decisions, and support for written 
+\begin_inset Quotes eld
+\end_inset
+
+chat
+\begin_inset Quotes erd
+\end_inset
+
+ communications among project participants both on the aircraft and on the
+ ground).
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -281,11 +507,20 @@ NIDAS
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-present
+GV, C-130 (2007)
 \end_layout
 
 \end_inset
@@ -298,252 +533,168 @@ present
 
 \end_layout
 
-\begin_layout Subsection
-System of Units and Values Used For Constants
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-This document will favor the SI system of units, but there are many exceptions.
- Among them are the following:
+Before 1993, data were processed by a different program, 
+\begin_inset Quotes eld
+\end_inset
+
+GENPRO,
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GENPRO
 \end_layout
 
-\begin_layout Enumerate
-The millibar (mb) or hectopascal (hPa) is used for pressure.
- 
+\end_inset
+
+ and a different output format (also named GENPRO) was used for archived
+ datasets.
+ Appendix E in 
+\begin_inset CommandInset href
+LatexCommand href
+name "RAF Bulletin 9"
+target "http://www.eol.ucar.edu/raf/Bulletins/bulletin9.html"
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Bulletin 9
 \end_layout
 
-\begin_layout Enumerate
-Many variables are presented in the units most often used for that variable,
- even when they involve CGS units or mixed CGS-MKS units, as for example
- [
-\begin_inset Formula $g\, m^{-3}]$
 \end_inset
 
- for liquid water content or [
-\begin_inset Formula $cm^{-3}$
-\end_inset
-
-] for droplet concentration.
- 
-\end_layout
-
-\begin_layout Enumerate
-Flow rates are often quoted in liters per minute (LPM) or standard liters
- per minute (SLPM) because those terms are linked to properties of commercially
- available instruments with flow control.
- One liter is 
-\begin_inset Formula $10^{-3}\, m^{3}$
-\end_inset
-
-.
- Because there is considerable ambiguity in the definition of 
-\begin_inset Quotes eld
-\end_inset
-
-standard
-\begin_inset Quotes erd
-\end_inset
-
- conditions (regarding choice of the reference pressure and temperature),
- the particular usage will be documented in each case.
-\end_layout
-
-\begin_layout Enumerate
-\begin_inset CommandInset label
-LatexCommand label
-name "enu:ppmv"
-
-\end_inset
-
-The International Bureau of Weights and Measures recommends against use
- of units like percent or parts per million, but these are so conventional
- in atmospheric chemistry and elsewhere that data filesl continue to use
- those units for relative humidity or the concentration of chemical species.
- Typical units are ppmv or ppbv for parts per million by volume or parts
- per billion by volume.
- Care must be taken to interpret ppbv especially, because 
-\begin_inset Quotes eld
-\end_inset
-
-billion
-\begin_inset Quotes erd
-\end_inset
-
- has different meaning in different languages and different countries; herein,
- 1 ppbv means a volumetric ratio of 1:10
-\begin_inset Formula $^{9}$
-\end_inset
-
-.
- Many measurements produce native results in terms of a mass ratio, often
- described as a mixing ratio 
-\begin_inset Formula $r_{m}$
-\end_inset
-
- in terms of mass of the measured gas per unit mass of 
-\begin_inset Quotes eld
-\end_inset
-
-air
-\begin_inset Quotes erd
-\end_inset
-
- (where the weight of the 
-\begin_inset Quotes eld
-\end_inset
-
-air
-\begin_inset Quotes erd
-\end_inset
-
- does not include the variable constituents, usually only significant for
- water vapor).
- The perfect gas law relates the density ratio of two gases (
-\begin_inset Formula $\rho_{1}:\rho_{2})$
-\end_inset
-
- to the ratio of their partial pressures (
-\begin_inset Formula $p_{1}:p_{2}$
-\end_inset
-
-) or number densities (
-\begin_inset Formula $n_{1}:n_{2}$
-\end_inset
-
-), as follows:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula \[
-r_{m}=\frac{\rho_{1}}{\rho_{2}}=\frac{p_{1}M_{1}}{p_{2}M_{2}}=\frac{n_{1}M_{1}}{n_{2}M_{2}}\]
-
-\end_inset
-
-where 
-\begin_inset Formula $M_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $M_{2}$
-\end_inset
-
- are respective molecular weights for the two gases.
- The ratio of number densities or, equivalently, partial pressures, denoted
- here as 
-\begin_inset Formula $r_{v}$
-\end_inset
-
- because it is also the volumetric mixing ratio, is related to the mass
- mixing ratio according to the following equation:
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula \[
-r_{v}=\frac{n_{1}}{n_{2}}=\left(\frac{M_{2}}{M_{1}}\right)r_{m}\]
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-When concentrations are recorded with units of 
-\begin_inset Quotes eld
-\end_inset
-
-ppmv
-\begin_inset Quotes erd
-\end_inset
-
- or 
-\begin_inset Quotes eld
-\end_inset
-
-pptv
-\begin_inset Quotes erd
-\end_inset
-
-, these units refer to (respectively) 
-\begin_inset Formula $10^{6}r_{v}$
-\end_inset
-
- or 
-\begin_inset Formula $10^{9}r_{v}$
-\end_inset
-
- as given by the above equation.
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Enumerate
-The unit 
-\begin_inset Quotes eld
-\end_inset
-
-hertz
-\begin_inset Quotes erd
-\end_inset
-
- (abbreviation Hz) is the proper unit for a periodic sampling frequency
- and will be used here in place of the more awkward term, 
-\begin_inset Quotes eld
-\end_inset
-
-samples per second.
-\begin_inset Quotes erd
-\end_inset
-
- That is the usage favored by the International Bureau of Weights and Measures
- (cf.
+, the previous description of RAF data products that is now superseded by
+ this technical note, describes that format.
+ Some variable names in this document, esp.
 \begin_inset space ~
 \end_inset
 
+in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:OBSOLETE-VARIABLES"
 
+\end_inset
+
+, refer to obsolete variable names, some used with GENPRO and others referring
+ to instruments that are now retired.
+ These names are included here so that this report can be a reference for
+ older archived data as well as for current data files.
+\end_layout
+
+\begin_layout Subsection
+Alphabetical List of Variables 
+\end_layout
+
+\begin_layout Standard
+At the end of this section, 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "List of Variables"
+
+\end_inset
+
+, there is a list of all the variable names
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+variable names
+\end_layout
+
+\end_inset
+
+ that appear in standard data files along with links to the primary discussion
+ of those variables.
+ The 
 \begin_inset Flex URL
 status collapsed
 
 \begin_layout Plain Layout
 
-http://www.bipm.org/en/si/si_brochure/chapter2/2-2/table3.html#notes
+index
 \end_layout
 
 \end_inset
 
-) when the frequency represented refers to the rate of sampling.
+ to this technical report (on page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "IndexReference"
+
+\end_inset
+
+) also includes all variables described here, and also some variables not
+ discussed in detail in this document.
+ Where possible, reference to those variables and information on the project(s)
+ where they were used have been included also.
+ In cases with multiple references, the bold entry is the primary discussion
+ of the variable.
  
 \end_layout
 
-\begin_layout Enumerate
-In some cases, particularly for older data files, speed has been recorded
- in units of knots (= 0.514444 m/s) and distance in nautical miles (= 1852
- m).
+\begin_layout Standard
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+naming conventions
 \end_layout
 
-\begin_layout Standard
-The following are values used for some constants in this document:
+\end_inset
+
+In some cases redundant measurements are present, often for key measurements
+ like pressure or temperature.
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+variable names
+\end_layout
+
+\end_inset
+
+ When these are used in subsequent calculation of derived variables like
+ potential temperature, some choice is usually made regarding which measurement
+ is considered most reliable for a particular project or flight, and a single
+ derived variable is calculated on the basis of the chosen input variable(s).
+ To record which measurements were so designated, a reference measurement
+ chosen from a group of redundant measurements usually has a variable name
+ ending with the letter(s) X or XC.
+ 
 \begin_inset Foot
 status open
 
 \begin_layout Plain Layout
-reference for 
-\begin_inset Formula $R_{0}$
-\end_inset
-
- and 
-\begin_inset Formula $\sigma$
-\end_inset
-
-: http://physics.nist.gov/cuu/Constants/index.html
+Some that do not follow this convention are ATTACK and SSLIP; see the individual
+ descriptions that follow.
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Subsection
+Constants Used in Data Processing
 \begin_inset Note Note
 status open
 
@@ -557,75 +708,218 @@ add footnote here with historical usage, but update to be current
 \end_layout
 
 \begin_layout Standard
-\noindent
-\align center
+The following box contains values used for some constants in this document.
+ For reference, the symbols used here also appear at the start of the index
+ along with their meanings and links to where they are defined.
+ Where references are to the 
+\begin_inset Quotes eld
+\end_inset
+
+NIST Chemistry WebBook
+\begin_inset Quotes erd
+\end_inset
+
+, the associated URL is 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://webbook.nist.gov
+\end_layout
+
+\end_inset
+
+.
+ References to the CODATA Internationally recommended values of the Fundamental
+ Physical Constants are available at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://physics.nist.gov/.cuu/.Constants
+\end_layout
+
+\end_inset
+
+.
+ The optimization involved in adjustment of these coefficients is documented
+ in Mohr et al., 2008a and 2008b, referenced at that URL.
+ 
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+P.
+ J.
+ Mohr, B.
+ N.
+ Taylor, and D.
+ B.
+ Newell, Rev.
+ Mod.
+ Phys 80(2), 633-730(2008); P.
+ J.
+ Mohr, B.
+ N.
+ Taylor, and D.
+ B.
+ Newell, J.
+ Phys.
+ Chem.
+ Ref.
+ Data 37(3), 1187-1284(2008).
+\end_layout
+
+\end_inset
+
+ In this technical note, references to these symbols will often have these
+ symbols or definitions marked by the symbol 
+\begin_inset Formula $^{\dagger}$
+\end_inset
+
+ to indicate that the values used are those in the following table.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vfill
+\backslash
+eject
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset Box Boxed
 position "t"
 hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "90text%"
+use_makebox 0
+width "100text%"
 special "none"
 height "1in"
 height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
-\begin_inset Formula $\pi$
+\begin_inset CommandInset label
+LatexCommand label
+name "ConstantsBox"
+
 \end_inset
 
 
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-= 3.1415926536...
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $C_{dr}$
-\end_inset
-
- = conversion factor, degrees to radians, = 
-\begin_inset Formula $2\pi/180^{\circ}$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $g$
-\end_inset
-
- = acceleration of gravity
-\begin_inset Foot
-status collapsed
+\begin_inset ERT
+status open
 
 \begin_layout Plain Layout
-for calculating altitude in the International Standard Atmosphere, 
-\begin_inset Formula $g$
-\end_inset
 
- is 9.80665 m
-\begin_inset space \thinspace{}
-\end_inset
 
-s
-\begin_inset Formula $^{-2}$
-\end_inset
-
-as specified by the ISA
+\backslash
+centerline{
+\backslash
+bf
+\backslash
+underbar{Table of Constants}}
 \end_layout
 
 \end_inset
 
-, 9.7959 m
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+constants!table
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+constants|see
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+symbols
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $g$
+\end_inset
+
+ = 
+\begin_inset CommandInset label
+LatexCommand label
+name "-constant-g"
+
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+g@
+\begin_inset Formula $g$
+\end_inset
+
+= acceleration of gravity
+\end_layout
+
+\end_inset
+
+acceleration of gravity
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+
+\size normal
+In the International Standard Atmosphere 
+\begin_inset Formula $g$
+\end_inset
+
+ is specified as 9.80665 m
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -633,7 +927,210 @@ s
 \begin_inset Formula $^{-2}$
 \end_inset
 
+, 
+\begin_inset Formula $M_{w}=28.9644$
+\end_inset
 
+ , and 
+\begin_inset Formula $R_{0}$
+\end_inset
+
+=8.31432×103 J kmol−1 K−1 
+\end_layout
+
+\end_inset
+
+ at latitude 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ 
+\begin_inset Index lis
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Formula $\lambda$
+\end_inset
+
+= latitude
+\end_layout
+
+\end_inset
+
+and altitude
+\begin_inset Index lis
+status collapsed
+
+\begin_layout Plain Layout
+z@
+\begin_inset Formula $z$
+\end_inset
+
+ = height
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Formula $z$
+\end_inset
+
+ above the WRS-80 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+WRS-80 Geoid
+\end_layout
+
+\end_inset
+
+geoid,
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+
+\size normal
+cf., e.g., Moritz, H., 1988: Geodetic Reference System 1980, Bulletin Geodesique,
+ Vol.
+ 62 , no.
+ 3.
+ 
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+g=g_{e}\left(\frac{1+g_{1}\sin^{2}(\lambda)}{(1-g_{2}\sin^{2}\lambda)^{1/2}}\right)-a_{z}z\label{eq:g_lambda}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hskip2em
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 1
+use_makebox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+where 
+\begin_inset Formula $g_{e}=9.780327$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset space \thinspace{}
+\end_inset
+
+s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+ is the reference value at the surface and equator,
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $g_{1}=0.001931851$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+ 
+\begin_inset Formula $g_{2}=0.006694380$
+\end_inset
+
+, and 
+\begin_inset Formula $a_{z}=3.086\times10^{-6}$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-1}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -641,7 +1138,24 @@ s
 \begin_inset Formula $T_{0}$
 \end_inset
 
- = temperature in kelvin corresponding to 
+ = temperature in kelvin
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{0}$
+\end_inset
+
+= 273.15
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\end_layout
+
+\end_inset
+
+ corresponding to 
 \begin_inset Formula $0{}^{\circ}C$
 \end_inset
 
@@ -654,10 +1168,37 @@ K
 \end_inset
 
 
-\begin_inset Formula $T_{t}$
+\begin_inset Formula $T_{3}$
 \end_inset
 
- = temperature corresponding to the triple point of water = 273.16
+ = temperature
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{3}$
+\end_inset
+
+= 273.16
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\end_layout
+
+\end_inset
+
+ corresponding to the triple point of water
+\begin_inset Index idx
+status collapsed
+
+\begin_layout Plain Layout
+triple point of water
+\end_layout
+
+\end_inset
+
+ = 273.16
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -666,15 +1207,364 @@ K
 \end_inset
 
 
-\begin_inset Formula $M_{a}$
+\begin_inset Formula $M_{d}$
 \end_inset
 
-= molecular weight of dry air, 28.9644 kg
+= 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Md@
+\begin_inset Formula $M_{d}$
+\end_inset
+
+= molecular weight of dry air
+\end_layout
+
+\end_inset
+
+molecular weight of dry air
+\begin_inset Formula $^{a}$
+\end_inset
+
+
+\begin_inset Index idx
+status collapsed
+
+\begin_layout Plain Layout
+molecular weight of dry air
+\end_layout
+
+\end_inset
+
+, 28.9637 kg
 \begin_inset space \thinspace{}
 \end_inset
 
 kmol
 \begin_inset Formula $^{-1}$
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+
+\size normal
+Jones, F.
+ E., 1978: J.
+ Res.
+ Natl.
+ Bur.
+ Stand., 83(5), 419, as quoted by Lemmon, E.
+ W., R.
+ T.
+ Jacobsen, S.
+ G.
+ Penoncello, and D.
+ G., Friend, J.
+ Phys.
+ Chem.
+ Ref.
+ Data, Vol.
+ 29, No.
+ 3, 2000, pp.
+ 331-385.
+ The quoted values of mole fraction from Jones (1978) and the calculation
+ of mean molecular weight are tabulated below using values of molecular
+ weights taken from the NIST Standard Reference Database 69: NIST Chemistry
+ WebBook as of March 2011.
+ With CO
+\begin_inset Formula $_{2}$
+\end_inset
+
+ increased to about 0.00039 and others decreased proportionately, the mean
+ is 28.9637.
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size normal
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Gas
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+mole fraction 
+\begin_inset Formula $x$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+molecular weight 
+\begin_inset Formula $M$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $x*M$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+N
+\begin_inset Formula $_{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.78102
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+28.01340
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+21.87903
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+O
+\begin_inset Formula $_{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.20946
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+31.99880
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.70247
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Ar
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.00916
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+39.94800
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.36592
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+CO
+\begin_inset Formula $_{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.00033
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+44.00950
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.01452
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean:
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+28.96194
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
 \end_inset
 
 
@@ -685,12 +1575,61 @@ kmol
 \begin_inset Formula $M_{w}$
 \end_inset
 
- = molecular weight of water, 18.01528 kg
+ = 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Mw@
+\begin_inset Formula $M_{w}$
+\end_inset
+
+= molecular weight of water
+\end_layout
+
+\end_inset
+
+molecular weight of water
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+molecular weight of water
+\end_layout
+
+\end_inset
+
+, 18.0153 kg
 \begin_inset space \thinspace{}
 \end_inset
 
 kmol
 \begin_inset Formula $^{-1}$
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+
+\size normal
+NIST Standard Reference Database 69: NIST Chemistry WebBook as of March
+ 2011
+\end_layout
+
 \end_inset
 
 
@@ -701,32 +1640,30 @@ kmol
 \begin_inset Formula $R_{0}$
 \end_inset
 
- = universal gas constant
-\begin_inset Foot
+ = 
+\begin_inset Index lis
 status open
 
 \begin_layout Plain Layout
-an exception to this value of 
-\begin_inset Formula $R$
+R@
+\begin_inset Formula $R_{0}$
 \end_inset
 
- occurs in the calculation of pressure altitude, where the value R=8.31432
-\begin_inset Formula $\times10^{3}$
+= universal gas constant
+\end_layout
+
 \end_inset
 
-J
-\begin_inset space \thinspace{}
+universal gas constant
+\begin_inset Formula $^{a}$
 \end_inset
 
-kmol
-\begin_inset Formula $^{-1}$
-\end_inset
 
-K
-\begin_inset Formula $^{-1}$
-\end_inset
+\begin_inset Index idx
+status open
 
- is used because that is required by the definition of the standard atmosphere
+\begin_layout Plain Layout
+universal gas constant
 \end_layout
 
 \end_inset
@@ -744,6 +1681,34 @@ kmol
 \end_inset
 
 K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+
+\size normal
+2006 CODATA
+\end_layout
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -751,7 +1716,67 @@ K
 \begin_inset Formula $R_{d}=(R_{0}/M_{d}$
 \end_inset
 
-) = gas constant for dry air
+) = 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Rd@
+\begin_inset Formula $R_{d}=$
+\end_inset
+
+gas constant for dry air
+\end_layout
+
+\end_inset
+
+gas constant for dry air
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+gas constant for dry air
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $R_{w}$
+\end_inset
+
+ = (
+\begin_inset Formula $R_{0}/M_{w})$
+\end_inset
+
+ = 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Rw@
+\begin_inset Formula $R_{W}$
+\end_inset
+
+= gas constant for water vapor
+\end_layout
+
+\end_inset
+
+gas constant for water vapor
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+gas constant for water vapor
+\end_layout
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -759,7 +1784,31 @@ K
 \begin_inset Formula $R_{E}$
 \end_inset
 
- = radius of the Earth = 6.371229
+ = 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Re@
+\begin_inset Formula $R_{E}$
+\end_inset
+
+= radius of the Earth
+\end_layout
+
+\end_inset
+
+radius of the Earth
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+radius of the Earth
+\end_layout
+
+\end_inset
+
+ = 6.371229
 \begin_inset Formula $\times$
 \end_inset
 
@@ -767,19 +1816,72 @@ K
 \begin_inset Formula $^{6}$
 \end_inset
 
- m
+ m 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+matching the value used by the inertial reference systems discussed in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:INS"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
 \begin_inset Newline newline
 \end_inset
 
-c
-\begin_inset Formula $_{p}$
+
+\begin_inset Formula $c{}_{p}$
 \end_inset
 
- = specific heat of dry air at constant pressure = 
+ = 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+cp@
+\begin_inset Formula $c_{p}$
+\end_inset
+
+= specific head of dry air at constant pressure
+\end_layout
+
+\end_inset
+
+specific heat of dry air at constant pressure
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+specific heat of dry air at constant pressure
+\end_layout
+
+\end_inset
+
+ = 
 \begin_inset Formula $\frac{7}{2}R_{d}=$
 \end_inset
 
-1.00470
+1.00473
 \begin_inset Formula $\times10^{3}$
 \end_inset
 
@@ -793,6 +1895,42 @@ kg
 
 K
 \begin_inset Formula $^{-1}$
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+
+\size normal
+The specific heat of dry air at 1013 hPa and 250--280 K as given by Lemmon
+ et al.
+ (2000) is 29.13 J/(mol-K), which translates to 1005.8
+\begin_inset Formula $\pm0.3$
+\end_inset
+
+ J/(kg-K).
+ However, the uncertainty limit associated with values of specific heat
+ is quoted as 1%, and the experimental data cited in that paper show scatter
+ that is at least comparable to several tenths percent, so the ideal-gas
+ value cited here is well within the range of uncertainty.
+ For this reason, and because this value is in widespread use, the ideal-gas
+ value is used throughout the algorithms described here.
+\end_layout
+
 \end_inset
 
 
@@ -847,15 +1985,39 @@ K
 \begin_inset Newline newline
 \end_inset
 
-c
-\begin_inset Formula $_{v}$
+
+\begin_inset Formula $c{}_{v}$
 \end_inset
 
- = specific heat at constant volume = 
+ = 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+cv@
+\begin_inset Formula $c_{v}$
+\end_inset
+
+= specific heat of dry air at constant volume
+\end_layout
+
+\end_inset
+
+specific heat at constant volume
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+specific heat of dry air at constant volume
+\end_layout
+
+\end_inset
+
+ = 
 \begin_inset Formula $\frac{5}{2}R_{d}=$
 \end_inset
 
-0.717646
+0.71766
 \begin_inset Formula $\times10^{3}$
 \end_inset
 
@@ -927,7 +2089,34 @@ K
 \begin_inset Formula $\gamma$
 \end_inset
 
- = ratio of specific heats, 
+ = 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $\gamma$
+\end_inset
+
+= ratio of specific heats of air, 
+\begin_inset Formula $c_{p}/c_{v}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ratio of specific heats
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+specific heat ratio, dry air
+\end_layout
+
+\end_inset
+
+, 
 \begin_inset Formula $c_{p}/c_{v}$
 \end_inset
 
@@ -939,8 +2128,31 @@ K
 \begin_inset Formula $\Omega$
 \end_inset
 
- = angular rotation rate of the Earth = 7.292116
-\begin_inset Formula $\times10^{6}$
+ = 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Omega$
+\end_inset
+
+= angular rotation rate of the Earth
+\end_layout
+
+\end_inset
+
+angular rotation rate of the Earth
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Earth, angular rotation rate
+\end_layout
+
+\end_inset
+
+ = 7.292115
+\begin_inset Formula $\times10^{-5}$
 \end_inset
 
  radians/s
@@ -951,7 +2163,30 @@ K
 \begin_inset Formula $\Omega_{Sch}$
 \end_inset
 
- = angular frequency of the Schuler oscillation = 
+ = 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Omega_{Sch}$
+\end_inset
+
+= angular frequency of the Schuler oscillation
+\end_layout
+
+\end_inset
+
+angular frequency of the Schuler oscillation
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Schuler oscillation
+\end_layout
+
+\end_inset
+
+ = 
 \begin_inset Formula $\sqrt{\frac{g}{R_{E}}}$
 \end_inset
 
@@ -963,7 +2198,30 @@ K
 \begin_inset Formula $\sigma$
 \end_inset
 
- = Stephan-Boltzmann Constant = 5.6704
+ = 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $\sigma$
+\end_inset
+
+= Stephan-Boltzmann constant
+\end_layout
+
+\end_inset
+
+Stephan-Boltzmann Constant
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Stephan-Boltzmann Constant
+\end_layout
+
+\end_inset
+
+ = 5.6704
 \begin_inset Formula $\times10^{-8}$
 \end_inset
 
@@ -975,8 +2233,283 @@ m
 \begin_inset Formula $^{-2}\mathrm{K}^{-4}$
 \end_inset
 
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+
+\size normal
+2006 CODATA
+\end_layout
+
+\end_inset
+
  
 \end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:List of Symbols"
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+symbols!table of
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset index_print
+LatexCommand printindex
+type "lis"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+GENERAL INFORMATION ABOUT DATA FILES
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+GENERAL INFORMATION
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+System of Units
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:System-of-Units"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This report will use the SI system of units
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+system of units
+\end_layout
+
+\end_inset
+
+, but with many exceptions.
+ Among them are the following:
+\end_layout
+
+\begin_layout Enumerate
+The millibar
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+millibar
+\end_layout
+
+\end_inset
+
+ (mb), equal to one hectopascal (hPa), is sometimes used for pressure.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Many variables are presented in the units most often used for that variable,
+ even when they involve CGS units or mixed CGS-MKS units, as for example
+ [
+\begin_inset Formula $\mathrm{g\, m}{}^{-3}]$
+\end_inset
+
+ for liquid water content or [
+\begin_inset Formula $\mathrm{cm}{}^{-3}$
+\end_inset
+
+] for droplet concentration.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Flow rates
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Flow rates
+\end_layout
+
+\end_inset
+
+ are often quoted in liters per minute (LPM) or standard liters per minute
+ (SLPM) because those terms are linked to properties of commercially available
+ instruments with flow control.
+ One liter is 
+\begin_inset Formula $10^{-3}\,\mathrm{m}^{3}$
+\end_inset
+
+.
+ Because there is considerable ambiguity in the definition of 
+\begin_inset Quotes eld
+\end_inset
+
+standard
+\begin_inset Quotes erd
+\end_inset
+
+ conditions (regarding choice of the reference pressure and temperature),
+ the particular usage will be documented when this term is used.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:ppmv"
+
+\end_inset
+
+The International Bureau of Weights and Measures recommends against use
+ of units like percent or parts per million, but these are in common use
+ in atmospheric chemistry and elsewhere so data files continue to use those
+ units for relative humidity or the concentration of chemical species.
+ Typical units are ppmv
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ppmv
+\end_layout
+
+\end_inset
+
+ or ppbv
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ppbv
+\end_layout
+
+\end_inset
+
+ for parts per million by volume or parts per billion by volume.
+ Care must be taken to interpret ppbv especially, because 
+\begin_inset Quotes eld
+\end_inset
+
+billion
+\begin_inset Quotes erd
+\end_inset
+
+ has different meaning in different languages and different countries; herein,
+ 1 ppbv means a volumetric ratio of 1:10
+\begin_inset Formula $^{9}$
+\end_inset
+
+.
+ Many measurements produce native results in terms of a mass ratio, often
+ described as a mixing ratio 
+\begin_inset Formula $r_{m}$
+\end_inset
+
+ in terms of mass of the measured gas per unit mass of 
+\begin_inset Quotes eld
+\end_inset
+
+air
+\begin_inset Quotes erd
+\end_inset
+
+ (where the weight of the 
+\begin_inset Quotes eld
+\end_inset
+
+air
+\begin_inset Quotes erd
+\end_inset
+
+ does not include the variable constituents, usually only significant for
+ water vapor).
+ The perfect gas law relates the density ratio of two gases (
+\begin_inset Formula $\rho_{1}:\rho_{2})$
+\end_inset
+
+ to the ratio of their partial pressures (
+\begin_inset Formula $p_{1}:p_{2}$
+\end_inset
+
+) or number densities (
+\begin_inset Formula $n_{1}:n_{2}$
+\end_inset
+
+), as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+r_{m}=\frac{\rho_{1}}{\rho_{2}}=\frac{p_{1}M_{1}}{p_{2}M_{2}}=\frac{n_{1}M_{1}}{n_{2}M_{2}}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $M_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $M_{2}$
+\end_inset
+
+ are respective molecular weights for the two gases.
+ The ratio of number densities or, equivalently, partial pressures, denoted
+ here as 
+\begin_inset Formula $r_{v}$
+\end_inset
+
+ because it is also the volumetric mixing ratio, is related to the mass
+ mixing ratio as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+r_{v}=\frac{n_{1}}{n_{2}}=\left(\frac{M_{2}}{M_{1}}\right)r_{m}
+\]
 
 \end_inset
 
@@ -984,16 +2517,193 @@ m
 \begin_inset Newline newline
 \end_inset
 
+When concentrations are recorded with units of 
+\begin_inset Quotes eld
+\end_inset
+
+ppmv
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+ppbv
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+pptv
+\begin_inset Quotes erd
+\end_inset
+
+, these units refer respectively to 
+\begin_inset Formula $10^{6}r_{v}$
+\end_inset
+
+, 
+\begin_inset Formula $10^{9}r_{v}$
+\end_inset
+
+, or 
+\begin_inset Formula $10^{12}r_{v}$
+\end_inset
+
+ with 
+\begin_inset Formula $r_{v}$
+\end_inset
+
+ given by the above equation.
+\begin_inset Newline newline
+\end_inset
+
 
 \end_layout
 
-\begin_layout Subsection
-Abbreviations
+\begin_layout Enumerate
+The unit 
+\begin_inset Quotes eld
+\end_inset
+
+hertz
+\begin_inset Quotes erd
+\end_inset
+
+ (abbreviation Hz) is the proper unit for a periodic sampling frequency
+ and will be used here in place of the more awkward 
+\begin_inset Quotes eld
+\end_inset
+
+samples per second.
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+samples per second
+\end_layout
+
+\end_inset
+
+ This usage is favored by the International Bureau of Weights and Measures
+ (cf.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.bipm.org/en/si/si_brochure/chapter2/2-2/table3.html#notes
+\end_layout
+
+\end_inset
+
+) when the frequency represented refers to the rate of sampling.
+ 
+\end_layout
+
+\begin_layout Enumerate
+In some cases, particularly for older data files, speed has been recorded
+ in units of knot
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+knot
+\end_layout
+
+\end_inset
+
+s (= 0.514444 m/s) and distance in nautical mile
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+nautical mile
+\end_layout
+
+\end_inset
+
+s (= 1852 m).
 \end_layout
 
 \begin_layout Standard
-The next table defines some abbreviations used in this appendix, in addition
- to the standard abbreviations for the mks system of units:
+There is a list of symbols used in this report, on page 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "sub:List of Symbols"
+
+\end_inset
+
+.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+ Some symbols used only once and defined where they are used are omitted
+ from this list
+\end_layout
+
+\end_inset
+
+.
+ The next table defines some abbreviations and symbols used in this report,
+ in addition to the standard abbreviations for the mks system of units:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="9" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0pt">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+abbreviation/symbol
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+definition
+\series default
+
 \begin_inset Foot
 status open
 
@@ -1010,32 +2720,24 @@ where the symbol
 
 \end_layout
 
-\begin_layout Standard
-\noindent
-\align center
-\begin_inset Box Boxed
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-width "90text%"
-special "none"
-height "1in"
-height_special "totalheight"
-status open
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
 
-\begin_layout Description
-CEP circular error probable: confidence level is 50% to be this close to
- the correct value (used to characterize the accuracy of IRS/INS position
- measurements)
+\begin_layout Plain Layout
+º
 \end_layout
 
-\begin_layout Description
-\begin_inset Formula $^{\circ}$
 \end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
 
- degree, angle measurement 
+\begin_layout Plain Layout
+degree, angle measurement 
 \begin_inset Formula $\equiv$
 \end_inset
 
@@ -1046,16 +2748,58 @@ CEP circular error probable: confidence level is 50% to be this close to
 /180) radian
 \end_layout
 
-\begin_layout Description
-ft foot 
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ft
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+foo
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+foo
+\end_layout
+
+\end_inset
+
+t 
 \begin_inset Formula $\equiv$
 \end_inset
 
  0.3048 m
 \end_layout
 
-\begin_layout Description
-mb millibar 
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+mb
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+millibar 
 \begin_inset Formula $\equiv$
 \end_inset
 
@@ -1066,8 +2810,31 @@ mb millibar
  1 hPa
 \end_layout
 
-\begin_layout Description
-ppmv parts per million by volume (see section 
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ppmv
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+parts per million by volume (see subsection 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:System-of-Units"
+
+\end_inset
+
+ item 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "enu:ppmv"
@@ -1077,36 +2844,132 @@ reference "enu:ppmv"
 )
 \end_layout
 
-\begin_layout Description
-ppbv parts per billion (
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ppbv
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+parts per billion (
 \begin_inset Formula $10^{9})$
 \end_inset
 
- by volume
+ by volume (see subsection 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:System-of-Units"
+
+\end_inset
+
+ item
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:ppmv"
+
+\end_inset
+
+)
 \end_layout
 
-\begin_layout Description
-pptv parts per trillion (
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+pptv
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+parts per trillion (
 \begin_inset Formula $10^{12})$
 \end_inset
 
- by volume
+ by volume (see subsection 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:System-of-Units"
+
+\end_inset
+
+ item
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:ppmv"
+
+\end_inset
+
+)
 \end_layout
 
-\begin_layout Description
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 n
 \begin_inset space ~
 \end_inset
 
-mi nautical mile 
+mi
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+nautical mile 
 \begin_inset Formula $\equiv$
 \end_inset
 
 1852 m
 \end_layout
 
-\begin_layout Description
-kt knot 
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+kt
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+knot (n
+\begin_inset space ~
+\end_inset
+
+mi/hour) 
 \begin_inset Formula $\equiv$
 \end_inset
 
@@ -1115,103 +2978,483 @@ kt knot
 \end_layout
 
 \end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
 
 
-\begin_inset Newline newline
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Variables Used To Denote Time
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Time Variables
+\end_layout
+
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
+Although there are some exceptions in old archived data files, the data
+ in all modern output files are referenced to Coordinated Universal Time
+ (UTC).
+ The time and date of the data acquisition system are synchronized to the
+ Global Positioning System (GPS) at the beginning of each flight, and for
+ data acquired by the present ADS-3 (NIDAS) data acquisition system time
+ is synchronized continuously with the GPS time.
+ Time variables vary for older archived data files; some of the following
+ are obsolete, but are included here for reference because they are important
+ to those wanting to use those archives.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Time (s): 
+\bar under
+Time
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+Time
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Time
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "han:Time-(s):-TimeThis-1"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The reference-time 
+\emph default
+counter 
+\emph on
+for the output 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\emph off
+time variable in data files
+\end_layout
+
+\end_inset
+
+data files,
+\emph default
+ used by data system versions beginning with ADS-3.
+ It is an integer output at 1 sample per second 
+\emph on
+and has an initial value of zero at the start of the flight
+\emph default
+.
+ Add this to the 
+\begin_inset Quotes eld
+\end_inset
+
+Time:units
+\begin_inset Quotes erd
+\end_inset
+
+ attribute found in the NETCDF header section for this variable to obtain
+ the UTC measurement time.
+\begin_inset Newline newline
+\end_inset
+
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+Example attribute: 
+\family typewriter
+\size small
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size default
+
+\begin_inset space \hspace*{}
+\length 1cm
+\end_inset
+
+
+\size small
+Time:units = 
+\begin_inset Quotes eld
+\end_inset
+
+seconds since 2006-04-26 12:55:00 +0000
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\family default
+\size default
+;
+\end_layout
+
+\begin_layout Plain Layout
+For code examples that show how to use 
+\begin_inset Quotes eld
+\end_inset
+
+Time
+\begin_inset Quotes erd
+\end_inset
+
+ see:
+\begin_inset Newline newline
+\end_inset
+
+
+\family typewriter
+
+\begin_inset space \hspace*{}
+\length 1cm
+\end_inset
+
+
+\family default
+
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://www.eol.ucar.edu/raf/Software/TimeExamp.html
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Reference Start Time (s): 
+\bar under
+base_time
+\series default
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+base time
+\end_layout
+
+\end_inset
+
+ (
+\emph on
+Obsolete; versions before ADS-3 only
+\emph default
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The reference time for the NETCDF output data files for data system versions
+ before ADS-3.
+ 
+\emph default
+It represents the time of the first data record.
+ Its format is Unix time (elapsed seconds after midnight 1 January 1970).
+ Use this measurement and add time_offset (below) to obtain the time for
+ each data record.
+ (Note: base_time is a single scalar, not a 
+\begin_inset Quotes eld
+\end_inset
+
+record
+\begin_inset Quotes erd
+\end_inset
+
+ variable, so it occurs just once in the output file.) 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Time Offset from Reference Start Time (s): 
+\bar under
+time_offset
+\series default
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+time offset
+\end_layout
+
+\end_inset
+
+ (
+\emph on
+Obsolete)
+\emph default
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The time offset from base_time of each data record used for the NETCDF output
+ files produced by data system versions before ADS-3.
+
+\emph default
+ It starts at zero (0) and increments each second, so it can also be thought
+ of as a record counter.
+ Use this measurement and add base_time to obtain the time for each data
+ record.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Tape Time (hour, minute, s): 
+\bar under
+HOUR
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+HOUR
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+MINUTE
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+MINUTE
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+SECOND
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+SECOND
+\end_layout
+
+\end_inset
+
+ 
+\series default
+(
+\emph on
+Obsolete
+\emph default
+)
+\begin_inset Newline newline
+\end_inset
+
+These three time variables are recorded directly from the aircraft's data
+ system.
+ Since ADS-3, this information is replaced by the 
+\begin_inset Quotes eld
+\end_inset
+
+Time
+\begin_inset Quotes erd
+\end_inset
+
+ variable and the 
+\begin_inset Quotes eld
+\end_inset
+
+Time:units
+\begin_inset Quotes erd
+\end_inset
+
+ attribute of that variable.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Date (m, d, y): 
+\bar under
+MONTH
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+MONTH
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DAY
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DAY
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+YEAR
+\series default
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+YEAR
+\end_layout
+
+\end_inset
+
+ (
+\emph on
+Obsolete
+\emph default
+)
+\begin_inset Newline newline
+\end_inset
+
+These three variables represent the date when the aircraft's data system
+ began recording data.
+ They are repeated as 1 Hz variables but are NOT incremented if the time
+ rolls over to the next day.
+ Use base_time and time_offset for reference timing.
+ Since ADS-3, this information is replaced by the 
+\begin_inset Quotes eld
+\end_inset
+
+Time
+\begin_inset Quotes erd
+\end_inset
+
+ variable and the 
+\begin_inset Quotes eld
+\end_inset
+
+Time:units
+\begin_inset Quotes erd
+\end_inset
+
+ attribute of that variable.
+\end_layout
+
+\begin_layout Hanging
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-I took the following out because there is no longer any reason to avoid
- Greek symbols and other math representations in this document -- WAC
-\end_layout
-
-\begin_layout Plain Layout
-To make this document more compatible with the standard ASCII character
- set, there were few Greek letters and special mathematical symbols in the
- original version, and some substitutes used full words in place of symbols
- Many but not all of those have been changed now in favor of clarity.
-\end_layout
-
-\end_inset
-
- 
-\begin_inset Note Comment
-status open
-
-\begin_layout List
-\labelwidthstring 00.00.0000
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-I took the following out because it is common usage - WAC
-\end_layout
-
-\begin_layout Plain Layout
-The following symbols and conventions are used:
-\end_layout
-
-\begin_layout List
-\labelwidthstring 00.00.0000
-\begin_inset space ~
-\end_inset
-
- 
-\begin_inset space ~
-\end_inset
-
-
-\end_layout
-
-\begin_layout List
-\labelwidthstring 00.00.0000
-* multiplication is implied, i.e., spaces separate multiplied terms, and no
- period, asterisk or star is used to indicate it.
-\end_layout
-
-\begin_layout List
-\labelwidthstring 00.00.0000
-+ means addition.
-\end_layout
-
-\begin_layout List
-\labelwidthstring 00.00.0000
-- means subtraction.
-\end_layout
-
-\begin_layout List
-\labelwidthstring 00.00.0000
-/ or a dividing line means division (multiplication/division are always
- performed before addition/subtraction).
-\end_layout
-
-\begin_layout List
-\labelwidthstring 00.00.0000
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-{(), [], {}}
-\end_layout
-
-\end_inset
-
- designate grouped elements which affect the order of mathematical operations
- (can be nested).
- 
-\end_layout
-
-\end_inset
-
-
+Consider adding a section, here or elsewhere, on how data are modified to
+ sampling frequencies other than the original in order to process all at
+ the same rates.
 \end_layout
 
 \end_inset
@@ -1228,32 +3471,32 @@ Variable Names In Equations
 \end_layout
 
 \begin_layout Standard
-This Appendix often uses variable names in equations, and sometimes there
+This report often uses variable names in equations, and sometimes there
  is potential for confusion because the variable names consist of multiple
  characters.
- In many cases, to denote that the variable name is considered as the variable
- in the equation (as opposed to each of the letters in the variable name
- representing quantities to be multiplied together), the variable name has
- been enclosed in brackets, as in {TASX}.
- In addition, variable names always are displayed with upright Roman character
+ In many cases, to denote that the variable name is the variable in the
+ equation (as opposed to each of the letters in the variable name representing
+ quantities to be multiplied together), the variable name has been enclosed
+ in brackets, as in {TASX}.
+ In addition, variable names are displayed with upright Roman character
  sets, while other nomenclature in equations is represented by slanted (script)
  character sets as is conventional for mathematical equations.
  In cases where code segments (usually expressed in C code) are included
  to document how calculations are performed, typewriter character sets indicate
- that the segment is a representation of how the processing is coded.
+ that the segment is a representation of how the processing could be coded.
  Such a code segment is not always a direct copy of the code in use, but
  such code is often the most convenient way to express the algorithm in
  use.
 \end_layout
 
 \begin_layout Subsubsection
-Distiinction Between Original Measurements and Derived Measurements
+Distinction Between Original Measurements and Derived Measurements
 \end_layout
 
 \begin_layout Standard
-Many of the variables in the data files and in this Appendix are derived
- from combinations of measurements.
- The term 
+Many of the variables in the data files and in this report are derived from
+ combinations of measurements.
+ The terms 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1261,30 +3504,77 @@ raw
 \begin_inset Quotes erd
 \end_inset
 
- measurement is often used for a minimally processed output received directly
- from a sensor or instrument.
- Such measurements may be subject to calibration coefficients or other conversio
-n to new units, but otherwise they are a direct representation of the measured
- quantity.
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+original
+\begin_inset Quotes erd
+\end_inset
+
+ measurement
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+measurement!raw
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+measurement!original
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+measurement!derived
+\end_layout
+
+\end_inset
+
+ are sometimes used for a minimally processed output received directly from
+ a sensor or instrument.
+ Such measurements may be converted to engineering units via calibration
+ coefficients, but otherwise they are a direct representation of the output
+ from a sensor.
 \begin_inset Foot
-status collapsed
+status open
 
 \begin_layout Plain Layout
 Calibration coefficients, e.g.
  those used to convert from voltage output from an analog sensor to a measured
  quantity with physical units like 
-\begin_inset Formula $^{\circ}C$
+\begin_inset Formula $\text{º}$
 \end_inset
 
-), are not included or discussed in this appendix but are part of project
+C), are not included or discussed in this report but are part of project
  reports and, in recent years, are included in the header of the NETCDF
  file.
 \end_layout
 
 \end_inset
 
- In contrast, derived variables (e.g., potential temperature) depend on one
- or more 
+ In contrast, derived variables
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+derived variables
+\end_layout
+
+\end_inset
+
+ (e.g., potential temperature) depend on one or more 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1294,11 +3584,22 @@ raw
 
  measurements and are not direct results of output from an instrument.
  For most derived measurements, a box that follows an introductory comment
- is used to document the processing algorithm.
+ is used in this report to document the processing algorithm.
  The box has a line dividing top from bottom; in the top are definitions
- used and explanations (usually with links) regarding variables that enter
- the calculation, while the bottom portion contains the equation, algorithm,
- or code segment that documents how the variable is calculated.
+ used and explanations regarding variables that enter the calculation, while
+ the bottom portion contains the equation, algorithm, or code segment that
+ documents how the variable is calculated.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+adding links to discussion of those variables referenced in the algorithm
+ discussions would be useful...
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -1306,13 +3607,22 @@ Dimensions in Equations
 \end_layout
 
 \begin_layout Standard
-An effort has been made to avoid dimensions in equations except where it
- would be awkward otherwise.
+An effort has been made to avoid dimensions
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+dimensionless equations
+\end_layout
+
+\end_inset
+
+ in equations except where it would be awkward otherwise.
  Some scale factors are introduced for only this purpose (e.g., to avoid dimension
-s in arguments to logarithms or exponentials), and some effort was made
- to isolate dimensions to defined constants rather than requiring that variables
- in equations be used with specific units.
- Some exceptions, however, remain, to be consistent with historical usage.
+s in arguments to logarithmic or exponential functions), and some effort
+ was made to isolate dimensions to defined constants rather than requiring
+ that variables in equations be used with specific units.
+ However, some exceptions remain to be consistent with historical usage.
 \end_layout
 
 \end_body

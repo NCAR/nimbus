@@ -1,0 +1,4011 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="GENERATOR" content="LyX 2.0.3" />
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<title>LyX Document</title>
+
+<!-- Text Class Preamble -->
+<style type="text/css">
+div.toc {
+margin: 2em 0em;
+border-style: solid;
+border-width: 2px 0px;
+padding: 1em 0em;
+}
+div.tochead { font-size: x-large; font-weight: bold; }
+div.lyxtoc-0 {
+margin: 2em 0em 0em 0em;
+font-size: xx-large;
+font-weight: bold;
+}
+div.lyxtoc-1 {
+margin: 1em 0em 0em 0em;
+font-size: x-large;
+font-weight: bold;
+}
+div.lyxtoc-2 {
+margin: 0em 0em 0em 1em;
+font-size: large;
+font-weight: normal;
+}
+div.lyxtoc-3 { margin: 0em 0em 0em 0.5em; font-size: medium; }
+div.lyxtoc-4 { margin: 0em 0em 0em 0.5em; }
+div.lyxtoc-5 { margin: 0em 0em 0em 0.5em; }
+div.lyxtoc-6 { margin: 0em 0em 0em 0.5em; }
+a.tocentry {
+text-decoration: none;
+color: black;
+}
+a.tocentry:visited { color: black; }
+a.tocarrow {
+font-weight: bold;
+text-decoration: none;
+color: #909090;
+}
+a.tocarrow:visited { color: #C0C0C0; }
+</style>
+
+<!-- Preamble Snippets -->
+
+<!-- Layout-provided Styles -->
+<style type='text/css'>
+div.standard {
+margin-bottom: 2ex;
+}
+div.plain_layout {
+text-align: left;
+
+}
+h2.section_ {
+font-weight: bold;
+font-size: x-large;
+margin-top: 1.3ex;
+margin-bottom: 0.7ex;
+text-align: left;
+
+}
+ul.itemize {
+margin-top: 0.7ex;
+margin-bottom: 0.7ex;
+margin-left: 3ex;
+text-align: left;
+
+}
+ol.enumerate {
+margin-top: 0.7ex;
+margin-bottom: 0.7ex;
+margin-left: 3ex;
+text-align: left;
+
+}
+div.lyx_code {
+font-family: monospace;
+margin-top: 0.5ex;
+margin-bottom: 0.5ex;
+margin-left: 3ex;
+margin-right: 3ex;
+text-align: left;
+
+}
+h3.subsection_ {
+font-weight: bold;
+font-size: large;
+margin-top: 0.9ex;
+margin-bottom: 0.5ex;
+text-align: left;
+
+}
+h4.subsubsection_ {
+font-weight: bold;
+font-size: medium;
+margin-top: 0.7ex;
+margin-bottom: 0.4ex;
+text-align: left;
+
+}
+ div.note_comment {
+   display: none;
+ }
+span.foot_label {
+vertical-align: super;
+font-size: smaller;
+font-weight: bold;
+text-decoration: underline;
+}
+div.foot {
+display: inline;
+font-size: small;
+font-weight: medium;
+font-family: serif;
+font-variant: normal;
+font-style: normal;
+}
+div.foot_inner { display: none; }
+div.foot:hover div.foot_inner {
+display: block;
+border: 1px double black;
+margin: 0em 1em;
+padding: 1em;
+}
+div.Frameless { margin: 1em; }
+div.float {
+border: 2px solid black;
+text-align: center;
+}
+div.float-caption {
+text-align: center;
+border: 2px solid black;
+padding: 1ex;
+margin: 1ex;
+}
+div.Boxed {
+border: solid thick black;
+padding: 0.5ex;
+}
+</style>
+</head>
+<body>
+<div class="standard"><a id='magicparlabel-3' />
+<div class="note_comment"><div class="plain_layout"><a id='magicparlabel-7' />
+set topicofnote to algorithm; e.g., Pressure Altitude (PALT)</div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-8' />
+</div>
+
+<div class="standard"><a id='magicparlabel-13' />
+</div>
+<h2 class="section_"><a id='magicparlabel-18' />
+Background</h2>
+<div class="standard"><a id='magicparlabel-23' />
+The CSIRO King Probe was first described in the literature in 1978 by Warren King.<div class="foot"><span class="foot_label">1</span><div class="foot_inner"><div class="plain_layout"><a id='magicparlabel-27' />
+King, W. D., D. A. Parkin and R. J. Handsworth, 1978 A hot-wire liquid water device having fully calculable response characteristics. J. Appl. Meteorol., 17, 1809&ndash;1813</div>
+</div></div>The response characteristics were characterized further by Bradley and King (1979).<div class="foot"><span class="foot_label">2</span><div class="foot_inner"><div class="plain_layout"><a id='magicparlabel-31' />
+.Bradley, S. G., and W. D. King, 1979 Frequency response of the CSIRO Liquid Water Probe. J. Appl. Meteorol., 18, 361&ndash;366.</div>
+</div></div> The key equation from the former paper is reproduced below, with some changes in symbols to be consistent with other usage in these memos. The power <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>P</mi>
+ </mrow></math> required to maintain constant wire temperature <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>T</mi>
+   </mrow>
+   <mrow><mi>w</mi>
+   </mrow>
+  </msub>
+ </mrow></math> was estimated from two terms, the first representing the heat required to warm the impinging water from the air temperature to the wire temperature and then evaporate it, the second (called <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>P</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math> here) representing convective heat loss from the wire in the absence of cloud water:</div>
+
+<div class="standard"><a id='magicparlabel-32' />
+<a id="eq_KingEquation" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow><mi>P</mi><mo>=</mo><mi>l</mi><mi>d</mi><mi>V</mi><mi> &chi; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>[</mo>
+     <mrow>
+      <msub>
+       <mrow><mi>L</mi>
+       </mrow>
+       <mrow><mi>v</mi>
+       </mrow>
+      </msub><mo>+</mo>
+      <msub>
+       <mrow><mi>c</mi>
+       </mrow>
+       <mrow><mi>w</mi>
+       </mrow>
+      </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+      <mrow>
+       <msub>
+        <mrow><mi>T</mi>
+        </mrow>
+        <mrow><mi>w</mi>
+        </mrow>
+       </msub><mo>-</mo><mi>T</mi>
+      </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>]</mo><mo>+</mo><mi> &pi; </mi><mi>l</mi><mi> &lambda; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow><mi>W</mi>
+       </mrow>
+      </msub><mo>-</mo><mi>T</mi>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+     <mstyle mathvariant='normal'>
+      <mrow><mi>N</mi><mi>u</mi>
+      </mrow>
+     </mstyle>
+    </mrow>
+   </mtd>
+   <mtd>(1)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+
+<div class="standard"><a id='magicparlabel-33' />
+with <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>l</mi>
+ </mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>d</mi>
+ </mrow></math> the length and diameter of the sensing element, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>V</mi>
+ </mrow></math> the airspeed, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &chi; </mi>
+ </mrow></math> the liquid water content, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>L</mi>
+   </mrow>
+   <mrow><mi>v</mi>
+   </mrow>
+  </msub>
+ </mrow></math> the latent heat of vaporization of water, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>c</mi>
+   </mrow>
+   <mrow><mi>w</mi>
+   </mrow>
+  </msub>
+ </mrow></math> the specific heat of liquid water, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>T</mi>
+ </mrow></math> the air temperature, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &lambda; </mi>
+ </mrow></math> the thermal conductivity of air, and Nu=<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>d</mi>
+   <msub>
+    <mrow><mi>J</mi>
+    </mrow>
+    <mrow><mi>H</mi>
+    </mrow>
+   </msub><mo>/</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>[</mo>
+   <mrow><mi> &lambda; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+    <mrow>
+     <msub>
+      <mrow><mi>T</mi>
+      </mrow>
+      <mrow><mi>W</mi>
+      </mrow>
+     </msub><mo>-</mo><mi>T</mi>
+    </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>]</mo>
+  </mrow>
+ </mrow></math> (with <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>J</mi>
+   </mrow>
+   <mrow><mi>H</mi>
+   </mrow>
+  </msub>
+ </mrow></math> the heat flux) is the Nusselt number associated with convective heat transfer from the wire. King et al.&nbsp;(1978) recommend determining Nu as a function of Reynolds number Re=<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi> &rho; </mi>
+    </mrow>
+    <mrow><mi>d</mi>
+    </mrow>
+   </msub><mi>V</mi><mi>d</mi><mo>/</mo><mi> &mu; </mi>
+  </mrow>
+ </mrow></math> (with <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi> &rho; </mi>
+   </mrow>
+   <mrow><mi>d</mi>
+   </mrow>
+  </msub>
+ </mrow></math> the density of dry air and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &mu; </mi>
+ </mrow></math> the viscosity of air, all evaluated at a temperature that is the mean of the wire and air temperatures) from flight tests in clear air).</div>
+
+<div class="standard"><a id='magicparlabel-34' />
+The following can be used to find values to use for the variables entering (<a href="#eq_KingEquation">1</a>):</div>
+
+<ul class="itemize"><li class="itemize_item"><a id='magicparlabel-35' />
+Pruppacher and Klett (1978, p.&nbsp;418) give <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &lambda; </mi>
+ </mrow></math>=(5.69+0.017(<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>T</mi><mo>-</mo>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>))<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mo> &times; </mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>5</mn>
+     </mrow>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math>cal&thinsp;cm<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math><math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> or, using 4.184 J/cal, 0.0238+0.000071(<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>T</mi><mo>-</mo>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>) J&thinsp;m<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>K<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>. </li>
+<li class="itemize_item"><a id='magicparlabel-36' />
+Pruppacher and Klett (1978, p.&nbsp;323) give <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &mu; </mi><mo>=</mo><mo>(</mo><mn>1.718</mn><mo>+</mo><mn>0.0049</mn><mo>(</mo>
+  </mrow>
+ </mrow></math><math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>T</mi><mo>-</mo>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>)-<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mn>1.2</mn><mo> &times; </mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>5</mn>
+     </mrow>
+    </mrow>
+   </msup><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mi>T</mi><mo>-</mo>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mn>0</mn>
+     </mrow>
+    </msub>
+    <msup>
+     <mrow><mo>)</mo>
+     </mrow>
+     <mrow><mn>2</mn>
+     </mrow>
+    </msup><mi> &delta; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+    <mrow><mi>T</mi><mo>-</mo>
+     <msub>
+      <mrow><mi>T</mi>
+      </mrow>
+      <mrow><mn>0</mn>
+      </mrow>
+     </msub>
+    </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo> &times; </mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>4</mn>
+     </mrow>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math> poise, where <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mi>T</mi><mo>-</mo>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mn>0</mn>
+     </mrow>
+    </msub>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math> is 0 for <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>T</mi><mo>&gt;</mo>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math> and 1 for <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>T</mi><mo>&lt;</mo>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>. Using 1 poise = 1 g&thinsp;cm<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>= 0.1&thinsp;kg&thinsp;m<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> leads to <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &mu; </mi><mo>=</mo>
+  </mrow>
+ </mrow></math><math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mo>(</mo><mn>1.718</mn><mo>+</mo><mn>0.0049</mn><mo>(</mo>
+  </mrow>
+ </mrow></math><math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>T</mi><mo>-</mo>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>)-<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mn>1.2</mn><mo> &times; </mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>5</mn>
+     </mrow>
+    </mrow>
+   </msup><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mi>T</mi><mo>-</mo>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mn>0</mn>
+     </mrow>
+    </msub>
+    <msup>
+     <mrow><mo>)</mo>
+     </mrow>
+     <mrow><mn>2</mn>
+     </mrow>
+    </msup><mi> &delta; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+    <mrow><mi>T</mi><mo>-</mo>
+     <msub>
+      <mrow><mi>T</mi>
+      </mrow>
+      <mrow><mn>0</mn>
+      </mrow>
+     </msub>
+    </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo> &times; </mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>5</mn>
+     </mrow>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math>&thinsp;kg&thinsp;m<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>.</li>
+<li class="itemize_item"><a id='magicparlabel-37' />
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>L</mi>
+   </mrow>
+   <mrow><mi>v</mi>
+   </mrow>
+  </msub>
+ </mrow></math> = (2.501 × 10<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mn>6</mn>
+   </mrow>
+  </msup>
+ </mrow></math>+2370(<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>T</mi><mo>-</mo>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub><mo>)</mo>
+  </mrow>
+ </mrow></math> J kg<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> (cf., e.g., Davies-Jones 2009)</li>
+<li class="itemize_item"><a id='magicparlabel-38' />
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>c</mi>
+   </mrow>
+   <mrow><mi>w</mi>
+   </mrow>
+  </msub>
+ </mrow></math>=1875 J kg<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>K<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math></li>
+<li class="itemize_item"><a id='magicparlabel-39' />
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>c</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>p</mi><mi>d</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math>= <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <mfrac>
+    <mrow><mn>7</mn>
+    </mrow>
+    <mrow><mn>2</mn>
+    </mrow>
+   </mfrac>
+   <msub>
+    <mrow><mi>R</mi>
+    </mrow>
+    <mrow><mi>d</mi>
+    </mrow>
+   </msub><mo>=</mo>
+  </mrow>
+ </mrow></math>1.00470<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mo> &times; </mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow><mn>3</mn>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math> J<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mspace width="6px" />
+ </mrow></math>kg<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>K<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math></li>
+</ul>
+<div class="standard"><a id='magicparlabel-40' />
+The choice of operating temperature should be made with consideration of three factors:</div>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-41' />
+A high temperature increases the dry-air heat losses and so increases the uncertainty introduced by the dry term.using </li>
+<li class="enumerate_item"><a id='magicparlabel-42' />
+A low temperature may allow the accumulation of water and lead to errors when that water is shed instead of evaporated. From Fig.&nbsp;A1 in King et al., it is evident that a relatively high operating temperature is needed to avoid shedding at GV flight speeds, which are up to about 3-4 times as high as used for this plot. Because the function plotted varies as <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup>
+   <mrow><mi> &chi; </mi>
+   </mrow>
+   <mrow>
+    <mrow><mn>4</mn><mo>/</mo><mn>3</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> and linearly as <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>V</mi>
+ </mrow></math>, the liquid water content that will lead to shedding at three times the flight speed is about <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mn>1</mn><mo>/</mo>
+   <msup>
+    <mrow><mn>3</mn>
+    </mrow>
+    <mrow>
+     <mrow><mn>3</mn><mo>/</mo><mn>4</mn>
+     </mrow>
+    </mrow>
+   </msup><mo> &sime; </mo><mn>0.44</mn>
+  </mrow>
+ </mrow></math> times as large as in this plot, which emphasizes that the temperature should be above about 75<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C to avoid shedding from saturation. </li>
+<li class="enumerate_item"><a id='magicparlabel-43' />
+The temperature should be below the boiling point of water (according to King et al., 1978) to avoid formation of an insulating vapor layer on the surface of the probe and possible reduced evaporation times and/or shedding. At GV flight altitudes, the boiling point can be lowered significantly, but there is usually no liquid water content at such altitudes. To ensure operation to -35<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C, where the typical pressure is around 370 hPa, this requirement would call for a temperature below about 75<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C. </li>
+</ol>
+<div class="standard"><a id='magicparlabel-44' />
+These requirements appear to call for a wire temperature around 75<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C for the GV and perhaps higher for the C-130 to account for the lower flight speed and potential to encounter higher values of liquid water content. However, early operators of the probe found that the third requirement was not needed, so probes are often operated above the boiling point now. The probe recently has been operated well above this temperature, at about 130<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C for the GV and 162<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C for the C-130 in VOCALS.</div>
+<h2 class="section_"><a id='magicparlabel-45' />
+Present Processing Code</h2>
+<div class="standard"><a id='magicparlabel-50' />
+As an example, in PREDICT, the probe temperature was <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mn>13</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow><mo> &cir; </mo>
+    </mrow>
+   </msup><mi>C</mi>
+  </mrow>
+ </mrow></math>, and the element diameter was d=0.1805. The element length is not in the netCDF header; it is coded into the routine 'kinglwc.c' as 2.1 cm. Dependencies do not include a source for the cloud number concentration, used as a threshold (value 0.25) below which a baseline value is subtracted from the resulting liquid water content, as described below.</div>
+
+<div class="standard"><a id='magicparlabel-51' />
+The existing code proceeds as follows:</div>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-52' />
+Express temperatures in kelvin; then find a mean temperature to use for air properties
+<br />
+
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mi>m</mi>
+    </mrow>
+   </msub><mo>=</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mi>W</mi>
+     </mrow>
+    </msub><mo>+</mo><mi>T</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>/</mo><mn>2</mn>
+  </mrow>
+ </mrow></math></li>
+<li class="enumerate_item"><a id='magicparlabel-53' />
+Find the thermal conductivity, viscosity, and dry-air density:
+<br />
+
+<div class='Frameless' style='width: 93%; '><div class="plain_layout"><a id='magicparlabel-57' />
+<a id="eq_thermalConductivityNow" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow><mi> &lambda; </mi><mo>=</mo><mn>5.8</mn><mo> &times; </mo><mn>1</mn>
+     <msup>
+      <mrow><mn>0</mn>
+      </mrow>
+      <mrow>
+       <mrow><mo>-</mo><mn>5</mn>
+       </mrow>
+      </mrow>
+     </msup>
+     <mfrac>
+      <mrow><mn>398</mn>
+      </mrow>
+      <mrow>
+       <mrow><mn>120</mn><mo>+</mo>
+        <msub>
+         <mrow><mi>T</mi>
+         </mrow>
+         <mrow><mi>m</mi>
+         </mrow>
+        </msub>
+       </mrow>
+      </mrow>
+     </mfrac><mspace width="6px" />
+     <msup>
+      <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+       <mfrac>
+        <mrow>
+         <msub>
+          <mrow><mi>T</mi>
+          </mrow>
+          <mrow><mi>m</mi>
+          </mrow>
+         </msub>
+        </mrow>
+        <mrow>
+         <msub>
+          <mrow><mi>T</mi>
+          </mrow>
+          <mrow><mn>0</mn>
+          </mrow>
+         </msub>
+        </mrow>
+       </mfrac><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+      </mrow>
+      <mrow>
+       <mrow><mn>3</mn><mo>/</mo><mn>2</mn>
+       </mrow>
+      </mrow>
+     </msup>
+    </mrow>
+   </mtd>
+   <mtd>(2)
+   </mtd>
+  </mtr>
+ </mtable></math><a id="eq_ViscosityNow" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow><mi> &mu; </mi><mo>=</mo><mn>1.718</mn><mo> &times; </mo><mn>1</mn>
+     <msup>
+      <mrow><mn>0</mn>
+      </mrow>
+      <mrow>
+       <mrow><mo>-</mo><mn>4</mn>
+       </mrow>
+      </mrow>
+     </msup>
+     <mfrac>
+      <mrow><mn>393</mn>
+      </mrow>
+      <mrow>
+       <mrow><mn>120</mn><mo>+</mo>
+        <msub>
+         <mrow><mi>T</mi>
+         </mrow>
+         <mrow><mi>m</mi>
+         </mrow>
+        </msub>
+       </mrow>
+      </mrow>
+     </mfrac><mspace width="6px" />
+     <msup>
+      <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+       <mfrac>
+        <mrow>
+         <msub>
+          <mrow><mi>T</mi>
+          </mrow>
+          <mrow><mi>m</mi>
+          </mrow>
+         </msub>
+        </mrow>
+        <mrow>
+         <msub>
+          <mrow><mi>T</mi>
+          </mrow>
+          <mrow><mn>0</mn>
+          </mrow>
+         </msub>
+        </mrow>
+       </mfrac><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+      </mrow>
+      <mrow>
+       <mrow><mn>3</mn><mo>/</mo><mn>2</mn>
+       </mrow>
+      </mrow>
+     </msup>
+    </mrow>
+   </mtd>
+   <mtd>(3)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+
+<div class="plain_layout"><a id='magicparlabel-58' />
+<a id="eq_densityNow" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow>
+     <msub>
+      <mrow><mi> &rho; </mi>
+      </mrow>
+      <mrow><mi>d</mi>
+      </mrow>
+     </msub><mo>=</mo>
+     <mfrac>
+      <mrow><mi>p</mi>
+      </mrow>
+      <mrow>
+       <mrow><mn>2870.5</mn>
+        <msub>
+         <mrow><mi>T</mi>
+         </mrow>
+         <mrow><mi>m</mi>
+         </mrow>
+        </msub>
+       </mrow>
+      </mrow>
+     </mfrac>
+    </mrow>
+   </mtd>
+   <mtd>(4)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+</div>
+<br />
+
+where (<a href="#eq_thermalConductivityNow">2</a>) gives the thermal conductivity in cal&thinsp;s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>cm<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math><math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>, (<a href="#eq_ViscosityNow">3</a>) gives the viscosity in CGS units of g&thinsp;cm<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>, and (<a href="#eq_densityNow">4</a>) gives the density in g&thinsp;cm<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>3</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> and uses the gas constant for dry air of 287.05&thinsp;J&thinsp;kg<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>K<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>. </li>
+<li class="enumerate_item"><a id='magicparlabel-59' />
+Calculate the Reynolds number:
+<br />
+
+
+<div class='Frameless'><div class="lyx_code"><div class="lyx_code_item"><a id='magicparlabel-63' />
+re1 = 100.0 * dens1 * tasx * diam / visc1;</div>
+</div>
+</div>
+<br />
+
+where <em>dens1</em> is the density calculated from (<a href="#eq_densityNow">4</a>), <em>tasx</em> is the true airspeed in m/s and is converted to cm/s by the factor of 100.0, <em>diam </em>is the wire diameter in cm, and <em>visc1 </em>is the viscosity from (<a href="#eq_ViscosityNow">3</a>) in CGS units, to produce a dimensionless result for <em>re1</em>. </li>
+<li class="enumerate_item"><a id='magicparlabel-64' />
+Then the Prandtl Number <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>Pr</mi><mo>&#8289;</mo>
+   <mrow><mo>=</mo>
+    <msub>
+     <mrow><mi>c</mi>
+     </mrow>
+     <mrow><mi>p</mi>
+     </mrow>
+    </msub>
+   </mrow><mi> &mu; </mi><mo>/</mo><mi> &lambda; </mi>
+  </mrow>
+ </mrow></math> is calculated from the line of code &ldquo;prf1=0.24*visc1/cnd1;&rdquo;. The specific heat of dry air in CGS units is 0.24 cal&thinsp;g<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>K<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>, so using units of cal&thinsp;cm<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>K<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>for &ldquo;cnd1&rdquo; is appropriate and, with other units CGS, gives a dimensionless result. The value is about Pr<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mo> &sime; </mo><mn>0.735</mn>
+  </mrow>
+ </mrow></math> for normal flight conditions. A second Prandtl Number, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mstyle mathvariant='normal'>
+   <mrow><mi>P</mi>
+    <msub>
+     <mrow><mi>r</mi>
+     </mrow>
+     <mrow><mi>w</mi>
+     </mrow>
+    </msub>
+   </mrow>
+  </mstyle>
+ </mrow></math> or &ldquo;prw1&rdquo;, is evaluated using values for the viscosity and conductivity at the wire temperature <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>T</mi>
+   </mrow>
+   <mrow><mi>w</mi>
+   </mrow>
+  </msub>
+ </mrow></math>. </li>
+<li class="enumerate_item"><a id='magicparlabel-65' />
+The power required for the dry term in (<a href="#eq_KingEquation">1</a>) is evaluated as follows:
+<br />
+
+<div class='Frameless' style='width: 93%; '><div class="plain_layout"><a id='magicparlabel-69' />
+<a id="eq_DryPowerTerm" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow>
+     <msub>
+      <mrow><mi>P</mi>
+      </mrow>
+      <mrow>
+       <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+       </mrow>
+      </mrow>
+     </msub><mo>=</mo><mn>0.26</mn><mspace width="6px" />
+     <mstyle mathvariant='normal'>
+      <mrow><mi>R</mi>
+       <msup>
+        <mrow><mi>e</mi>
+        </mrow>
+        <mrow><mn>0.6</mn>
+        </mrow>
+       </msup>
+      </mrow>
+     </mstyle>
+     <msup>
+      <mrow>
+       <mstyle mathvariant='normal'>
+        <mrow><mi>P</mi><mi>r</mi>
+        </mrow>
+       </mstyle>
+      </mrow>
+      <mrow><mn>0.37</mn>
+      </mrow>
+     </msup>
+     <msup>
+      <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+       <mfrac>
+        <mrow>
+         <mstyle mathvariant='normal'>
+          <mrow><mi>P</mi><mi>r</mi>
+          </mrow>
+         </mstyle>
+        </mrow>
+        <mrow>
+         <msub>
+          <mrow>
+           <mstyle mathvariant='normal'>
+            <mrow><mi>P</mi><mi>r</mi>
+            </mrow>
+           </mstyle>
+          </mrow>
+          <mrow><mi>w</mi>
+          </mrow>
+         </msub>
+        </mrow>
+       </mfrac><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+      </mrow>
+      <mrow><mn>0.25</mn>
+      </mrow>
+     </msup><mi> &pi; </mi><mi>l</mi><mi> &lambda; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow><mi>w</mi>
+       </mrow>
+      </msub><mo>-</mo><mi>T</mi>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>/</mo><mn>0.239</mn>
+    </mrow>
+   </mtd>
+   <mtd>(5)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+</div>
+<br />
+
+where the factor 1/0.239=4.184&thinsp;J/cal is the conversion factor to transform the heat loss from calories (used for <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &lambda; </mi>
+ </mrow></math>) to Joules.<div class="foot"><span class="foot_label">3</span><div class="foot_inner"><div class="plain_layout"><a id='magicparlabel-73' />
+It might appear that there is a problem with units in (<a href="#eq_DryPowerTerm">5</a>) because dividing by 0.239 converts from calories to MKS units of joules but <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>l</mi>
+ </mrow></math> remains the length in cm. However, the resulting units are those of <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>l</mi><mi> &lambda; </mi><mi>T</mi>
+  </mrow>
+ </mrow></math> so the units are cm <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mo> &times; </mo>
+ </mrow></math> J&thinsp;cm<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>K<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math><math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mo> &times; </mo>
+ </mrow></math> K = J/s = watts as required.</div>
+</div></div> This requires that the Nusselt number be
+<br />
+
+<div class='Frameless' style='width: 93%; '><div class="plain_layout"><a id='magicparlabel-77' />
+<a id="eq_NuFromCode" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow><mi>Nu</mi><mo>&#8289;</mo><mo>=</mo><mn>0.26</mn><mspace width="6px" />
+     <mstyle mathvariant='normal'>
+      <mrow><mi>R</mi>
+       <msup>
+        <mrow><mi>e</mi>
+        </mrow>
+        <mrow><mn>0.6</mn>
+        </mrow>
+       </msup>
+      </mrow>
+     </mstyle>
+     <msup>
+      <mrow>
+       <mstyle mathvariant='normal'>
+        <mrow><mi>P</mi><mi>r</mi>
+        </mrow>
+       </mstyle>
+      </mrow>
+      <mrow><mn>0.37</mn>
+      </mrow>
+     </msup>
+     <msup>
+      <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+       <mfrac>
+        <mrow>
+         <mstyle mathvariant='normal'>
+          <mrow><mi>P</mi><mi>r</mi>
+          </mrow>
+         </mstyle>
+        </mrow>
+        <mrow>
+         <msub>
+          <mrow>
+           <mstyle mathvariant='normal'>
+            <mrow><mi>P</mi><mi>r</mi>
+            </mrow>
+           </mstyle>
+          </mrow>
+          <mrow><mi>w</mi>
+          </mrow>
+         </msub>
+        </mrow>
+       </mfrac><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+      </mrow>
+      <mrow><mn>0.25</mn>
+      </mrow>
+     </msup>
+    </mrow>
+   </mtd>
+   <mtd>(6)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+</div></li>
+<li class="enumerate_item"><a id='magicparlabel-78' />
+After determining the power required to keep the wire hot in dry air, this power can be subtracted from the measured power to determine the power required to evaporate the liquid water.
+<br />
+
+The code now in use is equivalent to 
+<br />
+
+<a id="eq_LWCnimbus" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow><mi> &chi; </mi><mo>=</mo>
+     <mfrac>
+      <mrow>
+       <mrow><mn>1</mn>
+        <msup>
+         <mrow><mn>0</mn>
+         </mrow>
+         <mrow><mn>6</mn>
+         </mrow>
+        </msup><mo> &times; </mo><mn>0.239</mn><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+        <mrow><mi>p</mi><mo>-</mo>
+         <msub>
+          <mrow><mi>p</mi>
+          </mrow>
+          <mrow>
+           <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+           </mrow>
+          </mrow>
+         </msub>
+        </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+       </mrow>
+      </mrow>
+      <mrow>
+       <mrow><mi>l</mi><mspace width="6px" /><mi>d</mi><mspace width="6px" /><mi>V</mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>[</mo>
+        <mrow><mn>597.3</mn><mo>+</mo><mn>373.16</mn><mo>-</mo><mi>T</mi>
+        </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>]</mo>
+       </mrow>
+      </mrow>
+     </mfrac>
+    </mrow>
+   </mtd>
+   <mtd>(7)
+   </mtd>
+  </mtr>
+ </mtable></math>
+<br />
+
+where <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>T</mi><mo>=</mo><mi>A</mi><mi>T</mi><mi>X</mi><mo>+</mo><mn>273.15</mn>
+  </mrow>
+ </mrow></math> and the factor <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow><mn>6</mn>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math> converts from cm<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>3</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> to m<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>3</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> to give final units of g/m<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mn>3</mn>
+   </mrow>
+  </msup>
+ </mrow></math>. As discussed below, this is only correct for an evaporation temperature of 100.01<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C and is independent of the wire temperature included in the &ldquo;defaults&rdquo; file. This is discussed more later in this memo.</li>
+<li class="enumerate_item"><a id='magicparlabel-79' />
+Finally, a baseline value is calculated by recording the average value of <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &chi; </mi>
+ </mrow></math> when out-of-cloud, in a running average, and then subtracting that baseline from the final result. Out-of-cloud conditions correspond to measured 2-s-average cloud droplet concentration below some low threshold, typically 0.25 cm<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>3</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>, and the baseline value is averaged over 30&thinsp;s of accumulated values for each of which the threshold concentration is met. </li>
+</ol>
+<h2 class="section_"><a id='magicparlabel-80' />
+Reasons For Proposing Changes</h2>
+
+<ul class="itemize"><li class="itemize_item"><a id='magicparlabel-85' />
+The thermal conductivity of air appears to be incorrect and is undocumented and unreferenced. This is an important property that affects the magnitude of the dry-air term, so incorrect values can affect the accuracy of results and lead to incorrect calibrations of the Nusselt number. A comparison of the thermal-conductivity equation (<a href="#eq_thermalConductivityNow">2</a>) to the formula of Pruppacher and Klett gives, for <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mi>m</mi>
+    </mrow>
+   </msub><mo>=</mo><mn>273.15</mn><mo>,</mo>
+  </mrow>
+ </mrow></math>5.87 vs 5.69 (P&amp;K); for 293.15&thinsp;K, 6.21 vs 6.03; for 243.15&thinsp;K, 5.34 vs 5.18 (P&amp;K). The values being used are thus about 3% high in comparison to those of Pruppacher and Klett. This difference is significant and worth correcting in future processing, esp.&nbsp;because I could find no documentation or reference for the formula being used. However, the only effects have been on the dry-air term, so with baseline removal the error would be removed and there should be no need for reprocessing of past data for this reason.<div class="foot"><span class="foot_label">4</span><div class="foot_inner"><div class="plain_layout"><a id='magicparlabel-89' />
+There does not appear to be a similar problem for viscosity. To see this, linearize (<a href="#eq_ViscosityNow">3</a>) to first order in temperature for comparison to the formula from Pruppacher and Klett, by rewriting as:<div class='Frameless'><div class="plain_layout"><a id='magicparlabel-93' />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow>
+     <mfrac>
+      <mrow><mn>393</mn>
+      </mrow>
+      <mrow>
+       <mrow><mn>120</mn><mo>+</mo>
+        <msub>
+         <mrow><mi>T</mi>
+         </mrow>
+         <mrow><mi>m</mi>
+         </mrow>
+        </msub>
+       </mrow>
+      </mrow>
+     </mfrac><mspace width="6px" />
+     <msup>
+      <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+       <mfrac>
+        <mrow>
+         <msub>
+          <mrow><mi>T</mi>
+          </mrow>
+          <mrow><mi>m</mi>
+          </mrow>
+         </msub>
+        </mrow>
+        <mrow>
+         <msub>
+          <mrow><mi>T</mi>
+          </mrow>
+          <mrow><mn>0</mn>
+          </mrow>
+         </msub>
+        </mrow>
+       </mfrac><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+      </mrow>
+      <mrow>
+       <mrow><mn>3</mn><mo>/</mo><mn>2</mn>
+       </mrow>
+      </mrow>
+     </msup>
+    </mrow>
+   </mtd>
+   <mtd><mo>=</mo>
+   </mtd>
+   <mtd>
+    <mrow>
+     <mfrac>
+      <mrow><mn>1</mn>
+      </mrow>
+      <mrow>
+       <mrow><mn>1</mn><mo>+</mo>
+        <mfrac>
+         <mrow>
+          <mrow>
+           <msub>
+            <mrow><mi>T</mi>
+            </mrow>
+            <mrow><mi>m</mi>
+            </mrow>
+           </msub><mo>-</mo>
+           <msub>
+            <mrow><mi>T</mi>
+            </mrow>
+            <mrow><mn>0</mn>
+            </mrow>
+           </msub>
+          </mrow>
+         </mrow>
+         <mrow><mn>393</mn>
+         </mrow>
+        </mfrac>
+       </mrow>
+      </mrow>
+     </mfrac><mspace width="6px" />
+     <mfrac>
+      <mrow>
+       <msup>
+        <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+         <mrow><mn>1</mn><mo>+</mo>
+          <mfrac>
+           <mrow>
+            <mrow>
+             <msub>
+              <mrow><mi>T</mi>
+              </mrow>
+              <mrow><mi>m</mi>
+              </mrow>
+             </msub><mo>-</mo>
+             <msub>
+              <mrow><mi>T</mi>
+              </mrow>
+              <mrow><mn>0</mn>
+              </mrow>
+             </msub>
+            </mrow>
+           </mrow>
+           <mrow>
+            <msub>
+             <mrow><mi>T</mi>
+             </mrow>
+             <mrow><mn>0</mn>
+             </mrow>
+            </msub>
+           </mrow>
+          </mfrac>
+         </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+        </mrow>
+        <mrow>
+         <mrow><mn>3</mn><mo>/</mo><mn>2</mn>
+         </mrow>
+        </mrow>
+       </msup>
+      </mrow>
+      <mrow><mn>1</mn>
+      </mrow>
+     </mfrac>
+    </mrow>
+   </mtd>
+  </mtr>
+  <mtr>
+   <mtd><mrow/>
+   </mtd>
+   <mtd><mo> &sime; </mo>
+   </mtd>
+   <mtd>
+    <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow><mn>1</mn><mo>-</mo>
+      <mfrac>
+       <mrow>
+        <mrow>
+         <msub>
+          <mrow><mi>T</mi>
+          </mrow>
+          <mrow><mi>m</mi>
+          </mrow>
+         </msub><mo>-</mo>
+         <msub>
+          <mrow><mi>T</mi>
+          </mrow>
+          <mrow><mn>0</mn>
+          </mrow>
+         </msub>
+        </mrow>
+       </mrow>
+       <mrow><mn>393</mn>
+       </mrow>
+      </mfrac>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow><mn>1</mn><mo>+</mo>
+      <mfrac>
+       <mrow>
+        <mrow><mn>3</mn><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+         <mrow>
+          <msub>
+           <mrow><mi>T</mi>
+           </mrow>
+           <mrow><mi>m</mi>
+           </mrow>
+          </msub><mo>-</mo>
+          <msub>
+           <mrow><mi>T</mi>
+           </mrow>
+           <mrow><mn>0</mn>
+           </mrow>
+          </msub>
+         </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+        </mrow>
+       </mrow>
+       <mrow>
+        <mrow><mn>2</mn>
+         <msub>
+          <mrow><mi>T</mi>
+          </mrow>
+          <mrow><mn>0</mn>
+          </mrow>
+         </msub>
+        </mrow>
+       </mrow>
+      </mfrac>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+    </mrow>
+   </mtd>
+  </mtr>
+  <mtr>
+   <mtd><mrow/>
+   </mtd>
+   <mtd><mo> &sime; </mo>
+   </mtd>
+   <mtd>
+    <mrow><mn>1</mn><mo>+</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow>
+      <mfrac>
+       <mrow><mn>3</mn>
+       </mrow>
+       <mrow>
+        <mrow><mn>2</mn>
+         <msub>
+          <mrow><mi>T</mi>
+          </mrow>
+          <mrow><mn>0</mn>
+          </mrow>
+         </msub>
+        </mrow>
+       </mrow>
+      </mfrac><mo>-</mo>
+      <mfrac>
+       <mrow><mn>1</mn>
+       </mrow>
+       <mrow><mn>393</mn>
+       </mrow>
+      </mfrac>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow><mi>m</mi>
+       </mrow>
+      </msub><mo>-</mo>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow><mn>0</mn>
+       </mrow>
+      </msub>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+    </mrow>
+   </mtd>
+  </mtr>
+  <mtr>
+   <mtd><mrow/>
+   </mtd>
+   <mtd><mo> &sime; </mo>
+   </mtd>
+   <mtd>
+    <mrow><mo> &sime; </mo><mn>1</mn><mo>+</mo><mn>2.9</mn><mo> &times; </mo><mn>1</mn>
+     <msup>
+      <mrow><mn>0</mn>
+      </mrow>
+      <mrow>
+       <mrow><mo>-</mo><mn>3</mn>
+       </mrow>
+      </mrow>
+     </msup><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow><mi>m</mi>
+       </mrow>
+      </msub><mo>-</mo>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow><mn>0</mn>
+       </mrow>
+      </msub>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+    </mrow>
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+</div>
+<br />
+
+This can be compared to the linear term in the Pruppacher and Klett formula, with linear coefficient 0.0049/1.718=2.85<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mo> &times; </mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>3</mn>
+     </mrow>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math>. The linear change with temperature is thus the same, within expected accuracy limits, for the two formulas. The values are also essentially the same at 0<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C, so there is no apparent problem with the viscosity formula. Equation (<a href="#eq_ViscosityNow">3</a>) gives viscosity in CGS units (g&thinsp;cm<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>).</div>
+</div></div></li>
+<li class="itemize_item"><a id='magicparlabel-94' />
+The water is assumed to evaporate at 100<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C, regardless of the wire temperaature. The reason is that the wire temperature in recent usage has been higher than this, and water cannot be heated above its boiling point without evaporating from boiling. According to King et al.&nbsp;(1978), the liquid water content should be determined as follows:
+<br />
+
+<div class='Frameless' style='width: 93%; '><div class="plain_layout"><a id='magicparlabel-98' />
+<a id="eq_LWC" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow><mi> &chi; </mi><mo>=</mo>
+     <mfrac>
+      <mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+       <mrow><mi>P</mi><mo>-</mo>
+        <msub>
+         <mrow><mi>P</mi>
+         </mrow>
+         <mrow>
+          <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+          </mrow>
+         </mrow>
+        </msub>
+       </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+      </mrow>
+      <mrow>
+       <mrow><mi>l</mi><mi>d</mi><mi>V</mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>[</mo>
+        <mrow>
+         <msub>
+          <mrow><mi>L</mi>
+          </mrow>
+          <mrow><mi>v</mi>
+          </mrow>
+         </msub><mo>+</mo>
+         <msub>
+          <mrow><mi>c</mi>
+          </mrow>
+          <mrow><mi>w</mi>
+          </mrow>
+         </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+         <mrow>
+          <msub>
+           <mrow><mi>T</mi>
+           </mrow>
+           <mrow><mi>w</mi>
+           </mrow>
+          </msub><mo>-</mo><mi>T</mi>
+         </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+        </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>]</mo>
+       </mrow>
+      </mrow>
+     </mfrac>
+    </mrow>
+   </mtd>
+   <mtd>(8)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+</div>
+<br />
+
+
+<br />
+
+The latent heat of vaporization is reasonably represented by 597.3/0.239=2499 J/g (vs 2501 J/g at 0<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C), and the specific heat of water is 1 cal/g, so (<a href="#eq_LWCnimbus">7</a>) is approximately correct if the wire temperature is 100.01<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C or higher and the probe is at sea level. However, the boiling point decreases with altitude, so for wire temperature higher than the boiling point <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>T</mi>
+   </mrow>
+   <mrow><mi>W</mi>
+   </mrow>
+  </msub>
+ </mrow></math> in (<a href="#eq_LWC">8</a>) should be replaced by the boiling point <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>T</mi>
+   </mrow>
+   <mrow><mi>b</mi>
+   </mrow>
+  </msub>
+ </mrow></math> (in the same units as used for T). Also, the temperature variation of <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>L</mi>
+   </mrow>
+   <mrow><mi>v</mi>
+   </mrow>
+  </msub>
+ </mrow></math> is significant, so a value of <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>L</mi>
+   </mrow>
+   <mrow><mi>v</mi>
+   </mrow>
+  </msub>
+ </mrow></math> applicable at <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>T</mi>
+   </mrow>
+   <mrow><mi>b</mi>
+   </mrow>
+  </msub>
+ </mrow></math> should be used in (<a href="#eq_LWC">8</a>). A possible choice is <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>L</mi>
+    </mrow>
+    <mrow><mi>v</mi>
+    </mrow>
+   </msub><mo>=</mo>
+   <msub>
+    <mrow><mi>L</mi>
+    </mrow>
+    <mrow>
+     <mrow><mi>v</mi><mn>0</mn>
+     </mrow>
+    </mrow>
+   </msub><mo>+</mo>
+   <msub>
+    <mrow><mi>L</mi>
+    </mrow>
+    <mrow>
+     <mrow><mi>v</mi><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mi>b</mi>
+     </mrow>
+    </msub><mo>-</mo>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mn>0</mn>
+     </mrow>
+    </msub>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math> where <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>T</mi>
+   </mrow>
+   <mrow><mi>b</mi>
+   </mrow>
+  </msub>
+ </mrow></math> is the wire temperature and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>T</mi>
+   </mrow>
+   <mrow><mn>0</mn>
+   </mrow>
+  </msub>
+ </mrow></math> is the reference temperature for <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>L</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>v</mi><mn>0</mn>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math>, 0<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C. Values for <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>L</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>v</mi><mn>0</mn>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>L</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>v</mi><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math>, from Davies and Jones (2009), are respectively 2.501<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mo> &times; </mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow><mn>6</mn>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math> J&thinsp;kg<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> and 2370&thinsp;J&thinsp;kg<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>K<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>. Using the 0<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msup><mrow />
+    <mrow><mo> &cir; </mo>
+    </mrow>
+   </msup><mi>C</mi>
+  </mrow>
+ </mrow></math> value leads to an underestimate of about 10% in <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &chi; </mi>
+ </mrow></math>.</li>
+<li class="itemize_item"><a id='magicparlabel-99' />
+Mixed units (mostly CGS, but with calorie as the unit of energy, with results for power in MKS units) lead to confusion in the documentation and in the code (e.g., the apparent omission of the specific heat of water, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>c</mi>
+    </mrow>
+    <mrow><mi>w</mi>
+    </mrow>
+   </msub><mo>,</mo>
+  </mrow>
+ </mrow></math> in (<a href="#eq_LWCnimbus">7</a>) because its value is 1 cal/<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> and so does not appear explicitly in the code). It would be preferable to use consistent MKS units in the documentation and in the code.</li>
+<li class="itemize_item"><a id='magicparlabel-100' />
+The relationship giving Nusselt number as a function of Reynolds number is inconsistent with flight data for the GV and should be replaced. See the discussion below under &ldquo;Analysis&rdquo;.</li>
+<li class="itemize_item"><a id='magicparlabel-101' />
+The current representation of the dry-air term as a function of Prandtl number, although consistent with usage in fluid engineering, is misleading because there is little variation in the Prandtl number in the atmosphere. Attempts to determine the variation with Pr only complicate fits and documentation without improving the representation of the dry-air term. I have not found a source for (<a href="#eq_NuFromCode">6</a>), and it is not consistent with the expression given in the note [need link] on King Liquid Water Content by Baumgarder (written sometime in the 1990s, I think), which states that the dry-air power is obtained from a Nusselt number in the form Nu=A&thinsp;Re<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mi>x</mi>
+   </mrow>
+  </msup>
+ </mrow></math>Pr<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mi>y</mi>
+   </mrow>
+  </msup>
+ </mrow></math> and does not mention Pr<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mi>w</mi>
+   </mrow>
+  </msub>
+ </mrow></math>. Equations (<a href="#eq_thermalConductivityNow">2</a>) and (<a href="#eq_ViscosityNow">3</a>) show that <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &lambda; </mi>
+ </mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &mu; </mi>
+ </mrow></math> have essentially the same temperature dependence, so their temperature dependences should cancel in the ratio (Pr/Pr<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mi>w</mi>
+   </mrow>
+  </msub>
+ </mrow></math>=<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <mfrac>
+    <mrow><mi> &mu; </mi>
+    </mrow>
+    <mrow>
+     <msub>
+      <mrow><mi> &mu; </mi>
+      </mrow>
+      <mrow><mi>w</mi>
+      </mrow>
+     </msub>
+    </mrow>
+   </mfrac>
+   <mfrac>
+    <mrow>
+     <msub>
+      <mrow><mi> &lambda; </mi>
+      </mrow>
+      <mrow><mi>w</mi>
+      </mrow>
+     </msub>
+    </mrow>
+    <mrow><mi> &lambda; </mi>
+    </mrow>
+   </mfrac>
+  </mrow>
+ </mrow></math>). As a result, the last term in <a href="#eq_NuFromCode">6</a>) should be very close to unity as this is now coded. This equation can be compared to the conventional representation for the Nusselt number of a cylinder,<div class="foot"><span class="foot_label">5</span><div class="foot_inner"><div class="plain_layout"><a id='magicparlabel-105' />
+cf.&nbsp;Churchill, S. W.; Bernstein, M. (1977), "A Correlation Equation for Forced Convection from Gases and Liquids to a Circular Cylinder in Cross Flow", J. Heat Transfer, Trans. ASME 94: 300–306.</div>
+</div></div> Nu<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mo> &sime; </mo>
+ </mrow></math>0.6&thinsp;Re<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mn>1</mn><mo>/</mo><mn>2</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>Pr<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mn>1</mn><mo>/</mo><mn>3</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> with Pr<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msup><mrow />
+    <mrow>
+     <mrow><mn>1</mn><mo>/</mo><mn>3</mn>
+     </mrow>
+    </mrow>
+   </msup><mo> &sime; </mo><mn>0.9</mn>
+  </mrow>
+ </mrow></math>. The formulas from Pruppacher and Klett. (1978) as well as (<a href="#eq_thermalConductivityNow">2</a>) and (<a href="#eq_ViscosityNow">3</a>) show that thermal conductivity and viscosity have essentially the same temperature dependence. It is therefore not useful to represent Nu as a function of Pr because Pr does not vary to any significant extent. It would be just as effective to represent the Nusselt number as a function of Reynolds number, via a relationship like Nu=C&thinsp;Re<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mi> &alpha; </mi>
+   </mrow>
+  </msup>
+ </mrow></math>, and then determine this relationship from flight data in clear air. (This was actually the approach recommended in the original paper by King et al.&nbsp;(1978), and the additional dependence on Pr introduced later and the further addition of Pr<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mi>w</mi>
+   </mrow>
+  </msub>
+ </mrow></math> has just complicated valid determination of the appropriate correlation.)</li>
+<li class="itemize_item"><a id='magicparlabel-106' />
+I doesn't appear that the baseline correction being used could work for the GV because it references the FSSP concentration &ldquo;concf&rdquo; (not ever present on the GV) yet doesn't include that variable in the dependencies for PLWCC. Even for the C-130, the concentration variable does not appear in the dependences listed in the netCDF files. The baseline correction should probably be done in a different way.<div class="foot"><span class="foot_label">6</span><div class="foot_inner"><div class="plain_layout"><a id='magicparlabel-110' />
+ A danger with this baseline removal is that large errors can be masked, including errors in probe characteristics (<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>l</mi><mo>,</mo><mspace width="6px" /><mi>d</mi><mo>,</mo><mspace width="6px" />
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mi>w</mi>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>) or in Nu-Re relationships, and yet answers will look &ldquo;reasonable&rdquo;. A large error in <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>P</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math>, for example would not appear as a baseline shift and could go undetected. If the error arose from incorrect sensor characteristics, this could cause serious degradation of the accuracy of the measurements that would be hard to detect. Nevertheless, baseline removal seems useful to produce results that are used easily without the need for users to do a similar removal. The basic measurements including the power used by the probe are included in output files, so users can always calculate these results in different ways.</div>
+</div></div> A suggestion for improvement is developed below.</li>
+</ul>
+<h2 class="section_"><a id='magicparlabel-111' />
+Analysis</h2>
+<h3 class="subsection_"><a id='magicparlabel-116' />
+Finding the Nusselt Number:<a id="sub_FindingNu" />
+</h3>
+<div class="standard"><a id='magicparlabel-117' />
+If <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mi>m</mi>
+    </mrow>
+   </msub><mo>=</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mi>W</mi>
+     </mrow>
+    </msub><mo>-</mo><mi>T</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>/</mo><mn>2</mn>
+  </mrow>
+ </mrow></math> is used to characterize the temperature dependence of the heat loss, then the equation for the Reynolds number is</div>
+
+<div class="standard"><a id='magicparlabel-118' />
+<a id="eq_ReynoldsNumber" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow><mi>Re</mi><mo>&#8289;</mo><mo>=</mo>
+     <mfrac>
+      <mrow>
+       <mrow>
+        <msub>
+         <mrow><mi> &rho; </mi>
+         </mrow>
+         <mrow><mi>d</mi>
+         </mrow>
+        </msub><mi>V</mi><mi>d</mi>
+       </mrow>
+      </mrow>
+      <mrow>
+       <mrow><mi> &mu; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+        <msub>
+         <mrow><mi>T</mi>
+         </mrow>
+         <mrow><mi>m</mi>
+         </mrow>
+        </msub><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+       </mrow>
+      </mrow>
+     </mfrac><mo>=</mo>
+     <mfrac>
+      <mrow>
+       <mrow><mi>p</mi><mi>V</mi><mi>d</mi>
+       </mrow>
+      </mrow>
+      <mrow>
+       <mrow>
+        <msub>
+         <mrow><mi>R</mi>
+         </mrow>
+         <mrow><mi>d</mi>
+         </mrow>
+        </msub>
+        <msub>
+         <mrow><mi>T</mi>
+         </mrow>
+         <mrow><mi>m</mi>
+         </mrow>
+        </msub><mi> &mu; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+        <msub>
+         <mrow><mi>T</mi>
+         </mrow>
+         <mrow><mi>m</mi>
+         </mrow>
+        </msub><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+       </mrow>
+      </mrow>
+     </mfrac>
+    </mrow>
+   </mtd>
+   <mtd>(9)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+
+<div class="standard"><a id='magicparlabel-119' />
+so the Reynolds number depends on pressure, true airspeed, the diameter of the sensing wire, and the temperature. The heat loss term in the absence of hydrometeors is (from (<a href="#eq_KingEquation">1</a>))</div>
+
+<div class="standard"><a id='magicparlabel-120' />
+<a id="eq_Pdry" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow>
+     <msub>
+      <mrow><mi>P</mi>
+      </mrow>
+      <mrow>
+       <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+       </mrow>
+      </mrow>
+     </msub><mo>=</mo><mi> &pi; </mi><mi>l</mi><mi> &lambda; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow><mi>W</mi>
+       </mrow>
+      </msub><mo>-</mo><mi>T</mi>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+     <mstyle mathvariant='normal'>
+      <mrow><mi>N</mi><mi>u</mi>
+      </mrow>
+     </mstyle>
+    </mrow>
+   </mtd>
+   <mtd>(10)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+
+<div class="standard"><a id='magicparlabel-121' />
+so in addition the wire temperature and wire length are needed. If Nu=<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>A</mi>
+   </mrow>
+   <mrow><mi>N</mi>
+   </mrow>
+  </msub>
+ </mrow></math>Re<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mi> &alpha; </mi>
+   </mrow>
+  </msup>
+ </mrow></math> then</div>
+
+<div class="standard"><a id='magicparlabel-122' />
+<a id="eq_PdryRe" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow>
+     <msub>
+      <mrow><mi>P</mi>
+      </mrow>
+      <mrow>
+       <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+       </mrow>
+      </mrow>
+     </msub><mo>=</mo>
+     <msub>
+      <mrow><mi>A</mi>
+      </mrow>
+      <mrow><mi>N</mi>
+      </mrow>
+     </msub><mi> &pi; </mi><mi>l</mi><mi> &lambda; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <msub>
+      <mrow><mi>T</mi>
+      </mrow>
+      <mrow><mi>m</mi>
+      </mrow>
+     </msub><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow><mi>W</mi>
+       </mrow>
+      </msub><mo>-</mo><mi>T</mi>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+     <msup>
+      <mrow>
+       <mstyle mathvariant='normal'>
+        <mrow><mi>R</mi><mi>e</mi>
+        </mrow>
+       </mstyle>
+      </mrow>
+      <mrow><mi> &alpha; </mi>
+      </mrow>
+     </msup>
+    </mrow>
+   </mtd>
+   <mtd>(11)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+
+<div class="standard"><a id='magicparlabel-123' />
+where <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &lambda; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo><mi>T</mi><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math> includes the temperature dependence of the thermal conductivity. Then values of <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>A</mi>
+   </mrow>
+   <mrow><mi>N</mi>
+   </mrow>
+  </msub>
+ </mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &alpha; </mi>
+ </mrow></math> can be determined by a fit to measurements in the following form:</div>
+
+<div class="standard"><a id='magicparlabel-124' />
+<a id="eq_NuFitEquation" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow>
+     <msub>
+      <mrow><mo> log </mo>
+      </mrow>
+      <mrow><mn>10</mn>
+      </mrow>
+     </msub><mi>Nu</mi><mo>&#8289;</mo>
+     <mrow><mo>=</mo>
+      <msub>
+       <mrow><mo> log </mo>
+       </mrow>
+       <mrow><mn>10</mn>
+       </mrow>
+      </msub>
+     </mrow><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mfrac>
+      <mrow>
+       <msub>
+        <mrow><mi>P</mi>
+        </mrow>
+        <mrow>
+         <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+         </mrow>
+        </mrow>
+       </msub>
+      </mrow>
+      <mrow>
+       <mrow><mi> &pi; </mi><mi>l</mi><mi> &lambda; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+        <msub>
+         <mrow><mi>T</mi>
+         </mrow>
+         <mrow><mi>m</mi>
+         </mrow>
+        </msub><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+        <mrow>
+         <msub>
+          <mrow><mi>T</mi>
+          </mrow>
+          <mrow><mi>W</mi>
+          </mrow>
+         </msub><mo>-</mo><mi>T</mi>
+        </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+       </mrow>
+      </mrow>
+     </mfrac><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>=</mo>
+     <msub>
+      <mrow><mo> log </mo>
+      </mrow>
+      <mrow><mn>10</mn>
+      </mrow>
+     </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <msub>
+      <mrow><mi>A</mi>
+      </mrow>
+      <mrow><mi>N</mi>
+      </mrow>
+     </msub><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>+</mo><mi> &alpha; </mi>
+     <msub>
+      <mrow><mo> log </mo>
+      </mrow>
+      <mrow><mn>10</mn>
+      </mrow>
+     </msub><mo>(</mo>
+     <mstyle mathvariant='normal'>
+      <mrow><mi>R</mi><mi>e</mi><mo>)</mo>
+      </mrow>
+     </mstyle>
+    </mrow>
+   </mtd>
+   <mtd>(12)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+
+<div class="standard"><a id='magicparlabel-125' />
+where, from Pruppacher and Klett (1978) translated to MKS units, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &lambda; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mi>m</mi>
+    </mrow>
+   </msub><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>=</mo>
+   <msub>
+    <mrow><mi> &lambda; </mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub><mo>+</mo>
+   <msub>
+    <mrow><mi> &lambda; </mi>
+    </mrow>
+    <mrow><mn>1</mn>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mi>m</mi>
+     </mrow>
+    </msub><mo>-</mo>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mn>0</mn>
+     </mrow>
+    </msub>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math> with <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi> &lambda; </mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub><mo>=</mo>
+  </mrow>
+ </mrow></math>0.0238 J&thinsp;m<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>K<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi> &lambda; </mi>
+    </mrow>
+    <mrow><mn>1</mn>
+    </mrow>
+   </msub><mo>=</mo>
+  </mrow>
+ </mrow></math>0.000071&thinsp;J&thinsp;m<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>K<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>2</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>. Also, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &mu; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mi>m</mi>
+    </mrow>
+   </msub><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>=</mo>
+   <msub>
+    <mrow><mi> &mu; </mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub><mo>+</mo>
+   <msub>
+    <mrow><mi> &mu; </mi>
+    </mrow>
+    <mrow><mn>1</mn>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mi>m</mi>
+     </mrow>
+    </msub><mo>-</mo>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mn>0</mn>
+     </mrow>
+    </msub>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math> with <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi> &mu; </mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub><mo>=</mo><mn>1.718</mn><mo> &times; </mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>5</mn>
+     </mrow>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math>&thinsp;kg&thinsp;m<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi> &mu; </mi>
+    </mrow>
+    <mrow><mn>1</mn>
+    </mrow>
+   </msub><mo>=</mo><mn>0.0049</mn><mo> &times; </mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>5</mn>
+     </mrow>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math>&thinsp;kg&thinsp;m<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>s<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>K<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <mrow><mo>-</mo><mn>1</mn>
+    </mrow>
+   </mrow>
+  </msup>
+ </mrow></math>. </div>
+
+<div class="standard"><a id='magicparlabel-126' />
+</div>
+<div class='float float-figure'><div class="plain_layout" style='text-align: center;'><a id='magicparlabel-130' />
+<img style='width:5in;' src='0_home_cooperw_Research_Instrumentation_Bulletin9_KingProbeFig1.png' alt='image: 0_home_cooperw_Research_Instrumentation_Bulletin9_KingProbeFig1.png' />
+</div>
+
+<div class="plain_layout"><a id='magicparlabel-131' />
+<div class='float-caption float-caption-figure'>Figure 0.1:<div class="plain_layout"><a id='magicparlabel-135' />
+<a id="fig_Pdry_vs_Re_PREDICT_rf01" />
+Plot of <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mo> log </mo>
+    </mrow>
+    <mrow><mn>10</mn>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mstyle mathvariant='normal'>
+    <mrow><mi>N</mi><mi>u</mi>
+    </mrow>
+   </mstyle><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math> plotted vs <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mo> log </mo>
+    </mrow>
+    <mrow><mn>10</mn>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mstyle mathvariant='normal'>
+    <mrow><mi>R</mi><mi>e</mi>
+    </mrow>
+   </mstyle><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math> for GV PREDICT flight rf01. Data restrictions are: TASX&gt;20, CONCD_ROI=0. In addition, a short interval of flight at the start and end of the flight, when angle of attack was quite variable, is omitted; its inclusion increases the scatter significantly. The two lines on the left that almost overlap arise from the climb and descent; most of the flight is represented by points near the lower left corner of the scatterplot. </div>
+</div> </div>
+</div>
+
+
+<div class="standard"><a id='magicparlabel-136' />
+A plot of this form is in Fig.&nbsp;<a href="#fig_Pdry_vs_Re_PREDICT_rf01">0.1</a>. A fairly consistent relationship is shown, except for a set of points offset from the main correlation line to the right and then scattered along the constant-Nu line; this corresponds to the time during descent and approach when the flaps and gear were deployed and the angle of attack abruptly increased by about 2<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>. This suggests some effect on flow conditions, perhaps as a result of the associated change in angle of attack, as would be expected for heat loss from a cylinder if flow angle along the cylinder changes. It is not clear why there is also a break in the otherwise linear correlation at <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mo> log </mo>
+   </mrow>
+   <mrow><mn>10</mn>
+   </mrow>
+  </msub>
+ </mrow></math>(Re) about 3.86. Because there are significant changes in angle of attack at times when the liquid water content is most interesting (in cumulus clouds with vigorous updrafts or downdrafts), this possible dependence on flow angles should be investigated further but won't be addressed in this memo.<div class="foot"><span class="foot_label">7</span><div class="foot_inner"><div class="plain_layout"><a id='magicparlabel-140' />
+One would expect (and discussions of hot-wire-anemometers confirm) that the primary effect of a flow angle would be to change the effective cooling velocity to that component perpendicular to the wire; i.e., the effect could be estimated by replacing <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>V</mi>
+ </mrow></math> in (<a href="#eq_ReynoldsNumber">9</a>) with <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>V</mi><mi>cos</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo><mi> &alpha; </mi><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math> where <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &alpha; </mi>
+ </mrow></math> is the angle of attack. However, the King probe is oriented horizontally on the GV, so angle of attack does not influence the angle of flow relative to the sensing wire except indirectly via possible changes in airspeed or sideslip flow angle associated with changes in angle of attack. For a typical angle of attack of 2<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>, changing to 4<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>, the change in <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>V</mi><mi>cos</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo><mi> &alpha; </mi><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math> is about 0.2% or a change of about 0.005 in the base-10 logarithm of the Reynolds number. The offset in Fig.&nbsp;<a href="#fig_Pdry_vs_Re_PREDICT_rf01">0.1</a> is much larger, about 0.04, so this does not seem to be a possible explanation unless the normal flow angle is significantly different from the angle of attack. The same is true for reasonable larger offsets from orientation along the axis of the flow; for example, if the offset is 10<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>, the difference in the perpendicular component of the flow speed would be only 0.007 in natural logarithm for a 2<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math> change. Nevertheless, fits to the data showed significant improvement with inclusion of the angle of attack, even when the anomalous measurements during approach were excluded. This suggests that the effect on flow must not be a simple change proportional to the change in angle of attack but a more serious flow distortion resulting in changed airflow at the sensing wire. </div>
+</div></div> The standard error for the regression line following (<a href="#eq_NuFitEquation">12</a>) was 0.005 in the base-10 logarithm of Nu, or an uncertainty of about 0.2% in the dry-air term. This good result arises partly because there are a large number of points where the correlation is very good and only a few where the angle of attack produced a departure. </div>
+
+<div class="standard"><a id='magicparlabel-141' />
+If the outlying points near the end of the flight are omitted, the measurements still show some variance but it is much smaller, as shown in Fig.&nbsp;<a href="#fig_LikePdryPlotWithoutEndPoints">0.2</a>. There is a clear break in this plot where the logarithm of Re is about 3.86, both during climb and descent. Two fits, one for log<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mn>10</mn>
+   </mrow>
+  </msub>
+ </mrow></math>(Re)&lt;3.86 and another for log<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mn>10</mn>
+   </mrow>
+  </msub>
+ </mrow></math>(Re)&gt;3.86, gave an RMS deviation of about 0.0035, corresponding to a standard error in Nu of about 0.15%. For ln(Re)&lt;3.86, the fit coefficients were {<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub><mo>,</mo>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>1</mn>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>}={0.2713555, 0.3433589) for a fit to log<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mn>10</mn>
+   </mrow>
+  </msub>
+ </mrow></math>Nu=<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub><mo>+</mo>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>1</mn>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>log<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mn>10</mn>
+   </mrow>
+  </msub>
+ </mrow></math>(R). For log<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mn>10</mn>
+   </mrow>
+  </msub>
+ </mrow></math>(Re)&gt;3.86, the corresponding fit coefficients were {-0.8694714, 0.638318}. The dry-air power then can be determined as follows:</div>
+<div class='float float-figure'><div class="plain_layout" style='text-align: center;'><a id='magicparlabel-145' />
+<img style='width:5in;' src='1_home_cooperw_Research_Instrumentation_Bulletin9_KingProbeFig2.png' alt='image: 1_home_cooperw_Research_Instrumentation_Bulletin9_KingProbeFig2.png' />
+</div>
+
+<div class="plain_layout"><a id='magicparlabel-146' />
+<div class='float-caption float-caption-figure'>Figure 0.2:<div class="plain_layout"><a id='magicparlabel-150' />
+<a id="fig_LikePdryPlotWithoutEndPoints" />
+As in Fig.&nbsp;<a href="#fig_Pdry_vs_Re_PREDICT_rf01">0.1</a> but with points excluded near the end of the flight. </div>
+</div></div>
+</div>
+
+
+<div class="standard"><a id='magicparlabel-151' />
+<a id="eq_PdryFitResult" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow>
+     <msub>
+      <mrow><mi>P</mi>
+      </mrow>
+      <mrow>
+       <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+       </mrow>
+      </mrow>
+     </msub><mo>=</mo><mi> &pi; </mi><mi>l</mi><mi> &lambda; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <msub>
+      <mrow><mi>T</mi>
+      </mrow>
+      <mrow><mi>m</mi>
+      </mrow>
+     </msub><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+     <mrow>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow><mi>W</mi>
+       </mrow>
+      </msub><mo>-</mo><mi>T</mi>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>[</mo>
+     <mrow><mn>1</mn>
+      <msup>
+       <mrow><mn>0</mn>
+       </mrow>
+       <mrow>
+        <msub>
+         <mrow><mi>a</mi>
+         </mrow>
+         <mrow><mn>0</mn>
+         </mrow>
+        </msub>
+       </mrow>
+      </msup>
+      <msup>
+       <mrow>
+        <mstyle mathvariant='normal'>
+         <mrow><mi>R</mi><mi>e</mi>
+         </mrow>
+        </mstyle>
+       </mrow>
+       <mrow>
+        <msub>
+         <mrow><mi>a</mi>
+         </mrow>
+         <mrow><mn>1</mn>
+         </mrow>
+        </msub>
+       </mrow>
+      </msup>
+     </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>]</mo>
+    </mrow>
+   </mtd>
+   <mtd>(13)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+
+<div class="standard"><a id='magicparlabel-152' />
+or, for Nu=<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>A</mi>
+    </mrow>
+    <mrow><mi>N</mi>
+    </mrow>
+   </msub>
+   <mstyle mathvariant='normal'>
+    <mrow><mi>R</mi>
+     <msup>
+      <mrow><mi>e</mi>
+      </mrow>
+      <mrow><mi> &alpha; </mi>
+      </mrow>
+     </msup>
+    </mrow>
+   </mstyle>
+  </mrow>
+ </mrow></math>, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>A</mi>
+    </mrow>
+    <mrow><mi>N</mi>
+    </mrow>
+   </msub><mo>=</mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow>
+     <msub>
+      <mrow><mi>a</mi>
+      </mrow>
+      <mrow><mn>0</mn>
+      </mrow>
+     </msub>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &alpha; </mi><mo>=</mo>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>1</mn>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>. </div>
+<div class='float float-figure'><div class="plain_layout" style='text-align: center;'><a id='magicparlabel-156' />
+<img style='width:5in;' src='2_home_cooperw_Research_Instrumentation_Bulletin9_KingProbeFig3.png' alt='image: 2_home_cooperw_Research_Instrumentation_Bulletin9_KingProbeFig3.png' />
+</div>
+
+<div class="plain_layout"><a id='magicparlabel-157' />
+<div class='float-caption float-caption-figure'>Figure 0.3:<div class="plain_layout"><a id='magicparlabel-161' />
+<a id="fig_RedFitLines" />
+As for Fig.&nbsp;<a href="#fig_LikePdryPlotWithoutEndPoints">0.2</a> but with the two-segment fit superimposed. The blue line indicates the Nu-Re relationship now in the nimbus code.</div>
+</div></div>
+</div>
+
+
+<div class="standard"><a id='magicparlabel-162' />
+This gives the following result for the Nusselt number:</div>
+
+<div class="standard"><a id='magicparlabel-163' />
+<a id="eq_Nu2_1" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mstyle mathvariant='normal'>
+     <mrow><mi>N</mi><mi>u</mi>
+     </mrow>
+    </mstyle>
+   </mtd>
+   <mtd><mo>=</mo>
+   </mtd>
+   <mtd>
+    <mrow><mn>1.8679</mn><mspace width="6px" />
+     <msup>
+      <mrow>
+       <mstyle mathvariant='normal'>
+        <mrow><mi>R</mi><mi>e</mi>
+        </mrow>
+       </mstyle>
+      </mrow>
+      <mrow><mn>0.3433589</mn>
+      </mrow>
+     </msup><mspace width="6px" /><mspace width="6px" /><mspace width="6px" /><mspace width="6px" /><mspace width="6px" />
+     <mstyle mathvariant='normal'>
+      <mrow><mi>f</mi><mi>o</mi><mi>r</mi><mspace width="6px" /><mi>R</mi><mi>e</mi><mo>&lt;</mo><mn>7244</mn>
+      </mrow>
+     </mstyle>
+    </mrow>
+   </mtd>
+   <mtd>(14)
+   </mtd>
+  </mtr>
+  <mtr>
+   <mtd><mrow/>
+   </mtd>
+   <mtd><mo>=</mo>
+   </mtd>
+   <mtd>
+    <mrow><mn>0.13506</mn><mspace width="6px" />
+     <msup>
+      <mrow>
+       <mstyle mathvariant='normal'>
+        <mrow><mi>R</mi><mi>e</mi>
+        </mrow>
+       </mstyle>
+      </mrow>
+      <mrow><mn>0.638318</mn>
+      </mrow>
+     </msup><mspace width="6px" /><mspace width="6px" /><mspace width="6px" /><mspace width="6px" /><mspace width="6px" /><mspace width="6px" />
+     <mstyle mathvariant='normal'>
+      <mrow><mi>f</mi><mi>o</mi><mi>r</mi><mspace width="6px" /><mi>R</mi><mi>e</mi><mo>&gt;</mo><mn>7244</mn>
+      </mrow>
+     </mstyle>
+    </mrow>
+   </mtd>
+   <mtd>(15)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+
+<div class="standard"><a id='magicparlabel-164' />
+These results are shown as red lines in Fig._<a href="#fig_RedFitLines">0.3</a>. This figure also shows, as a blue line, the relationship previously in the processing code, which is quite different.</div>
+
+<div class="standard"><a id='magicparlabel-165' />
+If this analysis is repeated for the C-130 (using VOCALS flight RF02), the results (shown in Fig.&nbsp;<a href="#fig_NuReC130">0.4</a>) are consistent with a single fit line with </div>
+<div class='float float-figure'><div class="plain_layout" style='text-align: center;'><a id='magicparlabel-169' />
+<img style='width:5in;' src='3_home_cooperw_Research_Instrumentation_Bulletin9_NuReFitC130.png' alt='image: 3_home_cooperw_Research_Instrumentation_Bulletin9_NuReFitC130.png' />
+</div>
+
+<div class="plain_layout"><a id='magicparlabel-170' />
+<div class='float-caption float-caption-figure'>Figure 0.4:<div class="plain_layout"><a id='magicparlabel-174' />
+<a id="fig_NuReC130" />
+Corresponding measurements of Nusselt number (Nu) and Reynolds number (Re) from VOCALS flight RF02. The same restrictions are used as for the previous plot for the GV, figure <a href="#fig_RedFitLines">0.3</a>. Red dots show the regression fit, and blue dots show the relationship now being used in nimbus processing.</div>
+</div></div>
+
+<div class="plain_layout"><a id='magicparlabel-175' />
+</div>
+</div>
+
+
+<div class="standard"><a id='magicparlabel-176' />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>Nu</mi><mo>&#8289;</mo><mo>=</mo><mn>0.1179</mn><mspace width="6px" />
+   <msup>
+    <mrow>
+     <mstyle mathvariant='normal'>
+      <mrow><mi>R</mi><mi>e</mi>
+      </mrow>
+     </mstyle>
+    </mrow>
+    <mrow><mn>0.67454</mn>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math>In this case, the new fit (shown by red points) is fairly consistent with the old representation (blue points).
+<br />
+
+</div>
+<h4 class="subsubsection_"><a id='magicparlabel-177' />
+Removing baseline drift</h4>
+<div class="standard"><a id='magicparlabel-178' />
+The scheme in use now corrects for drift by removing from all measurements the average value of liquid water content accumulated from recent out-of-cloud measurements. This is equivalent to removing the average value of the term involving <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>P</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math> in (<a href="#eq_LWC">8</a>) from the final value for liquid water content. Because this term involves the airspeed and temperature as well as power from the probe, removal of the baseline in this way can fail to track variations during cloud penetrations that are real. It would be better to attempt to correct the dry-air term <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>P</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math> only by adjusting the Nu-Re relationship because that then retains other dependences like that on airspeed. One way to accomplish this, equivalent to removing the baseline in <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>P</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math> directly, is to accumulate the best estimate of the first fit coefficient <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>a</mi>
+   </mrow>
+   <mrow><mn>0</mn>
+   </mrow>
+  </msub>
+ </mrow></math> in the relationship Nu=<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow>
+     <msub>
+      <mrow><mi>a</mi>
+      </mrow>
+      <mrow><mn>0</mn>
+      </mrow>
+     </msub>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math>Re<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msup><mrow />
+    <mrow>
+     <msub>
+      <mrow><mi>a</mi>
+      </mrow>
+      <mrow><mn>1</mn>
+      </mrow>
+     </msub>
+    </mrow>
+   </msup><mo>=</mo>
+   <msub>
+    <mrow><mi>A</mi>
+    </mrow>
+    <mrow><mi>N</mi>
+    </mrow>
+   </msub>
+   <msup>
+    <mrow>
+     <mstyle mathvariant='normal'>
+      <mrow><mi>R</mi><mi>e</mi>
+      </mrow>
+     </mstyle>
+    </mrow>
+    <mrow>
+     <msub>
+      <mrow><mi>a</mi>
+      </mrow>
+      <mrow><mn>1</mn>
+      </mrow>
+     </msub>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math>, while keeping the second coefficient <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>a</mi>
+   </mrow>
+   <mrow><mn>1</mn>
+   </mrow>
+  </msub>
+ </mrow></math> constant. Observed relationships like that in Fig.&nbsp;<a href="#fig_Pdry_vs_Re_PREDICT_rf01">0.1</a> indicate that variations occurring in flights are offsets in this coefficient, except for the break that occurs as ln(Re)=3.86, and it is straightforward to show that the value determined by least-squares fit with slope constrained to be <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>a</mi>
+   </mrow>
+   <mrow><mn>1</mn>
+   </mrow>
+  </msub>
+ </mrow></math> is </div>
+
+<div class="standard"><a id='magicparlabel-179' />
+<a id="eq_a0Equation" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow>
+     <msub>
+      <mrow><mi>a</mi>
+      </mrow>
+      <mrow><mn>0</mn>
+      </mrow>
+     </msub><mo>=</mo>
+     <mover>
+      <mrow>
+       <mrow>
+        <mrow>
+         <msub>
+          <mrow><mo> log </mo>
+          </mrow>
+          <mrow><mn>10</mn>
+          </mrow>
+         </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+         <mstyle mathvariant='normal'>
+          <mrow><mi>N</mi><mi>u</mi>
+          </mrow>
+         </mstyle><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+        </mrow>
+       </mrow>
+      </mrow><mo stretchy="true">&macr;</mo>
+     </mover><mo>-</mo>
+     <msub>
+      <mrow><mi>a</mi>
+      </mrow>
+      <mrow><mn>1</mn>
+      </mrow>
+     </msub><mspace width="6px" />
+     <mover>
+      <mrow>
+       <mrow>
+        <mrow>
+         <msub>
+          <mrow><mo> log </mo>
+          </mrow>
+          <mrow><mn>10</mn>
+          </mrow>
+         </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+         <mstyle mathvariant='normal'>
+          <mrow><mi>R</mi><mi>e</mi>
+          </mrow>
+         </mstyle><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+        </mrow>
+       </mrow>
+      </mrow><mo stretchy="true">&macr;</mo>
+     </mover>
+    </mrow>
+   </mtd>
+   <mtd>(16)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+
+<div class="standard"><a id='magicparlabel-180' />
+(where the bar over quantities indicates average value over the fit interval). Baseline removal can be accomplished by accumulating estimates of <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mover>
+   <mrow>
+    <mstyle mathvariant='normal'>
+     <mrow><mi>l</mi><mi>n</mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+      <mrow><mi>N</mi><mi>u</mi>
+      </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+     </mrow>
+    </mstyle>
+   </mrow><mo stretchy="true">&macr;</mo>
+  </mover>
+ </mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mover>
+   <mrow>
+    <mstyle mathvariant='normal'>
+     <mrow><mi>l</mi><mi>n</mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+      <mrow><mi>R</mi><mi>e</mi>
+      </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+     </mrow>
+    </mstyle>
+   </mrow><mo stretchy="true">&macr;</mo>
+  </mover>
+ </mrow></math> out of cloud and then using (<a href="#eq_a0Equation">16</a>) to update the relationship giving Nu and hence giving <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>P</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math>. The two average terms in (<a href="#eq_a0Equation">16</a>) can be estimated by simple exponential updating, via <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mover>
+   <mrow><mi>x</mi>
+   </mrow><mo stretchy="true">_</mo>
+  </mover>
+ </mrow></math>+=(<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>x</mi><mo>-</mo>
+   <mover>
+    <mrow><mi>x</mi>
+    </mrow><mo stretchy="true">_</mo>
+   </mover><mo>)</mo><mo>/</mo><mi> &tau; </mi>
+  </mrow>
+ </mrow></math> where <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &tau; </mi>
+ </mrow></math> is the time constant (in units of update periods) for the averaging. This is equivalent to similar updating of the coefficient <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>a</mi>
+   </mrow>
+   <mrow><mn>0</mn>
+   </mrow>
+  </msub>
+ </mrow></math>. Because Nu=<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>A</mi>
+   </mrow>
+   <mrow><mi>N</mi>
+   </mrow>
+  </msub>
+ </mrow></math>Re<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msup><mrow />
+    <mrow>
+     <msub>
+      <mrow><mi>a</mi>
+      </mrow>
+      <mrow><mn>1</mn>
+      </mrow>
+     </msub>
+    </mrow>
+   </msup><mo>=</mo><mn>1</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow>
+     <msub>
+      <mrow><mi>a</mi>
+      </mrow>
+      <mrow><mn>0</mn>
+      </mrow>
+     </msub>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math>Re<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow>
+    <msub>
+     <mrow><mi>a</mi>
+     </mrow>
+     <mrow><mn>1</mn>
+     </mrow>
+    </msub>
+   </mrow>
+  </msup>
+ </mrow></math>, updating <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>a</mi>
+   </mrow>
+   <mrow><mn>0</mn>
+   </mrow>
+  </msub>
+ </mrow></math> in this way is equivalent to updating <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>A</mi>
+   </mrow>
+   <mrow><mi>N</mi>
+   </mrow>
+  </msub>
+ </mrow></math> in a similar way, giving a new value <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msubsup>
+   <mrow><mi>A</mi>
+   </mrow>
+   <mrow><mi>N</mi>
+   </mrow>
+   <mrow><mi> &prime; </mi>
+   </mrow>
+  </msubsup>
+ </mrow></math> after adjustment toward the value of <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>A</mi>
+   </mrow>
+   <mrow><mi>N</mi>
+   </mrow>
+  </msub>
+ </mrow></math> that would give the right relationship between an new observed Nu<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mi> &prime; </mi>
+   </mrow>
+  </msup>
+ </mrow></math> and Re<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mi> &prime; </mi>
+   </mrow>
+  </msup>
+ </mrow></math>:</div>
+
+<div class="standard"><a id='magicparlabel-181' />
+<a id="eq_AsubNUpdate" />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable>
+  <mtr>
+   <mtd>
+    <mrow>
+     <msubsup>
+      <mrow><mi>A</mi>
+      </mrow>
+      <mrow><mi>N</mi>
+      </mrow>
+      <mrow><mi> &prime; </mi>
+      </mrow>
+     </msubsup><mo>=</mo>
+     <msub>
+      <mrow><mi>A</mi>
+      </mrow>
+      <mrow><mi>N</mi>
+      </mrow>
+     </msub><mo>+</mo>
+     <mfrac>
+      <mrow>
+       <mstyle mathvariant='normal'>
+        <mrow>
+         <mfrac>
+          <mrow>
+           <msup>
+            <mrow>
+             <mstyle mathvariant='normal'>
+              <mrow><mi>N</mi><mi>u</mi>
+              </mrow>
+             </mstyle>
+            </mrow>
+            <mrow><mi> &prime; </mi>
+            </mrow>
+           </msup>
+          </mrow>
+          <mrow>
+           <mstyle mathvariant='normal'>
+            <mrow><mi>R</mi>
+             <msup>
+              <mrow><mi>e</mi>
+              </mrow>
+              <mrow>
+               <msub>
+                <mrow><mi>a</mi>
+                </mrow>
+                <mrow><mn>1</mn>
+                </mrow>
+               </msub>
+              </mrow>
+             </msup>
+            </mrow>
+           </mstyle>
+          </mrow>
+         </mfrac><mo>-</mo>
+         <msub>
+          <mrow><mi>A</mi>
+          </mrow>
+          <mrow><mi>N</mi>
+          </mrow>
+         </msub>
+        </mrow>
+       </mstyle>
+      </mrow>
+      <mrow><mi> &tau; </mi>
+      </mrow>
+     </mfrac>
+    </mrow>
+   </mtd>
+   <mtd>(17)
+   </mtd>
+  </mtr>
+ </mtable></math></div>
+
+<div class="standard"><a id='magicparlabel-182' />
+A possible procedure to remove the offset is then, for each observation, calculate the following:</div>
+
+<div class="standard"><a id='magicparlabel-183' />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mstyle mathvariant='normal'>
+   <mrow><mi>N</mi><mi>u</mi><mo>=</mo>
+    <mfrac>
+     <mrow>
+      <msub>
+       <mrow><mi>P</mi>
+       </mrow>
+       <mrow>
+        <mrow><mi>d</mi><mi>r</mi><mi>y</mi>
+        </mrow>
+       </mrow>
+      </msub>
+     </mrow>
+     <mrow>
+      <mrow><mi> &pi; </mi><mi>l</mi><mi> &lambda; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+       <msub>
+        <mrow><mi>T</mi>
+        </mrow>
+        <mrow><mi>m</mi>
+        </mrow>
+       </msub><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+       <mrow>
+        <msub>
+         <mrow><mi>T</mi>
+         </mrow>
+         <mrow><mi>W</mi>
+         </mrow>
+        </msub><mo>-</mo><mi>T</mi>
+       </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+      </mrow>
+     </mrow>
+    </mfrac>
+   </mrow>
+  </mstyle>
+ </mrow></math></div>
+
+<div class="standard"><a id='magicparlabel-184' />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>Re</mi><mo>&#8289;</mo><mo>=</mo>
+   <mfrac>
+    <mrow>
+     <mrow><mi> &rho; </mi><mi>V</mi><mi>d</mi>
+     </mrow>
+    </mrow>
+    <mrow>
+     <mrow><mi> &mu; </mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo><mi>T</mi><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+     </mrow>
+    </mrow>
+   </mfrac>
+  </mrow>
+ </mrow></math></div>
+
+<div class="standard"><a id='magicparlabel-185' />
+When out of cloud,</div>
+
+<div class="lyx_code"><div class="lyx_code" style='text-align: center;'><a id='magicparlabel-186' />
+
+<div class='Frameless' style='width: 80%; '><div class="lyx_code"><div class="lyx_code_item"><a id='magicparlabel-190' />
+if (Re &lt; 7244) {Nu_a0 += (Nu/pow(Re, Nu_a1))/tau;}</div>
+<div class="lyx_code_item"><a id='magicparlabel-191' />
+else           {Nu_b0 += (Nu/pow(Re, Nu_b1))/tau;}</div>
+</div>
+</div></div>
+</div>
+<h3 class="subsection_"><a id='magicparlabel-192' />
+The Boiling Point</h3>
+<div class="standard"><a id='magicparlabel-193' />
+If water evaporates at the boiling point rather than at the wire temperature, the temperature at which water boils is needed to determine the liquid water content from (<a href="#eq_LWC">8</a>). This may be of particular significance for the GV because the boiling point is reduced to around 75<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C where the temperature is -35<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C and so there might be liquid water. At lower temperature, there is some observed response to ice, but it isn't known if this can be quantitative or at what temperature evaporation would occur. Still, it is probably worthwhile to include the boiling-point temperature in all calculations.</div>
+
+<div class="standard"><a id='magicparlabel-194' />
+The boiling point is a function only of total pressure, so it is straightforward to determine that function from the vapor-pressure dependence on temperature as represented, e.g., by Murphy and Koop (2005). This is the same relationship discussed in the note on water vapor pressure, where it was necessary to determine the dew-point temperature from the vapor pressure, except in this case the vapor pressure is the total pressure and the dew point is instead the boiling-point temperature. High accuracy is probably not warranted because the actual wire temperature, as well as the temperature at which water evaporates, is uncertain, so it should be adequate to use interpolation in a table of boiling-point temperatures to find the boiling point from the ambient pressure. However, the pressure at the probe is further affected by dynamic compression, so the pressure to be used might be better approximated by the total or pitot pressure than by the ambient pressure. </div>
+
+<div class="standard"><a id='magicparlabel-195' />
+For reference, the boiling-point temperature as a function of pressure is shown in Fig.&nbsp;<a href="#fig_BoilingPoint">0.5</a>. A table of the values, with 1<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C resolution, was saved to use with interpolation to calculate <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>T</mi>
+   </mrow>
+   <mrow><mi>b</mi>
+   </mrow>
+  </msub>
+ </mrow></math> to use in (<a href="#eq_LWC">8</a>) in place of <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>T</mi>
+   </mrow>
+   <mrow><mi>w</mi>
+   </mrow>
+  </msub>
+ </mrow></math> when calculating the liquid water content. A cubic fit of the form</div>
+<div class='float float-figure'><div class="plain_layout" style='text-align: center;'><a id='magicparlabel-199' />
+<img style='width:5in;' src='4_home_cooperw_Research_Instrumentation_Bulletin9_DPfromE.png' alt='image: 4_home_cooperw_Research_Instrumentation_Bulletin9_DPfromE.png' />
+</div>
+
+<div class="plain_layout"><a id='magicparlabel-200' />
+<div class='float-caption float-caption-figure'>Figure 0.5:<div class="plain_layout"><a id='magicparlabel-204' />
+<a id="fig_BoilingPoint" />
+Boiling point [<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &cir; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>C] as a function of total pressure [mb].</div>
+</div></div>
+
+<div class="plain_layout"><a id='magicparlabel-205' />
+</div>
+</div>
+
+
+<div class="standard"><a id='magicparlabel-206' />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mo> log </mo>
+    </mrow>
+    <mrow><mn>10</mn>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mi>b</mi>
+    </mrow>
+   </msub><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>=</mo>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub><mo>+</mo>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>1</mn>
+    </mrow>
+   </msub>
+   <msub>
+    <mrow><mo> log </mo>
+    </mrow>
+    <mrow><mn>10</mn>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo><mi>P</mi><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>+</mo>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>2</mn>
+    </mrow>
+   </msub><mo>(</mo>
+   <msub>
+    <mrow><mo> log </mo>
+    </mrow>
+    <mrow><mn>10</mn>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo><mi>P</mi><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+   <msup>
+    <mrow><mo>)</mo>
+    </mrow>
+    <mrow><mn>2</mn>
+    </mrow>
+   </msup><mo>+</mo>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>3</mn>
+    </mrow>
+   </msub><mo>(</mo>
+   <msub>
+    <mrow><mo> log </mo>
+    </mrow>
+    <mrow><mn>10</mn>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo><mi>P</mi><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+   <msup>
+    <mrow><mo>)</mo>
+    </mrow>
+    <mrow><mn>3</mn>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math></div>
+
+<div class="standard"><a id='magicparlabel-207' />
+gave a very good fit to the data shown in Fig.&nbsp;<a href="#fig_BoilingPoint">0.5</a>) with coefficients {<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>0</mn>
+    </mrow>
+   </msub><mo>,</mo>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>1</mn>
+    </mrow>
+   </msub><mo>,</mo>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>2</mn>
+    </mrow>
+   </msub><mo>,</mo>
+   <msub>
+    <mrow><mi>a</mi>
+    </mrow>
+    <mrow><mn>3</mn>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>}={0.03366503,1.34236135,-0.33479451,0.03519342}. This same boiling-point temperature should be used when calculating the temperature-dependent value of <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>L</mi>
+   </mrow>
+   <mrow><mi>v</mi>
+   </mrow>
+  </msub>
+ </mrow></math>.</div>
+<h3 class="subsection_"><a id='magicparlabel-208' />
+Illustrative Examples:</h3>
+<div class="standard"><a id='magicparlabel-209' />
+An illustration of the performance of the approach developed in this section for representing the Nusselt number and for updating is shown in the Fig.&nbsp;<a href="#fig_PREDICTrf01">0.6</a>. The top panel shows the result of calculating the liquid water content from the King probe in the way outlined above (using code like that at the end of this note). The procedure provides a good baseline and reasonable responses associated with the locations where the CDP also has measurable concentrations. The offset removal in the standard processing clearly is not working, and there are extended variations near the first jump in LWC that appear to be false. The magnitude of the response is also slightly larger in the new processing, by about 10%. This arises mostly from different representation of the wire temperature and the temperature dependence of the latent heat of vaporization.</div>
+<div class='float float-figure'><div class="plain_layout" style='text-align: center;'><a id='magicparlabel-213' />
+<img style='width:5in;' src='5_home_cooperw_Research_Instrumentation_Bulletin9_PLWCX.png' alt='image: 5_home_cooperw_Research_Instrumentation_Bulletin9_PLWCX.png' />
+</div>
+
+<div class="plain_layout"><a id='magicparlabel-214' />
+<div class='float-caption float-caption-figure'>Figure 0.6:<div class="plain_layout"><a id='magicparlabel-218' />
+<a id="fig_PREDICTrf01" />
+Measurements from PREDICT flight RF01. &ldquo;CONCD&rdquo; is the concentration from the CDP, in yellow in the bottom panel, and shows points where passes were made through all-ice clouds near 1230 UTC. The true airspeed is also shown in the bottom panel as the blue trace labeled TASX. The next panel shows PLWC, the power recorded from the king probe in watts. The third panel is the result obtained from the standard processing, as contained in the production file produced 23 December 2010. The top panel shows the result from processing as described in this memo.</div>
+</div></div>
+
+<div class="plain_layout"><a id='magicparlabel-219' />
+</div>
+</div>
+
+
+<div class="standard"><a id='magicparlabel-220' />
+VOCALS flight RF02 was used as a representative case for the C-130. Measurements are shown in Fig.&nbsp;<a href="#fig_VOCALSrf02">0.7</a> using both the old and new processing. The figure shows that, in this case, there is little difference between the two processing schemes. For this project, baseline removal was based on the Gerber-probe liquid water content, so zero removal is quite reliable. A scatterplot of measured values using the old and new processing is shown in Fig.&nbsp;<a href="#fig_VOCALSscat">0.8</a>. The value produced by the standard processing is typically about 92% of the value produced by the new processing. This difference arises mostly from the change in latent heat of vaporization and not from change in either the Nu-Re relationship or use of the adjusted wire temperature, because the former is close to the new relationship determined for the C-130 and the latter is close to the assumed <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mn>10</mn>
+   <msup>
+    <mrow><mn>0</mn>
+    </mrow>
+    <mrow><mo> &cir; </mo>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math>C value because most VOCALS measurements were made at low levels.</div>
+<div class='float float-figure'><div class="plain_layout" style='text-align: center;'><a id='magicparlabel-224' />
+<img style='width:5in;' src='6_home_cooperw_Research_Instrumentation_Bulletin9_VOCALSrf02.png' alt='image: 6_home_cooperw_Research_Instrumentation_Bulletin9_VOCALSrf02.png' />
+</div>
+
+<div class="plain_layout"><a id='magicparlabel-225' />
+<div class='float-caption float-caption-figure'>Figure 0.7:<div class="plain_layout"><a id='magicparlabel-229' />
+<a id="fig_VOCALSrf02" />
+Measurements from VOCALS flight RF02: CONCD is the concentration measured by the CDP, TASX is the true airspeed, PLWC1 is the power measured by the King Probe, PDRY is the estimate of the power required in dry air, PLWCC1 is the standard LWC in the processed file, and PLWCX is the liquid water content produced by the new processing outlined in this section.</div>
+</div></div>
+
+<div class="plain_layout"><a id='magicparlabel-230' />
+</div>
+</div>
+<div class='float float-figure'><div class="plain_layout" style='text-align: center;'><a id='magicparlabel-234' />
+<img style='width:5in;' src='7_home_cooperw_Research_Instrumentation_Bulletin9_VOCALSscat.png' alt='image: 7_home_cooperw_Research_Instrumentation_Bulletin9_VOCALSscat.png' />
+</div>
+
+<div class="plain_layout"><a id='magicparlabel-235' />
+<div class='float-caption float-caption-figure'>Figure 0.8:<div class="plain_layout"><a id='magicparlabel-239' />
+<a id="fig_VOCALSscat" />
+Scatterplot comparing the two processing schemes. PLWCC1 is the standard released value and PLWCX is the value obtained using the processing outlined in this section.</div>
+</div></div>
+
+<div class="plain_layout"><a id='magicparlabel-240' />
+</div>
+</div>
+
+<h2 class="section_"><a id='magicparlabel-241' />
+Addition of May 2012:</h2>
+<div class="standard"><a id='magicparlabel-242' />
+Application of the preceding to HIPPO-4 flight 1 revealed that the Nu-Re relationship has a third branch, applying whenever TASX &lt; 150 m/s. Measurements in clear air from this flight are shown in Fig.&nbsp;<a href="#fig_HIPPONuRe">0.9</a>. In this figure, the green and blue dots are measurements from this flight in clear air; the blue-dotted lines are the fit as determined previously for low and high Re, and show that the earlier fit is again appropriate for this flight. However, red dots are measurements from this flight for which TASX &lt; 150 m/s; these are not represented well by the previous fit. To add these, a third fit was calculated to these data points, with the result that </div>
+
+<div class="standard"><a id='magicparlabel-243' />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>Nu</mi><mo>&#8289;</mo><mo>=</mo><mn>0.13289</mn>
+   <msup>
+    <mrow>
+     <mstyle mathvariant='normal'>
+      <mrow><mi>R</mi><mi>e</mi>
+      </mrow>
+     </mstyle>
+    </mrow>
+    <mrow><mn>0.3823</mn>
+    </mrow>
+   </msup><mspace width="6px" /><mspace width="6px" /><mspace width="6px" /><mspace width="6px" /><mn>.</mn>
+  </mrow>
+ </mrow></math></div>
+
+<div class="standard"><a id='magicparlabel-244' />
+This then is added as a third branch, applicable whenever TASX&lt;150 m/s. </div>
+
+<div class="standard"><a id='magicparlabel-245' />
+</div>
+<div class='float float-figure'><div class="plain_layout" style='text-align: center;'><a id='magicparlabel-249' />
+<img src='/home/cooperw/Research/Instrumentation/Bulletin9/NuRePlot3.png' alt='image: ' />
+</div>
+
+<div class="plain_layout"><a id='magicparlabel-250' />
+<div class='float-caption float-caption-figure'>Figure 0.9:<div class="plain_layout"><a id='magicparlabel-254' />
+<a id="fig_HIPPONuRe" />
+Plot of Nu factor vs Re for HIPPO-4 flight 1. Top red line is for TASX&lt;150 m/s; other plots are as included previously in Fig.&nbsp;<a href="#fig_RedFitLines">0.3</a></div>
+</div></div>
+
+<div class="plain_layout"><a id='magicparlabel-255' />
+</div>
+</div>
+
+<h2 class="section_"><a id='magicparlabel-256' />
+<em>Recommendations</em></h2>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-261' />
+Revise the formula used for the thermal conductivity of air, and include a reference. The linear formula in Pruppacher and Klett is a good candidate: <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &lambda; </mi><mo>=</mo><mn>0.0238</mn><mo>+</mo><mn>0.000071</mn><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mi>T</mi><mo>-</mo>
+    <msub>
+     <mrow><mi>T</mi>
+     </mrow>
+     <mrow><mn>0</mn>
+     </mrow>
+    </msub>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mspace width="6px" /><mi>J</mi><mspace width="6px" />
+   <msup>
+    <mrow><mi>m</mi>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msup>
+   <msup>
+    <mrow><mi>s</mi>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msup>
+   <msup>
+    <mrow><mi>K</mi>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math>.</li>
+<li class="enumerate_item"><a id='magicparlabel-262' />
+Change the formula used to calculate the heat transfer in clear air to eliminate the Prandtl number from the equation because there is insignificant variation in this parameter in the atmosphere. </li>
+<li class="enumerate_item"><a id='magicparlabel-263' />
+Revise the code that calculates liquid water content after subtraction of the dry-air term, to include correct dependence on the boiling point and to incorporate the temperature dependence of the latent heat of vaporization.</li>
+<li class="enumerate_item"><a id='magicparlabel-264' />
+Use revised fits to clear-air data to determine the relationship between Reynolds number and Nusselt number. The formula in the nimbus code produces an estimate of the power dissipation in clear air that is too low for the GV but reasonably close to the new fit for the C-130.</li>
+<li class="enumerate_item"><a id='magicparlabel-265' />
+The wire length should be in the output file along with the wire diameter and temperature because the length is needed if users are to repeat the calculations. Now the only documentation of that instrument characteristic is in the nimbus code.</li>
+<li class="enumerate_item"><a id='magicparlabel-266' />
+Change to MKS units for consistency and change constants in the code to correspond to MKS units.</li>
+<li class="enumerate_item"><a id='magicparlabel-267' />
+Change the baseline correction to update the dry-air term instead of removing a LWC offset, and include the dependence on CONCF or PLWCG in the dependency table and output file. </li>
+<li class="enumerate_item"><a id='magicparlabel-268' />
+Possible implementation for the GV in MKS units:<div class="foot"><span class="foot_label">8</span><div class="foot_inner"><div class="plain_layout"><a id='magicparlabel-272' />
+concf from a CDP</div>
+</div></div>
+<br />
+
+
+<div class='Boxed' style='width: 95%; '><div class="lyx_code"><div class="lyx_code_item"><a id='magicparlabel-276' />
+// input variables: plwc, tasx, atx, psxc, concf</div>
+<div class="lyx_code_item"><a id='magicparlabel-277' />
+// output: plwcc</div>
+<div class="lyx_code_item"><a id='magicparlabel-278' />
+const float cond0 = 0.0238, cond1 = 0.000071, </div>
+<div class="lyx_code_item"><a id='magicparlabel-279' />
+            visc0 = 1.718e-5, visc1 = 0.0049e-5;</div>
+<div class="lyx_code_item"><a id='magicparlabel-280' />
+// coefficients to determine the boiling point:</div>
+<div class="lyx_code_item"><a id='magicparlabel-281' />
+const float bp[4]={0.03366503,1.34236135,-0.33479451,0.03519342};</div>
+<div class="lyx_code_item"><a id='magicparlabel-282' />
+    // the following coefficients for Nusselt number should</div>
+<div class="lyx_code_item"><a id='magicparlabel-283' />
+    // go in a defaults file</div>
+<div class="lyx_code_item"><a id='magicparlabel-284' />
+static float Nu_a0 = 1.8679, Nu_b0 = 0.13506, Nu_c0 = 0.13289;</div>
+<div class="lyx_code_item"><a id='magicparlabel-285' />
+const float Nu_a1 = 0.3433589,Nu_b1 = 0.638318, Nu_c1 = 0.3823 ;</div>
+<div class="lyx_code_item"><a id='magicparlabel-286' />
+const tau_Nu = 300.;        // time constant for updating Nu</div>
+<div class="lyx_code_item"><a id='magicparlabel-287' />
+    // the next constants have many uses; global?</div>
+<div class="lyx_code_item"><a id='magicparlabel-288' />
+const float mb2Pa = 100., Kelvin = 273.15, </div>
+<div class="lyx_code_item"><a id='magicparlabel-289' />
+            Rd = 287.05, kg2g = 1000.;</div>
+<div class="lyx_code_item"><a id='magicparlabel-290' />
+    // better: Rd=R0/MD; above is 5-figure approx</div>
+<div class="lyx_code_item"><a id='magicparlabel-291' />
+    // latent heat of vaporization</div>
+<div class="lyx_code_item"><a id='magicparlabel-292' />
+const float ALHV0 = 2.501e6, ALHV1 = -2370.;</div>
+<div class="lyx_code_item"><a id='magicparlabel-293' />
+const float CW = 4.218e3; // specific heat of water</div>
+<div class="lyx_code_item"><a id='magicparlabel-294' />
+    // also need in defaults file: twire = 130., </div>
+<div class="lyx_code_item"><a id='magicparlabel-295' />
+    //                  dwire = 0.1805e-2, lwire = 2.1e-2;</div>
+<div class="lyx_code_item"><a id='magicparlabel-296' />
+    // other declarations omitted</div>
+<div class="lyx_code_item"><a id='magicparlabel-297' />
+tm = (atx + twire) / 2.;            // mean T</div>
+<div class="lyx_code_item"><a id='magicparlabel-298' />
+cond = cond0 + cond1 * tm;          // thermal conductivity, air</div>
+<div class="lyx_code_item"><a id='magicparlabel-299' />
+visc = visc0 + visc1 * tm;          // viscosity of air</div>
+<div class="lyx_code_item"><a id='magicparlabel-300' />
+dens = mb2Pa * psxc / (Rd * (tm + Kelvin)); // air density</div>
+<div class="lyx_code_item"><a id='magicparlabel-301' />
+Re = dens * tasx * dwire / visc;    // Reynolds number</div>
+<div class="lyx_code_item"><a id='magicparlabel-302' />
+    // update Nusselt-number coefficients</div>
+<div class="lyx_code_item"><a id='magicparlabel-303' />
+if (concf &lt; 0.25 &amp;&amp; concf &gt; MISSING_VALUE) {</div>
+<div class="lyx_code_item"><a id='magicparlabel-304' />
+    Nu = plwc / (PI * lwire * cond * (twire - atx));</div>
+<div class="lyx_code_item"><a id='magicparlabel-305' />
+    if (tasx &lt; 150.) {Nu_c0 += (Nu/pow(Re, Nu_c1)-Nu_c0)/tauNu;}</div>
+<div class="lyx_code_item"><a id='magicparlabel-306' />
+    else if (Re &lt; 7244.) {Nu_a0 += (Nu/pow(Re,Nu_a1)-Nu_a0)/tauNu;}</div>
+<div class="lyx_code_item"><a id='magicparlabel-307' />
+    else            {Nu_b0 += (Nu/pow(Re,Nu_b1)-Nu_b0)/tauNu;}</div>
+<div class="lyx_code_item"><a id='magicparlabel-308' />
+}</div>
+<div class="lyx_code_item"><a id='magicparlabel-309' />
+if (tasx &lt; 150.) {Nu = Nu_c0 * pow(Re, Nu_c1);}</div>
+<div class="lyx_code_item"><a id='magicparlabel-310' />
+   // get Nusselt number below or above Re=7244:</div>
+<div class="lyx_code_item"><a id='magicparlabel-311' />
+else if (Re &lt; 7244.) {Nu = Nu_a0 * pow(Re, Nu_a1);}</div>
+<div class="lyx_code_item"><a id='magicparlabel-312' />
+else            {Nu = Nu_b0 * pow(Re, Nu_b1);}</div>
+<div class="lyx_code_item"><a id='magicparlabel-313' />
+    // power required in dry air:</div>
+<div class="lyx_code_item"><a id='magicparlabel-314' />
+Pdry = PI * lwire * cond * (twire - atx) * Nu;</div>
+<div class="lyx_code_item"><a id='magicparlabel-315' />
+xp = log10(psxc);</div>
+<div class="lyx_code_item"><a id='magicparlabel-316' />
+Tbp = pow(10., (bp[0]+xp*(bp[1]+xp*(bp[2]+xp*bp[3]))));</div>
+<div class="lyx_code_item"><a id='magicparlabel-317' />
+    // liquid water content, converted from MKS to g/m^3</div>
+<div class="lyx_code_item"><a id='magicparlabel-318' />
+plwcc = kg2g * (plwc - Pdry) / (lwire * dwire * tasx </div>
+<div class="lyx_code_item"><a id='magicparlabel-319' />
+        * ((ALHV0+ALHV1*Tbp) + CW * (Tbp - atx)));</div>
+<div class="lyx_code_item"><a id='magicparlabel-320' />
+</div>
+</div>
+</div></li>
+</ol>
+<div class="standard"><a id='magicparlabel-321' />
+</div>
+
+<div class="standard"><a id='magicparlabel-330' />
+</div>
+
+<div class="standard"><a id='magicparlabel-341' />
+</div>
+</body>
+</html>

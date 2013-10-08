@@ -1,24 +1,50 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+% Added by lyx2lyx
+%  for proper underlining
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+\let\cite@rig\cite
+\newcommand{\b@xcite}[2][\%]{\def\def@pt{\%}\def\pas@pt{#1}
+  \mbox{\ifx\def@pt\pas@pt\cite@rig{#2}\else\cite@rig[#1]{#2}\fi}}
+\renewcommand{\underbar}[1]{{\let\cite\b@xcite\uline{#1}}}
+% Added by lyx2lyx
+%  for proper underlining
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+\let\cite@rig\cite
+\newcommand{\b@xcite}[2][\%]{\def\def@pt{\%}\def\pas@pt{#1}
+  \mbox{\ifx\def@pt\pas@pt\cite@rig{#2}\else\cite@rig[#1]{#2}\fi}}
+\renewcommand{\underbar}[1]{{\let\cite\b@xcite\uline{#1}}}
+\end_preamble
 \use_default_options true
 \begin_modules
 hanging
 \end_modules
+\maintain_unincluded_children false
 \language english
+\language_package default
 \inputencoding auto
+\fontencoding global
 \font_roman default
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -26,21 +52,31 @@ hanging
 \use_geometry false
 \use_amsmath 1
 \use_esint 1
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
-\defskip medskip
+\paragraph_indentation default
 \quotes_language english
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
-\author "" 
-\author "" 
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
 \end_header
 
 \begin_body
@@ -68,7 +104,7 @@ C):
 ATx
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -85,7 +121,7 @@ ATxH
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -98,9 +134,9 @@ ATxH
 \begin_inset Newline newline
 \end_inset
 
-The name of the variable used for ambient temperature, ATx conveys the same
- information regarding sensor type and location as the variable name used
- with total (recovery) temperature.
+The 'x' in the name of the variable used for ambient temperature, ATx, conveys
+ the same information regarding sensor type and location as the variable
+ name used with total (recovery) temperature.
  See the discussion in Aircraft and Meteorological State Variables (Section
  
 \begin_inset CommandInset ref
@@ -117,8 +153,8 @@ d from the measured recovery temperature, which includes dynamic heating
  TTx as well as the dynamic and static pressure, usually respectively QCXC
  and PSXC.
  The pressures are first corrected from the raw measurements QCX and PSX
- to account for deviations caused by airflow around the aircraft and/or
- position-dependent systematic errors.
+ to obtain variables that account for deviations caused by airflow around
+ the aircraft and/or position-dependent systematic errors.
  The basic equations use conservation of energy for a perfect gas undergoing
  an adiabatic compression.
 \begin_inset Newline newline
@@ -166,20 +202,26 @@ recovery
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Hanging
-\begin_inset Formula \begin{equation}
-\alpha=\frac{T_{r}-T_{a}}{T_{t}-T_{a}}\label{eq:8.2}\end{equation}
+
+\begin_inset Formula 
+\begin{equation}
+\alpha=\frac{T_{r}-T_{a}}{T_{t}-T_{a}}\label{eq:8.2}
+\end{equation}
 
 \end_inset
 
 From conservation of energy:
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Hanging
-\begin_inset Formula \begin{equation}
-\frac{U_{a}^{2}}{2}+c_{p}T_{a}=\frac{U_{r}^{2}}{2}+c_{p}T_{r}=\frac{U_{t}^{2}}{2}+c_{p}T_{t}\label{eq:8.1}\end{equation}
+
+\begin_inset Formula 
+\begin{equation}
+\frac{U_{a}^{2}}{2}+c_{p}T_{a}=\frac{U_{r}^{2}}{2}+c_{p}T_{r}=\frac{U_{t}^{2}}{2}+c_{p}T_{t}\label{eq:8.1}
+\end{equation}
 
 \end_inset
 
@@ -217,8 +259,10 @@ reference "eq:8.1"
 \end_inset
 
 ), 
-\begin_inset Formula \begin{equation}
-T_{a}=T_{r}-\alpha\frac{U_{a}^{2}}{2c_{p}}\label{eq:8.3}\end{equation}
+\begin_inset Formula 
+\begin{equation}
+T_{a}=T_{r}-\alpha\frac{U_{a}^{2}}{2c_{p}}\label{eq:8.3}
+\end{equation}
 
 \end_inset
 
@@ -226,11 +270,13 @@ The temperature sensors used on RAF aircraft are designed to decelerate
  the air adiabatically to near zero velocity.
  Recovery factors determined from wind tunnel testing for the Rosemount
  sensors are 0.95 (non-deiced model) and 0.98 (deiced model).
- The recovery factor determined for the NCAR reverse-flow sensor is 0.6.
+ 
 \begin_inset Foot
 status open
 
 \begin_layout Plain Layout
+ The recovery factor determined for the now-obsolete NCAR reverse-flow sensor
+ was 0.6.
  The recovery factor for the now retired NCAR fast-response (K-probe) temperatur
 e sensor was 0.8.
  
@@ -318,8 +364,9 @@ The relationship is conveniently derived by first calculating the dimensionless
 \begin_inset Formula $c_{p}/c_{v}$
 \end_inset
 
-), because the Mach number is a function of air temperature only.
- It can be determined as follows: 
+).
+ The Mach number is a function of air temperature only and can be determined
+ as follows: 
 \begin_inset Newline newline
 \end_inset
 
@@ -332,11 +379,14 @@ reference "eq:8.1"
 \end_inset
 
 ), in the form
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Hanging
-\begin_inset Formula \begin{equation}
-d\left(\frac{U_{a}^{2}}{2}\right)+c_{t}dT=0\label{eq:8.1a}\end{equation}
+
+\begin_inset Formula 
+\begin{equation}
+d\left(\frac{U_{a}^{2}}{2}\right)+c_{t}dT=0\,\,\,\,.\label{eq:8.1a}
+\end{equation}
 
 \end_inset
 
@@ -366,16 +416,19 @@ b).
 \end_inset
 
 , leading to the equation:
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Hanging
-\begin_inset Formula \begin{equation}
-\frac{U_{a}^{2}}{2}+c_{p}T_{a}=c_{p}T_{a}\left(\frac{p_{s}}{p_{a}}\right)^{\frac{R}{c_{p}}}\label{eq:8.4}\end{equation}
+
+\begin_inset Formula 
+\begin{equation}
+\frac{U_{a}^{2}}{2}+c_{p}T_{a}=c_{p}T_{a}\left(\frac{p_{t}}{p_{a}}\right)^{\frac{R}{c_{p}}}\label{eq:8.4}
+\end{equation}
 
 \end_inset
 
 where 
-\begin_inset Formula $p_{s}$
+\begin_inset Formula $p_{t}$
 \end_inset
 
  is the total pressure (i.e., PSXC+QCXC) and 
@@ -383,6 +436,10 @@ where
 \end_inset
 
  is the ambient pressure (PSXC).
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -400,12 +457,27 @@ c).
 \end_inset
 
  to obtain:
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Hanging
-\begin_inset Formula \begin{equation}
-M^{2}=\left(\frac{2c_{v}}{R}\right)\left[\left(\frac{p_{s}}{p_{a}}\right)^{\frac{R}{c_{p}}}-1\right]\label{eq:8.5}\end{equation}
 
+\begin_inset Formula 
+\begin{equation}
+M^{2}=\left(\frac{2c_{v}}{R}\right)\left[\left(\frac{p_{t}}{p_{a}}\right)^{\frac{R}{c_{p}}}-1\right]\label{eq:8.5}
+\end{equation}
+
+\end_inset
+
+which can be found from 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{a}$
+\end_inset
+
+ alone.
+\begin_inset Newline newline
 \end_inset
 
 
@@ -423,12 +495,15 @@ reference "eq:8.3"
 
 ), to obtain the temperature in terms of the Mach number and the recovery
  temperature:
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Hanging
-\begin_inset Formula \begin{eqnarray}
+
+\begin_inset Formula 
+\begin{eqnarray}
 T_{a} & = & T_{r}-\alpha\frac{U_{a}^{2}}{2c_{p}}=T_{r}-\alpha\frac{M^{2}\gamma RT_{a}}{2c_{p}}\nonumber \\
- & = & \frac{T_{r}}{1+\dfrac{\alpha M^{2}(\gamma-1)}{2}}\label{eq:8.6}\end{eqnarray}
+ & = & \frac{T_{r}}{1+\dfrac{\alpha M^{2}R}{2c_{v}}}\label{eq:8.6}
+\end{eqnarray}
 
 \end_inset
 
@@ -442,11 +517,14 @@ e).
 \end_inset
 
 ) as
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Hanging
-\begin_inset Formula \begin{equation}
-U_{a}=M\sqrt{\gamma RT_{a}}\label{eq:8.7}\end{equation}
+
+\begin_inset Formula 
+\begin{equation}
+U_{a}=M\sqrt{\gamma RT_{a}}\label{eq:8.7}
+\end{equation}
 
 \end_inset
 
@@ -469,7 +547,8 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "95text%"
+use_makebox 0
+width "90text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -496,11 +575,12 @@ PSXC = measured ambient pressure, after airflow/location correction (
 \begin_inset Newline newline
 \end_inset
 
-MACHx = Mach number based on QCxC and PSXC
+MACHx = Mach number based on QCxC and PSXC (there may be several of these)
 \begin_inset Newline newline
 \end_inset
 
-MACHX = Mach number based on QCXC and PSXC
+MACHX = Mach number based on QCXC and PSXC (this is the selected best of
+ the MACHx options)
 \begin_inset Newline newline
 \end_inset
 
@@ -513,7 +593,22 @@ MACHX = Mach number based on QCXC and PSXC
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 From (
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -525,8 +620,10 @@ reference "eq:8.5"
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula \begin{equation}
-\mathrm{MACHx}=\left\{ \left(\frac{2c_{v}}{R}\right)\left[\left(\frac{\mathrm{\{PSXC\}+\{QCxC\}}}{\mathrm{\{PSXC\}}}\right)^{\frac{R}{c_{p}}}-1\right]\right\} ^{1/2}\label{eq:8.8}\end{equation}
+\begin_inset Formula 
+\begin{equation}
+\mathrm{MACHx}=\left\{ \left(\frac{2c_{v}}{R}\right)\left[\left(\frac{\mathrm{\{PSXC\}+\{QCxC\}}}{\mathrm{\{PSXC\}}}\right)^{\frac{R}{c_{p}}}-1\right]\right\} ^{1/2}\label{eq:8.8}
+\end{equation}
 
 \end_inset
 
@@ -545,8 +642,10 @@ reference "eq:8.6"
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula \begin{equation}
-\mathrm{ATx}=\frac{\mathrm{\left(\{TTx\}+T_{0}\right)}}{\left(1+\dfrac{\alpha\mathrm{(\{MACHX\})}^{2}(\gamma-1)}{2}\right)}-T_{0}\label{eq:8.9}\end{equation}
+\begin_inset Formula 
+\begin{equation}
+\mathrm{ATx}=\frac{\mathrm{\left(\{TTx\}+T_{0}\right)}}{\left(1+\dfrac{\alpha\mathrm{(\{MACHX\})}^{2}R}{2c_{v}}\right)}-T_{0}\label{eq:8.9}
+\end{equation}
 
 \end_inset
 
@@ -555,7 +654,7 @@ reference "eq:8.6"
 status open
 
 \begin_layout Plain Layout
-note B9 uses 273.16 here; check if otherwise consisstent...
+note B9 uses 273.16 here; check if otherwise consistent...
 \end_layout
 
 \end_inset
@@ -563,10 +662,6 @@ note B9 uses 273.16 here; check if otherwise consisstent...
 
 \end_layout
 
-\end_inset
-
-
-\begin_inset Newline newline
 \end_inset
 
 
@@ -585,7 +680,7 @@ TASx
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -608,12 +703,17 @@ This derived measurement of the flight speed of the aircraft relative to
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Box Boxed
 position "t"
 hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "95text%"
 special "none"
 height "1in"
@@ -625,7 +725,7 @@ status open
 \begin_inset Newline newline
 \end_inset
 
-Note dependence of M on choices for QCxC and PSXC
+Note dependence of MACHx on choices for QCxC and PSXC
 \begin_inset Newline newline
 \end_inset
 
@@ -658,13 +758,30 @@ where PSXC and ATX are the preferred choices
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
 
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula \begin{equation}
-\mathrm{TASx}=\mathrm{\{MACHx\}}\sqrt{\gamma R_{d}\mathrm{\,(\{ATX\}}+T_{0})}\label{eq:8.10}\end{equation}
+\begin_inset Formula 
+\begin{equation}
+\mathrm{TASx}=\mathrm{\{MACHx\}}\sqrt{\gamma R_{d}\mathrm{\,(\{ATX\}}+T_{0})}\label{eq:8.10}
+\end{equation}
 
 \end_inset
 
@@ -704,7 +821,7 @@ TASHC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -739,6 +856,10 @@ I reworded this; I think this is correct, because it is not a departure
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Newline newline
+\end_inset
+
  
 \begin_inset Box Boxed
 position "t"
@@ -746,6 +867,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "95col%"
 special "none"
 height "1in"
@@ -758,7 +880,22 @@ SPHUM = specific humidity, g/kg
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
 
 \end_layout
 
@@ -768,7 +905,7 @@ TASHC = TASX * (1.0 + 0.000304 * SPHUM)
 status open
 
 \begin_layout Plain Layout
-this was TASx in B9
+TASX was TASx in B9
 \end_layout
 
 \end_inset
@@ -807,7 +944,7 @@ EDPC is the ambient vapor pressure of water, used in the calculation of
  correction for the enhancement factor that influences dew point or frost
  point measurements.
 \begin_inset Foot
-status open
+status collapsed
 
 \begin_layout Plain Layout
 prior to 2011, this variable was calculated using the Goff-Gratch formula.
@@ -816,7 +953,7 @@ prior to 2011, this variable was calculated using the Goff-Gratch formula.
 
 \end_inset
 
- ) The formula for obtaining the equilibrium water vapor pressure as a function
+ The formula for obtaining the ambient water vapor pressure as a function
  of dew point is given in the discussion of DPxC in Section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -824,13 +961,31 @@ reference "sec:AIRCRAFT-AND-METEOROLOGICAL"
 
 \end_inset
 
-.
+, Eqs.
+\begin_inset space ~
+\end_inset
+
+(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:proposedNewWater"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:EnhancementFactor"
+
+\end_inset
+
+).
 \begin_inset Newline newline
 \end_inset
 
 
 \begin_inset Note Comment
-status open
+status collapsed
 
 \begin_layout Plain Layout
 this is a description of the old Bulletin-9 section, saved here for reference.
@@ -848,6 +1003,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -903,7 +1059,24 @@ note discontinuity at 0; need better documentation of this.
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+rule[[0.5ex]]{1.0
+\backslash
+linewidth}{1pt}
+\end_layout
+
+\end_inset
+
 if DPX
 \begin_inset Formula $\geq0^{\circ}C:$
 \end_inset
@@ -913,14 +1086,18 @@ if DPX
 \end_inset
 
 
-\begin_inset Formula \[
-A=23.832241-5.02808\,\log\left(D_{K}\right)-1.3816\times10^{-7}(10^{11.334-0.0303998(D_{K}})\]
+\begin_inset Formula 
+\[
+A=23.832241-5.02808\,\log\left(D_{K}\right)-1.3816\times10^{-7}(10^{11.334-0.0303998(D_{K}})
+\]
 
 \end_inset
 
 
-\begin_inset Formula \[
-f=1.0007+(3.46\times10^{-6}\mathrm{PSXC})\]
+\begin_inset Formula 
+\[
+f=1.0007+(3.46\times10^{-6}\mathrm{PSXC})
+\]
 
 \end_inset
 
@@ -929,14 +1106,18 @@ if DPX
 \end_inset
 
 :
-\begin_inset Formula \[
-A=3.56654\log_{10}(D_{K})-0.0032098(D_{K})-\frac{2484.956}{D_{K}}+2.0702294\]
+\begin_inset Formula 
+\[
+A=3.56654\log_{10}(D_{K})-0.0032098(D_{K})-\frac{2484.956}{D_{K}}+2.0702294
+\]
 
 \end_inset
 
 
-\begin_inset Formula \[
-f=1.0003+(4.18\times10^{-6}\mathrm{PSXC})\]
+\begin_inset Formula 
+\[
+f=1.0003+(4.18\times10^{-6}\mathrm{PSXC})
+\]
 
 \end_inset
 
@@ -944,8 +1125,10 @@ vapor pressure:
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula \begin{equation}
-\mathrm{EDPC}=f\,10^{A}\label{eq:8.11GoffG}\end{equation}
+\begin_inset Formula 
+\begin{equation}
+\mathrm{EDPC}=f\,10^{A}\label{eq:8.11GoffG}
+\end{equation}
 
 \end_inset
 
@@ -971,7 +1154,7 @@ THETA
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -988,7 +1171,12 @@ The potential temperature in the output data files is the temperature reached
  if a dry parcel at the measured pressure and temperature would be compressed
  or expanded adiabatically to a pressure of 1000 mb.
  It does not take into account the difference in specific heats caused by
- the presence of water vapor.
+ the presence of water vapor, and water vapor can change the exponent in
+ the formula below enough to produce errors of 1
+\begin_inset space \thinspace{}
+\end_inset
+
+K or more.
 \begin_inset Newline newline
 \end_inset
 
@@ -999,6 +1187,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "95col%"
 special "none"
 height "1in"
@@ -1027,10 +1216,91 @@ PSXC = ambient pressure (mb)
 \end_inset
 
 
-\lyxline
+\begin_inset Formula $R_{d}$
+\end_inset
 
-\begin_inset Formula \begin{equation}
-\mathrm{THETA}=\left(\mathrm{\{ATX\}}+T_{0}\right)\left(\frac{p_{0}}{\mathrm{\{PSXC\}}}\right)^{R/c_{p}}\label{eq:8.13THETA}\end{equation}
+ = gas constant for dry air
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $c_{pd}$
+\end_inset
+
+ = specific heat at constant pressure for dry air
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ (taken to be exactly 
+\begin_inset Formula $7R_{d}/2)$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathrm{THETA}=\left(\mathrm{\{ATX\}}+T_{0}\right)\left(\frac{p_{0}}{\mathrm{\{PSXC\}}}\right)^{R_{d}/c_{pd}}\label{eq:8.13THETA}
+\end{equation}
 
 \end_inset
 
@@ -1053,17 +1323,27 @@ PSXC = ambient pressure (mb)
 \begin_layout Hanging
 
 \series bold
-Equivalent Potential Temperature (K): 
+Pseudo-Adiabatic Equivalent Potential Temperature (K): 
 \bar under
 THETAE
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
 THETAE
+\end_layout
+
+\end_inset
+
+
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+changed 2011
 \end_layout
 
 \end_inset
@@ -1072,15 +1352,199 @@ THETAE
 \begin_inset Newline newline
 \end_inset
 
- The equivalent potential temperature in the output data files is that obtained
- using the method of Bolton (1980), which uses an approximate fit to obtain
- the temperature at the lifted condensation level (
+Beginning in 2011, pesudo-adiabatic equivalent potential temperature is
+ calculated using the method developed by Davies-Jones (2009).
+ His formula is
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\Theta_{E}=\Theta_{DL}\exp\{\frac{r(L_{0}^{*}-L_{1}^{*}(T_{L}-T_{0})+K_{2}r)}{c_{pd}T_{L}}\}\label{eq:DaviesJonesThetaP}
+\end{equation}
+
+\end_inset
+
+and
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\Theta_{DL}=T_{K}(\frac{p_{r}}{p_{d}})^{0.2854}\,(\frac{T_{k}}{T_{L}})^{0.28\times10^{-3}r}\label{eq:ThetaDL}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where 
+\begin_inset Formula $T_{K}$
+\end_inset
+
+ is the absolute temperature (in kelvin) at the measurement level, 
+\begin_inset Formula $p_{d}$
+\end_inset
+
+ is the pressure of dry air at that level, 
+\begin_inset Formula $p_{r}$
+\end_inset
+
+ is the reference pressure (conventionally 1000 hPa), 
+\begin_inset Formula $r$
+\end_inset
+
+ is the (dimensionless) water vapor mixing ratio, 
+\begin_inset Formula $c_{pd}$
+\end_inset
+
+ the specific heat of dry air, 
+\begin_inset Formula $T_{L}$
+\end_inset
+
+ the temperature at the lifted condensation level (in kelvin), and 
+\begin_inset Formula $T_{0}=273.15\,$
+\end_inset
+
+K.
+ The coefficients in this formula are: 
+\begin_inset Formula $L_{0}=2.56313\times10^{6}J\, kg^{-1}$
+\end_inset
+
+, 
+\begin_inset Formula $L_{1}=1754$
+\end_inset
+
+ J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}\, K\mbox{\ensuremath{^{-1}}}$
+\end_inset
+
+, and 
+\begin_inset Formula $K=1.137\times10^{6}$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+.
+ The asterisks on 
+\begin_inset Formula $L_{0}^{*}$
+\end_inset
+
+ and 
+\begin_inset Formula $L_{1}^{*}$
+\end_inset
+
+ indicate that these coefficients depart from the best estimate of the coefficie
+nts that give the latent heat of vaporization of water, but they have been
+ adjusted to optimize the fit to values obtained by exact integration.
+ Note that, unlike the formula discussed below that was used prior to 2011,
+ the mixing ratio must be used in dimensionless form (i.e., kg/kg), 
+\emph on
+not
+\emph default
+ with units of g/kg.
+ The following empirical formula, developed by Bolton (1980), is used to
+ determine 
+\begin_inset Formula $T_{L}$
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+T_{L}=\frac{\beta_{1}}{3.5\ln(T_{K}/\beta_{3})-\ln(\mathrm{e/\beta_{4}})+\beta_{5}}+\beta_{2}\label{eq:TLCL}
+\end{equation}
+
+\end_inset
+
+where
+\begin_inset Formula $e$
+\end_inset
+
+ is the water vapor pressure, 
+\begin_inset Formula $\beta_{1}=2840\, K$
+\end_inset
+
+, 
+\begin_inset Formula $\beta_{2}=55\,$
+\end_inset
+
+K, 
+\begin_inset Formula $\beta_{3}=1$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+K, 
+\begin_inset Formula $\beta_{4}=1$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, 
+\begin_inset Formula $\beta_{5}=-4.805$
+\end_inset
+
+.
+ (Coefficients 
+\begin_inset Formula $\beta_{3}$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta_{4}$
+\end_inset
+
+ have been introduced into (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TLCL"
+
+\end_inset
+
+) only to ensure that arguments to logarithms are dimensionless and to specify
+ the units that must be used to achieve that.)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Prior to 2011, a variable called the equivalent potential temperature in
+ the output data files was that obtained using the method of Bolton (1980),
+ which used the same formula to obtain the temperature at the lifted condensatio
+n level (
 \begin_inset Formula $T_{LCL}$
 \end_inset
 
-) and then uses that temperature to find the value of potential temperature
- that would result if the parcel were lifted from that point until all water
- vapor condensed and was removed from the air parcel.
+) and then used that temperature to find the value of potential temperature
+ of dry air that would result if the parcel were lifted from that point
+ until all water vapor condensed and was removed from the air parcel.
  
 \begin_inset Note Note
 status open
@@ -1089,6 +1553,10 @@ status open
 check, and fix problem with taking exponent of a quantity with units
 \end_layout
 
+\end_inset
+
+ The formulas used were as follows:
+\begin_inset Newline newline
 \end_inset
 
 
@@ -1102,14 +1570,15 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "90text%"
+use_makebox 0
+width "95text%"
 special "none"
 height "1in"
 height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
-\begin_inset Formula $T_{lcl}$
+\begin_inset Formula $T_{L}$
 \end_inset
 
 = temperature at the lifted condensation level, K
@@ -1137,16 +1606,31 @@ THETA = potential temperature (K)
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
 
-\begin_inset Formula \[
-T_{lcl}=\frac{2840.}{3.5\ln(\mathrm{\{ATX\}+T_{0}})-\ln(\mathrm{\{EDPX\}})-4.805}+55.\]
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
 
 \end_inset
 
 
-\begin_inset Formula \begin{equation}
-\mathrm{THETAE}=\mathrm{\{THETA\}\left(\frac{3.376}{T_{lcl}}-0.00254\right)(\{MR\})(1+0.00081(\{MR\}))}\label{eq:8.13THETAE}\end{equation}
+\begin_inset Formula 
+\[
+T_{L}=\frac{2840.}{3.5\ln(\mathrm{\{ATX\}+T_{0}})-\ln(\mathrm{\{EDPX\}})-4.805}+55.
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathrm{THETAE}=\mathrm{\{THETA\}\left(\frac{3.376}{T_{lcl}}-0.00254\right)(\{MR\})(1+0.00081(\{MR\}))}\label{eq:8.13THETAE}
+\end{equation}
 
 \end_inset
 
@@ -1156,14 +1640,21 @@ T_{lcl}=\frac{2840.}{3.5\ln(\mathrm{\{ATX\}+T_{0}})-\ln(\mathrm{\{EDPX\}})-4.805
 \end_inset
 
 
-\begin_inset Note Note
-status open
+\series bold
 
-\begin_layout Plain Layout
-need to check this; this is what was in B9, but looks wrong...
- and maybe needs updating
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
+
+\series default
+Differences vs the new formula are usually minor but can be of order 0.5
+\begin_inset space \thinspace{}
+\end_inset
+
+K.
+\series bold
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -1182,7 +1673,7 @@ TVIR
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1198,8 +1689,16 @@ TVIR
 The virtual temperature is the temperature of dry air having the same pressure
  and density as the air being sampled, and so adjusts for the buoyancy added
  by water vapor.
- The calculation of virtual temperature in RAF output products is taken
- from page 295 of the Smithsonian Meteorological Tables (1958).
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+change 2011
+\end_layout
+
+\end_inset
+
+ 
 \begin_inset Note Note
 status open
 
@@ -1217,13 +1716,14 @@ note that q is defined here as specific humidity, g/g but in previous section
 \end_inset
 
 
-\begin_inset Box Frameless
+\begin_inset Box Boxed
 position "t"
 hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "100col%"
+use_makebox 0
+width "95col%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1243,33 +1743,64 @@ MR = mixing ratio of water vapor, g/kg
 \end_inset
 
 
-\begin_inset Formula $q$
+\begin_inset Formula $r$
 \end_inset
 
-= specific humidity, g/g
+ = mixing ratio, dimensionless [kg/kg] = {MR}/(1000 g/kg)
 \begin_inset Newline newline
 \end_inset
 
 
-\lyxline
+\begin_inset Formula $T_{0}=273.15$
+\end_inset
 
-\end_layout
 
-\begin_layout Plain Layout
-\begin_inset Formula \[
-q=\frac{\mathrm{\{MR\}}/1000}{\mathrm{1+\{MR\}/1000}}\]
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
 
 \end_inset
 
 
-\begin_inset Formula \begin{equation}
-\mathrm{TVIR}=(\mathrm{\{ATX\}}+T_{0})\left(\frac{1+\frac{M_{a}}{M_{w}}q}{1+q}\right)-T_{0}\label{eq:814TVIR}\end{equation}
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\begin{equation}
+\mathrm{TVIR}=(\mathrm{\{ATX\}}+T_{0})\left(\frac{1+\frac{M_{d}}{M_{w}}r}{1+r}\right)-T_{0}\label{eq:814TVIR}
+\end{equation}
 
 \end_inset
 
  
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -1284,7 +1815,7 @@ THETAV
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1300,18 +1831,33 @@ THETAV
 The virtual potential temperature is analogous to the potential temperature
  except that it is based on the virtual temperature (TVIR) instead of the
  ambient temperature (ATX).
- 
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+change 2011
+\end_layout
+
+\end_inset
+
+ Dry-adiabatic expansion or compression to the reference level (1000 hPa)
+ is assumed.
+ As for THETA, use of dry-air values for the gas constant and specific heat
+ at constant pressure can lead to significant errors in humid conditions.
+ For further information, see this note.
+ (XXX reference needed)
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset Box Frameless
+\begin_inset Box Boxed
 position "t"
 hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "100col%"
+use_makebox 0
+width "95col%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1326,21 +1872,78 @@ TVIR = virtual temperature,
 \begin_inset Newline newline
 \end_inset
 
-PSXC = ambient pressure, mb
+PSXC = ambient pressure, hPa
 \begin_inset Newline newline
 \end_inset
 
 
-\lyxline
+\begin_inset Formula $R_{d}=$
+\end_inset
 
-\begin_inset Formula \begin{equation}
-\mathrm{THETAV}=\left(\mathrm{\{TVIR\}}+T_{0}\right)\left(\frac{1000}{\mathrm{\{PSXC\}}}\right)^{R/c_{p}}\label{eq:8.15THETAV}\end{equation}
+gas constant for dry air
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $c_{pd}=$
+\end_inset
+
+specific heat at constant pressure for dry air (taken to be exactly 
+\begin_inset Formula $7R_{d}/2)$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $T_{0}=273.15$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $p_{r}$
+\end_inset
+
+ = reference pressure, conventionally 1000 hPa
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathrm{THETAV}=\left(\mathrm{\{TVIR\}}+T_{0}\right)\left(\frac{p_{r}}{\mathrm{\{PSXC\}}}\right)^{R_{d}/c_{pd}}\label{eq:8.15THETAV}
+\end{equation}
 
 \end_inset
 
  
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -1355,7 +1958,7 @@ RHUM
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1369,29 +1972,46 @@ RHUM
 \end_inset
 
 The relative humidity is the ratio of the water vapor pressure to the saturation
- water vapor pressure in equilibrium over a plane liquid-water surface,
- scaled to express the result in units of per cent.:
+ water vapor pressure in equilibrium over a plane 
+\emph on
+liquid
+\emph default
+-water surface,
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-check the following in code...
+The AMS Glossary gives this definition but also states that the WMO defines
+ relative humidity as the ratio of the mixing ratio to the saturation mixing
+ ratio, which is a slightly different measure.
+ However, the WMO Document 
+\begin_inset Quotes eld
+\end_inset
+
+Guide to Meteorological Instruments and Methods of Observation
+\begin_inset Quotes erd
+\end_inset
+
+, 7th Edition (2008) also gives the above definition and confirms that the
+ relative humidity should be measured relative to liquid water even below
+ 0C (contrary to some past policy and some statements in papers and web-sites).
 \end_layout
 
 \end_inset
 
-
+ scaled to express the result in units of per cent:
 \begin_inset Newline newline
 \end_inset
 
  
-\begin_inset Box Frameless
+\begin_inset Box Boxed
 position "t"
 hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "100col%"
+use_makebox 0
+width "95col%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1462,175 +2082,57 @@ dewpoint
 \begin_inset space ~
 \end_inset
 
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-(see (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:8.11GoffG"
-
-\end_inset
-
-) for the equation used)
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
 (see eq.
  
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "eq:8.11GoffG"
+reference "eq:proposedNewWater"
 
 \end_inset
 
-) for the formula used;
+) for the formula used.)
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-however, the branch for DPX
-\begin_inset Formula $\geq0$
-\end_inset
-
- is used always)
 \begin_inset Newline newline
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
 
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula \begin{equation}
-\mathrm{RHUM}=100\%\,\times\,\frac{\mathrm{\{EDPX\}}}{e_{s}(\mathrm{\{ATX\}})}\label{eq:8.16RHUM}\end{equation}
+\begin_inset Formula 
+\begin{equation}
+\mathrm{RHUM}=100\%\,\times\,\frac{\mathrm{\{EDPX\}}}{e_{s}(\mathrm{\{ATX\}})}\label{eq:8.16RHUM}
+\end{equation}
 
 \end_inset
 
  
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -1649,7 +2151,7 @@ RHOx
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1663,19 +2165,19 @@ RHOx
 \end_inset
 
 The absolute humidity is the water vapor density computed from various measureme
-nts of humidity.
- The different sources of humidity information are indicated by the 'x'
- suffix, as usual.
+nts of humidity as indicated by the 'x' suffix.
  The calculation is based on the equation of state for a perfect gas.
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-check units here; need conversion to Pa also..; have changed from 10^6 to
- 10^3...
- check.
+the code now uses 216.68 instead; change?
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -1689,7 +2191,8 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "90text%"
+use_makebox 0
+width "95text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1709,25 +2212,94 @@ EDPX = water vapor pressure, converted to consistent units
 \end_inset
 
 
-\begin_inset space \hspace*{}
-\length 0.8cm
+\begin_inset Formula $C_{mb2Pa}$
 \end_inset
 
-(e.g., multiplied by 100 Pa/mb if MKS units are used otherwise)
+ = 100 Pa
+\begin_inset space \thinspace{}
+\end_inset
+
+mb
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ (conversion factor to MKS units) 
 \begin_inset Newline newline
 \end_inset
 
 
-\lyxline
+\begin_inset Formula $C_{kg2g}=$
+\end_inset
 
-\begin_inset Formula \begin{equation}
-\mathrm{RHOx}=\left(10^{3}\frac{g}{kg}\right)\frac{(\mathrm{\{EDPX\}})M_{w}}{R_{0}\mathrm{(\{ATX\}+\mbox{\ensuremath{T_{0}}})}}\label{eq:8.17RHO}\end{equation}
+
+\begin_inset Formula $10^{3}$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+g
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ (conversion factor to give final units of g
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-1}$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $T_{0}$
+\end_inset
+
+ = 273.15
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+\mathrm{RHOx} & = & C_{kg2g}\frac{C_{mb2Pa}\mathrm{\{EDPx\}}}{R_{w}\mathrm{(\{ATX\}+\mbox{\ensuremath{T_{0}}})}}\label{eq:8.17RHO}\\
+ & = & 216.674\frac{\{\mathrm{EDPx}\}}{(\{\mathrm{ATX\}}+T_{0})}
+\end{eqnarray}
 
 \end_inset
 
 
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -1742,7 +2314,7 @@ SPHUM
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1756,8 +2328,12 @@ SPHUM
 \end_inset
 
 The specific humidity is the mass of water vapor per unit mass of (moist)
- air, onventionally measured in g/kg.
+ air, conventionally measured in g/kg.
  
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -1768,7 +2344,8 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "90text%"
+use_makebox 0
+width "95text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1784,16 +2361,69 @@ EDPX = ambient water vapor pressure
 \end_inset
 
 
-\lyxline
+\begin_inset Formula $C_{kg2g}=$
+\end_inset
 
-\begin_inset Formula \begin{equation}
-\mathrm{SPHUM}=\left(10^{3}\frac{g}{kg}\right)\frac{M_{w}}{M_{a}}(\mathrm{\frac{\{EDPX\}}{\mathrm{\{PSXC\}}-(1-\frac{M_{w}}{M_{d}})\mathrm{\{EDPX\}}}})\label{eq:8.18SPHUM}\end{equation}
+
+\begin_inset Formula $10^{3}$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+g
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ (conversion factor to give final units of g
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+\mathrm{SPHUM} & = & C_{kg2g}\frac{M_{w}}{M_{d}}(\mathrm{\frac{\{EDPX\}}{\mathrm{\{PSXC\}-(1-\frac{M_{w}}{M_{d}})\{\mathrm{EDPX}\}}}})\label{eq:8.18SPHUM}
+\end{eqnarray}
 
 \end_inset
 
 
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -1807,7 +2437,7 @@ Mixing Ratio (g/kg):
 MR
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1823,7 +2453,7 @@ MR
 MRCR
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1839,7 +2469,7 @@ MRCR
 MRLA
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1855,7 +2485,7 @@ MRLA
 MRLA1
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1872,7 +2502,7 @@ MRLH
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1885,10 +2515,32 @@ MRLH
 \begin_inset Newline newline
 \end_inset
 
-the mixing ratio is the ratio of the mass of water to the mass of dry air,
- normally expressed in g/kg.
- It is related to specific humidity as follows: SPHUM=MR/(1+MR).
- Mixing ratios may be calculated for the various instruments measuring humidity
+The mixing ratio is the ratio of the mass of water to the mass of dry air,
+ conventionally expressed in units of g/kg.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Omitted the following because it is incorrect; SPHUM and MR are 1000*q and
+ 1000*r, and q=r/(1+r):
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+It is related to specific humidity as follows: SPHUM=MR/(1+MR).
+ 
+\begin_inset Quotes eld
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Mixing ratios may be calculated for the various instruments measuring humidity
  on the aircraft, and the variable names reflect the source: MR from the
  dewpoint hygrometers, MRCR from the cryogenic hygrometer, MRLA from the
  Lyman-alpha snsor, MRLA1 if there is a second Lyman-alpha sensor, and MRLH
@@ -1899,13 +2551,18 @@ the mixing ratio is the ratio of the mass of water to the mass of dry air,
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Box Boxed
 position "t"
 hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "90text%"
+use_makebox 0
+width "95text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1921,16 +2578,69 @@ PSXC = ambient total pressure
 \end_inset
 
 
-\lyxline
+\begin_inset Formula $C_{2kg2g}=$
+\end_inset
 
-\begin_inset Formula \begin{equation}
-\mathrm{MR=\left(10^{3}\frac{g}{kg}\right)\frac{M_{w}}{M_{a}}\frac{\mathrm{\{EDPX\}}}{(\mathrm{\{PSXC\}-\{EDPX\})}}}\label{eq:8.19MR}\end{equation}
+
+\begin_inset Formula $10^{3}$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+g
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ (conversion factor to give final units of g
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathrm{MR=C_{kg2g}\frac{M_{w}}{M_{d}}\frac{\mathrm{\{EDPX\}}}{(\mathrm{\{PSXC\}-\{EDPX\})}}}\label{eq:8.19MR}
+\end{equation}
 
 \end_inset
 
 
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -1945,7 +2655,7 @@ PSURF
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1974,6 +2684,17 @@ was PSFDC
  Because of this assumption, the result is only valid for flight in a well-mixed
  surface layer or in other conditions in which the temperature lapse rate
  matches the dry-adiabatic lapse rate.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+There is ambiguity in the formula in old Bulletin 9: Not clear if the formula
+ intends for HGM to be in the numerator or denominator (numerator is correct)
+\end_layout
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -1984,18 +2705,19 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "90text%"
+use_makebox 0
+width "95col%"
 special "none"
 height "1in"
 height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
-PSXC = ambient pressure (mb)
+PSXC = ambient pressure (hPa)
 \begin_inset Newline newline
 \end_inset
 
-HGM = altitude above the surface (m)
+HGM = (radar) altitude above the surface (m)
 \begin_inset Newline newline
 \end_inset
 
@@ -2007,20 +2729,55 @@ TVIR = virtual temperature (
 \begin_inset Newline newline
 \end_inset
 
+PSURF = estimated surface pressure (hPa)
+\begin_inset Newline newline
+\end_inset
 
-\lyxline
 
-\end_layout
+\begin_inset Formula $g$
+\end_inset
 
-\begin_layout Plain Layout
-\begin_inset Formula \[
-T_{m}=(\mathrm{\{TVIR\}}+T_{0})+0.5\mathrm{\{HGM\}}\frac{g}{c_{p}}\]
+ = acceleration of gravity
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $R_{d}$
+\end_inset
+
+ = gas constant for dry air
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
 
 \end_inset
 
 
-\begin_inset Formula \[
-\mathrm{PSURF}=\mathrm{\{PSXC\}}\, e^{\frac{g\, T_{m}}{R\,(\mathrm{\{HGM\}})}}\]
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+T_{m}=(\mathrm{\{TVIR\}}+T_{0})+0.5\mathrm{\{HGM\}}\frac{g}{c_{pd}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathrm{PSURF}=\mathrm{\{PSXC\}}\,\exp\left\{ \frac{g\,\{\mathrm{HGM}\}}{R_{d}T_{m}}\right\} \label{eq:PSURF-1}
+\end{equation}
 
 \end_inset
 

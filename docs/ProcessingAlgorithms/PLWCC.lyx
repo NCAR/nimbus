@@ -1,0 +1,3486 @@
+#LyX 1.6.10 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Aircraft Algorithm Memo Re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\RAFAlgorithmMemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Research Aviation Facility}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Algorithm Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.2truein\leftline{\textcolor{blue}{\textsf{Subject: \the\topicofnote}}}
+\leftline{\textcolor{blue}{\textsf{Al Cooper}}}
+\leftline{\textcolor{blue}{\textsf{\datetoday}}} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding default
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to algorithm; e.g., Pressure Altitude (PALT)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={King Probe liquid water content (PLWCC)}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+RAFAlgorithmMemo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Background
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+usually, definition of the variable, uses, history, math expressions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The CSIRO King Probe was first described in the literature in 1978 by Warren
+ King.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+King, W.
+ D., D.
+ A.
+ Parkin and R.
+ J.
+ Handsworth, 1978 A hot-wire liquid water device having fully calculable
+ response characteristics.
+ J.
+ Appl.
+ Meteorol., 17, 1809--1813
+\end_layout
+
+\end_inset
+
+The response characteristics were characterized further by Bradley and King
+ (1979).
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+.Bradley, S.
+ G., and W.
+ D.
+ King, 1979 Frequency response of the CSIRO Liquid Water Probe.
+ J.
+ Appl.
+ Meteorol., 18, 361--366.
+\end_layout
+
+\end_inset
+
+ The key equation from the former paper is reproduced below, with some changes
+ in symbols to be consistent with other usage in these memos.
+ The power 
+\begin_inset Formula $P$
+\end_inset
+
+ required to maintain constant wire temperature 
+\begin_inset Formula $T_{w}$
+\end_inset
+
+ was estimated from two terms, the first representing the heat required
+ to warm the impinging water from the air temperature to the wire temperature
+ and then evaporate it, the second (called 
+\begin_inset Formula $P_{dry}$
+\end_inset
+
+ here) representing convective heat loss from the wire in the absence of
+ cloud water:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+P=ldV\chi[L_{v}+c_{w}(T_{w}-T)]+\pi l\lambda(T_{W}-T)\mathrm{Nu}\label{eq:KingEquation}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with 
+\begin_inset Formula $l$
+\end_inset
+
+ and 
+\begin_inset Formula $d$
+\end_inset
+
+ the length and diameter of the sensing element, 
+\begin_inset Formula $V$
+\end_inset
+
+ the airspeed, 
+\begin_inset Formula $\chi$
+\end_inset
+
+ the liquid water content, 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+ the latent heat of vaporization of water, 
+\begin_inset Formula $c_{w}$
+\end_inset
+
+ the specific heat of liquid water, 
+\begin_inset Formula $T$
+\end_inset
+
+ the air temperature, 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ the thermal conductivity of air, and Nu=
+\begin_inset Formula $dJ_{H}/[\lambda(T_{W}-T)]$
+\end_inset
+
+ (with 
+\begin_inset Formula $J_{H}$
+\end_inset
+
+ the heat flux) is the Nusselt number associated with convective heat transfer
+ from the wire.
+ King et al.
+\begin_inset space ~
+\end_inset
+
+(1978) recommend determining Nu as a function of Reynolds number Re=
+\begin_inset Formula $\rho_{d}Vd/\mu$
+\end_inset
+
+ (with 
+\begin_inset Formula $\rho_{d}$
+\end_inset
+
+ the density of dry air and 
+\begin_inset Formula $\mu$
+\end_inset
+
+ the viscosity of air, all evaluated at a temperature that is the mean of
+ the wire and air temperatures) from flight tests in clear air).
+\end_layout
+
+\begin_layout Standard
+The following can be used to find values to use for the variables entering
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:KingEquation"
+
+\end_inset
+
+):
+\end_layout
+
+\begin_layout Itemize
+Pruppacher and Klett (1978, p.
+\begin_inset space ~
+\end_inset
+
+418) give 
+\begin_inset Formula $\lambda$
+\end_inset
+
+=(5.69+0.017(
+\begin_inset Formula $T-T_{0}$
+\end_inset
+
+))
+\begin_inset Formula $\times10^{-5}$
+\end_inset
+
+cal
+\begin_inset space \thinspace{}
+\end_inset
+
+cm
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ or, using 4.184 J/cal, 0.0238+0.000071(
+\begin_inset Formula $T-T_{0}$
+\end_inset
+
+) J
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Itemize
+Pruppacher and Klett (1978, p.
+\begin_inset space ~
+\end_inset
+
+323) give 
+\begin_inset Formula $\mu=(1.718+0.0049($
+\end_inset
+
+
+\begin_inset Formula $T-T_{0}$
+\end_inset
+
+)-
+\begin_inset Formula $1.2\times10^{-5}(T-T_{0})^{2}\delta(T-T_{0}))\times10^{-4}$
+\end_inset
+
+ poise, where 
+\begin_inset Formula $\delta(T-T_{0})$
+\end_inset
+
+ is 0 for 
+\begin_inset Formula $T>T_{0}$
+\end_inset
+
+ and 1 for 
+\begin_inset Formula $T<T_{0}$
+\end_inset
+
+.
+ Using 1 poise = 1 g
+\begin_inset space \thinspace{}
+\end_inset
+
+cm
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+= 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ leads to 
+\begin_inset Formula $\mu=$
+\end_inset
+
+
+\begin_inset Formula $(1.718+0.0049($
+\end_inset
+
+
+\begin_inset Formula $T-T_{0}$
+\end_inset
+
+)-
+\begin_inset Formula $1.2\times10^{-5}(T-T_{0})^{2}\delta(T-T_{0}))\times10^{-5}$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $L_{v}$
+\end_inset
+
+ = (2.501 × 10
+\begin_inset Formula $^{6}$
+\end_inset
+
++2370(
+\begin_inset Formula $T-T_{0})$
+\end_inset
+
+ J kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ (cf., e.g., Davies-Jones 2009)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $c_{w}$
+\end_inset
+
+=1875 J kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $c_{pd}$
+\end_inset
+
+= 
+\begin_inset Formula $\frac{7}{2}R_{d}=$
+\end_inset
+
+1.00470
+\begin_inset Formula $\times10^{3}$
+\end_inset
+
+ J
+\begin_inset Formula $\,$
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The choice of operating temperature should be made with consideration of
+ three factors:
+\end_layout
+
+\begin_layout Enumerate
+A high temperature increases the dry-air heat losses and so increases the
+ uncertainty introduced by the dry term.using 
+\end_layout
+
+\begin_layout Enumerate
+A low temperature may allow the accumulation of water and lead to errors
+ when that water is shed instead of evaporated.
+ From Fig.
+\begin_inset space ~
+\end_inset
+
+A1 in King et al., it is evident that a relatively high operating temperature
+ is needed to avoid shedding at GV flight speeds, which are up to about
+ 3-4 times as high as used for this plot.
+ Because the function plotted varies as 
+\begin_inset Formula $\chi^{4/3}$
+\end_inset
+
+ and linearly as 
+\begin_inset Formula $V$
+\end_inset
+
+, the liquid water content that will lead to shedding at three times the
+ flight speed is about 
+\begin_inset Formula $1/3^{3/4}\simeq0.44$
+\end_inset
+
+ times as large as in this plot, which emphasizes that the temperature should
+ be above about 75
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C to avoid shedding from saturation.
+ 
+\end_layout
+
+\begin_layout Enumerate
+The temperature should be below the boiling point of water (according to
+ King et al., 1978) to avoid formation of an insulating vapor layer on the
+ surface of the probe and possible reduced evaporation times and/or shedding.
+ At GV flight altitudes, the boiling point can be lowered significantly,
+ but there is usually no liquid water content at such altitudes.
+ To ensure operation to -35
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, where the typical pressure is around 370 hPa, this requirement would
+ call for a temperature below about 75
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ 
+\end_layout
+
+\begin_layout Standard
+These requirements appear to call for a wire temperature around 75
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C for the GV and perhaps higher for the C-130 to account for the lower flight
+ speed and potential to encounter higher values of liquid water content.
+ However, early operators of the probe found that the third requirement
+ was not needed, so probes are often operated above the boiling point now.
+ The probe recently has been operated well above this temperature, at about
+ 130
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C for the GV and 162
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C for the C-130 in VOCALS.
+\end_layout
+
+\begin_layout Section*
+Present Processing Code
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+use LyX-code format where needed to include code segments from nimbus
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As an example, in PREDICT, the probe temperature was 
+\begin_inset Formula $130^{\circ}C$
+\end_inset
+
+, and the element diameter was d=0.1805.
+ The element length is not in the netCDF header; it is coded into the routine
+ 'kinglwc.c' as 2.1 cm.
+ Dependencies do not include a source for the cloud number concentration,
+ used as a threshold (value 0.25) below which a baseline value is subtracted
+ from the resulting liquid water content, as described below.
+\end_layout
+
+\begin_layout Standard
+The existing code proceeds as follows:
+\end_layout
+
+\begin_layout Enumerate
+Express temperatures in kelvin; then find a mean temperature to use for
+ air properties
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+T_{m}=(T_{W}+T)/2\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Find the thermal conductivity, viscosity, and dry-air density:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "93col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{equation}
+\lambda=5.8\times10^{-5}\frac{398}{120+T_{m}}\,\left(\frac{T_{m}}{T_{0}}\right)^{3/2}\label{eq:thermalConductivityNow}\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+\mu=1.718\times10^{-4}\frac{393}{120+T_{m}}\,\left(\frac{T_{m}}{T_{0}}\right)^{3/2}\label{eq:ViscosityNow}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{equation}
+\rho_{d}=\frac{p}{2870.5T_{m}}\label{eq:densityNow}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:thermalConductivityNow"
+
+\end_inset
+
+) gives the thermal conductivity in cal
+\begin_inset space \thinspace{}
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+cm
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ViscosityNow"
+
+\end_inset
+
+) gives the viscosity in CGS units of g
+\begin_inset space \thinspace{}
+\end_inset
+
+cm
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:densityNow"
+
+\end_inset
+
+) gives the density in g
+\begin_inset space \thinspace{}
+\end_inset
+
+cm
+\begin_inset Formula $^{-3}$
+\end_inset
+
+ and uses the gas constant for dry air of 287.05
+\begin_inset space \thinspace{}
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Calculate the Reynolds number:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+re1 = 100.0 * dens1 * tasx * diam / visc1;
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where 
+\emph on
+dens1
+\emph default
+ is the density calculated from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:densityNow"
+
+\end_inset
+
+), 
+\emph on
+tasx
+\emph default
+ is the true airspeed in m/s and is converted to cm/s by the factor of 100.0,
+ 
+\emph on
+diam 
+\emph default
+is the wire diameter in cm, and 
+\emph on
+visc1 
+\emph default
+is the viscosity from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ViscosityNow"
+
+\end_inset
+
+) in CGS units, to produce a dimensionless result for 
+\emph on
+re1
+\emph default
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Then the Prandtl Number 
+\begin_inset Formula $\mathrm{Pr}=c_{p}\mu/\lambda$
+\end_inset
+
+ is calculated from the line of code 
+\begin_inset Quotes eld
+\end_inset
+
+prf1=0.24*visc1/cnd1;
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The specific heat of dry air in CGS units is 0.24 cal
+\begin_inset space \thinspace{}
+\end_inset
+
+g
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, so using units of cal
+\begin_inset space \thinspace{}
+\end_inset
+
+cm
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+for 
+\begin_inset Quotes eld
+\end_inset
+
+cnd1
+\begin_inset Quotes erd
+\end_inset
+
+ is appropriate and, with other units CGS, gives a dimensionless result.
+ The value is about Pr
+\begin_inset Formula $\simeq0.735$
+\end_inset
+
+ for normal flight conditions.
+ A second Prandtl Number, 
+\begin_inset Formula $\mathrm{Pr_{w}}$
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+prw1
+\begin_inset Quotes erd
+\end_inset
+
+, is evaluated using values for the viscosity and conductivity at the wire
+ temperature 
+\begin_inset Formula $T_{w}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+The power required for the dry term in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:KingEquation"
+
+\end_inset
+
+) is evaluated as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "93col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{equation}
+P_{dry}=0.26\,\mathrm{Re^{0.6}}\mathrm{Pr}^{0.37}\left(\frac{\mathrm{Pr}}{\mathrm{Pr}_{w}}\right)^{0.25}\pi l\lambda(T_{w}-T)/0.239\label{eq:DryPowerTerm}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where the factor 1/0.239=4.184
+\begin_inset space \thinspace{}
+\end_inset
+
+J/cal is the conversion factor to transform the heat loss from calories
+ (used for 
+\begin_inset Formula $\lambda$
+\end_inset
+
+) to Joules.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+It might appear that there is a problem with units in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DryPowerTerm"
+
+\end_inset
+
+) because dividing by 0.239 converts from calories to MKS units of joules
+ but 
+\begin_inset Formula $l$
+\end_inset
+
+ remains the length in cm.
+ However, the resulting units are those of 
+\begin_inset Formula $l\lambda T$
+\end_inset
+
+ so the units are cm 
+\begin_inset Formula $\times$
+\end_inset
+
+ J
+\begin_inset space \thinspace{}
+\end_inset
+
+cm
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\begin_inset Formula $\times$
+\end_inset
+
+ K = J/s = watts as required.
+\end_layout
+
+\end_inset
+
+ This requires that the Nusselt number be
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "93col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{equation}
+\mathrm{Nu}=0.26\,\mathrm{Re^{0.6}}\mathrm{Pr}^{0.37}\left(\frac{\mathrm{Pr}}{\mathrm{Pr}_{w}}\right)^{0.25}\label{eq:NuFromCode}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+After determining the power required to keep the wire hot in dry air, this
+ power can be subtracted from the measured power to determine the power
+ required to evaporate the liquid water.
+\begin_inset Newline newline
+\end_inset
+
+The code now in use is equivalent to 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+\chi=\frac{10^{6}\times0.239(p-p_{dry})}{l\, d\, V[597.3+373.16-T]}\label{eq:LWCnimbus}\end{equation}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where 
+\begin_inset Formula $T=ATX+273.15$
+\end_inset
+
+ and the factor 
+\begin_inset Formula $10^{6}$
+\end_inset
+
+ converts from cm
+\begin_inset Formula $^{-3}$
+\end_inset
+
+ to m
+\begin_inset Formula $^{-3}$
+\end_inset
+
+ to give final units of g/m
+\begin_inset Formula $^{3}$
+\end_inset
+
+.
+ As discussed below, this is only correct for an evaporation temperature
+ of 100.01
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C and is independent of the wire temperature included in the 
+\begin_inset Quotes eld
+\end_inset
+
+defaults
+\begin_inset Quotes erd
+\end_inset
+
+ file.
+ This is discussed more later in this memo.
+\end_layout
+
+\begin_layout Enumerate
+Finally, a baseline value is calculated by recording the average value of
+ 
+\begin_inset Formula $\chi$
+\end_inset
+
+ when out-of-cloud, in a running average, and then subtracting that baseline
+ from the final result.
+ Out-of-cloud conditions correspond to measured 2-s-average cloud droplet
+ concentration below some low threshold, typically 0.25 cm
+\begin_inset Formula $^{-3}$
+\end_inset
+
+, and the baseline value is averaged over 30
+\begin_inset space \thinspace{}
+\end_inset
+
+s of accumulated values for each of which the threshold concentration is
+ met.
+ 
+\end_layout
+
+\begin_layout Section*
+Reasons For Proposing Changes
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+summarize why present code should be changed: weaknesses, errors, improvements,
+ accuracy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+The thermal conductivity of air appears to be incorrect and is undocumented
+ and unreferenced.
+ This is an important property that affects the magnitude of the dry-air
+ term, so incorrect values can affect the accuracy of results and lead to
+ incorrect calibrations of the Nusselt number.
+ A comparison of the thermal-conductivity equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:thermalConductivityNow"
+
+\end_inset
+
+) to the formula of Pruppacher and Klett gives, for 
+\begin_inset Formula $T_{m}=273.15,$
+\end_inset
+
+5.87 vs 5.69 (P&K); for 293.15
+\begin_inset space \thinspace{}
+\end_inset
+
+K, 6.21 vs 6.03; for 243.15
+\begin_inset space \thinspace{}
+\end_inset
+
+K, 5.34 vs 5.18 (P&K).
+ The values being used are thus about 3% high in comparison to those of
+ Pruppacher and Klett.
+ This difference is significant and worth correcting in future processing,
+ esp.
+\begin_inset space ~
+\end_inset
+
+because I could find no documentation or reference for the formula being
+ used.
+ However, the only effects have been on the dry-air term, so with baseline
+ removal the error would be removed and there should be no need for reprocessing
+ of past data for this reason.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+There does not appear to be a similar problem for viscosity.
+ To see this, linearize (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ViscosityNow"
+
+\end_inset
+
+) to first order in temperature for comparison to the formula from Pruppacher
+ and Klett, by rewriting as:
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{eqnarray*}
+\frac{393}{120+T_{m}}\,\left(\frac{T_{m}}{T_{0}}\right)^{3/2} & = & \frac{1}{1+\frac{T_{m}-T_{0}}{393}}\,\frac{\left(1+\frac{T_{m}-T_{0}}{T_{0}}\right)^{3/2}}{1}\\
+ & \simeq & \left(1-\frac{T_{m}-T_{0}}{393}\right)\left(1+\frac{3(T_{m}-T_{0})}{2T_{0}}\right)\\
+ & \simeq & 1+\left(\frac{3}{2T_{0}}-\frac{1}{393}\right)(T_{m}-T_{0})\\
+ & \simeq & \simeq1+2.9\times10^{-3}(T_{m}-T_{0})\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This can be compared to the linear term in the Pruppacher and Klett formula,
+ with linear coefficient 0.0049/1.718=2.85
+\begin_inset Formula $\times10^{-3}$
+\end_inset
+
+.
+ The linear change with temperature is thus the same, within expected accuracy
+ limits, for the two formulas.
+ The values are also essentially the same at 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, so there is no apparent problem with the viscosity formula.
+ Equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ViscosityNow"
+
+\end_inset
+
+) gives viscosity in CGS units (g
+\begin_inset space \thinspace{}
+\end_inset
+
+cm
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+The water is assumed to evaporate at 100
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, regardless of the wire temperaature.
+ The reason is that the wire temperature in recent usage has been higher
+ than this, and water cannot be heated above its boiling point without evaporati
+ng from boiling.
+ According to King et al.
+\begin_inset space ~
+\end_inset
+
+(1978), the liquid water content should be determined as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "93col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{equation}
+\chi=\frac{\left(P-P_{dry}\right)}{ldV[L_{v}+c_{w}(T_{w}-T)]}\label{eq:LWC}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The latent heat of vaporization is reasonably represented by 597.3/0.239=2499
+ J/g (vs 2501 J/g at 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C), and the specific heat of water is 1 cal/g, so (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:LWCnimbus"
+
+\end_inset
+
+) is approximately correct if the wire temperature is 100.01
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C or higher and the probe is at sea level.
+ However, the boiling point decreases with altitude, so for wire temperature
+ higher than the boiling point 
+\begin_inset Formula $T_{W}$
+\end_inset
+
+ in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:LWC"
+
+\end_inset
+
+) should be replaced by the boiling point 
+\begin_inset Formula $T_{b}$
+\end_inset
+
+ (in the same units as used for T).
+ Also, the temperature variation of 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+ is significant, so a value of 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+ applicable at 
+\begin_inset Formula $T_{b}$
+\end_inset
+
+ should be used in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:LWC"
+
+\end_inset
+
+).
+ A possible choice is 
+\begin_inset Formula $L_{v}=L_{v0}+L_{v1}(T_{b}-T_{0})$
+\end_inset
+
+ where 
+\begin_inset Formula $T_{b}$
+\end_inset
+
+ is the wire temperature and 
+\begin_inset Formula $T_{0}$
+\end_inset
+
+ is the reference temperature for 
+\begin_inset Formula $L_{v0}$
+\end_inset
+
+, 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ Values for 
+\begin_inset Formula $L_{v0}$
+\end_inset
+
+ and 
+\begin_inset Formula $L_{v1}$
+\end_inset
+
+, from Davies and Jones (2009), are respectively 2.501
+\begin_inset Formula $\times10^{6}$
+\end_inset
+
+ J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ and 2370
+\begin_inset space \thinspace{}
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+.
+ Using the 0
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+ value leads to an underestimate of about 10% in 
+\begin_inset Formula $\chi$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+Mixed units (mostly CGS, but with calorie as the unit of energy, with results
+ for power in MKS units) lead to confusion in the documentation and in the
+ code (e.g., the apparent omission of the specific heat of water, 
+\begin_inset Formula $c_{w},$
+\end_inset
+
+ in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:LWCnimbus"
+
+\end_inset
+
+) because its value is 1 cal/
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ and so does not appear explicitly in the code).
+ It would be preferable to use consistent MKS units in the documentation
+ and in the code.
+\end_layout
+
+\begin_layout Itemize
+The relationship giving Nusselt number as a function of Reynolds number
+ is inconsistent with flight data for the GV and should be replaced.
+ See the discussion below under 
+\begin_inset Quotes eld
+\end_inset
+
+Analysis
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+The current representation of the dry-air term as a function of Prandtl
+ number, although consistent with usage in fluid engineering, is misleading
+ because there is little variation in the Prandtl number in the atmosphere.
+ Attempts to determine the variation with Pr only complicate fits and documentat
+ion without improving the representation of the dry-air term.
+ I have not found a source for (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:NuFromCode"
+
+\end_inset
+
+), and it is not consistent with the expression given in the note [need
+ link] on King Liquid Water Content by Baumgarder (written sometime in the
+ 1990s, I think), which states that the dry-air power is obtained from a
+ Nusselt number in the form Nu=A
+\begin_inset space \thinspace{}
+\end_inset
+
+Re
+\begin_inset Formula $^{x}$
+\end_inset
+
+Pr
+\begin_inset Formula $^{y}$
+\end_inset
+
+ and does not mention Pr
+\begin_inset Formula $_{w}$
+\end_inset
+
+.
+ Equations (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:thermalConductivityNow"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ViscosityNow"
+
+\end_inset
+
+) show that 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ and 
+\begin_inset Formula $\mu$
+\end_inset
+
+ have essentially the same temperature dependence, so their temperature
+ dependences should cancel in the ratio (Pr/Pr
+\begin_inset Formula $_{w}$
+\end_inset
+
+=
+\begin_inset Formula $\frac{\mu}{\mu_{w}}\frac{\lambda_{w}}{\lambda}$
+\end_inset
+
+).
+ As a result, the last term in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:NuFromCode"
+
+\end_inset
+
+) should be very close to unity as this is now coded.
+ This equation can be compared to the conventional representation for the
+ Nusselt number of a cylinder,
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+cf.
+\begin_inset space ~
+\end_inset
+
+Churchill, S.
+ W.; Bernstein, M.
+ (1977), "A Correlation Equation for Forced Convection from Gases and Liquids
+ to a Circular Cylinder in Cross Flow", J.
+ Heat Transfer, Trans.
+ ASME 94: 300–306.
+\end_layout
+
+\end_inset
+
+ Nu
+\begin_inset Formula $\simeq$
+\end_inset
+
+0.6
+\begin_inset space \thinspace{}
+\end_inset
+
+Re
+\begin_inset Formula $^{1/2}$
+\end_inset
+
+Pr
+\begin_inset Formula $^{1/3}$
+\end_inset
+
+ with Pr
+\begin_inset Formula $^{1/3}\simeq0.9$
+\end_inset
+
+.
+ The formulas from Pruppacher and Klett.
+ (1978) as well as (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:thermalConductivityNow"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ViscosityNow"
+
+\end_inset
+
+) show that thermal conductivity and viscosity have essentially the same
+ temperature dependence.
+ It is therefore not useful to represent Nu as a function of Pr because
+ Pr does not vary to any significant extent.
+ It would be just as effective to represent the Nusselt number as a function
+ of Reynolds number, via a relationship like Nu=C
+\begin_inset space \thinspace{}
+\end_inset
+
+Re
+\begin_inset Formula $^{\alpha}$
+\end_inset
+
+, and then determine this relationship from flight data in clear air.
+ (This was actually the approach recommended in the original paper by King
+ et al.
+\begin_inset space ~
+\end_inset
+
+(1978), and the additional dependence on Pr introduced later and the further
+ addition of Pr
+\begin_inset Formula $_{w}$
+\end_inset
+
+ has just complicated valid determination of the appropriate correlation.)
+\end_layout
+
+\begin_layout Itemize
+I doesn't appear that the baseline correction being used could work for
+ the GV because it references the FSSP concentration 
+\begin_inset Quotes eld
+\end_inset
+
+concf
+\begin_inset Quotes erd
+\end_inset
+
+ (not ever present on the GV) yet doesn't include that variable in the dependenc
+ies for PLWCC.
+ Even for the C-130, the concentration variable does not appear in the dependenc
+es listed in the netCDF files.
+ The baseline correction should probably be done in a different way.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+ A danger with this baseline removal is that large errors can be masked,
+ including errors in probe characteristics (
+\begin_inset Formula $l,\, d,\, T_{w}$
+\end_inset
+
+) or in Nu-Re relationships, and yet answers will look 
+\begin_inset Quotes eld
+\end_inset
+
+reasonable
+\begin_inset Quotes erd
+\end_inset
+
+.
+ A large error in 
+\begin_inset Formula $P_{dry}$
+\end_inset
+
+, for example would not appear as a baseline shift and could go undetected.
+ If the error arose from incorrect sensor characteristics, this could cause
+ serious degradation of the accuracy of the measurements that would be hard
+ to detect.
+ Nevertheless, baseline removal seems useful to produce results that are
+ used easily without the need for users to do a similar removal.
+ The basic measurements including the power used by the probe are included
+ in output files, so users can always calculate these results in different
+ ways.
+\end_layout
+
+\end_inset
+
+ A suggestion for improvement is developed below.
+\end_layout
+
+\begin_layout Section*
+Analysis
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+this (and all) are optional, may not be needed -- intended for research-level
+ exploration of meaning of the variable or subtleties regarding its calculation,
+ as needed to develop the case for recommendations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Finding the Nusselt Number:
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:FindingNu"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $T_{m}=(T_{W}-T)/2$
+\end_inset
+
+ is used to characterize the temperature dependence of the heat loss, then
+ the equation for the Reynolds number is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\mathrm{Re}=\frac{\rho_{d}Vd}{\mu(T_{m})}=\frac{pVd}{R_{d}T_{m}\mu(T_{m})}\label{eq:ReynoldsNumber}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+so the Reynolds number depends on pressure, true airspeed, the diameter
+ of the sensing wire, and the temperature.
+ The heat loss term in the absence of hydrometeors is (from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:KingEquation"
+
+\end_inset
+
+))
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+P_{dry}=\pi l\lambda(T_{W}-T)\mathrm{Nu}\label{eq:Pdry}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+so in addition the wire temperature and wire length are needed.
+ If Nu=
+\begin_inset Formula $A_{N}$
+\end_inset
+
+Re
+\begin_inset Formula $^{\alpha}$
+\end_inset
+
+ then
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+P_{dry}=A_{N}\pi l\lambda(T_{m})(T_{W}-T)\mathrm{Re}^{\alpha}\label{eq:PdryRe}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\lambda(T)$
+\end_inset
+
+ includes the temperature dependence of the thermal conductivity.
+ Then values of 
+\begin_inset Formula $A_{N}$
+\end_inset
+
+ and 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ can be determined by a fit to measurements in the following form:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\log_{10}\mathrm{Nu}=\log_{10}\left(\frac{P_{dry}}{\pi l\lambda(T_{m})(T_{W}-T)}\right)=\log_{10}\left(A_{N}\right)+\alpha\log_{10}(\mathrm{Re)}\label{eq:NuFitEquation}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where, from Pruppacher and Klett (1978) translated to MKS units, 
+\begin_inset Formula $\lambda(T_{m})=\lambda_{0}+\lambda_{1}(T_{m}-T_{0})$
+\end_inset
+
+ with 
+\begin_inset Formula $\lambda_{0}=$
+\end_inset
+
+0.0238 J
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\lambda_{1}=$
+\end_inset
+
+0.000071
+\begin_inset space \thinspace{}
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-2}$
+\end_inset
+
+.
+ Also, 
+\begin_inset Formula $\mu(T_{m})=\mu_{0}+\mu_{1}(T_{m}-T_{0})$
+\end_inset
+
+ with 
+\begin_inset Formula $\mu_{0}=1.718\times10^{-5}$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\mu_{1}=0.0049\times10^{-5}$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename KingProbeFig1.png
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Pdry vs Re PREDICT rf01"
+
+\end_inset
+
+Plot of 
+\begin_inset Formula $\log_{10}\left(\mathrm{Nu}\right)$
+\end_inset
+
+ plotted vs 
+\begin_inset Formula $\log_{10}(\mathrm{Re})$
+\end_inset
+
+ for GV PREDICT flight rf01.
+ Data restrictions are: TASX>20, CONCD_ROI=0.
+ In addition, a short interval of flight at the start and end of the flight,
+ when angle of attack was quite variable, is omitted; its inclusion increases
+ the scatter significantly.
+ The two lines on the left that almost overlap arise from the climb and
+ descent; most of the flight is represented by points near the lower left
+ corner of the scatterplot.
+ 
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A plot of this form is in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Pdry vs Re PREDICT rf01"
+
+\end_inset
+
+.
+ A fairly consistent relationship is shown, except for a set of points offset
+ from the main correlation line to the right and then scattered along the
+ constant-Nu line; this corresponds to the time during descent and approach
+ when the flaps and gear were deployed and the angle of attack abruptly
+ increased by about 2
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+.
+ This suggests some effect on flow conditions, perhaps as a result of the
+ associated change in angle of attack, as would be expected for heat loss
+ from a cylinder if flow angle along the cylinder changes.
+ It is not clear why there is also a break in the otherwise linear correlation
+ at 
+\begin_inset Formula $\log_{10}$
+\end_inset
+
+(Re) about 3.86.
+ Because there are significant changes in angle of attack at times when
+ the liquid water content is most interesting (in cumulus clouds with vigorous
+ updrafts or downdrafts), this possible dependence on flow angles should
+ be investigated further but won't be addressed in this memo.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+One would expect (and discussions of hot-wire-anemometers confirm) that
+ the primary effect of a flow angle would be to change the effective cooling
+ velocity to that component perpendicular to the wire; i.e., the effect could
+ be estimated by replacing 
+\begin_inset Formula $V$
+\end_inset
+
+ in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ReynoldsNumber"
+
+\end_inset
+
+) with 
+\begin_inset Formula $V\cos(\alpha)$
+\end_inset
+
+ where 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ is the angle of attack.
+ However, the King probe is oriented horizontally on the GV, so angle of
+ attack does not influence the angle of flow relative to the sensing wire
+ except indirectly via possible changes in airspeed or sideslip flow angle
+ associated with changes in angle of attack.
+ For a typical angle of attack of 2
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+, changing to 4
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+, the change in 
+\begin_inset Formula $V\cos(\alpha)$
+\end_inset
+
+ is about 0.2% or a change of about 0.005 in the base-10 logarithm of the
+ Reynolds number.
+ The offset in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Pdry vs Re PREDICT rf01"
+
+\end_inset
+
+ is much larger, about 0.04, so this does not seem to be a possible explanation
+ unless the normal flow angle is significantly different from the angle
+ of attack.
+ The same is true for reasonable larger offsets from orientation along the
+ axis of the flow; for example, if the offset is 10
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+, the difference in the perpendicular component of the flow speed would
+ be only 0.007 in natural logarithm for a 2
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ change.
+ Nevertheless, fits to the data showed significant improvement with inclusion
+ of the angle of attack, even when the anomalous measurements during approach
+ were excluded.
+ This suggests that the effect on flow must not be a simple change proportional
+ to the change in angle of attack but a more serious flow distortion resulting
+ in changed airflow at the sensing wire.
+ 
+\end_layout
+
+\end_inset
+
+ The standard error for the regression line following (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:NuFitEquation"
+
+\end_inset
+
+) was 0.005 in the base-10 logarithm of Nu, or an uncertainty of about 0.2%
+ in the dry-air term.
+ This good result arises partly because there are a large number of points
+ where the correlation is very good and only a few where the angle of attack
+ produced a departure.
+ 
+\end_layout
+
+\begin_layout Standard
+If the outlying points near the end of the flight are omitted, the measurements
+ still show some variance but it is much smaller, as shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:LikePdryPlotWithoutEndPoints"
+
+\end_inset
+
+.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename KingProbeFig2.png
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:LikePdryPlotWithoutEndPoints"
+
+\end_inset
+
+As in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Pdry vs Re PREDICT rf01"
+
+\end_inset
+
+ but with points excluded near the end of the flight.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+There is a clear break in this plot where the logarithm of Re is about 3.86,
+ both during climb and descent.
+ Two fits, one for log
+\begin_inset Formula $_{10}$
+\end_inset
+
+(Re)<3.86 and another for log
+\begin_inset Formula $_{10}$
+\end_inset
+
+(Re)>3.86, gave an RMS deviation of about 0.0035, corresponding to a standard
+ error in Nu of about 0.15%.
+ For ln(Re)<3.86, the fit coefficients were {
+\begin_inset Formula $a_{0},a_{1}$
+\end_inset
+
+}={0.2713555, 0.3433589) for a fit to log
+\begin_inset Formula $_{10}$
+\end_inset
+
+Nu=
+\begin_inset Formula $a_{0}+a_{1}$
+\end_inset
+
+log
+\begin_inset Formula $_{10}$
+\end_inset
+
+(R).
+ For log
+\begin_inset Formula $_{10}$
+\end_inset
+
+(Re)>3.86, the corresponding fit coefficients were {-0.8694714, 0.638318}.
+ The dry-air power then can be determined as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+P_{dry}=\pi l\lambda(T_{m})(T_{W}-T)\left[10^{a_{0}}\mathrm{Re}^{a_{1}}\right]\label{eq:PdryFitResult}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+or, for Nu=
+\begin_inset Formula $A_{N}\mathrm{Re^{\alpha}}$
+\end_inset
+
+, 
+\begin_inset Formula $A_{N}=10^{a_{0}}$
+\end_inset
+
+ and 
+\begin_inset Formula $\alpha=a_{1}$
+\end_inset
+
+.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename KingProbeFig3.png
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:RedFitLines"
+
+\end_inset
+
+As for Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:LikePdryPlotWithoutEndPoints"
+
+\end_inset
+
+ but with the two-segment fit superimposed.
+ The blue line indicates the Nu-Re relationship now in the nimbus code.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This gives the following result for the Nusselt number:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{eqnarray}
+\mathrm{Nu} & = & 1.8679\,\mathrm{Re}^{0.3433589}\,\,\,\,\,\mathrm{for\, Re<7244}\label{eq:Nu2-1}\\
+ & = & 0.13506\,\mathrm{Re}^{0.638318}\,\,\,\,\,\,\mathrm{for\, Re>7244}\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These results are shown as red lines in Fig._
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:RedFitLines"
+
+\end_inset
+
+.
+ This figure also shows, as a blue line, the relationship previously in
+ the processing code, which is quite different.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename NuReFitC130.png
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:NuReC130"
+
+\end_inset
+
+Corresponding measurements of Nusselt number (Nu) and Reynolds number (Re)
+ from VOCALS flight RF02.
+ The same restrictions are used as for the previous plot for the GV, figure
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:RedFitLines"
+
+\end_inset
+
+.
+ Red dots show the regression fit, and blue dots show the relationship now
+ being used in nimbus processing.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+If this analysis is repeated for the C-130 (using VOCALS flight RF02), the
+ results (shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:NuReC130"
+
+\end_inset
+
+) are consistent with a single fit line with 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\mathrm{Nu}=0.1179\,\mathrm{Re}^{0.67454}\]
+
+\end_inset
+
+In this case, the new fit (shown by red points) is fairly consistent with
+ the old representation (blue points).
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Removing baseline drift
+\end_layout
+
+\begin_layout Standard
+The scheme in use now corrects for drift by removing from all measurements
+ the average value of liquid water content accumulated from recent out-of-cloud
+ measurements.
+ This is equivalent to removing the average value of the term involving
+ 
+\begin_inset Formula $P_{dry}$
+\end_inset
+
+ in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:LWC"
+
+\end_inset
+
+) from the final value for liquid water content.
+ Because this term involves the airspeed and temperature as well as power
+ from the probe, removal of the baseline in this way can fail to track variation
+s during cloud penetrations that are real.
+ It would be better to attempt to correct the dry-air term 
+\begin_inset Formula $P_{dry}$
+\end_inset
+
+ only by adjusting the Nu-Re relationship because that then retains other
+ dependences like that on airspeed.
+ One way to accomplish this, equivalent to removing the baseline in 
+\begin_inset Formula $P_{dry}$
+\end_inset
+
+ directly, is to accumulate the best estimate of the first fit coefficient
+ 
+\begin_inset Formula $a_{0}$
+\end_inset
+
+ in the relationship Nu=
+\begin_inset Formula $10^{a_{0}}$
+\end_inset
+
+Re
+\begin_inset Formula $^{a_{1}}=A_{N}\mathrm{Re}^{a_{1}}$
+\end_inset
+
+, while keeping the second coefficient 
+\begin_inset Formula $a_{1}$
+\end_inset
+
+ constant.
+ Observed relationships like that in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Pdry vs Re PREDICT rf01"
+
+\end_inset
+
+ indicate that variations occurring in flights are offsets in this coefficient,
+ except for the break that occurs as ln(Re)=3.86, and it is straightforward
+ to show that the value determined by least-squares fit with slope constrained
+ to be 
+\begin_inset Formula $a_{1}$
+\end_inset
+
+ is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+a_{0}=\overline{{\log_{10}(\mathrm{Nu})}}-a_{1}\,\overline{{\log_{10}(\mathrm{Re})}}\label{eq:a0Equation}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+(where the bar over quantities indicates average value over the fit interval).
+ Baseline removal can be accomplished by accumulating estimates of 
+\begin_inset Formula $\overline{\mathrm{ln(Nu)}}$
+\end_inset
+
+ and 
+\begin_inset Formula $\overline{\mathrm{ln(Re)}}$
+\end_inset
+
+ out of cloud and then using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:a0Equation"
+
+\end_inset
+
+) to update the relationship giving Nu and hence giving 
+\begin_inset Formula $P_{dry}$
+\end_inset
+
+.
+ The two average terms in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:a0Equation"
+
+\end_inset
+
+) can be estimated by simple exponential updating, via 
+\begin_inset Formula $\bar{x}$
+\end_inset
+
++=(
+\begin_inset Formula $x-\bar{x})/\tau$
+\end_inset
+
+ where 
+\begin_inset Formula $\tau$
+\end_inset
+
+ is the time constant (in units of update periods) for the averaging.
+ This is equivalent to similar updating of the coefficient 
+\begin_inset Formula $a_{0}$
+\end_inset
+
+.
+ Because Nu=
+\begin_inset Formula $A_{N}$
+\end_inset
+
+Re
+\begin_inset Formula $^{a_{1}}=10^{a_{0}}$
+\end_inset
+
+Re
+\begin_inset Formula $^{a_{1}}$
+\end_inset
+
+, updating 
+\begin_inset Formula $a_{0}$
+\end_inset
+
+ in this way is equivalent to updating 
+\begin_inset Formula $A_{N}$
+\end_inset
+
+ in a similar way, giving a new value 
+\begin_inset Formula $A_{N}^{\prime}$
+\end_inset
+
+ after adjustment toward the value of 
+\begin_inset Formula $A_{N}$
+\end_inset
+
+ that would give the right relationship between an new observed Nu
+\begin_inset Formula $^{\prime}$
+\end_inset
+
+ and Re
+\begin_inset Formula $^{\prime}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+A_{N}^{\prime}=A_{N}+\frac{\mathrm{\frac{\mathrm{Nu}^{\prime}}{\mathrm{Re^{a_{1}}}}-A_{N}}}{\tau}\label{eq:AsubNUpdate}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A possible procedure to remove the offset is then, for each observation,
+ calculate the following:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\mathrm{Nu=\frac{P_{dry}}{\pi l\lambda(T_{m})(T_{W}-T)}}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\mathrm{Re}=\frac{\rho Vd}{\mu(T)}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When out of cloud,
+\end_layout
+
+\begin_layout LyX-Code
+\noindent
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "80col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+if (Re < 7244) {Nu_a0 += (Nu/pow(Re, Nu_a1))/tau;}
+\end_layout
+
+\begin_layout LyX-Code
+else           {Nu_b0 += (Nu/pow(Re, Nu_b1))/tau;}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+The Boiling Point
+\end_layout
+
+\begin_layout Standard
+If water evaporates at the boiling point rather than at the wire temperature,
+ the temperature at which water boils is needed to determine the liquid
+ water content from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:LWC"
+
+\end_inset
+
+).
+ This may be of particular significance for the GV because the boiling point
+ is reduced to around 75
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C where the temperature is -35
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C and so there might be liquid water.
+ At lower temperature, there is some observed response to ice, but it isn't
+ known if this can be quantitative or at what temperature evaporation would
+ occur.
+ Still, it is probably worthwhile to include the boiling-point temperature
+ in all calculations.
+\end_layout
+
+\begin_layout Standard
+The boiling point is a function only of total pressure, so it is straightforward
+ to determine that function from the vapor-pressure dependence on temperature
+ as represented, e.g., by Murphy and Koop (2005).
+ This is the same relationship discussed in the note on water vapor pressure,
+ where it was necessary to determine the dew-point temperature from the
+ vapor pressure, except in this case the vapor pressure is the total pressure
+ and the dew point is instead the boiling-point temperature.
+ High accuracy is probably not warranted because the actual wire temperature,
+ as well as the temperature at which water evaporates, is uncertain, so
+ it should be adequate to use interpolation in a table of boiling-point
+ temperatures to find the boiling point from the ambient pressure.
+ However, the pressure at the probe is further affected by dynamic compression,
+ so the pressure to be used might be better approximated by the total or
+ pitot pressure than by the ambient pressure.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename DPfromE.png
+	lyxscale 50
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:BoilingPoint"
+
+\end_inset
+
+Boiling point [
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C] as a function of total pressure [mb].
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+For reference, the boiling-point temperature as a function of pressure is
+ shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:BoilingPoint"
+
+\end_inset
+
+.
+ A table of the values, with 1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C resolution, was saved to use with interpolation to calculate 
+\begin_inset Formula $T_{b}$
+\end_inset
+
+ to use in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:LWC"
+
+\end_inset
+
+) in place of 
+\begin_inset Formula $T_{w}$
+\end_inset
+
+ when calculating the liquid water content.
+ A cubic fit of the form
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\log_{10}(T_{b})=a_{0}+a_{1}\log_{10}(P)+a_{2}(\log_{10}(P))^{2}+a_{3}(\log_{10}(P))^{3}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+gave a very good fit to the data shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:BoilingPoint"
+
+\end_inset
+
+) with coefficients {
+\begin_inset Formula $a_{0},a_{1},a_{2},a_{3}$
+\end_inset
+
+}={0.03366503,1.34236135,-0.33479451,0.03519342}.
+ This same boiling-point temperature should be used when calculating the
+ temperature-dependent value of 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection*
+Illustrative Examples:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename PLWCX.png
+	lyxscale 50
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:PREDICTrf01"
+
+\end_inset
+
+Measurements from PREDICT flight RF01.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+CONCD
+\begin_inset Quotes erd
+\end_inset
+
+ is the concentration from the CDP, in yellow in the bottom panel, and shows
+ points where passes were made through all-ice clouds near 1230 UTC.
+ The true airspeed is also shown in the bottom panel as the blue trace labeled
+ TASX.
+ The next panel shows PLWC, the power recorded from the king probe in watts.
+ The third panel is the result obtained from the standard processing, as
+ contained in the production file produced 23 December 2010.
+ The top panel shows the result from processing as described in this memo.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+An illustration of the performance of the approach developed in this section
+ for representing the Nusselt number and for updating is shown in the Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:PREDICTrf01"
+
+\end_inset
+
+.
+ The top panel shows the result of calculating the liquid water content
+ from the King probe in the way outlined above (using code like that at
+ the end of this note).
+ The procedure provides a good baseline and reasonable responses associated
+ with the locations where the CDP also has measurable concentrations.
+ The offset removal in the standard processing clearly is not working, and
+ there are extended variations near the first jump in LWC that appear to
+ be false.
+ The magnitude of the response is also slightly larger in the new processing,
+ by about 10%.
+ This arises mostly from different representation of the wire temperature
+ and the temperature dependence of the latent heat of vaporization.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename VOCALSrf02.png
+	lyxscale 50
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:VOCALSrf02"
+
+\end_inset
+
+Measurements from VOCALS flight RF02: CONCD is the concentration measured
+ by the CDP, TASX is the true airspeed, PLWC1 is the power measured by the
+ King Probe, PDRY is the estimate of the power required in dry air, PLWCC1
+ is the standard LWC in the processed file, and PLWCX is the liquid water
+ content produced by the new processing outlined in this section.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+VOCALS flight RF02 was used as a representative case for the C-130.
+ Measurements are shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:VOCALSrf02"
+
+\end_inset
+
+ using both the old and new processing.
+ The figure shows that, in this case, there is little difference between
+ the two processing schemes.
+ For this project, baseline removal was based on the Gerber-probe liquid
+ water content, so zero removal is quite reliable.
+ A scatterplot of measured values using the old and new processing 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename VOCALSscat.png
+	lyxscale 50
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:VOCALSscat"
+
+\end_inset
+
+Scatterplot comparing the two processing schemes.
+ PLWCC1 is the standard released value and PLWCX is the value obtained using
+ the processing outlined in this section.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+is shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:VOCALSscat"
+
+\end_inset
+
+.
+ The value produced by the standard processing is typically about 92% of
+ the value produced by the new processing.
+ This difference arises mostly from the change in latent heat of vaporization
+ and not from change in either the Nu-Re relationship or use of the adjusted
+ wire temperature, because the former is close to the new relationship determine
+d for the C-130 and the latter is close to the assumed 
+\begin_inset Formula $100^{\circ}$
+\end_inset
+
+C value because most VOCALS measurements were made at low levels.
+\end_layout
+
+\begin_layout Section*
+Addition of May 2012:
+\end_layout
+
+\begin_layout Standard
+Application of the preceding to HIPPO-4 flight 1 revealed that the Nu-Re
+ relationship has a third branch, applying whenever TASX < 150 m/s.
+ Measurements in clear air from this flight are shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:HIPPONuRe"
+
+\end_inset
+
+.
+ In this figure, the green and blue dots are measurements from this flight
+ in clear air; the blue-dotted lines are the fit as determined previously
+ for low and high Re, and show that the earlier fit is again appropriate
+ for this flight.
+ However, red dots are measurements from this flight for which TASX < 150
+ m/s; these are not represented well by the previous fit.
+ To add these, a third fit was calculated to these data points, with the
+ result that 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\mathrm{Nu}=0.13289\mathrm{Re}^{0.3823}\,\,\,\,.\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This then is added as a third branch, applicable whenever TASX<150 m/s.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename NuRePlot3.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:HIPPONuRe"
+
+\end_inset
+
+Plot of Nu factor vs Re for HIPPO-4 flight 1.
+ Top red line is for TASX<150 m/s; other plots are as included previously
+ in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:RedFitLines"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\emph on
+Recommendations
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\emph on
+keep this short - 1/2 page or less
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Revise the formula used for the thermal conductivity of air, and include
+ a reference.
+ The linear formula in Pruppacher and Klett is a good candidate: 
+\begin_inset Formula $\lambda=0.0238+0.000071(T-T_{0})\, J\, m^{-1}s^{-1}K^{-1}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Change the formula used to calculate the heat transfer in clear air to eliminate
+ the Prandtl number from the equation because there is insignificant variation
+ in this parameter in the atmosphere.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Revise the code that calculates liquid water content after subtraction of
+ the dry-air term, to include correct dependence on the boiling point and
+ to incorporate the temperature dependence of the latent heat of vaporization.
+\end_layout
+
+\begin_layout Enumerate
+Use revised fits to clear-air data to determine the relationship between
+ Reynolds number and Nusselt number.
+ The formula in the nimbus code produces an estimate of the power dissipation
+ in clear air that is too low for the GV but reasonably close to the new
+ fit for the C-130.
+\end_layout
+
+\begin_layout Enumerate
+The wire length should be in the output file along with the wire diameter
+ and temperature because the length is needed if users are to repeat the
+ calculations.
+ Now the only documentation of that instrument characteristic is in the
+ nimbus code.
+\end_layout
+
+\begin_layout Enumerate
+Change to MKS units for consistency and change constants in the code to
+ correspond to MKS units.
+\end_layout
+
+\begin_layout Enumerate
+Change the baseline correction to update the dry-air term instead of removing
+ a LWC offset, and include the dependence on CONCF or PLWCG in the dependency
+ table and output file.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Possible implementation for the GV in MKS units:
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+concf from a CDP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+// input variables: plwc, tasx, atx, psxc, concf
+\end_layout
+
+\begin_layout LyX-Code
+// output: plwcc
+\end_layout
+
+\begin_layout LyX-Code
+const float cond0 = 0.0238, cond1 = 0.000071, 
+\end_layout
+
+\begin_layout LyX-Code
+            visc0 = 1.718e-5, visc1 = 0.0049e-5;
+\end_layout
+
+\begin_layout LyX-Code
+// coefficients to determine the boiling point:
+\end_layout
+
+\begin_layout LyX-Code
+const float bp[4]={0.03366503,1.34236135,-0.33479451,0.03519342};
+\end_layout
+
+\begin_layout LyX-Code
+    // the following coefficients for Nusselt number should
+\end_layout
+
+\begin_layout LyX-Code
+    // go in a defaults file
+\end_layout
+
+\begin_layout LyX-Code
+static float Nu_a0 = 1.8679, Nu_b0 = 0.13506, Nu_c0 = 0.13289;
+\end_layout
+
+\begin_layout LyX-Code
+const float Nu_a1 = 0.3433589,Nu_b1 = 0.638318, Nu_c1 = 0.3823 ;
+\end_layout
+
+\begin_layout LyX-Code
+const tau_Nu = 300.;        // time constant for updating Nu
+\end_layout
+
+\begin_layout LyX-Code
+    // the next constants have many uses; global?
+\end_layout
+
+\begin_layout LyX-Code
+const float mb2Pa = 100., Kelvin = 273.15, 
+\end_layout
+
+\begin_layout LyX-Code
+            Rd = 287.05, kg2g = 1000.;
+\end_layout
+
+\begin_layout LyX-Code
+    // better: Rd=R0/MD; above is 5-figure approx
+\end_layout
+
+\begin_layout LyX-Code
+    // latent heat of vaporization
+\end_layout
+
+\begin_layout LyX-Code
+const float ALHV0 = 2.501e6, ALHV1 = -2370.;
+\end_layout
+
+\begin_layout LyX-Code
+const float CW = 4.218e3; // specific heat of water
+\end_layout
+
+\begin_layout LyX-Code
+    // also need in defaults file: twire = 130., 
+\end_layout
+
+\begin_layout LyX-Code
+    //                  dwire = 0.1805e-2, lwire = 2.1e-2;
+\end_layout
+
+\begin_layout LyX-Code
+    // other declarations omitted
+\end_layout
+
+\begin_layout LyX-Code
+tm = (atx + twire) / 2.;            // mean T
+\end_layout
+
+\begin_layout LyX-Code
+cond = cond0 + cond1 * tm;          // thermal conductivity, air
+\end_layout
+
+\begin_layout LyX-Code
+visc = visc0 + visc1 * tm;          // viscosity of air
+\end_layout
+
+\begin_layout LyX-Code
+dens = mb2Pa * psxc / (Rd * (tm + Kelvin)); // air density
+\end_layout
+
+\begin_layout LyX-Code
+Re = dens * tasx * dwire / visc;    // Reynolds number
+\end_layout
+
+\begin_layout LyX-Code
+    // update Nusselt-number coefficients
+\end_layout
+
+\begin_layout LyX-Code
+if (concf < 0.25 && concf > MISSING_VALUE) {
+\end_layout
+
+\begin_layout LyX-Code
+    Nu = plwc / (PI * lwire * cond * (twire - atx));
+\end_layout
+
+\begin_layout LyX-Code
+    if (tasx < 150.) {Nu_c0 += (Nu/pow(Re, Nu_c1)-Nu_c0)/tauNu;}
+\end_layout
+
+\begin_layout LyX-Code
+    else if (Re < 7244.) {Nu_a0 += (Nu/pow(Re,Nu_a1)-Nu_a0)/tauNu;}
+\end_layout
+
+\begin_layout LyX-Code
+    else            {Nu_b0 += (Nu/pow(Re,Nu_b1)-Nu_b0)/tauNu;}
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\begin_layout LyX-Code
+if (tasx < 150.) {Nu = Nu_c0 * pow(Re, Nu_c1);}
+\end_layout
+
+\begin_layout LyX-Code
+   // get Nusselt number below or above Re=7244:
+\end_layout
+
+\begin_layout LyX-Code
+else if (Re < 7244.) {Nu = Nu_a0 * pow(Re, Nu_a1);}
+\end_layout
+
+\begin_layout LyX-Code
+else            {Nu = Nu_b0 * pow(Re, Nu_b1);}
+\end_layout
+
+\begin_layout LyX-Code
+    // power required in dry air:
+\end_layout
+
+\begin_layout LyX-Code
+Pdry = PI * lwire * cond * (twire - atx) * Nu;
+\end_layout
+
+\begin_layout LyX-Code
+xp = log10(psxc);
+\end_layout
+
+\begin_layout LyX-Code
+Tbp = pow(10., (bp[0]+xp*(bp[1]+xp*(bp[2]+xp*bp[3]))));
+\end_layout
+
+\begin_layout LyX-Code
+    // liquid water content, converted from MKS to g/m^3
+\end_layout
+
+\begin_layout LyX-Code
+plwcc = kg2g * (plwc - Pdry) / (lwire * dwire * tasx 
+\end_layout
+
+\begin_layout LyX-Code
+        * ((ALHV0+ALHV1*Tbp) + CW * (Tbp - atx)));
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip0.5truein 
+\backslash
+centerline{
+\backslash
+textcolor{blue}{---- END ----}}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this is just a closing line to note end of the memo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+uncomment to include a list of attachments according to the model in the
+ TeX example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional list of people to include in cc list (beyond algorithm committee,
+ who always should get these)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

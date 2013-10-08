@@ -1,0 +1,116 @@
+InfoKey: Producer
+InfoValue: pdfTeX-1.40.13
+InfoKey: Creator
+InfoValue: LaTeX with Beamer class version 3.26
+InfoKey: ModDate
+InfoValue: D:20130404071712-06'00'
+InfoKey: PTEX.Fullbanner
+InfoValue: This is pdfTeX, Version 3.1415926-2.5-1.40.13 (TeX Live 2013/dev) kpathsea version 6.1.1dev
+InfoKey: CreationDate
+InfoValue: D:20130404071712-06'00'
+PdfID0: d95561cd11e91e52252dc726d63d7ef8
+PdfID1: d95561cd11e91e52252dc726d63d7ef8
+NumberOfPages: 33
+BookmarkTitle: Preface
+BookmarkLevel: 1
+BookmarkPageNumber: 2
+BookmarkTitle: Finding Corrections to Pressure
+BookmarkLevel: 1
+BookmarkPageNumber: 13
+BookmarkTitle: The Total Pressure (p+q) 
+BookmarkLevel: 2
+BookmarkPageNumber: 13
+BookmarkTitle: Finding p using LAMS
+BookmarkLevel: 2
+BookmarkPageNumber: 16
+BookmarkTitle: Fitting LAMS Predictions
+BookmarkLevel: 2
+BookmarkPageNumber: 19
+BookmarkTitle: Reverse-Heading Maneuvers to Check Results
+BookmarkLevel: 2
+BookmarkPageNumber: 24
+BookmarkTitle: Checking Temperature Calibration
+BookmarkLevel: 1
+BookmarkPageNumber: 25
+BookmarkTitle: LAMS-Based Temperature Measurement
+BookmarkLevel: 1
+BookmarkPageNumber: 30
+BookmarkTitle: Conclusions (GV)
+BookmarkLevel: 1
+BookmarkPageNumber: 33
+PageLabelNewIndex: 1
+PageLabelStart: 1
+PageLabelPrefix: 1
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 2
+PageLabelStart: 1
+PageLabelPrefix: 2
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 13
+PageLabelStart: 1
+PageLabelPrefix: 3
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 16
+PageLabelStart: 1
+PageLabelPrefix: 4
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 17
+PageLabelStart: 1
+PageLabelPrefix: 5
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 18
+PageLabelStart: 1
+PageLabelPrefix: 6
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 19
+PageLabelStart: 1
+PageLabelPrefix: 7
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 20
+PageLabelStart: 1
+PageLabelPrefix: 8
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 21
+PageLabelStart: 1
+PageLabelPrefix: 9
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 22
+PageLabelStart: 1
+PageLabelPrefix: 10
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 24
+PageLabelStart: 1
+PageLabelPrefix: 11
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 25
+PageLabelStart: 1
+PageLabelPrefix: 12
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 26
+PageLabelStart: 1
+PageLabelPrefix: 13
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 27
+PageLabelStart: 1
+PageLabelPrefix: 14
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 28
+PageLabelStart: 1
+PageLabelPrefix: 15
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 29
+PageLabelStart: 1
+PageLabelPrefix: 16
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 30
+PageLabelStart: 1
+PageLabelPrefix: 17
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 31
+PageLabelStart: 1
+PageLabelPrefix: 18
+PageLabelNumStyle: NoNumber
+PageLabelNewIndex: 33
+PageLabelStart: 1
+PageLabelPrefix: 19
+PageLabelNumStyle: NoNumber

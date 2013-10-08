@@ -1,0 +1,6929 @@
+#LyX 1.6.10 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Aircraft Algorithm Memo re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\RAFAlgorithmMemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Research Aviation Facility}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Algorithm Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.2truein\leftline{\textcolor{blue}{\textsf{Subject: \the\topicofnote}}}
+\leftline{\textcolor{blue}{\textsf{Al Cooper}}}
+\leftline{\textcolor{blue}{\textsf{\datetoday}}} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding default
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={Corrections to Pressure for Airflow Effects}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+RAFAlgorithmMemo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Background
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+usually, definition of the variable, uses, history, math expressions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Ambient pressure is measured by accurate transducers connected to pressure
+ ports called 
+\begin_inset Quotes eld
+\end_inset
+
+static buttons
+\begin_inset Quotes erd
+\end_inset
+
+ that are designed and located on the fuselage to provide pressure sources
+ that are close to the ambient.
+ In the case of the GV, these pressure sources are connected to a Parascientific
+ Model 1000 quartz transducer that has nominal accuracy of 0.1 mb.
+ Dynamic pressure is then measured by a differential sensor connected to
+ measure the difference between the static ports and the total pressure
+ at the tip of a a pitot tube.
+ For the GV, this measurement is made by a Honeywell Model PPT0001 differential
+ pressure transducer having nominal accuracy of 0.05 mb.
+ 
+\end_layout
+
+\begin_layout Standard
+To account for possible errors in these measurements, 
+\begin_inset Quotes eld
+\end_inset
+
+Pcorr
+\begin_inset Quotes erd
+\end_inset
+
+ values 
+\begin_inset Formula $\{\Delta p,\Delta q\}$
+\end_inset
+
+ are added to the measurements 
+\begin_inset Formula $\{p_{m},q_{m}\}$
+\end_inset
+
+ of pressure and dynamic pressure, respectively, to obtain estimates of
+ the true values 
+\begin_inset Formula $\{p_{a},q_{a}\}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+p_{a}=p_{m}+\Delta p\label{eq:1}\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+q_{a}=q_{m}+\Delta q\label{eq:2}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+One common assumption about the origin of these errors is that the total
+ pressure at the tip of a pitot tube is correct, but that errors in both
+ 
+\begin_inset Formula $p_{m}$
+\end_inset
+
+ and 
+\begin_inset Formula $q_{m}$
+\end_inset
+
+ arise from errors in the pressure present at the static ports.
+ If that is the case, then 
+\begin_inset Formula $\Delta q=-\Delta p$
+\end_inset
+
+, so
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+q_{a}=q_{m}-\Delta p\,\,.\label{eq:3}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The variables PSXC and QCXC then represent values of the static and dynamic
+ pressure that are corrected by estimates of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ and 
+\begin_inset Formula $\Delta q$
+\end_inset
+
+, respectively.
+ Note that, with this assumption and using 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ to denote the pressure at the tip of the pitot tube,
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+p_{t}=p_{a}+q_{a}=p_{m}+q_{m}\label{eq:4}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+so 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ would be measured correctly.
+\end_layout
+
+\begin_layout Standard
+Redundant measurements provide a test of this assumption because they should
+ provide the same total pressure.
+ There are two sets of measurements of static and dynamic pressure on the
+ C-130, (PSFD/QCF) and (PSFRD/QCFR), so if both provide accurate measurement
+ of the total pressure then PSFD+QCF should equal PSFRD+QCFR.
+ The figure below shows that this is valid to high accuracy: The best fit
+ to the measurements is (PSFRD+QCFR)=
+\begin_inset Formula $\alpha$
+\end_inset
+
+(PSFD+QCF)+0.10 where 
+\begin_inset Formula $\alpha=1.0000$
+\end_inset
+
+, and the RMS deviation from this best-fit line is 0.04 mb.
+ However, the total pressures differ on average by almost 3 mb and a best
+ fit shows more scatter (about 0.6 mb).
+ This is supporting evidence for the assumption that 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ is measured correctly and that the errors in 
+\begin_inset Formula $p_{m}$
+\end_inset
+
+ and 
+\begin_inset Formula $q_{m}$
+\end_inset
+
+ arise from errors in the pressure provided by the static buttons.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/IDEAS/TotalPressure.png
+	lyxscale 50
+	width 12cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Measurements made at 1 Hz during flight 8 of IDEAS-4.
+ All measurements from 1955-2453 are included for times when the true airspeed
+ TASX exceeded 50 m/s (to exclude a short period with flaps deployed at
+ the end of the flight).
+ The measurements plotted are the total pressure 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ measured by two independent systems using two different pitot tubes and
+ sets of static buttons.
+ The quantities plotted are (PSFDR+QCFR) vs (PSFD+QCF), both before any
+ corrections beyond calibration coefficients are applied to the raw measurements.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Present Processing Code
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+use LyX-code format where needed to include code segments from nimbus
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In current processing, different equations are used for the C-130 and the
+ GV.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+C-130:
+\end_layout
+
+\begin_layout Standard
+For the C-130, a parameterization based on tests with a trailing cone is
+ used.
+ The correction 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ is applied to both the measured static pressure and, with reverse sign,
+ to the measured dynamic pressure.
+ The equations are:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{eqnarray*}
+\Delta p & = & 4.66+11.4405(ADIFR/QCRC)\,\,\mathrm{\,\,\,\,\,\,\,\,\,\, for\, PSFD\, and\, QCF}\\
+ & = & 4.66+11.4405(AKRD)\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\, for\, QCR\\
+ & = & 3.29+0.0273q\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\mathrm{{for\, PSFRD,\, QCFR,\, but\, steady\,4.7915\, for\, q<55}}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+notes: the second line appears to be an error, and different corrections
+ are applied to the two pairs of measurements, {PSFD/QCF} and {PSFRD/QCFR}.
+\end_layout
+
+\begin_layout Subsubsection*
+GV:
+\end_layout
+
+\begin_layout Standard
+Fits have been determined using the trailing code as reference and using
+ the avionic-system pressure as reference, but they differ significantly.
+ Present processing uses the following, based on using the avionic systems
+ as the standard:
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+the listed quantities for 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ are added to static pressure but subtracted from dynamic pressure
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{eqnarray*}
+\Delta p & = & -1.02+0.1565*q)+q1*(0.008+p*(7.1979e-09*p-1.4072e-05)\,\mathrm{\,\,\,\,\, for\, PSF}\\
+ & = & 2.00-q*(0.023809+q*0.0001361)\,\mathrm{\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\, for\, QCR}\\
+ & = & 1.02+(ADIFR/QCR)*(0.215-0.04*p/1000.)\\
+ &  & +p*(-0.003266+p*1.613e-06)\,\mathrm{\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\, for\, QCF}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+trailing cone parameterization:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\Delta p=-1.02+0.1565*(ADIFR/QCR))+q*(0.008+q*(7.1979e-09*q-1.4072e-05)\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Friehe parameterization:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\Delta p=-2.089+ADIFR*(0.196+0.00138*ADIFR)+MACH\_A*(9.609-8.307*MACH\_A)\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Reasons For Proposing Changes
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+summarize why present code should be changed: weaknesses, errors, improvements,
+ accuracy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+New representations of these corrections can be found from the LAMS.
+ Because that provides an absolute measurement, it should be more reliable
+ than other calibration sources.
+ If the LAMS measurements of relative wind give consistent parameterizations
+ in terms of other variables, those parameterizations can be used when the
+ LAMS is not present, but when present it may be preferable to use the LAMS
+ determination of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ directly in processing.
+ The next section analyzes this possibility.
+ 
+\end_layout
+
+\begin_layout Standard
+The absolute accuracy of the measurements from LAMS suggests that it may
+ be possible to calibrate several other measurements by using LAMS:
+\end_layout
+
+\begin_layout Enumerate
+LAMS determines TAS directly and so is a check on alternate calculations
+ of TAS.
+\end_layout
+
+\begin_layout Enumerate
+Equivalently, LAMS can be used to determine dynamic pressure.
+\end_layout
+
+\begin_layout Enumerate
+Because the error in measured dynamic pressure is probably a result of erroneous
+ static pressure, LAMS, by determining this error, can determine an accurate
+ value of static pressure.
+\end_layout
+
+\begin_layout Enumerate
+LAMS can be used in this way to provide a reference from which to determine
+ parameterizations for the errors in static and dynamic pressure, for use
+ when the LAMS is not present or not operational.
+\end_layout
+
+\begin_layout Enumerate
+Because LAMS determines airspeed, it can be used with measurements of static
+ and dynamic pressure to determine the temperature, 
+\emph on
+independent of any temperature sensor.
+\end_layout
+
+\begin_layout Enumerate
+This measurement of temperature will be valid in cloud and rain, so valid
+ measurements of in-cloud temperature will be possible.
+ LAMS operates well in cloud unless the windows become covered with ice.
+\end_layout
+
+\begin_layout Enumerate
+Improved accuracy in the measurement of pressure makes it possible, with
+ accurate differential GPS, to integrate the hydrostatic equation and use
+ the difference in height between to levels to determine the mean temperature
+ in the interval between those levels, thus checking or calibrating the
+ temperature measurement from either LAMS or the immersion sensors.
+\end_layout
+
+\begin_layout Section*
+Analysis
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+this (and all) are optional, may not be needed -- intended for research-level
+ exploration of meaning of the variable or subtleties regarding its calculation,
+ as needed to develop the case for recommendations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Equations for Correcting Static and Dynamic Pressure
+\end_layout
+
+\begin_layout Standard
+Refer to the Lenschow Tech Note describing the Buffalo air motion system
+ for the basis of the following derivation.
+ For compressible flow,
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\frac{v^{2}}{2}+c_{v}T+\frac{p}{\rho_{a}}=\frac{v^{2}}{2}+c_{p}T=constant\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+However, for adiabatic compression, with
+\begin_inset Formula $\gamma=c_{p}/c_{v}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+Tp^{-R/c_{p}}=Tp^{(1-\gamma)/\gamma}=const\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+or, if 
+\begin_inset Formula $T^{*}$
+\end_inset
+
+ is the temperature at stagnation where the pressure is (
+\begin_inset Formula $p+q$
+\end_inset
+
+),
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+T^{*}=T\left(\frac{p+q}{p}\right)^{R/c_{p}}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\frac{v^{2}}{2}+c_{p}T=c_{p}T\left(\frac{p+q}{p}\right)^{R/c_{p}}\label{eq:StagnationEq}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In terms of Mach number (
+\begin_inset Formula $M=v/\sqrt{\gamma R_{a}T}$
+\end_inset
+
+ , so that 
+\begin_inset Formula $v^{2}=M^{2}\gamma R_{a}T$
+\end_inset
+
+), and
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\frac{M^{2}\gamma R_{a}T}{2}+c_{p}T=c_{p}T\left(\frac{p+q}{p}\right)^{R/c_{p}}\label{eq:Stagnation2}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If solved for Mach number, this gives
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+M=\left\{ \left(\frac{2c_{v}}{R_{a}}\right)\left[\left(\frac{p+q}{\mathrm{p}}\right)^{R_{a}/c_{p}}-1\right]\right\} ^{1/2}\label{eq:MachEq}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which shows that Mach number can be found without knowing the temperature.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+An nteresting application of LAMS can then be that, with 
+\begin_inset Formula $v$
+\end_inset
+
+ measured by LAMS, the temperature can be determined from 
+\begin_inset Formula $T=v^{2}/(\gamma R_{a}M^{2})$
+\end_inset
+
+ without any input from a temperature sensor, just from accurate measurements
+ of 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $q$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+ Solving (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:StagnationEq"
+
+\end_inset
+
+) instead for 
+\begin_inset Formula $q$
+\end_inset
+
+ gives:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+q=p\left\{ \left(\frac{v^{2}}{2c_{p}T}+1\right)^{c_{P}/R_{a}}-1\right\} \label{eq:qFromLAMS}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which shows that, with knowledge of 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $T$
+\end_inset
+
+, LAMS can provide an independent measurement of the dynamic pressure 
+\begin_inset Formula $q$
+\end_inset
+
+.
+ That will lead to a direct measurement of the PCORs also:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\Delta p==\Delta q=q_{m}-q=q_{m}-p\chi\label{eq:PCOR1}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where, to simplify the notation, 
+\begin_inset Formula $\chi$
+\end_inset
+
+ is written for
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\chi=\left(\frac{v^{2}}{2c_{p}T}+1\right)^{c_{p}/R_{a}}-1\label{eq:ChiEquation}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then, because
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+p+p_{m}+\Delta p\,\;,\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\Delta p=\frac{q_{m}-p_{m}\chi}{1+\chi}\label{eq:PCOR2}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which gives the pressure correction directly in terms of the measured quantities
+ {
+\begin_inset Formula $p_{m},q_{m}$
+\end_inset
+
+}.
+ However, the temperature is needed to calculate 
+\begin_inset Formula $\chi$
+\end_inset
+
+, so there are several possible approaches to evaluating (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ChiEquation"
+
+\end_inset
+
+), including::
+\end_layout
+
+\begin_layout Enumerate
+Solve the complicated equations for 
+\begin_inset Formula $T$
+\end_inset
+
+, 
+\begin_inset Formula $p$
+\end_inset
+
+, and 
+\begin_inset Formula $q$
+\end_inset
+
+ simultaneously, obtaining an immediate result for 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Obtain the solution iteratively be calculating 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ as from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2"
+
+\end_inset
+
+) but with uncorrected values of {
+\begin_inset Formula $p,q$
+\end_inset
+
+} used in the calculation of 
+\begin_inset Formula $T$
+\end_inset
+
+, then improve the calculation of 
+\begin_inset Formula $T$
+\end_inset
+
+ using the derived corrections and iterate.
+\end_layout
+
+\begin_layout Enumerate
+Use a measurement of temperature (e.g., from a radiometric sensor) that does
+ not involve knowing static pressure and dynamic pressure.
+\end_layout
+
+\begin_layout Enumerate
+Use the measurement of temperature obtained solely from LAMS without reference
+ to any temperature sensor, using only the measurements {
+\begin_inset Formula $p_{m},q_{m}$
+\end_inset
+
+} and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:MachEq"
+
+\end_inset
+
+), where again either iteration or complicated solution of simultaneous
+ equations is needed because 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ as found from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2"
+
+\end_inset
+
+) is needed for accurate calculation of 
+\begin_inset Formula $M$
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+T=v^{2}/(\gamma R_{a}M^{2})\label{eq:TfromLAMS}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Supporting Evidence for Accuracy of 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There are general studies of pitot tubes that suggest their typical sensitivity
+ to flow angle is <1% at angles up to 10
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+, 0.2% up to 5
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+.
+ They are oriented so that they face the mean flow, so normal departures
+ from the mean flow angle during flight are usually much smaller than this.
+ It is critical to the analysis approach taken here that the measured total
+ pressure be accurate, so some test of this assumption is useful.
+\end_layout
+
+\begin_layout Standard
+On the C-130, there are redundant sensor pairs that sense the dynamic pressure
+ 
+\begin_inset Formula $q$
+\end_inset
+
+ and the static pressure 
+\begin_inset Formula $p$
+\end_inset
+
+.
+ The total pressure is measured by adding two sets of sensors, either PSFD
+ and QCF or PSFRD and QCRF.
+ The total pressure is measured as PSFD+QCF or PSFRD+QCRF, where the two
+ sets use independent static ports and independent pitot-tube sources.
+ Comparing these provides a test of the assumption that the total pressure
+ is delivered accurately by the pitot tubes and is measured accurately by
+ the transducers, because, even if the two measurements of static pressure
+ differ (as they do) because of their different sensing positions on the
+ aircraft, the sums should be the same.
+ The following figure shows a comparison of the two independent measurements
+ of 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ on the C-130:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/IDEAS/TotalPressure.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A fit to these measurements gave PSFRD+QCFR=
+\begin_inset Formula $a_{o}+a_{1}$
+\end_inset
+
+(PSFD+QFC) with 
+\begin_inset Formula $a_{0}=-0.065$
+\end_inset
+
+ mb and 
+\begin_inset Formula $a_{1}=1.0003$
+\end_inset
+
+, with an RMS scatter about this fit of 0.04 mb.
+ The mean difference between these two independent measurements was 0.15
+ mb.
+ In contrast, the averages of the individual components (
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $q$
+\end_inset
+
+) entering the measurement of 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ differed by about 2.5 mb.
+ This provides support for the assumption that the unertainty in total pressure
+ is much smaller than that in the uncorrected measurements of either static
+ or dynamic pressure, so it appears reasonable to assume that the errors
+ in measurements of the latter arise from errors in the pressure delivered
+ by the static ports.
+ 
+\end_layout
+
+\begin_layout Standard
+On the GV, there is only one set of sensors in the NCAR/RAF-provided data
+ system, but there are pressure measurements available from the avionics
+ package also that can be used in the same way.
+ In this case, the total pressure measured by the avionic-system pair of
+ measurements is about 1.1 mb higher than the corresponding measurements
+ from the GV RAF data system, and the best fit is PS_A+QC_A=1.2 mb + 0.9996(PSF+QC
+F), with an RMS error from this fit of 0.2 mb.
+ This error arises partly from filtering applied to the avionics-system
+ measurements, which is evident in spectral characteristics of those measurement
+s and leads to obvious differences in cases where measured quantities are
+ changing rapidly.
+ Nevertheless, this comparison is better than the comparison of either static
+ or dynamic pressure alone and so provides some evidence that the measurement
+ of total pressure is more accurate than those measurements.
+ Therefore, in the following, it will be assumed that the total pressure
+ is measured accurately, and corrections will be developed to adjust 
+\begin_inset Formula $q$
+\end_inset
+
+ to be that required by the measurements from LAMS.
+\end_layout
+
+\begin_layout Subsection*
+Moist air correction
+\end_layout
+
+\begin_layout Standard
+For accurate calculation in humid air, the values used in the preceding
+ should be those for moist air, although the density of dry air at the same
+ pressure and temperature is often used.
+ The density of moist air having vapor pressure 
+\begin_inset Formula $e$
+\end_inset
+
+ (and so mixing ratio 
+\begin_inset Formula $r=\epsilon e/(p-e)$
+\end_inset
+
+ where 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ is the ratio of the molecular weight of water to that of dry air) is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\rho_{a}=\frac{(p-e)}{R_{d}T}+\frac{e}{R_{w}T}=\frac{p}{R_{d}T}\left(1-\frac{e}{p}+\frac{e\epsilon}{p}\right)=\frac{p}{R_{d}T}\left(1+(\epsilon-1)\frac{e}{p}\right)\label{eq:MoistAirDensity}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+so the gas constant that should be used is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+R_{a}=R_{d}/[1+(\epsilon-1)\frac{e}{p}]\label{eq:moistR}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Because for air the specific heats are very close to those for a diatomic
+ molecule with five degrees of freedom, while for water the values are approsima
+tely those for six degrees of freedom (i.e., 
+\begin_inset Formula $c_{v}=3R_{w}),$
+\end_inset
+
+ similar results for 
+\begin_inset Formula $c_{p},$
+\end_inset
+
+ 
+\begin_inset Formula $c_{v}$
+\end_inset
+
+, and 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ for humid air are averages weighted by the mass fraction of each constituent,
+ as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+c_{v}=\frac{(p-e)R_{a}}{pR_{d}}\frac{5R_{u}}{2M_{d}}+\frac{eR_{a}}{pR_{w}}\frac{3R_{u}}{M_{w}}=c_{vd}\frac{R_{a}}{R_{d}}\left(1+(\frac{6}{5\epsilon}-1)\frac{e}{p}\right)=c_{vd}\frac{R_{a}}{R_{d}}(1+0.92926\,\frac{e}{p})\label{eq:moistcv}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+c_{p}=c_{pd}\frac{R_{a}}{R_{d}}\left(1+(\frac{8}{7\epsilon}-1)\frac{e}{p}\right)=c_{pd}\frac{R_{a}}{R_{d}}(1+0.83739\,\frac{e}{p})\label{eq:moistcp}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\gamma=\gamma_{d}\frac{1+(\frac{8}{7\epsilon}-1)\frac{e}{p}}{1+(\frac{6}{5\epsilon}-1)\frac{e}{p}}=\gamma_{d}\frac{1+0.83739\frac{e}{p}}{1+0.92926\frac{e}{p}}\label{eq:moistgamma}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These values for 
+\begin_inset Formula $R_{a}$
+\end_inset
+
+, 
+\begin_inset Formula $c_{p}$
+\end_inset
+
+ and 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ should be used when evaluating (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ChiEquation"
+
+\end_inset
+
+-
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TfromLAMS"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+When LAMS is present, this estimate of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ could be used to determine adjustments to the static pressure and the dynamic
+ pressure, with further correction for the effect of measurement angle as
+ discussed below.
+\end_layout
+
+\begin_layout Subsection*
+Effect of LAMS Orientation
+\end_layout
+
+\begin_layout Standard
+The pitot tube is relatively insensitive
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+typical sensitivity is less than 1% at flow angles up to 10
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ and less than 0.2% for flow angles up to 5
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+.
+ The error is in the direction of measuring too low a total pressure, and
+ to some extent it is compensated by orientation of the pitot tubes along
+ the flow angle expected in normal flight.
+\end_layout
+
+\end_inset
+
+ to flow angles and so measures the total dynamic pressure, but LAMS measures
+ the relative wind in a specific direction.
+ For LAMS, the effect of a flow angle 
+\begin_inset Formula $\theta$
+\end_inset
+
+ relative to the beam is that it measures 
+\begin_inset Formula $v_{l}=v\,\cos(\theta)$
+\end_inset
+
+.
+ The beam is oriented close to but slightly offset from the longitudinal
+ axis of the aircraft, at viewing angles 
+\begin_inset Formula $\theta_{1}$
+\end_inset
+
+ above and 
+\begin_inset Formula $\theta_{2}$
+\end_inset
+
+ to the starboard side of the longitudinal axis.
+ On the C-130 for IDEAS-4, these angles are Then, with sideslip 
+\begin_inset Formula $\beta$
+\end_inset
+
+ positive for relative wind approaching from the starboard side of the aircraft,
+ to a sufficient approximation
+\begin_inset Formula $\cos\theta=\cos(\theta_{1}+\alpha)\cos(\theta_{2}-\beta)$
+\end_inset
+
+ with 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ the angle of attack.
+ The resulting equation for 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ is then (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2"
+
+\end_inset
+
+) where, in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ChiEquation"
+
+\end_inset
+
+), 
+\begin_inset Formula $v$
+\end_inset
+
+ is replaced by 
+\begin_inset Formula $v_{l}/\cos\theta$
+\end_inset
+
+ and the moist-air values are used for 
+\begin_inset Formula $R_{a}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{p}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+correction1=cos(abs((Pitch-Cpitch)-Attack)*pi/180); %correct for attack
+ angle and wing flex correction2=cos(abs(Slip-h_off_angle)*pi/180); %correct
+ for horrizontal offset LAMS_speed_corrected = LAMS_speed./correction1./correction
+2
+\end_layout
+
+\begin_layout Plain Layout
+order: rotate about z by heading, to north; rotate about x, pitch, to longitudin
+al axis level; rotate about y, roll, to wings level.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Fits to 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Subsubsection*
+C-130
+\end_layout
+
+\begin_layout Standard
+For IDEAS-4 flight 8, times 2000-2440, fits to the values of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2"
+
+\end_inset
+
+) obtained as above were tried as function of various measured variables.
+ For PSFD and QCF, the best fit with all coefficients highly significant
+ (<0.001) was the following:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{\Delta p}{\mathrm{PSFD}}=a_{0}+a_{1}\frac{\mathrm{ADIFR}}{\mathrm{QCR}}+a_{2}M+a_{3}M^{2}+a_{4}M^{3}+a_{5}\frac{\mathrm{QCF}}{\mathrm{PSFD}}+a_{6}\frac{\mathrm{BDIFR}}{\mathrm{QCR}}\label{eq:PCORfitQCF}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with{
+\begin_inset Formula $a_{0},a_{1},a_{2},a_{3},a_{4},a_{5},a_{6}$
+\end_inset
+
+}={-0.041648743, 0.014852166, 0.372956768, -1.170049701, 0.901591721, 0.231472736,
+ 0.002393596}.
+ The RMS error for this fit was 0.00042, corresponding to a pressure uncertainty
+ at 700 hPa of about 0.3 hPa for the individual measurements.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The data constrained the mean of the function to more than a factor of 100
+ smaller uncertainty than this.
+\end_layout
+
+\end_inset
+
+The second term gave the largest reduction in residual error; using this
+ variation alone gave a residual standard error of 0.00050.
+ The least significant was the last term, only reducing the residual standard
+ error by 0.000013 for a typical effect on pressure of 0.01 mb, so this term
+ will be dropped even though the fit indicated that it was a significant
+ contributor.
+ Setting 
+\begin_inset Formula $a_{5}=0$
+\end_inset
+
+ also had an insignificant effect on the result because the dependence on
+ this term is already represented well by the Mach number variation.
+ An adequate and simpler fit with only coefficients {
+\begin_inset Formula $a_{0},a_{1},a_{2}$
+\end_inset
+
+}={0.001628887, 0.021428833, 0.014524779} and all others zero gave a residual
+ standard error of 0.00044 and so an additional error contribution to the
+ corrected pressure of typically 0.014 mb, which is insignificant in comparison
+ to other expected error sources, so the recommended coefficients (with
+ consideration the standard errors in the determination of the coefficients
+ in specifying the precision of the values) are {
+\begin_inset Formula $a_{0},a_{1},a_{2}$
+\end_inset
+
+}={0.00163, 0.0214, 0.0145} with all other coefficients set to zero.
+ While the residuals from this fit are small, the mean offset it produces
+ is about 2 mb.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Another, perhaps preferable, approach is to determine sensitivity to angle
+ of attack and sideslip from periods when there are maneuvers, fix these,
+ and then determine any additional variability from fits to entire flights.
+ IDEAS RF05 had two periods with sideslip maneuvers and two with pitch maneuvers
+; for former suggested that sensitivity of 
+\begin_inset Formula $\Delta p/\mathrm{PSFD}$
+\end_inset
+
+ to (BDIFR/QCR) is about -0.001773 and the latter indicated sensitivity to
+ (ADIFR/QCR) of 0.01890.
+ When these are forced and the flight data are used to determine further
+ dependence, the residual significant dependence was on either XMACH2 or
+ (QCF/PSFD), suggesting the following fit: 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\begin{equation}
+\frac{\Delta p}{\mathrm{PSFD}}=b_{0}+b_{1}\frac{\mathrm{ADIFR}}{\mathrm{QCR}}+b_{2}\mathrm{XMACH2}+b_{3}\frac{\mathrm{BDIFR}}{\mathrm{QCR}}\label{eq:PDORfit2}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+where 
+\begin_inset Formula $b_{0}=0.004199$
+\end_inset
+
+, 
+\begin_inset Formula $b_{1}=0.01891$
+\end_inset
+
+, 
+\begin_inset Formula $b_{2}=0.01890$
+\end_inset
+
+, and 
+\begin_inset Formula $b_{3}=-0.001773$
+\end_inset
+
+.
+ The RMS error for this fit was only slightly higher, for IDEAS flight 8,
+ than that given by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORfitQCF"
+
+\end_inset
+
+), but the representation of the maneuvers in flight 5 was improved.
+ Under normal conditions the last term makes negligible contribution, but
+ it has some effect during the high-sideslip portions of maneuvers so could
+ be included without harm.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A similar approach can be taken to determining 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ for other sensors.
+ The results are the same for QCR because, by assumption, the errors arise
+ from the static source and this is common between QCF and QCR.
+ However, QCR has additional corrections that arise from the flow dependence
+ of the dynamic pressure measurement, because this is a radome port instead
+ of a pitot-tube measurement and is more sensitive to flow angle.
+ On the C-130, another pair of measurements is provided by PSFRD and QCFR;
+ these use a different set of static buttons and so 
+\begin_inset Formula $\Delta p_{R}$
+\end_inset
+
+ may have a different functional dependence.
+ The same procedure was used to determine fits for this sensor, with these
+ results (where PSFD and QCF are replaced in the equations by PSFRD and
+ QCFR): {
+\begin_inset Formula $a_{0},a_{1},a_{2}$
+\end_inset
+
+}={-0.00460, 0.0085, 0.0379}.
+ These are significantly different from those determined for PSFD and QCF,
+ but that is expected because the static ports are in a different location
+ on the fuselage and, by hypothesis, they determine these errors.
+\end_layout
+
+\begin_layout Standard
+One check on this procedure is that, after application of these corrections,
+ PSFD and PSFRD should produce the same corrected values.
+ The following plot shows a comparison for flight 8 of IDEAS-4:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/IDEAS/PcomparisonR8.png
+	lyxscale 50
+	width 12cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Comparison of independent measurements of static pressure obtained after
+ correction using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORfitQCF"
+
+\end_inset
+
+) with the coefficients given in the text, for PSFD corrected to PSFW and
+ PSFRD corrected to PSFRW.
+ All measurements from flight 8 of IDEAS-4 are included, except those with
+ TASX<50 m/s, to exclude a period with flaps at the end of the flight and
+ the large difference in pressures that occurs after landing when the props
+ are reversed.
+ The best fit that minimizes the distance to the plotted points is PSFRW=0.08+1.00
+01*PSFW, and the RMS deviation of the points from this fit is 0.11 mb.
+ The mean values of pressure differ by 0.12 mb
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The mean values for pressure are only about 0.5 mb lower than those now in
+ use and recorded as PSX=PSFDC, and only 0.2 mb less than PSFC, which is
+ obtained from PSFRD.
+ For QC, the corrected values differ from each other by only 0.06 mb in the
+ mean, but they are about 0.5 mb higher than QCX (obtained from QCR).
+ This 1% difference in 
+\begin_inset Formula $q$
+\end_inset
+
+ would correspond to approximately a 0.5% difference in TAS.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+There are also some possible alternate approaches:
+\end_layout
+
+\begin_layout Enumerate
+When LAMS is present, it is possible to determine 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ continuously from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2"
+
+\end_inset
+
+) and apply that to the measurements of pressure.
+ A problem with this approach is that, while coherence between TASX and
+ TAS_LAMS is close to unity for periods of 5 s and longer, below about 5
+ s the coherence starts to decrease, so some noise would be introduced by
+ making this correction at high rate because the pitot tube and LAMS are
+ sensing different air volumes.
+ If instead a low-pass filter is applied to 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ with a cutoff of 0.3 Hz, the result is a less noisy correction, but that
+ correction will not have some of the needed sensitivity to rapid changes
+ in flow angle or airspeed.
+ For these reasons, even when LAMS is present, using the parameterized fit
+ seems preferable.
+\end_layout
+
+\begin_layout Enumerate
+When LAMS is present, it is also possible to determine the sensitivity of
+ 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ to controlling factors like pressure, dynamic pressure, and angle of attack
+ by updating an accumulated fit, weighting recent measurements more highly.
+ The advantage would be that, if some change occurs that affects the measurement
+ of static pressure (like ice accumulation on the fuselage, power setting,
+ use of flaps, perhaps remaining fuel load, etc.), the fit would adjust to
+ compensate for this change.
+ The drawback is that the equation for 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ would vary during the flight in ways that make error characterization more
+ difficult.
+ This is probably best left to a possible special post-processing step for
+ use only in cases where highest accuracy is important.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+GV
+\end_layout
+
+\begin_layout Standard
+In the case of the GV, a different parameterization was useful, probably
+ because of the wider range of flight conditions of that aircraft.
+ The measurements from PREDICT ferry flight #1 (from Colorado to St.
+ Croix) included many altitude changes, many of the constant-altitude legs
+ included speed changes, and LAMS provided good measurements for most of
+ the flight, so this flight was used for fitting to determine a functional
+ representation of the PCORs for use when LAMS is not present.
+ 
+\end_layout
+
+\begin_layout Standard
+The best representation of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+, obtained after trying many options, was 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{\Delta p}{p}=a_{0}+a_{1}\frac{q}{p}+a_{2}M+a_{3}M^{2}+a_{4}M^{3}\label{eq:PCORforGV}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $p$
+\end_inset
+
+ is the direct measurement of pressure (PSF), 
+\begin_inset Formula $q$
+\end_inset
+
+ the dynamic pressure (QCF), and 
+\begin_inset Formula $M$
+\end_inset
+
+ is the Mach number (obtained from 
+\begin_inset Formula $\sqrt{\mathrm{XMACH2}}$
+\end_inset
+
+).
+ The dimensionless coefficients for the best fit to this flight were as
+ given in the following table:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+coefficient
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+value
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $a_{0}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.00675
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $a_{1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.6663
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $a_{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.0581
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $a_{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.2862
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $a_{4}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.2406
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The fit RMS error vs the LAMS-determined PCORs was 0.00081 or, for a typical
+ pressure of about 350 mb, about 0.3 mb.
+ Some part of this scatter likely results from variance in the LAMS measurement,
+ perhaps arising from sensing a different air volume vs that arriving at
+ the pitot tube, but more likely indicating some resolution problem in determini
+ng the LAMS prediction because the variance spectrum showed some indication
+ of resolution noise at 1 Hz.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+IDEAS data were reprocessed at higher resolution; it would be useful to
+ get this file reprocessed also.
+\end_layout
+
+\end_inset
+
+ This result did not improve significantly with the inclusion of ADIFR/QCR
+ or BDIFR/QCR or abs(BDIFR/QCR), and it did not improve significatly with
+ higher powers of QCF/PSF or of 
+\begin_inset Formula $M$
+\end_inset
+
+.
+ Unlike the C-130 result, however, this higher-degree polynomial in 
+\begin_inset Formula $M$
+\end_inset
+
+ was required; omitting any of the terms led to significant reduction in
+ the correlation coefficient and significant increase in the RMS error of
+ the fit.
+ The correlation coefficient between the LAMS prediction and this formula
+ was 0.97, showing that this parameterization accounts for around 94% of
+ the variance in 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+.
+ This formula with these coefficients thus appears to be a good representation
+ of PCOR on a flight with many altitude changes and maneuvers.
+\end_layout
+
+\begin_layout Subsection*
+Tests Using Flight Maneuvers:
+\end_layout
+
+\begin_layout Standard
+A test of the accuracy of the measurement of dynamic pressure is that the
+ longitudinal component of the wind should not change in reverse-heading
+ maneuvers in which the aircraft is flown over the same (drifting) flight
+ leg twice with opposite headings.
+ To isolate the effect of the measurement of 
+\begin_inset Formula $q$
+\end_inset
+
+ and hence true airspeed, the best wind component to use is that along the
+ axis of the aircraft, which is 
+\begin_inset Formula $v_{g}\cos\beta-\mathrm{TAS}$
+\end_inset
+
+ where 
+\begin_inset Formula $v_{g}$
+\end_inset
+
+ is the groundspeed of the aircraft and 
+\begin_inset Formula $\beta$
+\end_inset
+
+ is the angle between the groundspeed vector and the heading of the aircraft.
+ The GPS system provides the groundspeed in variables GGSPD and GGTRK (magnitude
+ and direction), so 
+\begin_inset Formula $\beta=$
+\end_inset
+
+GGTRK-THDG and the wind component along the aircraft axis, as a new variable
+ called UXW, is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathrm{UXW}=\mathrm{GGSPD}\cos(\mathrm{GGTRK-THDG)-TASW}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where TASW is the true airspeed calculated from the corrected measurement
+ of dynamic pressure, QCW:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\mathrm{QCW} & = & \mathrm{QCF}-\Delta p_{1}\\
+\mathrm{or} & = & \mathrm{QCFR-\Delta p_{2}}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The true airspeed is a function of the measurements {
+\begin_inset Formula $q$
+\end_inset
+
+, 
+\begin_inset Formula $p$
+\end_inset
+
+, 
+\begin_inset Formula $T_{r}$
+\end_inset
+
+} of dynamic pressure, static pressure, and measured temperature:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+T_{a}=\frac{T_{r}}{1+\dfrac{\alpha M^{2}(\gamma-1)}{2}}
+\]
+
+\end_inset
+
+ where 
+\begin_inset Formula $T_{a}$
+\end_inset
+
+is the air temperature, 
+\begin_inset Formula $\gamma=c_{p}/c_{v}$
+\end_inset
+
+, and the Mach number 
+\begin_inset Formula $M$
+\end_inset
+
+ is determined from 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $q$
+\end_inset
+
+ via (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:MachEq"
+
+\end_inset
+
+).
+ Then TASW=
+\begin_inset Formula $v=M\sqrt{\gamma R_{a}T_{a}}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+C-130:
+\end_layout
+
+\begin_layout Standard
+The following table shows results for two reverse-heading maneuvers flown
+ on flight 5 of IDEAS-4:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="7">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Time Interval
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+UXW
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+GGTRK
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+THDG
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+WDC
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+WSC
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+UX
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+220000--230530
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.56
+\begin_inset Formula $\pm$
+\end_inset
+
+0.91
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+241
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+242
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+65 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.31 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.89
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+230700--231200
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1.08
+\begin_inset Formula $\pm$
+\end_inset
+
+0.55
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+224
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.43
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1.47
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+225100--225300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.975
+\begin_inset Formula $\pm0.40$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+148
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+149
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+312
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.58
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.40 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+225500--225700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.99
+\begin_inset Formula $\pm0.52$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+328
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+329
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+122
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.09 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.21
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The angles show that the maneuvers were flown well, with close to 180
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ difference in heading between the two legs and an orientation close to
+ the mean wind (although the second is about 20
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ offset).
+ Because UXW represents the wind along the longitudinal axis of the aircraft,
+ it should reverse sign for the two legs of the maneuver.
+ The first pair above has a difference of 0.48 m/s, significantly reduced
+ from the standard processing (UX) which shows a difference of 1.42 m/s.
+ The second pair gives a larger difference: 2.97 m/s for the new processing
+ vs 3.61 m/s for the standard processing.
+ Both old and new processing give a larger error than is expected for the
+ second pair, although the first pair leads to a quite acceptable difference.
+ Analysis of more reverse-heading maneuvers would help evaluate if these
+ corrections are acceptable, but the improvement produced in both cases
+ by the new fit suggests it is appropriate for use in processing.
+\end_layout
+
+\begin_layout Standard
+Speed runs also provide some indication of the quality of the corrections.
+ For the speed changes in flight 8 of IDEAS-4, 2413-2420, the standard deviation
+ in DVALUE calculated from the new pressures was 3.9 m, compared to 5.3 m
+ for the standard processing, and the mean value of the DVALUE was almost
+ 6 m smaller.
+ Also, UXW calculated as above varied only about 1 m/s during the speed
+ run in either processing, as required if the results for 
+\begin_inset Formula $q$
+\end_inset
+
+ are accurate.
+\end_layout
+
+\begin_layout Subsubsection*
+GV:
+\end_layout
+
+\begin_layout Standard
+One of the PREDICT test flights, #4, had a large number of reverse-heading
+ maneuvers flown at different altitudes, so these can be used to test if
+ this representation of 
+\begin_inset Formula $\Delta p=-\Delta q$
+\end_inset
+
+ gives satisfactory agreement between the longitudinal component of the
+ wind measured on the reverse-heading maneuvers.
+ As for the C-130, the appropriate variable to compare is called UXW (analogous
+ to the standard variable UX).
+ The following table shows the results for 18 reverse-heading pairs of legs
+ from this flight.
+ The mean difference on legs along opposing headings is +0.6
+\begin_inset Formula $\pm0.2$
+\end_inset
+
+ m/s, suggesting that the error in measurement of longitudinal wind is +0.3
+\begin_inset Formula $\pm0.1$
+\end_inset
+
+m/s.
+ Because this result is dependent on the measurement of temperature, it
+ will be important to iterate this entire procedure before considering this
+ a correction that might be applied to the measurements; instead, it is
+ an indication that the accuracy of the measurement of horizontal wind is
+ on the order of 0.3 m/s.
+\end_layout
+
+\begin_layout Standard
+
+\lang british
+\begin_inset Tabular
+<lyxtabular version="3" rows="38" columns="7">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\lang british
+TIME
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\lang british
+ALTITUDE (m)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\lang british
+HEADING
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\lang british
+UXC (m/s)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\lang british
+UXW (m/s)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\lang british
+\begin_inset Formula $\Delta U_{s}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\lang british
+\begin_inset Formula $\Delta U_{n}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+165200-165300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+2372
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+241
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.1318
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.03689
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+165530-165630
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+2373
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+70
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.47
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.3111 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.60
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.28
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+165815-165915
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+3283
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+240
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.5773
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.4231
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+170130-170230
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+3287
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+58
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.7581
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.8086
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.18
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.39
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+170430-170530
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+4194
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+241
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.312
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.275
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+170730-170830
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+4201
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+57
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.045
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.31
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.23
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+171100-171200
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+5111
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+240
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.859
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.817
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+171400-171500
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+5114
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+58
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+2.492
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+2.558 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.74
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+173845-173945
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+8835
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+240
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-12.85
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-12.41
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+174230-174330
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+8832
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+57
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+14.16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+14.8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.31
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+2.39
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+174630-174730
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+10060
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+240
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-24.24
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-23.72 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+175030-175130
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+10070
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+57
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+23.05
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+23.66
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.06
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+175500-175600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+10980
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+241
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-18.9
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-18.47 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+175900-180000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+10980 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+57
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+18.47
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+18.97 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.43
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.50
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+180300-180400
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+11900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+240
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-26.24
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-25.68
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+180715-180815
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+11900 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+57
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+26.25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+27.03
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.01
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.35
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+181030-181130
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+12440
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+232
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-22.82
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-22.1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+181700-181900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+12830
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+20.09
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+20.81 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+182800-183000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+12820
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+239
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-19.49
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-18.75
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.60
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+2.06
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+183100-183300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+12810
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+239
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-20.1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-19.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+183615-183815
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+12810
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+18.57
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+19.51 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.53
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.31
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+184500-184700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+12810
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+239
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-19.53
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-18.61
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.96
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.90
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+184800-185000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+12800
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+240
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-19.88
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-18.87
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+185300-185500
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+12800
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+18.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+19.33
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.68
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.46
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+185400-185600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+12800
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+18.51
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+19.63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+190130-190330
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+12800 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+239
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-19.63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-18.52
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.12
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.11
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+192000-192200
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+4227
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+10 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.402
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+2.016 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+192700-192900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+4228 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+190
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-2.011
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.308
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.61
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.71
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+192800-193000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+4228
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+189
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.499
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.8216
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+193300-193500
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+4242
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.282
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.951
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.22
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.14
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+194100-194300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+4242
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+190
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-2.971
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-2.248
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.69
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.30
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+194300-194500
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+4229
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+190
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.269
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.6109
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+194715-194915
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+4238 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.059 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.026
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.21
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+0.42
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+194815-195015
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+4239
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.67
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+1.582
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+195330-195530
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+4235
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+190 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-2.649
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-2.702
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.98
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-1.12
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\lang british
+MEAN
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.42
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
++0.61
+\begin_inset Formula $\pm$
+\end_inset
+
+0.83 (0.2)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\lang british
+MEAN w/0 2 largest
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
+-0.27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang british
++0.42
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The suggested conclusion for both the C-130 and GV is that the LAMS provides
+ a valid calibration source for both static and dynamic pressure, and that
+ fits to the resulting corrections predicted by LAMS can be used to improve
+ the corrections that are applied to static and dynamic pressure.
+\end_layout
+
+\begin_layout Subsection*
+Determining the Air Temperature
+\end_layout
+
+\begin_layout Standard
+Once confidence in the pressure measurements has been established as in
+ the preceding sections, a check on the absolute accuracy of the temperature
+ measurement can be obtained from integration of the hydrostatic equation,
+ expressed in this form: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\delta p_{i}=-\frac{g\, p_{i}}{R_{a}T_{a,i}}\delta z_{i}\label{eq:hydrostaticEq}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where {
+\begin_inset Formula $p_{i},T_{a,i}$
+\end_inset
+
+} are the values of air pressure and temperature for the 
+\begin_inset Formula $i$
+\end_inset
+
+-th measurement and 
+\begin_inset Formula $\delta p_{i}$
+\end_inset
+
+ is the change in pressure for the 
+\begin_inset Formula $i$
+\end_inset
+
+-th step, during which the geometric altitude changes by 
+\begin_inset Formula $\delta z_{i}$
+\end_inset
+
+.
+ This equation can be rearranged to obtain an estimate of the temperature:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+T_{a,i}=-\frac{g\,}{R_{a}}\frac{\delta z_{i}}{\delta\ln p_{i}}\label{eq:Tfromdzdp}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The altitude change 
+\begin_inset Formula $\delta z_{i}$
+\end_inset
+
+is provided with high accuracy by GPS measurements: for a climb rate of
+ 10 m/s, measurement accuracy of 1% in derived temperature requires at least
+ 1% accuracy in the measurement of the 1-s change, or accuracy of 0.1 m.
+ To determine the temperature to 0.1% (as required for a typical error of
+ about 0.3
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C), the altitude change must be measured to 1 cm.
+ The accuracy approaches this for differential measurements, but a better
+ approach is to use longer intervals so that the altitude difference is
+ greater -- perhaps 10 s or more.
+ The requirement is more stringent on the measurement of pressure.
+ In 1 s at 10 m/s climb, the pressure change is less than 1 mb, and it seems
+ likely that even differences in pressure cannot be measured confidently
+ to better than 0.05 mb, so this would introduce an error of >5% in the deduced
+ (absolute) temperature.
+ This is inadequate because it leads to errors in the temperature of >13
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ Instead, either longer intervals are needed or many measurements must be
+ averaged.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+C-130:
+\end_layout
+
+\begin_layout Standard
+About 30 min of flight during flight #8 of IDEAS-4 (2309-2341) was devoted
+ to repeated climbs and descents, so there are about 1800 measurements and
+ it might be expected that the standard error in the determination of temperatur
+e from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Tfromdzdp"
+
+\end_inset
+
+) could be reduced by 
+\begin_inset Formula $\sqrt{1800}=42,$
+\end_inset
+
+ or to around 0.5
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, by this procedure.
+ Alternately, a 
+\begin_inset Quotes eld
+\end_inset
+
+mean
+\begin_inset Quotes erd
+\end_inset
+
+ temperature between two levels can be determined from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Tfromdzdp"
+
+\end_inset
+
+); for this flight segment, climbs were repeated from about 12-16000 ft,
+ or over a pressure range of about 100 mb.
+ An uncertainty of 0.1 mb in pressure leads to about an uncertainty of 0.1%
+ or, in absolute temperature, an uncertainty of about 0.3
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C in the mean temperature between the layers.
+ It should therefore be possible to test the temperature measurements with
+ about this level of confidence.
+\end_layout
+
+\begin_layout Standard
+To test this, three sums were used between different flight levels:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{1}=\sum_{i}\frac{R_{a,i}}{g_{i}}\ln\left(\frac{p_{i}}{p_{i-1}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{2}=\sum_{i}(z_{i}-z_{i-1})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{3}=\sum_{i}\frac{z_{i}-z_{i-1}}{T_{m,i}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $R_{a,i}$
+\end_inset
+
+ and 
+\begin_inset Formula $g_{i}$
+\end_inset
+
+ are respectively the gas constant (adjusted for humidity) and the acceleration
+ of gravity (adjusted for latitude and altitude) and 
+\begin_inset Formula $T_{m,i}$
+\end_inset
+
+ is the temperature in absolute units, corrected for airspeed but based
+ on the measured value.
+ The predicted mean temperature for the layer, weighted by altitude, is
+ given by 
+\begin_inset Formula $T_{p}=-S_{1}/S_{2}$
+\end_inset
+
+, while the corresponding weighted-mean measured temperature is 
+\begin_inset Formula $\overline{T}_{m}=S_{2}/S_{3}$
+\end_inset
+
+.
+ The following table shows some measurements from selected flight legs in
+ IDEAS-4:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Flight Segment
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{p}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\overline{T}_{m}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Delta T$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF05, 205800--211100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-10.98
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-10.37
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.5
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF07, 212510--213300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-6.36
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-5.89
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.47
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF07, 212510--212900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.42
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.15
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF07, 212900--213300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-12.85
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-12.15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.70
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 214500--215300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.9
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 233700--234130
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-6.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-6.3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 234500--235000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-9.4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-8.8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.6
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 235600--240100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-9.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-8.4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1.1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+mean offset
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+excluding the first listed value for RF07 because the next two break this
+ climb segment into two segments
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Formula $T_{p}-\overline{T}_{m}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.55
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The evidence from these climbs then indicates that the temperature is about
+ 0.5
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C too high and that the offset perhaps increases as the temperature decreases.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+For the record: I did try to fit a linear correction using the measurements
+ of RF08, IDEAS-4.
+ A least-squares minimization procedure was used: Find the values of 
+\begin_inset Formula $c_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{1}$
+\end_inset
+
+ that minimize the variance 
+\begin_inset Formula ${\displaystyle \chi^{2}=\sum_{i}}\left(T_{m,i}+c_{0}+c_{1}T_{m,i}-T_{a,i}\right)^{2}$
+\end_inset
+
+.
+  However, the 1-s values were so variable that the attempt to calculate
+ fite coefficients led to a singular inversion, which presumably arose from
+ the large numbers entering the fit.
+ It may be possible to return to this, but the preceding evidence suggested
+ that the temperature measurements are approximately within expected errors
+ so I didn't pursue this for the C-130.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+GV:
+\end_layout
+
+\begin_layout Standard
+A similar approach can be taken for the GV, with promise of a larger range
+ of calibration points because of the large altitude changes present on
+ many of the flights.
+ However, because of the existence of many flights with altitude changes
+ (e.g., from HIPPO), it was decided to take a different approach in an attempt
+ to determine a polynomial-fit correction to the temperature via minimization
+ of the error between actual altitude changes and those predicted from integrati
+on of the hydrostatic equation.
+ The procedure used was as follows:
+\end_layout
+
+\begin_layout Enumerate
+Calculate new data files that have corrected values of pressure and dynamic
+ pressure, Mach number, and temperature based on the fits that give 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ and 
+\begin_inset Formula $\Delta q$
+\end_inset
+
+.
+ In addition, add the altitude variable 
+\begin_inset Quotes eld
+\end_inset
+
+ALTV
+\begin_inset Quotes erd
+\end_inset
+
+ described in a separate memo.
+\end_layout
+
+\begin_layout Enumerate
+Construct 
+\begin_inset Quotes eld
+\end_inset
+
+R
+\begin_inset Quotes erd
+\end_inset
+
+ data files that have the preceding variables and in addition include EDPC
+ (for calculation of the humidity-adjusted specific heats), LATC (for calculatio
+n of the latitude-adjusted acceleration of gravity), GGALT (as a backup
+ to ALTC), TASX (for validation that the aircraft is above flight speeds
+ where the flaps might be extended), and a total temperature measurement
+ like TTHR1.
+ Include also DVALUE measurements, for information on the horizontal pressure
+ gradient as explained below.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Use the 
+\begin_inset Quotes eld
+\end_inset
+
+R
+\begin_inset Quotes erd
+\end_inset
+
+ routine 
+\begin_inset Quotes eld
+\end_inset
+
+optim
+\begin_inset Quotes erd
+\end_inset
+
+ to minimize a 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ function defined as the difference between the predicted and measured altitude,
+ where the predicted altitude is determined by integration of the hydrostatic
+ equation in this form (with 
+\begin_inset Formula $T_{t}$
+\end_inset
+
+ the temperature in 
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+, 
+\begin_inset Formula $T_{0}=273.15$
+\end_inset
+
+, and 
+\begin_inset Formula $\{a_{0},a_{1},a_{2},...\}$
+\end_inset
+
+ fit coefficients used to minimize the value of 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+: 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\chi^{2}=\sum_{i}(h_{i}-Z_{i})^{2}\label{eq:ChiSq Equation}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+h_{i}=h_{i-1}-\frac{R_{a}}{g}\ln\frac{p_{i}}{p_{i-1}}(f(T_{t})+T_{0})\label{eq:AltitudeChangeEquation}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f(T_{t})=T_{t}+a_{0}+a_{1}T_{t}+a_{2}T_{t}^{2}+...
+\]
+
+\end_inset
+
+The vertical integration will match the pressure change only if the atmosphere
+ is horizontally homogeneous.
+ If not, the results will be biased as the fit attempts to compensate for
+ horizontal gradients.
+ This can introduce a serious error into the minimization results.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+To consider how serious this problem is, it is useful to assess how a pressure
+ gradient will affect the results.
+ Suppose the pressure gradient along the flight path is 
+\begin_inset Formula $dp/ds=G_{p}$
+\end_inset
+
+ .
+ Then there will be a contribution to the pressure change over a period
+ 
+\begin_inset Formula $\Delta T$
+\end_inset
+
+ not associated with an altitude change, of magnitude 
+\begin_inset Formula $G_{p}V\Delta T$
+\end_inset
+
+, arising just from the pressure gradient, so in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:AltitudeChangeEquation"
+
+\end_inset
+
+) the pressure ratio must be modified to be 
+\begin_inset Formula $(p_{i}-G_{p}V)/p_{i-1}$
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+Fortunately, there is a way to measure the horizontal pressure gradient
+ because it will be reflected in the change in DVALUE.
+ For example, in level flight the change in DVALUE will measure the pressure
+ gradient; similarly, in a climb, the change in DVALUE can be compared to
+ that expected for the measured temperature vs that of a standard atmosphere,
+ so that also can be used as a measure of the pressure gradient.
+ For horizontal or nearly horizontal motion (e.g., along pressure surfaces),
+ 
+\begin_inset Formula $(dp/ds=-\rho g\, dH_{p}/ds$
+\end_inset
+
+ where 
+\begin_inset Formula $H_{p}$
+\end_inset
+
+ is the height at pressure 
+\begin_inset Formula $p$
+\end_inset
+
+.
+ The change 
+\begin_inset Formula $dH_{p}$
+\end_inset
+
+ is the same as the change in DVALUE.
+ The term needed to correct the pressure used in the hydrostatic equation
+ is thus 
+\begin_inset Formula $G_{p}V\Delta T=-\rho gV\Delta T(dH_{p}/ds)=-\rho g\Delta H_{p}$
+\end_inset
+
+.
+ In a climb, however, the same correction is not possible because a change
+ caused by a horizontal pressure gradient can't be distinguished from one
+ caused by a different temperature along the flight path.
+ Even at 40,000 ft, though, the GV climbs at above 5 m/s, so the ratio of
+ contributions from the horizontal and vertical gradients will be
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{-\rho g\Delta H_{p}}{-\rho g\Delta z}=\frac{V(dH_{p}/ds)}{W}\simeq40\frac{dH_{p}}{ds}
+\]
+
+\end_inset
+
+For example, an upper limit to the horizontal height gradient might be 10
+ m/100 km or <10
+\begin_inset Formula $^{-4}$
+\end_inset
+
+; most level flight segments in the HIPPO flights show less than this gradient.
+ In this case the vertical gradient would be changed by about 0.004, and
+ a temperature change of around 1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C would be required to produce the same change in the gradient.
+ At this level of effect, it seems reasonable to expect that the measurements
+ will tend to average toward the correct answer, especially if repeated
+ climbs and descents are flown in the same direction so that the effects
+ of the horizontal pressure gradient on climbs and descents tend to cancel.
+ However, if all points including those from level legs are included, the
+ trend that will be present in the horizontal gradient for flights that
+ do not return to the starting base can easily be large enough to bias the
+ deduced temperature by 
+\begin_inset Formula $1^{\circ}\mathrm{C}$
+\end_inset
+
+ or so.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+There are several steps that can be taken to compensate for the horizontal
+ pressure gradient:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Use only periods when the climb rate exceeds some threshold (e.g., 2 m/s).
+\end_layout
+
+\begin_layout Enumerate
+Use DVALUE measurements from level flight segments to estimate the gradient.
+\end_layout
+
+\begin_layout Enumerate
+Use a comparison between pressure measured during climb and descent to estimate
+ and remove the gradient.
+ For example, it would be possible to determine the height of fixed pressure
+ surfaces on climb and again on descent, then use the difference as an estimate
+ of the pressure gradient between those locations.
+\end_layout
+
+\begin_layout Enumerate
+Use the whole-flight average DVALUE (perhaps only from level legs) to determine
+ the pressure gradient, and apply a correction.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Use only flights not returning to the takeoff point, to avoid cases where
+ it is not straightforward to determine the gradient.
+\end_layout
+
+\begin_layout Standard
+The strategy that will be tried first is the following: Require fabsf(VSPD)>2.0
+ or some other tolerance.
+ If the results seem adequate and consistent, stop; otherwise, on each climb
+ store values of ALTV at fixed pressures separated by 50 mb, and store the
+ locations (lat/long).
+ Make a 2nd pass that uses the stored values to determine the pressure gradients
+ as a function of time through the flight and adds these to the data files.
+ Then use those horizontal pressure gradients to correct the values entering
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ChiSq Equation"
+
+\end_inset
+
+) via (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:AltitudeChangeEquation"
+
+\end_inset
+
+).
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Subsubsection*
+A LAMS-based Measurement of Temperature:
+\end_layout
+
+\begin_layout Standard
+When (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TfromLAMS"
+
+\end_inset
+
+) is used with the fit to 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORfitQCF"
+
+\end_inset
+
+), the result for temperature is shown as the cyan line in the plot below.
+ The plotted result overlies the yellow line showing the result for ATX
+ but is now independent of that measurement except that the measurement
+ of ATX affects the data on which the fit was based.
+ These results therefore are not independent; indeed, if (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2"
+
+\end_inset
+
+) , shown also in the plot, is used to extimate 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ point-by-point and then (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TfromLAMS"
+
+\end_inset
+
+) is used to calculate the temperature, the result is exactly equal to ATX
+ because then the reference really is just recalculation of the same value
+ that entered the estimation of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ via (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2"
+
+\end_inset
+
+).
+ Once a fit is found to predict 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ from measurements like ADIFR, QCR, and PSFD, then the results become independen
+t of the measurements of ATX, except to the extent that ATX affects the
+ coefficients in the fit.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/IDEAS/ATLAMS1.png
+	lyxscale 50
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Temperature determined from LAMS (ATLAMS, cyan line) overlaid on the standard
+ measurement of temperature, ATX, for a flight segment from IDEAS-4 Flight
+ 8.
+ Also plotted is an estimate of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ (PCORR) determined from LAMS for the pressure measurement PSFD.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The variance is higher in ATLAMS for the flight segment in the boundary
+ layer (near 2100Z) because the flow conditions at the pitot tube and in
+ the air sampled by LAMS tend to have lower coherence at high rate, leading
+ to a noisier estimate of the temperature.
+ Techniques for reducing this variance will be explored in the studies of
+ the GV system that follow.
+\end_layout
+
+\begin_layout Section*
+
+\emph on
+Recommendations
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\emph on
+keep this short - 1/2 page or less
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+For the C-139, use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORfitQCF"
+
+\end_inset
+
+) with the coefficients given above to correct PSFD and PSFDR, and with
+ reversed sign to correct QCF and QCFR, to adjust for errors in the static
+ pressure delivered by the static sources.
+ The same analysis needs to be added for the GV.
+\end_layout
+
+\begin_layout Enumerate
+Consider additional flight data to learn if the indicated offset in temperature,
+ indicating that the measurements are too high by about 0.5
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C and that the offset is perhaps increasing as the temperature decreases,
+ are consistent and should be applied to the measurements.
+\end_layout
+
+\begin_layout Enumerate
+Repeat the temperature-calibration study with GV data from PREDICT, for
+ flights where the LAMS was operational.
+\end_layout
+
+\begin_layout Enumerate
+When evaluating the consistency of reverse-heading maneuvers, compare only
+ UX to test the accuracy of the pressure corrections.
+ Calm air is best, and the maneuvers are best flown along and against the
+ wind, but exactly complementary headings are more important than orientation.
+ Consistency of VY isolates the accuracy of any offset in radome sideslip
+ angle but is also affected by any error, changing between the legs, in
+ heading.
+\end_layout
+
+\begin_layout Enumerate
+Further study is needed of the temperature measurement from LAMS in cloud,
+ because the measurements from IDEAS-4 flight 7, 2200--2230, look suspect.
+\end_layout
+
+\begin_layout Enumerate
+It will be appropriate to consider appropriate filtering applied to the
+ LAMS measurement of temperature to reduce the noise arising from minor
+ incoherence between the dynamic pressure at the pitot tubes and in the
+ volume sensed by LAMS at periods of less than about 3 s.
+\end_layout
+
+\begin_layout Section*
+GV addition:
+\end_layout
+
+\begin_layout Standard
+Reconsider a fit to determine a correction function to the temperature:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{1}=\sum_{i}\frac{R_{a,i}}{g_{i}}\ln\left(\frac{p_{i}}{p_{i-1}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{2}=\sum_{i}(z_{i}-z_{i-1})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{3}=\sum_{i}\frac{z_{i}-z_{i-1}}{T_{m,i}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+{\displaystyle \chi^{2}=\sum_{i}}\left(T_{m,i}+c_{0}+c_{1}T_{m,i}-T_{a,i}\right)^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $T_{m,j}=S_{2}/S_{3}$
+\end_inset
+
+ and 
+\begin_inset Formula $T_{a,j}=-S_{1}/S_{2}$
+\end_inset
+
+.
+ Options are:
+\end_layout
+
+\begin_layout Enumerate
+Limit values entering the fit to ones with some minimum change in z or p,
+ to avoid undefined divide-by-near-zero errors;
+\end_layout
+
+\begin_layout Enumerate
+Select (perhaps automatically) segments with some minimum change in pressure
+ or z, calculate individual sums for those, and then minimize the Chisquare;
+\end_layout
+
+\begin_layout Enumerate
+Low-pass-filter results before calculating sums to avoid problems introduced
+ by small fluctuations;
+\end_layout
+
+\begin_layout Standard
+These all are not optimal, though, because the error characteristics are
+ not represented well by the Chisquare function (I think).
+ A maximum-likelihood solution seems called for, in which the steps might
+ be as follows:
+\end_layout
+
+\begin_layout Enumerate
+Use the integrated hydrostatic equation, with measured temperature adjusted
+ by fit coefficients, to predict the altitude 
+\begin_inset Formula $z_{c}$
+\end_inset
+
+ continuously, starting from some reference time, chosen after flaps/gear
+ are up at the start of the flight (and restarted anytime there are missing
+ values).
+ The equation is:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\delta z_{i}=-\frac{R_{a}T_{a,i}}{g\, p_{i}}\delta p_{i}
+\]
+
+\end_inset
+
+so it is useful to archive the quantity 
+\begin_inset Formula $R_{a}\delta p_{i}/(g\, p_{i})$
+\end_inset
+
+ to use for recalculating 
+\begin_inset Formula $\delta z_{i}$
+\end_inset
+
+ with adjustment of 
+\begin_inset Formula $T_{a,i}$
+\end_inset
+
+.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+newdap
+\begin_inset Quotes erd
+\end_inset
+
+ processing must then include this quantity in data files that can then
+ be translated to 
+\begin_inset Quotes eld
+\end_inset
+
+R
+\begin_inset Quotes erd
+\end_inset
+
+ data files, to be read into the routine that will process a large number
+ of flights simultaneously (perhaps all PREDICT, HIPPO-4, and HIPPO-5 flights
+ -- HIPPO is especially good for this purpose because the flights include
+ many climbs and descents).
+\end_layout
+
+\begin_layout Enumerate
+Use as reference the GPS-measured altitude 
+\begin_inset Formula $z_{GPS}$
+\end_inset
+
+, and find the best fit coefficients that match those measurements throughout
+ the flight.
+\end_layout
+
+\begin_layout Enumerate
+Assume a Gaussian error distribution (probably a better assumption for 
+\begin_inset Formula $z$
+\end_inset
+
+ than for the deduced 
+\begin_inset Formula $T$
+\end_inset
+
+), and calculate a likelihood based on the difference between 
+\begin_inset Formula $z_{GPS}-z_{c}$
+\end_inset
+
+.
+ Use statistical properties of this difference to estimate the appropriate
+ standard deviation to use when calculating the likelihood.
+\end_layout
+
+\begin_layout Enumerate
+Maximize the likelihood by adjusting the fit coefficients.
+\end_layout
+
+\begin_layout Enumerate
+Estimate the uncertainty in the result obtained from the likelihood 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip0.5truein 
+\backslash
+centerline{
+\backslash
+textcolor{blue}{---- END ----}}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this is just a closing line to note end of the memo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+uncomment to include a list of attachments according to the model in the
+ TeX example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional list of people to include in cc list (beyond algorithm committee,
+ who always should get these)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

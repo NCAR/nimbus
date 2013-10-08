@@ -1,0 +1,4 @@
+## command used on other computers to update those to this repository:
+rsync -aiv 72.19.177.194:Research/Instrumentation/Bulletin9 .
+## to get changes on those computers to the repository on this one:
+rsync -aiv . 72.19.177.194:Research/Instrumentation/Bulletin9

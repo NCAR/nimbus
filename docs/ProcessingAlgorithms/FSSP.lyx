@@ -1,0 +1,1358 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Aircraft Algorithm Memo re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\RAFAlgorithmMemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Research Aviation Facility}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Algorithm Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.2truein\leftline{\textcolor{blue}{\textsf{Subject: \the\topicofnote}}}
+\leftline{\textcolor{blue}{\textsf{Al Cooper}}}
+\leftline{\textcolor{blue}{\textsf{\datetoday}}} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding default
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={FSSP / DMT SPP-100 / CDP processing}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+RAFAlgorithmMemo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Background
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+usually, definition of the variable, uses, history, math expressions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The variables related to the FSSP/SPP-100/CDP are: total concentration of
+ droplets, the size distribution in individual size channels, liquid water
+ content, surface area of droplets, mean diameter, effective radius, and
+ liquid water content of cloud water.
+ The dispersion is also calculated but is not always output.
+ 
+\end_layout
+
+\begin_layout Standard
+The measuirements produced by the three probes are slightly different:
+\end_layout
+
+\begin_layout Enumerate
+All produce: counts per channel for size distributions.
+\end_layout
+
+\begin_layout Enumerate
+The FSSP records total strobes and the SPP records total counts and counts
+ of droplets rejected for too-short transit time.
+ The sum of these is equivalent to the total strobes of the FSSP.
+ 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The variable REJAT has the long name 
+\begin_inset Quotes eld
+\end_inset
+
+CDP Average Transit Rejected Particles.
+\begin_inset Quotes eld
+\end_inset
+
+ I think this is poorly named because no average is involved; the quantity
+ provided by the probe is the total count of rejected particles.
+\end_layout
+
+\end_inset
+
+ Reject counts are those pulses with width less than the average.
+ Width is measured as time above the minimum detection threshold, although
+ in some versions of the FSSP there was a possibility of measuring the pulse
+ width instead as the full-width-at-half maximum transit time by means of
+ a delay line.
+ If the electronics of the probe did not introduce any delay and the laser
+ beam were perfectly uniform and circular in cross-section, one would expect
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\bar{w}=2R\intop_{0}^{1}\sqrt{1-x^{2}}dx=\frac{\pi D}{4}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\bar{w}$
+\end_inset
+
+ is the mean transit distance through the beam of diameter 
+\begin_inset Formula $D$
+\end_inset
+
+ and the integration variable is 
+\begin_inset Formula $x=2h/D$
+\end_inset
+
+ where 
+\begin_inset Formula $h$
+\end_inset
+
+ is the height above the beam centerline and so varies from 
+\begin_inset Formula $-D/2$
+\end_inset
+
+ to 
+\begin_inset Formula $D/2$
+\end_inset
+
+.
+ This predicts that the height corresponding to the average transit distance
+ is 0.619
+\begin_inset Formula $D/2$
+\end_inset
+
+ so 61.9% of randomly spaced droplets would pass through the beam so as to
+ produce a transit time as long or longer than the average.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The FSSP produces an 
+\begin_inset Quotes eld
+\end_inset
+
+activity
+\begin_inset Quotes erd
+\end_inset
+
+ related to the time the probe is processing information, while the SPP-100
+ provides 
+\begin_inset Quotes eld
+\end_inset
+
+overflow counts
+\begin_inset Quotes erd
+\end_inset
+
+ indicating how many pulses were missed and not sized or tested for transit
+ time.
+ Practical ways of estimating the dead time for the FSSP can be based on
+ the activity or the measured strobes and 'fast resets' (where the droplet
+ is outside the depth-of-field), but this is more straightforward in the
+ SPP-100 because the droplets passing during overloaded conditions are counted
+ and that count can be used to correct for the fraction that are missed.
+ For the CDP, the claim is that the probe does not suffer losses from overloads.
+\end_layout
+
+\begin_layout Enumerate
+The CDP and SPP-100 provide some additional housekeeping information, including:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+average transit time (CDP only)
+\end_layout
+
+\begin_layout Enumerate
+count of particles rejected for transit time
+\end_layout
+
+\begin_layout Enumerate
+count of particles rejected as outside the depth-of-field
+\end_layout
+
+\begin_layout Enumerate
+other probe characteristics (board temperature, baselines, etc.)
+\end_layout
+
+\end_deeper
+\begin_layout Section*
+Present Processing Code
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+use LyX-code format where needed to include code segments from nimbus
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Processing common to all probes:
+\end_layout
+
+\begin_layout Standard
+The probe serial number is used to look up some probe characteristics and
+ processing conventions.
+ These are included in the netcdf header, so key processing assumptions
+ are available to users.
+\end_layout
+
+\begin_layout Description
+FIRST_BIN Droplet size distributions start at this bin.
+ Bin numbers start at 0, but the first (0th) bin is not used and should
+ be skipped in all cases.
+\end_layout
+
+\begin_layout Description
+LAST_BIN Droplet size distributions end one bin prior to this index.
+ Because the index is zero-based, specifying (e.g.) 16 will cause the last
+ bin to be the bin with index 15, but the index will start at zero unless
+ FIRST_BIN specifies differently.
+\end_layout
+
+\begin_layout Description
+DepthOfField Distance along the laser-beam direction over which droplets
+ will pass the DOF tests.
+\end_layout
+
+\begin_layout Description
+BeamDiameter Diameter of the laser beam used to illuminate droplets.
+ This value is the full diameter without adjustment for the rejection circuitry
+ based on transit time.
+\end_layout
+
+\begin_layout Description
+CellSizes Upper limit of each bin used to size the droplets.
+ The first (zero-index) cell is unused, so the size specified for this bin
+ is the lower limit for the next bin.
+\end_layout
+
+\begin_layout Subsection*
+SPP-100:
+\end_layout
+
+\begin_layout Standard
+The processing proceeds as follows:
+\end_layout
+
+\begin_layout Enumerate
+Get available data: 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+symbol
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m_{i}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+counted droplets in the ith channel
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+TASX
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+true airspeed
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+rejAT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+counted rejects for transit-time less than the average
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+oflow
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+counted rejected pulses arriving during probe overload conditions
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+frange
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+probe sizing range
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+Find sum of counts in all channels between first and last bins used: 
+\begin_inset Formula $M={\displaystyle {\displaystyle \sum_{FIRST\_BIN}^{LAST\_BIN}m_{i}}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Find the sample volume:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+V=\frac{TAS\,*A}{R}\frac{M}{(M+rejAT)}
+\]
+
+\end_inset
+
+ where 
+\begin_inset Formula $A$
+\end_inset
+
+ is the sample area (given by the product of the beam diameter and the depth-of-
+field) and 
+\begin_inset Formula $R$
+\end_inset
+
+ is the sample rate (1 Hz or 10 Hz).
+\end_layout
+
+\begin_layout Enumerate
+Use the sample volume so defined to calculate the concentration in bins
+ between FIRST_BIN and LAST_BIN, setting other values to zero, and use the
+ results to calculate the concentrations 
+\begin_inset Formula $m_{i}$
+\end_inset
+
+ in each bin as well as the summed contributions to the diameter weighted
+ by concentration in each bin, and also the analogous sums of the square
+ of the diameter and the cube of the diameter.
+ For these sums, sizes are used that correspond to the midpoints of the
+ bins, not the size limits that otherwise specify the upper limits of the
+ bins.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+The radar reflectivity factor is expressed in dBz and conversion factors
+ are used to produce the appropriate units.
+\end_layout
+
+\begin_layout Enumerate
+A quantity temporarily called the effective radius is set to the weighted
+ sum of the square of the diameter (dbar2).
+ A weighted sum of the cubes of the diameter (dbar3) is also calculated.
+ The effective radius would then be dbar3/dbar2, but this isn't calculated.
+ Instead, the sums are added to other sums from a probe covering larger
+ sizes (like the 2DC) to obtain values for the effective radius that combine
+ measurements over the full size range.
+ It isn't clear that this is a useful measurement, though, because the combinati
+on lacks good resolution at sizes between the upper size limit of the SPP-100
+ and the lower size limit of the 2DC and so may fail to provide appropriate
+ weighting to measurements in this range.
+\end_layout
+
+\begin_layout Enumerate
+The liquid water content is calculated from the weighted sum of the cube
+ of the diameters, as follows, with appropriate units and conversion factors
+ so as to produce an answer with units of 
+\begin_inset Formula $g/m^{3}$
+\end_inset
+
+: 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\chi=\frac{\pi}{6}\rho_{w}\sum m_{i}d_{i}^{3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The mean diameter is obtained from the weighted sum of the diameters divided
+ by the total concentration in the allowed interval between FIRST_BIN and
+ LAST_BIN.
+ 
+\end_layout
+
+\begin_layout Enumerate
+A 
+\begin_inset Quotes eld
+\end_inset
+
+dispersion
+\begin_inset Quotes erd
+\end_inset
+
+ is calculated from the quotient of the standard deviation in diameter divided
+ by the mean diameter.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Then a correction is applied for the overflow counts, as follows:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+A test requires that the overflow count be less than 5000, otherwise no
+ correction is applied.
+ (I don't understand why this is the case; the overflow count could legitimately
+ be over 5000, and no distinction is made between high-rate and low-rate
+ processing.)
+\end_layout
+
+\begin_layout Enumerate
+Values for 
+\begin_inset Formula $m_{i}$
+\end_inset
+
+and for the total concentration are then multiplied by a factor 
+\begin_inset Quotes eld
+\end_inset
+
+ccc
+\begin_inset Quotes erd
+\end_inset
+
+, which is given by
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+ccc=\frac{M+oflow}{M}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $M$
+\end_inset
+
+ is as defined above and 
+\begin_inset Formula $oflow$
+\end_inset
+
+ is the overflow count.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Subsection*
+FSSP-100 (original version from PMS):
+\end_layout
+
+\begin_layout Standard
+Many aspects of processing for the FSSP-100 are similar to that for the
+ SPP-100, so this section will highlight the differences:
+\end_layout
+
+\begin_layout Enumerate
+The specifications file for the FSSP-100 includes two additional parameters,
+ specifying two time constants 
+\begin_inset Quotes eld
+\end_inset
+
+TAU1
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+TAU2
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The probe also provides variables called 
+\begin_inset Quotes eld
+\end_inset
+
+activity
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+fbmfr
+\begin_inset Quotes erd
+\end_inset
+
+ that are not present for the other probes discussed in this note.
+ The two time constants relate to the time required to process normally
+ sized droplets (TAU1) and droplets that pass outside the depth-of-field
+ and are therefore processed faster (TAU2).
+ These are not used in the standard processing but can be used to refine
+ estimates of concentration to accound for the dead time of the probe.
+ The variables activity and fbmfr are used, as described below.
+ The activity is an estimate of the time the probe is overloaded and unable
+ to process droplets, so it provides an alternate measure of the losses.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+FACT
+\begin_inset Quotes erd
+\end_inset
+
+ was calculated from the following equation in the case of the old interface
+ cards to the FSSP:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray*}
+FACT & = & FSTROB*TAU1+FRESET*TAU
+\end{eqnarray*}
+
+\end_inset
+
+where 
+\begin_inset Quotes eld
+\end_inset
+
+FACT
+\begin_inset Quotes erd
+\end_inset
+
+ is the variable representing activity, FSTROB is the counted strobes (then
+ representing accepted particles and particles rejected for too-short transit
+ time), and FRESET is the counted fast resets (for particles out of the
+ DOF).
+ With the new interface card, the activity is provided directly as a housekeepin
+g measurement.
+ In either case, the correction applied for activity is the following factor
+ that decreases the sample volume and so increases the concentration and
+ other properties derived from the concentration:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+C_{a}^{\prime}=1-0.71\, FACT
+\]
+
+\end_inset
+
+In a similar way, the value used for the beam fraction, 
+\emph on
+fbmfr,
+\emph default
+ is calculated from the ratio of the valid counted particles (
+\begin_inset Formula $M$
+\end_inset
+
+ in the above section on the SPP-100) to the total strobes (which are analogous
+ to the sum of all valid particles plus the velocity-reject particles).
+ As for the SPP-100, 
+\begin_inset Formula $M$
+\end_inset
+
+ is calculated erroneously using only the droplets between FIRST_BIN and
+ LAST_BIN, while FSTROB is a count of all particles accepted or rejected.
+ (These should have corresponding limits.) FSTROB thus serves the role (
+\begin_inset Formula $M+rejAT$
+\end_inset
+
+) does for the SPP-100.
+ The sample volume used to calculate concentrations is then
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+V=\frac{TAS\, A}{R}\frac{M}{(FSTROB)}\, C_{a}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The derived quantities are then calculated as for the SPP-100.
+\end_layout
+
+\begin_layout Enumerate
+No correction analogous to that for 
+\begin_inset Quotes eld
+\end_inset
+
+oflow
+\begin_inset Quotes erd
+\end_inset
+
+ is made because the activity measurement and the factor 
+\begin_inset Formula $C_{a}$
+\end_inset
+
+ account for this effect.
+\backslash
+
+\end_layout
+
+\begin_layout Subsection*
+CDP:
+\end_layout
+
+\begin_layout Standard
+CDP processing is closely related to SPP-100 processing, except that neither
+ the velocity-reject counts nor the overload counts are not used in processing.
+ It is claimed that there are no dead-time losses in the CDP, so it is not
+ clear to me how the overload counts should be used.
+ The probe does provide housekeeping signals for the average transit time,
+ and for counts of particles rejected for transit time or for being outside
+ the depth-of-field.
+ If the velocity-reject circuitry works properly and if the nominal sample
+ area (0.24 mm
+\begin_inset Formula $^{2}$
+\end_inset
+
+) is appropriate with the velocity-reject circuitry operating (i.e., describes
+ the sample area within which the averate transit time exceeds the average),
+ no correction should be necessary for the velocity-reject counts.
+ 
+\end_layout
+
+\begin_layout Standard
+It is useful to check the probe housekeeping values to see if the constant
+ ratios needed to ignore the velocity-reject measurement are indeed present.
+ That will be presented later in this note.
+\end_layout
+
+\begin_layout Section*
+Reasons For Proposing Changes
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+summarize why present code should be changed: weaknesses, errors, improvements,
+ accuracy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+An error was introduced for the PLOWS and ICE-T projects, such that a factor
+ of 0.1 multiplied the velocity-reject counts for the SPP-100 probe.
+ This had a substantial (30-60%) effect on measured concentrations and derived
+ quantities from this probe.
+\end_layout
+
+\begin_layout Enumerate
+Sums for determining the beam fraction for FSSP-100 and SPP-100 probes should
+ cover the same ranges, but these projects and others in the past were processed
+ using the lower and upper bin limits for the valid counts but using all
+ velocity-reject counts.
+ (This is probably a minor effect.)
+\end_layout
+
+\begin_layout Enumerate
+The processing chain for the SPP-100 corrects the concentrations for overload
+ losses 
+\emph on
+after
+\noun on
+ 
+\emph default
+\noun default
+calculations are performed that lead to liquid water content, reflectivity,
+ weighted powers of the diameters, etc.
+ This in effect omits the effect of overloads from those derived quantities.
+\end_layout
+
+\begin_layout Enumerate
+The overload correction should be to introduce a factor of 
+\begin_inset Formula $(M+revAT)/(M+rejAT+oload)$
+\end_inset
+
+ but instead 
+\begin_inset Formula $M/(M+oload)$
+\end_inset
+
+ is being used.
+\end_layout
+
+\begin_layout Enumerate
+Some simplification and clarification of the processing chain is possible.
+\end_layout
+
+\begin_layout Section*
+Analysis
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+this (and all) are optional, may not be needed -- intended for research-level
+ exploration of meaning of the variable or subtleties regarding its calculation,
+ as needed to develop the case for recommendations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Problems
+\end_layout
+
+\begin_layout Enumerate
+The recorded cdp reject counts for projects IDEAS4, HIPPO-4, HIPPO-5, and
+ PLOWS were all zero, so no correction for the reduction in beam fraction
+ caused by the transit-time test could be (or was) made.
+ This is not a problem as long as the beam diameter that was used was appropriat
+ely adjusted for the expected transit-time definition.
+ The CDP manual gives the sample area as nominally 0.24 mm
+\begin_inset Formula $^{2}$
+\end_inset
+
+.
+ The absence of a count for the pulses rejected for too-short transit time
+ makes it impossible to check if this is reasonable.
+\end_layout
+
+\begin_layout Enumerate
+\noindent
+For DC3, there are non-zero values for REJAT and REJDOF for the CDP.
+ However, the values for REJAT are not reasonable numbers.
+ The counts were everywhere at least 
+\begin_inset Formula $(0.5-1)\times10^{7}/s$
+\end_inset
+
+ or more throughout the flights, including periods in clear air, and in
+ real water cloud they increased by typically an additional 
+\begin_inset Formula $2\times10^{7}/s$
+\end_inset
+
+.
+ The total counts from the CDP for the same period were about 
+\begin_inset Formula $0.7\times10^{4}$
+\end_inset
+
+, so the ratio of rejected to accepted pulses was about 300 while this was
+ expected to be about 0.62.
+ The velocity-reject counts are obviously not working and producing far
+ too much noise and values much too high.
+ (For the CDP in DC3, the ratio between total counts and concentration is
+ 36.4 at a TAS of 150 m/s.
+ This is the expected sample volume at this airspeed if the sample area
+ is 0.24.) However, the concentration of more than 2000 cm
+\begin_inset Formula $^{-3}$
+\end_inset
+
+ seems suspiciously high.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename CDPa.png
+	lyxscale 40
+	width 12cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+At the peak, the cloud pass from DC3 discussed in point 2 above had REJDOF
+ about 3.2 times higher than the total counts.
+ 
+\end_layout
+
+\begin_layout Subsection*
+The Velocity-Reject and DOF Fractions:
+\end_layout
+
+\begin_layout Standard
+The theoretical value for the ratio of particles rejected for having too-short
+ transit times to those accepted by the velocity-reject circuitry, for a
+ uniform beam and electronics having response times fast compared to particle
+ transit times through the beam, should be:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F_{1}=\frac{1.-0.619}{0.619}\simeq0.62
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The ratio of particles out of the depth-of-field to those inside, 
+\begin_inset Formula $F_{2}$
+\end_inset
+
+, should also be reasonably consistent.
+ Because the value in ice could be substantially different, it is useful
+ to test this in all-water clouds.
+ The figure below shows an example of a cloud pass from PLOWS (RF04) where
+ the temperature was above 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ 
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename PLOWS_CDP_FSSP.png
+	lyxscale 50
+	width 14cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following are some troublesome aspects of this plot:
+\end_layout
+
+\begin_layout Enumerate
+The concentrations vary over a wide range.
+ At about 002652, the respective concentrations from the CDP, FSSP1, and
+ FSSP2 are 109, 15, and 238 cm
+\begin_inset Formula $^{-3}$
+\end_inset
+
+.
+ The shapes of the plots of concentration vs time are quite different, e.g.,
+ showing structure for the FSSP2 at about 002720 that does not appear in
+ the other two curves.
+ Just before 0026, there is a segment where the FSSP1 concentration is zero
+ while that from the other probes suggests a normal cloud pass.
+\end_layout
+
+\begin_layout Enumerate
+As noted before, the REJAT counts from the CDP are zero throughout this
+ project.
+\end_layout
+
+\begin_layout Enumerate
+The reject fractions for the FSSPs are quite variable but in the core region
+ of the cloud they are reasonably close to the expected value of 0.62.
+ The fractions are higher early in the pass and lower later, although the
+ mean diameter (not shown) is fairly steady.
+ At about 0028, the reject fraction drops to about 0.3 for FSSP1, and it
+ is hard to understand why this should occur when the mean size is steady
+ (at around 10 
+\begin_inset Formula $\mu m$
+\end_inset
+
+).
+ 
+\end_layout
+
+\begin_layout Enumerate
+The variation in the lower plot, and the absence of information from the
+ CDP regarding transit-time rejected droplets, seems to call into question
+ the validity of assuming that the reject fraction is constand in the CDP
+ and can be ignored in processing, although with a different laser it might
+ have different reject characteristics.
+ It will be important to examine this further, though.
+\end_layout
+
+\begin_layout Enumerate
+The respective reject fractions for the CDP, FSSP1, and FSSP2 (not shown)
+ are about 60-100, 1-2, and 3-4.
+ The CDP has been changed since this time, so it will be useful to examine
+ this again in the pending C-130 tests.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vfill
+\backslash
+eject
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\emph on
+Recommendations
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\emph on
+keep this short - 1/2 page or less
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+For SPP-100/FSSP-100 probes, sums for determining the beam fraction should
+ cover the entire range, not the range between cells considered valid for
+ output, because no corresponding test can be applied to the rejected pulses.
+ (This is probably a minor effect.)
+\end_layout
+
+\begin_layout Enumerate
+For the CDP, the processing can continue to ignore the correction for velocity
+ rejection, at least until how this functions in the probe can be determined
+ and fixed.
+ No changes are suggested now.
+\end_layout
+
+\begin_layout Enumerate
+Correct the concentrations for 'oflow' before calculating derived quantities
+ in pms1d_cv.
+ The following defines the correction factor to be applied to the sample
+ volume (for the SPP-100):
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+C'=\frac{M}{(M+rejAT)}\frac{(M+rejAT)}{(M+rejAT+oflow)}=\frac{M}{M+rejAT+oflow}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Change the name of the variable rejAT from 
+\begin_inset Quotes eld
+\end_inset
+
+xxx Average Transit Rejected Particles
+\begin_inset Quotes eld
+\end_inset
+
+ to 
+\begin_inset Quotes eld
+\end_inset
+
+xxx Total Transit-Time-Rejected Particles
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+Suggesed implementation:
+\end_layout
+
+\begin_layout Standard
+SPP-100 and FSSP-100, where 'TACT' is calculated:
+\end_layout
+
+\begin_layout LyX-Code
+    sum all channels (don't limit to FIRST_BIN-LAST_BIN)
+\end_layout
+
+\begin_layout Standard
+SPP-100 only, in the line where 'vol' is calculated:
+\end_layout
+
+\begin_layout LyX-Code
+vol[probeNum] *= (float)(tact[probeNum]) 
+\end_layout
+
+\begin_layout LyX-Code
+     / (float)(tact[probeNum] + rejAT + oflow);
+\end_layout
+
+\begin_layout LyX-Code
+(Then omit this correction where it occurs now, below where pms1d_cv is
+ included.)
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip0.5truein 
+\backslash
+centerline{
+\backslash
+textcolor{blue}{---- END ----}}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this is just a closing line to note end of the memo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+uncomment to include a list of attachments according to the model in the
+ TeX example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional list of people to include in cc list (beyond algorithm committee,
+ who always should get these)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

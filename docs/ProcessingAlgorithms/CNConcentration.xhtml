@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="GENERATOR" content="LyX 2.0.3" />
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<title>LyX Document</title>
+
+<!-- Text Class Preamble -->
+<style type="text/css">
+div.toc {
+margin: 2em 0em;
+border-style: solid;
+border-width: 2px 0px;
+padding: 1em 0em;
+}
+div.tochead { font-size: x-large; font-weight: bold; }
+div.lyxtoc-0 {
+margin: 2em 0em 0em 0em;
+font-size: xx-large;
+font-weight: bold;
+}
+div.lyxtoc-1 {
+margin: 1em 0em 0em 0em;
+font-size: x-large;
+font-weight: bold;
+}
+div.lyxtoc-2 {
+margin: 0em 0em 0em 1em;
+font-size: large;
+font-weight: normal;
+}
+div.lyxtoc-3 { margin: 0em 0em 0em 0.5em; font-size: medium; }
+div.lyxtoc-4 { margin: 0em 0em 0em 0.5em; }
+div.lyxtoc-5 { margin: 0em 0em 0em 0.5em; }
+div.lyxtoc-6 { margin: 0em 0em 0em 0.5em; }
+a.tocentry {
+text-decoration: none;
+color: black;
+}
+a.tocentry:visited { color: black; }
+a.tocarrow {
+font-weight: bold;
+text-decoration: none;
+color: #909090;
+}
+a.tocarrow:visited { color: #C0C0C0; }
+</style>
+
+<!-- Preamble Snippets -->
+
+<!-- Layout-provided Styles -->
+<style type='text/css'>
+div.standard {
+margin-bottom: 2ex;
+}
+div.plain_layout {
+text-align: left;
+
+}
+ol.enumerate {
+margin-top: 0.7ex;
+margin-bottom: 0.7ex;
+margin-left: 3ex;
+text-align: left;
+
+}
+ div.note_comment {
+   display: none;
+ }
+</style>
+</head>
+<body>
+<div class="standard"><a id='magicparlabel-3' />
+<div class="note_comment"><div class="plain_layout"><a id='magicparlabel-7' />
+set topicofnote to topic of note</div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-8' />
+</div>
+
+<div class="standard"><a id='magicparlabel-13' />
+<div class="note_comment"><div class="plain_layout"><a id='magicparlabel-17' />
+Note goes here:</div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-18' />
+ </div>
+
+<div class="standard"><a id='magicparlabel-23' />
+It appears to me that this is how processing is done now:</div>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-24' />
+FCN comes directly from the CN counter. It is from a mass flow meter, so it must be in slpm.</li>
+<li class="enumerate_item"><a id='magicparlabel-25' />
+FCNC is calculated in scFlow, from FCNC=FCN<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <mfrac>
+    <mrow>
+     <msub>
+      <mrow><mi>p</mi>
+      </mrow>
+      <mrow>
+       <mrow><mi>S</mi><mi>T</mi><mi>P</mi>
+       </mrow>
+      </mrow>
+     </msub>
+    </mrow>
+    <mrow>
+     <msub>
+      <mrow><mi>p</mi>
+      </mrow>
+      <mrow>
+       <mrow><mi>C</mi><mi>N</mi>
+       </mrow>
+      </mrow>
+     </msub>
+    </mrow>
+   </mfrac>
+   <mfrac>
+    <mrow>
+     <msub>
+      <mrow><mi>T</mi>
+      </mrow>
+      <mrow>
+       <mrow><mi>C</mi><mi>N</mi>
+       </mrow>
+      </mrow>
+     </msub>
+    </mrow>
+    <mrow>
+     <msub>
+      <mrow><mi>T</mi>
+      </mrow>
+      <mrow>
+       <mrow><mi>S</mi><mi>T</mi><mi>P</mi>
+       </mrow>
+      </mrow>
+     </msub>
+    </mrow>
+   </mfrac>
+  </mrow>
+ </mrow></math>, using the entries in the standard DependTable. (Perhaps this is always changed now?). It is named in the NetCDF files as corrected sample flow, and in the code as vlpm, but it is not clear under what conditions the volume applies. The above equation, if correct, indicates that it is in the CN counter.</li>
+<li class="enumerate_item"><a id='magicparlabel-26' />
+The CN concentration is then calculated by dividing by FCNC, with further correction by a factor <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <mfrac>
+    <mrow>
+     <msub>
+      <mrow><mi>p</mi>
+      </mrow>
+      <mrow><mi>a</mi>
+      </mrow>
+     </msub>
+    </mrow>
+    <mrow>
+     <msub>
+      <mrow><mi>p</mi>
+      </mrow>
+      <mrow>
+       <mrow><mi>C</mi><mi>N</mi>
+       </mrow>
+      </mrow>
+     </msub>
+    </mrow>
+   </mfrac>
+   <mfrac>
+    <mrow>
+     <msub>
+      <mrow><mi>T</mi>
+      </mrow>
+      <mrow>
+       <mrow><mi>C</mi><mi>N</mi>
+       </mrow>
+      </mrow>
+     </msub>
+    </mrow>
+    <mrow>
+     <msub>
+      <mrow><mi>T</mi>
+      </mrow>
+      <mrow><mi>a</mi>
+      </mrow>
+     </msub>
+    </mrow>
+   </mfrac>
+  </mrow>
+ </mrow></math>, amounting to correction of FCNC by the inverse of this factor. The net equation is then equivalent to using the following flow rate <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>F</mi>
+ </mrow></math> in the calculation:
+<br />
+
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>F</mi><mo>=</mo><mi>F</mi><mi>C</mi><mi>N</mi>
+   <mfrac>
+    <mrow>
+     <mrow>
+      <msub>
+       <mrow><mi>p</mi>
+       </mrow>
+       <mrow>
+        <mrow><mi>S</mi><mi>T</mi><mi>P</mi>
+        </mrow>
+       </mrow>
+      </msub>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow>
+        <mrow><mi>C</mi><mi>N</mi>
+        </mrow>
+       </mrow>
+      </msub><mspace width="6px" /><mspace width="6px" />
+      <msub>
+       <mrow><mi>P</mi>
+       </mrow>
+       <mrow>
+        <mrow><mi>C</mi><mi>N</mi>
+        </mrow>
+       </mrow>
+      </msub>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow><mi>a</mi>
+       </mrow>
+      </msub>
+     </mrow>
+    </mrow>
+    <mrow>
+     <mrow>
+      <msub>
+       <mrow><mi>p</mi>
+       </mrow>
+       <mrow>
+        <mrow><mi>C</mi><mi>N</mi>
+        </mrow>
+       </mrow>
+      </msub>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow>
+        <mrow><mi>S</mi><mi>T</mi><mi>P</mi>
+        </mrow>
+       </mrow>
+      </msub><mspace width="6px" /><mspace width="6px" />
+      <msub>
+       <mrow><mi>p</mi>
+       </mrow>
+       <mrow><mi>a</mi>
+       </mrow>
+      </msub>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow>
+        <mrow><mi>C</mi><mi>N</mi>
+        </mrow>
+       </mrow>
+      </msub>
+     </mrow>
+    </mrow>
+   </mfrac><mo>=</mo>
+   <mfrac>
+    <mrow>
+     <mrow>
+      <msub>
+       <mrow><mi>P</mi>
+       </mrow>
+       <mrow>
+        <mrow><mi>S</mi><mi>T</mi><mi>P</mi>
+        </mrow>
+       </mrow>
+      </msub>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow><mi>a</mi>
+       </mrow>
+      </msub>
+     </mrow>
+    </mrow>
+    <mrow>
+     <mrow>
+      <msub>
+       <mrow><mi>T</mi>
+       </mrow>
+       <mrow>
+        <mrow><mi>S</mi><mi>T</mi><mi>P</mi>
+        </mrow>
+       </mrow>
+      </msub>
+      <msub>
+       <mrow><mi>p</mi>
+       </mrow>
+       <mrow><mi>a</mi>
+       </mrow>
+      </msub>
+     </mrow>
+    </mrow>
+   </mfrac>
+  </mrow>
+ </mrow></math></li>
+</ol>
+<div class="standard"><a id='magicparlabel-27' />
+This correctly uses the STP flow rate FCN translated to ambient volumetric flow rate, although the calculation is rather convoluted and confusing. However, along the way the value of FCNC is calculated as the volumetric flow rate <em>in the CN counter</em>, not in density units applicable to ambient conditions. The result is that, even apart from the coincidence correction, CN counts and CN concentration are not related by the output variable FCNC, and the units of FCNC are not useful for further analysis.</div>
+
+<div class="standard"><a id='magicparlabel-28' />
+To me, it would seem preferable to calculate FCNC directly from the above equation for <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>F</mi>
+ </mrow></math>, skipping any dependence on the conditions in the counter, then divide by it in calculating CONCN without further correction. That value should then be FCNC, replacing the quantity now used.</div>
+
+<div class="standard"><a id='magicparlabel-29' />
+</div>
+
+<div class="standard"><a id='magicparlabel-36' />
+</div>
+</body>
+</html>

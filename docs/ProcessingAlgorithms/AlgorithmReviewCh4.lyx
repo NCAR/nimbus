@@ -1,0 +1,390 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass beamerWAC
+\begin_preamble
+\usetheme{WAC}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{footline}[default]{}
+\setbeamertemplate{navigation symbols}{}
+%\setbeamercovered{transparent}
+\setbeamercovered{opaque}
+\setbeamertemplate{enumerate subitem}{(\alph{enumii})}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 2
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{normal text}{bg=yellow!10}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Section 4 
+\end_layout
+
+\begin_layout Subtitle
+\begin_inset Quotes eld
+\end_inset
+
+The State of the Atmosphere
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If you have a file called "institution-logo-filename.xxx", where xxx is a
+ graphic format that can be processed by latex or pdflatex, resp., then you
+ can add a logo by uncommenting the following:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+pgfdeclareimage[height=0.5cm]{institution-logo}{institution-logo-filename}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+logo{
+\backslash
+pgfuseimage{institution-logo}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If you wish to uncover everything in a step-wise fashion, uncomment the
+ following command:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+beamerdefaultoverlayspecification{<+->}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+SOME NEW THINGS:
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Italicized phrase follows each variable heading to provide a short definition
+ of the variable.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Red indicates a live link -- but they are inactive in the annotated file
+ I distributed.
+\end_layout
+
+\begin_layout Enumerate
+Note algorithm blocks: 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Top section: variables and constants used
+\end_layout
+
+\begin_layout Enumerate
+Bottom section: Expression for the algorithm (sometimes equations, sometimes
+ code)
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout BeginFrame
+QUESTIONS TO DISCUSS
+\end_layout
+
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Format of Algorithm Blocks}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Might replace constants by:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $c_{pd},$
+\end_inset
+
+ 
+\begin_inset Formula $R_{d},$
+\end_inset
+
+ 
+\begin_inset Formula $g$
+\end_inset
+
+: See Table of Constants (with link)
+\end_layout
+
+\begin_layout Enumerate
+Do the same for conversion factors?
+\end_layout
+
+\end_deeper
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Terminology}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+\begin_inset Quotes eld
+\end_inset
+
+Total temperature
+\begin_inset Quotes erd
+\end_inset
+
+ -> 
+\begin_inset Quotes eld
+\end_inset
+
+Recovery Temperature
+\begin_inset Quotes erd
+\end_inset
+
+?
+\end_layout
+
+\begin_layout Enumerate
+Why XMACH2? Wouldn't MACHX be more in line with conventions?
+\end_layout
+
+\begin_layout Enumerate
+Why EDPC? vs EDPX?
+\end_layout
+
+\begin_layout Enumerate
+Is it time to change from XUVI to something not starting with X?
+\end_layout
+
+\begin_layout Enumerate
+Use of underscore? Reserve for location like _LMO, vs _VXL?
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+HUMIDITY-BASED TEMPERATURE?
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Distributed draft: primed variables denote that the moisture content of
+ the air is included
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Known to matter in TAS for high humidity (BL) flight
+\end_layout
+
+\begin_layout Itemize
+Have had variable TASHC for this purpose
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Should this be standard?
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+For T, error analysis indicates that max change might be 0.1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C?
+\end_layout
+
+\begin_layout Itemize
+Change is probably not significant -- but it can be in TAS
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+How to incorporate? Not straightforward:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Must avoid bad humidity values that can introduce errors
+\end_layout
+
+\begin_layout Itemize
+coding somewhat involved, with potential for errors
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout EndFrame
+
+\end_layout
+
+\end_body
+\end_document

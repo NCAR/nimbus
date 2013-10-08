@@ -1,0 +1,1591 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass beamer
+\begin_preamble
+\usetheme{Warsaw}
+% or ...
+
+\setbeamercovered{transparent}
+% or whatever (possibly just delete it)
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 2
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+This file is a solution template for:
+\end_layout
+
+\begin_layout Itemize
+Talk at a conference/colloquium.
+ 
+\end_layout
+
+\begin_layout Itemize
+Talk length is about 20min.
+ 
+\end_layout
+
+\begin_layout Itemize
+Style is ornate.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Copyright 2004 by Till Tantau <tantau@users.sourceforge.net>.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+In principle, this file can be redistributed and/or modified under the terms
+ of the GNU Public License, version 2.
+ However, this file is supposed to be a template to be modified for your
+ own needs.
+ For this reason, if you use this file as a template and not specifically
+ distribute it as part of a another package/program, the author grants the
+ extra permission to freely copy and modify this file as you see fit and
+ even to delete this copyright notice.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Merging of Measurements 
+\end_layout
+
+\begin_layout Title
+Using a Complementary Filter
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+Misc.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional, use only with long paper titles
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Al Cooper
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Give the names in the same order as the appear in the paper.
+ 
+\end_layout
+
+\begin_layout Itemize
+Use the 
+\begin_inset Quotes eld
+\end_inset
+
+Institute mark
+\begin_inset Quotes erd
+\end_inset
+
+ inset (
+\family sans
+Insert\SpecialChar \menuseparator
+Custom Insets\SpecialChar \menuseparator
+InstituteMark
+\family default
+) only if the authors have different affiliations.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+Al Cooper
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+- optional, use only with lots of authors
+\end_layout
+
+\begin_layout Plain Layout
+- if there are really lots of authors, use 
+\begin_inset Quotes eld
+\end_inset
+
+Author et al.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Institute
+RAF Algorithm Review
+\end_layout
+
+\begin_layout Date
+09/28/2011
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Either use conference name or its abbreviation.
+ 
+\end_layout
+
+\begin_layout Itemize
+Not really informative to the audience, more for people (including yourself)
+ who are reading the slides online
+\end_layout
+
+\end_inset
+
+
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+Algorithm Review
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional, should be abbreviation of conference name
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If you have a file called "institution-logo-filename.xxx", where xxx is a
+ graphic format that can be processed by latex or pdflatex, resp., then you
+ can add a logo by uncommenting the following:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+pgfdeclareimage[height=0.5cm]{institution-logo}{institution-logo-filename}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+logo{
+\backslash
+pgfuseimage{institution-logo}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If you wish to uncover everything in a step-wise fashion, uncomment the
+ following command:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+beamerdefaultoverlayspecification{<+->}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+BACKGROUND AND PURPOSE
+\end_layout
+
+\begin_layout BeginFrame
+The Objective
+\end_layout
+
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1->{
+\end_layout
+
+\end_inset
+
+Combining Independent Measurements, e.g., of Aircraft Velocity
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+Resulting Variables: {VEWC, VNSC}
+\end_layout
+
+\end_deeper
+\begin_layout ColumnsCenterAligned
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5.5 cm
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2->{
+\end_layout
+
+\end_inset
+
+Inertial reference system (accelerometers and angles)
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+good short-term precision
+\end_layout
+
+\begin_layout Itemize
+good short-period response
+\end_layout
+
+\begin_layout Itemize
+drift over longer periods
+\end_layout
+
+\begin_layout Itemize
+Schuler oscillation that arises from error in initial alignment
+\end_layout
+
+\begin_layout Standard
+\align center
+Variables: {VEW, VNS}
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Column
+5.5 cm
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<3->{
+\end_layout
+
+\end_inset
+
+Global Positioning System (absolute position differentiated)
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+good absolute accuracy (without drift or oscillation)
+\end_layout
+
+\begin_layout Itemize
+less precise for short periods
+\end_layout
+
+\begin_layout Standard
+\align center
+Variables: {GVEW, GVNS}
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout BeginFrame
+Why Correct?
+\end_layout
+
+\begin_layout Subtitle
+Evident Drift In IRS, Some Noise in GPS
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/PREDICT/GPSminusIRS.png
+	lyxscale 50
+	width 8cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+The Approach
+\end_layout
+
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Use the best of each:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+beamerdefaultoverlayspecification{<+->}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+High-pass filter the IRS measurements to preserve short-period response
+\end_layout
+
+\begin_layout Enumerate
+Low-pass filter the GPS measurements to preserve absolute accuracy
+\end_layout
+
+\begin_layout Enumerate
+Add the results
+\end_layout
+
+\end_deeper
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<4>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "60col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $V_{EW}=F_{H}(\{\mathrm{VEW}\})+F_{L}(\{\mathrm{GVEW}\})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $V_{NS}=F_{H}(\{\mathrm{VNS}\})+F_{L}(\{\mathrm{GVNS}\})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Section
+CURRENT IMPLEMENTATION
+\end_layout
+
+\begin_layout BeginFrame
+The Filters 
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1->{
+\end_layout
+
+\end_inset
+
+Desirable Characteristics
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+\begin_inset Quotes eld
+\end_inset
+
+Complementary
+\begin_inset Quotes erd
+\end_inset
+
+:
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ 
+\begin_inset Formula $F_{H}(v)+F_{L}(v)=v$
+\end_inset
+
+ for all frequencies
+\end_layout
+
+\begin_layout Enumerate
+No phase shift (suggests Butterworth filter)
+\end_layout
+
+\begin_layout Enumerate
+recursive, not centered (doesn't require two passes for data processing)
+\end_layout
+
+\end_deeper
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2->{
+\end_layout
+
+\end_inset
+
+The Choice Made (<1990)
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $F_{L}$
+\end_inset
+
+=Three-pole Butterworth low-pass filter, digital
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Bosic, S.
+\begin_inset space ~
+\end_inset
+
+M., 1980: 
+\emph on
+Digital and Kalman filtering : An Introduction to Discrete-Time Filtering
+ and Optimum Linear Estimation, 
+\emph default
+p.
+ 49.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+\begin_inset Formula $F_{H}$
+\end_inset
+
+=(1-
+\begin_inset Formula $F_{L}$
+\end_inset
+
+)
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+Processing Code 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+CONSTANTS
+\series default
+ (dependent on time constant 
+\begin_inset Formula $\tau):$
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+For processing prior to the time of this review, the factor 
+\begin_inset Formula $\sqrt{\frac{3}{2}}$
+\end_inset
+
+ was erroneously 
+\begin_inset Formula $\frac{\sqrt{3}}{2}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $a=\frac{2\pi}{\tau}$
+\end_inset
+
+, 
+\begin_inset Formula $a_{2}$
+\end_inset
+
+=
+\begin_inset Formula $a\, e^{-a/2}(\cos(a{\color{red}\sqrt{\frac{3}{2}}})+\sqrt{\frac{1}{3}}\sin(a{\color{red}\sqrt{\frac{3}{2}}}))$
+\end_inset
+
+, 
+\begin_inset Formula $a_{3}$
+\end_inset
+
+=2
+\begin_inset Formula $e^{-a/2}$
+\end_inset
+
+
+\begin_inset Formula $\cos(a{\color{red}\sqrt{\frac{3}{2}}},$
+\end_inset
+
+ 
+\begin_inset Formula $a_{4}$
+\end_inset
+
+=
+\begin_inset Formula $e^{-a}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout LyX-Code
+// input x = unfiltered signal
+\end_layout
+
+\begin_layout LyX-Code
+// output returned is low-pass-filtered input
+\end_layout
+
+\begin_layout LyX-Code
+// tau determines the cutoff
+\end_layout
+
+\begin_layout LyX-Code
+// zf[] saves values  for recursion
+\end_layout
+
+\begin_layout LyX-Code
+zf[2] = -a*x + a2*zf[5] + a3*zf[3] - a4*zf[4];   
+\end_layout
+
+\begin_layout LyX-Code
+zf[1] = a*x + a4*zf[1];   
+\end_layout
+
+\begin_layout LyX-Code
+zf[4] = zf[3];   
+\end_layout
+
+\begin_layout LyX-Code
+zf[3] = zf[2];   
+\end_layout
+
+\begin_layout LyX-Code
+zf[5] = x;
+\end_layout
+
+\begin_layout LyX-Code
+return(zf[1] + zf[2]); 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Application to Wind Measurements
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Treatment when GPS is bad
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{alerted text}{fg=blue}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+beamerdefaultoverlayspecification{<+-|alert@+>}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Need to extrapolate smoothly to avoid discontinuities in measurements
+\end_layout
+
+\begin_layout Itemize
+The approach:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Fit good data to find 
+\begin_inset Formula $\boldsymbol{\Delta}=$
+\end_inset
+
+
+\begin_inset Formula $\mathbf{(u_{G}-u_{I})}$
+\end_inset
+
+ (e.g., GVEW-VEW): 
+\begin_inset Formula $\Delta=c_{1}+c_{2}\sin(\Omega t)+c_{3}\cos(\Omega t)$
+\end_inset
+
+ -- i.e., Schuler oscillation.
+ Emphasize latest measurements: Let matrix for fit decay exponentially.
+\end_layout
+
+\begin_layout Enumerate
+If GPS data become unavailable, take steps to avoid discontinuities:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+If a valid fit has been accumulated, it is used to continue to correct 
+\begin_inset Formula $\mathbf{u_{i}}$
+\end_inset
+
+ using 
+\begin_inset Formula $\Delta$
+\end_inset
+
+ as above (i.e., 
+\begin_inset Formula $\mathbf{u^{\prime}=\mathbf{u_{i}+\Delta)}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+If no valid fit has been accumulated, let latest correction decay exponentially
+ (336 s).
+ 
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_deeper
+\begin_layout BeginFrame
+More Details (Wind)
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Transitions
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+beamerdefaultoverlayspecification{<+-|alert@+>}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+When GPS reception is lost, with fit accumulated that predicts 
+\begin_inset Formula $\Delta$
+\end_inset
+
+ (the correction to {VEW,VNS} to match {GVEW,GVNS}), and with 
+\begin_inset Formula $\eta=0.997,$
+\end_inset
+
+{VEWC}={VEW}+
+\begin_inset Formula $\Delta^{\prime}$
+\end_inset
+
+ where:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Delta^{\prime}=\eta(\{VEWC\}_{0}-\{GVEW\}_{0})+(1-\eta)\Delta
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\{VEWC\}=\{VEW\}+\Delta^{\prime}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+When GPS reception is regained, return to updating the complementary filter
+ and to using the results from that filter.
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+Choice of Time Constant?
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Guidelines:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Should be where both the GPS and IRS give the same signal, so that details
+ of the filter aren't important
+\end_layout
+
+\begin_layout Itemize
+Once way to make this choice: Examine variance spectra for GPS and IRS variables
+, and coherence:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Want variance spectra to be the same in the region of transition, confirming
+ similar magnitude signals there
+\end_layout
+
+\begin_layout Itemize
+Want coherence = 1 and phase = 0
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout BeginFrame
+Variance Spectra for GGVEW (blue) and VEW (red)
+\end_layout
+
+\begin_layout Subtitle
+Red is VEW, Blue is GGVEW
+\end_layout
+
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+PREDICT Flight 12, flight segment at 10,000 ft
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/PREDICT/MGGVEW.png
+	lyxscale 50
+	width 7cm
+	height 6cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+Coherence GGVEW/VEW
+\end_layout
+
+\begin_layout Subtitle
+PREDICT flight RF12: 10,000 ft flight segment in BL
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Coherence
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/PREDICT/Coherence.png
+	lyxscale 50
+	width 7cm
+	height 5cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+Corresponding Phase: Solidly zero throughout the frequency range.
+\begin_inset Newline newline
+\end_inset
+
+Might shorten to 100 s or less? >20 s appears acceptable.
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+Application to Position
+\end_layout
+
+\begin_layout Subtitle
+(Not Complementary Filter; Simple Exponential Update)
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{The Corrected Position (LATC,LONC):}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{alerted text}{fg=blue}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+beamerdefaultoverlayspecification{<+-|alert@+>}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Initialize 
+\begin_inset Formula $\mathbf{x^{\prime}=x}$
+\end_inset
+
+ at the start of a flight or after any large change.
+\end_layout
+
+\begin_layout Enumerate
+Integrate forward using 
+\begin_inset Formula $\mathbf{u^{\prime}}$
+\end_inset
+
+, which gives good short-term accuracy
+\end_layout
+
+\begin_layout Enumerate
+Adjust to the GPS position exponentially, with about 100-s time constant,
+ using 
+\begin_inset Formula $\mathbf{x^{\prime}}$
+\end_inset
+
++= 
+\begin_inset Formula $\eta$
+\end_inset
+
+(
+\begin_inset Formula $\mathbf{x_{G}-x_{I}}$
+\end_inset
+
+) with 
+\begin_inset Formula $\eta=2\pi/600s$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+For periods when the GPS signal is lost, use a procedure analogous to that
+ for velocity:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Accumulate a fit to the difference (
+\begin_inset Formula $\mathbf{x_{G}-x_{I}}$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Enumerate
+Use that fit to extrapolate through periods when the GPS is unavailable.
+\end_layout
+
+\begin_layout Enumerate
+Handle transitions as for aircraft velocity.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Section
+SUGGESTED CHANGES
+\end_layout
+
+\begin_layout BeginFrame
+Suggested Minor Changes
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5.5 cm
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1->{Suppress Decay of Corrections}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{alerted text}{fg=blue}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+beamerdefaultoverlayspecification{<+-|alert@+>}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+GPS is much more reliable than when this was first implemented.
+\end_layout
+
+\begin_layout Itemize
+If GPS reception is lost and there is no valid fit:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{alerted text}{fg=blue}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+beamerdefaultoverlayspecification{<+-|alert@+>}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+now, the correction decays and the corrected variables move toward the IRS
+ values
+\end_layout
+
+\begin_layout Itemize
+it would be better to retain the last offset in both signals until GPS reception
+ returns
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Column
+5.5 cm
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<5->{Correct An Abrupt Transition}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{alerted text}{fg=blue}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+beamerdefaultoverlayspecification{<+-|alert@+>}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Now, when GPS measure\SpecialChar \-
+ments resume, the corrected measurements for velocity
+ return to the complementary-filtered results abruptly.
+\end_layout
+
+\begin_layout Itemize
+Better: make this transition exponentially as is now done when GPS reception
+ is lost.
+\end_layout
+
+\end_deeper
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<7-|visible@7->{For Both Cases (and Position):}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Calculate target (GPS or fit), and update to that target.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout BeginFrame
+Details
+\end_layout
+
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+See Memo for Details and Implementation Notes
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout EndFrame
+
+\end_layout
+
+\end_body
+\end_document

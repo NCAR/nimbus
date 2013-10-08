@@ -1,5 +1,5 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass article
@@ -7,18 +7,26 @@
 \begin_modules
 hanging
 \end_modules
+\maintain_unincluded_children false
 \language english
+\language_package default
 \inputencoding auto
+\fontencoding global
 \font_roman default
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -26,21 +34,31 @@ hanging
 \use_geometry false
 \use_amsmath 1
 \use_esint 1
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
-\defskip medskip
+\paragraph_indentation default
 \quotes_language english
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
-\author "" 
-\author "" 
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
 \end_header
 
 \begin_body
@@ -50,7 +68,38 @@ RADIATION VARIABLES
 \end_layout
 
 \begin_layout Subsection
-Measurements of Irradiance and Radiometric Temperature
+Measurements of Irradiance
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Irradiance
+\end_layout
+
+\end_inset
+
+ and Radiometric Temperature
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Temperature!radiometric
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Have not done any but cursory changes to this section; also, need to add
+ new sensors
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -66,7 +115,17 @@ RSTx
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+RSTx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -89,53 +148,41 @@ Radiomatric temperature is the equivalent black body temperature measured
 \begin_inset Newline newline
 \end_inset
 
-* a narrow bandwidth, narrow field-of-view (2
-\begin_inset Formula $^{\circ}$
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Itemize
+a narrow bandwidth, narrow field-of-view (2
+\begin_inset Formula $\text{º}$
 \end_inset
 
-) Heimann Model KT-19.85 
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset space \hspace{}
-\length 0.4cm
-\end_inset
-
-precision radiation thermometer.
+) Heimann Model KT-19.85 precision radiation thermometer.
  The wavelength range is 9.6 to 11.5 
 \begin_inset Formula $\mu m$
 \end_inset
 
 .
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Itemize
+a narrow bandwidth, narrow field-of-view (2
+\begin_inset Formula $\text{º}$
 \end_inset
 
-* a narrow bandwidth, narrow field-of-view (2
-\begin_inset Formula $^{\circ}$
-\end_inset
-
-) Barnes Engineering Model 
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset space \hspace{}
-\length 0.4cm
-\end_inset
-
-PRT-5 precision radiation thermometer.
+) Barnes Engineering Model PRT-5 precision radiation thermometer.
  This instrument is now retired.
- 
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset space \hspace{}
-\length 0.4cm
-\end_inset
-
-The spectral bandwidth available was either 8 to 14 
+ The spectral bandwidth available was either 8 to 14 
 \begin_inset Formula $\mu m$
 \end_inset
 
@@ -144,16 +191,16 @@ The spectral bandwidth available was either 8 to 14
 \end_inset
 
 .
- 
+ Its cavity temperature was monitored and recorded as either TCAVB or TCAVT.
+\end_layout
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset space \hspace{}
-\length 0.4cm
-\end_inset
-
-Its cavity temperature was monitored and recorded as either TCAVB or TCAVT.
 \end_layout
 
 \begin_layout Hanging
@@ -169,7 +216,17 @@ TRSTB
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+TRSTB
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -182,15 +239,32 @@ TRSTB
 \begin_inset Newline newline
 \end_inset
 
- This is the temperature of the Heimann radiometer's sensing head, usually
- from RSTB, the primary down-looking instrument.
+ This is the temperature of the sensing head of the Heimann radiometer
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Heimann radiometer
+\end_layout
+
+\end_inset
+
+, usually from RSTB, the primary down-looking instrument.
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
 
 \series bold
-Raw Pyrgeometer Output (W/m
-\begin_inset Formula $^{2}$
+Raw Pyrgeometer Output (W
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-2}$
 \end_inset
 
 ): 
@@ -199,7 +273,17 @@ IRx
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+IRx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -212,8 +296,28 @@ IRx
 \begin_inset Newline newline
 \end_inset
 
-The pyrgeometer, manufactured by Eppley Laboratory, Inc., measures long-wave
- irradiance using a calibrated thermopile.
+A pyrgeometer
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+pyrgeometer
+\end_layout
+
+\end_inset
+
+ manufactured by Eppley Laboratory, Inc.
+ measures 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+radiation!long-wave
+\end_layout
+
+\end_inset
+
+long-wave irradiance using a calibrated thermopile.
  It has a coated glass hemisphere that transmits radiation in a bandwidth
  between 3.5 
 \begin_inset Formula $\mu m$
@@ -226,16 +330,33 @@ The pyrgeometer, manufactured by Eppley Laboratory, Inc., measures long-wave
 .
  It is calibrated at RAF according to procedures specified by Albrecht and
  Cox (1977).
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+need reference
+\end_layout
+
+\end_inset
+
  The pyrgeometers are usually flown in pairs, one up-looking and one down-lookin
 g.
- The x denotes either bottom (B) or top (T).
+ The letter 'x' denotes either bottom (B) or top (T).
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
 
 \series bold
-Corrected Infrared Irradiance (W/m
-\begin_inset Formula $^{2}$
+Corrected Infrared Irradiance (W
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-2}$
 \end_inset
 
 ): 
@@ -244,7 +365,17 @@ IRxC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+IRxC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -260,12 +391,9 @@ IRxC
 Because the pyrgeometer measures net radiation, IRx must be corrected for
  emission from the dome covering the sensor and for emission from the thermopile
  itself.
- The corrected value
-\begin_inset Newline newline
-\end_inset
-
-This is the output of , determined following procedures of Albrecht and
- Cox (1977), is the corrected infrared irradiance.
+ IRxC is the corrected infrared irradiance, determined following procedures
+ of Albrecht and Cox (1977).
+ .
  
 \begin_inset Note Note
 status open
@@ -274,7 +402,17 @@ status open
 I think these references to the Boltzmann constant should be to the Stephan-Bolt
 zmann constant, conventionally 
 \backslash
-sigma.Also, need values for the emissivity and empiracal constant
+sigma.Also, need values for the emissivity and empirical constant
+\end_layout
+
+\end_inset
+
+
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+change 2011
 \end_layout
 
 \end_inset
@@ -290,6 +428,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -297,11 +436,15 @@ height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
-IRx = raw pyrgeometer output (W/m
-\begin_inset Formula $^{2}$
+IRx = raw pyrgeometer output [W
+\begin_inset space \thinspace{}
 \end_inset
 
-)
+m
+\begin_inset Formula $^{-2}$
+\end_inset
+
+]
 \begin_inset Newline newline
 \end_inset
 
@@ -309,7 +452,7 @@ IRx = raw pyrgeometer output (W/m
 \begin_inset Formula $T_{D}$
 \end_inset
 
- = dome temperature
+ = dome temperature [K]
 \begin_inset Newline newline
 \end_inset
 
@@ -329,7 +472,7 @@ sink
 \begin_inset space ~
 \end_inset
 
-the thermopile temperature)
+the thermopile temperature) [K]
 \begin_inset Newline newline
 \end_inset
 
@@ -337,17 +480,7 @@ the thermopile temperature)
 \begin_inset Formula $\epsilon$
 \end_inset
 
- = emissivity of the thermopile (dimensionless)
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-give value
-\end_layout
-
-\end_inset
-
-
+ = emissivity of the thermopile (dimensionless) = 0.986
 \begin_inset Newline newline
 \end_inset
 
@@ -355,14 +488,39 @@ give value
 \begin_inset Formula $\beta$
 \end_inset
 
- = empirical constant dependent on the dome type
+ = empirical constant dependent on the dome type = 5.5
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\sigma$
+\end_inset
+
+ = Stephan-Boltzmann constant
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-give value
+code has 5.6686e-8; the value that follows is from the NIST summary of physical
+ constants
 \end_layout
 
+\end_inset
+
+ = 5.6704
+\begin_inset Formula $\times10^{-8}$
+\end_inset
+
+ W
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-2}$
+\end_inset
+
+K
+\begin_inset Formula $^{-4}$
 \end_inset
 
 
@@ -370,16 +528,33 @@ give value
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
 
-\begin_inset Formula \[
-\mathrm{IRxC}=\mathrm{IRx}-\beta\sigma(T_{D}^{4}-T_{S}^{4})+\epsilon\sigma T_{S}^{4}\]
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathrm{IRxC}=\mathrm{IRx}-\beta\sigma(T_{D}^{4}-T_{S}^{4})+\epsilon\sigma T_{S}^{4}
+\]
 
 \end_inset
 
 
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -398,7 +573,17 @@ SWx
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+SWx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -411,7 +596,27 @@ SWx
 \begin_inset Newline newline
 \end_inset
 
-An Eppley Laboratory, Inc., pyranometer measures short-wave irradiance.
+An Eppley Laboratory, Inc., pyranometer
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+pyranometer
+\end_layout
+
+\end_inset
+
+ measures 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+radiation!short wave
+\end_layout
+
+\end_inset
+
+short-wave irradiance.
  The dome normally used is UG295 glass, which gives wide coverage of the
  solar spectrum (from 0.285 
 \begin_inset Formula $\mu m$
@@ -429,7 +634,7 @@ An Eppley Laboratory, Inc., pyranometer measures short-wave irradiance.
  down-looking.
  They are calibrated periodically at the NOAA Solar Radiation Facility in
  Boulder, Colorado.
- The x denotes either bottom (B) or top (T).
+ The letter 'x' denotes either bottom (B) or top (T).
 \end_layout
 
 \begin_layout Hanging
@@ -445,7 +650,17 @@ SWTC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+SWTC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -465,16 +680,27 @@ The down-welling shortwave irradiance measured by the difference between
 \begin_inset Formula $\pm6^{\circ}$
 \end_inset
 
- in either angle.
+ in either angle, so these measurements should be considered invalid beyond
+ these limits.
  This is the derived output of incoming (down-welling) shortwave irradiance,
  taking into account both solar position (sun angle) and modest variations
  in aircraft attitude (at present, restricted to less than 6
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
  in pitch and/or roll).
  (For more information, refer to Bulletin No.
- 25.)
+ 25.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+add link
+\end_layout
+
+\end_inset
+
+)
 \begin_inset Note Note
 status open
 
@@ -497,7 +723,17 @@ Ultraviolet Irradiance (W/m
 ): UVx
 \series default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+UVx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -524,10 +760,14 @@ A pair of UV radiometer/photometers measure either down-welling (x=T) or
  These units are periodically returned to the Eppley Laboratories for recalibrat
 ion.
  
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
-SOLAR ANGLES
+Solar Angles
 \end_layout
 
 \begin_layout Standard
@@ -546,7 +786,17 @@ The calculations described in this group are used primarily for deriving
 Solar Declination Angle (radians): 
 \bar under
 SOLDE
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+SOLDE
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -565,13 +815,32 @@ SOLDE
 \begin_inset Newline newline
 \end_inset
 
-This is a complex calculation of the astronomical measurement of solar declinati
-on angle, the angular distance of the sun north or south of the earth's
- equator.
- (Positive values are north.) It also makes a complex calculation of solar
- hour angle that takes leap year into account.
- The calculations were adapted by Ron Ruth from a FORTRAN program used by
+This is a calculation of the astronomical measurement of solar declination
+ angle
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+solar declination angle
+\end_layout
+
+\end_inset
+
+, the angular distance of the sun north or south of the earth's equator.
+ (Positive values are north.) To obtain this, the solar hour angle is calculated
+ (taking leap years into account).
+ The calculations were adapted by Ron Ruth from an algorithm developed by
  Lutz Bannehr.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+need comment on documentation here...
+\end_layout
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -586,6 +855,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -598,10 +868,20 @@ time = day number (corrected for leap year) since 1 January 1980
 \end_inset
 
 theta = coarse solar time (radians)
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+how do we get this?
+\end_layout
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-g = equation-of-time term for calculating declination (radians)
+gg = equation-of-time term for calculating declination (radians)
 \begin_inset Newline newline
 \end_inset
 
@@ -614,24 +894,35 @@ eps = equation-of-time term for calculating declination (radians)
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
 
 \end_layout
 
 \begin_layout LyX-Code
-g = -0.031271 - (4.53963e-7 time) + theta
+gg = -0.031271 - (4.53963e-7 time) + theta
 \end_layout
 
 \begin_layout LyX-Code
-el = 4.900968 + (3.67474e-7 time) +
+el = 4.900968 + (3.67474e-7 time) 
 \end_layout
 
 \begin_layout LyX-Code
-{[0.033434 - (2.3e-9 time)] sin(g)} +
+     + {[0.033434 - (2.3e-9 time)] sin(gg)} 
 \end_layout
 
 \begin_layout LyX-Code
-[0.000349 sin(2 g) + theta]
+     + [0.000349 sin(2 gg) + theta]
 \end_layout
 
 \begin_layout LyX-Code
@@ -653,6 +944,10 @@ SOLDE = asin {sel sin(eps)}
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -664,7 +959,17 @@ SOLZE
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+SOLZE
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -677,8 +982,18 @@ SOLZE
 \begin_inset Newline newline
 \end_inset
 
-This is the astronomical measurement of solar zenith angle, the angle from
- zenith to the sun, complementary to the sun's elevation angle:
+This is the astronomical measurement of solar zenith angle
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+solar zenith angle
+\end_layout
+
+\end_inset
+
+, the angle from zenith to the sun, complementary to the sun's elevation
+ angle:
 \begin_inset Newline newline
 \end_inset
 
@@ -693,6 +1008,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -713,7 +1029,18 @@ SOLDE = solar declination angle (radians)
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
 
 \end_layout
 
@@ -728,6 +1055,10 @@ SOLZE = asin {sin(lat) sin(SOLDE)
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -739,7 +1070,17 @@ SOLAZ
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+SOLAZ
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -752,9 +1093,18 @@ SOLAZ
 \begin_inset Newline newline
 \end_inset
 
-This is the astronomical measurement of solar azimuth angle, the angular
- distance between due south and the projection of the line of sight to the
- sun on the ground.
+This is the astronomical measurement of solar azimuth angle
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+solar azimuth angle
+\end_layout
+
+\end_inset
+
+, the angular distance between due south and the projection of the line
+ of sight to the sun on the ground.
  A positive solar azimuth angle indicates a position east of south (i.e.,
  morning).
 \begin_inset Newline newline
@@ -771,6 +1121,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "95text%"
 special "none"
 height "1in"
@@ -791,7 +1142,18 @@ SOLZE = solar zenith angle (radians)
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
 
 \end_layout
 
@@ -817,7 +1179,17 @@ SOLEL
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+SOLEL
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -830,8 +1202,17 @@ SOLEL
 \begin_inset Newline newline
 \end_inset
 
-This is the astronomical measurement of solar elevation angle, describing
- how high the sun appears in the sky.
+This is the astronomical measurement of solar elevation angle
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+solar elevation angle
+\end_layout
+
+\end_inset
+
+, describing how high the sun appears in the sky.
  The angle is measured between an imaginary line between the observer and
  the sun and the horizontal plane on which the observer is standing.
  The altitude angle is negative when the sun drops below the horizon.
@@ -849,6 +1230,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "95text%"
 special "none"
 height "1in"
@@ -861,7 +1243,18 @@ SOLZE = solar zenith angle (radians)
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
 
 \end_layout
 

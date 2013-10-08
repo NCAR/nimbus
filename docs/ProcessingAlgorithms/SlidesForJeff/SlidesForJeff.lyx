@@ -1,0 +1,5670 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass beamerWAC
+\begin_preamble
+\usetheme{WAC}
+% or ...
+%\setbeamertemplate{headline}{}
+\setbeamertemplate{footline}[default]{}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercovered{opaque}
+% or whatever (possibly just delete it)
+\setbeamertemplate{enumerate subitem}{(\alph{enumii})}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 2
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{normal text}{bg=yellow!10}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+setbeameroption{show notes}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Calibrations Based On 
+\begin_inset Newline newline
+\end_inset
+
+A Laser Air Motion Sensing System
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+LAMS Applications
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional, use only with long paper titles
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Al Cooper
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Give the names in the same order as the appear in the paper.
+ 
+\end_layout
+
+\begin_layout Itemize
+Use the 
+\begin_inset Quotes eld
+\end_inset
+
+Institute mark
+\begin_inset Quotes erd
+\end_inset
+
+ inset (
+\family sans
+Insert\SpecialChar \menuseparator
+Custom Insets\SpecialChar \menuseparator
+
+\lang american
+InstituteMark
+\family default
+\lang english
+) only if the authors have different affiliations.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+Al Cooper
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+- optional, use only with lots of authors
+\end_layout
+
+\begin_layout Plain Layout
+- if there are really lots of authors, use 
+\begin_inset Quotes eld
+\end_inset
+
+Author et al.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip2.5cm
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/cooperw/Documents/Work/Images/GVHIAPERPhoto.jpg
+	lyxscale 10
+	scale 10
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hskip6cm
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/cooperw/Documents/Work/Images/Picture1.jpg
+	lyxscale 7
+	scale 7
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Institute
+\begin_inset Graphics
+	filename /home/cooperw/Documents/Work/Images/EOLlogo.jpg
+	lyxscale 5
+	scale 7
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+NCAR EOL
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Date
+January 17 2012
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Either use conference name or its abbreviation.
+ 
+\end_layout
+
+\begin_layout Itemize
+Not really informative to the audience, more for people (including yourself)
+ who are reading the slides online
+\end_layout
+
+\end_inset
+
+
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional, should be abbreviation of conference name
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout NoteItem
+example note
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If you have a file called "institution-logo-filename.xxx", where xxx is a
+ graphic format that can be processed by latex or pdflatex, resp., then you
+ can add a logo by uncommenting the following:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+pgfdeclareimage[height=0.5cm]{institution-logo}{institution-logo-filename}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+logo{
+\backslash
+pgfuseimage{institution-logo}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+pgfdeclareimage[height=0.5cm]{institution-logo}{/home/cooperw/Documents/Work/NSFR
+eviewTalk/EOLlogo}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+logo{
+\backslash
+pgfuseimage{institution-logo}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The following causes the table of contents to be shown at the beginning
+ of every subsection.
+ Delete this, if you do not want it.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+AtBeginSubsection[]{
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\backslash
+frame<beamer>{ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\backslash
+frametitle{Outline}   
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\backslash
+tableofcontents[currentsection,currentsubsection] 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  }
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If you wish to uncover everything in a step-wise fashion, uncomment the
+ following command:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+beamerdefaultoverlayspecification{<+->}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{alerted text}{fg=red}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Preface
+\end_layout
+
+\begin_layout BeginFrame
+SOME RECENT ALGORITHM CHANGES
+\end_layout
+
+\begin_layout FrameSubtitle
+Part of a Comprehensive Review of Data Processing 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-0.3cm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout ColumnsTopAligned
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5.5 cm
+\end_layout
+
+\begin_layout Enumerate
+Altitude Calculations
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Pressure altitude
+\end_layout
+
+\begin_layout Enumerate
+Combining GPS and IRS measurements
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Wind Processing
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Complementary-Filter Combination, GPS and IRS
+\end_layout
+
+\begin_layout Enumerate
+
+\color red
+Calibration using a laser air motion sensing system
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset Quotes eld
+\end_inset
+
+King
+\begin_inset Quotes erd
+\end_inset
+
+ liquid water content
+\end_layout
+
+\begin_layout Enumerate
+
+\color red
+Pressure corrections via a laser air motion sensor
+\end_layout
+
+\begin_layout Column
+5.5 cm
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+[]
+\backslash
+setcounter{enumi}{4}
+\backslash
+vskip-0.8cm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Changes related to humidity
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+The Murphy-Koop equation for equilibrium vapor pressure
+\end_layout
+
+\begin_layout Enumerate
+Correcting chilled-mirror hygrometers for the pressure in the housing
+\end_layout
+
+\begin_layout Enumerate
+Humidity corrections to airspeed
+\end_layout
+
+\begin_layout Enumerate
+Dew point inversion from vapor pressure
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Studies of equivalent potential temperature (esp.the equation of Davies-Jones,
+ 2009)
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+THE LASER AIR MOTION SENSING SYSTEM
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+8 cm
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename LAMSfromSpulerEtAl.png
+	lyxscale 50
+	width 8cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Column
+3.0 cm
+\end_layout
+
+\end_deeper
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2->
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+6 cm
+\end_layout
+
+\begin_layout Column
+5 cm
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-7cm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Basic System Described On Last Visit:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Coherent Doppler measurement
+\end_layout
+
+\begin_layout Itemize
+Remote sensing in undisturbed air
+\end_layout
+
+\begin_layout Itemize
+An absolute measurement (accuracy
+\begin_inset Formula $\lesssim$
+\end_inset
+
+0.1 m/s)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $V_{LAMS}\Rightarrow q$
+\end_inset
+
+, dynamic pressure
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-0.3cm 
+\backslash
+fcolorbox{black}{yellow!20}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 1
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\size footnotesize
+Spuler, S.
+ M., D.
+ Richter, M.
+ P.
+ Spowart, and K.
+ Rieken, 2011: Optical fiber-based laser remote sensor for airborne measurement
+ of wind velocity and turbulence.
+ Applied Optics, 50, 842-851.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+BASIS FOR THE APPROACH
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{alerted text}{fg=blue}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5.5 cm
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-0.3cm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Steps:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|alert@+|visible@+->
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $p_{t}=p+q$
+\end_inset
+
+ is accurate
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|alert@+|visible@+->
+\end_layout
+
+\end_inset
+
+Errors in 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $q$
+\end_inset
+
+ arise from error at static sources
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|alert@+,8,9|visible@+->
+\end_layout
+
+\end_inset
+
+Find 
+\begin_inset Formula $\Delta q$
+\end_inset
+
+ required to match LAMS; hence 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|alert@+|visible@+->
+\end_layout
+
+\end_inset
+
+Refinements for accuracy
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|alert@+,8,9|visible@+->
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ is a function of measured quantities like 
+\begin_inset Formula $p_{m}$
+\end_inset
+
+, 
+\begin_inset Formula $q_{m}$
+\end_inset
+
+, 
+\begin_inset Formula $\alpha_{m}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|alert@+,10|visible@+->
+\end_layout
+
+\end_inset
+
+Flight maneuvers: checks and to calibrate 
+\begin_inset Formula $T$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|alert@+,11|visible@+->
+\end_layout
+
+\end_inset
+
+Use LAMS with the above results to measure 
+\begin_inset Formula $T$
+\end_inset
+
+ directly.
+\end_layout
+
+\end_deeper
+\begin_layout Column
+5.5 cm
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $p_{t}$
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $p_{t}$
+\end_inset
+
+=total pressure, 
+\begin_inset Formula $p$
+\end_inset
+
+=static, 
+\begin_inset Formula $q=$
+\end_inset
+
+dynamic
+\end_layout
+
+\begin_layout Itemize
+pitot tube insensitive to flow angle (<0.1%)
+\end_layout
+
+\begin_layout Itemize
+orientation removes normal offset
+\end_layout
+
+\begin_layout Itemize
+redundant measurements 
+\begin_inset Formula $\Rightarrow$
+\end_inset
+
+consistency
+\end_layout
+
+\begin_layout Itemize
+still, an assumption
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Graphics
+	filename Pq.png
+	lyxscale 50
+	width 6cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Calibrating $q$ then calibrates $p$}%
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Spuler, S.
+ M., D.
+ Richter, M.
+ P.
+ Spowart, and K.
+ Rieken, 2011: Optical fiber-based laser remote sensor for airborne measurement
+ of wind velocity and turbulence.
+ Applied Optics, 50, 842-851.
+ 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Consequences}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $q$
+\end_inset
+
+ are the measured quantities
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+plumbing: 
+\begin_inset Formula $q$
+\end_inset
+
+ is difference, 
+\begin_inset Formula $q=p_{t}-p$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+therefore 
+\begin_inset Formula $\Delta p=-\Delta q$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+can predict 
+\begin_inset Formula $q$
+\end_inset
+
+ from LAMS, hence 
+\begin_inset Formula $\Delta q$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+can use 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ to correct 
+\begin_inset Formula $p$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<4>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Adjustments}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+correct because 
+\begin_inset Formula $p$
+\end_inset
+
+ enters the prediction of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+calculate humidity influences on 
+\begin_inset Formula $R_{a}$
+\end_inset
+
+, 
+\begin_inset Formula $C_{p}$
+\end_inset
+
+, 
+\begin_inset Formula $C_{v}$
+\end_inset
+
+, 
+\begin_inset Formula $\gamma=c_{p}/c_{v}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+correct for offset angle of LAMS
+\end_layout
+
+\begin_layout Itemize
+recalculate 
+\begin_inset Formula $T$
+\end_inset
+
+ using corrected pressures
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<5>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Fit Correction to 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $q$
+\end_inset
+
+ given by LAMS:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+use second-by-second prediction of 
+\begin_inset Formula $\Delta q$
+\end_inset
+
+ from LAMS
+\end_layout
+
+\begin_layout Itemize
+try fits like 
+\begin_inset Formula $(\Delta p/p)=a_{0}+a_{1}q+a_{2}(ADIFR/QCR)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+find 
+\begin_inset Formula $\Delta p(measurements)$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<6>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Maneuvers for testing results
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+reverse-heading maneuvers
+\end_layout
+
+\begin_layout Itemize
+climbs and descents to calibrate temperature via integration of the hydrostatic
+ equation
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<7>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+LAMS-based measurement of temperature
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+LAMS provides TAS=
+\begin_inset Formula $v$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $q$
+\end_inset
+
+ determine Mach number 
+\begin_inset Formula $M=v/v_{s}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $v_{s}=\sqrt{\gamma R_{a}T}$
+\end_inset
+
+ so measured 
+\begin_inset Formula $M$
+\end_inset
+
+ and 
+\begin_inset Formula $v$
+\end_inset
+
+ 
+\begin_inset Formula $\Rightarrow$
+\end_inset
+
+
+\begin_inset Formula $T$
+\end_inset
+
+ without reference to a temperature sensor
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<3>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{What 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $q$
+\end_inset
+
+ is required to match LAMS?
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+TAS: depends on 
+\begin_inset Formula $q$
+\end_inset
+
+, 
+\begin_inset Formula $p$
+\end_inset
+
+, 
+\begin_inset Formula $T$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+relatively insensitive to 
+\begin_inset Formula $T$
+\end_inset
+
+ (iterate...)
+\end_layout
+
+\begin_layout Itemize
+find 
+\begin_inset Formula $\Delta q$
+\end_inset
+
+ s.th.
+ 
+\begin_inset Formula $q_{m}+\Delta q$
+\end_inset
+
+, 
+\begin_inset Formula $p_{m}-\Delta q$
+\end_inset
+
+, T gives 
+\begin_inset Formula $v_{\mathrm{LAMS}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<8->
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Results:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|alert@+|visible@+->
+\end_layout
+
+\end_inset
+
+Calibration of dynamic pressure, hence true airspeed, hence longitudinal
+ component of wind 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|alert@+|visible@+->
+\end_layout
+
+\end_inset
+
+Calibration of pressure
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|alert@+|visible@+->
+\end_layout
+
+\end_inset
+
+Calibration of temperature via accurate measurements of pressure + GPS
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|alert@+|visible@+->
+\end_layout
+
+\end_inset
+
+Provide new independent temperature measurement that 
+\begin_inset Formula $should$
+\end_inset
+
+ work in cloud
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_deeper
+\begin_layout Section
+Finding Corrections to Pressure
+\end_layout
+
+\begin_layout Subsection
+The Total Pressure (
+\begin_inset Formula $p+q$
+\end_inset
+
+) 
+\end_layout
+
+\begin_layout BeginFrame
+THE MEASUREMENT OF TOTAL PRESSURE, C-130
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5.2 cm
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-0.3 cm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Basic Measurements, C-130}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "95col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Description
+static
+\begin_inset space ~
+\end_inset
+
+pressure PSFD, PSFRD 
+\end_layout
+
+\begin_layout Itemize
+absolute sensors
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\pm0.1$
+\end_inset
+
+ mb (Parascientific Model 1000)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "95col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Description
+dynamic
+\begin_inset space ~
+\end_inset
+
+pressure QCF, QCRF
+\end_layout
+
+\begin_layout Itemize
+differential sensors, total vs static
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\pm0.05$
+\end_inset
+
+ mb
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Uncover
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<3>
+\backslash
+hyperlink{SkipPoint}{
+\backslash
+beamergotobutton{Skip Equations}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Column
+6.5 cm
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+pitot tube performance
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+typical sensitivity <1% at angles up to 10
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+, 0.2% up to 5
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+mean orientation chosen along expected flow direction, not centerline
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<3>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-4cm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centerline{PSFRD+QCFR=$a_1$(PSFD+QCF)+$a_2$}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+centerline{$a_1$=1.0000, $a_2$=0.10 mb}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/IDEAS/TotalPressure.png
+	lyxscale 50
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-5.5cm 
+\backslash
+hskip1,5cm
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fcolorbox{black}{yellow!40}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "33col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+RMS scatter: 0.04 mb
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Subsection
+Finding 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ using LAMS
+\end_layout
+
+\begin_layout BeginFrame
+THE EQUATIONS
+\end_layout
+
+\begin_layout Standard
+Energy conservation in compressible flow:
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $\frac{v^{2}}{2}+c_{p}T=\mathrm{constant}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For adiabatic compression to stagnation (
+\begin_inset Formula $v=0)$
+\end_inset
+
+, 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+M^{2}=\frac{v^{2}}{\gamma R_{a}T}=\left\{ \left(\frac{2c_{v}}{R_{d}}\right)\left[\left(\frac{p+q}{p}\right)^{R_{a}/c_{p}}-1\right]\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+q=p{\color{red}\left\{ \left(\frac{v^{2}}{2c_{p}T}+1\right)^{c_{p}/R_{a}}-1\right\} }=p{\color{red}\chi}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where the last equality defines 
+\begin_inset Formula $\chi(v,T).$
+\end_inset
+
+ Write in terms of measured quantities 
+\begin_inset Formula $p_{m}=p-\Delta p$
+\end_inset
+
+ and 
+\begin_inset Formula $q_{m}=q-\Delta q$
+\end_inset
+
+ and unknown 
+\begin_inset Formula $\Delta p=-\Delta q$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-0.8cm
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fcolorbox{black}{yellow!40}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "27col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Formula 
+\[
+\Delta p=\frac{q_{m}-p_{m}\chi}{1+\chi}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+HOW TO ADDRESS NEED FOR TEMPERATURE
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5.5 cm
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Need Temperature:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Have 
+\begin_inset Formula $v$
+\end_inset
+
+ from LAMS
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\chi({\color{red}v},{\color{blue}T})=\left\{ \left(\frac{{\color{red}v^{2}}}{2c_{p}{\color{blue}{\color{blue}T}}}+1\right)^{c_{p}/R_{a}}-1\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Not very sensitive: Fractional error in 
+\begin_inset Formula $T$
+\end_inset
+
+ is small
+\end_layout
+
+\begin_layout Itemize
+Use available-processed 
+\begin_inset Formula $T$
+\end_inset
+
+ as the first approximation
+\end_layout
+
+\begin_layout Itemize
+Then, iterate both in calculation and in calibration
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Column
+6 cm
+\end_layout
+
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Determining "PCORR" Function}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fcolorbox{black}{yellow!40}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "50col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Formula 
+\[
+\Delta p=\frac{q_{m}-p_{m}\chi}{1+\chi}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Airspeed from LAMS gives second-by-second estimates of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Can fit those values to get 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ as function of other measure- ments
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout BeginFrame
+REFINEMENTS FOR ACCURACY
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Moist Air Corrections
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+humidity matters at this level of precision
+\end_layout
+
+\begin_layout Itemize
+Use 
+\begin_inset Formula $R_{a}$
+\end_inset
+
+, 
+\begin_inset Formula $c_{p}$
+\end_inset
+
+, 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ adjusted for humidity
+\end_layout
+
+\end_deeper
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Pointing Angle Corrections}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $v_{l}=v\,\cos(\theta)$
+\end_inset
+
+ where 
+\begin_inset Formula $v_{l}$
+\end_inset
+
+ is the speed measured by LAMS
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\cos\theta\simeq\cos(\theta_{1}+\alpha)\cos(\theta_{2}-\beta)$
+\end_inset
+
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $\theta_{1}$
+\end_inset
+
+ is the pointing angle above the longitudinal axis=0.1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\theta_{2}$
+\end_inset
+
+ is the pointing angle to starboard of the longitudinal axis=-0.2
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+if 
+\begin_inset Formula $\alpha=-4^{\circ}$
+\end_inset
+
+,
+\begin_inset Formula $\cos\theta\simeq0.9976$
+\end_inset
+
+ and at 130 m/s 
+\begin_inset Formula $\delta v=0.3$
+\end_inset
+
+ m/s.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Therefore, use 
+\begin_inset Formula $v=v_{l}/\cos(\theta)$
+\end_inset
+
+ in the preceding equation
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Fitting LAMS Predictions
+\end_layout
+
+\begin_layout BeginFrame
+FITS TO 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Candidate Fit Parameters}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+\begin_inset Formula $p$
+\end_inset
+
+: Effects on 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ probably scale with pressure, so fitting functions of the form 
+\begin_inset Formula $\frac{\Delta p}{p}=f(...)$
+\end_inset
+
+ seems appropriate and provided improved fits
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $q$
+\end_inset
+
+ or 
+\begin_inset Formula $q/p$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\alpha$
+\end_inset
+
+ or ADIFR/QCR - no significant dependence found
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\beta$
+\end_inset
+
+ or BDIFR/QCR - no significant dependence found, either 
+\begin_inset Formula $\beta$
+\end_inset
+
+ or 
+\begin_inset Formula $|\beta|$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $M$
+\end_inset
+
+ 
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+PREFERRED FIT, C-130
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-0.3 cm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Best Option?}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\Delta p}{\mathrm{PSFD}}=a_{0}+a_{1}\frac{\mathrm{ADIFR}}{\mathrm{QCR}}+a_{2}\frac{\mathrm{QCF}}{\mathrm{PSFD}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Fit procedure:
+\end_layout
+
+\begin_layout Enumerate
+Determine 
+\begin_inset Formula $a_{1}$
+\end_inset
+
+ by fit to pitch maneuvers
+\end_layout
+
+\begin_layout Enumerate
+Keep 
+\begin_inset Formula $a_{1}$
+\end_inset
+
+ constant and fit for 
+\begin_inset Formula $a_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $a_{2}$
+\end_inset
+
+ using data from all times when LAMS provides a measurement of 
+\begin_inset Formula $v$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Obtain coefficients by separate fits for {PSFD, QCF} and {PSFRD, QCFR}
+\end_layout
+
+\begin_layout Standard
+RMS error vs LAMS measurements: 0.3 mb, 1-Hz measurements.
+\end_layout
+
+\begin_layout Itemize
+(Different sample volumes)
+\end_layout
+
+\begin_layout Itemize
+Mean correction: uncertainty < 0.01 mb
+\begin_inset Newline newline
+\end_inset
+
+(>10,000 measurements)
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+FIT FOR GV DATA
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hypertarget{SkipPoint}{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Representation in terms of Mach number:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{\Delta p}{p}=a_{0}+a_{1}\frac{q}{p}+a_{2}M+a_{3}M^{2}+a_{4}M^{3}\label{eq:PCORforGV}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+no significant dependence on angle of attack, sideslip, or abs(sideslip)
+\end_layout
+
+\begin_layout Itemize
+all three terms in 
+\begin_inset Formula $M$
+\end_inset
+
+ were significant
+\end_layout
+
+\begin_layout Itemize
+resulting RMS of fit to LAMS values: corresponds to RMS in TAS of about
+ 0.3 m/s (but some contribution arises from resolution of LAMS measurement
+ and different locations sensed by LAMS vs the pitot tube)
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+MAGNITUDE OF THE CORRECTION
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+7 cm
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/PREDICT/PCORRhistb.png
+	lyxscale 50
+	height 7cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2|visible@2>{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/PREDICT/PCORRhista.png
+	lyxscale 50
+	height 7cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Column
+4 cm
+\end_layout
+
+\begin_layout Uncover
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1|visible@1>
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fcolorbox{black}{orange!40}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+
+\series bold
+mean difference,
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+corrected-measured:
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+-3.0
+\begin_inset Formula $\pm1.7$
+\end_inset
+
+ mb
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Uncover
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2|visible@2>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Uncover
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fcolorbox{black}{yellow!40}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+
+\series bold
+mean difference,
+\begin_inset Newline newline
+\end_inset
+
+corrected-avionics:
+\series default
+ 
+\begin_inset Newline newline
+\end_inset
+
+-0.13
+\begin_inset Formula $\pm$
+\end_inset
+
+0.15 mb
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Uncover
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fcolorbox{black}{red!20}{
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Uncover
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+RVSM requirement:
+\series default
+ 
+\begin_inset Newline newline
+\end_inset
+
+ca.
+\begin_inset space ~
+\end_inset
+
+25 m or typically 1 mb
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout BeginFrame
+FIT (cyan) vs.
+ LAMS PREDICTION (yellow)
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/IDEAS/PCORfit.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout BeginFrame
+
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5 cm
+\end_layout
+
+\begin_layout Column
+3.5 cm
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-7.0cm 
+\backslash
+fcolorbox{black}{yellow!40}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "90col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\align center
+RMS 
+\begin_inset Formula $\simeq$
+\end_inset
+
+ 0.3 mb, 
+\begin_inset Newline newline
+\end_inset
+
+<0.1 mb above BL
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Column
+4 cm
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+CHANGE FROM STANDARD?
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5 cm
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+PSFW: new calibration
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+mean pressure is about 0.5 mb lower
+\end_layout
+
+\begin_layout Itemize
+low scatter (<0.2 mb) 
+\begin_inset Formula $\Rightarrow$
+\end_inset
+
+ functional dependence is similar
+\end_layout
+
+\end_deeper
+\begin_layout Column
+6 cm
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/IDEAS/DELTAP.png
+	lyxscale 50
+	width 95col%
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout BeginFrame
+COMPARISON OF CORRECTED PSFD and PSFRD
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/IDEAS/PcomparisonR8.png
+	lyxscale 50
+	width 6.5cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+SOURCE OF NOISE?
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5 cm
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Coherence, 
+\end_layout
+
+\begin_layout Plain Layout
+
+TASF vs TAS
+\backslash
+_LAMS}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+boundary layer flight segment
+\end_layout
+
+\begin_layout Itemize
+drops significantly by 5 Hz
+\end_layout
+
+\begin_layout Itemize
+only 0.9 at 0.2 Hz
+\end_layout
+
+\end_deeper
+\begin_layout Column
+6.6 cm
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/IDEAS/COHERENCE.png
+	lyxscale 50
+	width 6.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout BeginFrame
+VARIANCE SPECTRA
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/IDEAS/PSDmerged.png
+	lyxscale 50
+	width 6.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Reverse-Heading Maneuvers to Check Results
+\end_layout
+
+\begin_layout BeginFrame
+REVERSE-HEADING FLIGHT LEGS
+\end_layout
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{GV Flight Legs from PREDICT:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+
+\series bold
+longitudinal
+\begin_inset space ~
+\end_inset
+
+wind
+\series default
+: Should reverse sign for reverse-track leg.
+\begin_inset Newline newline
+\end_inset
+
+For 
+\begin_inset Formula $\theta=$
+\end_inset
+
+heading,
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathrm{V_{Long}}=V_{GPS}\cos(\theta_{G}-\theta)-V_{LAMS}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+18 reverse-heading legs used, at various altitudes
+\end_layout
+
+\begin_layout Itemize
+result: 
+\begin_inset Formula $\Delta=+0.4\pm0.2$
+\end_inset
+
+m m/s, indicating a measurement +0.2 m/s too high
+\end_layout
+
+\begin_layout Itemize
+However, temperature enters this and the evaluation of the values of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ and 
+\begin_inset Formula $\Delta q$
+\end_inset
+
+, so this should be re-visited after the temperature calibration is considered.
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout BeginFrame
+REVERSE-HEADING FLIGHT SEGMENTS
+\end_layout
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Reverse-heading maneuvers flown on flight 5 of IDEAS-4:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Plain Layout
+\noindent
+\align center
+
+\size footnotesize
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="7">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size footnotesize
+Time Interval
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size footnotesize
+UXW
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size footnotesize
+GGTRK
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size footnotesize
+THDG
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size footnotesize
+WDC
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size footnotesize
+WSC
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size footnotesize
+UX
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+220000--230530
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+1.56
+\begin_inset Formula $\pm$
+\end_inset
+
+0.91
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+241
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+242
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+65 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+3.31 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+2.89
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+230700--231200
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+-1.08
+\begin_inset Formula $\pm$
+\end_inset
+
+0.55
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+224
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+1.43
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+-1.47
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+225100--225300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+1.975
+\begin_inset Formula $\pm0.40$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+148
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+149
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+312
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+2.58
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+2.40 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+225500--225700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+0.99
+\begin_inset Formula $\pm0.52$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+328
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+329
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+122
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+1.09 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+1.21
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Test of Accuracy:
+\begin_inset Newline newline
+\end_inset
+
+Longitudinal Wind Should Reverse
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\color black
+Set #1: 
+\begin_inset Formula $\Delta$
+\end_inset
+
+UXW
+\begin_inset Formula $\simeq$
+\end_inset
+
+0.5 m/s (vs.
+ 1.4 m/s, std) 
+\end_layout
+
+\begin_layout Itemize
+
+\color red
+Set #2: 
+\begin_inset Formula $\Delta\mathrm{UXW}\simeq3.0$
+\end_inset
+
+ m/s (vs 3.6 m/s, std)
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Checking Layer Temperatures
+\end_layout
+
+\begin_layout BeginFrame
+CALIBRATING TEMPERATURE USING LAMS
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Integrating the Hydrostatic Equation
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Assumption: absolute pressure is accurate as calibrated, LAMS
+\end_layout
+
+\begin_layout Itemize
+GPS provides acurate measurement of geometric altitude
+\end_layout
+
+\begin_layout Itemize
+Integrate the hydrostatic equation between two pressure levels:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Predicted altitude change depends on the 
+\begin_inset Quotes eld
+\end_inset
+
+mean
+\begin_inset Quotes erd
+\end_inset
+
+ temperature.
+\end_layout
+
+\begin_layout Itemize
+Comparison to a similar 
+\begin_inset Quotes eld
+\end_inset
+
+mean
+\begin_inset Quotes erd
+\end_inset
+
+ of the measurements checks the accuracy of the temperature measurement.
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Checking Temperature Calibration
+\end_layout
+
+\begin_layout BeginFrame
+CALIBRATING TEMPERATURE USING LAMS
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Integrating the Hydrostatic Equation
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Assume that the absolute pressure is accurate as calibrated
+\end_layout
+
+\begin_layout Itemize
+GPS provides acurate measurement of geometric altitude
+\end_layout
+
+\begin_layout Itemize
+Consider Integration of the hydrostatic equation between two pressure levels:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Predicted altitude change depends on the 
+\begin_inset Quotes eld
+\end_inset
+
+mean
+\begin_inset Quotes erd
+\end_inset
+
+ temperature.
+\end_layout
+
+\begin_layout Itemize
+Comparison to a similar 
+\begin_inset Quotes eld
+\end_inset
+
+mean
+\begin_inset Quotes erd
+\end_inset
+
+ of the measurements checks the accuracy of the temperature measurement.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hyperlink{Skip2Point}{
+\backslash
+beamergotobutton{Skip Equations}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+EQUATIONS USED
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Three Sums Are Needed: 
+\begin_inset Formula $S_{1}$
+\end_inset
+
+, 
+\begin_inset Formula $S_{2}$
+\end_inset
+
+, 
+\begin_inset Formula $S_{3}$
+\end_inset
+
+:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\delta p_{i}=-\frac{g\, p_{i}}{R_{a}T_{a,i}}\delta z_{i}\,\,\,\,\,\mathrm{(too\, noisy,\, second-by-second)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{1}=\sum_{i}\frac{R_{a,i}}{g_{i}}\ln\left(\frac{p_{i}}{p_{i-1}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{2}=\sum_{i}(z_{i}-z_{i-1})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{3}=\sum_{i}\frac{z_{i}-z_{i-1}}{T_{m,i}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Then compare prediction ($T_p$) to observed ($T_m$)}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centerline{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $T_{p}=-S_{1}/S_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $\overline{T}_{m}=S_{2}/S_{3}$
+\end_inset
+
+, weighted appropriately
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+RESULTS FOR MEAN TEMPERATURES BETWEEN LAYERS
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-1 cm
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Flight Segment
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{p}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\overline{T}_{m}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Delta T$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF05, 205800--211100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-10.98
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-10.37
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.5
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF07, 212510--213300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-6.36
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-5.89
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.47
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF07, 212510--212900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.42
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.15
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF07, 212900--213300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-12.85
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-12.15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.70
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 214500--215300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.9
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 233700--234130
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-6.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-6.3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 234500--235000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-9.4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-8.8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.6
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 235600--240100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-9.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-8.4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1.1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+mean offset
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+excluding the first listed value for RF07 because the next two break this
+ climb segment into two segments
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Formula $T_{p}-\overline{T}_{m}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color red
+-0.55
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+APPROACH TO TEMPERATURE CALIBRATION/CHECK:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hypertarget{Skip2Point}{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{"HIPPO" Dataset: Numerous climbs and descents, ''pole-to-pole''}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Assume a polynomial correction to 
+\begin_inset Formula $T_{t}$
+\end_inset
+
+ expressed in Celsius::
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+T_{t}=f(T_{m})=T_{m}+a_{0}+a_{1}T_{m}+a_{2}T_{m}^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\chi^{2}=(\Delta h-\Delta z_{GPS})^{2}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\Delta h$
+\end_inset
+
+ is the height difference predicted from the hydrostatic equation:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Delta h=-\frac{R_{a}}{g}\ln\frac{p_{i}}{p_{i-1}}(f(T_{m})+T_{0})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Find the coefficients that minimize this 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ over the 25 flights and >300 climbs or descents from HIPPO circuits 4 and
+ 5.
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+RESULT FOR TEMPERATURE:
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+2.5 cm
+\end_layout
+
+\begin_layout Column
+5.8 cm
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/HIPPO/Tcal2s.png
+	lyxscale 50
+	width 5.8cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Column
+2.5 cm
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+1.5 cm
+\end_layout
+
+\begin_layout Column
+8.6 cm
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-8.7cm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fcolorbox{red}{orange!10}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 1
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+T_{t}=T_{m}-0.817-0.075T_{m}-0.00141T_{m}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip1.3cm 
+\backslash
+hskip5.7cm 
+\backslash
+fcolorbox{blue}{blue!10}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "30text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+\bar under
+Corrections:
+\series default
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+-50C: -0.60C
+\begin_inset Newline newline
+\end_inset
+
+-40C: -0.08C
+\begin_inset Newline newline
+\end_inset
+
+-20C: +0.12C
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \space{}
+\end_inset
+
+
+\begin_inset space \space{}
+\end_inset
+
+ 0C: -0.82C
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \space{}
+\end_inset
+
+ 20C: -2.88C
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Column
+0.5 cm
+\end_layout
+
+\end_deeper
+\begin_layout Section
+LAMS-Based Temperature Measurement
+\end_layout
+
+\begin_layout BeginFrame
+DETERMINING THE MACH NUMBER
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula 
+\[
+M^{2}=\left\{ \left(\frac{2c_{v}}{R_{a}}\right)\left[\left(\frac{p+q}{\mathrm{p}}\right)^{R_{a}/c_{p}}-1\right]\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+LAMS provides a correction 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ to be added to 
+\begin_inset Formula $p$
+\end_inset
+
+ and subtracted from 
+\begin_inset Formula $q$
+\end_inset
+
+ (affecting only the denominator).
+ 
+\end_layout
+
+\begin_layout Itemize
+Measured temperature is not needed (except indirectly as it enters fitting
+ to find 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Itemize
+Once calibrated, the above equation for 
+\begin_inset Formula $M^{2}$
+\end_inset
+
+ can be used to find the temperature, independent of a temperature probe,
+ using only pressure measurements and 
+\begin_inset Formula $v$
+\end_inset
+
+ determined by LAMS:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+T_{LAMS}=v^{2}/(\gamma R_{a}M^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+AN EXAMPLE OF T FROM LAMS
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout OverlayArea
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{11 cm}{6.0 cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1->
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/IDEAS/ATLAMS1.png
+	lyxscale 50
+	width 11cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+4 cm
+\end_layout
+
+\begin_layout Column
+5.5 cm
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-10cm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Noise in the BL
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $v$
+\end_inset
+
+ from LAMS and 
+\begin_inset Formula $q$
+\end_inset
+
+ from pitot tube measure different volumes (cf.
+\begin_inset space ~
+\end_inset
+
+coherence)
+\end_layout
+
+\begin_layout Itemize
+to use this, perhaps should filter 
+\begin_inset Formula $v$
+\end_inset
+
+, 
+\begin_inset Formula $q$
+\end_inset
+
+, or 
+\begin_inset Formula $T_{LAMS}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_deeper
+\end_deeper
+\end_deeper
+\begin_layout Section
+Conclusions (GV)
+\end_layout
+
+\begin_layout BeginFrame
+CONCLUSIONS (GV)
+\end_layout
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Key Results:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+LAMS provides a direct calibration of airspeed.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+[$
+\backslash
+rightarrow$]
+\end_layout
+
+\end_inset
+
+Longitudinal wind after correction:accuracy <0.2 m/s
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+This calibrates dynamic pressure:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+[$
+\backslash
+rightarrow$]
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $q$
+\end_inset
+
+ should be increased by about 3.0 mb on average.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+If total pressure is accurately measured, this calibrates pressure:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+[$
+\backslash
+rightarrow$]
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $p$
+\end_inset
+
+ should be decreased by about 3.0 mb on average.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Accurate pressure supports integration of the hydrostatic equation to calibrate
+ temperature:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+[$
+\backslash
+rightarrow$]
+\end_layout
+
+\end_inset
+
+Results indicate that temperature is accurate to within about 1
+\begin_inset Formula $^{\circ}\mathrm{C}$
+\end_inset
+
+ for T<0
+\begin_inset Formula $^{\circ}\mathrm{C}$
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+It is possible to obtain a new temperature measurement solely from 
+\begin_inset Formula $p$
+\end_inset
+
+, 
+\begin_inset Formula $q$
+\end_inset
+
+, and 
+\begin_inset Formula $v_{LAMS}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout EndFrame
+
+\end_layout
+
+\end_body
+\end_document

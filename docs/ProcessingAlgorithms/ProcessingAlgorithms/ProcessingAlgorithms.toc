@@ -1,0 +1,33 @@
+\select@language {english}
+\contentsline {section}{\numberline {1}Introduction}{5}{section.1}
+\contentsline {section}{\numberline {2}GENERAL INFORMATION}{6}{section.2}
+\contentsline {subsection}{\numberline {2.1}Alphabetical List of Variables }{6}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}System of Units}{6}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Variables Used To Denote Time}{7}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Other Comments On Terminology}{8}{subsection.2.4}
+\contentsline {subsubsection}{\numberline {2.4.1}Variable Names In Equations}{8}{subsubsection.2.4.1}
+\contentsline {subsubsection}{\numberline {2.4.2}Distinction Between Original Measurements and Derived Measurements}{9}{subsubsection.2.4.2}
+\contentsline {subsubsection}{\numberline {2.4.3}Dimensions in Equations}{9}{subsubsection.2.4.3}
+\contentsline {subsection}{\numberline {2.5}Constants Used in Data Processing}{9}{subsection.2.5}
+\contentsline {section}{\numberline {3}THE STATE OF THE AIRCRAFT}{11}{section.3}
+\contentsline {subsection}{\numberline {3.1}Inertial Reference Systems}{11}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Global Positioning Systems}{16}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Other Measurements of Aircraft Altitude}{18}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Combining IRS and GPS Measurements}{21}{subsection.3.4}
+\contentsline {section}{\numberline {4}THE STATE OF THE ATMOSPHERE}{25}{section.4}
+\contentsline {subsection}{\numberline {4.1}General Information On Variable Names}{25}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Pressure, Temperature, and Humidity}{25}{subsection.4.2}
+\contentsline {section}{\numberline {5}WIND}{40}{section.5}
+\contentsline {subsection}{\numberline {5.1}Relative Wind}{40}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Wind Components and the Wind Vector}{43}{subsection.5.2}
+\contentsline {section}{\numberline {6}CLOUD PHYSICS VARIABLES}{45}{section.6}
+\contentsline {subsection}{\numberline {6.1}Measurements of Liquid Water Content}{45}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Sensors of Individual Particles (1-D Probes)}{47}{subsection.6.2}
+\contentsline {subsection}{\numberline {6.3}Hydrometeor Imaging Probes}{53}{subsection.6.3}
+\contentsline {section}{\numberline {7}AIR CHEMISTRY MEASUREMENTS}{54}{section.7}
+\contentsline {section}{\numberline {8}AEROSOL PARTICLE MEASUREMENTS}{57}{section.8}
+\contentsline {section}{\numberline {9}RADIATION VARIABLES}{60}{section.9}
+\contentsline {subsection}{\numberline {9.1}Measurements of Irradiance and Radiometric Temperature}{60}{subsection.9.1}
+\contentsline {subsection}{\numberline {9.2}SOLAR ANGLES}{61}{subsection.9.2}
+\contentsline {section}{\numberline {10}EXPERIMENTAL VARIABLES}{64}{section.10}
+\contentsline {section}{\numberline {11}OBSOLETE VARIABLES}{65}{section.11}

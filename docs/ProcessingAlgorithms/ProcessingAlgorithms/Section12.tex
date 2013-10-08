@@ -1,0 +1,135 @@
+
+\section{AEROSOL PARTICLE MEASUREMENTS}
+
+RAF uses a modified TSI, Inc. Model 3760 condensation nucleus counter\index{condensation nucleus counter|see {CN counter}}\index{CN counter}
+to measure the concentration of particulates in the atmosphere larger
+than about 0.01 $\mu m$ diameter. Individual inlets have been designed
+for each research aircraft that provide approximately isokinetic flow
+at research airspeeds. The CN counter is often used as a stand-alone
+instrument, but it also can be placed downstream of various instruments,
+such as a counterflow virtual impactor or differential mobility analyzer.
+It is useful at altitudes up to about 11km. It operates by condensing
+n-butyl alcohol on the particles as they pass through a cooling/condenser
+tube where supersaturation of a few hundred percent is produced. The
+particles grow large enough to be seen by a laser-diode optical detector,
+and the pulses from tat detector are counted to obtain an estimate
+of the total concentration of aerosol particles. The counter does
+not resolve particle concentration by size; the lower size limit of
+the TSI 3760 is about XXX $\mu m$, and all particles above that size
+enter the measurement of the total concentration.
+
+If large concentrations are encountered, two or more particles may
+be present in the viewing volume at once and will produce only a single
+pulse from the photodetector. This ``coincidence'' error, which
+increases from about 0.6\% at a total concentration of $10^{3}/cm^{3}$to
+about 6\% at $10^{4}$cm$^{-3}$; a correction for these effects of
+coincidence is applied, but for concentrations above about $2\times10^{4}$\,cm$^{-3}$
+effects of coincidence become large enough that the correction introduces
+significant uncertainty in the measurements. 
+
+The variables associated with these measurements of condensation-nucleus
+concentrations are discussed in the remainder of this section.
+\begin{hangparagraphs}
+\textbf{CN Counter Inlet Pressure (mbar): }\textbf{\uline{PCN}}\sindex[var]{PCN}\index{PCN}\\
+PCN is the absolute pressure inside the inlet tube of the instrument,
+as measured by a Heise Model 623 pressure sensor. The measurement
+is used to correct the sample flow rates (FCN and XICN) that are used
+to obtain measurements of concentration.
+
+\textbf{CN Counter Inlet Temperature ($^{\circ}C$): }\textbf{\uline{TEMP1}}\textbf{\sindex[var]{TEMP1}\index{TEMP1},
+}\textbf{\uline{TEMP2}}\sindex[var]{TEMP2}\textbf{\index{TEMP2},
+}\textbf{\uline{CNTEMP}}\sindex[var]{CNTEMP}\index{CNTEMP}\\
+TEMP1, TEMP2 or CNTEMP is the output from a temperature sensor mounted
+on the outside of the sampling tube immediately ahead of the counter.
+The measurement, an approximation to the temperature of the air passing
+through the tube, is used to correct the sample flow rates (FCN and
+XICN).
+
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{Raw CN Counter Sample Flow Rate (slpm): }\textbf{\uline{FCN}}\sindex[var]{FCN}\index{FCN}\\
+\textbf{Corrected CN Counter Sample Flow Rate (vlpm): }\textbf{\uline{FCNC\sindex[var]{FCNC}\index{FCNC}}}%
+\end{minipage}
+
+~~~~~~~~~FCN is the raw sample flow rate in standard liters
+per minute (slpm) measured with a Sierra 830 Mass Flow meter. The
+flow meter measures the flow rate that would apply under ``standard''
+conditions; i.e., pressure of 1013.25 and temperature of $0^{\circ}C$.
+FCNC is the sample flow rate in vlpm (volumetric liters per minute)
+corrected for pressure and temperature.\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+PCN = pressure at the inlet to the CN counter (mb)\\
+TEMP1 = temperature at the inlet of the sample tube ($^{\circ}C$)\\
+$P_{ref}$ = standard reference pressure, 1013.25 mb\\
+$T_{ref}$ = standard reference temperature, 293.26 K \\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+\[
+\mathrm{FCNC=\{FCN\}}\frac{P_{ref}}{\mathrm{\{PCN\}}}\frac{(\{\mathrm{TEMP1\}}+T_{0})}{T_{ref}}
+\]
+%
+\end{minipage}}\\
+
+
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{Raw CN Isokinetic Side Flow Rate (slpm): }\textbf{\uline{XICN}}\sindex[var]{XICN}\index{XICN}\\
+\textbf{Corrected CN Isokinetic Side Flow Rate (vlpm): }\textbf{\uline{XICNC\sindex[var]{XICNC}\index{XICNC}}}%
+\end{minipage}\\
+XICN is the raw isokinetic side flow rate in standard liters per minute
+(slpm) measured with a Sierra 830 Mass Flow meter, and XICNC is that
+flow corrected for pressure and temperature to be the true volumetric
+flow. For isokinetic sampling, the flow rate at the inlet entrance
+needs to equal the true airspeed, and for proper operation the flow
+rate through the CN counter should be at least 1.2 vlpm. A side flow
+of filtered air is added so both of these conditions can be met.\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+PCN = pressure at the inlet to the CN counter (mb)\\
+TEMP1 = temperature at the inlet of the sample tube ($^{\circ}C$)\\
+$P_{r}$ = standard reference pressure, 1013.25 mb\\
+$T_{r}$\sindex[lis]{Tr@$T_{r}$= absolute reference temperature, STP}
+= 293.26 K \\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+\[
+\mathrm{XICNC=\{XICN\}}\frac{P_{r}}{\mathrm{\{PCN\}}}\frac{(\{\mathrm{TEMP1\}}+T_{0})}{T_{r}}
+\]
+%
+\end{minipage}}\\
+
+
+\textbf{TSI CN Counter Output (counts per sample interval); }\textbf{\uline{CNTS}}\sindex[var]{CNTS}\index{CNTS}\\
+CNTS is the raw output count from the TSI,~Inc. 3760 condensation
+cncleus counter. The project-dependent sample rate may be chosen in
+the range from 1--50 Hz. In some unusual cases the counts are divided
+by a selected power of two to keep the counter from overflowing; see
+the project documentation. 
+
+.
+
+\textbf{Condensation Nucleus (CN) Concentration (cm$^{-3}$): }\textbf{\uline{CONCN}}\sindex[var]{CONCN}\index{CONCN}\\
+CONCN is the corrected concentration of condensation nuclei, calculated
+with consideration of the sample rate and corrected for losses caused
+by coincidence: \\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+CNTS = counts per second from the CN counter\\
+$\Delta T$ = interval between recorded samples\\
+$D$ = scale factor (normally 1)\\
+FCNC = corrected sample flow rate ($cm^{3}/s)$\\
+$T_{vv}$ = time each particle is in the view volume = 4.167$\times10-6$
+s\\
+\\
+\rule[0.5ex]{1\linewidth}{1pt}
+\[
+\mathrm{A=\frac{\{CNTS\}}{\mathrm{\{FCNC\}}\Delta T}\, D}
+\]
+\begin{equation}
+\mathrm{CONCN=A}\, e^{AT_{vv}\mathrm{\{FCNC\}}}\label{eq:12.1}
+\end{equation}
+%
+\end{minipage}} \\
+\\
+See the introduction to this section for comments regarding the range
+of validity of the coincidence correction in Eq.~ (\ref{eq:12.1}).
+
+\end{hangparagraphs}
+

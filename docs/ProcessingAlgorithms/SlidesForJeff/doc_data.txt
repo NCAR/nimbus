@@ -1,0 +1,13 @@
+InfoKey: Producer
+InfoValue: pdfTeX-1.40.3
+InfoKey: Creator
+InfoValue: LaTeX with beamer class version 3.06
+InfoKey: ModDate
+InfoValue: D:20120119105303-07'00'
+InfoKey: PTEX.Fullbanner
+InfoValue: This is pdfTeX using libpoppler, Version 3.141592-1.40.3-2.2 (Web2C 7.5.6) kpathsea version 3.5.6
+InfoKey: CreationDate
+InfoValue: D:20120119105303-07'00'
+PdfID0: 18f7afb65759ccb9803d18ce3442782
+PdfID1: 18f7afb65759ccb9803d18ce3442782
+NumberOfPages: 3

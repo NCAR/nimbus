@@ -1,0 +1,1227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="GENERATOR" content="LyX 2.0.3" />
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<title>LyX Document</title>
+
+<!-- Text Class Preamble -->
+<style type="text/css">
+div.toc {
+margin: 2em 0em;
+border-style: solid;
+border-width: 2px 0px;
+padding: 1em 0em;
+}
+div.tochead { font-size: x-large; font-weight: bold; }
+div.lyxtoc-0 {
+margin: 2em 0em 0em 0em;
+font-size: xx-large;
+font-weight: bold;
+}
+div.lyxtoc-1 {
+margin: 1em 0em 0em 0em;
+font-size: x-large;
+font-weight: bold;
+}
+div.lyxtoc-2 {
+margin: 0em 0em 0em 1em;
+font-size: large;
+font-weight: normal;
+}
+div.lyxtoc-3 { margin: 0em 0em 0em 0.5em; font-size: medium; }
+div.lyxtoc-4 { margin: 0em 0em 0em 0.5em; }
+div.lyxtoc-5 { margin: 0em 0em 0em 0.5em; }
+div.lyxtoc-6 { margin: 0em 0em 0em 0.5em; }
+a.tocentry {
+text-decoration: none;
+color: black;
+}
+a.tocentry:visited { color: black; }
+a.tocarrow {
+font-weight: bold;
+text-decoration: none;
+color: #909090;
+}
+a.tocarrow:visited { color: #C0C0C0; }
+</style>
+
+<!-- Preamble Snippets -->
+
+<!-- Layout-provided Styles -->
+<style type='text/css'>
+div.standard {
+margin-bottom: 2ex;
+}
+div.plain_layout {
+text-align: left;
+
+}
+h2.section_ {
+font-weight: bold;
+font-size: x-large;
+margin-top: 1.3ex;
+margin-bottom: 0.7ex;
+text-align: left;
+
+}
+h3.subsection_ {
+font-weight: bold;
+font-size: large;
+margin-top: 0.9ex;
+margin-bottom: 0.5ex;
+text-align: left;
+
+}
+div.hanging {
+text-align: left;
+
+}
+ol.enumerate {
+margin-top: 0.7ex;
+margin-bottom: 0.7ex;
+margin-left: 3ex;
+text-align: left;
+
+}
+div.lyx_code {
+font-family: monospace;
+margin-top: 0.5ex;
+margin-bottom: 0.5ex;
+margin-left: 3ex;
+margin-right: 3ex;
+text-align: left;
+
+}
+ div.note_comment {
+   display: none;
+ }
+div.Boxed {
+border: solid thick black;
+padding: 0.5ex;
+}
+span.foot_label {
+vertical-align: super;
+font-size: smaller;
+font-weight: bold;
+text-decoration: underline;
+}
+div.foot {
+display: inline;
+font-size: small;
+font-weight: medium;
+font-family: serif;
+font-variant: normal;
+font-style: normal;
+}
+div.foot_inner { display: none; }
+div.foot:hover div.foot_inner {
+display: block;
+border: 1px double black;
+margin: 0em 1em;
+padding: 1em;
+}
+</style>
+</head>
+<body>
+<div class="standard"><a id='magicparlabel-3' />
+<div class="note_comment"><div class="plain_layout"><a id='magicparlabel-7' />
+set topicofnote to topic of note</div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-8' />
+</div>
+
+<div class="standard"><a id='magicparlabel-13' />
+</div>
+<h2 class="section_"><a id='magicparlabel-18' />
+Background</h2>
+<div class="standard"><a id='magicparlabel-23' />
+Wind measurements combine a measurement of relative wind with a measurement of aircraft motion to determine the air motion relative to the ground. The aircraft motion has long been measured by an IRS, and recently also by a GPS. These have complementary strengths: The IRS provides very good information on short-term motion but drifts with a characteristic period of more than an hour, while the GPS provides good absolute accuracy but sometimes is unable to receive the GPS signals and (except in differential-GPS mode) can have short-term errors that make short segments of the track look jagged. To take advantage of the strengths of each, a complementary-filter calculation was developed and implemented in the 1980s, but it was never documented publicly. This memo is partly an attempt to remedy that and partly a suggestion to make some minor changes to how it is implemented.</div>
+<h3 class="subsection_"><a id='magicparlabel-24' />
+Aircraft velocity</h3>
+<div class="hanging"><a id='magicparlabel-25' />
+To accomplish this, a low-pass filter, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>F</mi>
+    </mrow>
+    <mrow><mi>L</mi>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>{
+    <mstyle mathvariant='normal'>
+     <mrow><mi>G</mi><mi>V</mi><mi>N</mi><mi>S</mi><mo>,</mo><mi>G</mi><mi>V</mi><mi>E</mi><mi>W</mi>}
+     </mrow>
+    </mstyle>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math>, is applied to the GPS measurements of groundspeed, {GVNS,GVEW}, which are assumed to be valid for frequencies at or lower than the cutoff frequency <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>f</mi>
+   </mrow>
+   <mrow><mi>c</mi>
+   </mrow>
+  </msub>
+ </mrow></math> of the filter. Then the complementary high-pass filter, denoted (<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mn>1</mn><mo>-</mo>
+   <msub>
+    <mrow><mi>F</mi>
+    </mrow>
+    <mrow><mi>L</mi>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>)(<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>{
+   <mstyle mathvariant='normal'>
+    <mrow><mi>V</mi><mi>N</mi><mi>S</mi><mo>,</mo><mi>V</mi><mi>E</mi><mi>W</mi>}
+    </mrow>
+   </mstyle>
+  </mrow>
+ </mrow></math>), is applied to the IRS measurements of groundspeed, {VNS,VEW}, which are assumed valid for frequencies at or higher than <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>f</mi>
+   </mrow>
+   <mrow><mi>c</mi>
+   </mrow>
+  </msub>
+ </mrow></math>. Ideally, the transition frequency would be selected where the GPS errors (increasing with frequency) are equal to the IRS errors (decreasing with frequency). The filter used is a three-pole Butterworth lowpass filter, coded following the algorithm described in Bosic, S.&nbsp;M., 1980: <em>Digital and Kalman filtering : An Introduction to Discrete-Time Filtering and Optimum Linear Estimation, </em>p. 49. The digital filter used is recursive, not centered, to permit calculation during a single pass through the data. If the cutoff frequency lies where both the GPS and INS measurements are valid and are almost the same, then the detailed characteristics of the filter in the transition region (e.g., phase shift) do not matter because the complementary filters have cancelling effects when applied to the same signal. The transition frequency <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>f</mi>
+   </mrow>
+   <mrow><mi>c</mi>
+   </mrow>
+  </msub>
+ </mrow></math> was chosen to be (1/600) Hz (but this value can be overridden via the &ldquo;defaults&rdquo; file). The Butterworth filter was chosen because it provides flat response away from the transition. The resulting variables for aircraft motion, {VNSC,VEWC}, are then each the sum of two filtered signals, calculated as described in the following box:
+<br />
+
+<div class='Boxed' style='width: 95%; '><div class="plain_layout"><a id='magicparlabel-29' />
+VEW = IRS-measured east component of the aircraft ground speed
+<br />
+
+VNS = IRS-measured north component of the aircraft ground speed
+<br />
+
+GVEW = GPS-measured east component of the aircraft ground speed
+<br />
+
+GVNS = GPS-measured north component of the aircraft ground speed
+<br />
+
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>F</mi>
+    </mrow>
+    <mrow><mi>L</mi>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo><mrow/><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math> = three-pole Butterworth lowpass recursive digital filter
+<br />
+
+
+<br />
+
+<hr />
+
+</div>
+
+<div class="plain_layout"><a id='magicparlabel-30' />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>{<mi>VNSC</mi><mo>&#8289;</mo>}<mo>=</mo>
+   <msub>
+    <mrow><mi>F</mi>
+    </mrow>
+    <mrow><mi>L</mi>
+    </mrow>
+   </msub><mo>(</mo>
+   <mstyle mathvariant='normal'>
+    <mrow>{<mi>G</mi><mi>V</mi><mi>N</mi><mi>S</mi>}<mo>)</mo>
+    </mrow>
+   </mstyle><mo>+</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mn>1</mn><mo>-</mo>
+    <msub>
+     <mrow><mi>F</mi>
+     </mrow>
+     <mrow><mi>L</mi>
+     </mrow>
+    </msub>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>{
+    <mstyle mathvariant='normal'>
+     <mrow><mi>V</mi><mi>N</mi><mi>S</mi>}
+     </mrow>
+    </mstyle>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>{<mi>VEWC</mi><mo>&#8289;</mo>}<mo>=</mo>
+   <msub>
+    <mrow><mi>F</mi>
+    </mrow>
+    <mrow><mi>L</mi>
+    </mrow>
+   </msub><mo>(</mo>
+   <mstyle mathvariant='normal'>
+    <mrow>{<mi>G</mi><mi>V</mi><mi>E</mi><mi>W</mi>}<mo>)</mo>
+    </mrow>
+   </mstyle><mo>+</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mn>1</mn><mo>-</mo>
+    <msub>
+     <mrow><mi>F</mi>
+     </mrow>
+     <mrow><mi>L</mi>
+     </mrow>
+    </msub>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>{
+    <mstyle mathvariant='normal'>
+     <mrow><mi>V</mi><mi>E</mi><mi>W</mi>}
+     </mrow>
+    </mstyle>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-31' />
+This is straightforward and effective when both sets of measurements (IRS and GPS) are available. The approach in use becomes more complicated when the GPS signals are lost, as sometimes happens in sharp turns. Then some means is needed to avoid sudden discontinuities in velocity (and hence windspeed), which would introduce spurious effects into variance spectra and other properties dependent on a continuously valid measurement of wind. To extrapolate measurements through periods when the GPS measurements are not available, a fit is determined to the difference between the best-estimate variables {VNSC,VEWC} and the IRS variables {VNS,VEW} for the period before GPS reception was lost, and that fit is used to extrapolate through periods when GPS reception is not available. The procedure is as follows:</div>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-32' />
+If GPS reception has never been valid earlier in the flight, the IRS values are used without correction. </li>
+<li class="enumerate_item"><a id='magicparlabel-33' />
+At present, if GPS reception is lost after a valid complementary-filter correction has been obtained using the procedure described above, but no valid Schuler-oscillation fit has been accumulated as described in [3.] below, the correction factors from the complementary filter at the time that GPS information is lost are reduced by a factor of 0.997 each second, producing an exponential decay back toward the IRS values with decay time constant of about 5.6 min. This time constant can be reset from the &ldquo;defaults&rdquo; file. </li>
+<li class="enumerate_item"><a id='magicparlabel-38' />
+Whenever GPS reception is good, a fit matrix for a least-squares fit to the difference between the GPS and INS groundspeeds is updated, for each component. The errors are assumed to result primarily from a Schuler oscillation, so the three-term fit is of the form <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mo> &Delta; </mo><mo>=</mo>
+   <msub>
+    <mrow><mi>c</mi>
+    </mrow>
+    <mrow><mn>1</mn>
+    </mrow>
+   </msub><mo>+</mo>
+   <msub>
+    <mrow><mi>c</mi>
+    </mrow>
+    <mrow><mn>2</mn>
+    </mrow>
+   </msub><mi>sin</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mo> &Omega; </mo>
+     </mrow>
+     <mrow>
+      <mrow><mi>S</mi><mi>c</mi><mi>h</mi>
+      </mrow>
+     </mrow>
+    </msub><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>+</mo>
+   <msub>
+    <mrow><mi>c</mi>
+    </mrow>
+    <mrow><mn>3</mn>
+    </mrow>
+   </msub><mi>cos</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mo> &Omega; </mo>
+     </mrow>
+     <mrow>
+      <mrow><mi>S</mi><mi>c</mi><mi>h</mi>
+      </mrow>
+     </mrow>
+    </msub><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math> , where <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mo> &Omega; </mo>
+   </mrow>
+   <mrow>
+    <mrow><mi>S</mi><mi>c</mi><mi>h</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math> is the angular frequency of the Schuler oscillation (taken to be <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mn>2</mn><mi> &pi; </mi><mo>/</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mn>5067</mn><mspace width="6px" /><mi>s</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>)</mo>
+  </mrow>
+ </mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>t</mi>
+ </mrow></math> is the time since the start of the flight. A separate fit is used for each component of the velocity and each component of the position (discussed below under LATC and LONC). The fit matrix used to determine these coefficients is updated each time step but the accumulated fit factors decay exponentially with about 30-min decay constant, so the terms used to determine the fit are exponentially weighted over the period of valid data with a time constant that decays exponentially into the past with a characteristic time of 30 min. This is long enough to determine a significant portion of the Schuler oscillation but short enough to emphasize recent measurements of the correction. The procedures for accumulating the matrices for the fit are as follows:
+<br />
+
+
+<br />
+
+<div class='Boxed' style='width: 90%; '><div class="plain_layout"><a id='magicparlabel-46' />
+Define <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>u</mi>
+   </mrow>
+   <mrow><mi>G</mi>
+   </mrow>
+  </msub>
+ </mrow></math> as the aircraft eastward velocity measured by the GPS and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>u</mi>
+   </mrow>
+   <mrow><mi>I</mi>
+   </mrow>
+  </msub>
+ </mrow></math> the corresponding velocity measured by the IRS, so that the difference is</div>
+
+<div class="plain_layout"><a id='magicparlabel-47' />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mi>u</mi><mo>=</mo>
+   <msub>
+    <mrow><mi>u</mi>
+    </mrow>
+    <mrow><mi>G</mi>
+    </mrow>
+   </msub><mo>-</mo>
+   <msub>
+    <mrow><mi>u</mi>
+    </mrow>
+    <mrow><mi>I</mi>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math>If <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mo> &Omega; </mo>
+   </mrow>
+   <mrow><mi>S</mi>
+   </mrow>
+  </msub>
+ </mrow></math> is the Schuler oscillation period, with <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mo> &Omega; </mo>
+    </mrow>
+    <mrow><mi>S</mi>
+    </mrow>
+   </msub><mo>=</mo><mn>2</mn><mi> &pi; </mi><mi>t</mi><mo>/</mo>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mi>s</mi>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math> where <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>T</mi>
+    </mrow>
+    <mrow><mi>s</mi>
+    </mrow>
+   </msub><mo>=</mo><mn>5040</mn>
+  </mrow>
+ </mrow></math> s, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi> &tau; </mi>
+   </mrow>
+   <mrow><mi>u</mi>
+   </mrow>
+  </msub>
+ </mrow></math> is the time constant for the update (1800 s), <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi>t</mi>
+ </mrow></math> is the time from the start of the flight, and the measurement matrix is <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>A</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>i</mi><mi>j</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math>, then updated terms of the measurement matrix each sample period (<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msubsup>
+   <mrow><mi>A</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>i</mi><mo>,</mo><mi>j</mi>
+    </mrow>
+   </mrow>
+   <mrow><mi> &prime; </mi>
+   </mrow>
+  </msubsup>
+ </mrow></math>) are (for <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mi>u</mi>
+  </mrow>
+ </mrow></math>):</div>
+
+<div class="plain_layout"><a id='magicparlabel-48' />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msubsup>
+    <mrow><mi>A</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>0</mn><mo>,</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+    <mrow><mi> &prime; </mi>
+    </mrow>
+   </msubsup><mo>=</mo>
+   <msub>
+    <mrow><mi>A</mi>
+    </mrow>
+    <mrow><mn>0.1</mn>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mn>1</mn><mo>-</mo>
+    <mfrac>
+     <mrow><mn>1</mn>
+     </mrow>
+     <mrow>
+      <msub>
+       <mrow><mi> &tau; </mi>
+       </mrow>
+       <mrow><mi>u</mi>
+       </mrow>
+      </msub>
+     </mrow>
+    </mfrac>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>+</mo><mi> &delta; </mi><mi>u</mi>
+  </mrow>
+ </mrow></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msubsup>
+    <mrow><mi>A</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>1</mn><mo>,</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+    <mrow><mi> &prime; </mi>
+    </mrow>
+   </msubsup><mo>=</mo>
+   <msub>
+    <mrow><mi>A</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>1</mn><mo>,</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mn>1</mn><mo>-</mo>
+    <mfrac>
+     <mrow><mn>1</mn>
+     </mrow>
+     <mrow>
+      <msub>
+       <mrow><mi> &tau; </mi>
+       </mrow>
+       <mrow><mi>u</mi>
+       </mrow>
+      </msub>
+     </mrow>
+    </mfrac>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>+</mo><mi> &delta; </mi><mi>u</mi><mspace width="6px" /><mi>sin</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mo> &Omega; </mo>
+     </mrow>
+     <mrow><mi>S</mi>
+     </mrow>
+    </msub><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msubsup>
+    <mrow><mi>A</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>2</mn><mo>,</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+    <mrow><mi> &prime; </mi>
+    </mrow>
+   </msubsup><mo>=</mo>
+   <msub>
+    <mrow><mi>A</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>2</mn><mo>,</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mn>1</mn><mo>-</mo>
+    <mfrac>
+     <mrow><mn>1</mn>
+     </mrow>
+     <mrow>
+      <msub>
+       <mrow><mi> &tau; </mi>
+       </mrow>
+       <mrow><mi>u</mi>
+       </mrow>
+      </msub>
+     </mrow>
+    </mfrac>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>+</mo><mi> &delta; </mi><mi>u</mi><mspace width="6px" /><mi>cos</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mo> &Omega; </mo>
+     </mrow>
+     <mrow><mi>S</mi>
+     </mrow>
+    </msub><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math></div>
+
+<div class="plain_layout"><a id='magicparlabel-49' />
+The matrix components <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>A</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>j</mi><mo>,</mo><mn>0</mn>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math> apply to the northward velocity component and so are represented by the same equations with <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mi>u</mi>
+  </mrow>
+ </mrow></math> replaced by <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mi>v</mi>
+  </mrow>
+ </mrow></math>. Similar matrices are calculated for latitude <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &theta; </mi>
+ </mrow></math> and longitude <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &phi; </mi>
+ </mrow></math>, based on the differences <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mi> &theta; </mi>
+  </mrow>
+ </mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mi> &phi; </mi>
+  </mrow>
+ </mrow></math> between GPS and IRS measurements. The information matrix <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>H</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>i</mi><mi>j</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math> is calculated via</div>
+
+<div class="plain_layout"><a id='magicparlabel-50' />
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>H</mi>
+    </mrow>
+    <mrow>
+     <mrow><mi>i</mi><mo>,</mo><mi>j</mi>
+     </mrow>
+    </mrow>
+   </msub><mo>=</mo>
+   <msub>
+    <mrow><mi>H</mi>
+    </mrow>
+    <mrow>
+     <mrow><mi>i</mi><mo>,</mo><mi>j</mi>
+     </mrow>
+    </mrow>
+   </msub><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mn>1</mn><mo>-</mo>
+    <mfrac>
+     <mrow><mn>1</mn>
+     </mrow>
+     <mrow>
+      <msub>
+       <mrow><mi> &tau; </mi>
+       </mrow>
+       <mrow><mi>u</mi>
+       </mrow>
+      </msub>
+     </mrow>
+    </mfrac>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>+</mo>
+   <msub>
+    <mrow><mi>V</mi>
+    </mrow>
+    <mrow>
+     <mrow><mi>i</mi><mo>,</mo><mi>j</mi>
+     </mrow>
+    </mrow>
+   </msub>
+  </mrow>
+ </mrow></math></div>
+
+<div class="plain_layout"><a id='magicparlabel-51' />
+where <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>V</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>0</mn><mo>,</mo><mn>0</mn>
+     </mrow>
+    </mrow>
+   </msub><mo>=</mo><mn>1</mn>
+  </mrow>
+ </mrow></math>, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>V</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>0</mn><mo>,</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msub><mo>=</mo>
+   <msub>
+    <mrow><mi>V</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>1</mn><mo>,</mo><mn>0</mn>
+     </mrow>
+    </mrow>
+   </msub><mo>=</mo><mi>sin</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mo> &Omega; </mo>
+     </mrow>
+     <mrow><mi>S</mi>
+     </mrow>
+    </msub><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math>, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>V</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>0</mn><mo>,</mo><mn>2</mn>
+     </mrow>
+    </mrow>
+   </msub><mo>=</mo>
+   <msub>
+    <mrow><mi>V</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>2</mn><mo>,</mo><mn>0</mn>
+     </mrow>
+    </mrow>
+   </msub><mo>=</mo><mi>cos</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mo> &Omega; </mo>
+     </mrow>
+     <mrow><mi>S</mi>
+     </mrow>
+    </msub><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math>, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>V</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>1</mn><mo>,</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msub><mo>=</mo>
+   <msup>
+    <mrow><mo> sin </mo>
+    </mrow>
+    <mrow><mn>2</mn>
+    </mrow>
+   </msup><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mo> &Omega; </mo>
+     </mrow>
+     <mrow><mi>S</mi>
+     </mrow>
+    </msub><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math>, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>V</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>1</mn><mo>,</mo><mn>2</mn>
+     </mrow>
+    </mrow>
+   </msub><mo>=</mo>
+   <msub>
+    <mrow><mi>V</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>2</mn><mo>,</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msub><mo>=</mo><mi>sin</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mo> &Omega; </mo>
+     </mrow>
+     <mrow><mi>S</mi>
+     </mrow>
+    </msub><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mi>cos</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mo> &Omega; </mo>
+     </mrow>
+     <mrow><mi>S</mi>
+     </mrow>
+    </msub><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math>, and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msub>
+    <mrow><mi>V</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>2</mn><mo>,</mo><mn>2</mn>
+     </mrow>
+    </mrow>
+   </msub><mo>=</mo>
+   <msup>
+    <mrow><mo> cos </mo>
+    </mrow>
+    <mrow><mn>2</mn>
+    </mrow>
+   </msup><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mo> &Omega; </mo>
+     </mrow>
+     <mrow><mi>S</mi>
+     </mrow>
+    </msub><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math>. When the fit is needed, the matrix <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>H</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>i</mi><mo>,</mo><mi>j</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math> is inverted and the result multiplied by the measurement matrix <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>A</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>i</mi><mo>,</mo><mi>j</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math> to get the fit coefficients <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>C</mi>
+   </mrow>
+   <mrow>
+    <mrow><mi>i</mi><mi>j</mi>
+    </mrow>
+   </mrow>
+  </msub>
+ </mrow></math> to use for predicting the results for <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mi>u</mi>
+  </mrow>
+ </mrow></math>, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mi>v</mi>
+  </mrow>
+ </mrow></math>, <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mi> &theta; </mi>
+  </mrow>
+ </mrow></math>, and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mi> &phi; </mi>
+  </mrow>
+ </mrow></math> via equations like <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &delta; </mi><mi>u</mi><mo>=</mo>
+   <msub>
+    <mrow><mi>C</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>0</mn><mo>,</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msub><mo>+</mo>
+   <msub>
+    <mrow><mi>C</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>1</mn><mo>,</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msub><mi>sin</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow>
+    <msub>
+     <mrow><mo> &Omega; </mo>
+     </mrow>
+     <mrow><mi>S</mi>
+     </mrow>
+    </msub><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo>+</mo>
+   <msub>
+    <mrow><mi>C</mi>
+    </mrow>
+    <mrow>
+     <mrow><mn>2</mn><mo>,</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msub><mi>cos</mi><mo>&#8289;</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mo> &Omega; </mo><mi>t</mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math>.</div>
+</div></li>
+<li class="enumerate_item"><a id='magicparlabel-52' />
+When GPS data become invalid, if sufficient data (spanning 30 min) have been accumulated, the accumulated fit matrices are inverted to determine the coefficients <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>{
+   <msub>
+    <mrow><mi>c</mi>
+    </mrow>
+    <mrow><mn>1</mn>
+    </mrow>
+   </msub><mo>,</mo>
+   <msub>
+    <mrow><mi>c</mi>
+    </mrow>
+    <mrow><mn>2</mn>
+    </mrow>
+   </msub><mo>,</mo>
+   <msub>
+    <mrow><mi>c</mi>
+    </mrow>
+    <mrow><mn>3</mn>
+    </mrow>
+   </msub>}
+  </mrow>
+ </mrow></math> and then the formula for <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mo> &Delta; </mo>
+ </mrow></math> in the preceding step is used to extrapolate the correction to the IRS measurements while the GPS measurements remain invalid. Doing so immediately could introduce a discontinuity in {VNSC,VEWC}, however, so the correction <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mo> &Delta; </mo>
+ </mrow></math> is introduced smoothly by adjusting {VNSC,VEWC} as follows: <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup>
+   <mrow><mo> &Delta; </mo>
+   </mrow>
+   <mrow><mi> &prime; </mi>
+   </mrow>
+  </msup>
+ </mrow></math>=<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &eta; </mi>
+ </mrow></math>(VEWC<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mn>0</mn>
+   </mrow>
+  </msub>
+ </mrow></math>-GVEW<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mn>0</mn>
+   </mrow>
+  </msub>
+ </mrow></math>)<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mo>+</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mn>1</mn><mo>-</mo><mi> &eta; </mi>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo><mo> &Delta; </mo>
+  </mrow>
+ </mrow></math> where <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup>
+   <mrow><mo> &Delta; </mo>
+   </mrow>
+   <mrow><mi> &prime; </mi>
+   </mrow>
+  </msup>
+ </mrow></math> is the sequentially adjusted correction, (VEWC<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mn>0</mn>
+   </mrow>
+  </msub>
+ </mrow></math>-GVEW<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mn>0</mn>
+   </mrow>
+  </msub>
+ </mrow></math>) is the difference preserved from the last time the GPS groundspeed was valid, and <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &eta; </mi><mo>=</mo><mn>0.997</mn><mspace width="6px" />
+   <msup>
+    <mrow><mi>s</mi>
+    </mrow>
+    <mrow>
+     <mrow><mo>-</mo><mn>1</mn>
+     </mrow>
+    </mrow>
+   </msup>
+  </mrow>
+ </mrow></math> is chosen to give a decaying transition with a time constant of about 5.5 min. This has the potential to introduce some artificial variance at this scale and so should be considered in cases where variance spectra are analyzed in detail, but it has much less influence on such spectra than would introducing a discontinuous transition. Ideally, the current fit and the last filtered discrepancy (VEWC<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mn>0</mn>
+   </mrow>
+  </msub>
+ </mrow></math>-GVEW<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub><mrow />
+   <mrow><mn>0</mn>
+   </mrow>
+  </msub>
+ </mrow></math>) should be about equal, so this should not introduce a significant change. The current code requires 30 min of valid data to make this fit; otherwise, it assumes that insufficient data have been accumulated for the fit and uses the last determined offset from step 2 if available or the IRS information data if not.</li>
+<li class="enumerate_item"><a id='magicparlabel-57' />
+When GPS information is again valid, the solution returns to the values of the complementary filter, updating of that filter is resumed, and accumulation of the Schuler-fit coefficients resumes.</li>
+</ol>
+<h3 class="subsection_"><a id='magicparlabel-58' />
+Aircraft position</h3>
+<div class="standard"><a id='magicparlabel-59' />
+A simpler approach using an exponential filter is possible with aircraft position, as follows:</div>
+
+<div class="hanging"><a id='magicparlabel-60' />
+<div class='Boxed' style='width: 95%; '><div class="plain_layout"><a id='magicparlabel-64' />
+LAT = latitude measured by the IRS
+<br />
+
+LON = longitude measured by the IRS
+<br />
+
+GLAT = latitude measured by the GPS
+<br />
+
+GLON = longitude measured by the GPS
+<br />
+
+VNSC = aircraft ground speed, north component, corrected 
+<br />
+
+VEWC = aircraft ground speed, east component, corrected
+<br />
+
+
+<br />
+
+<hr />
+
+</div>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-65' />
+Initialize the corrected position at the IRS position at the start of the flight or after any large change (&gt;5<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msup><mrow />
+   <mrow><mo> &#176; </mo>
+   </mrow>
+  </msup>
+ </mrow></math>) in the IRS position.</li>
+<li class="enumerate_item"><a id='magicparlabel-66' />
+Integrate forward from that position using the aircraft groundspeed with components {VNSC,VEWC}. Note that in the absence of GPS information this will introduce long-term errors because it does not account for the Earth's spherical geometry. It provides good short-term accuracy, but the GPS updating in the next step is needed to compensate for the difference between a rectilinear frame and the Earth's spherical coordinate frame and provides a smooth yet accurate track.</li>
+<li class="enumerate_item"><a id='magicparlabel-67' />
+Use an exponential adjustment to the GPS position, with time constant that is typically about 100 s.<div class="foot"><span class="foot_label">1</span><div class="foot_inner"><div class="plain_layout"><a id='magicparlabel-71' />
+specifically, LATC += <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow><mi> &eta; </mi>
+ </mrow></math>(GLAT-LATC) with <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi> &eta; </mi><mo>=</mo><mn>2</mn><mi> &pi; </mi><mo>/</mo><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo>
+   <mrow><mn>600</mn><mspace width="6px" />
+    <mstyle mathvariant='normal'><mi>s</mi>
+    </mstyle>
+   </mrow><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math></div>
+</div></div></li>
+<li class="enumerate_item"><a id='magicparlabel-72' />
+To handle periods when the GPS becomes invalid, use an approach analogous to that for groundspeed, whereby a Schuler-oscillation fit to the difference between the GPS and IRS measurements is developed and used to extrapolate through periods when the GPS is invalid. </li>
+</ol>
+</div></div>
+<h2 class="section_"><a id='magicparlabel-73' />
+Present Processing Code</h2>
+<div class="standard"><a id='magicparlabel-78' />
+See /scr/raf/cjw/builds/bora/raf/nimbus/src/amlib/std/gpsc.c</div>
+<h2 class="section_"><a id='magicparlabel-79' />
+Reasons For Proposing Changes</h2>
+<div class="standard"><a id='magicparlabel-84' />
+The purpose of this memo is primarily to document the procedure, but there are a few minor changes that might be improvements:</div>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-85' />
+With present GPS reliability, it may be better to suppress the decay discussed in the box for VNSC/VEWC (#2 in the first box above). This decay allows the merged signal to move back toward the IRS value, but if a good offset has been obtained this is probably not best for short-term drop-outs. I suggest continuing to apply the last offset instead, without decay. This would mean suppressing the section in gpsc.c with lines like dvy[]*=fctrf[]. The same applies to position, which now is allowed to adjust slowly back to the IRS position; it may be better to retain the last-valid offset.</li>
+<li class="enumerate_item"><a id='magicparlabel-86' />
+Step 5 above seems to me to be a problem with the current approach because it introduces a discontinuous change from the Schuler-oscillation fit to the complementary-filter fit, without any transition. it would be desirable to use a gradual transition back to the complementary-filtered solution. Specifically, if GPS becomes again good while the Schuler fit is being used, the correction applied to the IRS measurements should be moved toward the complementary-filter solution gradually, with the same exponential filter used to initiate the use of the fit. <div class="foot"><span class="foot_label">2</span><div class="foot_inner"><div class="plain_layout"><a id='magicparlabel-90' />
+Note that there is no need to filter gvns and vns separately, only their difference, because the filter is linear. We could save two filter steps and arrays: dvy[]=filter((gvns-vns), zf[]).</div>
+</div></div> To move from that previous Schuler-oscillation fit to the complementary-filter fit smoothly, we could use something like dvy[] = dvy[]*fctrf[]+(1-fctrf[])*filter((gvns-vns), zf[])). This introduces another time constant (5.6 min) into the filter that otherwise has a 10-min period, but avoids the sharp transition. It compromises the otherwise favorable characteristic of the complementary filter to have no or little effect on the variance spectrum, but dvy can be regarded as a correction to vns to correct for long-term drift in the IRS, and to the extent that this is true and all variance remains in vns then any filtering applied to dvy won't have much effect. <div class="foot"><span class="foot_label">3</span><div class="foot_inner"><div class="plain_layout"><a id='magicparlabel-94' />
+It may even be acceptable to apply this correction always, instead of switching it on and off when transitions occur, but I haven't investigated this.</div>
+</div></div></li>
+<li class="enumerate_item"><a id='magicparlabel-95' />
+(Thanks to Dick Friesen:) There is an error in the filter code. The coefficient <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msub>
+   <mrow><mi>b</mi>
+   </mrow>
+   <mrow><mn>1</mn>
+   </mrow>
+  </msub>
+ </mrow></math> should be <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow>
+   <msqrt>
+    <mrow><mo>(</mo><mn>3</mn><mo>/</mo><mn>2</mn>
+    </mrow>
+   </msqrt><mo>=</mo><mn>1.227...</mn>
+  </mrow>
+ </mrow></math>, not <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <msqrt><mn>3</mn>
+  </msqrt>
+ </mrow></math>/2=0.866... as in the code that has been in use since 1992. This doesn't make much difference because the filter with the wrong coefficient still works reasonably although not optimally.</li>
+</ol>
+<h2 class="section_"><a id='magicparlabel-96' />
+<em>Recommendations</em></h2>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-101' />
+Use the material in this note as an addition to the Processing Algorithm documentation being developed to replace Bulletin 9 Appendix B.</li>
+<li class="enumerate_item"><a id='magicparlabel-102' />
+When the GPS signal is lost, suppress drift back to the IRS values; instead, retain the last-determined offset between the IRS and GPS. For example, this would be achieved by omitting the four statements in this code segment from gpsc.c starting with line 345 that cause the corrections {dvy,dvx,dlat,dlon} to decay with a time constant of about 5.6 min:
+<br />
+
+
+<div class='Boxed'><div class="lyx_code"><div class="lyx_code_item"><a id='magicparlabel-106' />
+else       </div>
+<div class="lyx_code_item"><a id='magicparlabel-107' />
+  {       </div>
+<div class="lyx_code_item"><a id='magicparlabel-108' />
+  /* No good fit accumulated yet, so just let last correction      </div>
+<div class="lyx_code_item"><a id='magicparlabel-109' />
+   * factors slowly decay.</div>
+<div class="lyx_code_item"><a id='magicparlabel-110' />
+   */ </div>
+<div class="lyx_code_item"><a id='magicparlabel-111' />
+/*      gpsflg = 0.001; </div>
+<div class="lyx_code_item"><a id='magicparlabel-112' />
+*/</div>
+<div class="lyx_code_item"><a id='magicparlabel-113' />
+   dvy[FeedBack]     *= fctrf[FeedBack];</div>
+<div class="lyx_code_item"><a id='magicparlabel-114' />
+   dvx[FeedBack]     *= fctrf[FeedBack];</div>
+<div class="lyx_code_item"><a id='magicparlabel-115' />
+   dlat[FeedBack]    *= fctrf[FeedBack]; </div>
+<div class="lyx_code_item"><a id='magicparlabel-116' />
+   dlon[FeedBack]    *= fctrf[FeedBack]; </div>
+<div class="lyx_code_item"><a id='magicparlabel-117' />
+   } </div>
+<div class="lyx_code_item"><a id='magicparlabel-118' />
+ } </div>
+</div>
+</div></li>
+<li class="enumerate_item"><a id='magicparlabel-119' />
+When the GPS signal becomes valid again for GPS measurements, and if a Schuler-fit correction is being used, make a decaying-exponential transition back to the GPS values. (This is already done for position measurements.) This could be implemented by using a different variable Dvx/Dvy[Feedback] to represent the correction, whether determined from the Schuler fit or from the complementary filter. It would then be updated to dvx/dvy[Feedback], sometimes determined from the complementary filter and sometimes from the Schuler oscillation, depending on validity of the GPS measurements. Code something like the following, to be inserted in place of the two statements that follow &ldquo;label546:&rdquo; below line 402 in the code, would accomplish this:
+<br />
+
+
+<div class='Boxed'><div class="lyx_code"><div class="lyx_code_item"><a id='magicparlabel-123' />
+// (initialize Dvx, Dvy[Feedback] to zero //  before starting and at line 409)</div>
+<div class="lyx_code_item"><a id='magicparlabel-124' />
+// then update Dvx to dvx:</div>
+<div class="lyx_code_item"><a id='magicparlabel-125' />
+Dvx[Feedback] += (1-fctrf[Feedback]) * (dvx[Feedback] - Dvx[Feedback]);</div>
+<div class="lyx_code_item"><a id='magicparlabel-126' />
+Dvy[Feedback] += (1-fctrf[Feedback]) * (dvy[Feedback] - Dvy[Feedback]);</div>
+<div class="lyx_code_item"><a id='magicparlabel-127' />
+vnsc[Feedback] = vns + Dvy[Feedback];</div>
+<div class="lyx_code_item"><a id='magicparlabel-128' />
+vewc[Feedback] + vew + Dvx[Feedback];</div>
+</div>
+</div>
+<br />
+
+If this is used, the earlier code that makes a similar transition from GPS-valid to GPS-invalid conditions, located below the commented &ldquo;gpsflg = 1.0&rdquo; statement at line 331 in gpsc.c, should be replaced by the following:
+<br />
+
+
+<div class='Boxed'><div class="lyx_code"><div class="lyx_code_item"><a id='magicparlabel-132' />
+dvy[Feedback] = c[0][0] + c[0][1] * sinwt + c[0][2] * coswt;</div>
+<div class="lyx_code_item"><a id='magicparlabel-133' />
+ (and analogously for the three statements for dvx, dlat, and dlon)</div>
+</div>
+</div></li>
+<li class="enumerate_item"><a id='magicparlabel-134' />
+Although it would not make any change in the output, the coding of the filtering could be simplified by the elimination of two filters because the only filtering that is needed is that applied to the differences (gvns - vns) and (gvew - vew). All four quantities are filtered individually now and the filtered quantities are subtracted to obtain the filtered values of the quantities in parentheses, but the filters are linear so those could be replaced by filters for the two differences to make the routine more elegant. </li>
+<li class="enumerate_item"><a id='magicparlabel-135' />
+The coefficient b1 in the filter should be corrected to be <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mrow><mi>s</mi><mi>q</mi><mi>r</mi><mi>t</mi><mo form='prefix' fence='true' stretchy='true' symmetric='true'>(</mo><mn>1.5</mn><mo form='postfix' fence='true' stretchy='true' symmetric='true'>)</mo>
+  </mrow>
+ </mrow></math>.</li>
+</ol>
+<div class="standard"><a id='magicparlabel-136' />
+</div>
+
+<div class="standard"><a id='magicparlabel-145' />
+</div>
+
+<div class="standard"><a id='magicparlabel-156' />
+</div>
+</body>
+</html>

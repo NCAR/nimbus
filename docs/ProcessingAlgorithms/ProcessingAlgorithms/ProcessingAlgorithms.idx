@@ -1,0 +1,927 @@
+\indexentry{nimbus|hyperpage}{5}
+\indexentry{NetCDF!format|hyperpage}{5}
+\indexentry{NetCDF!header|hyperpage}{5}
+\indexentry{GENPRO|hyperpage}{5}
+\indexentry{Bulletin 9|hyperpage}{5}
+\indexentry{variable names|hyperpage}{5}
+\indexentry{NIDAS|hyperpage}{5}
+\indexentry{variable names|hyperpage}{6}
+\indexentry{system of units|hyperpage}{6}
+\indexentry{millibar|hyperpage}{6}
+\indexentry{Flow rates|hyperpage}{6}
+\indexentry{ppmv|hyperpage}{6}
+\indexentry{ppbv|hyperpage}{6}
+\indexentry{samples per second|hyperpage}{7}
+\indexentry{knot|hyperpage}{7}
+\indexentry{nautical mile|hyperpage}{7}
+\indexentry{foo|hyperpage}{7}
+\indexentry{Time Variables|hyperpage}{7}
+\indexentry[var]{Time|hyperpage}{8}
+\indexentry{Time|hyperpage}{8}
+\indexentry{time variable in data files|hyperpage}{8}
+\indexentry{base time|hyperpage}{8}
+\indexentry{time offset|hyperpage}{8}
+\indexentry{HOUR|hyperpage}{8}
+\indexentry{MINUTE|hyperpage}{8}
+\indexentry{SECOND|hyperpage}{8}
+\indexentry{MONTH|hyperpage}{8}
+\indexentry{DAY|hyperpage}{8}
+\indexentry{YEAR|hyperpage}{8}
+\indexentry{measurement!raw|hyperpage}{9}
+\indexentry{measurement!original|hyperpage}{9}
+\indexentry{measurement!derived|hyperpage}{9}
+\indexentry{derived variables|hyperpage}{9}
+\indexentry{dimensionless equations|hyperpage}{9}
+\indexentry{constants!table|hyperpage}{10}
+\indexentry{constants|see{symbols}}{10}
+\indexentry[lis]{g@$g$= acceleration of gravity|hyperpage}{10}
+\indexentry[lis]{lambda = latitude@$\lambda $= latitude|hyperpage}{10}
+\indexentry[lis]{z@$z$ = height|hyperpage}{10}
+\indexentry{WRS-80 Geoid|hyperpage}{10}
+\indexentry[lis]{T_{0} = 273.15 K@$T_{0}$= 273.15\tmspace  +\thinmuskip {.1667em}K|hyperpage}{10}
+\indexentry[lis]{T_{3} = 273.16 K@$T_{3}$= 273.16\tmspace  +\thinmuskip {.1667em}K|hyperpage}{10}
+\indexentry{triple point of water|hyperpage}{10}
+\indexentry[lis]{Md@$M_{d}$= molecular weight of dry air|hyperpage}{10}
+\indexentry{molecular weight of dry air|hyperpage}{10}
+\indexentry[lis]{Mw@$M_{w}$= molecular weight of water|hyperpage}{10}
+\indexentry{molecular weight of water|hyperpage}{10}
+\indexentry[lis]{R@$R_{0}$= universal gas constant|hyperpage}{10}
+\indexentry{universal gas constant|hyperpage}{10}
+\indexentry[lis]{Rd@$R_{d}=$gas constant for dry air|hyperpage}{10}
+\indexentry{gas constant for dry air|hyperpage}{10}
+\indexentry[lis]{Rw@$R_{W}$= gas constant for water vapor|hyperpage}{10}
+\indexentry{gas constant for water vapor|hyperpage}{10}
+\indexentry[lis]{Re@$R_{E}$= radius of the Earth|hyperpage}{10}
+\indexentry{radius of the Earth|hyperpage}{10}
+\indexentry[lis]{cp@$c_{p}$= specific head of dry air at constant pressure|hyperpage}{10}
+\indexentry{specific heat of dry air at constant pressure|hyperpage}{10}
+\indexentry[lis]{cv@$c_{v}$= specific heat of dry air at constant volume|hyperpage}{10}
+\indexentry{specific heat of dry air at constant volume|hyperpage}{10}
+\indexentry[lis]{gamma = ratio of specific heats of air, c_{p}/c_{v} @$\gamma $= ratio of specific heats of air, $c_{p}/c_{v}$|hyperpage}{10}
+\indexentry{specific heat ratio, dry air|hyperpage}{10}
+\indexentry[lis]{Omega = angular rotation rate of the Earth@$\Omega $= angular rotation rate of the Earth|hyperpage}{10}
+\indexentry{Earth, angular rotation rate|hyperpage}{10}
+\indexentry[lis]{Omega_{Sch} = angular frequency of the Schuler oscillation@$\Omega _{Sch}$= angular frequency of the Schuler oscillation|hyperpage}{10}
+\indexentry{Schuler oscillation|hyperpage}{10}
+\indexentry[lis]{sigma = Stephan-Boltzmann constant@$\sigma $= Stephan-Boltzmann constant|hyperpage}{10}
+\indexentry{Stephan-Boltzmann Constant|hyperpage}{10}
+\indexentry{symbols!table of|hyperpage}{10}
+\indexentry{variable names!table of|hyperpage}{10}
+\indexentry{IRU|hyperpage}{11}
+\indexentry{inertial reference unit|see {IRU}}{11}
+\indexentry{inertial reference system|see {IRU}}{11}
+\indexentry{INS|see {IRU}}{11}
+\indexentry{GPS|hyperpage}{11}
+\indexentry{IRU!GV|hyperpage}{11}
+\indexentry{ADS=aircraft data system|hyperpage}{11}
+\indexentry{NetCDF!header|hyperpage}{11}
+\indexentry{IRU!alignment|hyperpage}{11}
+\indexentry{Schuler oscillation|hyperpage}{11}
+\indexentry[var]{LAT|hyperpage}{11}
+\indexentry{LAT|hyperpage}{11}
+\indexentry{latitude|hyperpage}{11}
+\indexentry[var]{LON|hyperpage}{11}
+\indexentry{LON|hyperpage}{11}
+\indexentry{longitude|hyperpage}{11}
+\indexentry{THDG|hyperpage}{11}
+\indexentry{heading!true|hyperpage}{11}
+\indexentry{heading!magnetic|hyperpage}{11}
+\indexentry[var]{PITCH|hyperpage}{11}
+\indexentry{PITCH|hyperpage}{11}
+\indexentry{pitch|hyperpage}{11}
+\indexentry[var]{ROLL|hyperpage}{12}
+\indexentry{ROLL|hyperpage}{12}
+\indexentry{roll|hyperpage}{12}
+\indexentry[var]{ACINS|hyperpage}{12}
+\indexentry{ACINS|hyperpage}{12}
+\indexentry{acceleration!vertical|hyperpage}{12}
+\indexentry{pressure damping|hyperpage}{12}
+\indexentry[var]{VSPD|hyperpage}{12}
+\indexentry{VSPD|hyperpage}{12}
+\indexentry{velocity!aircraft vertical|hyperpage}{12}
+\indexentry{baro-inertial loop|hyperpage}{12}
+\indexentry{WP3|hyperpage}{12}
+\indexentry{IRU!Litton LTN-51|hyperpage}{12}
+\indexentry[var]{WP3|hyperpage}{12}
+\indexentry{WP3|hyperpage}{12}
+\indexentry{VSPD|hyperpage}{12}
+\indexentry{IRU!Honeywell|hyperpage}{12}
+\indexentry{altitude!pressure|hyperpage}{12}
+\indexentry{Coriolis acceleration|hyperpage}{14}
+\indexentry{centrifugal acceleration|hyperpage}{14}
+\indexentry[var]{ALT|hyperpage}{15}
+\indexentry{ALT|hyperpage}{15}
+\indexentry[var]{GSF|hyperpage}{15}
+\indexentry{GSF|hyperpage}{15}
+\indexentry[var]{VEW|hyperpage}{15}
+\indexentry{VEW|hyperpage}{15}
+\indexentry[var]{VNS|hyperpage}{15}
+\indexentry{VNS|hyperpage}{15}
+\indexentry[var]{DEI|hyperpage}{15}
+\indexentry{DEI@DE\textbf  {I}|hyperpage}{15}
+\indexentry[var]{DNI|hyperpage}{15}
+\indexentry{DNI|hyperpage}{15}
+\indexentry[var]{FXAZIM|hyperpage}{15}
+\indexentry{FXAZIM|hyperpage}{15}
+\indexentry[var]{FXDIST|hyperpage}{15}
+\indexentry{FXDIST|hyperpage}{15}
+\indexentry{IRU variables!raw|hyperpage}{16}
+\indexentry{IRU measurements!not in normal data files|hyperpage}{16}
+\indexentry[var]{BLATA|hyperpage}{16}
+\indexentry{BLATA|hyperpage}{16}
+\indexentry[var]{BLONA|hyperpage}{16}
+\indexentry{BLONA|hyperpage}{16}
+\indexentry[var]{BNORMA|hyperpage}{16}
+\indexentry{BNORMA|hyperpage}{16}
+\indexentry[var]{BPITCHR|hyperpage}{16}
+\indexentry{BPITCHR|hyperpage}{16}
+\indexentry[var]{BROLLR|hyperpage}{16}
+\indexentry{BROLLR|hyperpage}{16}
+\indexentry[var]{BYAWR|hyperpage}{16}
+\indexentry{BYAWR|hyperpage}{16}
+\indexentry{global positioning system|see{GPS}}{16}
+\indexentry{GPS|hyperpage}{16}
+\indexentry{GPS!Trimble TANS-III|hyperpage}{16}
+\indexentry{GPS!Garmin|hyperpage}{17}
+\indexentry{GPS!aircraft avionics unit|hyperpage}{17}
+\indexentry[var]{GGLAT|hyperpage}{17}
+\indexentry{GGLAT|hyperpage}{17}
+\indexentry[var]{G|hyperpage}{17}
+\indexentry{LAT_G@\textbf  {LAT\_G}|hyperpage}{17}
+\indexentry[var]{GLAT|hyperpage}{17}
+\indexentry{GLAT|hyperpage}{17}
+\indexentry[var]{GGLON|hyperpage}{17}
+\indexentry{GGLON|hyperpage}{17}
+\indexentry[var]{G|hyperpage}{17}
+\indexentry{LON_G@\textbf  {LON\_G}|hyperpage}{17}
+\indexentry[var]{GLON|hyperpage}{17}
+\indexentry{GLON@\textbf  {GLON}|hyperpage}{17}
+\indexentry[var]{G|hyperpage}{17}
+\indexentry{GSF_G@GSF\_G|hyperpage}{17}
+\indexentry[var]{GGSPD|hyperpage}{17}
+\indexentry{GGSPD|hyperpage}{17}
+\indexentry[var]{GGVEW|hyperpage}{17}
+\indexentry{GGVEW|hyperpage}{17}
+\indexentry[var]{G|hyperpage}{17}
+\indexentry{VEW_G@VEW\_G|hyperpage}{17}
+\indexentry[var]{GGVNS|hyperpage}{17}
+\indexentry{GGVNS|hyperpage}{17}
+\indexentry[var]{G|hyperpage}{17}
+\indexentry{VNS_G@VNS\_G|hyperpage}{17}
+\indexentry[var]{G|hyperpage}{17}
+\indexentry{VSPD_G@\textbf  {VSPD\_G}|hyperpage}{17}
+\indexentry[var]{GVZI (obsolete)|hyperpage}{17}
+\indexentry{GVZI|hyperpage}{17}
+\indexentry[var]{GGALT|hyperpage}{17}
+\indexentry{GGALT|hyperpage}{17}
+\indexentry[var]{G|hyperpage}{17}
+\indexentry{ALT_G@ALT\_G|hyperpage}{17}
+\indexentry{altitude!aircraft!GPS|hyperpage}{17}
+\indexentry[var]{GGTRK|hyperpage}{17}
+\indexentry{GGTRK@\textbf  {GGTRK}|hyperpage}{17}
+\indexentry[var]{G|hyperpage}{17}
+\indexentry{TKAT_G@\textbf  {TKAT\_G}|hyperpage}{17}
+\indexentry[var]{GGEOIDHT|hyperpage}{17}
+\indexentry{GGEOIDHT@\textbf  {GGEOIDHT}|hyperpage}{17}
+\indexentry[var]{GGNSAT|hyperpage}{17}
+\indexentry{GGNSAT@\textbf  {GGNSAT}|hyperpage}{17}
+\indexentry[var]{GGQUAL|hyperpage}{18}
+\indexentry{GGQUAL|hyperpage}{18}
+\indexentry[var]{GMODE (obsolete)|hyperpage}{18}
+\indexentry{GMODE@\textbf  {GMODE}|hyperpage}{18}
+\indexentry[var]{GGSTATUS|hyperpage}{18}
+\indexentry{GGSTATUS|hyperpage}{18}
+\indexentry[var]{G|hyperpage}{18}
+\indexentry{GSTAT_G@\textbf  {GSTAT\_G}|hyperpage}{18}
+\indexentry[var]{GSTAT|hyperpage}{18}
+\indexentry{GSTAT|hyperpage}{18}
+\indexentry[var]{ALTX|hyperpage}{18}
+\indexentry{ALTX|hyperpage}{18}
+\indexentry[var]{GALTC|hyperpage}{18}
+\indexentry{GALTC|hyperpage}{18}
+\indexentry{GPS|hyperpage}{18}
+\indexentry[var]{PALT|hyperpage}{18}
+\indexentry{PALT|hyperpage}{18}
+\indexentry{altitude!pressure|hyperpage}{18}
+\indexentry{International Standard Atmosphere|hyperpage}{18}
+\indexentry{ISA|see {International Standard Atmosphere}}{18}
+\indexentry[lis]{lambda@$\lambda $= tropospheric lapse rate, standard atmosphere|hyperpage}{20}
+\indexentry{International Standard Atmosphere!lapse rate|hyperpage}{20}
+\indexentry[lis]{Pa@$p_{a}$= reference pressure for zero altitude, ISA|hyperpage}{20}
+\indexentry[lis]{Tt@$T_{T}$= temperature at the ISA tropopause|hyperpage}{20}
+\indexentry[lis]{pT@$p_{T}$= pressure at the ISA tropopause|hyperpage}{20}
+\indexentry{International Standard Atmosphere!tropopause|hyperpage}{20}
+\indexentry[var]{HGM|hyperpage}{20}
+\indexentry{HGM|hyperpage}{20}
+\indexentry{altimeter!radio|hyperpage}{20}
+\indexentry[var]{HGME|hyperpage}{21}
+\indexentry{HGME|hyperpage}{21}
+\indexentry{altimeter!radar|hyperpage}{21}
+\indexentry{APN-159|hyperpage}{21}
+\indexentry[var]{HGM232|hyperpage}{21}
+\indexentry{HGM232|hyperpage}{21}
+\indexentry[var]{HI3 (obsolete)|hyperpage}{21}
+\indexentry{HI3|hyperpage}{21}
+\indexentry{GPS|hyperpage}{21}
+\indexentry{IRU|hyperpage}{21}
+\indexentry[var]{VEWC|hyperpage}{21}
+\indexentry{VEWC|hyperpage}{21}
+\indexentry[var]{VNSC|hyperpage}{21}
+\indexentry{VNSC|hyperpage}{21}
+\indexentry{filter, complementary (for wind)|hyperpage}{21}
+\indexentry[lis]{FL@$F_{L}$= digital low-pass filter|hyperpage}{22}
+\indexentry[lis]{fc@$f_{c}$= cutoff frequency fo the filter $F_{L}$|hyperpage}{22}
+\indexentry{filter!Butterworth|hyperpage}{22}
+\indexentry{VEW|hyperpage}{22}
+\indexentry{VNS|hyperpage}{22}
+\indexentry{GGVEW|hyperpage}{22}
+\indexentry{GGVNS|hyperpage}{22}
+\indexentry{complementary filter (for wind)|hyperpage}{23}
+\indexentry{Schuler oscillation|hyperpage}{23}
+\indexentry{GPS|hyperpage}{23}
+\indexentry{Schuler oscillation|hyperpage}{23}
+\indexentry{fit matrix, wind correction|hyperpage}{23}
+\indexentry[lis]{eta@$\eta=$update constant for exponential updating|hyperpage}{23}
+\indexentry[var]{LATC|hyperpage}{23}
+\indexentry{LATC|hyperpage}{23}
+\indexentry[var]{LONC|hyperpage}{23}
+\indexentry{LONC|hyperpage}{23}
+\indexentry{LAT|hyperpage}{24}
+\indexentry{LON|hyperpage}{24}
+\indexentry{GGLAT|hyperpage}{24}
+\indexentry{GGLON|hyperpage}{24}
+\indexentry{VNSC|hyperpage}{24}
+\indexentry{VEWC|hyperpage}{24}
+\indexentry{Variable Names|hyperpage}{25}
+\indexentry{radome gust-sensing|hyperpage}{25}
+\indexentry{dynamic pressure|hyperpage}{25}
+\indexentry{858AJ gust probe|hyperpage}{25}
+\indexentry{Pressure|hyperpage}{25}
+\indexentry{Temperature|hyperpage}{25}
+\indexentry{Humidity|hyperpage}{25}
+\indexentry[var]{PSx@\textbf  {PSx}|hyperpage}{25}
+\indexentry{PSx|hyperpage}{25}
+\indexentry[var]{PSxC|hyperpage}{25}
+\indexentry{PSxC|hyperpage}{25}
+\indexentry{pressure!ambient|hyperpage}{25}
+\indexentry{flow-field distortion|hyperpage}{25}
+\indexentry{PSFD|hyperpage}{25}
+\indexentry{PSFDC|hyperpage}{25}
+\indexentry{pressure!transducer|hyperpage}{25}
+\indexentry{PSFRD|hyperpage}{25}
+\indexentry[var]{TTx|hyperpage}{26}
+\indexentry{TTx|hyperpage}{26}
+\indexentry[var]{TTxH|hyperpage}{26}
+\indexentry{TTxH|hyperpage}{26}
+\indexentry{temperature!recovery|hyperpage}{26}
+\indexentry{temperature!ambient|hyperpage}{26}
+\indexentry{temperature!total|hyperpage}{26}
+\indexentry[var]{ATx|hyperpage}{26}
+\indexentry{ATx|hyperpage}{26}
+\indexentry[var]{ATxH|hyperpage}{26}
+\indexentry{ATxH|hyperpage}{26}
+\indexentry{temperature!static air|hyperpage}{26}
+\indexentry{TTx|hyperpage}{26}
+\indexentry{pressure!dynamic|hyperpage}{26}
+\indexentry{pressure!ambient|hyperpage}{26}
+\indexentry{QCXC|hyperpage}{26}
+\indexentry{PSXC|hyperpage}{26}
+\indexentry{measurements!raw|hyperpage}{26}
+\indexentry{QCX|hyperpage}{26}
+\indexentry{PSX|hyperpage}{26}
+\indexentry{temperature!sensor|hyperpage}{26}
+\indexentry{temperature!total|hyperpage}{26}
+\indexentry{temperature|hyperpage}{26}
+\indexentry{recovery factor|hyperpage}{26}
+\indexentry[lis]{a@$\alpha$= recovery factor, temperature probe|hyperpage}{26}
+\indexentry{conservation of energy|hyperpage}{27}
+\indexentry[lis]{Ua@$U_{a}$= true airspeed (sometimes $U$)|hyperpage}{27}
+\indexentry{true airspeed|hyperpage}{27}
+\indexentry[lis]{Ta@$T_{a}$= ambient air temperature in absolute units; sometimes, $T_{K}$|hyperpage}{27}
+\indexentry[lis]{Tr@$T_{r}$= recovery temperature|hyperpage}{27}
+\indexentry[lis]{Tt@$T_{t}$= total air temperature|hyperpage}{27}
+\indexentry{recovery factor|hyperpage}{27}
+\indexentry{Mach number|hyperpage}{27}
+\indexentry[lis]{M@$M$= Mach number, ratio of airspeed to the speed of sound|hyperpage}{27}
+\indexentry{speed of sound|hyperpage}{27}
+\indexentry[lis]{Us@$U_{s}$= speed of sound|hyperpage}{27}
+\indexentry[lis]{V@$V$= volume|hyperpage}{27}
+\indexentry[lis]{p@$p$= pressure|hyperpage}{27}
+\indexentry{adiabatic compression|hyperpage}{27}
+\indexentry{pressure!total|hyperpage}{28}
+\indexentry{PSXC|hyperpage}{28}
+\indexentry{QCXC|hyperpage}{28}
+\indexentry{pressure!ambient|hyperpage}{28}
+\indexentry[lis]{pa@$p_{a}$= ambient air pressure|hyperpage}{28}
+\indexentry{PSXC|hyperpage}{28}
+\indexentry{Mach number|hyperpage}{28}
+\indexentry{true airspeed|hyperpage}{28}
+\indexentry{TTX|hyperpage}{29}
+\indexentry{QCxC|hyperpage}{29}
+\indexentry{PSXC|hyperpage}{29}
+\indexentry{MACHx|hyperpage}{29}
+\indexentry[var]{MACH = Mach number|hyperpage}{29}
+\indexentry[var]{DPx|hyperpage}{29}
+\indexentry{DPx|hyperpage}{29}
+\indexentry{dew point|hyperpage}{29}
+\indexentry{frost point|hyperpage}{29}
+\indexentry{hygrometer!dewpoint|hyperpage}{29}
+\indexentry[var]{DPxC|hyperpage}{29}
+\indexentry{DPxC|hyperpage}{29}
+\indexentry[var]{|hyperpage}{29}
+\indexentry{PSDPx|hyperpage}{29}
+\indexentry{dew point!corrected|hyperpage}{29}
+\indexentry{pressure!water vapor!equilibrium|hyperpage}{29}
+\indexentry{hygrometer|hyperpage}{29}
+\indexentry{enhancement factor, equilibrium water vapor|hyperpage}{29}
+\indexentry{pressure!dew point housing|hyperpage}{29}
+\indexentry{pressure!partial, water vapor|hyperpage}{29}
+\indexentry{hygrometer!housing|hyperpage}{30}
+\indexentry{Murphy and Koop, 2005|hyperpage}{30}
+\indexentry{pressure!water vapor!equilibrium|hyperpage}{30}
+\indexentry[lis]{e@$e$= water vapor pressure|hyperpage}{30}
+\indexentry[lis]{Tdp@$T_{DP}$= temperature at the dew point|hyperpage}{30}
+\indexentry[lis]{Tfp@$T_{FP}$= temperature at the front point|hyperpage}{30}
+\indexentry[lis]{T0@$T_{0}$= 273.15 K|hyperpage}{30}
+\indexentry[lis]{esi@$e_{s,i}$= equilibrium vapor pressure over a plane ice surface|hyperpage}{30}
+\indexentry[lis]{esl@$e_{s,l}$= equilibrium vapor pressure over a plane water surface|hyperpage}{30}
+\indexentry[lis]{fpT@$f(p,T_{p})$= enhancement factor for equilibrium water vapor pressure|hyperpage}{30}
+\indexentry[lis]{Tp@$T_{p}=$dew point temperature if above 0$^{\circ}C$, frost point temperature otherwise|hyperpage}{30}
+\indexentry[lis]{ea@$e_{a}$= ambient water vapor pressure|hyperpage}{30}
+\indexentry[lis]{alpha@$\alpha$= tanh($e_{s}(T-T_{x})$, Murphy/Koop equations|hyperpage}{30}
+\indexentry[lis]{Tx@$T_{x}$= 218.8~k, Murphy/Koop equations|hyperpage}{30}
+\indexentry[lis]{eh@$e_{h}$= water vapor pressure in an instrument housing|hyperpage}{31}
+\indexentry[lis]{ph@$p_{h}$= pressure in a sensor housing|hyperpage}{31}
+\indexentry{DPxC|hyperpage}{31}
+\indexentry{pressure!water vapor|hyperpage}{31}
+\indexentry[lis]{Fd@$F_{d}$= interpolation formula, dew point temperature from water vapor pressure|hyperpage}{31}
+\indexentry{dew point!corrected|hyperpage}{31}
+\indexentry{Lyman-alpha hygrometer|hyperpage}{31}
+\indexentry{hygrometer!tunable diode laser|hyperpage}{31}
+\indexentry{DPx|hyperpage}{32}
+\indexentry{water vapor!density|hyperpage}{32}
+\indexentry{ATX|hyperpage}{32}
+\indexentry{temperature!ambient|hyperpage}{32}
+\indexentry[lis]{Tk@$T_{K}$= absolute temperature (in kelvin)|hyperpage}{32}
+\indexentry{PSXC|hyperpage}{32}
+\indexentry[var]{EDPC|hyperpage}{32}
+\indexentry{EDPC|hyperpage}{32}
+\indexentry{DPXC|hyperpage}{32}
+\indexentry{enhancement factor|hyperpage}{32}
+\indexentry[var]{RHUM|hyperpage}{32}
+\indexentry{RHUM|hyperpage}{32}
+\indexentry{humidity!relative|hyperpage}{32}
+\indexentry{relative humidity|see humidity, relative}{32}
+\indexentry{EDPX|hyperpage}{33}
+\indexentry{ATX|hyperpage}{33}
+\indexentry{pressure!water vapor!saturation|hyperpage}{33}
+\indexentry{enhancement factor|hyperpage}{33}
+\indexentry[var]{RHOx|hyperpage}{33}
+\indexentry{RHOx|hyperpage}{33}
+\indexentry{humidity!absolute|hyperpage}{33}
+\indexentry{density!water vapor|hyperpage}{33}
+\indexentry{water vapor density|see density, water vapor}{33}
+\indexentry{chilled-mirror|hyperpage}{33}
+\indexentry{hygrometer!chilled-mirror|hyperpage}{33}
+\indexentry{ATX|hyperpage}{33}
+\indexentry{EDPX|hyperpage}{33}
+\indexentry[lis]{Cmb2@$C_{mb2Pa}$= conversion factor, mb to Pa|hyperpage}{33}
+\indexentry[lis]{Ckg2@conversion factor, kg to g|hyperpage}{33}
+\indexentry{hygrometer!Lyman-alpha|hyperpage}{33}
+\indexentry{hygrometer!UV|hyperpage}{33}
+\indexentry[var]{RHOUV|hyperpage}{33}
+\indexentry{RHOUV|hyperpage}{33}
+\indexentry[var]{RHOLA|hyperpage}{33}
+\indexentry{RHOLA|hyperpage}{33}
+\indexentry[var]{XUVI|hyperpage}{33}
+\indexentry[var]{VLA|hyperpage}{33}
+\indexentry{DPXC|hyperpage}{34}
+\indexentry{ATX|hyperpage}{34}
+\indexentry{RHODT|hyperpage}{34}
+\indexentry[var]{SPHUM|hyperpage}{34}
+\indexentry{SPHUM|hyperpage}{34}
+\indexentry{humidity!specific|hyperpage}{34}
+\indexentry{PSXC|hyperpage}{34}
+\indexentry{EDPX|hyperpage}{34}
+\indexentry[var]{MR|hyperpage}{34}
+\indexentry{MR|hyperpage}{34}
+\indexentry[var]{MRCR|hyperpage}{34}
+\indexentry{MRCR|hyperpage}{34}
+\indexentry[var]{MRLA|hyperpage}{34}
+\indexentry{MRLA|hyperpage}{34}
+\indexentry{MRLA1|hyperpage}{34}
+\indexentry[var]{MRLH|hyperpage}{34}
+\indexentry{MRLH|hyperpage}{34}
+\indexentry{water vapor!mixing ratio|hyperpage}{34}
+\indexentry{hygrometer!dew point|hyperpage}{34}
+\indexentry{hygrometer!cryogenic|hyperpage}{34}
+\indexentry{hygrometer!Lyman-alpha|hyperpage}{34}
+\indexentry{hygrometer!TDL|hyperpage}{34}
+\indexentry{EDPX|hyperpage}{34}
+\indexentry{PSXC|hyperpage}{34}
+\indexentry[var]{THETA|hyperpage}{35}
+\indexentry{THETA|hyperpage}{35}
+\indexentry{temperature!potential|hyperpage}{35}
+\indexentry{potential temperature|see {temperature, potential}}{35}
+\indexentry{ATX|hyperpage}{35}
+\indexentry{PSXC|hyperpage}{35}
+\indexentry[lis]{p0@$p_{0}$= reference pressure equal to 1000 mb|hyperpage}{35}
+\indexentry{gas constant!dry air|hyperpage}{35}
+\indexentry{specific heat!constant pressure|hyperpage}{35}
+\indexentry[var]{THETAE|hyperpage}{35}
+\indexentry{THETAE|hyperpage}{35}
+\indexentry{temperature, pseudo-adiabatic equivalent potential|hyperpage}{35}
+\indexentry{Davies-Jones|hyperpage}{35}
+\indexentry[lis]{pd@$p_{d}$= partial pressure of dry air|hyperpage}{35}
+\indexentry[lis]{r@$r$= mixing ratio of water vapor|hyperpage}{35}
+\indexentry[lis]{TL@$T_{L}$= temperature!lifted condensation level|hyperpage}{35}
+\indexentry{lifted condensation level|hyperpage}{35}
+\indexentry{latent heat of vaporization|hyperpage}{35}
+\indexentry{Bolton|hyperpage}{35}
+\indexentry{temperature!equivalent potential|hyperpage}{36}
+\indexentry{temperature!potential|hyperpage}{36}
+\indexentry{ATX|hyperpage}{36}
+\indexentry{EDPX|hyperpage}{36}
+\indexentry{MR|hyperpage}{36}
+\indexentry{THETA|hyperpage}{36}
+\indexentry[var]{TVIR|hyperpage}{36}
+\indexentry{TVIR|hyperpage}{36}
+\indexentry{temperature!virtual|hyperpage}{36}
+\indexentry{ATX|hyperpage}{36}
+\indexentry[var]{THETAV|hyperpage}{37}
+\indexentry{THETAV|hyperpage}{37}
+\indexentry{temperature!virtual potential|hyperpage}{37}
+\indexentry{TVIR|hyperpage}{37}
+\indexentry{PSXC|hyperpage}{37}
+\indexentry[var]{CRHP|hyperpage}{37}
+\indexentry{CRHP|hyperpage}{37}
+\indexentry[var]{VCRH|hyperpage}{37}
+\indexentry{VCRH|hyperpage}{37}
+\indexentry{hygrometer!cryogenic|hyperpage}{37}
+\indexentry[var]{FPCRC|hyperpage}{37}
+\indexentry{FPCRC|hyperpage}{37}
+\indexentry[var]{DPCRC|hyperpage}{37}
+\indexentry{DPCRC|hyperpage}{37}
+\indexentry{frost poin|hyperpage}{37}
+\indexentry[var]{VLA|hyperpage}{38}
+\indexentry{VLA|hyperpage}{38}
+\indexentry{VLA1|hyperpage}{38}
+\indexentry{hygrometer!Lyman-alpha|hyperpage}{38}
+\indexentry[var]{XUVI|hyperpage}{38}
+\indexentry{XUVI|hyperpage}{38}
+\indexentry{hygrometer!UV|hyperpage}{38}
+\indexentry[var]{XUVP|hyperpage}{38}
+\indexentry{XUVP|hyperpage}{38}
+\indexentry[var]{XUVT|hyperpage}{38}
+\indexentry{XUVT|hyperpage}{38}
+\indexentry[var]{PSURF|hyperpage}{39}
+\indexentry{PSURF|hyperpage}{39}
+\indexentry{HGM|hyperpage}{39}
+\indexentry{TVIR|hyperpage}{39}
+\indexentry{PSXC|hyperpage}{39}
+\indexentry{MR|hyperpage}{39}
+\indexentry{equation!thickness|hyperpage}{39}
+\indexentry{PSXC|hyperpage}{39}
+\indexentry{HGM|hyperpage}{39}
+\indexentry{TVIR|hyperpage}{39}
+\indexentry{PSURF|hyperpage}{39}
+\indexentry{Bulletin 23|hyperpage}{40}
+\indexentry{IRU|hyperpage}{40}
+\indexentry{wind!relative|hyperpage}{40}
+\indexentry[var]{QCx|hyperpage}{40}
+\indexentry{QCx|hyperpage}{40}
+\indexentry[var]{QCxC|hyperpage}{40}
+\indexentry{QCxC|hyperpage}{40}
+\indexentry{pressure!dynamic|hyperpage}{40}
+\indexentry{pressure!total|hyperpage}{40}
+\indexentry{pressure!pitot|see {pressure, total}}{40}
+\indexentry{pressure!ambient|hyperpage}{40}
+\indexentry{pressure!static|see {pressure ambient}}{40}
+\indexentry{Bulletin 21|hyperpage}{40}
+\indexentry{true airspeed|hyperpage}{40}
+\indexentry{Mach number|hyperpage}{40}
+\indexentry{TASx|hyperpage}{40}
+\indexentry{flight speed|see{true airspeed}}{40}
+\indexentry{pressure!ambient|hyperpage}{40}
+\indexentry{ATx|hyperpage}{41}
+\indexentry{MACHx|hyperpage}{41}
+\indexentry{QCxC|hyperpage}{41}
+\indexentry{PSXC|hyperpage}{41}
+\indexentry{TASx|hyperpage}{41}
+\indexentry{PSXC|hyperpage}{41}
+\indexentry{ATX|hyperpage}{41}
+\indexentry[var]{TASHC|hyperpage}{41}
+\indexentry{TASHC|hyperpage}{41}
+\indexentry{true airspeed|hyperpage}{41}
+\indexentry{SPHUM|hyperpage}{41}
+\indexentry{humidity!specific|hyperpage}{41}
+\indexentry[var]{ADIFR|hyperpage}{41}
+\indexentry{ADIFR|hyperpage}{41}
+\indexentry{attack, angle of|hyperpage}{41}
+\indexentry{radome gust-sensing system|hyperpage}{41}
+\indexentry[var]{BDIFR|hyperpage}{41}
+\indexentry{BDIFR|hyperpage}{41}
+\indexentry{sideslip, angle of|hyperpage}{41}
+\indexentry{radome gust-sensing system|hyperpage}{41}
+\indexentry[var]{AKRD|hyperpage}{41}
+\indexentry{AKRD|hyperpage}{41}
+\indexentry{attack, angle of|hyperpage}{41}
+\indexentry{ADIFR|hyperpage}{41}
+\indexentry{pressure!dynamic|hyperpage}{41}
+\indexentry{ADIF|hyperpage}{41}
+\indexentry{BDIF|hyperpage}{41}
+\indexentry{ADIFR|hyperpage}{42}
+\indexentry{QCXC|hyperpage}{42}
+\indexentry{XMACH2|hyperpage}{42}
+\indexentry[var]{ATTACK|hyperpage}{42}
+\indexentry{ATTACK|hyperpage}{42}
+\indexentry{AKRD|hyperpage}{42}
+\indexentry[var]{SSRD|hyperpage}{42}
+\indexentry{SSRD|hyperpage}{42}
+\indexentry{BDIFR|hyperpage}{42}
+\indexentry{pressure!dynamic|hyperpage}{42}
+\indexentry[var]{SSLIP|hyperpage}{42}
+\indexentry{SSLIP|hyperpage}{42}
+\indexentry{sideslip, angle of|hyperpage}{42}
+\indexentry{SSRD|hyperpage}{42}
+\indexentry[var]{UI|hyperpage}{43}
+\indexentry{UI|hyperpage}{43}
+\indexentry[var]{VI|hyperpage}{43}
+\indexentry{VI|hyperpage}{43}
+\indexentry[var]{WI|hyperpage}{43}
+\indexentry{WI|hyperpage}{43}
+\indexentry{wind|hyperpage}{43}
+\indexentry{wind!vector|hyperpage}{43}
+\indexentry{wind!components|hyperpage}{43}
+\indexentry[var]{WS|hyperpage}{43}
+\indexentry{WS|hyperpage}{43}
+\indexentry[var]{WD|hyperpage}{43}
+\indexentry{WD|hyperpage}{43}
+\indexentry{wind!speed|hyperpage}{43}
+\indexentry{wind!direction|hyperpage}{43}
+\indexentry[lis]{Crd@$C_{rd}$= conversion factor, radians to degrees (180/$\pi $)|hyperpage}{43}
+\indexentry[var]{UX|hyperpage}{43}
+\indexentry{UX|hyperpage}{43}
+\indexentry[var]{VY|hyperpage}{43}
+\indexentry{VY|hyperpage}{43}
+\indexentry{wind!vector|hyperpage}{43}
+\indexentry[var]{UIC|hyperpage}{43}
+\indexentry{UIC|hyperpage}{43}
+\indexentry[var]{VIC|hyperpage}{43}
+\indexentry{VIC|hyperpage}{43}
+\indexentry{wind!GPS-corrected|hyperpage}{43}
+\indexentry{wind!vector|hyperpage}{43}
+\indexentry[var]{WIC|hyperpage}{44}
+\indexentry{WIC|hyperpage}{44}
+\indexentry{wind!vertical|hyperpage}{44}
+\indexentry[var]{WSC|hyperpage}{44}
+\indexentry{WSC|hyperpage}{44}
+\indexentry[var]{WDC|hyperpage}{44}
+\indexentry{WDC|hyperpage}{44}
+\indexentry{wind!GPS-corrected|hyperpage}{44}
+\indexentry[var]{UXC|hyperpage}{44}
+\indexentry{UXC|hyperpage}{44}
+\indexentry[var]{VYC|hyperpage}{44}
+\indexentry{VYC|hyperpage}{44}
+\indexentry{wind!lateral component|hyperpage}{44}
+\indexentry{wind!longitudinal component|hyperpage}{44}
+\indexentry[var]{PLWC|hyperpage}{45}
+\indexentry{PLWC|hyperpage}{45}
+\indexentry{PLWC1|hyperpage}{45}
+\indexentry{King probe|hyperpage}{45}
+\indexentry{Bulletin 24|hyperpage}{45}
+\indexentry[var]{PLWCC|hyperpage}{45}
+\indexentry{PLWCC|hyperpage}{45}
+\indexentry{PLWCC1|hyperpage}{45}
+\indexentry{liquid water content!King probe|hyperpage}{45}
+\indexentry{water!boiling point|hyperpage}{45}
+\indexentry{King probe!power dissipated|hyperpage}{46}
+\indexentry{King Probe!element dimensions|hyperpage}{46}
+\indexentry{King probe!sensor temperature|hyperpage}{46}
+\indexentry[lis]{Tb@$T_{b}$= boiling temperature of water|hyperpage}{46}
+\indexentry[lis]{Lv@$L_{V}$= latent heat of vaporization of water|hyperpage}{46}
+\indexentry[lis]{cw@$c_{w}$= specific heat of liquid water|hyperpage}{46}
+\indexentry[lis]{lambda_{c} = thermal conductivity, dry air@$\lambda _{c}$= thermal conductivity, dry air|hyperpage}{46}
+\indexentry{thermal conductivity|hyperpage}{46}
+\indexentry[lis]{mu_{a} = dynamic viscosity of air@$\mu _{a}$= dynamic viscosity of air|hyperpage}{46}
+\indexentry{viscosity|hyperpage}{46}
+\indexentry[lis]{rhoa@$\rho _{a}$= density of air|hyperpage}{46}
+\indexentry[lis]{Re= Reynolds number|hyperpage}{46}
+\indexentry[lis]{Nu= Nusselt number|hyperpage}{46}
+\indexentry[lis]{Ckg2g@$C_{kg2g}$= conversion factor, g to kg|hyperpage}{46}
+\indexentry[lis]{chi = liquid water content@$\chi $= liquid water content|hyperpage}{46}
+\indexentry[var]{RICE|hyperpage}{46}
+\indexentry{RICE|hyperpage}{46}
+\indexentry{Rosemount 871F icing probe|hyperpage}{46}
+\indexentry{liquid water content|hyperpage}{46}
+\indexentry[var]{SCLWC|hyperpage}{47}
+\indexentry{SCLWC|hyperpage}{47}
+\indexentry{hydrometeor detector|hyperpage}{47}
+\indexentry{variable names!hydrometeor probes|hyperpage}{47}
+\indexentry{hydrometeor probes!table of|hyperpage}{48}
+\indexentry[var]{AFSSP|hyperpage}{48}
+\indexentry{AFSSP|hyperpage}{48}
+\indexentry[var]{AF300|hyperpage}{48}
+\indexentry{AF300|hyperpage}{48}
+\indexentry[var]{APCAS|hyperpage}{48}
+\indexentry{APCAS|hyperpage}{48}
+\indexentry[var]{A200X|hyperpage}{48}
+\indexentry{A200X|hyperpage}{48}
+\indexentry[var]{A260X|hyperpage}{48}
+\indexentry{A260X|hyperpage}{48}
+\indexentry[var]{A200Y|hyperpage}{48}
+\indexentry{A200Y|hyperpage}{48}
+\indexentry[var]{ACDP|hyperpage}{48}
+\indexentry{ACDP|hyperpage}{48}
+\indexentry[var]{AUHSAS|hyperpage}{48}
+\indexentry{AUHSAS|hyperpage}{48}
+\indexentry{NetCDF|hyperpage}{48}
+\indexentry{CFSSP|hyperpage}{49}
+\indexentry{CF300|hyperpage}{49}
+\indexentry{CPCAS|hyperpage}{49}
+\indexentry{CCDP|hyperpage}{49}
+\indexentry{CUHSAS|hyperpage}{49}
+\indexentry{C200X|hyperpage}{49}
+\indexentry{C260X|hyperpage}{49}
+\indexentry{C200Y|hyperpage}{49}
+\indexentry{concentration!hydrometeor|hyperpage}{49}
+\indexentry{FSSP-100!size distribution|hyperpage}{49}
+\indexentry{spectrometer!hydrometeor|hyperpage}{49}
+\indexentry{hydrometeor spectrometer|hyperpage}{49}
+\indexentry{FSSP-300|hyperpage}{49}
+\indexentry{PCAS|hyperpage}{49}
+\indexentry{CDP|hyperpage}{49}
+\indexentry{UHSAS|hyperpage}{49}
+\indexentry{200X 1D probe|hyperpage}{49}
+\indexentry{260X 1D probe|hyperpage}{49}
+\indexentry{200Y 1D probe|hyperpage}{49}
+\indexentry{Bulletin 24|hyperpage}{49}
+\indexentry[var]{CONCF|hyperpage}{49}
+\indexentry{CONCF|hyperpage}{49}
+\indexentry[var]{CONC3|hyperpage}{49}
+\indexentry{CONC3|hyperpage}{49}
+\indexentry[var]{CONCP|hyperpage}{49}
+\indexentry{CONCP|hyperpage}{49}
+\indexentry[var]{CONCD|hyperpage}{49}
+\indexentry{CONCD|hyperpage}{49}
+\indexentry[var]{CONCU|hyperpage}{49}
+\indexentry{CONCU|hyperpage}{49}
+\indexentry[var]{CONCX|hyperpage}{49}
+\indexentry{CONCX|hyperpage}{49}
+\indexentry[var]{CONC6|hyperpage}{49}
+\indexentry{CONC6|hyperpage}{49}
+\indexentry[var]{CONCY|hyperpage}{49}
+\indexentry{CONCY|hyperpage}{49}
+\indexentry{FSSP-100!concentration|hyperpage}{49}
+\indexentry{DBARF|hyperpage}{49}
+\indexentry{DBAR3|hyperpage}{49}
+\indexentry{DBARP|hyperpage}{49}
+\indexentry{DBARX|hyperpage}{49}
+\indexentry{DBAR6|hyperpage}{49}
+\indexentry{DBARY|hyperpage}{49}
+\indexentry{DBARD|hyperpage}{49}
+\indexentry{DBARU|hyperpage}{49}
+\indexentry{diameter!mean|hyperpage}{49}
+\indexentry{FSSP-100!mean diameter|hyperpage}{49}
+\indexentry[lis]{Cyi@$Cy_{i}$= concentration from hydrometeor probe y in channel i|hyperpage}{49}
+\indexentry[lis]{di@$d_{i}$= diameter of hydrometeor in channel $i$|hyperpage}{49}
+\indexentry[var]{DISPF|hyperpage}{49}
+\indexentry{DISPF|hyperpage}{49}
+\indexentry[var]{DISP3|hyperpage}{49}
+\indexentry{DISP3|hyperpage}{49}
+\indexentry[var]{DISPP|hyperpage}{49}
+\indexentry{DISPP|hyperpage}{49}
+\indexentry[var]{DISPX|hyperpage}{49}
+\indexentry{DISPX|hyperpage}{49}
+\indexentry[var]{DISP6|hyperpage}{49}
+\indexentry{DISP6|hyperpage}{49}
+\indexentry[var]{DISPY|hyperpage}{49}
+\indexentry{DISPY|hyperpage}{49}
+\indexentry[var]{DISPD|hyperpage}{49}
+\indexentry{DISPD|hyperpage}{49}
+\indexentry[var]{DISPU|hyperpage}{49}
+\indexentry{DISPU|hyperpage}{49}
+\indexentry{dispersion|hyperpage}{49}
+\indexentry{FSSP-100!dispersion|hyperpage}{49}
+\indexentry[var]{PLWCF|hyperpage}{50}
+\indexentry{PLWCF|hyperpage}{50}
+\indexentry[var]{PLWCX|hyperpage}{50}
+\indexentry{PLWCX|hyperpage}{50}
+\indexentry[var]{PLWC6|hyperpage}{50}
+\indexentry{PLWC6|hyperpage}{50}
+\indexentry[var]{PLWCY|hyperpage}{50}
+\indexentry{PLWCY|hyperpage}{50}
+\indexentry[var]{PLWCD|hyperpage}{50}
+\indexentry{PLWCD|hyperpage}{50}
+\indexentry{liquid water content|hyperpage}{50}
+\indexentry{FSSP-100!liquid water content|hyperpage}{50}
+\indexentry{diameter!equivalent|hyperpage}{50}
+\indexentry{ice water content|hyperpage}{50}
+\indexentry[lis]{dei@$d_{e,i}$= equivalent melted diameter for channel i of a hydrometeor spectrometer|hyperpage}{50}
+\indexentry[lis]{rhow@$\rho _{w}$= density of liquid water|hyperpage}{50}
+\indexentry[var]{DBZF|hyperpage}{50}
+\indexentry{DBZF|hyperpage}{50}
+\indexentry[var]{DBZX|hyperpage}{50}
+\indexentry{DBZX|hyperpage}{50}
+\indexentry[var]{DBZ6|hyperpage}{50}
+\indexentry{DBZ6|hyperpage}{50}
+\indexentry[var]{DBZY|hyperpage}{50}
+\indexentry{DBZY|hyperpage}{50}
+\indexentry[var]{DBZD|hyperpage}{50}
+\indexentry{DBZD|hyperpage}{50}
+\indexentry{reflectivity factor|hyperpage}{50}
+\indexentry{dBz|hyperpage}{50}
+\indexentry{FSSP-100!radar reflectivity factor|hyperpage}{50}
+\indexentry{dimensionless equations|hyperpage}{51}
+\indexentry[var]{FRNG|hyperpage}{51}
+\indexentry{FRNG|hyperpage}{51}
+\indexentry[var]{FRANGE|hyperpage}{51}
+\indexentry{FRANGE|hyperpage}{51}
+\indexentry{FSSP-100!range|hyperpage}{51}
+\indexentry[var]{FRST|hyperpage}{51}
+\indexentry{FRST|hyperpage}{51}
+\indexentry[var]{FRESET|hyperpage}{51}
+\indexentry{FRESET|hyperpage}{51}
+\indexentry{FSSP-100!fast resets|hyperpage}{51}
+\indexentry{FSSP-100!dead time|hyperpage}{51}
+\indexentry[var]{FSTB|hyperpage}{51}
+\indexentry{FSTB|hyperpage}{51}
+\indexentry[var]{FSTROB|hyperpage}{51}
+\indexentry{FSTROB|hyperpage}{51}
+\indexentry{FSSP-100!total strobes|hyperpage}{51}
+\indexentry{Bulletin 24|hyperpage}{52}
+\indexentry[var]{FBMFR|hyperpage}{52}
+\indexentry{FBMFR|hyperpage}{52}
+\indexentry{FSSP-100!beam fraction|hyperpage}{52}
+\indexentry{FACT|hyperpage}{52}
+\indexentry{FSSP-100!activity|hyperpage}{52}
+\indexentry{dead time!FSSP|hyperpage}{52}
+\indexentry{FSSP-100!dead time|hyperpage}{52}
+\indexentry[var]{AACT|hyperpage}{52}
+\indexentry{AACT|hyperpage}{52}
+\indexentry[var]{PACT|hyperpage}{52}
+\indexentry{PACT|hyperpage}{52}
+\indexentry{CON2C1|hyperpage}{53}
+\indexentry{CON2P1|hyperpage}{53}
+\indexentry{CO|hyperpage}{54}
+\indexentry{CMODE|hyperpage}{54}
+\indexentry{COZRO|hyperpage}{54}
+\indexentry{COCOR|hyperpage}{54}
+\indexentry{COCAL|hyperpage}{54}
+\indexentry{TEO3|hyperpage}{54}
+\indexentry{TEP|hyperpage}{54}
+\indexentry{TEO3P|hyperpage}{54}
+\indexentry{TET|hyperpage}{54}
+\indexentry{TEO3C|hyperpage}{54}
+\indexentry{XNO|hyperpage}{55}
+\indexentry{XNOY|hyperpage}{55}
+\indexentry{XNOCF|hyperpage}{55}
+\indexentry{XNCLF|hyperpage}{55}
+\indexentry{XNST|hyperpage}{55}
+\indexentry{XNOZA|hyperpage}{55}
+\indexentry{XNZAF|hyperpage}{55}
+\indexentry{XNOSF|hyperpage}{55}
+\indexentry{XNSAF|hyperpage}{55}
+\indexentry{XNOYP|hyperpage}{55}
+\indexentry{XNMBT|hyperpage}{55}
+\indexentry{XNOCAL|hyperpage}{55}
+\indexentry{XNYCAL|hyperpage}{55}
+\indexentry{O3FS|hyperpage}{55}
+\indexentry{O3FF|hyperpage}{55}
+\indexentry{O3FN|hyperpage}{55}
+\indexentry{O3FP|hyperpage}{55}
+\indexentry{O3FC|hyperpage}{56}
+\indexentry{condensation nucleus counter|see {CN counter}}{57}
+\indexentry{CN counter|hyperpage}{57}
+\indexentry[var]{PCN|hyperpage}{57}
+\indexentry{PCN|hyperpage}{57}
+\indexentry[var]{TEMP1|hyperpage}{57}
+\indexentry{TEMP1|hyperpage}{57}
+\indexentry[var]{TEMP2|hyperpage}{57}
+\indexentry{TEMP2|hyperpage}{57}
+\indexentry[var]{CNTEMP|hyperpage}{57}
+\indexentry{CNTEMP|hyperpage}{57}
+\indexentry[var]{FCN|hyperpage}{57}
+\indexentry{FCN|hyperpage}{57}
+\indexentry[var]{FCNC|hyperpage}{57}
+\indexentry{FCNC|hyperpage}{57}
+\indexentry[var]{XICN|hyperpage}{58}
+\indexentry{XICN|hyperpage}{58}
+\indexentry[var]{XICNC|hyperpage}{58}
+\indexentry{XICNC|hyperpage}{58}
+\indexentry[lis]{Tr@$T_{r}$= absolute reference temperature, STP|hyperpage}{58}
+\indexentry[var]{CNTS|hyperpage}{58}
+\indexentry{CNTS|hyperpage}{58}
+\indexentry[var]{CONCN|hyperpage}{58}
+\indexentry{CONCN|hyperpage}{58}
+\indexentry{Irradiance|hyperpage}{60}
+\indexentry{Temperature!radiometric|hyperpage}{60}
+\indexentry[var]{RSTx|hyperpage}{60}
+\indexentry{RSTx|hyperpage}{60}
+\indexentry[var]{TRSTB|hyperpage}{60}
+\indexentry{TRSTB|hyperpage}{60}
+\indexentry{Heimann radiometer|hyperpage}{60}
+\indexentry[var]{IRx|hyperpage}{60}
+\indexentry{IRx|hyperpage}{60}
+\indexentry{pyrgeometer|hyperpage}{60}
+\indexentry{radiation!long-wave|hyperpage}{60}
+\indexentry[var]{IRxC|hyperpage}{60}
+\indexentry{IRxC|hyperpage}{60}
+\indexentry[var]{SWx|hyperpage}{61}
+\indexentry{SWx|hyperpage}{61}
+\indexentry{pyranometer|hyperpage}{61}
+\indexentry{radiation!short wave|hyperpage}{61}
+\indexentry[var]{SWTC|hyperpage}{61}
+\indexentry{SWTC|hyperpage}{61}
+\indexentry{UVxUVx@\relax \@savsk \lastskip \@savsf \spacefactor \begingroup \catcode `\ 12\relax \catcode `\\12\relax \catcode `\$12\relax \catcode `\&12\relax \catcode `\#12\relax \catcode `\^12\relax \catcode `\_12\relax \catcode `\%12\relax \catcode `\~12\relax \@wrsindex [var]{UVx}UVx|hyperpage}{61}
+\indexentry[var]{SOLDE|hyperpage}{61}
+\indexentry{SOLDE|hyperpage}{61}
+\indexentry{solar declination angle|hyperpage}{61}
+\indexentry[var]{SOLZE|hyperpage}{62}
+\indexentry{SOLZE|hyperpage}{62}
+\indexentry{solar zenith angle|hyperpage}{62}
+\indexentry[var]{SOLAZ|hyperpage}{62}
+\indexentry{SOLAZ|hyperpage}{62}
+\indexentry{solar azimuth angle|hyperpage}{62}
+\indexentry[var]{SOLEL|hyperpage}{62}
+\indexentry{SOLEL|hyperpage}{62}
+\indexentry{solar elevation angle|hyperpage}{62}
+\indexentry[var]{TPTIME (obsolete)|hyperpage}{65}
+\indexentry{TPTIME|hyperpage}{65}
+\indexentry[var]{PTIME (obsolete)|hyperpage}{65}
+\indexentry{PTIME|hyperpage}{65}
+\indexentry[var]{TMLAG (obsolete)|hyperpage}{65}
+\indexentry{TMLAG|hyperpage}{65}
+\indexentry[var]{CLAT (obsolete)|hyperpage}{65}
+\indexentry{CLAT|hyperpage}{65}
+\indexentry[var]{CLON (obsolete)|hyperpage}{65}
+\indexentry{CLON|hyperpage}{65}
+\indexentry[var]{CCEP (obsolete)|hyperpage}{65}
+\indexentry{CCEP|hyperpage}{65}
+\indexentry[var]{CGS (obsolete)|hyperpage}{65}
+\indexentry{CGS|hyperpage}{65}
+\indexentry[var]{CSEC (obsolete)|hyperpage}{65}
+\indexentry{CSEC|hyperpage}{65}
+\indexentry[var]{CFSEC (obsolete)|hyperpage}{65}
+\indexentry{CFSEC|hyperpage}{65}
+\indexentry[var]{ALAT (obsolete)|hyperpage}{66}
+\indexentry{ALAT|hyperpage}{66}
+\indexentry[var]{ALON (obsolete)|hyperpage}{66}
+\indexentry{ALON|hyperpage}{66}
+\indexentry[var]{XVI (obsolete)|hyperpage}{66}
+\indexentry{XVI|hyperpage}{66}
+\indexentry[var]{YVI (obsolete)|hyperpage}{66}
+\indexentry{YVI|hyperpage}{66}
+\indexentry[var]{THI (obsolete)|hyperpage}{66}
+\indexentry{THI|hyperpage}{66}
+\indexentry[var]{ALPHA (obsolete)|hyperpage}{66}
+\indexentry{ALPHA|hyperpage}{66}
+\indexentry[var]{PHDG (obsolete)|hyperpage}{66}
+\indexentry{PHDG|hyperpage}{66}
+\indexentry{Litton LTN-51 INS|hyperpage}{66}
+\indexentry[var]{VZI (obsolete)|hyperpage}{66}
+\indexentry{VZI|hyperpage}{66}
+\indexentry[var]{THF (obsolete)|hyperpage}{66}
+\indexentry{THF|hyperpage}{66}
+\indexentry[var]{GSF (obsolete)|hyperpage}{66}
+\indexentry{GSF@\textbf  {GSF}|hyperpage}{66}
+\indexentry[var]{VEW (obsolete)|hyperpage}{66}
+\indexentry{VEW|hyperpage}{66}
+\indexentry[var]{VNS (obsolete)|hyperpage}{66}
+\indexentry{VNS|hyperpage}{66}
+\indexentry[var]{WSPD (obsolete)|hyperpage}{66}
+\indexentry{WSPD|hyperpage}{66}
+\indexentry[var]{WDRCTN (obsolete)|hyperpage}{66}
+\indexentry{WDRCTN|hyperpage}{66}
+\indexentry[var]{AFIXx (obsolete)|hyperpage}{67}
+\indexentry{AFIXx|hyperpage}{67}
+\indexentry[var]{BFIXx (obsolete)|hyperpage}{67}
+\indexentry{BFIXx|hyperpage}{67}
+\indexentry[var]{AKFXx (obsolete)|hyperpage}{67}
+\indexentry{AKFXx|hyperpage}{67}
+\indexentry[var]{SSFXx (obsolete)|hyperpage}{67}
+\indexentry{SSFXx|hyperpage}{67}
+\indexentry[var]{QCB (obsolete)|hyperpage}{67}
+\indexentry{QCB|hyperpage}{67}
+\indexentry[var]{QCBC (obsolete)|hyperpage}{67}
+\indexentry{QCBC|hyperpage}{67}
+\indexentry[var]{QCG (obsolete)|hyperpage}{67}
+\indexentry{QCG|hyperpage}{67}
+\indexentry[var]{QCGC (obsolete)|hyperpage}{67}
+\indexentry{QCGC|hyperpage}{67}
+\indexentry[var]{TTRF (obsolete)|hyperpage}{67}
+\indexentry{TTRF|hyperpage}{67}
+\indexentry{reverse-flow temperature sensor|hyperpage}{67}
+\indexentry[var]{TTKP (obsolete)|hyperpage}{67}
+\indexentry{TTKP|hyperpage}{67}
+\indexentry[var]{ATRF (obsolete)|hyperpage}{68}
+\indexentry{ATRF|hyperpage}{68}
+\indexentry[var]{ATKP (obsolete)|hyperpage}{68}
+\indexentry{ATKP|hyperpage}{68}
+\indexentry[var]{LWC (obsolete)|hyperpage}{68}
+\indexentry{LWC|hyperpage}{68}
+\indexentry{Johnson-Williams|hyperpage}{68}
+\indexentry[var]{LWCC (obsolete)|hyperpage}{68}
+\indexentry{LWCC|hyperpage}{68}
+\indexentry[var]{EDPC (obsolete)|hyperpage}{68}
+\indexentry{EDPC|hyperpage}{68}

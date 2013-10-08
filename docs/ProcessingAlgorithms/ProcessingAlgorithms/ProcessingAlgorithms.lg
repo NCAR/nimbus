@@ -1,0 +1,430 @@
+htfcss: ptmb8t   font-weight: bold;
+htfcss: ptmri8t font-style: italic;
+htfcss: ptmb8t   font-weight: bold;
+htfcss: ec-lmbo  font-style: oblique;
+htfcss: ec-lmbx  font-weight: bold;
+htfcss: ec-lmbxi  font-style:italic; font-weight: bold;
+htfcss: ec-lmbxo  font-style: oblique; font-weight: bold;
+htfcss: ec-lmcsco  font-style: oblique;
+htfcss: ec-lmri  font-style:italic;
+htfcss: ec-lmro  font-style: oblique;
+htfcss: ec-lmss  font-family: sans-serif;
+htfcss: ec-lmssbo  font-family: sans-serif; font-style: oblique; font-weight: bold;
+htfcss: ec-lmssbx  font-family: sans-serif; font-weight: bold;
+htfcss: ec-lmssdc  font-family: sans-serif;
+htfcss: ec-lmssdo  font-family: sans-serif; font-style: oblique;
+htfcss: ec-lmsso  font-family: sans-serif; font-style: oblique;
+htfcss: ec-lmssq  font-family: sans-serif;
+htfcss: ec-lmssqbo  font-family: sans-serif; font-style: oblique; font-weight: bold;
+htfcss: ec-lmssqbx  font-family: sans-serif; font-weight: bold;
+htfcss: ec-lmssqo  font-family: sans-serif; font-style: oblique;
+htfcss: ec-lmtcsc  font-family: monospace;
+htfcss: ec-lmtcso  font-style: oblique; font-family: monospace;
+htfcss: ec-lmtk  font-family: monospace;
+htfcss: ec-lmtko  font-style: oblique; font-family: monospace;
+htfcss: ec-lmtl  font-weight: light; font-family: monospace;
+htfcss: ec-lmtlc  font-weight: light; font-family: monospace;
+htfcss: ec-lmtlco  font-weight: light; font-style: oblique; font-family: monospace;
+htfcss: ec-lmtlo  font-weight: light; font-style: oblique; font-family: monospace;
+htfcss: ec-lmtt  font-family: monospace;
+htfcss: ec-lmtti  font-family: monospace; font-style:italic;
+htfcss: ec-lmtto  font-style: oblique; font-family: monospace;
+htfcss: ec-lmvtk  font-family: monospace;
+htfcss: ec-lmvtko  font-style: oblique; font-family: monospace;
+htfcss: ec-lmvtl  font-weight: light; font-family: monospace;
+htfcss: ec-lmvtlo  font-weight: light; font-style: oblique; font-family: monospace;
+htfcss: ec-lmvtt  font-family: monospace;
+htfcss: ec-lmvtto  font-style: oblique; font-family: monospace;
+htfcss: ptmri8t font-style: italic;
+htfcss: ec-lmbo  font-style: oblique;
+htfcss: ec-lmbx  font-weight: bold;
+htfcss: ec-lmbxi  font-style:italic; font-weight: bold;
+htfcss: ec-lmbxo  font-style: oblique; font-weight: bold;
+htfcss: ec-lmcsco  font-style: oblique;
+htfcss: ec-lmri  font-style:italic;
+htfcss: ec-lmro  font-style: oblique;
+htfcss: ec-lmss  font-family: sans-serif;
+htfcss: ec-lmssbo  font-family: sans-serif; font-style: oblique; font-weight: bold;
+htfcss: ec-lmssbx  font-family: sans-serif; font-weight: bold;
+htfcss: ec-lmssdc  font-family: sans-serif;
+htfcss: ec-lmssdo  font-family: sans-serif; font-style: oblique;
+htfcss: ec-lmsso  font-family: sans-serif; font-style: oblique;
+htfcss: ec-lmssq  font-family: sans-serif;
+htfcss: ec-lmssqbo  font-family: sans-serif; font-style: oblique; font-weight: bold;
+htfcss: ec-lmssqbx  font-family: sans-serif; font-weight: bold;
+htfcss: ec-lmssqo  font-family: sans-serif; font-style: oblique;
+htfcss: ec-lmtcsc  font-family: monospace;
+htfcss: ec-lmtcso  font-style: oblique; font-family: monospace;
+htfcss: ec-lmtk  font-family: monospace;
+htfcss: ec-lmtko  font-style: oblique; font-family: monospace;
+htfcss: ec-lmtl  font-weight: light; font-family: monospace;
+htfcss: ec-lmtlc  font-weight: light; font-family: monospace;
+htfcss: ec-lmtlco  font-weight: light; font-style: oblique; font-family: monospace;
+htfcss: ec-lmtlo  font-weight: light; font-style: oblique; font-family: monospace;
+htfcss: ec-lmtt  font-family: monospace;
+htfcss: ec-lmtti  font-family: monospace; font-style:italic;
+htfcss: ec-lmtto  font-style: oblique; font-family: monospace;
+htfcss: ec-lmvtk  font-family: monospace;
+htfcss: ec-lmvtko  font-style: oblique; font-family: monospace;
+htfcss: ec-lmvtl  font-weight: light; font-family: monospace;
+htfcss: ec-lmvtlo  font-weight: light; font-style: oblique; font-family: monospace;
+htfcss: ec-lmvtt  font-family: monospace;
+htfcss: ec-lmvtto  font-style: oblique; font-family: monospace;
+htfcss: zptmcm7y  font-weight: bold; font-style: italic;
+htfcss: zpzccmry  font-weight: bold; font-style: italic;
+htfcss: zptmcm7y  font-weight: bold; font-style: italic;
+htfcss: zptmcm7y  font-weight: bold; font-style: italic;
+htfcss: zptmcm7m  font-weight: bold; font-style: italic;
+htfcss: zptmcm7m  font-weight: bold; font-style: italic;
+htfcss: zptmcm7m  font-weight: bold; font-style: italic;
+htfcss: zptmcm7t  font-weight: bold; font-style: italic;
+htfcss: zptmcmr  font-style: italic;
+htfcss: zptmcm7t  font-weight: bold; font-style: italic;
+htfcss: zptmcm7t  font-weight: bold; font-style: italic;
+htfcss: ptmri8t font-style: italic;
+htfcss: ptmb8t   font-weight: bold;
+htfcss: zptmcm7v  font-weight: bold; font-style: italic;
+htfcss: zptmcm7y  font-weight: bold; font-style: italic;
+htfcss: zptmcm7y  font-weight: bold; font-style: italic;
+htfcss: zptmcm7y  font-weight: bold; font-style: italic;
+htfcss: zptmcm7m  font-weight: bold; font-style: italic;
+htfcss: zptmcm7m  font-weight: bold; font-style: italic;
+htfcss: zptmcm7m  font-weight: bold; font-style: italic;
+htfcss: zptmcm7t  font-weight: bold; font-style: italic;
+htfcss: zptmcm7t  font-weight: bold; font-style: italic;
+htfcss: zptmcm7t  font-weight: bold; font-style: italic;
+htfcss: ec-lmbo  font-style: oblique;
+htfcss: ec-lmbx  font-weight: bold;
+htfcss: ec-lmbxi  font-style:italic; font-weight: bold;
+htfcss: ec-lmbxo  font-style: oblique; font-weight: bold;
+htfcss: ec-lmcsco  font-style: oblique;
+htfcss: ec-lmri  font-style:italic;
+htfcss: ec-lmro  font-style: oblique;
+htfcss: ec-lmss  font-family: sans-serif;
+htfcss: ec-lmssbo  font-family: sans-serif; font-style: oblique; font-weight: bold;
+htfcss: ec-lmssbx  font-family: sans-serif; font-weight: bold;
+htfcss: ec-lmssdc  font-family: sans-serif;
+htfcss: ec-lmssdo  font-family: sans-serif; font-style: oblique;
+htfcss: ec-lmsso  font-family: sans-serif; font-style: oblique;
+htfcss: ec-lmssq  font-family: sans-serif;
+htfcss: ec-lmssqbo  font-family: sans-serif; font-style: oblique; font-weight: bold;
+htfcss: ec-lmssqbx  font-family: sans-serif; font-weight: bold;
+htfcss: ec-lmssqo  font-family: sans-serif; font-style: oblique;
+htfcss: ec-lmtcsc  font-family: monospace;
+htfcss: ec-lmtcso  font-style: oblique; font-family: monospace;
+htfcss: ec-lmtk  font-family: monospace;
+htfcss: ec-lmtko  font-style: oblique; font-family: monospace;
+htfcss: ec-lmtl  font-weight: light; font-family: monospace;
+htfcss: ec-lmtlc  font-weight: light; font-family: monospace;
+htfcss: ec-lmtlco  font-weight: light; font-style: oblique; font-family: monospace;
+htfcss: ec-lmtlo  font-weight: light; font-style: oblique; font-family: monospace;
+htfcss: ec-lmtt  font-family: monospace;
+htfcss: ec-lmtti  font-family: monospace; font-style:italic;
+htfcss: ec-lmtto  font-style: oblique; font-family: monospace;
+htfcss: ec-lmvtk  font-family: monospace;
+htfcss: ec-lmvtko  font-style: oblique; font-family: monospace;
+htfcss: ec-lmvtl  font-weight: light; font-family: monospace;
+htfcss: ec-lmvtlo  font-weight: light; font-style: oblique; font-family: monospace;
+htfcss: ec-lmvtt  font-family: monospace;
+htfcss: ec-lmvtto  font-style: oblique; font-family: monospace;
+htfcss: zptmcm7m  font-weight: bold; font-style: italic;
+htfcss: ecbx  font-weight: bold;
+htfcss: ecsx  font-weight: bold;
+htfcss: ecbi  font-weight: bold;   font-style: italic;
+htfcss: ecit  font-style: italic; font-family: monospace;
+htfcss: ecss  font-family: sans-serif;
+htfcss: ecff  font-family: fantasy;
+htfcss: ecti  font-style: italic;
+htfcss: ectt  font-family: monospace;
+File: ProcessingAlgorithms.html
+File: ProcessingAlgorithms.css
+File: ProcessingAlgorithms.tmp
+File: ProcessingAlgorithms2.html
+File: ProcessingAlgorithms3.html
+File: ProcessingAlgorithms4.html
+File: ProcessingAlgorithms5.html
+File: ProcessingAlgorithms6.html
+File: ProcessingAlgorithms7.html
+File: ProcessingAlgorithms8.html
+File: ProcessingAlgorithms9.html
+File: ProcessingAlgorithms10.html
+File: ProcessingAlgorithms11.html
+File: ProcessingAlgorithms12.html
+File: ProcessingAlgorithms13.html
+File: ProcessingAlgorithms14.html
+File: ProcessingAlgorithms15.html
+File: ProcessingAlgorithms16.html
+File: ProcessingAlgorithms17.html
+File: ProcessingAlgorithms18.html
+File: ProcessingAlgorithms19.html
+File: ProcessingAlgorithms20.html
+File: ProcessingAlgorithms21.html
+Font_Class(4,"4"): <span  class="small-caps"></span>
+File: ProcessingAlgorithms22.html
+File: ProcessingAlgorithms23.html
+File: ProcessingAlgorithms24.html
+File: ProcessingAlgorithms25.html
+File: ProcessingAlgorithms26.html
+File: ProcessingAlgorithms27.html
+Css: p.noindent { text-indent: 0em }
+Css: td p.noindent { text-indent: 0em; margin-top:0em; }
+Css: p.nopar { text-indent: 0em; }
+Css: p.indent{ text-indent: 1.5em }
+Css: @media print {div.crosslinks {visibility:hidden;}}
+Css: a img { border-top: 0; border-left: 0; border-right: 0; }
+Font_Css("4"): .small-caps{font-variant: small-caps; }
+Font_Css("10"): .htf-cmbx {font-weight: bold; font-style:normal;}
+Font_Css("12"): .htf-calligraphy {font-family:cursive}
+Font_Css("14"): .htf-italic {font-style: italic;}
+Font_Css("16"): .htf-bold {font-weight: bold;}
+Font_Css("12"): .htf-calligraphy-bold {font-family:cursive ; font-weight: bold; }
+Css: center { margin-top:1em; margin-bottom:1em; }
+Css: td center { margin-top:0em; margin-bottom:0em; }
+Css: .Canvas { position:relative; }
+Css: img.math{vertical-align:middle;}
+Css: li p.indent { text-indent: 0em }
+Css: .enumerate1 {list-style-type:decimal;}
+Css: .enumerate2 {list-style-type:lower-alpha;}
+Css: .enumerate3 {list-style-type:lower-roman;}
+Css: .enumerate4 {list-style-type:upper-alpha;}
+Css: div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+Css: .obeylines-h,.obeylines-v {white-space: nowrap; }
+Css: div.obeylines-v p { margin-top:0; margin-bottom:0; }
+Css: .overline{ text-decoration:overline; }
+Css: .overline img{ border-top: 1px solid black; }
+Css: td.displaylines {text-align:center; white-space:nowrap;}
+Css: .centerline {text-align:center;}
+Css: .rightline {text-align:right;}
+Css: div.verbatim {font-family: monospace; white-space: nowrap; text-align:left; clear:both; }
+Css: .fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+Css: div.fbox {display:table}
+Css: div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+Css: div.minipage{width:100%;}
+Css: div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+Css: div.center div {text-align: left;}
+Css: div.flushright, div.flushright div.flushright {text-align: right;}
+Css: div.flushright div {text-align: left;}
+Css: div.flushleft {text-align: left;}
+Css: .underline{ text-decoration:underline; }
+Css: .underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+Css: .framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+Css: .framebox-c {text-align:center;}
+Css: .framebox-l {text-align:left;}
+Css: .framebox-r {text-align:right;}
+Css: span.thank-mark{ vertical-align: super }
+Css: span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+Css: div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+Css: table.tabular td p{margin-top:0em;}
+Css: table.tabular {margin-left: auto; margin-right: auto;}
+Css: div.td00{ margin-left:0pt; margin-right:0pt; }
+Css: div.td01{ margin-left:0pt; margin-right:5pt; }
+Css: div.td10{ margin-left:5pt; margin-right:0pt; }
+Css: div.td11{ margin-left:5pt; margin-right:5pt; }
+Css: table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+Css: td.td00{ padding-left:0pt; padding-right:0pt; }
+Css: td.td01{ padding-left:0pt; padding-right:5pt; }
+Css: td.td10{ padding-left:5pt; padding-right:0pt; }
+Css: td.td11{ padding-left:5pt; padding-right:5pt; }
+Css: table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+Css: .hline hr, .cline hr{ height : 1px; margin:0px; }
+Css: .tabbing-right {text-align:right;}
+Css: span.TEX {letter-spacing: -0.125em; }
+Css: span.TEX span.E{ position:relative;top:0.5ex;left:-0.0417em;}
+Css: a span.TEX span.E {text-decoration: none; }
+Css: span.LATEX span.A{ position:relative; top:-0.5ex; left:-0.4em; font-size:85%;}
+Css: span.LATEX span.TEX{ position:relative; left: -0.4em; }
+Css: div.float img, div.float .caption {text-align:center;}
+Css: div.figure img, div.figure .caption {text-align:center;}
+Css: .marginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+Css: .marginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+Css: table.equation {width:100%;}
+Css: .equation td{text-align:center; }
+Css: td.equation { margin-top:1em; margin-bottom:1em; } 
+Css: td.equation-label { width:5%; text-align:center; }
+Css: td.eqnarray4 { width:5%; white-space: normal; }
+Css: td.eqnarray2 { width:5%; }
+Css: table.eqnarray-star, table.eqnarray {width:100%;}
+Css: div.eqnarray{text-align:center;}
+Css: div.array {text-align:center;}
+Css: div.pmatrix {text-align:center;}
+Css: table.pmatrix {width:100%;}
+Css: span.pmatrix img{vertical-align:middle;}
+Css: div.pmatrix {text-align:center;}
+Css: table.pmatrix {width:100%;}
+Css: img.cdots{vertical-align:middle;}
+Css: .partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+Css: .index-item, .index-subitem, .index-subsubitem {display:block}
+Css: .caption td.id{font-weight: bold; white-space: nowrap; }
+Css: table.caption {text-align:center;}
+Css: h1.partHead{text-align: center}
+Css: p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+Css: p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+Css: .paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+Css: .subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+Css: .quote {margin-bottom:0.25em; margin-top:0.25em; margin-left:1em; margin-right:1em; text-align:justify;}
+Css: .verse{white-space:nowrap; margin-left:2em}
+Css: div.maketitle {text-align:center;}
+Css: h2.titleHead{text-align:center;}
+Css: div.maketitle{ margin-bottom: 2em; }
+Css: div.author, div.date {text-align:center;}
+Css: div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+Css: div.author{white-space: nowrap;}
+Font_Size: 12
+Css: .quotation {margin-bottom:0.25em; margin-top:0.25em; margin-left:1em; }
+Css: .abstract p {margin-left:5%; margin-right:5%;}
+Css: div.abstract {width:100%;}
+Css: div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+Css: table.tabular td p{margin-top:0em;}
+Css: table.tabular {margin-left: auto; margin-right: auto;}
+Css: div.td00{ margin-left:0pt; margin-right:0pt; }
+Css: div.td01{ margin-left:0pt; margin-right:5pt; }
+Css: div.td10{ margin-left:5pt; margin-right:0pt; }
+Css: div.td11{ margin-left:5pt; margin-right:5pt; }
+Css: table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+Css: td.td00{ padding-left:0pt; padding-right:0pt; }
+Css: td.td01{ padding-left:0pt; padding-right:5pt; }
+Css: td.td10{ padding-left:5pt; padding-right:0pt; }
+Css: td.td11{ padding-left:5pt; padding-right:5pt; }
+Css: table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+Css: .hline hr, .cline hr{ height : 1px; margin:0px; }
+Css: div.array {text-align:center;}
+Css: div.verbatiminput {font-family: monospace; white-space: nowrap; }
+Css: .equation td{text-align:center; }
+Css: .equation-star td{text-align:center; }
+Css: table.equation-star { width:100%; }
+Css: table.equation { width:100%; }
+Css: table.align, table.alignat, table.xalignat, table.xxalignat, table.flalign {width:100%; margin-left:5%; white-space: nowrap;}
+Css: table.align-star, table.alignat-star, table.xalignat-star, table.flalign-star {margin-left:auto; margin-right:auto; white-space: nowrap;}
+Css: td.align-label { width:5%; text-align:center; }
+Css: td.align-odd { text-align:right; padding-right:0.3em;}
+Css: td.align-even { text-align:left; padding-right:0.6em;}
+Css: table.multline, table.multline-star {width:100%;}
+Css: td.gather-star, td.gather1 {text-align:center; }
+Css: table.gather, table.gather-star {width:100%;}
+Css: .uline{ text-decoration:underline; }
+Css: .uuline{ text-decoration:underline; }
+Css: span.sout {text-decoration: line-through }
+Css: span.xout {text-decoration: line-through }
+Css: span.uwave {text-decoration:underline }
+--- needs --- ProcessingAlgorithms.idv[2] ==> ProcessingAlgorithms0x.png ---
+--- needs --- ProcessingAlgorithms.idv[3] ==> ProcessingAlgorithms1x.png ---
+--- needs --- ProcessingAlgorithms.idv[5] ==> ProcessingAlgorithms2x.png ---
+--- needs --- ProcessingAlgorithms.idv[7] ==> ProcessingAlgorithms3x.png ---
+--- needs --- ProcessingAlgorithms.idv[8] ==> ProcessingAlgorithms4x.png ---
+--- needs --- ProcessingAlgorithms.idv[9] ==> ProcessingAlgorithms5x.png ---
+File: ProcessingAlgorithms.4idx
+--- needs --- ProcessingAlgorithms.idv[11] ==> ProcessingAlgorithms6x.png ---
+--- needs --- ProcessingAlgorithms.idv[13] ==> ProcessingAlgorithms7x.png ---
+--- needs --- ProcessingAlgorithms.idv[15] ==> ProcessingAlgorithms8x.png ---
+--- needs --- ProcessingAlgorithms.idv[17] ==> ProcessingAlgorithms9x.png ---
+--- needs --- ProcessingAlgorithms.idv[19] ==> ProcessingAlgorithms10x.png ---
+--- needs --- ProcessingAlgorithms.idv[21] ==> ProcessingAlgorithms11x.png ---
+--- needs --- ProcessingAlgorithms.idv[22] ==> ProcessingAlgorithms12x.png ---
+--- needs --- ProcessingAlgorithms.idv[23] ==> ProcessingAlgorithms13x.png ---
+--- needs --- ProcessingAlgorithms.idv[24] ==> ProcessingAlgorithms14x.png ---
+--- needs --- ProcessingAlgorithms.idv[25] ==> ProcessingAlgorithms15x.png ---
+--- needs --- ProcessingAlgorithms.idv[26] ==> ProcessingAlgorithms16x.png ---
+--- needs --- ProcessingAlgorithms.idv[28] ==> ProcessingAlgorithms17x.png ---
+--- needs --- ProcessingAlgorithms.idv[30] ==> ProcessingAlgorithms18x.png ---
+--- needs --- ProcessingAlgorithms.idv[31] ==> ProcessingAlgorithms19x.png ---
+--- needs --- ProcessingAlgorithms.idv[33] ==> ProcessingAlgorithms20x.png ---
+--- needs --- ProcessingAlgorithms.idv[35] ==> ProcessingAlgorithms21x.png ---
+--- needs --- ProcessingAlgorithms.idv[37] ==> ProcessingAlgorithms22x.png ---
+--- needs --- ProcessingAlgorithms.idv[38] ==> ProcessingAlgorithms23x.png ---
+--- needs --- ProcessingAlgorithms.idv[40] ==> ProcessingAlgorithms24x.png ---
+--- needs --- ProcessingAlgorithms.idv[42] ==> ProcessingAlgorithms25x.png ---
+--- needs --- ProcessingAlgorithms.idv[44] ==> ProcessingAlgorithms26x.png ---
+--- needs --- ProcessingAlgorithms.idv[46] ==> ProcessingAlgorithms27x.png ---
+--- needs --- ProcessingAlgorithms.idv[48] ==> ProcessingAlgorithms28x.png ---
+--- needs --- ProcessingAlgorithms.idv[50] ==> ProcessingAlgorithms29x.png ---
+--- needs --- ProcessingAlgorithms.idv[52] ==> ProcessingAlgorithms30x.png ---
+--- needs --- ProcessingAlgorithms.idv[54] ==> ProcessingAlgorithms31x.png ---
+--- needs --- ProcessingAlgorithms.idv[56] ==> ProcessingAlgorithms32x.png ---
+--- needs --- ProcessingAlgorithms.idv[58] ==> ProcessingAlgorithms33x.png ---
+--- needs --- ProcessingAlgorithms.idv[60] ==> ProcessingAlgorithms34x.png ---
+--- needs --- ProcessingAlgorithms.idv[62] ==> ProcessingAlgorithms35x.png ---
+--- needs --- ProcessingAlgorithms.idv[63] ==> ProcessingAlgorithms36x.png ---
+--- needs --- ProcessingAlgorithms.idv[65] ==> ProcessingAlgorithms37x.png ---
+--- needs --- ProcessingAlgorithms.idv[67] ==> ProcessingAlgorithms38x.png ---
+--- needs --- ProcessingAlgorithms.idv[69] ==> ProcessingAlgorithms39x.png ---
+--- needs --- ProcessingAlgorithms.idv[70] ==> ProcessingAlgorithms40x.png ---
+--- needs --- ProcessingAlgorithms.idv[71] ==> ProcessingAlgorithms41x.png ---
+--- needs --- ProcessingAlgorithms.idv[72] ==> ProcessingAlgorithms42x.png ---
+--- needs --- ProcessingAlgorithms.idv[74] ==> ProcessingAlgorithms43x.png ---
+--- needs --- ProcessingAlgorithms.idv[75] ==> ProcessingAlgorithms44x.png ---
+--- needs --- ProcessingAlgorithms.idv[77] ==> ProcessingAlgorithms45x.png ---
+--- needs --- ProcessingAlgorithms.idv[79] ==> ProcessingAlgorithms46x.png ---
+--- needs --- ProcessingAlgorithms.idv[80] ==> ProcessingAlgorithms47x.png ---
+--- needs --- ProcessingAlgorithms.idv[82] ==> ProcessingAlgorithms48x.png ---
+--- needs --- ProcessingAlgorithms.idv[84] ==> ProcessingAlgorithms49x.png ---
+--- needs --- ProcessingAlgorithms.idv[86] ==> ProcessingAlgorithms50x.png ---
+--- needs --- ProcessingAlgorithms.idv[87] ==> ProcessingAlgorithms51x.png ---
+--- needs --- ProcessingAlgorithms.idv[88] ==> ProcessingAlgorithms52x.png ---
+--- needs --- ProcessingAlgorithms.idv[90] ==> ProcessingAlgorithms53x.png ---
+--- needs --- ProcessingAlgorithms.idv[91] ==> ProcessingAlgorithms54x.png ---
+--- needs --- ProcessingAlgorithms.idv[93] ==> ProcessingAlgorithms55x.png ---
+--- needs --- ProcessingAlgorithms.idv[95] ==> ProcessingAlgorithms56x.png ---
+--- needs --- ProcessingAlgorithms.idv[96] ==> ProcessingAlgorithms57x.png ---
+--- needs --- ProcessingAlgorithms.idv[97] ==> ProcessingAlgorithms58x.png ---
+--- needs --- ProcessingAlgorithms.idv[98] ==> ProcessingAlgorithms59x.png ---
+--- needs --- ProcessingAlgorithms.idv[100] ==> ProcessingAlgorithms60x.png ---
+--- needs --- ProcessingAlgorithms.idv[101] ==> ProcessingAlgorithms61x.png ---
+--- needs --- ProcessingAlgorithms.idv[103] ==> ProcessingAlgorithms62x.png ---
+--- needs --- ProcessingAlgorithms.idv[105] ==> ProcessingAlgorithms63x.png ---
+--- needs --- ProcessingAlgorithms.idv[106] ==> ProcessingAlgorithms64x.png ---
+--- needs --- ProcessingAlgorithms.idv[107] ==> ProcessingAlgorithms65x.png ---
+--- needs --- ProcessingAlgorithms.idv[108] ==> ProcessingAlgorithms66x.png ---
+--- needs --- ProcessingAlgorithms.idv[110] ==> ProcessingAlgorithms67x.png ---
+--- needs --- ProcessingAlgorithms.idv[112] ==> ProcessingAlgorithms68x.png ---
+--- needs --- ProcessingAlgorithms.idv[113] ==> ProcessingAlgorithms69x.png ---
+--- needs --- ProcessingAlgorithms.idv[115] ==> ProcessingAlgorithms70x.png ---
+--- needs --- ProcessingAlgorithms.idv[116] ==> ProcessingAlgorithms71x.png ---
+--- needs --- ProcessingAlgorithms.idv[118] ==> ProcessingAlgorithms72x.png ---
+--- needs --- ProcessingAlgorithms.idv[119] ==> ProcessingAlgorithms73x.png ---
+--- needs --- ProcessingAlgorithms.idv[120] ==> ProcessingAlgorithms74x.png ---
+--- needs --- ProcessingAlgorithms.idv[122] ==> ProcessingAlgorithms75x.png ---
+--- needs --- ProcessingAlgorithms.idv[123] ==> ProcessingAlgorithms76x.png ---
+--- needs --- ProcessingAlgorithms.idv[125] ==> ProcessingAlgorithms77x.png ---
+--- needs --- ProcessingAlgorithms.idv[126] ==> ProcessingAlgorithms78x.png ---
+--- needs --- ProcessingAlgorithms.idv[128] ==> ProcessingAlgorithms79x.png ---
+--- needs --- ProcessingAlgorithms.idv[130] ==> ProcessingAlgorithms80x.png ---
+--- needs --- ProcessingAlgorithms.idv[132] ==> ProcessingAlgorithms81x.png ---
+--- needs --- ProcessingAlgorithms.idv[134] ==> ProcessingAlgorithms82x.png ---
+--- needs --- ProcessingAlgorithms.idv[135] ==> ProcessingAlgorithms83x.png ---
+--- characters ---
+Font("ecrm","1200","12","100")
+Font("ptmr8t","","10","120")
+Font("ptmr8t","","10","207")
+Font("zptmcm7m","","10","109")
+Font("ec-lmtt","12","12","100")
+Font("zptmcm7t","","10","120")
+Font("zptmcm7t","","10","90")
+Font("zptmcm7t","","10","70")
+Font("zptmcm7m","","10","120")
+Font("zptmcm7m","","10","90")
+Font("zptmcm7m","","10","70")
+Font("zptmcm7y","","10","120")
+Font("zptmcm7y","","10","90")
+Font("zptmcm7y","","10","70")
+Font("zptmcm7v","","10","120")
+Font("ptmb8t","","10","120")
+Font("ptmr8t","","10","109")
+Font("ptmr8t","","10","100")
+Font("ptmri8t","","10","109")
+Font("zptmcm7t","","10","100")
+Font("zptmcm7t","","10","74")
+Font("zptmcm7t","","10","60")
+Font("zptmcm7m","","10","100")
+Font("zptmcm7m","","10","74")
+Font("zptmcm7m","","10","60")
+Font("zptmcm7y","","10","100")
+Font("zptmcm7y","","10","74")
+Font("zptmcm7y","","10","60")
+Font("ptmr8c","","10","120")
+Font("ec-lmtt","10","10","100")
+Font("ptmri8t","","10","120")
+Font("ec-lmtt","10","10","109")
+Font("ptmb8t","","10","100")
+Font("ptmri8t","","10","100")
+Font("ptmrc8t","","10","120")
+Font("ptmb8t","","10","109")

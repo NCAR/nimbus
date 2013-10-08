@@ -1,0 +1,159 @@
+%% LyX 2.0.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[12pt,twoside,english]{article}
+\usepackage{mathptmx}
+\usepackage{helvet}
+\renewcommand{\ttdefault}{lmtt}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1.2in,rmargin=1in}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{xcolor}
+\usepackage{pdfcolmk}
+\usepackage{babel}
+\usepackage{array}
+\usepackage{verbatim}
+\usepackage{varioref}
+\usepackage{prettyref}
+\usepackage{calc}
+\usepackage{textcomp}
+\usepackage{url}
+\usepackage{ifthen}
+\usepackage{amsmath}
+\usepackage{splitidx}
+\makeindex
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+\newindex[Index]{idx}
+\newindex[Variable Names]{var}
+\newindex[List of Symbols]{lis}
+\usepackage[unicode=true]
+ {hyperref}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\newcommand{\noun}[1]{\textsc{#1}}
+\newcommand{\lyxmathsym}[1]{\ifmmode\begingroup\def\b@ld{bold}
+  \text{\ifx\math@version\b@ld\bfseries\fi#1}\endgroup\else#1\fi}
+
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+\providecolor{lyxadded}{rgb}{0,0,1}
+\providecolor{lyxdeleted}{rgb}{1,0,0}
+%% Change tracking with ulem
+\newcommand{\lyxadded}[3]{{\texorpdfstring{\color{lyxadded}{}}{}#3}}
+\newcommand{\lyxdeleted}[3]{{\texorpdfstring{\color{lyxdeleted}\sout{#3}}{}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+ \newlength{\lyxhang}
+ \IfFileExists{hanging.sty}{
+   \usepackage{hanging}
+   \newenvironment{hangparagraphs}
+     {%
+       \ifthenelse{\lengthtest{\parindent > 0pt}}%
+         {\setlength{\lyxhang}{\parindent}}%
+         {\setlength{\lyxhang}{2em}}%
+       \par\begin{hangparas}{\lyxhang}{1}%
+     }
+     {\end{hangparas}}
+ }{%else
+   \newenvironment{hangparagraphs}
+     {%
+       \ifthenelse{\lengthtest{\parindent > 0pt}}%
+         {\setlength{\lyxhang}{\parindent}}%
+         {\setlength{\lyxhang}{2em}}%
+       \begin{hangparas}%
+     }
+     {\end{hangparas}}
+   \newcommand{\hangpara}{\hangindent \lyxhang \hangafter 1 \noindent}
+   \newenvironment{hangparas}{\setlength{\parindent}{\z@}
+   \everypar={\hangpara}}{\par}
+ }
+\newenvironment{lyxcode}
+{\par\begin{list}{}{
+\setlength{\rightmargin}{\leftmargin}
+\setlength{\listparindent}{0pt}% needed for AMS classes
+\raggedright
+\setlength{\itemsep}{0pt}
+\setlength{\parsep}{0pt}
+\normalfont\ttfamily}%
+ \item[]}
+{\end{list}}
+
+\@ifundefined{date}{}{\date{}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+% macro for italic page numbers in the index
+\newcommand{\IndexDef}[1]{\textit{#1}}
+\newcommand{\IndexPrimary}[1]{\textbf{#1}}
+
+% workaround for a makeindex bug,
+% see sec. "Index Entry Order"
+% only uncomment this when you are using makindex
+\let\OrgIndex\index 
+\renewcommand*{\index}[1]{\OrgIndex{#1}}
+\usepackage{splitidx}
+
+\AtBeginDocument{
+  \def\labelitemii{\(\circ\)}
+  \def\labelitemiii{\(\triangleright\)}
+}
+
+\makeatother
+
+\begin{document}
+
+\title{RAF Technical Note: Processing Algorithms}
+
+\maketitle
+\begin{center}
+Variables and Algorithms Used to Produce Data Products from Research
+Aircraft
+\par\end{center}
+
+\begin{center}
+revision of 2012
+\par\end{center}
+
+\pagebreak{}
+
+~~~~
+
+\pagebreak{}
+
+\tableofcontents{}
+
+\vfill\eject
+
+\pagebreak{}
+
+\include{Section1}
+
+\include{Section3}
+
+\include{Section7}
+
+
+
+
+
+\include{Section9}
+
+\include{Section11}
+
+\include{Section13}
+
+\include{Section12}
+
+\include{Section10}
+
+\include{Section14}
+
+\include{Section15}
+
+\label{IndexReference}\printindex[idx]{}
+\end{document}

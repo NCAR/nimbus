@@ -1,0 +1,667 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Aircraft Algorithm Memo re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\RAFAlgorithmMemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Research Aviation Facility}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Algorithm Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.2truein\leftline{\textcolor{blue}{\textsf{Subject: \the\topicofnote}}}
+\leftline{\textcolor{blue}{\textsf{Al Cooper}}}
+\leftline{\textcolor{blue}{\textsf{\datetoday}}} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding default
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={Dew point correction for pressure in housing}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+RAFAlgorithmMemo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Background
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+usually, definition of the variable, uses, history, math expressions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The external dew point sensors have housings exposed to the airstream by
+ a special inlet, shown in Fig.
+\begin_inset space ~
+\end_inset
+
+1 below.
+ The inlet is supposed to be rotated so that the pressure in the housing
+ matches the ambient pressure.
+ On the GV especially, this is difficult because of the high speed and large
+ range in angle of attack.
+ Without measurement of the pressure in the housing, a large uncertainty
+ would be introduced in the measurement.
+ Since May 2011 there have been transducers for pressure in each of the
+ external dew point sensors, recorded as a new variable PSDPx (x=L or R).
+ This pressure, however, is not yet incorporated into the processing code,
+ so this note describes how that should be done.
+\end_layout
+
+\begin_layout Section*
+Present Processing Code
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+use LyX-code format where needed to include code segments from nimbus
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Processing of the dew point measurements to obtain vapor pressure was described
+ in the earlier note on vapor pressure, where a change to Murphy-Koop was
+ recommended.
+ A relationship between vapor pressure and dew point was recommended for
+ use there, because that is necessary to remove the effect of the 
+\begin_inset Quotes eld
+\end_inset
+
+enhancement factor
+\begin_inset Quotes erd
+\end_inset
+
+ that requires an enhanced water vapor pressure for equilibrium in the presence
+ of dry air.
+ The latter relationship can also be used to correct the dew point for the
+ error arising from the pressure in the housing, so that will be the approach
+ taken in this note.
+\end_layout
+
+\begin_layout Section*
+Reasons For Proposing Changes
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+summarize why present code should be changed: weaknesses, errors, improvements,
+ accuracy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is important not only to incorporate the measurement of housing pressure
+ into the processing but also to correct, as far as possible, the past measureme
+nts.
+ The reason is that otherwise the error can be significant.
+ An approximate estimate of the error can be obtained from the typical dependenc
+e of vapor pressure on dew point, for which the vapor pressure changes approxima
+tely a factor of 2 for each 10
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ change in dewpoint.
+ If the pressure in the housing is only 50% of the ambient pressure, for
+ example, the vapor pressure deduced from this measurement will also be
+ 50% of the correct value, and the dew point will be about 10
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C too low.
+ The initial measurements suggest that this value is not as extreme as expected
+ before this measurement was added.
+ 
+\end_layout
+
+\begin_layout Section*
+Analysis
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+this (and all) are optional, may not be needed -- intended for research-level
+ exploration of meaning of the variable or subtleties regarding its calculation,
+ as needed to develop the case for recommendations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following two plots show examples of the pressure measurements, the
+ first from DC3-TEST rf03, the second from HIPPO-4 rf01:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename DPPressureMeasurements.png
+	lyxscale 50
+	width 12cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename HIPPO4DPP.png
+	lyxscale 50
+	width 12cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In both cases the pressure in the housing is almost 100 mb less than the
+ ambient pressure at the upper levels, although the pressure agrees with
+ the ambient on the ground.
+ For example, at 170000 in HIPPO-4 rf01, the measured pressure is about
+ 188 mb but the pressure in the housing of the DPR sensor is 90 mb.
+ This is surprising because the dynamic pressure here is only 98 mb, so
+ the pressure deficit in the housing is the same as the full dynamic pressure.
+ The airspeed is Mach 0.80 and the dew point sensors are in a region of possibly
+ accelerated flow around the nose of the aircraft, so perhaps some extreme
+ effects can arise at near-sonic speed.
+ (The effect seems so large that further consideration of the calibration
+ of the sensor is indicated, but the rest of this note will assume that
+ these pressure measurements are valid.) It is curious that the pressure
+ difference for PSDPL shows periods of extra deviation in both climbs and
+ descents, as shown by the dips in the second panel of the HIPPO-4 flight,
+ but the similar deviations do not occur for PSDPR.
+ These deviations occur where the angle of attack is lower than in level
+ flight, by about 1 degree, both for climbs and descents.
+ so they suggest a dependence on angle of attack as well as on airspeed
+ and pressure.
+ Plots of QCRC and MACH1 in these regions show that there are significant
+ deviations in QCRC, but not in MACH1, associated with the deviations in
+ housing pressure at the start of climbs and descents.
+ These suggest looking for correlations between the pressure deficit and
+ QCRC and/or angle of attack, in addition to a dominating correlation with
+ Mach Number or airspeed.
+\end_layout
+
+\begin_layout Standard
+A fit to the data of RF01, HIPPO-4, found significant dependence on PSXC,
+ Mach Number, and QCRC.
+ The following fit gave a residual RMS of 7.9 mb and extreme deviations all
+ less than 
+\begin_inset Formula $\pm$
+\end_inset
+
+30 mb:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\{\mathrm{PSDPL}\}=\mathrm{PSXC\,}(a_{0}+a_{1}\{\mathrm{QCXC}\}+a_{2}\{\mathrm{XMACH2}\})\label{eq:FitEquation}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $a_{0}$
+\end_inset
+
+=1.064737656, 
+\begin_inset Formula $a_{1}$
+\end_inset
+
+=0.001574938 mb
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, 
+\begin_inset Formula $a_{2}=-1.249778256$
+\end_inset
+
+ .
+ For the right dew point sensor, the coefficients were slightly different:
+ 1.016216249, 0.003024151 mb
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, and -1.345207603.
+ In this case, the fit had a higher RMS error, about 12 mb, and maximum
+ errors of about 
+\begin_inset Formula $\pm45$
+\end_inset
+
+ mb.
+ The following plot shows the measured pressure in the housing, PSDPL, as
+ the thick black line, and the fit from the equation above, as the thin
+ red line, for flight RF01 of HIPPO-4:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename Phousing.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Residuals: Min 1Q Median 3Q Max -19.2363 -1.4834 0.7526 2.1284 14.3618 
+\end_layout
+
+\begin_layout Plain Layout
+Coefficients: Estimate Std.
+ Error t value Pr(>|t|) (Intercept) 1.964e+02 1.533e+00 128.2 <2e-16 *** PSXC
+ 8.953e-01 1.874e-03 477.9 <2e-16 *** XMACH2 -3.539e+02 2.140e+00 -165.4 <2e-16
+ *** QCXC -6.188e-01 2.892e-03 -214.0 <2e-16 *** --- Signif.
+ codes: 0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+\end_layout
+
+\begin_layout Plain Layout
+Residual standard error: 5.62 on 18644 degrees of freedom (2832 observations
+ deleted due to missingness) Multiple R-squared: 0.9991, Adjusted R-squared:
+ 0.9991 F-statistic: 6.634e+06 on 3 and 18644 DF, p-value: < 2.2e-16 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The importance of this fit is that, if it applies to flights prior to installati
+on of the pressure sensor, it can be used to correct archived values.
+ At least for the HIPPO flights, this seems reasonable because the flight
+ profiles were reasonably similar to this one.
+ To test how well this might apply to other projects, flights from DC3-TEST
+ were used to compare the predictions of this formula to the measured values.
+ The results are shown in the next figure:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename DC3RF3.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this figure, the yellow lines show the measured pressures and the blue
+ lines the predicted pressure on the basis of the fit determined from HIPPO-4
+ flight RF01.
+ The predicted pressure is significantly better for the left dew point sensor
+ (PSDPL) than for the right sensor, giving a standard deviation (for the
+ portion from 1940 to 2250) of 11 mb vs 25 mb for the right sensor.
+ An error of 11 mb at a pressure of 400 mb, or an error of about 3% in vapor
+ pressure, leads to an uncertainty in dew point of approximately 0.4
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, while a 25 mb error corresponds to an error in dew point of about 1 
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ 
+\end_layout
+
+\begin_layout Standard
+The following plot shows an example of the magnitude of the difference between
+ the corrected and original dew point measurements:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename DPCORR.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this plot, the yellow traces in the bottom two plots are the original
+ measurements, and the values corrected for housing pressure are shown in
+ blue.
+ The green trace in the second panel is the dew point from the VCSEL for
+ the same time.
+ The difference between the values of dew point for the left sensor is shown
+ as the red trace in the top panel.
+ The differences are often around 6
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C and vary from -1 to +6 during the climbs and descents.
+\end_layout
+
+\begin_layout Section*
+
+\emph on
+Recommendations
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\emph on
+keep this short - 1/2 page or less
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Add processing to include the effect of the measured pressure, as follows:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Calculate the pressure ratio PSXC/PSDPx =Rx
+\end_layout
+
+\begin_layout Enumerate
+In the new processing sequence for dew point, as described in the memo discussin
+g vapor pressure and recommending use of the Murphy-Koop equations, multiply
+ the vapor pressure by Rx after converting from dew point to vapor pressure.
+\end_layout
+
+\begin_layout Enumerate
+Use this modified vapor pressure as the output variable, and also as input
+ to the interpolation table to find the dew point temperature.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+For old GV data, consider reprocessing with the pressure determined from
+ (1) to correct for rather large errors in the dew point measurements, which
+ can be 5-10
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip0.5truein 
+\backslash
+centerline{
+\backslash
+textcolor{blue}{---- END ----}}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this is just a closing line to note end of the memo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+uncomment to include a list of attachments according to the model in the
+ TeX example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional list of people to include in cc list (beyond algorithm committee,
+ who always should get these)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

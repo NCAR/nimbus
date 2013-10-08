@@ -1,0 +1,1 @@
+ncdump -h VOCALSrf02.nc > ~/Bulletin9/ProcessingAlgorithms/NetCDFvar/VOCALSrf02.header

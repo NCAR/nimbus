@@ -1,0 +1,2861 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding default
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\use_mhchem 0
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={T cals}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Bath Calibrations
+\end_layout
+
+\begin_layout Subsection*
+ISF calibration of 29 March 2012
+\end_layout
+
+\begin_layout Standard
+Consider the ISF calibration from 29 March 2012, which from Dick Friesen's
+ spreadsheet of 22 Feb 2013 gave the results in the first two columns of
+ the following table.
+ The Callendar-Van Dusen (CVD) equation for a PRT can be written in the
+ following form:
+\begin_inset Formula 
+\begin{equation}
+\frac{R_{T}}{R_{0}}=1+\alpha(1+\frac{\delta}{1.e2})T-\frac{\alpha\delta}{1.e4}T^{2}\left\{ +\frac{\alpha\beta}{1.e6}T^{3}-\frac{\alpha\beta}{1.e8}T^{4}\right\} \label{eq:CVD}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $R_{T}$
+\end_inset
+
+ is the PRT resistance at temperature 
+\begin_inset Formula $T$
+\end_inset
+
+, 
+\begin_inset Formula $R_{0}$
+\end_inset
+
+ is the resistance at 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, 
+\backslash
+alpha is the temperature sensitivity expected to be 0.003925, 
+\begin_inset Formula $\delta$
+\end_inset
+
+ = 1.46 and 
+\begin_inset Formula $\beta$
+\end_inset
+
+ = 0 for 
+\begin_inset Formula $T<0^{\circ}$
+\end_inset
+
+C and 0.1 otherwise.
+ A fit to the measurements in which only 
+\begin_inset Formula $R_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ were allowed to vary and 
+\begin_inset Formula $\delta$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta$
+\end_inset
+
+ were held at the preceding values produced the smallest RMS errors from
+ the tabulated values for 
+\begin_inset Formula $R_{0}=50.0082$
+\end_inset
+
+ and 
+\begin_inset Formula $\alpha=0.0039128$
+\end_inset
+
+, and with these values (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:CVD"
+
+\end_inset
+
+) produces the values shown in the third column of the table, with the deviation
+s shown in the fourth column.
+ The deviations are very small except at the lowest two temperatures.
+ Fitting while excluding the lowest three temperatures produced essentially
+ the same fit, so these deviations are not distorting the fit to a significant
+ degree.
+ Because it is more difficult to maintain bath uniformity at low temperature,
+ I think it is preferable to use the CVD fit results instead of the measurements
+ to avoid possible errors arising from conduction and/or bath non-uniformity
+ at the lowest temperatures.
+ However, the departures are not in the direction I would have expected
+ (with measurements being too high in temperature); instead, as shown in
+ the last column, the departures 
+\begin_inset Formula $\Delta T$
+\end_inset
+
+ (the deviations in resistance translated into corresponding deviations
+ in temperature) are negative at the lowest temperatures.
+ Even the largest deviation corresponds to a temperature error of <0.05
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, so these measurements are in very good agreement with the values from
+ the CVD equation.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vfill
+\backslash
+eject
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+
+\emph on
+Table 1: ISF calibration of 2012 (first two columns), the resistance values
+ that result from Equation (1) using the fit to these calibration values,
+ the deviation between the measurements and the fit, and the corresponding
+ error in temperature (
+\begin_inset Formula $\Delta T$
+\end_inset
+
+) that would result if the CVD result is correct and the measured resistance
+ is used.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="12" columns="5">
+<features tabularvalignment="middle">
+<column alignment="decimal" decimal_point="." valignment="top" width="0pt">
+<column alignment="decimal" decimal_point="." valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ISF PRT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+TTHR1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+CVD fit
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Deviation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Delta T$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Omega$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Omega$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Omega$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+C
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-60.028
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+37.979
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+37.987
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-0.008
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.047
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-50.043
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+39.997
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+40.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-0.004
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.023
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-40.047
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+42.010
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+42.011
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.009
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-30.058
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+44.015
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+44.014
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.001
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-20.076
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+46.011
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+46.011
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+0.000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
++0.001
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-10.088
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+48.003
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+48.002
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.000
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-0.101
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+49.988
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+49.988
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+0.000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.003
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+9.889
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+51.968
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+51.969
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.005
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+19.873
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+53.942
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+53.943
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.003
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+29.866
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="decimal" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+55.914
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+55.913
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
++0.006
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The CVD equation (1) can then be used to calculate resistance values at
+ specific temperatures for use during the on-board calibrations..
+ The following table shows the values that result from (1) using the fit
+ to the ISF calibration:
+\end_layout
+
+\begin_layout Quote
+
+\emph on
+Table 2: Corresponding values of temperature and resistance determined from
+ Eq.
+\begin_inset space ~
+\end_inset
+
+(1) using the fit parameters determined from the 2012 ISF calibration.
+ These would be appropriate values to use during on-board calibration.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="13" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Temperature, 
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Resistance, 
+\begin_inset Formula $\Omega$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-70
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+35.971
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-60
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+37.994
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+40.010
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-40
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+42.021
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+44.027
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+46.026
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+-10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+48.020
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+50.008
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+51.991
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+53.968
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+55.939
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+40
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+57.905
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+ISF Calibration of 8 March 2011
+\end_layout
+
+\begin_layout Standard
+Comparison to the calibration of the same sensor a year earlier provides
+ an indication of the stability of the sensor.
+ The fit to those measurements gave 
+\begin_inset Formula $R_{0}=50.076$
+\end_inset
+
+ and 
+\begin_inset Formula $\alpha=0.003754$
+\end_inset
+
+.
+ The latter is a somewhat larger deviation than expected from the nominal
+ 0.003925 and the 0.0039128 from the 2012 calibration.
+ The following figure shows that this calibration differs significantly
+ (by up to 4C) from the 2012 calibration and the departure is largest at
+ low temperature.
+ The inconsistency of this calibration with the CVD equation also suggests
+ that errors occurred at the low temperatures.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Spyder/TCal/TTHR1b.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+
+\emph on
+In this figure, the red dots are the 2011 calibration and the blue ones
+ the 2012 calibration.
+ The blue line shows the error that would result from using the 2011 calibration
+, multiplied by a scale factor of 10, if the 2012 calibration is the correct
+ answer.
+ (I.e., the departure is about 4C at the lowest temperature and lowest resistance.)
+\end_layout
+
+\begin_layout Standard
+Because of the rather large difference at low temperature and the inconsistency
+ with expected PRT behavior, I think it is best to discount this calibration
+ rather than assume that the probe itself changed.
+\end_layout
+
+\begin_layout Subsection*
+RAF Calibration of 3 Mar 2011, Low-T Bath
+\end_layout
+
+\begin_layout Standard
+The CVD coefficients for this calibration are 50.021 and 0.003665, so the
+ sensitivity coefficient 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ is significantly smaller than the expected value of 0.003925.
+ The following plot shows that this is rather inconsistent with the ISF
+ 2012 calibration, and use of this calibration would lead to significant
+ errors at low temperature if the 2012 ISF calibration is correct, and this
+ calibration would produce temperature readings too low by up to 5C (although
+ only by about 3C at -50, the usual low-T range for total temperature in
+ GV flight).
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Spyder/TCal/TTHR1c.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+
+\emph on
+Red dots: RAF calibration in the low-T bath, 3 Mar 2011.
+ The blue dots are thoe measurements from the ISF 2012 calibration, and
+ the blue line is the temperature error (scaled by a factor of 10) that
+ would result from using the 3 Mar 2011 calibration if the ISF calibration
+ is correct.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vfill
+\backslash
+eject
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+RAF Calibration of June 2010, 
+\begin_inset Quotes eld
+\end_inset
+
+Old Bath
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The CVD fit parameters for this calibration are 50.18 and 0.003715.
+ The following figure shows this calibration is comparison to the 2012 ISF
+ calibration, and shows that significant errors would result from the use
+ of this calibration if the 2012 ISF calibration or the predictions of the
+ CVD equation are correct.
+ The error is up to 3C at -30C.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Spyder/TCal/TTHR1d.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+
+\emph on
+Red dots: RAF Calibration of June 2010, old bath.
+ Blue dots: ISF calibration of 2012.
+ Blue line: error that would result from using this calibration, if the
+ 2012 calibration is correct.
+\end_layout
+
+\begin_layout Subsection*
+RAF Calibration of March 2009, Old Bath?
+\end_layout
+
+\begin_layout Standard
+For this calibration the CVD coefficients are 50.216 and 0.003708.
+ These are reasonably consistent with other RAF calibrations but not with
+ the 2012 ISF calibration or expectations from the CVD equation.
+ The plot for this calibration, in similar format as those for other calibration
+s, is shown below.
+ As for most of the other calibrations, significant errors (up to 4C) would
+ result from use of this calibration, if the ISF 2012 calibration is correct.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Spyder/TCal/TTHR1e.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+
+\emph on
+Red dots: RAF calibration of 2009-03; blue dots: ISF calibration of 2012.
+ Blue line: error that would result from use of this calibration if the
+ 2012 ISF calibration is correct.
+\end_layout
+
+\begin_layout Subsection*
+Summary, Bath Calibrations
+\end_layout
+
+\begin_layout Standard
+The sensitivity coefficient (formally, the temperature coefficient of resistance
+) determined from the RAF bath calibrations is consistently low compared
+ to the expected value.
+ The DLR and ISF-2012 cals are consistent with a value close to the nominal
+ value, and the NIST calibration is lower but still high in comparison to
+ all RAF calibrations, as shown in the following table:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="11" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Calibration
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\alpha$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+CVD, HARCO, Goodrich nominal value
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.003925
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+DLR June 2011 Sensor 708904 #1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0039153
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+DLR June 2011 Sensor 708904 #
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0039154
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ISF 2012
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.003912
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+NIST
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.003813
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ISF 2011
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.003754
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RAF Cold-T bath Mar 2011
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.003665
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RAF old bath 2010-6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.003715
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RAF cold bath 2010-6
+\begin_inset Formula $^{*}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.003683
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RAF old bath 2009-03
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.003708
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+\begin_inset Formula $\hskip5cm$
+\end_inset
+
+
+\begin_inset Formula $^{*}$
+\end_inset
+
+used for PREDICT cals
+\end_layout
+
+\begin_layout Standard
+Except for the 2012 ISF result, these coefficients appear suspiciously small
+ and will lead to errors of 4C or more at the lowest temperatures measured
+ by the GV, if the 2012 ISF calibration is correct.
+ That appears to me to be the favored interpretation because of the similarity
+ between the measured value of 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ and the value expected for a PRT.
+ This coefficient can exhibit some variability as is higher for higher purity
+ of platinum and absence of strain in the element.
+ Some PRT sensors are designed commercially to have sensitivity coefficients
+ of 0.00385, and some high-quality PRTs have also been made with coefficients
+ of about 0.0039.
+ Lower coefficients such as those shown for the RAF calibrations are clearly
+ inconsistent with expectations for a high-quality PRT, and the last result
+ (2012) suggests that the value has not decreased from damage or degradation
+ but instead results from mis-measurement.
+ 
+\end_layout
+
+\begin_layout Standard
+It wouild be interesting to compare these results to the DLR and NIST calibratio
+ns.
+\end_layout
+
+\begin_layout Section*
+Tentative Recommendations:
+\end_layout
+
+\begin_layout Enumerate
+Stop using repeated calibrations in the baths, which are more likely to
+ introduce errors.
+ Instead, periodically check that the sensor has not changed significantly,
+ but use either the CVD equation with nominal values or the CVD equation
+ with values from the 2012 ISF calibration unless there is evidence that
+ the probe has changed significantly.
+ The RAF calibrations are consistent enough that they could be used for
+ monitoring for change, but they should not be used for determining resistance
+ values for the onboard calibration.
+\end_layout
+
+\begin_layout Enumerate
+Confirmation of the 2012 ISF calibration would be useful, because it is
+ an outlier vs other calibrations even though it appears to be most consistent
+ with CVD.
+ Evidence from the NIST and DLR calibrations would be useful in this regard.
+\end_layout
+
+\begin_layout Enumerate
+A new temperature scale was introduced in 1990 that affects measurements
+ such as this.
+ It goes by the name ITS-90 and is described in NIST Tech Note 1265.
+ A somewhat incomplete study of this suggests that the differences it might
+ introduce are <0.1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C in the most extreme cases we will encounter, so I have not included these
+ changes for now.
+ At some time it may be worth considering more carefully how the redefinition
+ of the temperature scale (which brings it more in line with the thermodynamic
+ scale and so better for our purposes) might affect our measurements.
+ There are services that will provide calibration to IST-90 temperature,
+ and it may be worth sending a sensor to a company for such calibration.
+ We need to specify the temperature range of interest to avoid having the
+ expense of a full calibration over the IST-90 range.
+ Key thresholds are 29C (the melting point of gallium) and -38C (the triple
+ point of mercury).
+ Extending below 38C may require going to the triple point of Argon, which
+ is -189C, and it may be impractical and unwise to expose the sensor to
+ such a low temperature.
+ 
+\end_layout
+
+\begin_layout Enumerate
+If further investigation supports the 2012 ISF calibration and the direct
+ use of the CVD equation with nominal coefficients, it would then be best
+ to use the values in Table 2 above for the onboard calibrations.
+ The calibrations still incorporate the performance of the preamp and other
+ circuitry, which may introduce non-linearities.
+ The following points apply to these calibrations:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+If resistance box settings restrict entries to increments of 0.01
+\begin_inset Formula $\Omega$
+\end_inset
+
+, this is not a serious concern because the error introduced by an error
+ of 0.005
+\begin_inset Formula $\Omega$
+\end_inset
+
+ corresponds to an error in temperature of only about 0.03C.
+\end_layout
+
+\begin_layout Enumerate
+Present calibrations show complex variations not represented well by power-law
+ equations except at high order.
+ Use of the present quadratic form introduces significant error vs the calibrati
+on points, and some other approach should be used.
+ Interpolation, either linear or Lagrange, or a different functional form
+ should be explored.
+ This would be a complication in nimbus but appears to be needed.
+\end_layout
+
+\begin_layout Enumerate
+As for the bath cals, developing a good calibration for a particular A-D
+ board and staying with that calibration unless there is clear evidence
+ of a change would be preferable to the current practice of frequently changing
+ the calibration based on the latest result.
+ That probably introduces frequent errors and variability from project to
+ project that is not real.
+\end_layout
+
+\end_deeper
+\begin_layout Section*
+Inverting Existing Calibrations
+\end_layout
+
+\begin_layout Standard
+Assume we have the set used for cal: {Ti, Ri}.
+ The calibration then gives {Ti, Vi} via {Ri, Vi}.
+ If, instead, should have used {Ti', Ri} where Ti' is e.g.
+ from CVD
+\end_layout
+
+\begin_layout Enumerate
+need Ri data from calibration.
+ These are in the email from rbf on 2/22
+\end_layout
+
+\begin_layout Enumerate
+change Ti -> Ti' and re-fit to get {Ti', Vi} 
+\end_layout
+
+\begin_layout Enumerate
+already have the resistances in python TCal.py
+\end_layout
+
+\begin_layout Enumerate
+problem is that an inversion is needed: Have r=CVD(T), need T=CVD^-1(R).
+ Need to invert the Callendar-Van Dusen equation, Eq.
+\begin_inset space ~
+\end_inset
+
+(1).
+ A suitable rearrangement of (1) gives a form that can be the basis for
+ an iterative solution (verified to converge to machine double-precision
+ is 5-6 iterations):
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+T=\left(\frac{R_{T}}{R_{0}}-1\right)\frac{1}{\alpha\left(1+(\delta/1.e2)\right)}+\frac{1}{(1+\delta/1.e2)}\left\{ \frac{\delta}{1.e4}T^{2}-\frac{\beta}{1.e6}T^{3}+\frac{\beta}{1.e8}T^{4}\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Then, for the pre-PREDICT cal, the adjusted temperatures that correspond
+ to the resistances used are {-65.32, -56.38, -47.41, -38.09, -28.48, -18.98,
+ -9.67, 0.08, 9.96} instead of {-70, -60, ...
+ 10}.
+ The fit to these, replacing (-89.225, 25.933, -0.078795), is (-82.44, 22.71,
+ 0.297).
+ The standard error for this fit is 0.024, so (unlike the previous calibration)
+ the quadratic fit is adequate.
+\end_layout
+
+\begin_layout Standard
+The following plot compares the two calibrations and shows that, at low
+ temperature, the differences are substantial.
+ Even at normal GV total temperatures (usually -50C or higher), the difference
+ can be around 2C.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/PREDICT/RevisedPREDICTcal.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+My plan now is to calculate a new temperature for the PREDICT ferry flight
+ #1 by using the old cal to calculate the old voltage, then use the new
+ cal to determine the new temperature, and see how that temperature works
+ in the LAMS analysis.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Material from Dick Friesen gives PREDICT pre- and post-cals (I think) --
+ pre-cals on Jul 30 2010 (I presume 2010?) and post on Oct 6 2010.
+ A note on the latter says it is based on temperatures from the 'Cooper'
+ bath, which provides low temperature more reliably.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Each cal is a list of set points in temperature and the corresponding voltage
+ measured at that set point.
+ My understanding is that the resistance corresponding to the calibration
+ in the bath was applied at the connector for the temperature probe via
+ a resistance box and the voltage was measured by the data system.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+Questions:
+\end_layout
+
+\begin_layout Enumerate
+What were the resistances set in the resistance box? The problem is that
+ I suspect the input resistance values may be in error because of inadequate
+ thermal control at the temperature head, and this would give departures
+ increasing at low temperature.
+ See the discussion below.
+\end_layout
+
+\begin_layout Enumerate
+What does the 'Applied' column mean? Some of these are 0.2 different from
+ the set points in some cases.
+ Is the fit to these values or to the set points?
+\end_layout
+
+\begin_layout Enumerate
+Was the temperature dependence of the A-D calibration handled right for
+ these calibrations, and also for the processing of research flights? This
+ was a time when all this was being sorted out.
+ Appropriate temperature-dependent calibrations for the A-D are needed when
+ the calibration is done (unless the temperature is 40C).
+\end_layout
+
+\begin_layout Enumerate
+How should the resistance be reflected in voltage? The values in these calibrati
+ons are not consistent with the expected dependence of a PRT (with resistance
+ varying approximately as 1+0.003982
+\begin_inset Formula $T_{C}$
+\end_inset
+
+) so there must be an offset in the measured voltage if that voltage is
+ linearly related to the resistance.
+ How does the pre-amp work? 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+(An offset of 6.43V would give reasonable agreement between the calibration
+ and the following Callendar-Van-Dusen equation at higher T but would produce
+ lower Ts at -50 to -70C by 0.8 to 1.5C.)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Comments:
+\end_layout
+
+\begin_layout Enumerate
+It would be better to work with the Callendar-Van Dusen equation, cited
+ in the Goodrich Technical Report 5755 as follows: 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{R_{T}}{R_{0}}=1+\alpha\left[T-\delta\left(\frac{T}{100}-1\right)\left(\frac{T}{100}\right)-\beta\left(\frac{T}{100}-1\right)\left(\frac{T}{100}\right)^{3}\right]
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $R_{T}$
+\end_inset
+
+ is the resistance at temperature
+\begin_inset Formula $T$
+\end_inset
+
+ (in degrees Celsius), 
+\begin_inset Formula $R_{0}$
+\end_inset
+
+ is the resistance at temperature 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, 
+\begin_inset Formula $\alpha=0.003925,$
+\end_inset
+
+ 
+\begin_inset Formula $\delta=1.46$
+\end_inset
+
+, and 
+\begin_inset Formula $\beta=0.1$
+\end_inset
+
+ for T>0 and 0.0 otherwise.
+ This expands to the following power-law equation:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{R_{T}}{R_{0}}=1+\alpha(1+\frac{\delta}{1.e2})T-\frac{\alpha\delta}{1.e4}T^{2}\left\{ +\frac{\alpha\beta}{1.e6}T^{3}-\frac{\alpha\beta}{1.e8}T^{4}\right\} 
+\]
+
+\end_inset
+
+where the final term in brackets is only included for T>0.
+ If the equation fit to the measured values for resistance vs temperature
+ is inconsistent with this, especially at the low-T end, I'd suspect the
+ bath control of uniform temperature and use a fit where this equation is
+ matched to the values at higher temperature and extrapolated to low temperature.
+ To pursue this, though, I need the resistance values, not the voltages,
+ or else some way of finding the resistance values from the voltages.
+ My hope is to determine the linear and quadratic terms from measurements
+ near room temperature, which should be close to the values in the above
+ equation, and then see if extrapolation to low temperature is consistent
+ with the low-T calibration points.
+ I suspect there will be deviations because of the difficulty in providing
+ a good thermal sink in the baths at low temperature.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

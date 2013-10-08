@@ -1,0 +1,935 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Aircraft Algorithm Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\RAFAlgorithmMemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Research Aviation Facility}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Algorithm Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.2truein \leftline{\hskip\longindent Al Cooper}
+\leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding default
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={Virtual Temperature and THETAV}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+RAFAlgorithmMemo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Background
+\end_layout
+
+\begin_layout Standard
+The virtual temperature is the temperature of a dry-air parcel that would
+ have the same density as the actual moist-air parcel.
+ The defining equation arises from the equation of state:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+p=\rho_{m}R_{m}T=\rho_{m}R_{d}T_{v}\label{eq:EquationOfState}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $p$
+\end_inset
+
+ is the total pressure, 
+\begin_inset Formula $\rho_{m}$
+\end_inset
+
+ the density of moist air, 
+\begin_inset Formula $R_{m}$
+\end_inset
+
+ the gas constant for moist air (equal to 
+\begin_inset Formula $R^{*}/M_{m}$
+\end_inset
+
+ where 
+\begin_inset Formula $R^{*}$
+\end_inset
+
+ is the universal gas constant and 
+\begin_inset Formula $M_{m}$
+\end_inset
+
+ is the molecular weight of the moist air), 
+\begin_inset Formula $R_{d}=R^{*}/M_{d}$
+\end_inset
+
+ is the gas constant for dry air of molecular weight 
+\begin_inset Formula $M_{d}$
+\end_inset
+
+, 
+\begin_inset Formula $T$
+\end_inset
+
+ is the absolute temperature, and 
+\begin_inset Formula $T_{v}$
+\end_inset
+
+ is the absolute virtual temperature.
+ Because the pressures are additive, (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:EquationOfState"
+
+\end_inset
+
+) can also be written as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+p=p_{d}+e=\rho_{d}\frac{R^{*}}{M_{d}}T+\rho_{v}\frac{R^{*}}{M_{w}}T\label{eq:SumOfPressures}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $R^{*}$
+\end_inset
+
+ is the universal gas constant, 
+\begin_inset Formula $M_{d}$
+\end_inset
+
+ and 
+\begin_inset Formula $M_{w}$
+\end_inset
+
+ are the respective molecular weights of dry air and water, and 
+\begin_inset Formula $\rho_{d}$
+\end_inset
+
+ and 
+\begin_inset Formula $\rho_{v}$
+\end_inset
+
+ are the respective densities.
+ Because 
+\begin_inset Formula $\rho_{m}=\rho_{d}+\rho_{e}$
+\end_inset
+
+, equating (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:EquationOfState"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:SumOfPressures"
+
+\end_inset
+
+) as expressions for the pressure gives
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+(\rho_{d}+\rho_{v})\frac{R^{*}}{M_{m}}T=\rho_{d}\frac{R^{*}}{M_{d}}T+\rho_{v}\frac{R^{*}}{M_{w}}T\label{eq:EquatingPressures}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which leads to the gas constant for moist air:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+R_{m}=\frac{\rho_{d}}{\rho_{m}}R_{d}+\frac{\rho_{v}}{\rho_{m}}R_{w}\label{eq:RsubM}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with 
+\begin_inset Formula $R_{w}=R^{*}/M_{w}$
+\end_inset
+
+ the gas constant for water vapor.
+ The mixing ratio is 
+\begin_inset Formula $r=\rho_{v}/\rho_{d}$
+\end_inset
+
+ so
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+R_{m}=\frac{1}{1+r}\, R_{d}+\frac{r}{1+r}\, R_{w}=R_{d}\frac{1+r/\epsilon}{1+r}\label{eq:TVIRfromMixingRatio}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\epsilon=R_{d}/R_{w}=M_{w}/M_{d}\simeq0.622$
+\end_inset
+
+.
+ Then (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:EquationOfState"
+
+\end_inset
+
+) gives the following equation for the absolute virtual temperature:
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The current version of Bulletin 9 gives this equation but with mixing ratio
+ 
+\begin_inset Formula $r$
+\end_inset
+
+ replaced by specific humidity 
+\begin_inset Formula $q$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+T_{v}=T\left(\frac{1+r/\epsilon}{1+r}\right)\simeq T\left(\frac{1+1.6078r}{1+r}\right)\label{eq:TVIR-R}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Alternately, because 
+\begin_inset Formula $q=\rho_{v}/\rho_{m}$
+\end_inset
+
+ is the dimensionless specific humidity and 
+\begin_inset Formula $\rho_{d}=\rho_{m}-\rho_{v}$
+\end_inset
+
+, this can be written as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+R_{m}=(1-q)R_{d}+qR_{w}=R_{d}(1-q(1-\frac{1}{\epsilon}))=R_{d}(1+q\frac{1-\epsilon}{\epsilon})\label{eq:R_m}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then, using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:EquationOfState"
+
+\end_inset
+
+) gives the equation for the absolute virtual temperature:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+T_{v}=\frac{R_{m}}{R_{d}}\, T=T\left(1+q\left(\frac{1-\epsilon}{\epsilon}\right)\right)\simeq T\left(1+0.6078q\right)\label{eq:Tvir}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which also could have been obtained immediately from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TVIR-R"
+
+\end_inset
+
+) using the relationships 
+\begin_inset Formula $q=r/(1+r)$
+\end_inset
+
+ or 
+\begin_inset Formula $r=q/(1-q)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The virtual potential temperature 
+\begin_inset Formula $\Theta_{v}$
+\end_inset
+
+ is defined analogously as the potential temperature of dry air that would
+ have the same density as the moist air.
+ For unsaturated air, the result is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\Theta_{v}=T_{v}(\frac{p_{r}}{p})^{R_{d}/c_{pd}}\label{eq:THETAVequation}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $p_{r}$
+\end_inset
+
+ is the reference pressure (conventionally 1000 hPa) and 
+\begin_inset Formula $R_{d}/c_{pd}$
+\end_inset
+
+ is normally taken to be 2/7, which would be the exact result if dry air
+ were a perfect gas and which is very close to measured values.
+ The subtlety in this equation is in the use of the total pressure 
+\begin_inset Formula $p$
+\end_inset
+
+ with values for the exponent that apply to dry air.
+ The AMS Glossary says that weight of any liquid water should be included,
+ in which case the appropriate virtual temperature would be modified to
+ incorporate that weight.
+ The actual formula in the Glossary
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+small-value approximations have been used here; I think the formula without
+ approximations would be 
+\begin_inset Formula $\Theta_{v}=\Theta(1+r/\epsilon)/(1+r+r_{W})$
+\end_inset
+
+ where 
+\begin_inset Formula $r_{w}=\chi/\rho$
+\end_inset
+
+ is the mixing ratio of liquid water, 
+\begin_inset Formula $\chi$
+\end_inset
+
+ is the liquid water content [mass/volume], and 
+\begin_inset Formula $\rho$
+\end_inset
+
+ is the total air weight per volume including the weight of condensed water.
+\end_layout
+
+\end_inset
+
+ is 
+\begin_inset Formula $\Theta_{v}=\Theta(1+0.61r-r_{w})$
+\end_inset
+
+ where 
+\begin_inset Formula $r_{w}$
+\end_inset
+
+ is the mixing ratio of liquid water and 
+\begin_inset Formula $\Theta$
+\end_inset
+
+ is specified to be 
+\begin_inset Quotes eld
+\end_inset
+
+the actual potential temperature
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Interpreted literally, this would require use of a gas constant and specific
+ heat that are adjusted for the moisture in the air, not the dry-air values
+ in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:THETAVequation"
+
+\end_inset
+
+).
+ Because the uses for 
+\begin_inset Formula $T_{v}$
+\end_inset
+
+ and 
+\begin_inset Formula $\Theta_{v}$
+\end_inset
+
+ are as surrogates for buoyancy, it is desirable to preserve the relationship
+ to buoyancy as far as possible.
+ If 
+\begin_inset Formula $R_{m}/c_{pm}$
+\end_inset
+
+ (applicable to moist air) were to be used, then variations in 
+\begin_inset Formula $\Theta_{v}$
+\end_inset
+
+ would be introduced by humidity both via 
+\begin_inset Formula $T_{v}$
+\end_inset
+
+ and via 
+\begin_inset Formula $R_{m}/c_{pm}$
+\end_inset
+
+, and the connection to buoyancy would be lost.
+ To preserve this connection, one must used a fixed exponent in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:THETAVequation"
+
+\end_inset
+
+), even though this contradicts the specification in the AMS Glossary.
+ The weakness in this approach is that vertical movements of parcels will
+ obey potential temperature equations with the actual moist-air coefficients,
+ so the benefit of retaining exact correspondence to buoyancy at the measurement
+ level is lost when parcels move vertically.
+ 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+This could be remedied by introducing a different formula for 
+\begin_inset Formula $\Theta_{v}$
+\end_inset
+
+ in which 
+\begin_inset Formula $T_{v}$
+\end_inset
+
+ is replaced by 
+\begin_inset Formula $T_{v}^{*}$
+\end_inset
+
+ and the moist-air exponent is used, but 
+\begin_inset Formula $T_{v}^{*}$
+\end_inset
+
+ includes an additional adjustment to compensate for the variation in buoyancy
+ introduced by using the actual moist-air exponent.
+ This does not seem to be a good alternative for an RAF output variable
+ because there is no precedent for its use.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Present Processing Code
+\end_layout
+
+\begin_layout Standard
+TVIR is not in recent datasets, and the code in the program segment to calculate
+ it (tvir.c) is obviously not functional, so TVIR should not be used without
+ change.
+ 
+\end_layout
+
+\begin_layout Standard
+Here is the current code for virtual potential temperature THETAV:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+void sthetav(DERTBL *varp) {   
+\end_layout
+
+\begin_layout LyX-Code
+  NR_TYPE	thetav = 0.0, atx, tvir, psxc, edpc, sphum;
+\end_layout
+
+\begin_layout LyX-Code
+  atx	= GetSample(varp, 0);   
+\end_layout
+
+\begin_layout LyX-Code
+  psxc	= GetSample(varp, 1);   
+\end_layout
+
+\begin_layout LyX-Code
+  edpc	= GetSample(varp, 2);   
+\end_layout
+
+\begin_layout LyX-Code
+  sphum	= psxc - 0.378 * edpc;
+\end_layout
+
+\begin_layout LyX-Code
+  if (sphum != 0.0)     sphum = 622.0 * edpc / sphum;
+\end_layout
+
+\begin_layout LyX-Code
+  tvir = 1.0 - 0.6e-3 * sphum;
+\end_layout
+
+\begin_layout LyX-Code
+  if (tvir != 0.0)     
+\end_layout
+
+\begin_layout LyX-Code
+    tvir = (atx + Kelvin) / tvir - Kelvin;
+\end_layout
+
+\begin_layout LyX-Code
+  if (psxc != 0.0)    
+\end_layout
+
+\begin_layout LyX-Code
+    thetav = (tvir + Kelvin) 
+\end_layout
+
+\begin_layout LyX-Code
+           * pow( (double)(1000.0 / psxc), (double)0.28571);
+\end_layout
+
+\begin_layout LyX-Code
+  PutSample(varp, thetav);
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This equation recalculates the specific humidity, also available in the
+ subroutine sphum.c, and it duplicates the code from sphum.c.
+ This is correct apart from an insignificant departure from the exact best-curre
+nt-estimate value for the ratio of molecular weights: 
+\begin_inset Formula $\epsilon=0.62198$
+\end_inset
+
+.
+ SPHUM, however, has not been included in recent data files.
+ It can always be calculated readily from the mixing ratio 
+\begin_inset Formula $r$
+\end_inset
+
+, which is present: 
+\begin_inset Formula $q=r/(1+r)$
+\end_inset
+
+.
+ For THETAV, the code in use is equivalent to (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Tvir"
+
+\end_inset
+
+), except for the use of 
+\begin_inset Formula $(1-0.6q)^{-1}$
+\end_inset
+
+ in place of 
+\begin_inset Formula $(1+0.6078q)$
+\end_inset
+
+.
+ The difference is insignificant for levels of humidity normally encountered
+ in the atmosphere.
+\end_layout
+
+\begin_layout Section*
+Reasons For Proposing Changes
+\end_layout
+
+\begin_layout Enumerate
+Virtual temperature is a useful variable and it would be good to include
+ it in processed data files.
+ Its calculation is less ambiguous than that for virtual potential temperature.
+\end_layout
+
+\begin_layout Enumerate
+The relevant code fragment tvir.c is obviously not functional and will produce
+ serious errors.
+ If it is desirable to calculate virtual temperature, that routine should
+ be updated.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Although the calculation of 
+\begin_inset Formula $\Theta_{v}$
+\end_inset
+
+ is suitably accurate, the equation could easily be replaced by a form that
+ does not make unnecessary approximations.
+ The inaccuracies arise primarily from the use of 
+\begin_inset Formula $(1-0.6q)^{-1}$
+\end_inset
+
+ in place of the correct form 
+\begin_inset Formula $\left(1+q\left(\frac{1-\epsilon}{\epsilon}\right)\right)\simeq(1+0.6078q)$
+\end_inset
+
+.
+ Changing this would also save users and future reviewers from having to
+ wonder why the form being used is not the conventional one.
+\end_layout
+
+\begin_layout Enumerate
+Duplicating the code for calculation of specific humidity in this routine
+ runs the risk that a future change to that code, either in this routine
+ or in 
+\begin_inset Quotes eld
+\end_inset
+
+sphum.c
+\begin_inset Quotes erd
+\end_inset
+
+, would lead to inconsistency.
+ Specific humidity would also be a good variable to include in data files,
+ even though users can easily recalculate it.
+ For virtual temperature and virtual potential temperature, however, it
+ may be preferable to use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TVIR-R"
+
+\end_inset
+
+) because it uses mixing ratio instead.
+\end_layout
+
+\begin_layout Section*
+
+\emph on
+Recommendations
+\end_layout
+
+\begin_layout Enumerate
+Calculate virtual temperature (TVIR) as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+// (in global data somewhere, MW = 18.01526 and MD = 28.9644)
+\end_layout
+
+\begin_layout LyX-Code
+// input is ATX [deg C] and MR [g/kg]
+\end_layout
+
+\begin_layout LyX-Code
+// output is TVIR [deg C]
+\end_layout
+
+\begin_layout LyX-Code
+// factors of 0.001 are conversion factors to obtain 
+\end_layout
+
+\begin_layout LyX-Code
+//     dimensionless mixing ratios [kg/kg]
+\end_layout
+
+\begin_layout LyX-Code
+TVIR = (ATX + KELVIN) * (1.
+ + 0.001 * MR * MD / MW) 
+\end_layout
+
+\begin_layout LyX-Code
+     / (1.
+ + 0.001 * MR) - KELVIN;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Calculate potential virtual temperature (THETAV) as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+// input is TVIR and PSXC; output is thetav [kelvin]
+\end_layout
+
+\begin_layout LyX-Code
+thetav = (TVIR + KELVIN) * pow((1000./PSXC), 0.28571);
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip0.5truein 
+\backslash
+centerline{
+\backslash
+textcolor{blue}{---- END ----}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

@@ -1,24 +1,42 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+% Added by lyx2lyx
+%  for proper underlining
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+\let\cite@rig\cite
+\newcommand{\b@xcite}[2][\%]{\def\def@pt{\%}\def\pas@pt{#1}
+  \mbox{\ifx\def@pt\pas@pt\cite@rig{#2}\else\cite@rig[#1]{#2}\fi}}
+\renewcommand{\underbar}[1]{{\let\cite\b@xcite\uline{#1}}}
+\end_preamble
 \use_default_options true
 \begin_modules
 hanging
 \end_modules
+\maintain_unincluded_children false
 \language english
+\language_package default
 \inputencoding auto
+\fontencoding global
 \font_roman default
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -26,21 +44,31 @@ hanging
 \use_geometry false
 \use_amsmath 1
 \use_esint 1
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
-\defskip medskip
+\paragraph_indentation default
 \quotes_language english
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
-\author "" 
-\author "" 
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
 \end_header
 
 \begin_body
@@ -53,7 +81,7 @@ CLOUD PHYSICS VARIABLES
 Measurements of Liquid Water Content
 \end_layout
 
-\begin_layout Standard
+\begin_layout Hanging
 
 \series bold
 Raw Output PMS/CSIRO (KING) Liquid Water Content (W): 
@@ -61,7 +89,17 @@ Raw Output PMS/CSIRO (KING) Liquid Water Content (W):
 PLWC
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+PLWC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -78,7 +116,7 @@ PLWC1
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -91,12 +129,53 @@ PLWC1
 \begin_inset Newline newline
 \end_inset
 
-This is the output of a PMS/CSIRO (KING) liquid water probe (in Watts).
- It measures the power required to maintain a constant temperature through
- a heated element as that element is cooled by convection and evaporation
- of impinging liquid water.
+This variable
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+King probe
+\end_layout
+
+\end_inset
+
+ is the output of a PMS/CSIRO (King) liquid water probe (in watts).
+ PLWC is the power required to maintain constant temperature in a heated
+ element as that element is cooled by convection and evaporation of impinging
+ liquid water.
  The convective heat losses are determined by calibration in dry air over
- a range of airspeeds and temperatures.
+ a range of airspeeds and temperatures, so that the remaining power can
+ be related to the liquid water content.
+ The instrument is described in 
+\begin_inset CommandInset href
+LatexCommand href
+name "RAF Bulletin 24"
+target "http://www.eol.ucar.edu/raf/Bulletins/bulletin24.html"
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Bulletin 24
+\end_layout
+
+\end_inset
+
+.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+add link
+\end_layout
+
+\end_inset
+
+See PLWCC (which follows) for processing.
 \begin_inset Note Note
 status open
 
@@ -107,9 +186,13 @@ add reference
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
-\begin_layout Standard
+\begin_layout Hanging
 
 \series bold
 Corrected PMS/CSIRO (KING) Liquid Water Content (g/m
@@ -121,7 +204,17 @@ Corrected PMS/CSIRO (KING) Liquid Water Content (g/m
 PLWCC
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+PLWCC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -138,7 +231,7 @@ PLWCC1
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -151,9 +244,133 @@ PLWCC1
 \begin_inset Newline newline
 \end_inset
 
-This is the corrected liquid water content obtained from relating the power
- consumption (required to maintain a constant temperature) to liquid water
- content, taking into account the effect of convective heat losses.
+
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+change
+\begin_inset Newline newline
+\end_inset
+
+2011
+\end_layout
+
+\end_inset
+
+This is the corrected liquid water content
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+liquid water content!King probe
+\end_layout
+
+\end_inset
+
+ obtained from relating the power consumption required to maintain a constant
+ temperature to the liquid water content, taking into account the effect
+ of convective heat losses.
+ The instrument and processing are described by King et al.
+ (1978)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+King, W.
+ D., D.
+ A.
+ Parkin and R.
+ J.
+ Handsworth, 1978 A hot-wire liquid water device having fully calculable
+ response characteristics.
+ J.
+ Appl.
+ Meteorol., 17, 1809--1813.
+ See also Bradley, S.
+ G., and W.
+ D.
+ King, 1979 Frequency response of the CSIRO Liquid Water Probe.
+ J.
+ Appl.
+ Meteorol., 18, 361--366.
+\end_layout
+
+\end_inset
+
+ and in a note available at this URL: 
+\begin_inset CommandInset href
+LatexCommand href
+name "on the RAF Science Wiki"
+target "http://wiki.eol.ucar.edu/rafscience/ProcessingAlgorithms?action=AttachFile&do=view&target+PLWCC2.pdf"
+
+\end_inset
+
+.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Needed
+\end_layout
+
+\end_inset
+
+ Because the temperature of the sensing wire is typically well above the
+ boiling point of water
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+water!boiling point
+\end_layout
+
+\end_inset
+
+, the assumption made in processing is that the water collected on the sensing
+ wire is vaporized at the boiling point 
+\begin_inset Formula $T_{b}$
+\end_inset
+
+.
+ The boiling point is represented as a function of pressure as described
+ below.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+need also the new zero-removal scheme?
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+King, W.
+ D., D.
+ A.
+ Parkin and R.
+ J.
+ Handsworth, 1978 A hot-wire liquid water device having fully calculable
+ response characteristics.
+ J.
+ Appl.
+ Meteorol., 17, 1809--1813.
+ See also Bradley, S.
+ G., and W.
+ D.
+ King, 1979 Frequency response of the CSIRO Liquid Water Probe.
+ J.
+ Appl.
+ Meteorol., 18, 361--366.
+\end_layout
+
+\end_inset
+
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -168,14 +385,15 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
-width "90text%"
+use_makebox 0
+width "95text%"
 special "none"
 height "1in"
 height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
-PLWC = total power dissipated by the probe
+PLWC = total power dissipated by the probe (W)
 \begin_inset Newline newline
 \end_inset
 
@@ -183,7 +401,17 @@ PLWC = total power dissipated by the probe
 \begin_inset Formula $P_{D}$
 \end_inset
 
- = power dissipated by the cooling effect of dry air alone
+ = power dissipated
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+King probe!power dissipated
+\end_layout
+
+\end_inset
+
+ by the cooling effect of dry air alone
 \begin_inset Newline newline
 \end_inset
 
@@ -196,26 +424,25 @@ PLWC = total power dissipated by the probe
 \begin_inset Newline newline
 \end_inset
 
-Nu = Nusselt Number (relating conduction heat loss to the total heat loss
- for dry air)
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-formula?
-\end_layout
-
-\end_inset
-
-.
-\begin_inset Newline newline
-\end_inset
-
 
 \begin_inset Formula $L$
 \end_inset
 
- = length of the probe sensitive element, m
+ = length of the probe sensitive element
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+King Probe!element dimensions
+\end_layout
+
+\end_inset
+
+, typically 0.021
+\begin_inset space \thinspace{}
+\end_inset
+
+m
 \begin_inset Newline newline
 \end_inset
 
@@ -223,15 +450,11 @@ formula?
 \begin_inset Formula $d$
 \end_inset
 
-= diameter of the probe sensitive element, m
-\begin_inset Newline newline
+= diameter of the probe sensitive element, typically 1.805
+\begin_inset Formula $\times10^{-3}$
 \end_inset
 
-
-\begin_inset Formula $\lambda$
-\end_inset
-
- = thermal conductivity of dry air ()
+m
 \begin_inset Newline newline
 \end_inset
 
@@ -239,7 +462,17 @@ formula?
 \begin_inset Formula $T_{s}$
 \end_inset
 
-= sensor temperature (K)
+= sensor temperature
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+King probe!sensor temperature
+\end_layout
+
+\end_inset
+
+ (K)
 \begin_inset Newline newline
 \end_inset
 
@@ -252,18 +485,171 @@ formula?
 \end_inset
 
 
-\begin_inset Formula $L_{v}$
+\begin_inset Formula $T_{b}$
 \end_inset
 
- = latent heat of vaporization of water
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Tb@
+\begin_inset Formula $T_{b}$
+\end_inset
+
+= boiling temperature of water
+\end_layout
+
+\end_inset
+
+ = boiling temperature of water (dependent on pressure): 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+with 
+\begin_inset Formula $x=\log_{10}(p/(1$
+\end_inset
+
+hPa)), 
+\begin_inset Formula $B=1^{\circ}C$
+\end_inset
+
+, and {
+\begin_inset Formula $b_{0},$
+\end_inset
+
+ 
+\begin_inset Formula $b_{1}$
+\end_inset
+
+, 
+\begin_inset Formula $b_{2}$
+\end_inset
+
+} = {0.03366503, 1.34236135, -0.33479451, 0.0351934}: 
+\begin_inset Formula $T_{b}=B\times10^{(b_{0}+b_{1}x+b_{2}x^{2}+b_{3}x^{3})}$
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset Formula $C_{w}$
+\begin_inset Formula $T_{m}=(T_{a}+T_{s})/2$
 \end_inset
 
- = specific heat of water
+ = mean temperature for air properties
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $L_{v}(T_{b})$
+\end_inset
+
+ = latent heat of vaporization of water
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Lv@
+\begin_inset Formula $L_{V}$
+\end_inset
+
+= latent heat of vaporization of water
+\end_layout
+
+\end_inset
+
+ = (2.501+0.00237(
+\begin_inset Formula $T_{a}-T_{0})$
+\end_inset
+
+)
+\begin_inset Formula $\times10^{6}$
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $c_{w}$
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+cw@
+\begin_inset Formula $c_{w}$
+\end_inset
+
+= specific heat of liquid water
+\end_layout
+
+\end_inset
+
+ = specific heat of water=1875
+\begin_inset space \thinspace{}
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -276,10 +662,301 @@ formula?
 \end_inset
 
 
+\begin_inset Formula $\lambda_{c}$
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $\lambda_{c}$
+\end_inset
+
+= thermal conductivity, dry air
+\end_layout
+
+\end_inset
+
+ = thermal conductivity
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+thermal conductivity
+\end_layout
+
+\end_inset
+
+ of dry air (2.38+0.0071(
+\begin_inset Formula $T_{m}-T_{0}$
+\end_inset
+
+))
+\begin_inset Formula $\times10^{-2}$
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+m
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\mu$
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mu_{a}$
+\end_inset
+
+= dynamic viscosity of air
+\end_layout
+
+\end_inset
+
+ =viscosity of air =
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+viscosity
+\end_layout
+
+\end_inset
+
+ (1.718+0.0049(
+\begin_inset Formula $T_{m}-T_{0}))\times10^{-5}$
+\end_inset
+
+ kg
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+m
+\begin_inset Formula $^{-1}$
+\end_inset
+
+s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\rho_{a}$
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+rhoa@
+\begin_inset Formula $\rho_{a}$
+\end_inset
+
+= density of air
+\end_layout
+
+\end_inset
+
+ = density of air = 
+\begin_inset Formula $p/(R_{d}T_{a})$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Re
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Re= Reynolds number
+\end_layout
+
+\end_inset
+
+ = Reynolds number = 
+\begin_inset Formula $\rho_{a}U_{a}d/\mu_{a}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Nu
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Nu= Nusselt number
+\end_layout
+
+\end_inset
+
+ = Nusselt Number relating conduction heat loss to the total heat loss for
+ dry air: 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+typically Nu=
+\begin_inset Formula $a_{0}\mathrm{Re}^{a_{1}}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $C_{kg2g}=1000$
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Ckg2g@
+\begin_inset Formula $C_{kg2g}$
+\end_inset
+
+= conversion factor, g to kg
+\end_layout
+
+\end_inset
+
+ = grams per kilogram 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+(unit conversion to conventional units for liquid water content)
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Formula $\chi$
 \end_inset
 
- = liquid water content (g/m
+ 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+ 
+\begin_inset Formula $\chi$
+\end_inset
+
+= liquid water content
+\end_layout
+
+\end_inset
+
+= liquid water content (g/m
 \begin_inset Formula $^{3}$
 \end_inset
 
@@ -287,29 +964,44 @@ formula?
 \end_layout
 
 \begin_layout Plain Layout
+\noindent
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
 
-\lyxline
+\end_inset
 
-\begin_inset Formula \[
-\mathrm{PLWC}=P_{D}+P_{W}\]
+
+\begin_inset Formula 
+\[
+\mathrm{PLWC}=P_{D}+P_{W}
+\]
 
 \end_inset
 
 where
-\begin_inset Formula \[
-P_{D}=\pi\mathrm{Nu}\, L\lambda(T_{s}-T_{a})\]
+\begin_inset Formula 
+\[
+P_{D}=\pi\mathrm{Nu}\, L\lambda_{c}(T_{s}-T_{a})
+\]
 
 \end_inset
 
 
-\begin_inset Formula \[
-P_{W}=L\, d[L_{v}+c_{w}(T_{s}-T_{a})]\, U_{a}\chi\]
+\begin_inset Formula 
+\[
+P_{W}=L\, d[L_{v}(T_{b})+c_{w}(T_{b}-T_{a})]\, U_{a}\chi
+\]
 
 \end_inset
 
 Result:
-\begin_inset Formula \[
-\mathrm{PLWCC}=\chi=\frac{\mathrm{\{PLWC\}}-P_{D}}{L\, d\, U_{a}[L_{v}+c_{w}(T_{s}-T_{a})]}\]
+\begin_inset Formula 
+\[
+\mathrm{PLWCC}=\chi=\frac{C_{kg2g}(\mathrm{\{PLWC\}}-P_{D})}{L\, d\, U_{a}[L_{v}(T_{b})+c_{w}(T_{b}-T_{a})]}
+\]
 
 \end_inset
 
@@ -325,7 +1017,63 @@ Result:
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Hanging
+
+\series bold
+PVM-100 Liquid Water Content (g/m
+\begin_inset Formula $^{-3}$
+\end_inset
+
+): 
+\bar under
+PLWCG
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+PLWCG
+\end_layout
+
+\end_inset
+
+
+\series default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+PLWCG
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+Cloud liquid water content for cloud droplets in the approximate size range
+ from 3--50 
+\begin_inset Formula $\mu$
+\end_inset
+
+m.
+ 
+\emph default
+The PVM produces a measure of the liquid water content directly, but a baseline
+ value is sometimes subtracted by reference to another cloud droplet instrument
+ such as an FSSP or CDP, such that when the other instrument measures a
+ very low droplet concentration the baseline value for the PVM-100 is updated
+ at the corresponding time and that average is then subtracted from the
+ measurements directly produced by the PVM-100.
+ Typical values are 
+\end_layout
+
+\begin_layout Hanging
 
 \series bold
 Raw Output Rosemount Icing Detector (V): 
@@ -334,7 +1082,17 @@ RICE
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+RICE
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -347,8 +1105,18 @@ RICE
 \begin_inset Newline newline
 \end_inset
 
-A Rosemount 871F ice-accretion probe consists of a rod set in vibration
- by a piezoelectric crystal.
+A Rosemount 871F
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Rosemount 871F icing probe
+\end_layout
+
+\end_inset
+
+ ice-accretion probe consists of a rod set in vibration by a piezoelectric
+ crystal.
  The oscillation frequency of the probe changes with ice loading, so in
  supercooled cloud ice accumulates on the sensor, and the change in oscillation
  frequency is transmitted as a DC voltage..
@@ -356,11 +1124,25 @@ A Rosemount 871F ice-accretion probe consists of a rod set in vibration
  the ice.
  Its output voltage is a measure of the mass of the accreted ice.
  The rate of voltage change is converted to an estimate of the supercooled
- liquid water content, as described in the next paragraph.
- 
+ liquid water content
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+liquid water content
 \end_layout
 
-\begin_layout Standard
+\end_inset
+
+, as described in the next paragraph.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
 
 \series bold
 Derived Supercooled Liquid Water Content (g/m
@@ -373,7 +1155,7 @@ SCLWC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
 status open
 
 \begin_layout Plain Layout
@@ -383,6 +1165,16 @@ SCLWC
 \end_inset
 
 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+SCLWC
+\end_layout
+
+\end_inset
+
+ {obsolete? Couldn't find code}
 \begin_inset Newline newline
 \end_inset
 
@@ -420,6 +1212,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -464,17 +1257,34 @@ A = effective surface area of the probe (m
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
 
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula \[
-\mathrm{SCLWC}=AU_{a}\frac{\Delta m}{\Delta t}\]
+\begin_inset Formula 
+\[
+\mathrm{SCLWC}=AU_{a}\frac{\Delta m}{\Delta t}
+\]
 
 \end_inset
 
-SCLWC = A (Dm/Dt)/Ua.
+
 \end_layout
 
 \end_inset
@@ -487,14 +1297,28 @@ Sensors of Individual Particles (1-D Probes)
 \end_layout
 
 \begin_layout Standard
-The RAF operates a set of hydrometeor detectors that provide single-dimension
- measurements (i.e., not images) of individual particle sizes.
- RAF Bulletin No.
-\begin_inset space ~
+The RAF operates a set of hydrometeor detectors
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+hydrometeor detector
+\end_layout
+
 \end_inset
 
-24 contains extensive information on the operating principles and characteristic
-s of these instruments.
+ that provide single-dimension measurements (i.e., not images) of individual
+ particle sizes.
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "RAF Bulletin 24"
+target "http://www.eol.ucar.edu/raf/Bulletins/bulletin24.html"
+
+\end_inset
+
+ contains extensive information on the operating principles and characteristics
+ of some of the older instruments.
 \begin_inset Note Note
 status open
 
@@ -509,7 +1333,17 @@ this needs updating with recent info, esp Korolev, Strapp, etc.
 \end_layout
 
 \begin_layout Standard
-Four- and five-character variable names shown in this section are generic.
+Four- and five-character variable names
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+variable names!hydrometeor probes
+\end_layout
+
+\end_inset
+
+ shown in this section are generic.
  The actual names appearing in NIMBUS-generated production output data sets
  have appended to them an underscore (_) and three more characters which
  indicate a probe's specific aircraft mounting location.
@@ -518,8 +1352,9 @@ Four- and five-character variable names shown in this section are generic.
  The codes presently in use are given in the following table.
  For the GV, there are 12 locations available, characterized by three letters.
  The first is the wing ({L,R} for {port,starboard}), the second is the pylon
- ({I,M,O} for inboard, middle, outboard}), the third is which canister at
- the pylon is used ({I,O} for {inboard, outboard}).
+ ({I,M,O} for inboard, middle, outboard}), the third is which of the two
+ possible canister locations at the pylon is used ({I,O} for {inboard, outboard}
+).
 \end_layout
 
 \begin_layout Standard
@@ -527,7 +1362,7 @@ Four- and five-character variable names shown in this section are generic.
 \align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="18" columns="3">
-<features>
+<features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -1501,8 +2336,8 @@ GV
 \begin_layout Standard
 The probe type also is coded into each variable's name, sometimes using
  four characters, sometimes only one: FSSP-100 (FSSP or F), FSSP-300 (F300
- or 3), PCAS (PCAS or P), OAP-200X (200X or X), OAP-260X (260X or 6) and
- OAP-200Y (200Y or Y).
+ or 3), CDP (CDP or D), UHSAS (UHSAS or U), PCAS (PCAS or P), OAP-200X (200X
+ or X), OAP-260X (260X or 6) and OAP-200Y (200Y or Y).
  Prefix letters are used to identify the type of measurement (A=accumulated
  particle counts per time interval per channel, C = concentration per channel,
  CONC = Concentration from all channels, DBAR = Mean Diameter, DISP = Dispersion
@@ -1526,14 +2361,24 @@ PMS probe
 \end_inset
 
 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+hydrometeor probes!table of
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 \noindent
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="7" columns="7">
-<features>
+<lyxtabular version="3" rows="9" columns="7">
+<features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -1692,6 +2537,136 @@ FSSP-100
 \end_inset
 </cell>
 <cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+UHSAS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+U
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+UHSAS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0-63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+??
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+CDP
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+D
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+CDP
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2133,6 +3108,10 @@ OAP-200Y
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -2147,7 +3126,17 @@ Total Accumulation (counts per time interval):
 AFSSP
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+AFSSP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2161,9 +3150,22 @@ AFSSP
 , 
 \bar under
 AF300
+\series medium
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+AF300
+\end_layout
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2179,7 +3181,17 @@ AF300
 APCAS
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+APCAS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2195,7 +3207,17 @@ APCAS
 A200X
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+A200X
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2211,7 +3233,17 @@ A200X
 A260X
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+A260X
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2228,7 +3260,7 @@ A200Y
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
 status open
 
 \begin_layout Plain Layout
@@ -2237,6 +3269,68 @@ A200Y
 
 \end_inset
 
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+A200Y
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+ACDP
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+ACDP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ACDP
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+AUHSAS
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+AUHSAS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+AUHSAS
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
 
 \begin_inset Newline newline
 \end_inset
@@ -2255,9 +3349,30 @@ vector
 \begin_inset Quotes erd
 \end_inset
 
- character in the NETCDF output files, with dimension equal to the number
- of usable channels in the table above and one entry per channel.
+ character in the NetCDF
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+NetCDF
+\end_layout
+
+\end_inset
+
+ output files, with dimension equal to the number of usable channels in
+ the table above and one entry per channel.
  
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+explain sizes in netCDF files: rel to bin limits; also, is discussion needed
+ of the dummy zero channel?
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -2269,6 +3384,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -2287,7 +3403,7 @@ Concentration (per channel) (
 CFSSP
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2303,7 +3419,7 @@ CFSSP
 CF300
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2317,7 +3433,7 @@ CF300
 , 
 \bar under
 CPCAS
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2325,6 +3441,26 @@ status open
 \series medium
 \bar no
 CPCAS
+\end_layout
+
+\end_inset
+
+, CCDP
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+CCDP
+\end_layout
+
+\end_inset
+
+, CUHSAS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+CUHSAS
 \end_layout
 
 \end_inset
@@ -2344,7 +3480,7 @@ Concentration (per channel) (
 C200X
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2360,7 +3496,7 @@ C200X
 C260X
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2374,7 +3510,7 @@ C260X
 , 
 \bar under
 C200Y
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2401,8 +3537,27 @@ C200Y
 
 
 \series default
-These measurements give the particle concentrations in each usable bin of
- the probe.
+These measurements give the particle concentrations
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+concentration!hydrometeor
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!size distribution
+\end_layout
+
+\end_inset
+
+ in each usable bin of the probe.
  They have 
 \begin_inset Quotes eld
 \end_inset
@@ -2413,15 +3568,118 @@ vector
 
  character is the NETCDF output files, with dimension equal to the number
  of usable channels in the table above and with one entry per channel.
- For the scattering spectrometer probes (FSSP-100, FSSP-300, PCAS) the concentra
-tion value is modified by the probe activity (FACT, PACT) as described below.
- The concentration is obtained from the total number of particles detected
- and a calculated, probe-dependent sample volume.
- For details, see RAF Bulletin No.
-\begin_inset space ~
+ For the scattering spectrometer
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+spectrometer!hydrometeor
+\end_layout
+
 \end_inset
 
-24.
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+hydrometeor spectrometer
+\end_layout
+
+\end_inset
+
+ probes (FSSP-100, FSSP-300
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-300
+\end_layout
+
+\end_inset
+
+, PCAS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+PCAS
+\end_layout
+
+\end_inset
+
+, CDP
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+CDP
+\end_layout
+
+\end_inset
+
+, UHSAS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+UHSAS
+\end_layout
+
+\end_inset
+
+) the concentration value is modified by the probe activity (FACT, PACT)
+ as described below.
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+200X 1D probe
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+260X 1D probe
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+200Y 1D probe
+\end_layout
+
+\end_inset
+
+ The concentration is obtained from the total number of particles detected
+ and a calculated, probe-dependent sample volume.
+ For details, see 
+\begin_inset CommandInset href
+LatexCommand href
+name "RAF Bulletin 24"
+target "http://www.eol.ucar.edu/raf/Bulletins/bulletin24.html"
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Bulletin 24
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Hanging
@@ -2433,6 +3691,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -2451,7 +3710,17 @@ Concentration, sum over all channels (
 CONCF
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+CONCF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2465,9 +3734,22 @@ CONCF
 , 
 \bar under
 CONC3
+\series medium
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+CONC3
+\end_layout
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2481,7 +3763,17 @@ CONC3
 , 
 \bar under
 CONCP
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+CONCP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2489,6 +3781,46 @@ status open
 \series medium
 \bar no
 CONCP
+\end_layout
+
+\end_inset
+
+, CONCD
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+CONCD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+CONCD
+\end_layout
+
+\end_inset
+
+, CONCU
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+CONCU
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+CONCU
 \end_layout
 
 \end_inset
@@ -2508,7 +3840,17 @@ Concentration, sum over all channels (
 CONCX
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+CONCX
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2522,9 +3864,22 @@ CONCX
 , 
 \bar under
 CONC6
+\series medium
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+CONC6
+\end_layout
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2538,7 +3893,17 @@ CONC6
 , 
 \bar under
 CONCY
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+CONCY
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2565,13 +3930,31 @@ CONCY
 
 
 \series default
-These measurements are the particle concentrations summed over all channels
- to give the total particle concentration in the size range of the probe.
- For details, see RAF Bulletin No.
-\begin_inset space ~
+These measurements are the particle concentrations
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!concentration
+\end_layout
+
 \end_inset
 
-24.
+ summed over all channels to give the total particle concentration in the
+ size range of the probe.
+ For details, see 
+\begin_inset CommandInset href
+LatexCommand href
+name "RAF Bulletin 24"
+target "http://www.eol.ucar.edu/raf/Bulletins/bulletin24.html"
+
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -2586,7 +3969,7 @@ Mean Diameter (
 DBARF
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2602,7 +3985,7 @@ DBARF
 DBAR3
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2618,7 +4001,7 @@ DBAR3
 DBARP
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2634,7 +4017,7 @@ DBARP
 DBARX
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2650,7 +4033,7 @@ DBARX
 DBAR6
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2667,7 +4050,7 @@ DBARY
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2676,11 +4059,63 @@ DBARY
 
 \end_inset
 
+, 
+\series bold
+\bar under
+DBARD
+\series default
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+DBARD
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+DBARU
+\series default
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+DBARU
+\end_layout
+
+\end_inset
+
 
 \begin_inset Newline newline
 \end_inset
 
-The mean diameter is the arithmetic average of all particle diameters.
+The mean diameter
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+diameter!mean
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!mean diameter
+\end_layout
+
+\end_inset
+
+ is the arithmetic average of all particle diameters.
  It is calculated as follows: 
 \begin_inset Note Note
 status open
@@ -2709,6 +4144,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -2720,7 +4156,21 @@ status open
 \begin_inset Formula $_{i}$
 \end_inset
 
-} = concentration from probe y in channel i
+} = concentration
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Cyi@
+\begin_inset Formula $Cy_{i}$
+\end_inset
+
+= concentration from hydrometeor probe y in channel i
+\end_layout
+
+\end_inset
+
+ from probe y in channel i
 \begin_inset Newline newline
 \end_inset
 
@@ -2729,7 +4179,7 @@ status open
 \length 0.6cm
 \end_inset
 
-(e.g., y=FSSP to calculate DBARx for x=F)
+(e.g., y=FSSP to calculate DBARF)
 \begin_inset Newline newline
 \end_inset
 
@@ -2745,24 +4195,63 @@ i2 = highest usable channel for the probe
 \begin_inset Formula $d_{i}$
 \end_inset
 
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+di@
+\begin_inset Formula $d_{i}$
+\end_inset
+
+= diameter of hydrometeor in channel 
+\begin_inset Formula $i$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
  = mean diameter of particles in channel i for this probe (
 \begin_inset Formula $\mu m$
 \end_inset
 
 )
-\lyxline
+\begin_inset Newline newline
+\end_inset
 
-\end_layout
 
-\begin_layout Plain Layout
-\begin_inset Formula \[
-\mathrm{DBARx}=\frac{{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}}}}{\sum_{i=i1}^{i2}\left\{ \mathrm{Cy}_{i}\right\} }\]
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
 
 \end_inset
 
 
 \end_layout
 
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+\mathrm{DBARx}=\frac{{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}}}}{\sum_{i=i1}^{i2}\left\{ \mathrm{Cy}_{i}\right\} }
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -2776,7 +4265,17 @@ Dispersion (dimensionless):
 DISPF
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DISPF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2792,7 +4291,17 @@ DISPF
 DISP3
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DISP3
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2808,7 +4317,17 @@ DISP3
 DISPP
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DISPP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2824,7 +4343,17 @@ DISPP
 DISPX
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DISPX
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2840,7 +4369,17 @@ DISPX
 DISP6
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DISP6
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -2857,7 +4396,7 @@ DISPY
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
 status open
 
 \begin_layout Plain Layout
@@ -2867,11 +4406,92 @@ DISPY
 \end_inset
 
 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+DISPY
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+DISPD
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DISPD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+DISPD
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+DISPU
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DISPU
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+DISPU
+\end_layout
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-The dispersion is the ratio of the standard deviation of particle diameters
- to the mean particle diameter.
+The dispersion
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+dispersion
+\end_layout
+
+\end_inset
+
+ is the ratio of the standard deviation of particle diameters to the mean
+ particle diameter.
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!dispersion
+\end_layout
+
+\end_inset
+
  
 \begin_inset Note Note
 status open
@@ -2898,6 +4518,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -2926,7 +4547,7 @@ status open
 \length 0.6cm
 \end_inset
 
-(e.g., y=FSSP to calculate DISPx for x=F)
+(e.g., y=FSSP to calculate DISPF)
 \begin_inset Newline newline
 \end_inset
 
@@ -2951,13 +4572,30 @@ i2 = highest usable channel for the probe
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
 
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula \[
-\mathrm{DISPx}==\frac{1}{\{\mathrm{DBARx}\}}\,\left\{ \frac{{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}^{2}}}}{\sum_{i=i1}^{i2}\left\{ \mathrm{Cy}_{i}\right\} }-\{\mathrm{DBARx}\}^{2}\right\} ^{1/2}\]
+\begin_inset Formula 
+\[
+\mathrm{DISPx}==\frac{1}{\{\mathrm{DBARx}\}}\,\left\{ \frac{{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}^{2}}}}{\sum_{i=i1}^{i2}\left\{ \mathrm{Cy}_{i}\right\} }-\{\mathrm{DBARx}\}^{2}\right\} ^{1/2}
+\]
 
 \end_inset
 
@@ -2982,10 +4620,24 @@ Liquid/Ice Water Content (
 
 ): 
 \bar under
+
+\begin_inset Newline newline
+\end_inset
+
 PLWCF
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+PLWCF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3001,7 +4653,17 @@ PLWCF
 PLWCX
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+PLWCX
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3017,7 +4679,17 @@ PLWCX
 PLWC6
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+PLWC6
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3034,7 +4706,7 @@ PLWCY
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
 status open
 
 \begin_layout Plain Layout
@@ -3044,19 +4716,92 @@ PLWCY
 \end_inset
 
 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+PLWCY
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+PLWCD
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+PLWCD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+PLWCD
+\end_layout
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
-This variable is a derived calculation of the liquid or ice water content
- obtained from the measured concentration (CONCx) and the third moment of
- the equivalent droplet diameter.
- The equivalent droplet diameter is the diameter that represents the equivalent
- mass in the detected particle.
- For water, the equivalent droplet diameter is the normally the measured
- diameter, but some processing has used other assumptions and this is a
- choice that can be made differently based on project needs.
- Using this definition allows for the approximate estimation of ice water
- content in cases where it is known that all hydrometeors are ice.
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+liquid water content
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!liquid water content
+\end_layout
+
+\end_inset
+
+These variables are derived from the measured concentration (CONCx) and
+ the third moment of the equivalent droplet diameter.
+ The equivalent droplet diameter
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+diameter!equivalent
+\end_layout
+
+\end_inset
+
+ is the diameter that represents the mass in the detected particle.
+ The equivalent droplet diameter is normally the measured diameter for liquid
+ hydrometeors, but some processing has used other assumptions and this is
+ a choice that can be made based on project needs.
+ Using this definition allows for the approximate estimation of 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ice water content
+\end_layout
+
+\end_inset
+
+ice water content in cases where it is known that all hydrometeors are ice.
  
 \begin_inset Newline newline
 \end_inset
@@ -3076,6 +4821,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -3084,6 +4830,20 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Formula $d_{e,i}$
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+dei@
+\begin_inset Formula $d_{e,i}$
+\end_inset
+
+= equivalent melted diameter for channel i of a hydrometeor spectrometer
+\end_layout
+
 \end_inset
 
  = equivalent melted diameter for channel 
@@ -3115,6 +4875,20 @@ status open
 \begin_inset Formula $\varrho_{w}$
 \end_inset
 
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+rhow@
+\begin_inset Formula $\rho_{w}$
+\end_inset
+
+= density of liquid water
+\end_layout
+
+\end_inset
+
  = density of water ( 
 \begin_inset Formula $10{}^{3}kg/m^{3}$
 \end_inset
@@ -3132,10 +4906,23 @@ i2 = highest usable channel for the probe
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
 
-\begin_inset Formula \[
-\mathrm{PLWCx}=\frac{\pi\varrho_{w}}{6}{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{e,i}^{3}}}\]
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathrm{PLWCx}=\frac{\pi\varrho_{w}}{6}{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{e,i}^{3}}}
+\]
 
 \end_inset
 
@@ -3164,7 +4951,17 @@ Radar Reflectivity Factor (dbZ):
 DBZF
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DBZF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3180,7 +4977,17 @@ DBZF
 DBZX
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DBZX
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3196,7 +5003,17 @@ DBZX
 DBZ6
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DBZ6
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3213,7 +5030,7 @@ DBZY
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
 status open
 
 \begin_layout Plain Layout
@@ -3223,11 +5040,77 @@ DBZY
 \end_inset
 
 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+DBZY
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+DBZD
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DBZD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+DBZD
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+
 \begin_inset Newline newline
 \end_inset
 
-The radar reflectivity factor for water is a measure of the product of the
- concentration and the sixth moment of the dropleet diameter.
+The radar reflectivity factor
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+reflectivity factor
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+dBz
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!radar reflectivity factor
+\end_layout
+
+\end_inset
+
+ for water is a measure of the product of the concentration and the sixth
+ moment of the droplet diameter.
  An equivalent radar reflectivity factor can be calculated from the hydrometeor
  size distribution if an assumption about composition of the particles is
  made, but this variable is not part of normal data files.
@@ -3238,14 +5121,24 @@ not
 \emph default
 a measure of radar reflectivity, because the latter also depends on wavelength,
  dielectric constant, and other characteristics of the hydrometeors.
- The radar reflectivity factor is measured on a logarithmic scale that depends
- on a particular choice of units, so (although it is not conventionally
- included) an appropriate scale factor 
+ The normally used radar reflectivity factor is measured on a logarithmic
+ scale that depends on a particular choice of units, so (although it is
+ not conventionally included) an appropriate scale factor 
 \begin_inset Formula $Z_{r}$
 \end_inset
 
  is included in the following equation to satisfy the convention that arguments
- of logarithms should be dimensionless.
+ of logarithms should be dimensionless
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+dimensionless equations
+\end_layout
+
+\end_inset
+
+.
  
 \begin_inset Note Note
 status open
@@ -3262,7 +5155,7 @@ iity, although that could be added, because it seemed unnecessary.
 
 \end_inset
 
-/
+
 \begin_inset Newline newline
 \end_inset
 
@@ -3273,6 +5166,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -3321,7 +5215,7 @@ i2 = highest usable channel for the probe
 \end_inset
 
  = reference factor for units = 
-\begin_inset Formula $1\, mm^{6}/m^{3}$
+\begin_inset Formula $1\, mm^{6}\, m^{-3}$
 \end_inset
 
 
@@ -3329,13 +5223,26 @@ i2 = highest usable channel for the probe
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
 
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula \[
-\mathrm{DBZx}=10\log_{10}\left({\textstyle \frac{1}{Z_{r}}\sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}^{6}}}\right)\]
+\begin_inset Formula 
+\[
+\mathrm{DBZx}=10\log_{10}\left({\textstyle \frac{1}{Z_{r}}\sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}^{6}}}\right)
+\]
 
 \end_inset
 
@@ -3345,7 +5252,18 @@ i2 = highest usable channel for the probe
 \end_inset
 
 
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+some additions needed here: RAFFD, REFFD2DC (misnamed), PVOLU, TCNTD (total
+ counts all cells, CDP); housekeeping variables? All: first and last bins?
+ UHSAS: T and P in canister, intensity, etc.
+\end_layout
+
 \end_inset
 
 
@@ -3359,7 +5277,17 @@ FSSP-100 Range (dimensionless):
 FRNG
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+FRNG
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3376,7 +5304,17 @@ FRANGE
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+FRANGE
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3389,7 +5327,17 @@ FRANGE
 \begin_inset Newline newline
 \end_inset
 
-This variable records the size range in use for the FSSP-100 probe
+This variable records the size range in use for the FSSP-100
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!range
+\end_layout
+
+\end_inset
+
+ probe
 \begin_inset Newline newline
 \end_inset
 
@@ -3404,6 +5352,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -3419,7 +5368,7 @@ status open
 
 \begin_inset Tabular
 <lyxtabular version="3" rows="5" columns="3">
-<features>
+<features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -3623,10 +5572,14 @@ Nominal Bin Width
 
 In recent NETCDF data files, the actual bin boundaries used for processing
  are recorded in the header.
- That header should be consulted because processing often uses non-standard
+ That header should be consulted because processing sometimes uses non-standard
  sizes selected to adjust for Mie scattering, which causes departures from
  the nominal linear bins.
  
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -3637,7 +5590,17 @@ FSSP-100 Fast Resets (number per sample interval):
 FRST
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+FRST
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3653,7 +5616,17 @@ FRST
 FRESET
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+FRESET
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3670,7 +5643,17 @@ FRESET
 
 
 \series default
-The FSSP records events called 
+The FSSP
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!fast resets
+\end_layout
+
+\end_inset
+
+ records events called 
 \begin_inset Quotes eld
 \end_inset
 
@@ -3679,10 +5662,19 @@ fast resets
 \end_inset
 
  that occur when a particle traverses the beam outside the depth-of-field
- and is therefore not accepted for sizing.
+ and therefore is not accepted for sizing.
  To avoid the processing time associated with sizing, the probe resets quickly
- in this case, but there is still some dead time when the probe cannot record
- another event.
+ in this case, but there is still some dead time
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!dead time
+\end_layout
+
+\end_inset
+
+ when the probe cannot record another event.
  Fast resets consume a time determined by circuit characteristics, so that
  time is determined in laboratory tests of the FSSP circuitry.
  This variable is needed in addition to the 
@@ -3704,6 +5696,20 @@ dead time
 
  enters calculation of the concentration.
  
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+where to find values used?
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -3714,7 +5720,17 @@ FSSP-100 Total Strobes (number per sample interval):
 FSTB
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+FSTB
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3731,7 +5747,17 @@ FSTROB
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+FSTROB
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3752,8 +5778,17 @@ strobe
 \begin_inset Quotes erd
 \end_inset
 
- is generated in the FSSP whenever a particle is detected within its depth-of-fi
-eld.
+ is generated in the FSSP
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!total strobes
+\end_layout
+
+\end_inset
+
+ whenever a particle is detected within its depth-of-field.
  Not all such particles are accepted for inclusion in the size distribution,
  however, because some pass through the outer regions of the illuminating
  laser beam and therefore produce shorter and smaller-amplitude pulses than
@@ -3761,15 +5796,33 @@ eld.
  The probe maintains a running estimate of the average transit time and
  rejects particles with transit times shorter than this average.
  The total number of strobes recorded is therefore more than the number
- of sized particles, but the ratio of strobes to accepted particles can
- indicate quality of opeeration of the probe.
+ of sized particles, and the ratio of strobes to accepted particles can
+ indicate quality of operation of the probe.
  Also, the strobes require processing and so contribute to the dead time
  of the probe, affecting the concentration unless a correction is made.
- See RAF Bulletin No.
-\begin_inset space ~
+ See 
+\begin_inset CommandInset href
+LatexCommand href
+name "RAF Bulletin 24"
+target "http://www.eol.ucar.edu/raf/Bulletins/bulletin24.html"
+
 \end_inset
 
-24 for more discussion of the operation of the FSSP.
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Bulletin 24
+\end_layout
+
+\end_inset
+
+ for more discussion on the operation of the FSSP.
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -3781,7 +5834,17 @@ FBMFR
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+FBMFR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3794,10 +5857,19 @@ FBMFR
 \begin_inset Newline newline
 \end_inset
 
-This variable records the ratio of the number of velocity-accepted particles
- (particles that pass through the effective beam diameter) to the total
- number of particles detected in the depth-of-field of the beam (the total
- strobes).
+This variable
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!beam fraction
+\end_layout
+
+\end_inset
+
+ records the ratio of the number of velocity-accepted particles (particles
+ that pass through the effective beam diameter) to the total number of particles
+ detected in the depth-of-field of the beam (the total strobes).
  See the discussion of Total Strobes for more information.
 \begin_inset Newline newline
 \end_inset
@@ -3823,6 +5895,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -3848,10 +5921,23 @@ per sample interval
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
 
-\begin_inset Formula \[
-\mathrm{FBMFR=\{AFSSP\}/\{FSTROB\}}\]
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathrm{FBMFR=\{AFSSP\}/\{FSTROB\}}
+\]
 
 \end_inset
 
@@ -3876,7 +5962,7 @@ FACT
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -3889,12 +5975,42 @@ FACT
 \begin_inset Newline newline
 \end_inset
 
-This variable represents the fraction of the time that the FSSP is unable
- to count and size particles (its 
+This variable
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!activity
+\end_layout
+
+\end_inset
+
+ represents the fraction of the time that the FSSP is unable to count and
+ size particles (its 
 \begin_inset Quotes eld
 \end_inset
 
 dead time
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+dead time!FSSP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FSSP-100!dead time
+\end_layout
+
+\end_inset
+
+
 \begin_inset Quotes erd
 \end_inset
 
@@ -3902,6 +6018,7 @@ dead time
  The activity fraction is not measured directly but is estimated from fast
  resets and total strobes along with measurements of the dead times associated
  with each (as determined in laboratory tests).
+ The characteristic times are in the NetCDF header (for recent projects).
  
 \begin_inset Note Note
 status open
@@ -3927,12 +6044,13 @@ per sample intereval
 \end_inset
 
 
-\begin_inset Box Frameless
+\begin_inset Box Boxed
 position "t"
 hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -3982,13 +6100,26 @@ fast resets
 \end_inset
 
 
-\lyxline
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
 
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula \[
-\backslash\mathrm{FACT=\{FSTROB\}\,}t_{1}+\mathrm{\{FRESET\}}\, t_{2}\]
+\begin_inset Formula 
+\[
+FACT=\{FSTROB\}\, t_{1}+\mathrm{\{FRESET\}}\, t_{2}
+\]
 
 \end_inset
 
@@ -4016,7 +6147,17 @@ PCAS Raw Activity (dimensionless);
 AACT
 \series default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+AACT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -4033,11 +6174,31 @@ PACT
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
 status open
 
 \begin_layout Plain Layout
 PACT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+PACT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this doesn't appear in recent files; why not? Didn't find this code.
 \end_layout
 
 \end_inset
@@ -4059,8 +6220,10 @@ The PCAS probe provides this measure of dead time, the time that the probe
 \end_inset
 
 
-\begin_inset Formula \[
-f_{PCAS}=0.52\frac{\mathrm{\{PACT\}}}{F_{PCAS}}\]
+\begin_inset Formula 
+\[
+f_{PCAS}=0.52\frac{\mathrm{\{PACT\}}}{F_{PCAS}}
+\]
 
 \end_inset
 
@@ -4099,13 +6262,13 @@ there was inconsistency in the explanation because it was claimed that 1024
 
 \series bold
 PMS-2D Cloud Probe Particle Concentration (
-\begin_inset Formula $cm^{-3}$
+\begin_inset Formula $L^{-1}$
 \end_inset
 
 ): 
 \bar under
 CON2C1
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -4132,6 +6295,16 @@ this has other names now...
 \end_inset
 
 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+move this to next subsection
+\end_layout
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -4150,13 +6323,17 @@ shadow-or
  sample volume of the probe and the flight speed to determine this upper
  estimate of the particle concentration.
  
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
 
 \series bold
 PMS-2D Precip Probe Particle Concentration (
-\begin_inset Formula $cm^{-3}$
+\begin_inset Formula $L^{-1}$
 \end_inset
 
 ): 
@@ -4165,7 +6342,7 @@ CON2P1
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -4181,6 +6358,14 @@ CON2P1
 This measurement is based on SDWP1 or SHDORP and is analogous to CON2C1
  but for the PMS-2D Precip Probe.
  
+\end_layout
+
+\begin_layout Subsection
+Hydrometeor Imaging Probes
+\end_layout
+
+\begin_layout Standard
+-- NEEDED: 2DC, 2DP, CPI, etc
 \end_layout
 
 \end_body

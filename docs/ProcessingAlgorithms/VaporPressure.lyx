@@ -1,5 +1,5 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0.0beta3 created this file. For more info see http://www.lyx.org/
+\lyxformat 410
 \begin_document
 \begin_header
 \textclass report
@@ -42,18 +42,25 @@
 %usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
 \end_preamble
 \use_default_options false
+\maintain_unincluded_children false
 \language english
 \inputencoding auto
+\fontencoding global
 \font_roman times
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize 12
 \spacing single
 \use_hyperref false
@@ -61,9 +68,18 @@
 \use_geometry true
 \use_amsmath 1
 \use_esint 0
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \leftmargin 2.54cm
 \topmargin 3.54cm
 \rightmargin 2.54cm
@@ -81,8 +97,8 @@
 \paperpagestyle fancy
 \tracking_changes false
 \output_changes false
-\author "" 
-\author "" 
+\html_math_output 0
+\html_be_strict false
 \end_header
 
 \begin_body
@@ -164,6 +180,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -300,7 +317,8 @@ The correction for atmospheric pressure that enters through fw would be
 
 
 \begin_inset Formula \begin{equation}
-f=1+10^{-5}p(4.923-0.0325T+5.84\times10^{-5}T^{2})\label{eq:ReplacementForBuckEnhancementFw}\end{equation}
+f=1+10^{-5}p(4.923-0.0325T+5.84\times10^{-5}T^{2})\label{eq:ReplacementForBuckEnhancementFw}
+\end{equation}
 
 \end_inset
 
@@ -553,7 +571,8 @@ this form differs from that of Murphy and Koop (2005) only to present it
 
 \begin_layout Standard
 \begin_inset Formula \begin{eqnarray}
-e_{s,i} & = & b_{0}^{\prime}\exp(b_{1}\frac{(T_{0}-T)}{T_{0}T}+b_{2}\ln(\frac{T}{T_{0}})+b_{3}(T-T_{0}))\label{eq:MK1-1}\end{eqnarray}
+e_{s,i} & = & b_{0}^{\prime}\exp(b_{1}\frac{(T_{0}-T)}{T_{0}T}+b_{2}\ln(\frac{T}{T_{0}})+b_{3}(T-T_{0}))\label{eq:MK1-1}
+\end{eqnarray}
 
 \end_inset
 
@@ -702,7 +721,8 @@ Murphy and Koop (2005) present a single formula that they suggest is valid
 
 \begin_layout Standard
 \begin_inset Formula \begin{equation}
-\ln(e_{s,w})=d_{1}+d_{2}\frac{(T_{0}-T)}{TT_{0}}+d_{3}\ln(\frac{T}{T_{0}})+d_{4}(T-T_{0})\label{eq:MKwater}\end{equation}
+\ln(e_{s,w})=d_{1}+d_{2}\frac{(T_{0}-T)}{TT_{0}}+d_{3}\ln(\frac{T}{T_{0}})+d_{4}(T-T_{0})\label{eq:MKwater}
+\end{equation}
 
 \end_inset
 
@@ -712,7 +732,8 @@ Murphy and Koop (2005) present a single formula that they suggest is valid
 \begin_layout Standard
 or 
 \begin_inset Formula \begin{equation}
-e_{s,w}=e_{0}\exp\left((\alpha-1)e_{6}+d_{2}(\frac{T_{0}-T}{TT_{0}}\right)+d_{3}\ln(\frac{T}{T_{0}})+d_{4}(T-T_{0})\label{eq:proposedNewWater}\end{equation}
+e_{s,w}=e_{0}\exp\left((\alpha-1)e_{6}+d_{2}(\frac{T_{0}-T}{TT_{0}})+d_{3}\ln(\frac{T}{T_{0}})+d_{4}(T-T_{0})\right)\label{eq:proposedNewWater}
+\end{equation}
 
 \end_inset
 
@@ -765,7 +786,7 @@ K,
 \align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="10" columns="2">
-<features>
+<features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
 <row>
@@ -1151,7 +1172,8 @@ The Goff-Gratch equation and the Murphy-Koop equation provide vapor pressure
 
 \begin_layout Standard
 \begin_inset Formula \begin{equation}
-T_{d}=0.009109+T_{f}(1.134055+0.001038T_{f})\label{eq:DPfromFP}\end{equation}
+T_{d}=0.009109+T_{f}(1.134055+0.001038T_{f})\label{eq:DPfromFP}
+\end{equation}
 
 \end_inset
 
@@ -1224,7 +1246,8 @@ C.
 \begin_layout Standard
 \begin_inset Formula \begin{eqnarray}
 T_{d} & = & 4.953828\times10^{-3}+T_{f}(1.132468+T_{f}(8.865794\times10^{-4}\label{eq:TDfromTFrevised}\\
- & + & T_{f}(-5.273161\times10^{-6}+T_{f}(-4.492316\times10^{-8}))))\nonumber \end{eqnarray}
+ & + & T_{f}(-5.273161\times10^{-6}+T_{f}(-4.492316\times10^{-8}))))\nonumber 
+\end{eqnarray}
 
 \end_inset
 
@@ -1451,6 +1474,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -1553,6 +1577,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "95text%"
 special "none"
 height "1in"
@@ -1788,7 +1813,8 @@ reference "eq:ReplacementForBuckEnhancementFw"
 
 
 \begin_inset Formula \[
-f=1+10^{-5}p(4.923+T(-0.0325+T(5.84\times10^{-5}))\]
+f=1+10^{-5}p(4.923+T(-0.0325+T(5.84\times10^{-5}))
+\]
 
 \end_inset
 
@@ -1820,6 +1846,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -2061,7 +2088,8 @@ i.e., the frost point measured by the frost-point hygrometer should be corrected
 
 
 \begin_inset Formula \begin{equation}
-\delta T_{FP}=\frac{e_{s}(T_{FP})(f-1)}{de_{s}(T_{FP})/dT_{FP}}\label{eq:enhancementCorrection}\end{equation}
+\delta T_{FP}=\frac{e_{s}(T_{FP})(f-1)}{de_{s}(T_{FP})/dT_{FP}}\label{eq:enhancementCorrection}
+\end{equation}
 
 \end_inset
 

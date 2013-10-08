@@ -1,5 +1,5 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass article
@@ -7,18 +7,26 @@
 \begin_modules
 hanging
 \end_modules
+\maintain_unincluded_children false
 \language english
+\language_package default
 \inputencoding auto
+\fontencoding global
 \font_roman default
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -26,27 +34,37 @@ hanging
 \use_geometry false
 \use_amsmath 1
 \use_esint 1
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
-\defskip medskip
+\paragraph_indentation default
 \quotes_language english
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
-\output_changes false
-\author "" 
-\author "" 
+\output_changes true
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
 \end_header
 
 \begin_body
 
 \begin_layout Section
-VARIABLES OBTAINED FROM AN INERTIAL REFERENCE SYSTEM
+THE STATE OF THE AIRCRAFT
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:INS"
@@ -57,15 +75,139 @@ name "sec:INS"
 \end_layout
 
 \begin_layout Standard
-An Inertial Reference System (IRS) provides measurements of aircraft position,
- orientation, velocity, acceleration and attitude.
- For the GV, the system is a Honeywell Laseref III/IV Inertial Reference
- System.
+The primary sources of information on the location and motion of the aircraft
+ are from inertial reference systems
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IRU
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+inertial reference unit|see 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{IRU}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+inertial reference system|see 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{IRU}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+INS|see 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{IRU}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ and from global positioning systems
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GPS
+\end_layout
+
+\end_inset
+
+.
+ Both are described in this section, as well as combined results that merge
+ the best features of each into composite variables for location and motion.
+\end_layout
+
+\begin_layout Subsection
+Inertial Reference Systems
+\end_layout
+
+\begin_layout Standard
+An Inertial Reference System (IRS) or Inertial Reference Unit (IRU) provides
+ measurements of aircraft position, velocity relative to the Earth, acceleration
+ and attitude or orientation.
+ For the GV, the system is a
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IRU!GV
+\end_layout
+
+\end_inset
+
+ Honeywell Laseref III/IV Inertial Reference System.
  Data from the IRS come via a serial digital bit stream (the ARINC digital
- bus) to the ADS (Aircraft Data System).
+ bus) to the ADS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ADS=aircraft data system
+\end_layout
+
+\end_inset
+
+ (Aircraft Data System).
  Because there is some delay in transmission and recording of these variables,
  adjustments for this delay are made when the measurements are merged into
- the processed data files, as documented in the NETCDF header files.
+ the processed data files, as documented in the NetCDF
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+NetCDF!header
+\end_layout
+
+\end_inset
+
+ header files.
  Some of the variables are recorded only on the original 
 \begin_inset Quotes eld
 \end_inset
@@ -86,12 +228,32 @@ need identification of what the C-130 system is
 
 \end_inset
 
- See also Section XXX for information on results from inertial systems that
- were used prior to installation of the present Honeywell systems.
+ See also Section XXX
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+needed
+\end_layout
+
+\end_inset
+
+ for information on results from inertial systems that were used prior to
+ installation of the present Honeywell systems.
 \end_layout
 
 \begin_layout Standard
-An Inertial Reference System 
+An Inertial Reference System
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IRU!alignment
+\end_layout
+
+\end_inset
+
+ 
 \begin_inset Quotes eld
 \end_inset
 
@@ -109,6 +271,16 @@ Schuler oscillation
 \begin_inset Quotes erd
 \end_inset
 
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Schuler oscillation
+\end_layout
+
+\end_inset
+
  that produces oscillatory errors in position and other measurements, with
  a period 
 \begin_inset Formula $\tau_{Sch}$
@@ -124,7 +296,7 @@ ons.
  See Section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:IRS/GPS"
+reference "sub:IRS/GPS"
 
 \end_inset
 
@@ -139,7 +311,7 @@ reference "sec:IRS/GPS"
 Latitude (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -150,7 +322,17 @@ LAT
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+LAT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -163,8 +345,29 @@ LAT
 \begin_inset Newline newline
 \end_inset
 
-This is the aircraft latitude, output from the IRS at 10 Hz.
- Positive values are north of the equator; negative values are south.
+
+\emph on
+The aircraft latitude
+\emph default
+ 
+\emph on
+or angular distance north of the equator in an Earth reference frame
+\emph default
+.
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+latitude
+\end_layout
+
+\end_inset
+
+
+\emph on
+ 
+\emph default
+Positive values are north of the equator; negative values are south.
  The resolution is 0.00017
 \begin_inset Formula $^{\circ}$
 \end_inset
@@ -174,6 +377,7 @@ This is the aircraft latitude, output from the IRS at 10 Hz.
 \end_inset
 
  after 6 h of flight.
+ Values are provided by the IRU at a frequency of 10 Hz.
 \end_layout
 
 \begin_layout Hanging
@@ -182,7 +386,7 @@ This is the aircraft latitude, output from the IRS at 10 Hz.
 Longitude (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -190,7 +394,23 @@ Longitude (
 ): 
 \bar under
 LON
-\begin_inset Index
+\series medium
+\bar no
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+LON
+\end_layout
+
+\end_inset
+
+
+\series bold
+\bar under
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -208,8 +428,20 @@ LON
 
 
 \series default
+\emph on
 \bar default
-This is the aircraft longitude, output from the IRS at 10 Hz.
+The aircraft longitude
+\emph default
+ or angular distance east of the prime meridian in an Earth reference frame.
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+longitude
+\end_layout
+
+\end_inset
+
  Positive values are east of the prime meridian; negative values are west.
  The resolution is 0.00017
 \begin_inset Formula $^{\circ}$
@@ -220,6 +452,7 @@ This is the aircraft longitude, output from the IRS at 10 Hz.
 \end_inset
 
  after 6 h of flight.
+ Values are provided by the IRU at a frequency of 10 Hz.
 \end_layout
 
 \begin_layout Hanging
@@ -239,7 +472,7 @@ THDG
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -252,16 +485,36 @@ THDG
 \begin_inset Newline newline
 \end_inset
 
-This is the aircraft's true heading, output from the IRS at 25 Hz.
+
+\emph on
+The azimuthal angle between the centerline of the aircraft (pointing ahead,
+ toward the nose) and a line of meridian.
+ 
+\emph default
+This azimuthal angle is measured in a polar coordinate system oriented relative
+ to the Earth with polar axis upward and azimuthal angle measured relative
+ to true north.
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+heading!true
+\end_layout
+
+\end_inset
+
+ The heading thus indicates the orientation of the aircraft, not necessarily
+ the direction in which the aircraft is traveling.
  The resolution is 0.00017
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
  and the accuracy is quoted by the manufacturer as 0.2
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
  after 6 h of flight.
+ Values are provided by the IRU at a frequency of 50 Hz.
  
 \begin_inset Quotes eld
 \end_inset
@@ -270,8 +523,36 @@ True
 \begin_inset Quotes erd
 \end_inset
 
- distinguishes the heading from the magnetic heading, the heading that would
- be measured by a magnetic-compass needle.
+ distinguishes the heading from the magnetic heading
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+heading!magnetic
+\end_layout
+
+\end_inset
+
+, the heading that would be measured by a magnetic-compass needle.
+ For more information on the coordinate system used, see 
+\begin_inset CommandInset href
+LatexCommand href
+name "RAF Bulletin 23"
+target "http://www.eol.ucar.edu/raf/Bulletins/bulletin23.html"
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Bulletin 23
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Hanging
@@ -280,7 +561,7 @@ True
 Aircraft Pitch Attitude Angle (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -291,7 +572,17 @@ PITCH
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+PITCH
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -304,18 +595,34 @@ PITCH
 \begin_inset Newline newline
 \end_inset
 
-This is the aircraft's pitch angle, provided from the IRS at 50 Hz.
+
+\emph on
+The angle between the centerline of the aircraft (pointing ahead, toward
+ the nose) and the horizontal plan in a reference frame relative to the
+ Earth with polar axis upward.
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+pitch
+\end_layout
+
+\end_inset
+
  Positive values correspond to the nose of the aircraft pointing above the
  horizon.
  The resolution is 0.00017
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
  and the accuracy is quoted by the manufacturer as 0.05
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
  after 6 h of flight.
+ Values are provided by the IRU at a frequency of 50 Hz.
 \end_layout
 
 \begin_layout Hanging
@@ -324,7 +631,7 @@ This is the aircraft's pitch angle, provided from the IRS at 50 Hz.
 Aircraft Roll Attitude Angle (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -335,7 +642,17 @@ ROLL
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+ROLL
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -348,18 +665,34 @@ ROLL
 \begin_inset Newline newline
 \end_inset
 
-This is the aircraft's roll angle, output from the IRS at 50 Hz.
- Positive angles occur with the starboard (right) wing down ((i.e., a clockwise
- rotation from level when facing forward in the aircraft).
+
+\emph on
+The angle of rotation about the longitudinal axis of the aircraft required
+ to bring the lateral axis (along the wings) to the horizontal plane.
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+roll
+\end_layout
+
+\end_inset
+
+ Positive angles indicate that the starboard (right) wing is down ((i.e.,
+ a clockwise rotation has occurred from level when facing forward in the
+ aircraft).
  The resolution is 0.00017
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
  and the accuracy is quoted by the manufacturer as 0.05
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
- after 6 h of flight..
+ after 6 h of flight.
+ Values are provided by the IRU at a frequency of 50 Hz.
 \end_layout
 
 \begin_layout Hanging
@@ -379,7 +712,17 @@ ACINS
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+ACINS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -392,8 +735,45 @@ ACINS
 \begin_inset Newline newline
 \end_inset
 
-This is the output from the IRS vertical accelerometer with its internal
- drift removed via pressure damping.
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+acceleration!vertical
+\end_layout
+
+\end_inset
+
+
+\emph on
+The acceleration upward (relative to the Earth) as measured by an inertial
+ reference unit.
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\emph off
+IRU
+\end_layout
+
+\end_inset
+
+
+\emph default
+ With IRUs now in use, the internal drift is removed by the IRU via pressure
+ damping
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+pressure damping
+\end_layout
+
+\end_inset
+
+.
 \begin_inset Foot
 status collapsed
 
@@ -408,6 +788,7 @@ mping.
 
 \end_inset
 
+ Positive values are upward.
  The sample rate is 50 Hz and the resolution is 0.0024 m
 \begin_inset space \thinspace{}
 \end_inset
@@ -429,7 +810,17 @@ VSPD
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VSPD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -442,14 +833,56 @@ VSPD
 \begin_inset Newline newline
 \end_inset
 
-This is the upward velocity of the aircraft provided directly by the IRS.
- It is determined in the IRS by integration of the vertical acceleration,
+
+\emph on
+The upward velocity of the aircraft as measured by the IRU, relative to
+ the Earth.
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+velocity!aircraft vertical
+\end_layout
+
+\end_inset
+
+ VSPD is determined within the IRU by integration of the vertical acceleration,
  with damping based on measured pressure to correct for accumulated errors
  in the integration of acceleration.
  The sample rate is 50 Hz with a resolution of 0.00016 m/s.
- The Honeywell Laseref IRS employs a baro-inertial loop, similar to that
- described below for WP3 and the Litton LTN-51, to update the value of the
- acceleration.
+ The Honeywell Laseref IRS employs a baro-inertial loop
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+baro-inertial loop
+\end_layout
+
+\end_inset
+
+, similar to that described below for WP3
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+WP3
+\end_layout
+
+\end_inset
+
+ and the Litton LTN-51
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IRU!Litton LTN-51
+\end_layout
+
+\end_inset
+
+, to update the value of the acceleration.
  It is also filtered within the IRS so that there is little variance with
  frequency higher than 0.1 Hz.
  
@@ -464,7 +897,17 @@ WP3
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+WP3
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -477,9 +920,16 @@ WP3
 \begin_inset Newline newline
 \end_inset
 
-This was a derived output incorporating a third-order damping feedback loop
- to remove the drift from the inertial system's vertical accelerometer (ACINS
- or VZI) using pressure altitude (PALT) as a long-term, stable reference.
+
+\begin_inset CommandInset label
+LatexCommand label
+name "WP3 algorithm"
+
+\end_inset
+
+This was a derived variable incorporating a third-order damping feedback
+ loop to remove the drift from the inertial system's vertical accelerometer
+ (ACINS or VZI) using pressure altitude (PALT) as a long-term, stable reference.
  Positive values are up.
 \begin_inset Note Note
 status open
@@ -494,21 +944,70 @@ PALT is a measure of pressure, not altitude, so this gives false updating
 \end_inset
 
  The Honeywell IRS now in use provides its own version of this measurement,
- VSPD, and WP3 is now considered obsolete (and in any case should not be
- calculated from ACINS as provided by the Honeywell Laseref IRS because
- ACINS already incorporates pressure damping).
+ VSPD
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+VSPD
+\end_layout
+
+\end_inset
+
+, and WP3 is now considered obsolete (and in any case should not be calculated
+ from ACINS as provided by the Honeywell Laseref IRS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IRU!Honeywell
+\end_layout
+
+\end_inset
+
+ because that ACINS already incorporates pressure damping).
  Documentation is included here because many old data files include this
  variable.
- WP3 was calculated by the data-processing software, as follows:
+ Note that 
+\begin_inset Quotes eld
+\end_inset
+
+pressure altitude
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+altitude!pressure
+\end_layout
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+ is not a true altitude but an altitude equivalent to the ambient pressure
+ in a standard atmosphere, so updating a variable integrated from inertial
+ measurements to this value can introduce errors vs.
+\begin_inset space ~
+\end_inset
+
+the true altitude..
+ WP3 was calculated by the data-processing software as follows (with coefficient
+s in historical use and not updated to the recommendations elsewhere in
+ this technical note):
 \begin_inset Foot
 status open
 
 \begin_layout Plain Layout
 Regarding signs, note that ACINS is a number near zero, not near g, and
  so already has the estimated acceleration of gravity removed.
- It appears that the assumption made in the following is that the INS will
- report values adjusted for the gravitational acceleration at the point
- of alignment, which would be 
+ The assumption made in the following is that the INS will report values
+ adjusted for the gravitational acceleration 
+\emph on
+at the point of alignment
+\emph default
+, which would be 
 \begin_inset Formula $G_{L}$
 \end_inset
 
@@ -530,16 +1029,16 @@ smaller
 \begin_inset Formula $G_{L}-g_{f}$
 \end_inset
 
-) will be positive; this will correct for the value ACINS being the sensed
- gravity - 
+) will be positive; this will correct for the reference value for ACINS
+ being the gravity measured at alignment (
 \begin_inset Formula $G_{L}$
 \end_inset
 
- when it should actually be the sensed gravity - 
+) when it should actually be the sensed gravity (
 \begin_inset Formula $g_{f}$
 \end_inset
 
-, so to obtain (sensed gravity - 
+) at the measurement point, so to obtain (sensed acceleration - 
 \begin_inset Formula $g_{f}$
 \end_inset
 
@@ -551,8 +1050,16 @@ smaller
 \emph on
 increasing 
 \emph default
-acz in this case.
- Howeer, the situation with 
+
+\begin_inset Quotes eld
+\end_inset
+
+acz
+\begin_inset Quotes erd
+\end_inset
+
+ in this case.
+ However, the situation with 
 \begin_inset Quotes eld
 \end_inset
 
@@ -560,8 +1067,7 @@ vcorac
 \begin_inset Quotes erd
 \end_inset
 
- is apparently reversed.
- 
+ is reversed: 
 \begin_inset Quotes eld
 \end_inset
 
@@ -572,7 +1078,7 @@ vcorac
  is a positive term for all eastward flight, for example, but in that case
  the motion of the aircraft makes objects seem lighter (i.e., they experience
  less acceleration of gravity) than without such flight.
- ACINS is positive upward so represents a net acceleration of the aircraft
+ ACINS is positive upward so it represents a net acceleration of the aircraft
  upward (as imposed by the combination of gravity and the lift force of
  the aircraft).
  To accomplish level flight in these circumstances, the aircraft must actually
@@ -596,12 +1102,12 @@ acz
 \end_inset
 
 .
- In the extreme that the aircraft flew fast enough for the interior to appear
- weightless, ACINS would reduce to -1*
+ In the conceptual extreme that the aircraft flies fast enough for the interior
+ to appear weightless, ACINS would reduce to -1*
 \begin_inset Formula $G_{L}$
 \end_inset
 
-and vcorac would increase to +
+ and vcorac would increase to +
 \begin_inset Formula $G_{L}$
 \end_inset
 
@@ -622,6 +1128,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "95text%"
 special "none"
 height "1in"
@@ -640,7 +1147,7 @@ s
 \begin_inset Formula $^{-2}$
 \end_inset
 
-
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -672,16 +1179,12 @@ s
 \begin_inset Newline newline
 \end_inset
 
-VEW = eastward groundspeed of the aircraft
-\begin_inset Newline newline
-\end_inset
-
-VNS = northward groundspeed of the aircraft
+VEW (VNS) = eastward (northward) groundspeed of the aircraft (see below)
 \begin_inset Newline newline
 \end_inset
 
 LAT = latitude measured by the IRS [
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 ]
@@ -689,7 +1192,7 @@ LAT = latitude measured by the IRS [
 \end_inset
 
 
-\begin_inset Formula $C_{dr}=2\pi/180^{\circ}$
+\begin_inset Formula $C_{dr}=\pi/180^{\circ}$
 \end_inset
 
  = conversion factor, degrees to radians
@@ -744,7 +1247,7 @@ PALT = pressure altitude of the aircraft
 \begin_inset Formula $G_{L}$
 \end_inset
 
- = local gravity at the location of INS alignment, corrected to zero altitude
+ = local gravity at the location of IRU alignment, corrected to zero altitude
 \begin_inset Newline newline
 \end_inset
 
@@ -756,8 +1259,15 @@ PALT = pressure altitude of the aircraft
 \end_layout
 
 \begin_layout Plain Layout
+\noindent
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
 
-\lyxline
+\end_inset
+
 
 \end_layout
 
@@ -768,8 +1278,10 @@ From the pressure altitude PALT (in m) and the latitude LAT (converted to
 \end_inset
 
 
-\begin_inset Formula \[
-g_{f}=g_{1}\left(1+a_{2}\sin^{2}(\mathrm{C_{dr}\{LAT\})}+a_{1}\mathrm{\{PALT\}}\right)\]
+\begin_inset Formula 
+\[
+g_{f}=g_{1}\left(1+a_{2}\sin^{2}(\mathrm{C_{dr}\{LAT\})}+a_{1}\mathrm{\{PALT\}}\right)
+\]
 
 \end_inset
 
@@ -777,14 +1289,45 @@ g_{f}=g_{1}\left(1+a_{2}\sin^{2}(\mathrm{C_{dr}\{LAT\})}+a_{1}\mathrm{\{PALT\}}\
 \end_layout
 
 \begin_layout Enumerate
-Determine corrections for Coriolis acceleration and centrifugal acceleration,
- based on motion of the aircraft:
+Determine corrections for Coriolis acceleration
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Coriolis acceleration
+\end_layout
+
+\end_inset
+
+ and centrifugal acceleration
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+centrifugal acceleration
+\end_layout
+
+\end_inset
+
+: 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+centripetal is directed toward the center of curvature; centrifugal is away
+\end_layout
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset Formula \[
-V_{c}=2\Omega\mathrm{\{VEW\}}\cos(C_{r}\mathrm{\{LAT\}})+\frac{\mathrm{\{VEW\}}^{2}+\mathrm{\{VNS\}}^{2}}{R_{E}}\]
+\begin_inset Formula 
+\[
+a_{c}=2\Omega\mathrm{\{VEW\}}\cos(C_{r}\mathrm{\{LAT\}})+\frac{\mathrm{\{VEW\}}^{2}+\mathrm{\{VNS\}}^{2}}{R_{E}}
+\]
 
 \end_inset
 
@@ -797,23 +1340,39 @@ Estimate the acceleration experienced by the aircraft as follows:
 \end_inset
 
 
-\begin_inset Formula \[
-a_{z}=\mathrm{\{ACINS\}}+G_{L}-g_{f}+V_{c}\]
+\begin_inset Formula 
+\[
+\mathrm{acz}=a_{z}=\mathrm{\{ACINS\}}+G_{L}-g_{f}+a_{c}
+\]
 
 \end_inset
 
-
+ 
 \end_layout
 
 \begin_layout Enumerate
-Use a feedback loop to update the integrated value of the acceleration to
- obtain a new value of the vertical motion of the aircraft.
- The following code segment uses acz=
+Use a feedback loop to update the integrated value of the accelerationt.
+ The following code segment uses 
+\emph on
+acz
+\emph default
+=
 \begin_inset Formula $a_{z}$
 \end_inset
 
-, deltaT[] to represent the time between updates, and hi3, hx, and hxx to
- store the feedback terms:
+, 
+\emph on
+deltaT[]
+\emph default
+ to represent the time between updates, and 
+\emph on
+hi3, hx,
+\emph default
+ and 
+\emph on
+hxx
+\emph default
+ to store the feedback terms:
 \begin_inset Newline newline
 \end_inset
 
@@ -824,6 +1383,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -855,6 +1415,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -904,7 +1465,17 @@ ALT
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+ALT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -917,9 +1488,15 @@ ALT
 \begin_inset Newline newline
 \end_inset
 
-This is the aircraft altitude as provided by the IRS, with pressure damping
- applied within the IRS to the integrated aircraft vertical velocity to
- avoid the accumulation of errors.
+
+\emph on
+The altitude of the aircraft as provided by an IRU
+\emph default
+, with pressure damping applied within the IRU to the integrated aircraft
+ vertical velocity to avoid the accumulation of errors.
+ The value therefore is updated to the pressure altitude, not the geometric
+ altitude, and should be regarded as a measurement of pressure altitude
+ that has short-term variations as provided by the IRU.
  The sample rate is 25 Hz with a resolution of 0.038 m.
 \end_layout
 
@@ -932,7 +1509,17 @@ GSF
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GSF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -945,8 +1532,22 @@ GSF
 \begin_inset Newline newline
 \end_inset
 
-This is the aircraft's ground speed as provided by the IRS (at 10 Hz).
- The resolution is 0.0020 m/s.
+
+\emph on
+The ground speed of the aircraft as provided by an IRU.
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+groundspeed
+\end_layout
+
+\end_inset
+
+ The resolution is 0.0020 m/s, and the IRU provides this measurement at a
+ frequency of 10 Hz.
 \end_layout
 
 \begin_layout Hanging
@@ -958,7 +1559,17 @@ VEW
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VEW
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -971,9 +1582,13 @@ VEW
 \begin_inset Newline newline
 \end_inset
 
-This is the output from the IRS (10 Hz) of the east component of ground
- speed.
- The resolution is 0.0020 m/s.
+
+\emph on
+The east-directed component of ground speed as provided by an IRU.
+ 
+\emph default
+The resolution is 0.0020 m/s, and the IRU provides this measurement at a
+ frequency of 10 Hz..
 \end_layout
 
 \begin_layout Hanging
@@ -985,7 +1600,17 @@ VNS
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VNS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -998,10 +1623,281 @@ VNS
 \begin_inset Newline newline
 \end_inset
 
-This is the output from the IRS (10 Hz) of the north component of ground
- speed.
- The resolution is 0.0020 m/s.
+
+\emph on
+The north-directed component of ground speed as provided by an IRU.
  
+\emph default
+The resolution is 0.0020 m/s, and the IRU provides this measurement at a
+ frequency of 10 Hz..
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Distance East/North of a Reference (km): 
+\bar under
+DEI
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DEI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DE
+\series bold
+I
+\end_layout
+
+\end_inset
+
+/
+\bar under
+DNI
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+DNI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+DNI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+Distance east or north of a project-dependent reference point.
+ 
+\emph default
+These are derived outputs obtained by subtracting a fixed reference position
+ from the current position.
+ The values are determined from measurements of latitude and longitude and
+ converted from degrees to distance in a rectilinear coordinate system.
+ The reference position can be either the starting location of the flight
+ or a user-defined reference point (e.g., the location of a project radar).
+ The accuracy of these values is dependent on the accuracy of the source
+ of latitude and longitude measurements (see LAT and LON), and the calculations
+ are only appropriate for short distances because they do not take into
+ account the spherical geometry of the Earth.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+consider change to spherical geometry
+\end_layout
+
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+LON
+\begin_inset Formula $_{ref}$
+\end_inset
+
+ = reference longitude (
+\begin_inset Formula $\text{º}$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+LAT
+\begin_inset Formula $_{ref}$
+\end_inset
+
+ = reference latitude (
+\begin_inset Formula $\text{º}$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $C_{deg2km}=$
+\end_inset
+
+ conversion factor, degrees latitude to km
+\begin_inset Index con
+status open
+
+\begin_layout Plain Layout
+conversion factor, degrees latitude to km
+\end_layout
+
+\end_inset
+
+ = 111.12 km /
+\begin_inset Formula $\text{º}$
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+B9 says 111.17; 111.12 is correct and exact
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+\mathrm{DEI}=(\mathrm{\{LON\}}-\{\mathrm{LON}_{ref}\})\mathrm{C_{deg2km}}\cos(\mathrm{\{LAT\}})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathrm{DNI=(\mathrm{\{LAT\}}=\{\mathrm{LAT}_{ref}\})C_{deg2km}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Radial Azimuth/Distance from Fixed Reference: 
+\bar under
+FXAZIM
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+FXAZIM
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+FXAZIM
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+FXDIST
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+FXDIST
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+FXDIST
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+Azimuth and distance from a project-dependent reference point.
+ 
+\emph default
+The units of the azimuthal angle are degrees (relative to true north) and
+ the distance is in kilometers.
+ These are calculated by rectangular-to-polar conversion of DEI and DNI,
+ described in the preceding paragraph.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -1013,9 +1909,28 @@ This is the output from the IRS (10 Hz) of the north component of ground
 \end_layout
 
 \begin_layout Standard
-The following IRS variables are not normally included in archived data files,
- but their values are recorded by the ADS and can be obtained from the original
- 
+The following IRS variables
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IRU variables!raw
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IRU measurements!not in normal data files
+\end_layout
+
+\end_inset
+
+ are not normally included in archived data files, but their values are
+ recorded by the ADS and can be obtained from the original 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1043,7 +1958,17 @@ BLATA
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+BLATA
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1056,9 +1981,18 @@ BLATA
 \begin_inset Newline newline
 \end_inset
 
-This is the raw output from the IRS lateral accelerometer.
- Positive values are toward the front, parallel to the aircraft center line.
- The sample rate is 50 Hz with a resolution of 0.0024 m/s2.
+The raw output from the IRU lateral accelerometer.
+ Positive values are toward the starboard, normal to the aircraft center
+ line.
+ The sample rate is 50 Hz with a resolution of 0.0024 m
+\begin_inset space \thinspace{}
+\end_inset
+
+s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Hanging
@@ -1074,7 +2008,17 @@ BLONA
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+BLONA
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1087,9 +2031,18 @@ BLONA
 \begin_inset Newline newline
 \end_inset
 
-This is the raw output from the IRS longitudinal accelerometer.
- Positive values are toward the right, normal to the aircraft center line.
- The sample rate is 50 Hz with a resolution of 0.0024 m/s2.
+The raw output from the IRU longitudinal accelerometer.
+ Positive values are in the direction of the nose of the aircraft and parallel
+ to the aircraft center line.
+ The sample rate is 50 Hz with a resolution of 0.0024 m
+\begin_inset space \thinspace{}
+\end_inset
+
+s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Hanging
@@ -1105,7 +2058,17 @@ BNORMA
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+BNORMA
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1118,9 +2081,18 @@ BNORMA
 \begin_inset Newline newline
 \end_inset
 
-This is the raw output from the IRS vertical accelerometer.
- Positive values are up, normal to the aircraft center line.
- The sample rate is 50 Hz with a resolution of 0.0024 m/s2
+The raw output from the IRU vertical accelerometer.
+ Positive values are upward in the reference frame of the aircraft, normal
+ to the aircraft center line and lateral axis.
+ The sample rate is 50 Hz with a resolution of 0.0024 m
+\begin_inset space \thinspace{}
+\end_inset
+
+s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Hanging
@@ -1129,7 +2101,7 @@ This is the raw output from the IRS vertical accelerometer.
 Raw Body Pitch Rate (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -1140,7 +2112,17 @@ BPITCHR
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+BPITCHR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1153,10 +2135,11 @@ BPITCHR
 \begin_inset Newline newline
 \end_inset
 
-This is the raw output of the IRS pitch rate gyro.
- Positive values are up, normal to the aircraft's lateral axis.
+The raw output of the IRU pitch rate gyro.
+ Positive values indicate the nose moving upward and refer to rotation about
+ the aircraft's lateral axis.
  The sample rate is 50 Hz with a resolution of 0.0039
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 /s.
@@ -1168,7 +2151,7 @@ This is the raw output of the IRS pitch rate gyro.
 Raw Body Roll Rate (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -1179,7 +2162,17 @@ BROLLR
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+BROLLR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1192,10 +2185,11 @@ BROLLR
 \begin_inset Newline newline
 \end_inset
 
-This is the raw output of the IRS roll rate gyro.
- Positive values are right wing down, normal to the aircraft center line.
+The raw output of the IRU roll rate gyro.
+ Positive values indicate starboard wing moving down and refer to rotation
+ about the aircraft center line.
  The sample rate is 50 Hz with a resolution of 0.0039
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 /s.
@@ -1207,7 +2201,7 @@ This is the raw output of the IRS roll rate gyro.
 Raw Body Yaw Rate (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -1218,7 +2212,17 @@ BYAWR
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+BYAWR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1231,15 +2235,2975 @@ BYAWR
 \begin_inset Newline newline
 \end_inset
 
-This is the raw output of the IRS yaw rate gyro.
- Positive values are nose turning to the right, normal to the aircraft's
- vertical axis.
+The raw output of the IRU yaw rate.
+ Positive values represent the nose turning to the starboard and refer to
+ rotation about the aircraft's vertical axis.
  The sample rate is 50 Hz with a resolution of 0.0039
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 /s.
  
+\end_layout
+
+\begin_layout Subsection
+Global Positioning Systems
+\end_layout
+
+\begin_layout Standard
+GPS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+global positioning system|see
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{GPS}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GPS
+\end_layout
+
+\end_inset
+
+ variables aboard RAF aircraft are provided by a Trimble TANS-III GPS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GPS!Trimble TANS-III
+\end_layout
+
+\end_inset
+
+ receiver.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+update this
+\end_layout
+
+\end_inset
+
+It has the ability to track up to 6 satellites at a time but needs only
+ 4 to provide 3-dimensional position and velocity data (3 satellites for
+ 2-dimensions).
+ The accuracy of the position measurements is stated to be 25 meters (horizontal
+) and 35 meters (vertical) under 
+\begin_inset Quotes eld
+\end_inset
+
+steady-state conditions.
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Note: The GPS signals at one time suffered from 
+\begin_inset Quotes eld
+\end_inset
+
+selective availability,
+\begin_inset Quotes erd
+\end_inset
+
+ a US DOD term for a dithered signal that degrades GPS absolute accuracy
+ to 100 meters.
+ This was especially noticeable in the altitude measurement, so GALT normally
+ was not useful.
+ As of 1 May 2000, selective availability was deactivated to allow everyone
+ to obtain better position measurements.
+ (See the Interagency GPS Executive Board web site for more information.)
+ 
+\end_layout
+
+\end_inset
+
+ Likewise, velocity measurements are within 0.2 m/s for all axes.
+ Measurement resolution is that of 4-byte IEEE format (about 6 significant
+ digits).
+ All variables are output at a sample rate of 1 Hz.
+\end_layout
+
+\begin_layout Standard
+Some of the following variables are also available from a second unit and
+ are qualified by the name of that unit; e.g., GGLAT_GMN for GGLAT as measured
+ by a Garmin GPS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GPS!Garmin
+\end_layout
+
+\end_inset
+
+ unit.
+ In addition, some of the measurements from the GPS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GPS!aircraft avionics unit
+\end_layout
+
+\end_inset
+
+ units that are part of the aircraft avionics systems are recorded; these
+ are denoted by a suffix 
+\begin_inset Quotes eld
+\end_inset
+
+_G
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+_A
+\begin_inset Quotes erd
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Latitude (
+\series default
+
+\begin_inset Formula $\text{º}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+GGLAT
+\series default
+\bar default
+
+\begin_inset Index var
+status collapsed
+
+\begin_layout Plain Layout
+GGLAT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGLAT
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+LAT_G
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+LAT_G
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+LAT_G
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+; also formerly 
+\series bold
+\bar under
+GLAT
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GLAT
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GLAT
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The aircraft latitude measured by a global positioning system.
+
+\emph default
+ Positive values are north of the equator; negative values are south.
+ GGLAT is provided by the data-system GPS; LAT_G and LATF_G are from the
+ avionics system GPS.
+ LATF_G is a fine-resolution measurement that requires special processing.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Longitude (
+\series default
+
+\begin_inset Formula $\text{º}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+GGLON
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GGLON
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGLON
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+LON_G
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+LON_G
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+LON_G
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+; also formerly 
+\series bold
+\bar under
+GLON
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GLON
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GLON
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The aircraft longitude measured by a global positioning system.
+
+\emph default
+ Positive values are east of the prime meridian; negative are west.
+ GGLON is provided by the (or a) data-system GPS; LON_G and LONF_G are from
+ the avionics system GPS.
+ LONF_G is a fine-resolution measurement that requires special processing.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+need to explain how these are used together...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Ground Speed (m/s): 
+\bar under
+GSF
+\bar default
+_
+\bar under
+G
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GSF_G
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GSF_G
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+GGSPD
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GGSPD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGSPD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The aircraft ground speed measured by a global positioning system.
+
+\emph default
+ GSF_G originates from an avionics-system GPS; GGSPD originates from a data-syst
+em GPS.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Ground Speed Vector East Component (m/s): 
+\bar under
+GGVEW
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GGVEW
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGVEW
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+VEW_G
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VEW_G
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+VEW_G
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The east component of ground speed measured by a global positioning system.
+
+\emph default
+ VEW_G originates from an avionics-system GPS; GGVEW originates from a data-syst
+em GPS.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Ground Speed Vector North Component (m/s): 
+\bar under
+GGVNS
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GGVNS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGVNS
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+VNS_G
+\series default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VNS_G
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+VNS_G
+\end_layout
+
+\end_inset
+
+
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The northward component of ground speed as measured by a global positioning
+ system.
+
+\emph default
+ VNS_G originates from an avionics-system GPS; GGVNS originates from a data-syst
+em GPS.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS-Computed Aircraft Vertical Velocity (m/s): 
+\bar under
+VSPD_G
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+VSPD_G
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+VSPD_G
+\end_layout
+
+\end_inset
+
+
+\bar default
+, 
+\series default
+(obsolete) 
+\series bold
+\bar under
+GVZI
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GVZI (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GVZI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The aircraft vertical velocity provided by a GPS unit.
+
+\emph default
+ Positive values are upward.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Altitude (m): 
+\bar under
+GGALT
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GGALT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGALT
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+ALT_G
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ALT_G
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ALT_G
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The aircraft altitude
+\emph default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+altitude!aircraft!GPS
+\end_layout
+
+\end_inset
+
+
+\emph on
+ measured by a global positioning system.
+
+\emph default
+ The measurement is with respect to a geopotential surface (MSL) defined
+ by the GPS's built-in earth model.
+ Positive values are above the reference surface.
+ GGALT originates from a data-system GPS; ALT_G originates from an avionics-syst
+em GPS.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Aircraft Track Angle (
+\begin_inset Formula $\text{º}$
+\end_inset
+
+): 
+\bar under
+GGTRK
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GGTRK
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GGTRK
+\end_layout
+
+\end_inset
+
+
+\bar default
+,
+\bar under
+ TKAT_G
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+TKAT_G
+\end_layout
+
+\end_inset
+
+
+\series bold
+\bar under
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+TKAT_G
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\emph on
+\bar default
+The direction of the aircraft track (degrees clockwise from true north)
+\emph default
+ as measured by a data-system global positioning system (GGTRK) or an avionics-s
+ystem GPS (TKAT_G)
+\emph on
+.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Height of the Geoid (m): 
+\bar under
+GGEOIDHT
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GGEOIDHT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GGEOIDHT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\emph on
+\bar default
+Height of geoid (MSL) above the WGS84 ellipsoid.
+
+\emph default
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Check on this terminology; seems confusing to me
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Satellites Tracked: 
+\bar under
+GGNSAT
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GGNSAT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GGNSAT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\emph on
+The number of satellites tracked by a GPS unit.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Mode: 
+\bar under
+GGQUAL
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GGQUAL
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGQUAL
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+GPS quality flag:
+\emph default
+ 0, 1, 2 for invalid, normal GPS, and differential GPS, respectively.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Mode: 
+\bar under
+GMODE
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GMODE (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GMODE
+\end_layout
+
+\end_inset
+
+ 
+\series default
+\bar default
+(obsolete)
+\begin_inset Newline newline
+\end_inset
+
+This is the former output from the GPS indicating the mode of operation.
+ The normal value is 4, indicating automatic (not manual) mode and that
+ the receiver is operating in 4-satellite (as opposed to fewer) mode.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+add meaning of other modes here
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Status: 
+\bar under
+GGSTATUS
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GGSTATUS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGSTATUS
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+GSTAT_G
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GSTAT_G
+\end_layout
+
+\end_inset
+
+
+\bar under
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GSTAT_G
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+, (obsolete) 
+\series bold
+\bar under
+GSTAT
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GSTAT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GSTAT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The status of the GPS receiver.
+ A value of 1 indicates that the receiver is operating normally; a value
+ of 0 indicates a warning regarding data quality.
+ GGSTATUS indicates the status of the data-system GPS; GSTAT_G indicates
+ the status of the avionics-system GPS.
+ The obsolete variable GSTAT, formerly used for the same purpose, has the
+ reverse meaning: A value of 0 indicates normal operation and any other
+ code indicates a malfunction or warning regarding poor data accuracy.
+ 
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Get Dick Friesen or someone to review and update this
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Other Measurements of Aircraft Altitude
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Altitude, Reference (MSL): 
+\bar under
+ALTX
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ALTX
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ALTX
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+GALTC
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GALTC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GALTC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this needs revision and perhaps a new algorithm; add ALTC?
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Marginal
+status collapsed
+
+\begin_layout Plain Layout
+revise this as described in the GGALTC algorithm note of 10 Dec
+\end_layout
+
+\end_inset
+
+
+\emph on
+Derived altitude above the geopotential surface.
+ 
+\emph default
+This variable is derived primarily from GGALT, the GPS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGALT
+\end_layout
+
+\end_inset
+
+ altitude, with help from another reference altitude, typically ALT
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ALT
+\end_layout
+
+\end_inset
+
+, the inertial altitude.
+ The GPS signals at times are degraded, most often during aircraft turns.
+ Two GPS status measurements are used to detect this, but sometimes the
+ information comes too late.
+ A 10-second running average is calculated of the difference between the
+ GPS altitude and the reference altitude.
+ When the sample-to-sample altitude difference changes more than 50 meters
+ or when the GPS status detects a degraded signal, the altitude from this
+ measurement changes from GPS altitude to an adjusted reference altitude
+ (defined as reference altitude plus the running difference average).
+ When the GPS altitude is again 
+\begin_inset Quotes eld
+\end_inset
+
+good
+\begin_inset Quotes erd
+\end_inset
+
+ and to avoid a sudden altitude transition, the output linearly steps back
+ to the GPS altitude over the next 10 seconds.
+ *** 
+\emph on
+REVISE THIS, NEW ALGORITHM
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+ISA Pressure Altitude (m): 
+\bar under
+PALT
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+PALT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+PALT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Revised Nov 2010
+\end_layout
+
+\end_inset
+
+The altitude in the International Standard Atmosphere where the pressure
+ is equal to the reference barometric (ambient) pressure (PSXC).
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+altitude!pressure
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+International Standard Atmosphere
+\end_layout
+
+\end_inset
+
+ (
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ISA|see 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{International Standard Atmosphere}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+See 
+\begin_inset Quotes eld
+\end_inset
+
+U.S.
+ Standard Atmosphere, 1976
+\begin_inset Quotes erd
+\end_inset
+
+, NASA-TM-A-74335, available for download at 
+\begin_inset CommandInset href
+LatexCommand href
+name "this URL"
+target "http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19770009539_1977009539.pdf"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+ The pressure altitude is best interpreted as a variable equivalent to the
+ measured pressure, not as a geometric altitude.
+ In the following description of the algorithm, some constants (identified
+ by the symbol 
+\begin_inset Formula $^{\ddagger}$
+\end_inset
+
+) are specified as part of the ISA and so should not be 
+\begin_inset Quotes eld
+\end_inset
+
+improved
+\begin_inset Quotes erd
+\end_inset
+
+ to more modern values such as those given in the table in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "ConstantsBox"
+
+\end_inset
+
+ (e.g., 
+\begin_inset Formula $R_{0}^{\ddagger}).$
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Prior to and including some projects in 2010, processing used slightly different
+ coefficients: for aircraft other than the GV, 
+\begin_inset Formula $T_{0}/\lambda$
+\end_inset
+
+ was represented by -43308.83, the reference pressure 
+\begin_inset Formula $p_{0}$
+\end_inset
+
+ was taken to be 1013.246, and the exponent 
+\begin_inset Formula $x$
+\end_inset
+
+ was represented numerically by 0.190284.
+ For the GV, the value of 
+\begin_inset Formula $T_{0}/\lambda$
+\end_inset
+
+ was taken to be 44308.0, the transition pressure 
+\begin_inset Formula $p_{T}$
+\end_inset
+
+ was 226.1551 hPa, 
+\begin_inset Formula $x$
+\end_inset
+
+ = 0.190284, and coefficient 
+\begin_inset Formula $\frac{R_{0}^{\prime}T_{T}}{gM_{d}}$
+\end_inset
+
+ was taken to be 6340.70 m instead of 6341.620 m as obtained below.
+ The difference between these older values and the ones recommended below
+ is everywhere less than 10 m and so is small compared to the expected uncertain
+ty in pressure measurements, because 1 hPa change in pressure leads to a
+ change in pressure altitude that varies from about 8--40 m over the altitude
+ range of the GV .)
+\end_layout
+
+\end_inset
+
+ A note at 
+\begin_inset CommandInset href
+LatexCommand href
+name "this URL"
+target "http://wiki.eol.ucar.edu/rafscience/ProcessingAlgorithms?action=AttachFile&do=view&target=PressureAltitude.pdf"
+
+\end_inset
+
+ describes the pressure altitude in more detail and documents the change
+ that was implemented in November 2010.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{0}^{\ddagger}$
+\end_inset
+
+= 288.15 K, reference temperature
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\lambda^{\ddagger}$
+\end_inset
+
+ 
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+lambda@
+\begin_inset Formula $\lambda$
+\end_inset
+
+= tropospheric lapse rate, standard atmosphere
+\end_layout
+
+\end_inset
+
+= -0.0065 K/m = the lapse rate
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+International Standard Atmosphere!lapse rate
+\end_layout
+
+\end_inset
+
+ for the troposphere
+\begin_inset Formula $^{\ddagger}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $p$
+\end_inset
+
+ = measured static (ambient) pressure, hPa, usually from PSXC
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $p_{0}^{\ddagger}$
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+P0star@
+\begin_inset Formula $p_{0}^{\ddagger}$
+\end_inset
+
+= reference pressure for zero altitude, ISA
+\end_layout
+
+\end_inset
+
+ = 1013.25 hPa, reference pressure for PALT=0 
+\begin_inset Formula $^{\ddagger}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $M_{d}^{\ddagger}$
+\end_inset
+
+ = 28.9644 
+\begin_inset Formula $kg/kmol$
+\end_inset
+
+= molecular weight of dry air, ISA definition 
+\begin_inset Formula $^{\ddagger}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $g^{\ddagger}$
+\end_inset
+
+ = 9.80665 m
+\begin_inset space \thinspace{}
+\end_inset
+
+s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+, acceleration of gravity 
+\begin_inset Formula $^{\ddagger}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $R_{0}^{\ddagger}$
+\end_inset
+
+ = universal gas constant, defined
+\begin_inset Formula $^{\ddagger}$
+\end_inset
+
+ as 8.31432
+\begin_inset Formula $\times10^{3}$
+\end_inset
+
+ 
+\begin_inset Formula $J\,\mathrm{kmol}^{-1}\,\mathrm{K}^{-1}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $z_{T}^{\ddagger}$
+\end_inset
+
+ = altitude of the ISA tropopause = 11,000 m 
+\begin_inset Formula $^{\ddagger}$
+\end_inset
+
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $x=R_{0}^{\ddagger}\lambda/(M_{d}^{\ddagger}g^{\ddagger})$
+\end_inset
+
+ 
+\begin_inset Formula $\approx$
+\end_inset
+
+ 0.1902632 (dimensionless)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+This is the value, rounded to seven significant figures, that is used for
+ data processing.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+For pressure > 226.3206 hPa (equivalent to a pressure altitude < 
+\begin_inset Formula $z_{T}$
+\end_inset
+
+):
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathrm{PALT}=-\left(\frac{T_{0}^{\ddagger}}{\lambda^{\ddagger}}\right)\left(1-\left(\frac{p}{p_{0}^{\ddagger}}\right)^{x}\right)
+\]
+
+\end_inset
+
+otherwise, if 
+\begin_inset Formula $T_{T}$
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+Tt@
+\begin_inset Formula $T_{T}$
+\end_inset
+
+= temperature at the ISA tropopause
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Formula $p_{T}$
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+pT@
+\begin_inset Formula $p_{T}$
+\end_inset
+
+= pressure at the ISA tropopause
+\end_layout
+
+\end_inset
+
+ are respectively the temperature and pressure at the altitude
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+International Standard Atmosphere!tropopause
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Formula $z_{T}$
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+T_{T}=T_{0}+\lambda^{\ddagger}z_{T}^{\ddagger}=216.65\,\mathrm{K}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+p_{T}=p_{0}^{\ddagger}\Bigl(\frac{T_{0}^{\ddagger}}{T_{T}}\Bigr)^{\frac{g^{\ddagger}M_{d}^{\ddagger}}{\lambda^{\ddagger}R_{0}^{\ddagger}}}=226.3206\,\mathrm{hPa}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathrm{PALT}=z_{T}^{\ddagger}+\frac{R_{0}^{\ddagger}T_{T}}{g^{\ddagger}M_{d}^{\ddagger}}\ln\left(\frac{p{}_{T}}{p}\right)
+\]
+
+\end_inset
+
+which, after conversion from natural to base-10 logarithm, is coded to be
+ equivalent to the following:
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout LyX-Code
+          // transition pressure at the assumed ISA tropopause:
+\end_layout
+
+\begin_layout LyX-Code
+#define ISAP1 226.3206
+\end_layout
+
+\begin_layout LyX-Code
+          // reference pressure for standard atmosphere:
+\end_layout
+
+\begin_layout LyX-Code
+#define ISAP0 1013.25
+\end_layout
+
+\begin_layout LyX-Code
+if (psxc > ISAP1)
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+palt = 44330.77 * (1.0 - pow(psxc/ISAP0, 0.1902632));
+\end_layout
+
+\end_deeper
+\begin_layout LyX-Code
+else
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+palt = 11000.0 + 14602.12 * log10(ISAP1/psxc);
+\end_layout
+
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Geometric Radio Altitude (m): 
+\bar under
+HGM
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+HGM
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+HGM
+\end_layout
+
+\end_inset
+
+ 
+\emph on
+- (obsolete)
+\emph default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The distance to the surface below the aircraft,
+\emph default
+ measured by a radio
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+radar?
+\end_layout
+
+\end_inset
+
+ altimeter
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+altimeter!radio
+\end_layout
+
+\end_inset
+
+.
+ The maximum range is 762m (2,500 ft).
+ The instrument changes in accuracy at an altitude of 152 m: The estimated
+ error from 152 m to 762 m is 7%, while the estimated error for altitudes
+ below 152 m is 1.5 m or 5%, whichever is greater.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Geometric Radar Altitude (Extended Range) (APN-159) (m): 
+\bar under
+HGME
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+HGME
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+HGME
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The distance to the surface below the aircraft, measured by a radar altimeter.
+ 
+\emph default
+There are two outputs from an APN-159 radar altimeter
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+altimeter!radar
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+APN-159
+\end_layout
+
+\end_inset
+
+, one with coarse resolution (CHGME) and one with fine resolution (HGME).
+ Both raw outputs cycle through the range 0-360 degrees, where one cycle
+ corresponds to 4,000 feet for HGME and to 100,000 feet for CHGME.
+ To resolve the ambiguity arising from these cycles, 4,000-foot increments
+ are added to HGME to maintain agreement with CHGME.
+ This preserves the fine resolution of HGME (1.86 m) throughout the altitude
+ range of the APN-159.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Geometric Radar Altitude (Extended Range) (APN-232) (m): 
+\bar under
+HGM232
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+HGM232
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+HGM232
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+Altitude above the ground
+\emph default
+ as measured by an APN-232 radar altimeter.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Pressure-Damped Inertial Altitude (m): 
+\bar under
+HI3
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+HI3 (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+HI3
+\end_layout
+
+\end_inset
+
+ (obsolete)
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The aircraft altitude obtained from the twice-integrated IRU acceleration
+ (ACINS), pressure-adjusted to obtain long-term agreement with PALT.
+ 
+\emph default
+Note that this variable has mixed character, producing short-term variations
+ that accurately track the inertial system changes but with adjustment to
+ the pressure altitude, which is not a true altitude.
+ The variable is not appropriate for estimates of true altitude, but proves
+ useful in the updating algorithm used with the LTN-51 IRU for vertical
+ wind.
+ See the discussion of WP3 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "WP3 algorithm"
+
+\end_inset
+
+.
+ This variable is now obsolete.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:IRS/GPS"
+
+\end_inset
+
+Combining IRS and GPS Measurements
+\end_layout
+
+\begin_layout Standard
+Measurements from the global positioning
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GPS
+\end_layout
+
+\end_inset
+
+ and inertial reference systems
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+IRU
+\end_layout
+
+\end_inset
+
+ are combined to produce new variables that take advantage of the strengths
+ of each, so that the resulting variables have the long-term stability of
+ the GPS and the short-term resolution of the IRU.
+ This section describes some variables that result from this blending of
+ variables.
+ These corrected variables are usually the best available when the GPS and
+ IRS are both functioning.
+ 
+\end_layout
+
+\begin_layout Standard
+One can determine if the GPS is functioning by examining the GPS status
+ variables described in the previous section or by looking for spikes or
+ 
+\begin_inset Quotes eld
+\end_inset
+
+flat-lines
+\begin_inset Quotes erd
+\end_inset
+
+ in the data.
+ If the GPS data are missing for a short time (a few seconds to a minute),
+ accuracy is not affected.
+ However, longer dropouts will result in accuracies degrading toward those
+ of the IRU.
+ Without the GPS or another ground reference, the IRS error cannot be determined
+ empirically, and one should assume that it is within the manufacturer's
+ specification (1 nautical mile of error per hour of flight, 90% CEP).
+ When the GPS is active, RAF estimates that the correction algorithm produces
+ a position with an error less than 100 meters.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I think it's probably better than this; what evidence is there for this?
+\end_layout
+
+\end_inset
+
+ Due to the nature of the algorithm, the error will increase fromabout 100
+ meters to the IRU specification in about one-half hour after GPS information
+ is lost.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+In other words, if there is a continuous GPS dropout that lasts one-half
+ hour or longer, the corrected position will revert to the full IRS position
+\begin_inset Quotes erd
+\end_inset
+
+ -- This is what B9 says, but it appears to me that the Schuler-oscillation
+ fit remains in effect as long as the GPS is lost, provided a good fit was
+ obtained.
+ This means that the fit to the Schuler oscillation should increase the
+ accuracy of the result to be better than the pure IRS result even when
+ the GPS is lost for extended periods, provided a good initial fit was obtained.
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS-Corrected Inertial Ground Speed Vector, (m/s): 
+\bar under
+VEWC
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VEWC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+VEWC
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+VNSC
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VNSC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+VNSC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+These variables result from combining GPS and IRU output of the east and
+ north components of ground speed from a complementary-filter
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+filter, complementary (for wind)
+\end_layout
+
+\end_inset
+
+ algorithm.
+ Positive values are toward the east and north, respectively.
+ The smooth, high-resolution, continuous measurements from the inertial
+ navigation system, {VNS, VEW}, which can slowly accumulate errors over
+ time, are combined with the measurements from the GPS, {GVNS, GVEW}, which
+ have good long-term stability, via an approach based on a complementary
+ filter.
+ A low-pass filter, 
+\begin_inset Formula $F_{L}(\{\mathrm{GVNS,GVEW\}})$
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+FL@
+\begin_inset Formula $F_{L}$
+\end_inset
+
+= digital low-pass filter
+\end_layout
+
+\end_inset
+
+, is applied to the GPS measurements of groundspeed, which are assumed to
+ be valid for frequencies at or lower than the cutoff frequency 
+\begin_inset Formula $f_{c}$
+\end_inset
+
+
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+fc@
+\begin_inset Formula $f_{c}$
+\end_inset
+
+= cutoff frequency fo the filter 
+\begin_inset Formula $F_{L}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ of the filter.
+ Then the complementary high-pass filter, denoted (
+\begin_inset Formula $1-F_{L}$
+\end_inset
+
+)(
+\begin_inset Formula $\{\mathrm{VNS,VEW\}}$
+\end_inset
+
+), is applied to the IRS measurements of groundspeed, which are assumed
+ valid for frequencies at or higher than 
+\begin_inset Formula $f_{c}$
+\end_inset
+
+.
+ Ideally, the transition frequency would be selected where the GPS errors
+ (increasing with frequency) are equal to the IRS errors (decreasing with
+ frequency).
+ The filter used is a three-pole Butterworth lowpass filter
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+filter!Butterworth
+\end_layout
+
+\end_inset
+
+, coded following the algorithm described in Bosic, S.
+\begin_inset space ~
+\end_inset
+
+M., 1980: 
+\emph on
+Digital and Kalman filtering : An Introduction to Discrete-Time Filtering
+ and Optimum Linear Estimation, 
+\emph default
+p.
+ 49.
+ The digital filter used is recursive, not centered, to permit calculation
+ during a single pass through the data.
+ If the cutoff frequency lies where both the GPS and IRU measurements are
+ almost the same, then the detailed characteristics of the filter (e.g., phase
+ shift) in the transition region do not matter because the complementary
+ filters have cancelling effects when applied to the same signal.
+ The transition frequency 
+\begin_inset Formula $f_{c}$
+\end_inset
+
+ was chosen to be (1/600) Hz.
+ The Butterworth filter was chosen because it provides flat response away
+ from the transition.
+ The net result then is the sum of these two filtered signals, calculated
+ as described in the following box:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+VEW
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+VEW
+\end_layout
+
+\end_inset
+
+ = IRS-measured east component of the aircraft ground speed
+\begin_inset Newline newline
+\end_inset
+
+VNS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+VNS
+\end_layout
+
+\end_inset
+
+ = IRS-measured north component of the aircraft ground speed
+\begin_inset Newline newline
+\end_inset
+
+GGVEW
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGVEW
+\end_layout
+
+\end_inset
+
+ = GPS-measured east component of the aircraft ground speed
+\begin_inset Newline newline
+\end_inset
+
+GGVNS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGVNS
+\end_layout
+
+\end_inset
+
+ = GPS-measured north component of the aircraft ground speed
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $F_{L}()$
+\end_inset
+
+ = three-pole Butterworth lowpass recursive digital filter
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+\{\mathrm{VNSC}\}=F_{L}(\mathrm{\{GGVNS\})}+(1-F_{L})(\{\mathrm{VNS\}})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\{\mathrm{VEWC}\}=F_{L}(\mathrm{\{GGVEW\})}+(1-F_{L})(\{\mathrm{VEW\}})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This result is used as long as the GPS signals are continuous and flagged
+ as being valid.
+ When that is not the case, some means is needed to avoid sudden discontinuities
+ in velocity (and hence windspeed), which would introduce spurious effects
+ into variance spectra and other properties dependent on a continuously
+ valid measurement of wind.
+ To extrapolate measurements through periods when the GPS signals are lost
+ (as sometimes occurs, for example, in turns) a fit is determined to the
+ difference between the best-estimate variables {VNSC,VEWC} and the IRS
+ variables {VNS,VEW} for the period before GPS reception was lost, and that
+ fit is used to extrapolate through periods when GPS reception is not available.
+ The procedure is as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Enumerate
+If GPS reception has never been valid earlier in the flight, use the IRU
+ values without correction.
+ 
+\end_layout
+
+\begin_layout Enumerate
+If GPS reception is lost after a valid complementary-filter
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+complementary filter (for wind)
+\end_layout
+
+\end_inset
+
+ correction has been obtained earlier using the procedure described above,
+ but no valid Schuler-oscillation
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Schuler oscillation
+\end_layout
+
+\end_inset
+
+ fit has been accumulated as described in [3.] below, use the correction
+ factors from the complementary filter reduced by a factor of 0.997 each
+ second, producing an exponential decay back toward the IRS values with
+ decay time constant of about 5.6 min.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I wonder if, with present reliability, it is better to suppress this decay?
+ This would mean suppressing the section in gpsc.c with lines like dvy[]*=fctrf[]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+When GPS
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GPS
+\end_layout
+
+\end_inset
+
+ reception is good, update a least-squares fit to the difference between
+ the GPS and IRU groundspeeds, for each component.
+ The errors are assumed to result primarily from a Schuler oscillation
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Schuler oscillation
+\end_layout
+
+\end_inset
+
+, so the three-term fit is of the form 
+\begin_inset Formula $\Delta=a_{1}+a_{2}\sin(\Omega_{Sch}t)+a_{3}\cos(\Omega_{Sch}t)$
+\end_inset
+
+ , where 
+\begin_inset Formula $\Omega_{Sch}$
+\end_inset
+
+ is the angular frequency of the Schuler oscillation (taken to be 
+\begin_inset Formula $2\pi/(5067\, s))$
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+recommended to be consistent with constants in section 1.
+ 5040s in use now -- insignificant difference
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Formula $t$
+\end_inset
+
+ is the time since the start of the flight.
+ A separate fit is used for each component of the velocity and each component
+ of the position (discussed below under LATC and LONC).
+ The fit matrix
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+fit matrix, wind correction
+\end_layout
+
+\end_inset
+
+ used to determine these coefficients is updated each time step but the
+ accumulated fit factors decay exponentially with a 30-min decay constant,
+ so the terms used to determine the fit are exponentially weighted over
+ the period of valid data with a time constant that decays exponentially
+ into the past with a characteristic time of 30 min.
+ This is long enough to determine a significant portion of the Schuler oscillati
+on but short enough to emphasize recent measurements of the correction.
+\end_layout
+
+\begin_layout Enumerate
+When GPS data become invalid, if sufficient data (spanning 30 min) have
+ been accumulated, invert the accumulated fit matrices to determine the
+ coefficients 
+\begin_inset Formula $\{a_{1},a_{2},a_{3}\}$
+\end_inset
+
+ and then use the formula for 
+\begin_inset Formula $\Delta$
+\end_inset
+
+ in the preceding step to extrapolate the correction to the IRS measurements
+ while the GPS measurements remain invalid.
+ Doing so immediately would introduce a discontinuity in {VNSC,VEWC}, however,
+ so the correction 
+\begin_inset Formula $\Delta$
+\end_inset
+
+ is introduced smoothly by adjusting {VNSC,VEWC} smoothly as follows: 
+\begin_inset Formula $\Delta^{\prime}$
+\end_inset
+
+=
+\begin_inset Formula $(1-\eta)$
+\end_inset
+
+(VNSC
+\begin_inset Formula $_{0}$
+\end_inset
+
+-GVNS
+\begin_inset Formula $_{0}$
+\end_inset
+
+)
+\begin_inset Formula $+\eta\Delta$
+\end_inset
+
+ where 
+\begin_inset Formula $\Delta^{\prime}$
+\end_inset
+
+ is the sequentially adjusted correction, (VNSC
+\begin_inset Formula $_{0}$
+\end_inset
+
+-GVNS
+\begin_inset Formula $_{0}$
+\end_inset
+
+) is the difference preserved from the last time the GPS groundspeed was
+ valid, and
+\begin_inset Index lis
+status open
+
+\begin_layout Plain Layout
+eta@
+\begin_inset Formula $\eta=$
+\end_inset
+
+update constant for exponential updating
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Formula $\eta=0.997\, s^{-1}$
+\end_inset
+
+ is chosen to give a decaying transition with a time constant of about 5.5
+ min.
+ This has the potential to introduce some artificial variance at this scale
+ and so should be considered in cases where variance spectra are analyzed
+ in detail, but it has much less influence on such spectra than would introducin
+g a discontinuous transition.
+ Ideally, the current fit and the last filtered discrepancy (VNSC
+\begin_inset Formula $_{0}$
+\end_inset
+
+-GVNS
+\begin_inset Formula $_{0}$
+\end_inset
+
+) should be about equal, so this should not introduce a significant change.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+it would be desirable to use a gradual transition back to the complementary-filt
+ered solution, but this apparently isn't done now; instead, there is a hard
+ switch back to use of the complementary-filter solution, without adjustment
+ or re-initialization of the past accumulated filters (carried in zf).
+ Specifically, if GPS becomes again good while the fit is being used, dvy
+ should be moved toward the complementary-filter solution gradually, with
+ the same exponential filter used to initiate the use of the fit.
+ This would be implemented by replacing the dvy first expression for goodGPS
+ .
+ Note that there is no need to filter gvns and vns separately, only their
+ difference, because the filter is linear.
+ Could save two filter steps and arrays: dvy[]=filter(()gvns-vns, zf[]).
+ But, if a fit was calculated previously, want to move from that previous
+ fit to this result, via something like dvy[] = dvy[]*fctrf[]+(1-fctrf[])*filter
+(()gvns-vns, zf[])).
+ This introduces another time constant (5.6 min) into the filter that is
+ otherwise 10-min, but avoids the sharp transition.
+ It compromises the otherwise favorable characteristic of the complementary
+ filter that it has no or little effect on the variance spectrum, but dvy
+ can be regarded as a correction to vns to correct for long-term drift in
+ the IRS, and to the extent that this is true and all variance remains in
+ vns then any filtering applied to dvy won't have much effect.
+ It may be acceptable to apply this correction always, instead of switching
+ it on and off when transitions occur.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS-Corrected Inertial Latitude and Longitude (
+\series default
+
+\begin_inset Formula $\text{º}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+LATC
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+LATC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+LATC
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+LONC
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+LONC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+LONC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+Combined GPS and IRS output of latitude and longitude.
+
+\emph default
+ Positive values are north and east, respectively.
+ These variables are the best estimate of position, obtained by the following
+ approach:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+LAT
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+LAT
+\end_layout
+
+\end_inset
+
+ = latitude measured by the IRS
+\begin_inset Newline newline
+\end_inset
+
+LON
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+LON
+\end_layout
+
+\end_inset
+
+ = longitude measured by the IRS
+\begin_inset Newline newline
+\end_inset
+
+GGLAT
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGLAT
+\end_layout
+
+\end_inset
+
+ = latitude measured by the GPS
+\begin_inset Newline newline
+\end_inset
+
+GGLON
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGLON
+\end_layout
+
+\end_inset
+
+ = longitude measured by the GPS
+\begin_inset Newline newline
+\end_inset
+
+VNSC
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+VNSC
+\end_layout
+
+\end_inset
+
+ = aircraft ground speed, north component, corrected 
+\begin_inset Newline newline
+\end_inset
+
+VEWC
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+VEWC
+\end_layout
+
+\end_inset
+
+ = aircraft ground speed, east component, corrected
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Initialize the corrected position at the IRS position at the start of the
+ flight or after any large change (>5
+\begin_inset Formula $\text{º}$
+\end_inset
+
+) in the IRS position.
+\end_layout
+
+\begin_layout Enumerate
+Integrate forward from that position using the aircraft groundspeed with
+ components {VNSC,VEWC}.
+ Note that in the absence of GPS information this will introduce long-term
+ errors because it does not account for the Earth's spherical geometry.
+ It provides good short-term accuracy, but the GPS updating in the next
+ step is needed to compensate for the difference between a rectilinear frame
+ and the Earth's spherical coordinate frame and provides a smooth yet accurate
+ track.
+\end_layout
+
+\begin_layout Enumerate
+Use an exponential adjustment to the GPS position, with time constant that
+ is typically about 100 s.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+specifically, LATC += 
+\begin_inset Formula $\eta$
+\end_inset
+
+(GLAT-LATC) with 
+\begin_inset Formula $\eta=2\pi/(600\,\mathrm{s})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+To handle periods when the GPS becomes invalid, use an approach analogous
+ to that for groundspeed, whereby a Schuler-oscillation fit to the difference
+ between the GPS and IRS measurements is developed and used to extrapolate
+ through periods when the GPS is invalid.
+ 
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body

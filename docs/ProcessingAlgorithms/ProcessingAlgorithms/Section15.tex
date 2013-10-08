@@ -1,0 +1,241 @@
+
+\section{OBSOLETE VARIABLES\label{sec:OBSOLETE-VARIABLES}}
+
+RAF retired the ``GENPRO'' processor, the software program previously
+used to produce data sets, in 1993, but data files produced by that
+processor are still retained and available for use. Also, there are
+some instruments that are now retired but provided measurements in
+some archived data files. Obsolete variable names that are associated
+only with GENPRO or a retired instrument are discussed below, for
+reference and to facilitate use of old data files. 
+\begin{hangparagraphs}
+\textbf{Unaltered Tape Time (s): TPTIME}\sindex[var]{TPTIME (obsolete)}\index{TPTIME}\\
+This variable is derived by converting the HOUR, MINUTE and SECOND
+to elapsed seconds after midnight of the current day. If time increments
+to the next day, its value is not reset to zero, but 86400 seconds
+are added to produce ever-increasing values for the data set.
+
+\textbf{Processor Time (s): PTIME}\sindex[var]{PTIME (obsolete)}\index{PTIME}\\
+This is an internal time variable created by the GENPRO processor.
+It represents elapsed seconds after midnight. It differs from TPTIME
+in that, after it has been set at the beginning of the data set, it
+is incremented internally for each second of data processed. If duplicate
+or missing raw data records exist, it can differ from TPTIME. It is
+guaranteed to be a monotonically increasing and continuous series
+of values.
+
+\textbf{INS: Data System Time Lag (s): TMLAG}\sindex[var]{TMLAG (obsolete)}\index{TMLAG}\\
+TMLAG is the amount of time between the reference time of a Litton
+LTN-5l Inertial Navigation System (INS) and the data system clock,
+in seconds. TMLAG will always be greater than zero and less than 2.
+
+\textbf{}%
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{LORAN-C Latitude (}$\text{º}$\textbf{): }\textbf{\uline{CLAT}}\textbf{\sindex[var]{CLAT (obsolete)}\index{CLAT}}\\
+\textbf{LORAN-C Longitude (}$\text{º}$\textbf{): }\textbf{\uline{CLON}}\textbf{\sindex[var]{CLON (obsolete)}\index{CLON}}\\
+\textbf{LORAN-C Circular Error of Probability (n mi): }\textbf{\uline{CCEP}}\textbf{\sindex[var]{CCEP (obsolete)}\index{CCEP}}\\
+\textbf{LORAN-C Ground Speed (m/s): }\textbf{\uline{CGS}}\textbf{\sindex[var]{CGS (obsolete)}\index{CGS}}\\
+\textbf{LORAN-C Time (s): }\textbf{\uline{CSEC}}\textbf{\sindex[var]{CSEC (obsolete)}\index{CSEC}}\\
+\textbf{LORAN-C Fractional Time (s): }\textbf{\uline{CFSEC\sindex[var]{CFSEC (obsolete)}\index{CFSEC}}}%
+\end{minipage}\\
+Before the advent of GPS, NCAR/RAF operated a LORAN-C receiver that
+provided information on the position and groundspeed of the aircraft.
+The measurements of latitude and longitude from this system are CLAT
+and CLON, measured at 1 Hz and with positive values of longitude to
+the east and positive values of latitude to the north. and CCEP provides
+an estimate of the uncertainty in those measurements (in units of
+nautical miles). A status word, CSTAT, was used to record a value
+of 15 when the system was operational. The ground speed and reference
+times were also recorded in the above corresponding variables. The
+sum of CSEC and CFSEC represented the time of the measurement, which
+was not always the time in the data file when the measurements were
+recorded, 
+
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{INS Latitude (}$\text{º}$\textbf{): }\textbf{\uline{ALAT}}\textbf{\sindex[var]{ALAT (obsolete)}\index{ALAT}}\\
+\textbf{INS Longitude (}$\text{º}$\textbf{): }\textbf{\uline{ALON}}\textbf{\sindex[var]{ALON (obsolete)}\index{ALON}}\\
+\textbf{Raw INS Ground Speed X Component (m/s): }\textbf{\uline{XVI}}\sindex[var]{XVI (obsolete)}\textbf{\index{XVI}}\\
+\textbf{Raw INS Ground Speed Y Component (m/s): }\textbf{\uline{YVI}}\textbf{\sindex[var]{YVI (obsolete)}\index{YVI}}\\
+\textbf{Raw INS True Heading (}$\text{º}$\textbf{): }\textbf{\uline{THI}}\textbf{\sindex[var]{THI (obsolete)}\index{THI}}\\
+\textbf{INS Wander Angle (}$\text{º}$\textbf{): }\textbf{\uline{ALPHA}}\textbf{\sindex[var]{ALPHA (obsolete)}\index{ALPHA}}\\
+\textbf{INS Platform Heading (}$\text{º}$\textbf{): }\textbf{\uline{PHDG\sindex[var]{PHDG (obsolete)}\index{PHDG}}}%
+\end{minipage}
+
+~~~~~~~~~These variables from the Litton LTN-51 Inertial
+Navigation System\index{Litton LTN-51 INS} (INS) are analogous to
+the modern variables discussed in section \ref{sec:INS}. The measurements
+of latitude and longitude were provided with 1-Hz frequency and had
+a resolution of 0.0014$\text{º}$, while the ground speed components
+were provided at 10 Hz and had resolution equal to 0.012 m/s. The
+X component of the ground speed was along the longitudinal axis of
+the aircraft \emph{at the time of alignment,}  and the Y axis was
+in the starboard direction at the time of alignment. PHDG recorded
+the orientation of the platform relative to true north, with resolution
+0.0028$\text{º}$. THI was the true heading of the aircraft, produced
+at 5 Hz with resolution of 0.0014$\text{º}$. The ``wander angle''
+is an INS-only variable that recorded the angle of the INS platform
+x-axis relative to its original orientation; it ``wandered'' in
+response to east-west motion of the aircraft on a spherical Earth. 
+
+\textbf{Raw Aircraft Vertical Velocity (m/s): }\textbf{\uline{VZI}}\sindex[var]{VZI (obsolete)}\index{VZI}\\
+This is an integrated output from an up/down binary counter connected
+to the INS vertical accelerometer. Resolution is 0.012 m/s. Due to
+changes in local gravity and accumulated errors, this often develops
+a significant offset during flight. 
+
+\textbf{Aircraft True Heading (}$\text{º}$\textbf{): }\textbf{\uline{THF}}\sindex[var]{THF (obsolete)}\index{THF}\\
+This measurement of aircraft heading was derived from the angle between
+the horizontal projection of the aircraft center and true north: THF
+= PHDG + ALPHA. Resolution is 0.0028$\text{º}$. 
+
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{Aircraft Ground Speed (m/s): }\textbf{\uline{GSF}}\textbf{\sindex[var]{GSF (obsolete)}\index{GSF@\textbf{GSF}}}\\
+\textbf{Aircraft Ground Speed East Component (m/s): }\textbf{\uline{VEW}}\textbf{\sindex[var]{VEW (obsolete)}\index{VEW}}\\
+\textbf{Aircraft Ground Speed North Component (m/s): }\textbf{\uline{VNS\sindex[var]{VNS (obsolete)}\index{VNS}}}%
+\end{minipage}
+
+~~~~~~~~~These variables have the same names as the modern
+variables for ground speed. (Cf.~section \ref{sec:INS}.) GSF is
+the magnitude of the ground speed determined by the INS, as derived
+from XVI and YVI: \\
+\[
+\mathrm{GSF=\sqrt{\{XVI\}^{2}+\{YVI\}^{2}}}
+\]
+\\
+VEW and VNS are the east and north projections of this ground speed,
+derived using THF for the aircraft heading.
+
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{Wind Speed (m/s): }\textbf{\uline{WSPD}}\textbf{\sindex[var]{WSPD (obsolete)}\index{WSPD}}\\
+\textbf{Wind Direction (}$\text{º}$\textbf{): }\textbf{\uline{WDRCTN\sindex[var]{WDRCTN (obsolete)}\index{WDRCTN}}}%
+\end{minipage}
+
+~~~~~~~~~These variables are calculated from UI and VI, the
+east and north components of the wind determined as described in RAF
+Bulletin No.~23 and summarized in section \ref{sec:WIND}:
+
+\begin{eqnarray*}
+\mathrm{WS} & = & \sqrt{\mathrm{\{UI\}^{2}+\{VI\}^{2}}}\\
+\mathrm{WD} & = & \mathrm{\frac{180^{\circ}}{\pi}atan2(-\{UI\},}-\{VI\})+180^{\circ}
+\end{eqnarray*}
+\\
+
+
+\textbf{Raw Attack Force (Fixed Vane) (g): }\textbf{\uline{AFIXx}}\sindex[var]{AFIXx (obsolete)}\index{AFIXx}\\
+AFIXx is an amplified output from a strain-gage, fixed-vane sensor
+mounted in the horizontal plane of the aircraft at the end of a gust
+boom. The ``force'' on the vane (calibrated in ``equivalent grams''
+at Jefferson County Airport gravity) varies as a function of the aircraft
+attack angle and dynamic pressure. Here x refers to left or right.
+
+\textbf{Raw Sideslip Force(Fixed Vane) (g): }\textbf{\uline{BFIXx}}\sindex[var]{BFIXx (obsolete)}\index{BFIXx}\\
+BFIXx is an amplified output from a strain-gage, fixed-vane sensor
+mounted in the vertical plane of the aircraft at the end of a gust
+boom. The ``force'' on the vane (calibrated in ``equivalent grams''
+at Jefferson County Airport gravity) varies as a function of the aircraft
+sideslip angle and dynamic pressure. Here x refers to top or bottom.
+
+\textbf{Attack Angle (Fixed Vane) (}$\text{º}$\textbf{): }\textbf{\uline{AKFXx}}\sindex[var]{AKFXx (obsolete)}\index{AKFXx}\\
+AKFXx is the angle of attack, computed from AFIXx and QCx (either
+boom or gust dynamic pressure). An empirically derived function, HSSATK,
+is used to determine the attack angle based upon wind tunnel test
+data.
+
+\textbf{Sideslip Angle (Fixed Vane) (}$\text{º}$\textbf{): }\textbf{\uline{SSFXx}}\sindex[var]{SSFXx (obsolete)}\index{SSFXx}\\
+SSFXx is the sideslip angle, computed from BFIXx, and QCx (either
+boom or gust dynamic pressure). An empirically derived function, HSSATK,
+is used to determine the sideslip angle based upon wind tunnel test
+data.
+
+\begin{minipage}[t]{1\columnwidth}%
+\textbf{Dynamic Pressure (Boom) (mb): }\textbf{\uline{QCB}}\textbf{\sindex[var]{QCB (obsolete)}\index{QCB},
+}\textbf{\uline{QCBC}}\textbf{\sindex[var]{QCBC (obsolete)}\index{QCBC}}\\
+\textbf{Dynamic Pressure (Gust Probe) (mb): }\textbf{\uline{QCG}}\textbf{\sindex[var]{QCG (obsolete)}\index{QCG},
+}\textbf{\uline{QCGC\sindex[var]{QCGC (obsolete)}\index{QCGC}}}%
+\end{minipage}
+
+~~~~~~~~~These variables, measured by a differential pressure
+gauge, record the difference between a pitot (total) pressure and
+a static pressure. The QCBC and QCGC values are corrected for local
+flow-field distortion. The boom and gust probe measurements referred
+to the same aircraft structure. The different designations used for
+those measurements specified the transducer used and its location.
+In the gust probe dynamic pressure measurement (QCG), a Rosemount
+Model 1332 differential pressure transducer was located closer to
+the sensor in the gust probe itself, whereas in the boom measurement
+(QCB), a Rosemount Model 1221 pressure transducer was typically located
+in the aircraft nose.
+
+\textbf{Total Temperature, Reverse Flow ($^{\circ}C$): }\textbf{\uline{TTRF}}\sindex[var]{TTRF (obsolete)}\index{TTRF}\\
+TTRF is the recovery temperature from a calibrated NCAR reverse-flow
+temperature sensor\index{reverse-flow temperature sensor}, for which
+the housing was designed to separate water droplets and protect the
+element from wetting in cloud. 
+
+\textbf{Total Temperature (Fast Response) ($^{\circ}C$): }\textbf{\uline{TTKP}}\sindex[var]{TTKP (obsolete)}\index{TTKP}\\
+This is the output of recovery temperature from the NCAR fast-response
+temperature probe, originally designed by Karl Danninger. (See discussion
+of total temperature in section \ref{sub:PTq}.)
+
+\textbf{Ambient Temperature ($^{\circ}C$): }\textbf{\uline{ATRF}}\sindex[var]{ATRF (obsolete)}\index{ATRF}\\
+The ambient temperature computed using the NCAR reverse-flow temperature
+sensor. (See discussion in Section \ref{sub:PTq} above.)
+
+\textbf{Ambient Temperature (Fast Response) ($^{\circ}C$): }\textbf{\uline{ATKP}}\sindex[var]{ATKP (obsolete)}\index{ATKP}\\
+The ambient temperature computed using the fast-response temperature
+probe. (See discussion of ambient temperature in section \ref{sub:PTq}.)
+
+\textbf{Raw Cloud Technology (Johnson-Williams) }\\
+\textbf{Liquid Water Content ($g/m^{3}$): }\textbf{\uline{LWC}}\sindex[var]{LWC (obsolete)}\index{LWC}\\
+This is the raw output of a Johnson-Williams\index{Johnson-Williams}
+liquid water content sensor converted to units of grams per cubic
+meter. The Johnson-Williams indicator measures the evaporative cooling
+caused by the latent heat of vaporization of droplets contacting the
+heated sensing element by sensing changes in its resistance as it
+cools. Through calibration this resistance is converted to a liquid
+water content. A ``compensation'' wire is also mounted in the J-W
+sensor, parallel to the droplet stream, to compensate for cooling
+effects of the airstream. Typically the instrument is set for a true
+airspeed of 200 knots. The instrument must be zeroed in ``cloud-free
+air.'' The Johnson-Williams liquid water content sensor is designed
+for the cloud droplet spectrum. There is some evidence to indicate
+that droplets larger than 30 $\mu m$ are shed before completely vaporizing
+on the sensor element. This tends to underestimate the liquid water
+content.
+
+\textbf{Corrected Cloud Technology (Johnson-Williams) }\\
+\textbf{Liquid Water Content (g/M3): }\textbf{\uline{LWCC}}\sindex[var]{LWCC (obsolete)}\index{LWCC}\\
+This is the corrected liquid water content obtained by using the aircraft's
+true airspeed after removing the zero offset: LWCC=LWC$U_{a}/U_{ref}$
+where $U_{a}$ is the true airspeed of the aircraft and $U_{ref}$
+is the true airspeed set on the dial of the instrument. $U_{ref}$
+was normally 200 kts = 102.88889 m/s.
+
+\textbf{Water Vapor Pressure (mb): }\textbf{\uline{EDPC}}\sindex[var]{EDPC (obsolete)}\index{EDPC}\\
+This is a derived intermediate variable used in the calculation of
+several derived thermodynamic variables. The vapor pressure over a
+plane water surface is obtained by the method of Paul R. Lowe (1977),
+a derived, sixth-order, Chebyshev polynomial fit to the Goff-Gratch
+Formulation (1946) as a function of temperature expressed in $^{\circ}C$.
+The error is much less than 1\% over the range -50$\text{º}$C to
++50$\text{º}$C. EDPC was calculated using this method for most RAF
+research projects between 1993 and 1996. This variable does not have
+the enhancement factor applied that is discussed in Appendix C. \\
+\\
+\framebox{\begin{minipage}[t]{0.9\textwidth}%
+A. T $<$ -50 C:\\
+\begin{eqnarray*}
+\mathrm{EDPC} & = & 4.4685+T(0.27347+T\{6.83811\times10^{-3}\\
+ & + & T[8.7094x10^{-5}+T(5.63513x10^{-7}+T\,1.47796\times10^{\mbox{-9}})]\})
+\end{eqnarray*}
+\\
+B. T $>$= -50$\text{º}$C:\\
+\begin{eqnarray*}
+\mathrm{EDPC} & = & 6.107799961+T\,[0.4436518521+T(0.01428945805\\
+ & + & T\{2.650648471\times10^{-4}+T\,[3.031240396\times10^{-6}\\
+ & + & T(2.034080948\times10^{-8}+T\,6.136820929\times10^{-11})]\})]
+\end{eqnarray*}
+%
+\end{minipage}}
+\end{hangparagraphs}
+

@@ -1,5 +1,5 @@
-#LyX 2.0.0beta2 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass report
@@ -43,17 +43,26 @@
 %usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
 \end_preamble
 \use_default_options false
+\maintain_unincluded_children false
 \language english
+\language_package default
 \inputencoding default
+\fontencoding global
 \font_roman times
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
+
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize 12
 \spacing single
 \use_hyperref false
@@ -61,9 +70,18 @@
 \use_geometry true
 \use_amsmath 1
 \use_esint 0
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \leftmargin 2.54cm
 \topmargin 3.54cm
 \rightmargin 2.54cm
@@ -81,6 +99,9 @@
 \paperpagestyle fancy
 \tracking_changes false
 \output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
 \end_header
 
 \begin_body
@@ -171,7 +192,7 @@ alent potential temperature (symbol
 \begin_inset Formula $\Theta_{q}$
 \end_inset
 
-) and the latter as the pseudo-adiabatic equivalent potential temperature
+) and the latter as the pseudoadiabatic equivalent potential temperature
  (symbol 
 \begin_inset Formula $\Theta_{p}$
 \end_inset
@@ -221,7 +242,8 @@ The wet-equivalent potential temperature is actually easier to derive and
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \begin{equation}
+\begin_inset Formula 
+\begin{equation}
 \Theta_{q}=T\left(\frac{p_{0}}{p_{d}}\right)^{R_{d}/c_{pt}}\exp\left(\frac{L_{v}r}{c_{pt}T}\right)\label{eq:ThetaQ}
 \end{equation}
 
@@ -351,8 +373,8 @@ e to entropy, would take into account that variation.
 \end_inset
 
 Bolton (1980) and Davies-Jones (2009).
- Emanuel (1994) the the preceding two references present derivations of
- the pseudo-adiabatic equivalent potential temperature.
+ Emanuel (1994) and the preceding two references present derivations of
+ the pseudoadiabatic equivalent potential temperature.
 \end_layout
 
 \begin_layout Standard
@@ -378,7 +400,8 @@ Because I want to perform integrations that include representations of the
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \begin{equation}
+\begin_inset Formula 
+\begin{equation}
 Tds^{\prime}=c_{p}^{\prime}dT-v^{\prime}dp\label{eq:2ndLaw}
 \end{equation}
 
@@ -417,7 +440,8 @@ ely.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \begin{equation}
+\begin_inset Formula 
+\begin{equation}
 Tds^{\prime}=(n_{d}^{\prime}c_{pd}^{\prime}+n_{v}^{\prime}c_{pv}^{\prime}+n_{w}^{\prime}c_{w}^{\prime})dT-n_{d}^{\prime}v_{d}^{\prime}dp_{d}-n_{v}^{\prime}v_{v}^{\prime}de+L_{v}^{\prime}dn_{v}^{\prime}\label{eq:EntropySum}
 \end{equation}
 
@@ -481,7 +505,8 @@ The mixing ratios
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \begin{eqnarray}
+\begin_inset Formula 
+\begin{eqnarray}
 r & = & \frac{n_{v}^{\prime}M_{w}}{n_{d}^{\prime}M_{d}}\nonumber \\
 r_{w} & = & \frac{n_{w}^{\prime}M_{w}}{n_{d}^{\prime}M_{d}}\label{eq:MixingRatioDefs}
 \end{eqnarray}
@@ -520,7 +545,8 @@ reference "eq:EntropySum"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \begin{equation}
+\begin_inset Formula 
+\begin{equation}
 (c_{pd}+rc_{pv}+r_{w}c_{w})\frac{dT}{T}-\frac{v_{d}}{T}dp_{d}-r\frac{v_{v}}{T}de+\frac{L_{v}}{T}dr=0\label{eq:DiffForm1}
 \end{equation}
 
@@ -574,7 +600,7 @@ where unprimed quantities
 \begin_inset Formula $v_{v}$
 \end_inset
 
-and 
+ and 
 \begin_inset Formula $L_{v}$
 \end_inset
 
@@ -608,7 +634,8 @@ and
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \begin{equation}
+\begin_inset Formula 
+\begin{equation}
 \frac{de_{s}}{e_{s}}=\frac{L_{v}dT}{R_{w}T^{2}}\label{eq:Clausius-Clapeyron}
 \end{equation}
 
@@ -626,8 +653,9 @@ and Kirchhoff's equation (cf., e.g., Emanuel 1994, Eq.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \begin{equation}
-dL_{V}=(p_{pv}-c_{w})\, dT\,\,.\label{eq:Kirchhoff}
+\begin_inset Formula 
+\begin{equation}
+dL_{V}=(c_{pv}-c_{w})\, dT\,\,.\label{eq:Kirchhoff}
 \end{equation}
 
 \end_inset
@@ -657,7 +685,8 @@ es of T and p:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \[
+\begin_inset Formula 
+\[
 \frac{L_{v}dr}{T}=\frac{d(L_{v}r)}{T}-r\frac{dL_{v}}{dT}\frac{dT}{T}=\frac{d(L_{v}r)}{T}-r(c_{pv}-c_{w})\frac{dT}{T}
 \]
 
@@ -667,7 +696,8 @@ es of T and p:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \[
+\begin_inset Formula 
+\[
 rR_{w}\frac{de_{s}}{e_{s}}=rR_{w}\frac{L_{vdT}}{R_{w}T^{2}}=\frac{L_{v}r}{T}\frac{dT}{T}
 \]
 
@@ -677,7 +707,8 @@ rR_{w}\frac{de_{s}}{e_{s}}=rR_{w}\frac{L_{vdT}}{R_{w}T^{2}}=\frac{L_{v}r}{T}\fra
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \[
+\begin_inset Formula 
+\[
 \frac{d(L_{v}r)}{T}=d\left(\frac{L_{v}r}{T}\right)+\frac{L_{v}r}{T}\frac{dT}{T}
 \]
 
@@ -687,7 +718,8 @@ rR_{w}\frac{de_{s}}{e_{s}}=rR_{w}\frac{L_{vdT}}{R_{w}T^{2}}=\frac{L_{v}r}{T}\fra
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \[
+\begin_inset Formula 
+\[
 d\left(\frac{L_{v}r}{T}\right)=\left(\frac{\partial\left(\frac{L_{v}r}{T}\right)}{\partial T}\right)_{p_{d}}dT+\left(\frac{\partial\left(\frac{L_{v}r}{T}\right)}{\partial p_{d}}\right)_{T}dp_{d}=\frac{\epsilon T\, d\left(\frac{L_{v}e_{s}(T)}{T}\right)}{p_{d}dT}\frac{dT}{T}-\frac{L_{v}r}{T}\frac{dp_{d}}{p_{d}}
 \]
 
@@ -718,7 +750,8 @@ reference "eq:DiffForm1"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \[
+\begin_inset Formula 
+\[
 \left[(c_{pd}+r_{t}c_{w})+\frac{T\epsilon}{p_{d}}\left(\frac{\partial\left(\frac{L_{v}e_{s}(T)}{T}\right)}{\partial T}\right)_{p_{d}}\right]\frac{dT}{T}=\left[R_{d}+\frac{L_{v}r}{T}\right]\frac{dp_{d}}{p_{d}}
 \]
 
@@ -749,8 +782,9 @@ where
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \begin{equation}
-\frac{dT}{dp_{d}}=\frac{T(R_{d}+L_{v}r)}{p_{d}}\,\left[(c_{pd}+r_{t}c_{w})+\frac{T\epsilon}{p_{d}}\left(\frac{\partial\left(\frac{L_{v}e_{s}(T)}{T}\right)}{\partial T}\right)_{p_{d}}\right]^{-1}\label{eq:dTdp}
+\begin_inset Formula 
+\begin{equation}
+\frac{dT}{dp_{d}}=\frac{TR_{d}+L_{v}r}{p_{d}}\,\left[(c_{pd}+r_{t}c_{w})+\frac{T\epsilon}{p_{d}}\left(\frac{\partial\left(\frac{L_{v}e_{s}(T)}{T}\right)}{\partial T}\right)_{p_{d}}\right]^{-1}\label{eq:dTdp}
 \end{equation}
 
 \end_inset
@@ -767,8 +801,8 @@ The result is a derivative that can be used for numerical integrations that
 \end_inset
 
 , as in Murphy and Koop (2006).
- This is used below to evaluate the accuracy of simpler representations
- of the equivalent potential temperatures.
+ This is used below to evaluate the accuracy of representations of the equivalen
+t potential temperatures.
  
 \end_layout
 
@@ -786,7 +820,7 @@ reference "eq:dTdp"
 \end_inset
 
 .
- The similar formula for the pseudo-adiabatic equivalent potential temperature
+ The similar formula for the pseudoadiabatic equivalent potential temperature
  
 \begin_inset Formula $\Theta_{p}$
 \end_inset
@@ -827,6 +861,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -868,7 +903,8 @@ This is based on equation (38) from Bolton (1980):
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \begin{equation}
+\begin_inset Formula 
+\begin{equation}
 \Theta_{E}=\Theta\exp\left\{ \left(\frac{3.376}{T_{L}}-0.00254\right)r(1+0.81\times10^{-3}r)\right\} \label{eq:Bolton38}
 \end{equation}
 
@@ -879,7 +915,8 @@ This is based on equation (38) from Bolton (1980):
 
 \begin_layout Standard
 where
-\begin_inset Formula \begin{equation}
+\begin_inset Formula 
+\begin{equation}
 T_{L}=\frac{2840}{3.5\ln T_{K}-\ln e-4.805}+55\label{eq:Bolton21}
 \end{equation}
 
@@ -909,32 +946,77 @@ The equation selected from Bolton (1980) is the less accurate of several
 \end_layout
 
 \begin_layout Enumerate
-Bolton (1980) recommends a different form for 
+Bolton (1980) also offers a different form for 
 \begin_inset Formula $\Theta$
 \end_inset
 
- that the one now in use.
- His recommendation is
+ that is more accurate than the one now in use.
+ His more accurate formula is:
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset Formula \[
-\Theta=T_{k}\left(\frac{1000}{p}\right)^{0.2854(1-0.28\times10^{-3}r}
-\]
+\begin_inset Formula 
+\begin{equation}
+\Theta_{p}=\Theta_{DL}\exp\left\{ \left(\frac{3.036}{T_{L}}-0.00178\right)r\left(1+0.448\times10^{-3}r\right)\right\} \label{eq:Bolton39}
+\end{equation}
 
 \end_inset
 
-which takes into account the effect of humidity on the ratio of specific
- heats of the water-saturated air parcel.
- Because he used fits to adjust coefficients in this formula and in (
+where
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\Theta_{DL}=T_{k}\left(\frac{1000}{p_{d}}\right)^{0.2854}\left(\frac{T_{K}}{T_{L}}\right)^{0.28\times10^{-3}r}\label{eq:ThetaDL}
+\end{equation}
+
+\end_inset
+
+is the potential temperature of dry air at the lifting condensation level
+ (LCL) and 
+\begin_inset Formula $T_{L}$
+\end_inset
+
+ is the temperature at the LCL as given by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton21"
+
+\end_inset
+
+).
+ Equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton39"
+
+\end_inset
+
+ takes into account the effect of humidity on the ratio of specific heats
+ of the water-saturated air parcel.
+ This form appears to be a better choice than the one now in use.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Because Bolton used fits to adjust coefficients in this formula and in (
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:Bolton38"
 
 \end_inset
 
-), departure from his recommendations will introduce errors.
+), coefficients should be adjusted to modern values only with care.
+ Davies-Jones (2009) has provided updated coefficients based on a similar
+ but more extensive procedure.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -961,30 +1043,62 @@ C.
 Murphy and Koop 2006), it is important to check if the Bolton formula (Bolton,
  1980, equation (10)) is an adequate representation of equivalent potential
  temperatures calculated with the new data.
+ More significantly, the Murphy and Koop formula is based on estimates of
+ the specific heat of liquid water in the supercooled region that vary significa
+ntly, while previous analysis like those of Bolton and of Davies-Jones (describe
+d in the next paragraph) have used constant specific heats.
+ Some justification for use of whatever formula is used for processing is
+ therefore needed.
 \end_layout
 
 \begin_layout Enumerate
 Davies-Jones (2009) presents a new formula that appears to be slightly more
- accurate than the formulas of Bolton.
- However, he has again used an approximate equation from Bolton (1980) to
+ accurate than the formulas of Bolton (1980), and he also optimized a large
+ set of candidate expressions by adjusting the coefficients (including those
+ of Bolton) to match results from exact integrations of the entropy formulas.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+However, he has also used an approximate equation from Bolton (1980) to
  represent the vapor pressure.
- His formula is
+\end_layout
+
+\end_inset
+
+ His new formula (Davies-Jones, 2009, Eq.
+\begin_inset space ~
+\end_inset
+
+(6.5)) is
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset Formula \begin{equation}
-\Theta_{p}^{[DJ\}}=\Theta_{DL}\exp\left\{ \frac{(L_{0}-L_{1}(T_{L}-T_{0})+Kr)\, r}{c_{pd}T_{L}}\right\} \label{eq:DJThetaP}
+\begin_inset Formula 
+\begin{equation}
+\Theta_{p}^{[DJ\}}=\Theta_{DL}\exp\left\{ \frac{(L_{0}^{*}-L_{1}^{*}(T_{L}-T_{0})+K_{2}r)\, r}{c_{pd}T_{L}}\right\} \label{eq:DJThetaP}
 \end{equation}
 
 \end_inset
 
 where 
-\begin_inset Formula $L_{0}=2.56313\times10^{6}J\, kg^{-1}$
+\begin_inset Formula $\Theta_{DL}$
+\end_inset
+
+ is as defined by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ThetaDL"
+
+\end_inset
+
+), 
+\begin_inset Formula $L_{0}^{*}=2.56313\times10^{6}J\, kg^{-1}$
 \end_inset
 
 , 
-\begin_inset Formula $L_{1}=1754$
+\begin_inset Formula $L_{1}^{*}=1754$
 \end_inset
 
  J
@@ -992,11 +1106,15 @@ where
 \end_inset
 
 kg
-\begin_inset Formula $^{-1}\, K\mbox{\ensuremath{^{-1}}}$
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
 \end_inset
 
 , and 
-\begin_inset Formula $K=1.137\times10^{6}$
+\begin_inset Formula $K_{2}=1.137\times10^{6}$
 \end_inset
 
 
@@ -1012,11 +1130,17 @@ kg
 \end_inset
 
 .
- 
-\begin_inset Newline newline
+ The asterisks on 
+\begin_inset Formula $L_{0}^{*}$
 \end_inset
 
+ and 
+\begin_inset Formula $L_{1}^{*}$
+\end_inset
 
+ indicate that these are the result of his optimization procedure and therefore
+ depart slightly from the coefficients that would provide the best match
+ to the latent heat of vaporization.
 \end_layout
 
 \begin_layout Enumerate
@@ -1036,17 +1160,21 @@ It may be useful to include a new variable, the wet-equivalent potential
 \begin_inset Formula $\Theta_{p}$
 \end_inset
 
-.
+, and it enters analyses that have become widely used like the analyses
+ of Paluch (1979).
 \end_layout
 
 \begin_layout Standard
 Perhaps arguing against change is that, as long as we state clearly what
  the basis for the calculation is, users are always able to calculate a
- different variable from the basic measurements that are in the data set,
- so the variable in the data files does not constrain users.
+ different variable of their choice from the basic measurements that are
+ in the data set, so the variable in the data files does not constrain users.
  It may be preferable to retain the current equation or make small changes
  to represent the best values in the Bolton (1980) paper, rather than make
  a change, because use of the Bolton formulas has become the common convention.
+ Changing to the higher-accuracy version from Bolton (1980) or to the Davies-Jon
+es (2009) formula, however, would improve the accuracy of the representation
+ of an entropy-equivalent potential temperature.
 \end_layout
 
 \begin_layout Section*
@@ -1054,76 +1182,7 @@ Analysis
 \end_layout
 
 \begin_layout Standard
-To determine what should be reported for the equivalent potential temperature,
- it is necessary to consider the process that is to be represented.
- In the case of pseudo-adiabatic equivalent potential temperature 
-\begin_inset Formula $\Theta_{p}$
-\end_inset
-
-, the process can be as follows:
-\end_layout
-
-\begin_layout Enumerate
-If the parcel is subsaturated, expand the parcel adiabatically until condensatio
-n first occurs, at a level characterized by 
-\begin_inset Formula $T_{LCL}$
-\end_inset
-
- and 
-\begin_inset Formula $p_{d,LCL}$
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Enumerate
-Continue expansion until all water is removed.
- Remove all condensed water from the parcel immediately.
-\end_layout
-
-\begin_layout Enumerate
-Compress the dry air to the reference pressure, conventionally 1000 hPa.
- The final temperature is the value of 
-\begin_inset Formula $\Theta_{p}$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-The problem is conceptually more difficult for the wet-equivalent potential
- temperature.
- The steps might be thought to be:
-\end_layout
-
-\begin_layout Enumerate
-(as above, expand to the condensation point)
-\end_layout
-
-\begin_layout Enumerate
-Continue expansion until all water is in the liquid phase.
- Carry the water along with the parcel, so its specific heat affects the
- temperature after expansion.
-\end_layout
-
-\begin_layout Enumerate
-Label the result as the value of potential temperature for dry air having
- the same temperature and pressure as the final parcel.
- This is equivalent to compressing the dry air only to the reference pressure
- and equating the final temperature to 
-\begin_inset Formula $\Theta_{q}$
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Standard
-The error with this second approach is that the water, having been carried
- along with the parcel, affects the final entropy, and neglecting that water
- then does not result in a temperature that is a measure of entropy.
- The desired relationship between entropy and 
+The desired relationship between entropy and 
 \begin_inset Formula $\Theta_{q}$
 \end_inset
 
@@ -1171,7 +1230,8 @@ where
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula \begin{equation}
+\begin_inset Formula 
+\begin{equation}
 \Theta_{q}=T(\frac{p_{0}}{p_{d}})^{R_{d/c_{pt}}}\exp\left\{ \frac{L_{v}r}{c_{pt}T}\right\} \left(\frac{e}{e_{s}(T)}\right)^{-rRw/c_{pt}}\label{eq:ThetaQEquation}
 \end{equation}
 
@@ -1181,9 +1241,20 @@ where
 \end_layout
 
 \begin_layout Standard
-where the last term arises in case of a subsaturated parcel (below its LCL).
- (See the derivation in Emanuel, 1994, leading to his equation (4.5.11).) In
- the case of 
+where the last term, not included in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ThetaQ"
+
+\end_inset
+
+) but unity for a saturated parcel, arises in case of a subsaturated parcel
+ (below its LCL).
+ (See the derivation in Emanuel, 1994, leading to his equation (4.5.11).) 
+\end_layout
+
+\begin_layout Standard
+In the case of 
 \begin_inset Formula $\Theta_{p}$
 \end_inset
 
@@ -1212,7 +1283,17 @@ where the last term arises in case of a subsaturated parcel (below its LCL).
 \end_inset
 
 , including those of Bolton (1980) and Davies-Jones (2009).
- The desired relationship of 
+ The desired relationship
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ why was this fragment here: tt = thetam / pow(1000./pp, RbyCp);
+\end_layout
+
+\end_inset
+
+ of 
 \begin_inset Formula $\Theta_{p}$
 \end_inset
 
@@ -1305,39 +1386,4951 @@ reference "eq:EntropySum"
 
 \end_inset
 
-) relative to the reference state? Davies-Jones (2009) has addressed this
- question for the Bolton formulas, a new alternative he proposed, and some
- others.
- Two considerations not discussed there are relevant to RAF applications:
+) relative to the reference state? This can be addressed by evaluating the
+ extent to which constant values of 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+ or 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ represent true pseudoadiabats or wet adiabats during vertical motion of
+ air parcels.
+ Davies-Jones (2009) has addressed this question for the Bolton formulas,
+ a new alternative he proposed, and some others.
+ However, two considerations not discussed there are relevant to RAF application
+s:
 \end_layout
 
 \begin_layout Itemize
+
+\bar under
 What is the effect of introduction of the Murphy and Koop (2006) representation
- of equilibrium water vapor pressure? This will result in small shifts in
- results but should not affect the analysis of accuracy as presented by
- Davies-Jones (2009) because the formulas have vapor pressure as an input.
- The analysis considers adjustment of coefficients in the formulas to compensate
- for factors like the variation in latent heat with temperature, and those
+ of equilibrium water vapor pressure?
+\bar default
+ This will result in small shifts in results but should not affect the analysis
+ of accuracy as presented by Davies-Jones (2009) because the formulas have
+ vapor pressure as an input.
+ That analysis considers adjustment of coefficients in the formulas to compensat
+e for factors like the variation in latent heat with temperature, and those
  coefficients have been minimized by comparison to numerical integrations
  that use old representations of vapor pressure, but this does not seem
- likely to have much effect on the results because the formulas are quite
- close to the revised form presented by Murphy and Koop (2006) and then
- enter both the parameterized formula and the exact integration.
+ likely to have much effect on the results because the vapor-pressure formula
+ used is close to the revised form presented by Murphy and Koop (2006) and
+ would enter both the parameterized formula and the exact integration.
 \end_layout
 
 \begin_layout Itemize
-The temperature dependence of the specific heats is neglected, both in the
- parameterized formulas and in the exact integration.
- Again, the effects are probably compensating in the evaluation of accuracy,
- but there will be an inaccuracy in both caused by erroneous specific heats,
- and it seems worthwhile to evaluate that inaccuracy.
- This also applies to the wet-equivalent potential temperature.
+
+\bar under
+What is the effect of temperature dependence of the specific heats, esp.
+\begin_inset space ~
+\end_inset
+
+that of supercooled water?
+\bar default
+ The temperature dependence of the specific heats is neglected, both in
+ the parameterized formulas and in the exact integration as done by Davies-Jones
+, Bolton, and others.
+ However, the vapor-pressure formulas offered by Murlphy and Koop (2005)
+ are based on a representation of the specific heat of supercooled water
+ that has significant variation, of order 50% overall.
+ This applies to the wet-equivalent potential temperature as well as the
+ pseudoadiabatic equivalent potential temperature.
+\end_layout
+
+\begin_layout Standard
+One approach to both questions is to integrate 
+\begin_inset Formula $dT=(dT/dp_{d})\, dp_{d}$
+\end_inset
+
+ using the exact relationship (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:dTdp"
+
+\end_inset
+
+) and compare the result to that obtained from the formulas that were obtained
+ with constant specific heats.
+ For example, consider a case where the temperature and dry-air pressure
+ are 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{d,1}$
+\end_inset
+
+ and the parcel is saturated.
+ One can obtain the temperature at a low pressure 
+\begin_inset Formula $p_{d,2}$
+\end_inset
+
+ (e.g., 100 mb) by evaluating the appropriate formula for 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ or 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, then inverting that formula to obtain the temperature at 
+\begin_inset Formula $p_{d,2}$
+\end_inset
+
+ that gives the same corresponding equivalent potential temperature.
+ Alternately, one can integrate (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:dTdp"
+
+\end_inset
+
+) to obtain the same temperature.
+ If the temperature dependence of the specific heats is included in the
+ latter integration, the difference between results will provide a measure
+ of the error in equivalent potential temperature obtained from the formula
+ used for its evaluation.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+It will be useful to evaluate the formula used for the LCL also, because
+ this will also be affected by the variation in specific heats and by the
+ change in representation of the equilibrium vapor pressure; this has not
+ been included here yet.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To do this, the temperature dependence of the specific heats must be represented.
+ The data in the Appendix to this memo specify the data available.
+ The most important variation is that of the specific heat of liquid water
+ (including in the supercooled region), which varies quite significantly
+ (more than 50%) in the supercooled region.
+ Because the water vapor pressure becomes quite low for substantial supercooling
+, it is not clear that even this very large variation has a significant
+ effect, but this is likely to be the dominant term causing a departure
+ from constant-
+\begin_inset Formula $c_{p}$
+\end_inset
+
+ formulas.
+ The specific heat of dry air, in constrast, varies little (less than 0.1%
+ from -50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C to +40
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, and less than 0.4% from -100 to +60
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C), so that variation will be neglected here.
+ The specific heat of water vapor does not enter the formulas for pseudoadiabati
+c or wet equivalent potential temperature, but it does enter indirectly
+ through the Kirchoff equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Kirchhoff"
+
+\end_inset
+
+), which relates the temperature dependence of 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+ to the difference between the specific heats of water vapor and liquid
+ water.
+ There are significant discrepancies among values listed in the Appendix,
+ but for this study I have used the table in Wagner and Pruss with quadratic
+ extrapolation into the region below 0: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+c_{pv}=1.932468-1.343977\times10^{-3}T+4.275412\times10^{-6}T^{2}\label{eq:CpvQuadratic}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For example, consider an LCL at 
+\begin_inset Formula $T_{1}=(10+273.15)$
+\end_inset
+
+K and 
+\begin_inset Formula $p_{d,1}=750$
+\end_inset
+
+ hPa.
+ Formula (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ThetaQ"
+
+\end_inset
+
+) gives 
+\begin_inset Formula $\Theta_{q}=335.47$
+\end_inset
+
+K, and formula (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DJThetaP"
+
+\end_inset
+
+) gives 
+\begin_inset Formula $\Theta_{p}=338.93$
+\end_inset
+
+K.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+These values are obtained with the Davies-Jones (2009) values of 
+\begin_inset Formula $c_{pd}=1005.7$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, 
+\begin_inset Formula $c_{pv}=1875$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, and 
+\begin_inset Formula $L_{v}=L_{0}+L_{1}(T-T_{0})$
+\end_inset
+
+ where 
+\begin_inset Formula $L_{0}=2.501\times10^{6}$
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $L_{1}=2370$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+Jkg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+ At 
+\begin_inset Formula $p_{d,2}=100$
+\end_inset
+
+ hPa, inversion of these formulas give the respective temperatures 178.69
+\begin_inset space \thinspace{}
+\end_inset
+
+K and 175.66
+\begin_inset space \thinspace{}
+\end_inset
+
+K.
+ For comparison, integrations from point 1 to point 2 using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:dTdp"
+
+\end_inset
+
+) or the analog with
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+should this be 
+\begin_inset Formula $r_{t}$
+\end_inset
+
+ instead of r? Can't remember now why I used the dagger symbol here?
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Formula $c_{pt}^{\dagger}=c_{pd}+rc_{w}$
+\end_inset
+
+ give the respective values 178.71
+\begin_inset space \thinspace{}
+\end_inset
+
+K and 175.69
+\begin_inset space \thinspace{}
+\end_inset
+
+K, both quite close to the values obtained by the respective equations.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The integrations with constant specific heat consistently produced agreement
+ with the formulas to an accuracy of 0.01
+\begin_inset space \thinspace{}
+\end_inset
+
+K.
+ This provides a check on the accuracy of the integration, but also shows
+ consistency with the optimized coefficients of Davies-Jones (2009), because
+ the integration is independent of the coefficients he determined.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following table gives these and a few more values, where 
+\begin_inset Formula $T_{q}$
+\end_inset
+
+ and 
+\begin_inset Formula $T_{p}$
+\end_inset
+
+ are the temperatures determined at the final pressure 
+\begin_inset Formula $p_{2}$
+\end_inset
+
+ from inversion of the formulas for 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ and 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, and the corresponding primed quantities are the temperatures determined
+ by numerical integration that incorporates the variation in specific heat.:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="9" columns="7">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+T [
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+p [hPa]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+final 
+\begin_inset Formula $p_{2}$
+\end_inset
+
+ [hPa]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{q}[K]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{q}^{\prime}[K]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{p}[K]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{p}^{\prime}[K]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+850
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+206.50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+207.69
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+200.73
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+200.76
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+750
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+189.34
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+189.73
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+185.39
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+185.42
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+750
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+178.69
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+178.71
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+175.66
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+175.69
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+167.05
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+166.90
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+165.39
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+165.41
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+163.54
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+163.44
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+162.68
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+162.70
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+850
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+222.59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+222.69
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+222.27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+222.29
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+750
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+239.43
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+239.46
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+238.52
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+238.51
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+226.46
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+226.59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+225.82
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+225.84
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Although the evaluation is not exhaustive, it appears to support these conclusio
+ns:
+\end_layout
+
+\begin_layout Enumerate
+Comparison of the last two columns suggests that the formula (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DJThetaP"
+
+\end_inset
+
+) represents the pseudoadiabats with good accuracy, even when they are calculate
+d using the strong variations in the specific heat of liquid water estimated
+ by Murphy and Koop (2005) and using the Murphy and Koop vapor pressures.
+\end_layout
+
+\begin_layout Enumerate
+Even for the reversible adiabatic equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ThetaQ"
+
+\end_inset
+
+), there is only minor deviation from true adiabats when the temperature
+ variation of the specific heats is represented accurately.
+ The variations from the temperature on a true wet adiabat are only a few
+ tenths degree in the worst cases.
+ One might expect more variation, because high liquid water content can
+ be carried upward where the variation in specific heat of liquid water
+ can affect the answer.
+ These are unrealistic situations, however, because high liquid water content
+ cannot exist at temperatures as low as the extremes of this integration.
+\end_layout
+
+\begin_layout Standard
+One additional issue is the representation in cases where the parcel is
+ unsaturated.
+ Equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DJThetaP"
+
+\end_inset
+
+) represents the pseudoadiabatic equivalent potential temperature in terms
+ that involve the saturation temperature, the temperature at the LCL.
+ To determine this, one can use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton21"
+
+\end_inset
+
+) from Bolton (1980), include the additional term in the entropy equation
+ as derived by Emanuel (1994),
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+i.e., multiply the formula for pseudoadiabatic equivalent potential temperature
+ by 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+\left(\frac{e}{e_{s}(T)}\right)^{-rRw/c_{pt}^{\prime}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ or find the LCL from conservation of the mixing ratio and of the moist
+ potential temperature during adiabatic expansion.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:One-additional-issue"
+
+\end_inset
+
+ If the specific heats are functions of temperature, it is not clear what
+ choice to make.
+\end_layout
+
+\begin_layout Standard
+Emanuel (1994) also gives an equation for the saturation temperature, his
+ Eq.
+ (4.6.21):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+-\ln\frac{e}{e_{s}(T)}=\left(\frac{c_{pd}}{R_{d}}\frac{\left(1+rc_{pv}/c_{pd}\right)}{\left(1+r/\epsilon\right)}+\frac{c_{w}-c_{pv}}{R_{w}}\right)\ln\frac{T_{L}}{T}+\left[\frac{L_{V}(T_{0})}{R_{w}}\right]\left(\frac{1}{T_{L}}-\frac{1}{T}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+(with 
+\begin_inset Formula $T_{0}=273.15\,$
+\end_inset
+
+K), which can be solved numerically for 
+\begin_inset Formula $T_{L}$
+\end_inset
+
+.
+ Alternately, one can determine the temperature of the rising parcel from
+ the conserved values of mixing ratio and moist potential temperature, iterative
+ly evaluated for the temperature that gives the equilibrium vapor pressure.
+ 
+\end_layout
+
+\begin_layout Standard
+To evaluate how well the Bolton formula for 
+\begin_inset Formula $T_{L}$
+\end_inset
+
+ represents exact values, a set of calculations were performed where the
+ LCL was determined by lifting the parcel adiabatically and using the conservati
+on of moist potential temperature and mixing ratio during adiabatic ascent
+ to determine the LCL numerically.
+ The approach was as follows:
+\end_layout
+
+\begin_layout Enumerate
+Determine the appropriate values of the molecular weight and specific heat
+ of moist air using these equations:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+M^{*}=\frac{1+r}{1+r/\epsilon}\, M_{d}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+c_{p}^{*}=c_{pd}\left(\frac{1}{1+r}\right)+c_{pv}\frac{r}{1+r}=c_{pd}\frac{1+rc_{pv}/c_{pd}}{1+r}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\frac{R^{*}}{c_{p}^{*}}=\frac{R_{d}}{c_{pd}}\left(\frac{1+r/\epsilon}{1+rc_{pv}/c_{pd}}\right)\label{eq:RStarbyCPstar}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Find the potential temperature for the moist mixture from
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\Theta_{m}=T\left(\frac{1000}{p}\right)^{R^{*}/c_{p}^{*}}\label{eq:ThetaM}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Use conservation of 
+\begin_inset Formula $\Theta_{m}$
+\end_inset
+
+ and the mixing ratio 
+\begin_inset Formula $r$
+\end_inset
+
+ to find the pressure at which the temperature deduced from (XXX) gives
+ a saturation vapor pressure equal to the vapor pressure deduced from 
+\begin_inset Formula $e=rp/(r+\epsilon)$
+\end_inset
+
+, the latter as required for a constant mixing ratio.
+ Specifically, this was done by minimizing the following function of pressure:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f(p)=e_{s}(T(p))-\frac{rp}{r+\epsilon}
+\]
+
+\end_inset
+
+where T(p) is the temperature determined from (XXX) above.
+ 
+\end_layout
+
+\begin_layout Standard
+A short list of checks, shown in the following table, suggested that the
+ Bolton formula for 
+\begin_inset Formula $T_{L}$
+\end_inset
+
+ performs well, giving values within 0.05
+\begin_inset space \thinspace{}
+\end_inset
+
+K of those determined by the numerical solution.
+ Because this is a published equation in common use, there does not appear
+ to be any need for a change.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Temperature [
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Pressure [hPa]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RH [%]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton21"
+
+\end_inset
+
+) -- Bolton
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Numerical
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+850
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+280.074
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+280.067
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+275.42
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+275.43
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+290.94
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+290.92
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+80
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+279.14
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+279.14
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+271.12
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+271.24
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+247.54
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+247.58
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+80
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+269.45
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+269.48
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+40
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+258.79
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+258.84
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+249.13
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+249.18
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section*
 
 \emph on
-Recommendations
+Recommendations:
+\end_layout
+
+\begin_layout Enumerate
+Change to (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DJThetaP"
+
+\end_inset
+
+), and change the variable name to 
+\begin_inset Quotes eld
+\end_inset
+
+pseudoadiabatic equivalent potential temperature
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton21"
+
+\end_inset
+
+) to determine the saturation temperature 
+\begin_inset Formula $T_{L}$
+\end_inset
+
+.
+ (There will need to be some protection against the relative humidity exceeding
+ 100%; if it does, set it to 100% for this calculation.)
+\end_layout
+
+\begin_layout Enumerate
+Add a new variable 
+\begin_inset Quotes eld
+\end_inset
+
+wet equivalent potential temperature
+\begin_inset Quotes erd
+\end_inset
+
+ and use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ThetaQEquation"
+
+\end_inset
+
+) for its evaluation.
+ A caution should be included to warn users that there may be inaccuracies
+ in 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ of a few tenths kelvin that arise from variation and uncertainty in the
+ specific heat of supercooled water.
+ 
+\end_layout
+
+\begin_layout Enumerate
+It might be useful to consider adding still another potential temperature
+ that refers to ice-phase processes, because that is more commonly the case
+ at GV flight altitude.
+ However, that is a project for another time.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+An approach similar to that of Davies-Jones (2009) would be appropriate,
+ where coefficients in an equation of the form he uses are adjusted to match
+ exact-integration values over a broad range of conditions.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vfill
+\backslash
+eject
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Appendix: Values Used For Specific Heats
+\end_layout
+
+\begin_layout Standard
+For dry air, the following values come from the 
+\begin_inset Quotes eld
+\end_inset
+
+Engineering Toolbox
+\begin_inset Quotes erd
+\end_inset
+
+ and are reasonable in comparison to sparsely placed values in the CRC Handbook.
+ They suggest that there is no significant variation in the specific heat
+ of dry air over the range of temperatures encountered by RAF research aircraft.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+T (
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $c_{p}[$
+\end_inset
+
+kJ
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+]
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-150
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.026
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.009
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.005
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.005
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.005
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+40
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.005
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+60
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.009
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For water vapor, the 
+\begin_inset Quotes eld
+\end_inset
+
+Engineering Toolbox
+\begin_inset Quotes erd
+\end_inset
+
+ provides the following data (in conflict with the data from Wagner and
+ Pruss (2002) presented later, and also with the Penn State summary of physical
+ constants which gives a single value, 1.952):
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+T [K]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $c_{p}[$
+\end_inset
+
+kJ
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+]
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+175
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.850
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+200
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.851
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+225
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.852
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+250
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.855
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+275
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.859
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.871
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+325
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.880
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For liquid water at 1000 hPa (
+\begin_inset Formula $M_{w}=18.01528)$
+\end_inset
+
+,
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+T (
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $c_{p}[$
+\end_inset
+
+kJ
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+]
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.2176
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.1921
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.1818
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.1784
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+40
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.1785
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.1806
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+60
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.1843
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For supercooled water, Murphy and Koop (2005) presented their estimate for
+ the specific heat in their Fig.
+\begin_inset space ~
+\end_inset
+
+6, and they referenced Wagner and Pruss (2002) for the specific heat of
+ water at temperature greater than 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ Tables were constructed from these two sources, giving the values below
+ (which will here be used in preference to those immediately above, from
+ the CRC Handbook) as well as reference values for the specific heat of
+ water vapor.
+ For liquid water, the following plot represents the tabulated data.
+ This figure and the following table show that there is significant variation
+ in the specific heat of liquid water, especially in the supercooled-water
+ region, and this is likely to affect the calculation of equivalent potential
+ temperatures (whether carried with the parcel or not, because of the link
+ between the specific heat of liquid water and the variation in the latent
+ heat of vaporization via the Kirchhoff equation).
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Research/Instrumentation/SpecificHeat.png
+	width 6.5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="52" columns="3">
+<features islongtable="true" longtabularalignment="center">
+<column alignment="center" valignment="top" width="1in">
+<column alignment="center" valignment="top" width="1in">
+<column alignment="center" valignment="top" width="1in">
+<row endhead="true">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+T [K]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $c_{w}\,[kJ\, kg^{-1}K^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $c_{pv}\,[kJ\, kg^{-1}K^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+200
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+2.9873
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+202
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+3.2597
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+204
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+3.5615
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+206
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+3.8970
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+208
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2637
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+210
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.6348
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+212
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+5.0286
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+214
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+5.4508
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+216
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+5.8732
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+218
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+6.2855
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+220
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+6.6228
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+222
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+6.8251
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+224
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+6.9813
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+226
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+7.0099
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+228
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+6.8818
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+230
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+6.5527
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+232
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+6.1004
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+234
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+5.7058
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+236
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+5.3838
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+238
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+5.1507
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+240
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.9515
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+242
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.7998
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+244
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.6721
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+246
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.5790
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+248
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.5002
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+250
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.4397
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+252
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.3831
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+254
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.3457
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+256
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.3113
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+258
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2808
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+260
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2708
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+262
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2538
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+264
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2452
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+266
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2210
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+268
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2191
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+270
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2104
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row newpage="true">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+272
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2087
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none" width="1in">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+274
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2171
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.8852
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+276
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2110
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.8872
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+278
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2058
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.8893
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+280
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.2014
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.8913
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+282
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.1975
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.8935
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+284
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.1942
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.8956
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+286
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.1914
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.8978
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+288
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.1890
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9000
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+290
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.1869
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9023
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+292
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.1852
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9046
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+294
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.1838
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9069
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+296
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.1826
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9092
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+298
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.1817
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9116
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+4.1809
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.9141
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard

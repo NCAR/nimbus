@@ -1,4 +1,4 @@
-#LyX 1.6.7 created this file. For more info see http://www.lyx.org/
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
 \lyxformat 345
 \begin_document
 \begin_header
@@ -10,7 +10,7 @@
 \fancyfoot[CE,CO]{}
 \newtoks{\topicofnote} \global\topicofnote={}
 \newdimen\longindent \longindent=3.5truein
-\fancyhead[L]{Aircraft Algorithm Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\fancyhead[L]{Aircraft Algorithm Memo re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
 \renewcommand{\headrulewidth}{0.0pt}
 \newenvironment{lyxlist}[1]
 {\begin{list}{}
@@ -28,8 +28,9 @@
 {\raggedright \textsf{\textsc{\large \textcolor{blue}{Research Aviation Facility}}}}\par
 {\raggedright \textsf{\textsl{\textcolor{blue}{Algorithm Memorandum:}}}} \par \vskip6pt
 {\color{blue}{\hrule}}\par
-\vskip0.2truein \leftline{\hskip\longindent Al Cooper}
-\leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\vskip0.2truein\leftline{\textcolor{blue}{\textsf{Subject: \the\topicofnote}}}
+\leftline{\textcolor{blue}{\textsf{Al Cooper}}}
+\leftline{\textcolor{blue}{\textsf{\datetoday}}} \vskip0.2truein
 \thispagestyle{empty}}
 \newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
 \item [Attachments:] {#1}
@@ -83,6 +84,7 @@
 \tracking_changes false
 \output_changes false
 \author "" 
+\author "" 
 \end_header
 
 \begin_body
@@ -134,33 +136,104 @@ RAFAlgorithmMemo
 
 \begin_layout Section*
 Background
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+usually, definition of the variable, uses, history, math expressions
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section*
 Present Processing Code
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+use LyX-code format where needed to include code segments from nimbus
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section*
 Reasons For Proposing Changes
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+summarize why present code should be changed: weaknesses, errors, improvements,
+ accuracy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Analysis
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+this (and all) are optional, may not be needed -- intended for research-level
+ exploration of meaning of the variable or subtleties regarding its calculation,
+ as needed to develop the case for recommendations
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section*
 
 \emph on
 Recommendations
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\emph on
+keep this short - 1/2 page or less
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
 
 \backslash
+vskip0.5truein 
+\backslash
 centerline{
 \backslash
 textcolor{blue}{---- END ----}}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this is just a closing line to note end of the memo
 \end_layout
 
 \end_inset
@@ -197,6 +270,17 @@ second}
 \end_inset
 
 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+uncomment to include a list of attachments according to the model in the
+ TeX example
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -216,6 +300,17 @@ second
 
 \backslash
 3rd att}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional list of people to include in cc list (beyond algorithm committee,
+ who always should get these)
 \end_layout
 
 \end_inset

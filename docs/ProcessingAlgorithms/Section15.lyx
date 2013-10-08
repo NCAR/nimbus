@@ -1,21 +1,32 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
-\lyxformat 345
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
 \begin_document
 \begin_header
 \textclass article
 \use_default_options true
+\begin_modules
+hanging
+\end_modules
+\maintain_unincluded_children false
 \language english
+\language_package default
 \inputencoding auto
+\fontencoding global
 \font_roman default
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
 
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -23,21 +34,31 @@
 \use_geometry false
 \use_amsmath 1
 \use_esint 1
+\use_mhchem 1
+\use_mathdots 1
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
-\defskip medskip
+\paragraph_indentation default
 \quotes_language english
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
-\author "" 
-\author "" 
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
 \end_header
 
 \begin_body
@@ -79,7 +100,17 @@ GENPRO
 Unaltered Tape Time (s): TPTIME
 \series default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+TPTIME (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -105,7 +136,17 @@ This variable is derived by converting the HOUR, MINUTE and SECOND to elapsed
 Processor Time (s): PTIME
 \series default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+PTIME (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -133,7 +174,17 @@ This is an internal time variable created by the GENPRO processor.
 INS: Data System Time Lag (s): TMLAG
 \series default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+TMLAG (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -160,6 +211,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -172,7 +224,7 @@ status open
 LORAN-C Latitude (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -182,7 +234,19 @@ LORAN-C Latitude (
 CLAT
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CLAT (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -200,7 +264,7 @@ CLAT
 LORAN-C Longitude (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -210,7 +274,19 @@ LORAN-C Longitude (
 CLON
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CLON (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -230,7 +306,19 @@ LORAN-C Circular Error of Probability (n mi):
 CCEP
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CCEP (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -250,7 +338,19 @@ LORAN-C Ground Speed (m/s):
 CGS
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CGS (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -270,7 +370,19 @@ LORAN-C Time (s):
 CSEC
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CSEC (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -288,7 +400,19 @@ CSEC
 LORAN-C Fractional Time (s): 
 \bar under
 CFSEC
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CFSEC (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -334,6 +458,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -346,7 +471,7 @@ status open
 INS Latitude (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -356,7 +481,19 @@ INS Latitude (
 ALAT
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ALAT (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -374,7 +511,7 @@ ALAT
 INS Longitude (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -384,7 +521,19 @@ INS Longitude (
 ALON
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ALON (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -402,9 +551,22 @@ ALON
 Raw INS Ground Speed X Component (m/s): 
 \bar under
 XVI
+\series medium
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+XVI (obsolete)
+\end_layout
+
+\end_inset
+
+
+\series bold
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -424,7 +586,19 @@ Raw INS Ground Speed Y Component (m/s):
 YVI
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+YVI (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -442,7 +616,7 @@ YVI
 Raw INS True Heading (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -452,7 +626,19 @@ Raw INS True Heading (
 THI
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+THI (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -470,7 +656,7 @@ THI
 INS Wander Angle (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -480,7 +666,19 @@ INS Wander Angle (
 ALPHA
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ALPHA (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -498,7 +696,7 @@ ALPHA
 INS Platform Heading (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -506,7 +704,19 @@ INS Platform Heading (
 ): 
 \bar under
 PHDG
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+PHDG (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -524,11 +734,55 @@ PHDG
 \end_inset
 
 
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Hanging
+\begin_inset space ~
 \end_inset
 
-These variables from the Litton LTN-51 Inertial Navigation System (INS)
- are analogous to the modern variables discussed in section 
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+These variables from the Litton LTN-51 Inertial Navigation System
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Litton LTN-51 INS
+\end_layout
+
+\end_inset
+
+ (INS) are analogous to the modern variables discussed in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:INS"
@@ -538,7 +792,7 @@ reference "sec:INS"
 .
  The measurements of latitude and longitude were provided with 1-Hz frequency
  and had a resolution of 0.0014
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 , while the ground speed components were provided at 10 Hz and had resolution
@@ -562,13 +816,13 @@ check this: did it stay with this orientation, or was it converted to new
  and the Y axis was in the starboard direction at the time of alignment.
  PHDG recorded the orientation of the platform relative to true north, with
  resolution 0.0028
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 .
  THI was the true heading of the aircraft, produced at 5 Hz with resolution
  of 0.0014
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 .
@@ -602,7 +856,17 @@ VZI
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VZI (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -629,7 +893,7 @@ This is an integrated output from an up/down binary counter connected to
 Aircraft True Heading (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -640,7 +904,17 @@ THF
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+THF (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -657,7 +931,7 @@ This measurement of aircraft heading was derived from the angle between
  the horizontal projection of the aircraft center and true north: THF =
  PHDG + ALPHA.
  Resolution is 0.0028
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 .
@@ -671,6 +945,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -685,12 +960,24 @@ Aircraft Ground Speed (m/s):
 GSF
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
 status open
 
 \begin_layout Plain Layout
 
-\series bold
+\series medium
+GSF (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+
+\series medium
 GSF
 \end_layout
 
@@ -705,7 +992,19 @@ Aircraft Ground Speed East Component (m/s):
 VEW
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+VEW (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -723,7 +1022,19 @@ VEW
 Aircraft Ground Speed North Component (m/s): 
 \bar under
 VNS
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+VNS (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -741,7 +1052,42 @@ VNS
 \end_inset
 
 
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Hanging
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
 \end_inset
 
 These variables have the same names as the modern variables for ground speed.
@@ -762,8 +1108,10 @@ reference "sec:INS"
 \end_inset
 
 
-\begin_inset Formula \[
-\mathrm{GSF=\sqrt{\{XVI\}^{2}+\{YVI\}^{2}}}\]
+\begin_inset Formula 
+\[
+\mathrm{GSF=\sqrt{\{XVI\}^{2}+\{YVI\}^{2}}}
+\]
 
 \end_inset
 
@@ -782,6 +1130,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -796,7 +1145,19 @@ Wind Speed (m/s):
 WSPD
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+WSPD (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -814,7 +1175,7 @@ WSPD
 Wind Direction (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -822,7 +1183,19 @@ Wind Direction (
 ): 
 \bar under
 WDRCTN
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+WDRCTN (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -840,7 +1213,42 @@ WDRCTN
 \end_inset
 
 
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Hanging
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
 \end_inset
 
 These variables are calculated from UI and VI, the east and north components
@@ -870,9 +1278,11 @@ check signs here; this differs from the section-9 equation ...
 \end_layout
 
 \begin_layout Hanging
-\begin_inset Formula \begin{eqnarray*}
+\begin_inset Formula 
+\begin{eqnarray*}
 \mathrm{WS} & = & \sqrt{\mathrm{\{UI\}^{2}+\{VI\}^{2}}}\\
-\mathrm{WD} & = & \mathrm{\frac{180^{\circ}}{\pi}atan2(-\{UI\},}-\{VI\})+180^{\circ}\end{eqnarray*}
+\mathrm{WD} & = & \mathrm{\frac{180^{\circ}}{\pi}atan2(-\{UI\},}-\{VI\})+180^{\circ}
+\end{eqnarray*}
 
 \end_inset
 
@@ -892,7 +1302,17 @@ AFIXx
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+AFIXx (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -937,7 +1357,17 @@ BFIXx
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+BFIXx (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -979,7 +1409,7 @@ equivalent grams
 Attack Angle (Fixed Vane) (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -990,7 +1420,17 @@ AKFXx
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+AKFXx (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1024,7 +1464,7 @@ can I find this?
 Sideslip Angle (Fixed Vane) (
 \series default
 
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 
@@ -1035,7 +1475,17 @@ SSFXx
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+SSFXx (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1061,6 +1511,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "100col%"
 special "none"
 height "1in"
@@ -1075,7 +1526,19 @@ Dynamic Pressure (Boom) (mb):
 QCB
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+QCB (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1091,7 +1554,19 @@ QCB
 QCBC
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+QCBC (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1111,7 +1586,19 @@ Dynamic Pressure (Gust Probe) (mb):
 QCG
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+QCG (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1125,7 +1612,19 @@ QCG
 , 
 \bar under
 QCGC
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+QCGC (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1143,7 +1642,42 @@ QCGC
 \end_inset
 
 
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Hanging
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
 \end_inset
 
 These variables, measured by a differential pressure gauge, record the differenc
@@ -1171,7 +1705,17 @@ TTRF
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+TTRF (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1185,8 +1729,18 @@ TTRF
 \end_inset
 
 TTRF is the recovery temperature from a calibrated NCAR reverse-flow temperature
- sensor, for which the housing was designed to separate water droplets and
- protect the element from wetting in cloud.
+ sensor
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+reverse-flow temperature sensor
+\end_layout
+
+\end_inset
+
+, for which the housing was designed to separate water droplets and protect
+ the element from wetting in cloud.
  
 \end_layout
 
@@ -1203,7 +1757,17 @@ TTKP
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+TTKP (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1221,11 +1785,11 @@ re probe, originally designed by Karl Danninger.
  (See discussion of total temperature in section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:THERMODYNAMIC-VARIABLES"
+reference "sub:PTq"
 
 \end_inset
 
- above.)
+.)
 \end_layout
 
 \begin_layout Hanging
@@ -1241,7 +1805,17 @@ ATRF
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+ATRF (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1259,7 +1833,7 @@ The ambient temperature computed using the NCAR reverse-flow temperature
  (See discussion in Section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:THERMODYNAMIC-VARIABLES"
+reference "sub:PTq"
 
 \end_inset
 
@@ -1279,7 +1853,17 @@ ATKP
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+ATKP (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1296,7 +1880,7 @@ The ambient temperature computed using the fast-response temperature probe.
  (See discussion of ambient temperature in section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:THERMODYNAMIC-VARIABLES"
+reference "sub:PTq"
 
 \end_inset
 
@@ -1320,7 +1904,17 @@ LWC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+LWC (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1333,8 +1927,17 @@ LWC
 \begin_inset Newline newline
 \end_inset
 
-This is the raw output of a Johnson-Williams liquid water content sensor
- converted to units of grams per cubic meter.
+This is the raw output of a Johnson-Williams
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+Johnson-Williams
+\end_layout
+
+\end_inset
+
+ liquid water content sensor converted to units of grams per cubic meter.
  The Johnson-Williams indicator measures the evaporative cooling caused
  by the latent heat of vaporization of droplets contacting the heated sensing
  element by sensing changes in its resistance as it cools.
@@ -1381,7 +1984,17 @@ LWCC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+LWCC (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1424,7 +2037,17 @@ EDPC
 \series default
 \bar default
 
-\begin_inset Index
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+EDPC (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
@@ -1448,18 +2071,18 @@ h Formulation (1946) as a function of temperature expressed in
 
 .
  The error is much less than 1% over the range -50
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 C to +50
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 C.
  EDPC was calculated using this method for most RAF research projects between
  1993 and 1996.
- This variable does not have the enhancement factor applied that is discussed
- in Appendix C.
+ This variable did not have the enhancement factor applied that was discussed
+ in Appendix C of Bulletin 9.
  
 \begin_inset Note Note
 status open
@@ -1485,6 +2108,7 @@ hor_pos "c"
 has_inner_box 1
 inner_pos "t"
 use_parbox 0
+use_makebox 0
 width "90text%"
 special "none"
 height "1in"
@@ -1502,9 +2126,11 @@ A.
 \end_inset
 
 
-\begin_inset Formula \begin{eqnarray*}
+\begin_inset Formula 
+\begin{eqnarray*}
 \mathrm{EDPC} & = & 4.4685+T(0.27347+T\{6.83811\times10^{-3}\\
- & + & T[8.7094x10^{-5}+T(5.63513x10^{-7}+T\,1.47796\times10^{\mbox{-9}})]\})\end{eqnarray*}
+ & + & T[8.7094x10^{-5}+T(5.63513x10^{-7}+T\,1.47796\times10^{\mbox{-9}})]\})
+\end{eqnarray*}
 
 \end_inset
 
@@ -1518,7 +2144,7 @@ B.
 \end_inset
 
 = -50
-\begin_inset Formula $^{\circ}$
+\begin_inset Formula $\text{º}$
 \end_inset
 
 C:
@@ -1526,10 +2152,12 @@ C:
 \end_inset
 
 
-\begin_inset Formula \begin{eqnarray*}
+\begin_inset Formula 
+\begin{eqnarray*}
 \mathrm{EDPC} & = & 6.107799961+T\,[0.4436518521+T(0.01428945805\\
  & + & T\{2.650648471\times10^{-4}+T\,[3.031240396\times10^{-6}\\
- & + & T(2.034080948\times10^{-8}+T\,6.136820929\times10^{-11})]\})]\end{eqnarray*}
+ & + & T(2.034080948\times10^{-8}+T\,6.136820929\times10^{-11})]\})]
+\end{eqnarray*}
 
 \end_inset
 
