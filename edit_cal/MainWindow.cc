@@ -62,6 +62,10 @@
 /* -------------------------------------------------------------------- */
 #include <QItemDelegate>
 
+/**
+ * @class BackgroundColorDelegate
+ * A delgate that colors the lines in the table view. 
+ */
 class BackgroundColorDelegate: public QItemDelegate
 {
 public:
@@ -312,7 +316,6 @@ void MainWindow::setupViews()
     wnd->setLayout(layout);
     setCentralWidget(wnd);
 
-//   _plot->setModel(_proxy); // not used
      _form->setModel(_proxy);
 
      _form->setEnabled(false);
@@ -567,7 +570,7 @@ void MainWindow::replot(int row)
 
     // don't plot if not already plotted
     QString rid = modelData(row, clm_rid);
-    foreach (CalibrationCurve *curve, plottedCurves)
+    foreach (CalibrationCurve *curve, _plot->curves)
         if (curve->rid == rid) {
             unplotCalButtonClicked(row);
             plotCalButtonClicked(row);
@@ -1476,8 +1479,8 @@ void MainWindow::initializeForm(int row)
             iD.next();
             _form->_setDateTimeList[i]->setText("");
             _form->_setPointList[i]->setText(   "");
-            _form->_newVList[i]->setText(       "");
-            _form->_new_sdList[i]->setText(     "");
+            _form->_inputList[i]->setText(      "");
+            _form->_stdDevList[i]->setText(     "");
             _form->_appliedList[i]->setText(    "");
             _form->_delButtonList[i]->setEnabled(false);
             i++;
@@ -1497,8 +1500,8 @@ void MainWindow::initializeForm(int row)
 
         _form->_setDateTimeList[i]->setText(dt.remove(QChar('"')));
         _form->_setPointList[i]->setText(   sp);
-        _form->_newVList[i]->setText(       average);
-        _form->_new_sdList[i]->setText(     iD.next());
+        _form->_inputList[i]->setText(      average);
+        _form->_stdDevList[i]->setText(     iD.next());
         _form->_appliedList[i]->setText(    applied);
         _form->_delButtonList[i]->setEnabled(true);
         i++;
@@ -1557,7 +1560,7 @@ void MainWindow::plotCalButtonClicked(int row)
 
     // don't plot if already plotted
     QString rid = modelData(row, clm_rid);
-    foreach (CalibrationCurve *curve, plottedCurves)
+    foreach (CalibrationCurve *curve, _plot->curves)
         if (curve->rid == rid) return;
 
     QString label = modelData(row, clm_var_name) + " " + modelData(row, clm_cal_date);
@@ -1713,7 +1716,7 @@ void MainWindow::plotCalButtonClicked(int row)
 
     curve->actual->attach(_plot->qwtPlot);
     curve->fitted->attach(_plot->qwtPlot);
-    plottedCurves.append(curve);
+    _plot->curves.append(curve);
 
 //  TODO implement zooming via rubberband selection
 //  QRectF region = actData->boundingRect();
@@ -1739,10 +1742,10 @@ void MainWindow::unplotAllButtonClicked()
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 
-    foreach (CalibrationCurve *curve, plottedCurves) {
+    foreach (CalibrationCurve *curve, _plot->curves) {
         curve->actual->detach();
         curve->fitted->detach();
-        plottedCurves.removeOne(curve);
+        _plot->curves.removeOne(curve);
         _delegate->unhighlightRow(curve->rid);
     }
     _plot->dropColors();
@@ -1759,7 +1762,7 @@ void MainWindow::unplotCalButtonClicked(int row)
     QString rid = modelData(row, clm_rid);
     std::cout << "selected rid: " << rid.toStdString() << std::endl;
 
-    foreach (CalibrationCurve *curve, plottedCurves) {
+    foreach (CalibrationCurve *curve, _plot->curves) {
         std::cout << "iterated rid: " << curve->rid.toStdString() << std::endl;
         if (curve->rid == rid) {
             QColor color = curve->actual->pen().color();
@@ -1767,7 +1770,7 @@ void MainWindow::unplotCalButtonClicked(int row)
             _plot->colors.push_front(color);
             curve->actual->detach();
             curve->fitted->detach();
-            plottedCurves.removeOne(curve);
+            _plot->curves.removeOne(curve);
         } 
     } 
     _plot->qwtPlot->replot();

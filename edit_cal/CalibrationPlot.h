@@ -14,6 +14,14 @@ using namespace std;
 
 #include "ui_CalibrationPlot.h"
 
+/**
+ * @class CalibrationCurve
+ * This is a simple class that associates a row of calibration data
+ * to a pair of plotted curves.  The 'actual' curve is rendered as
+ * line segments from set point to set point.  The 'fitted' is a
+ * single straight line that is least square fitted to the set points
+ * based upon the coefficients set in the calibration row.
+ */
 class CalibrationCurve
 {
 public:
@@ -23,7 +31,8 @@ public:
 };
 
 /**
- * @class calib::CalibrationPlot
+ * @class CalibrationPlot
+ * A container widget that stores the curves and maintains their colors. 
  */
 class CalibrationPlot : public QWidget, public Ui::CalibrationPlot
 {
@@ -34,6 +43,7 @@ public:
     void dropColors();
     void setupColors();
 
+    QList<CalibrationCurve *> curves;
     list<QColor> colors;
 };
 

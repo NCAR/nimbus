@@ -3,6 +3,10 @@
 
 #include <QSortFilterProxyModel>
 
+/**
+ * @class SortFilterProxyModel
+ * This derived class allows for multiple column filters.
+ */
 class SortFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT

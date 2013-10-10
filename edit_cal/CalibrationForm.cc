@@ -24,8 +24,8 @@ CalibrationForm::CalibrationForm(QWidget* parent) : QWidget(parent)
     for (int r=0; r<nRows; r++) {
         _setPointList.append(new QLineEdit);
         _delButtonList.append(new QPushButton);
-        _newVList.append(new QLineEdit);
-        _new_sdList.append(new QLineEdit);
+        _inputList.append(new QLineEdit);
+        _stdDevList.append(new QLineEdit);
         _appliedList.append(new QLineEdit);
         _setDateTimeList.append(new QLineEdit);
 
@@ -35,22 +35,22 @@ CalibrationForm::CalibrationForm(QWidget* parent) : QWidget(parent)
 
         _setPointList[r]->setReadOnly(true);
         _delButtonList[r]->setText("del");
-        _newVList[r]->setReadOnly(true);
-        _new_sdList[r]->setReadOnly(true);
+        _inputList[r]->setReadOnly(true);
+        _stdDevList[r]->setReadOnly(true);
         _appliedList[r]->setReadOnly(true);
         _setDateTimeList[r]->setReadOnly(true);
 
         _setPointList[r]->setMinimumWidth(80);
         _delButtonList[r]->setFixedWidth(40);
-        _newVList[r]->setMinimumWidth(90);
-        _new_sdList[r]->setMinimumWidth(90);
+        _inputList[r]->setMinimumWidth(90);
+        _stdDevList[r]->setMinimumWidth(90);
         _appliedList[r]->setMinimumWidth(20);
         _setDateTimeList[r]->setMinimumWidth(50);
 
         _tableWidget->setCellWidget(r, 0, _setPointList[r] );
         _tableWidget->setCellWidget(r, 1, _delButtonList[r] );
-        _tableWidget->setCellWidget(r, 2, _newVList[r] );
-        _tableWidget->setCellWidget(r, 3, _new_sdList[r] );
+        _tableWidget->setCellWidget(r, 2, _inputList[r] );
+        _tableWidget->setCellWidget(r, 3, _stdDevList[r] );
         _tableWidget->setCellWidget(r, 4, _appliedList[r] );
         _tableWidget->setCellWidget(r, 5, _setDateTimeList[r] );
     }
@@ -257,8 +257,8 @@ void CalibrationForm::removeSetPoint( int index )
     // removed by MainWindow::removeSetPoint.
     _setPointList   [index]->clear();
     _delButtonList  [index]->setEnabled(false);
-    _newVList       [index]->clear();
-    _new_sdList     [index]->clear();
+    _inputList      [index]->clear();
+    _stdDevList     [index]->clear();
     _appliedList    [index]->clear();
     _setDateTimeList[index]->clear();
 

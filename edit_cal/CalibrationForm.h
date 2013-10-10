@@ -11,7 +11,9 @@
 #define nRows 20
 
 /**
- * @class calib::CalibrationForm
+ * @class CalibrationForm
+ * This defines the form used when editing a single calibration entry.
+ * Its layout UI is based upon the one used in the AEROS calibration tool.
  */
 class CalibrationForm : public QWidget, public Ui::CalibrationForm
 {
@@ -33,8 +35,8 @@ public:
 
   QList<QLineEdit*>   _setPointList;
   QList<QPushButton*> _delButtonList;
-  QList<QLineEdit*>   _newVList;         // TODO rename to _inputList
-  QList<QLineEdit*>   _new_sdList;       // TODO rename to _stdDevList
+  QList<QLineEdit*>   _inputList;
+  QList<QLineEdit*>   _stdDevList;
   QList<QLineEdit*>   _appliedList;
   QList<QLineEdit*>   _setDateTimeList;
 
@@ -44,7 +46,6 @@ public:
   QButtonGroup* _delButtonGroup;
   QButtonGroup* _curveFitGroup;
 
-//protected slots:
 public slots:
   void commitData(QWidget* widget);
   void removeSetPoint(int index);

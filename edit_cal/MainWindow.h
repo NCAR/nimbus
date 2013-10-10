@@ -29,7 +29,7 @@ QT_END_NAMESPACE
 class BackgroundColorDelegate;
 
 /**
- * @class calib::MainWindow
+ * @class MainWindow
  * Provides an editable QDataTable to display the main calibration SQL table.
  */
 class MainWindow : public QMainWindow
@@ -189,8 +189,6 @@ private:
 
     QAction *hideColumnAction;
     QAction *showColumnAction;
-
-    QList<CalibrationCurve *> plottedCurves;
 
     // A list of editable clone RIDs.
     QStringList _editable;

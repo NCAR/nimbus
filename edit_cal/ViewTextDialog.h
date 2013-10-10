@@ -7,7 +7,7 @@
 #include "ui_ViewTextDialog.h"
 
 /**
- * @class calib::ViewTextDialog
+ * @class ViewTextDialog
  * Provides a monospaced view of text.
  */
 class ViewTextDialog : public QDialog, public Ui::Ui_ViewTextDialog
