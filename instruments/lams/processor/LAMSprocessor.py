@@ -9,6 +9,8 @@
 
 # This routine reads a netCDF file with the normal data, to which Scott Spuler has added three variables that contain the measurements of airspeed from the three beams of 3D-LAMS. It adds three new variables to that file representing the three relative-wind components as measured by LAMS but translated back to the IRS reference system. These relative-wind components are analogous to the same measurements made by the radome gust system and can be used as alternate measurements of relative wind when constructing the true wind.
 # 
+# Note the need to supply the input netCDF file name in code cell #3 below.
+# 
 # The processing sequence is as follows:                                                       
 #   1. The conventional measurements are processed by nimbus and output to a netCDF file. That file has the measurements needed to determine the components of the relative wind from the radome gust probe, TASX, the IRS attitude angles, and the CMIGITS attitude angles.       
 # 2. Scott uses TASX to determine folding and the histograms recorded by LAMS to determine three velocities, {VA, VB, VC}. which he adds to the netCDF file.   
@@ -22,6 +24,10 @@ import numpy.ma as ma # masked arrays -- masks used to track and propagate missi
 from pylab import *   # included to be able to plot easily. Some plots are generated here.
 from netCDF4 import Dataset  # used to read and write the netCDF file
 import os             # for copying netCDF file before changing it
+import time           # just for timing execution
+
+localtime = time.asctime( time.localtime(time.time()) )
+print "Processing started at ", localtime
 
 # <headingcell level=2>
 
@@ -68,8 +74,10 @@ Si = linalg.inv (S)  # calculate the inverse of S
 
 # <codecell>
 
+# 7% of run time
 # copy the netCDF file to another before opening, to be able to write to the new file
-InputFile = 'IDEASGrf04'
+#InputFile = 'IDEASGrf04HR'
+InputFile = 'IDEASGrf04HR25'
 DataDirectory = '/Data/LAMS/'
 FullFileName = DataDirectory + InputFile + 'SMS.nc'
 RevisedFileName = DataDirectory + InputFile + 'WAC.nc'
@@ -85,7 +93,7 @@ DLEN = len (netCDFfile.dimensions['Time'])
 # variables from netCDF file needed for processing:
 varNames = ['TASX', 'THDG', 'PITCH', 'ROLL', 'AKRD', 'SSLIP', 'Time', \
             'CPITCH_LAMS', 'CROLL_LAMS', 'CTHDG_LAMS', 'VNSC', 'VEWC', 'VSPD', \
-            'BEAM1_speed', 'BEAM2_speed', 'BEAM3_speed']
+            'Beam1_LAMS', 'Beam2_LAMS', 'Beam3_LAMS']
 # if any are not found, routine will crash when they are used
 Vars = []   # set up list used temporarily for transfer to masked arrays
 for h in varNames:
@@ -124,9 +132,16 @@ BEAM3speed = ma.array (Vars[15].reshape (DL), fill_value=-32767.)
 BEAM1speed = ma.masked_where (BEAM1speed == -32767., BEAM1speed)
 BEAM2speed = ma.masked_where (BEAM2speed == -32767., BEAM2speed)
 BEAM3speed = ma.masked_where (BEAM3speed == -32767., BEAM3speed)
+CTHDG = ma.masked_where (CTHDG == -32767., CTHDG)
+CTHDG[abs (CTHDG-180.) < 3.] = ma.masked
 
+# special masked regions in IDEASG rf04 where CTHDG oscillates while going through 180 deg.
+#CTHDG[8680+250000:8780+250000] = ma.masked
+#CTHDG[18150+250000:18250+250000] = ma.masked
+#CTHDG[38310+250000:38410+250000] = ma.masked
+#CTHDG[48160+250000:48260+250000] = ma.masked
 
-# temporary: try using CTHDG values advanced by 1 s:
+# temporary: try using CTHDG values advanced by 1 sample:
 
 #XTHDG = np.append (CTHDG, 0.)
 #CTHDG = np.delete (XTHDG, [0])
@@ -140,10 +155,10 @@ BEAM3speed = ma.masked_where (BEAM3speed == -32767., BEAM3speed)
 Z =   ma.zeros (DL)
 One = ma.ones (DL)
 
-# example index, center of 270 turn, R4 90-270 starting at 1900Z
+# example 1-Hz index, center of 270 turn, R4 90-270 starting at 1900Z
 # used for debugging to print individual values
 IX = 6548
-print 'Now have data in python arrays'
+print ('Have data in python arrays at', time.asctime (time.localtime (time.time ())))
 
 # <headingcell level=2>
 
@@ -161,6 +176,7 @@ WR = TASX * ma.tan (AKRD * pi/180.)
 
 # relative-wind array: RWR as measured by radome gust system
 RWR = transpose (ma.array([UR,VR,WR], fill_value=-32767.))
+print ('Have radome-based relative wind array at ', time.asctime (time.localtime (time.time ())))
 
 # <headingcell level=2>
 
@@ -180,13 +196,15 @@ RWR = transpose (ma.array([UR,VR,WR], fill_value=-32767.))
 
 # get rotation-rate-vector array:
 Omega = ma.array ([ROLL, PITCH, THDG], fill_value = -32767.) * pi / 180.
-Omega = np.diff (Omega.T, axis=0) * SampleRate    # this differentiates step-wise to get the rotation rates
+Omega = np.diff (Omega.T, axis=0)                 # this differentiates step-wise to get the rotation rates
 Omega[:,2][Omega[:,2] > pi] -= 2.*pi              # handle where THDG goes through 360 degrees
 Omega[:,2][Omega[:,2] < -pi] += 2.*pi
+Omega *= SampleRate
 Omega = np.append (Omega, ma.zeros((1,3)), axis=0) # to match dimensions of other arrays
 
 # get false contribution to relative wind from rotation:
 F = ma.array (np.cross (Omega, LL), fill_value=-32767.)
+print ('Rotation-rate correction generated at ', time.asctime (time.localtime (time.time ())))
 
 # <headingcell level=2>
 
@@ -203,6 +221,7 @@ F = ma.array (np.cross (Omega, LL), fill_value=-32767.)
 # <codecell>
 
 A = transpose (ma.array ([BEAM1speed, BEAM2speed, BEAM3speed], fill_value=-32767.))
+print ('Load 3-beam measurements at ', time.asctime (time.localtime (time.time ())))
 
 # <headingcell level=3>
 
@@ -211,6 +230,7 @@ A = transpose (ma.array ([BEAM1speed, BEAM2speed, BEAM3speed], fill_value=-32767
 # <codecell>
 
 RW = transpose (ma.dot (Si, A.T)) - F  # F is the rotation-rate correction
+print ('Transformed to relative-wind components at ', time.asctime (time.localtime (time.time ())))
 
 # <headingcell level=3>
 
@@ -229,6 +249,7 @@ RW = transpose (ma.dot (Si, A.T)) - F  # F is the rotation-rate correction
 
 # <codecell>
 
+# 5% of run time
 #RWT = np.dot (T3, np.dot(T2, np.dot(T1, RW))) -- I wish! Try later to get an array statement to work
 RWT = ma.empty (shape (RW))
 Cradeg = pi / 180.  # convert to radians from degrees 
@@ -243,6 +264,7 @@ T2.shape = (3,3,len(CP))
 T3.shape = (3,3,len(CH))
 for i in range (0,DL):
     RWT[i,:] = ma.dot (T3[...,i], ma.dot (T2[...,i], ma.dot (T1[...,i], RW[i,:])))
+print ('Rotated relative wind to Earth reference frame at ', time.asctime (time.localtime (time.time ())))
  
 
 # <headingcell level=2>
@@ -269,7 +291,9 @@ for i in range (0,DL):
 
    
 RWG = RWT  # relative wind wrt ground; save for use later
-GW = RWG - transpose (ma.array([VNSC, VEWC, -1.*VSPD], fill_value=-32767.))
+GWA = transpose (ma.array([VNSC, VEWC, -1.*VSPD], fill_value=-32767.))
+GW = RWG - GWA
+print ('Have Earth-relative wind at ', time.asctime (time.localtime (time.time ())))
 
 # <headingcell level=2>
 
@@ -283,6 +307,7 @@ GW = RWG - transpose (ma.array([VNSC, VEWC, -1.*VSPD], fill_value=-32767.))
 
 # <codecell>
 
+# 5% of run time -- skip later if not needed to just get wind
 CR = -1. * ROLL * Cradeg    # negative sign because now doing the transform in the reverse direction
 CP = -1. * PITCH * Cradeg
 CH = -1. * THDG * Cradeg
@@ -294,6 +319,7 @@ T2.shape = (3,3,len(CP))
 T3.shape = (3,3,len(CH))
 for i in range (0,DL):  # note reversal in order of transformations
     RWT[i,:] = ma.dot (T1[...,i], ma.dot (T2[...,i], ma.dot (T3[...,i], RWT[i,:])))
+print ('Transformed back to aircraft reference frame at ', time.asctime (time.localtime (time.time ())))
 
 # <headingcell level=2>
 
@@ -301,6 +327,7 @@ for i in range (0,DL):  # note reversal in order of transformations
 
 # <codecell>
 
+# 17% of run time at 50 Hz
 # create new netCDF variables for {u,v,w} and for {WD, WS, WI}:
 if len (Shape) < 2:
     ULAMSCDF = netCDFfile.createVariable ('U_LAMS', 'f4', ('Time'), fill_value=-32767.)
@@ -309,15 +336,22 @@ if len (Shape) < 2:
     WDLAMSCDF = netCDFfile.createVariable ('WD_LAMS', 'f4', ('Time'), fill_value=-32767.)
     WSLAMSCDF = netCDFfile.createVariable ('WS_LAMS', 'f4', ('Time'), fill_value=-32767.)
     WILAMSCDF = netCDFfile.createVariable ('WI_LAMS', 'f4', ('Time'), fill_value=-32767.)
-else:                  # later, generalize this to spsXX
-    ULAMSCDF = netCDFfile.createVariable ('U_LAMS', 'f4', ('Time', 'sps50'), fill_value=-32767.)
-    VLAMSCDF = netCDFfile.createVariable ('V_LAMS', 'f4', ('Time', 'sps50'), fill_value=-32767.)
-    WLAMSCDF = netCDFfile.createVariable ('W_LAMS', 'f4', ('Time', 'sps50'), fill_value=-32767.)
-    WDLAMSCDF = netCDFfile.createVariable ('WD_LAMS', 'f4', ('Time', 'sps50'), fill_value=-32767.)
-    WSLAMSCDF = netCDFfile.createVariable ('WS_LAMS', 'f4', ('Time', 'sps50'), fill_value=-32767.)
-    WILAMSCDF = netCDFfile.createVariable ('WI_LAMS', 'f4', ('Time', 'sps50'), fill_value=-32767.)
+else:  
+    HRdim = DL / DLEN
+    HRdimName = 'sps' + format (HRdim, 'd')
+    ULAMSCDF = netCDFfile.createVariable ('U_LAMS', 'f4', ('Time', HRdimName), fill_value=-32767.)
+    VLAMSCDF = netCDFfile.createVariable ('V_LAMS', 'f4', ('Time', HRdimName), fill_value=-32767.)
+    WLAMSCDF = netCDFfile.createVariable ('W_LAMS', 'f4', ('Time', HRdimName), fill_value=-32767.)
+    WDLAMSCDF = netCDFfile.createVariable ('WD_LAMS', 'f4', ('Time', HRdimName), fill_value=-32767.)
+    WSLAMSCDF = netCDFfile.createVariable ('WS_LAMS', 'f4', ('Time', HRdimName), fill_value=-32767.)
+    WILAMSCDF = netCDFfile.createVariable ('WI_LAMS', 'f4', ('Time', HRdimName), fill_value=-32767.)
+print ('Created new netCDF variables at ', time.asctime (time.localtime (time.time ())))
 
-# add attributes
+# <codecell>
+
+# 61% of total run time is spend in this cell, so consider a better way to define these attributes?
+# for test runs, change this cell to 'raw text' to suppress execution
+#add attributes
 ULAMSCDF.units = 'm/s'
 WLAMSCDF.units = 'm/s'
 WLAMSCDF.units = 'm/s'
@@ -357,28 +391,57 @@ WLAMSCDF.Dependencies = '9 BEAM1speed BEAM2speed BEAM3speed ROLL PITCH THDG CROL
 WDLAMSCDF.Dependencies = '11 BEAM1speed BEAM2speed BEAM3speed ROLL PITCH THDG CROLL_LAMS CPITCH_LAMS CTHDG_LAMS VNSC VEWC'
 WSLAMSCDF.Dependencies = '11 BEAM1speed BEAM2speed BEAM3speed ROLL PITCH THDG CROLL_LAMS CPITCH_LAMS CTHDG_LAMS VNSC VEWC'
 WILAMSCDF.Dependencies = '10 BEAM1speed BEAM2speed BEAM3speed ROLL PITCH THDG CROLL_LAMS CPITCH_LAMS CTHDG_LAMS VSPD'
+print ('Created netcdf attributes at ', time.asctime (time.localtime (time.time ())))
+
+# <codecell>
+
+# 4% of run time in getting ready to write; negligible time in 'close' statement
 # put the unmasked data in the netCDF file, with masked values replaced by -32767.
+RWT.mask[:,0] |= BEAM1speed.mask
+GW.mask[:,0]  |= BEAM1speed.mask
+RWT.mask[:,1] |= BEAM2speed.mask
+GW.mask[:,1]  |= BEAM2speed.mask
+RWT.mask[:,2] |= BEAM3speed.mask
+GW.mask[:,2]  |= BEAM3speed.mask
+Hdiff = CTHDG - THDG
+Hdiff[Hdiff > 180.] -= 360.
+Hdiff[Hdiff < -180.] += 360.
+Hdiff = abs (Hdiff)
+RWT.mask[:,0] |= (Hdiff > 5.)    # avoid bad heading from CMIGITS
+GW.mask[:,0]  |= (Hdiff > 5.)
+RWT.mask[:,1] |= (Hdiff > 5.)   
+GW.mask[:,1]  |= (Hdiff > 5.)
+RWT.mask[:,2] |= (Hdiff > 5.)  
+GW.mask[:,2]  |= (Hdiff > 5.)
 WDL = ma.arctan2 (GW[:,1], GW[:,0]) / Cradeg  # wind direction based on LAMS
 WDL[WDL < 0.] += 360.
+WDL[WDL > 360.] -= 360.
+WSL = ma.array ((GW[:,0]**2 + GW[:,1]**2)**0.5, fill_value=-32767.)
+#WSL = ma.masked_where ((GW.mask[:,0] | GW.mask[:,1]), WSL)
+WDL.data[WDL.mask] = -32767.
+WSL.data[WSL.mask] = -32767.
+GW.data[GW.mask[:,2],2] = -32767.
 if len (Shape) < 2:
     ULAMSCDF[:] = RWT[:,0].data
     VLAMSCDF[:] = RWT[:,1].data 
     WLAMSCDF[:] = RWT[:,2].data
     WDLAMSCDF[:] = ma.array (WDL, fill_value=-32767.).data
-    WSLAMSCDF[:] = ma.array ((GW[:,0]**2 + GW[:,1]**2)**0.5, fill_value=-32767.).data
+    WSLAMSCDF[:] = ma.array (WSL, fill_value=-32767.).data
     WILAMSCDF[:] = GW[:,2].data
-else:  # this is untested
+else:
     ULAMSCDF[:] = RWT[:,0].data.reshape (DLEN, Shape[1])
     VLAMSCDF[:] = RWT[:,1].data.reshape (DLEN, Shape[1]) 
     WLAMSCDF[:] = RWT[:,2].data.reshape (DLEN, Shape[1])
     WDLAMSCDF[:] = ma.array (WDL, fill_value=-32767.).data.reshape (DLEN, Shape[1])
-    WSLAMSCDF[:] = ma.array ((GW[:,0]**2 + GW[:,1]**2)**0.5, fill_value=-32767.).data.reshape (DLEN, Shape[1])
+    WSLAMSCDF[:] = ma.array (WSL, fill_value=-32767.).data.reshape (DLEN, Shape[1])
     WILAMSCDF[:] = GW[:,2].data.reshape (DLEN, Shape[1])
+print ('Have netCDF variables; ready to write and close file at', time.asctime (time.localtime (time.time ())))
+
 netCDFfile.close () # writes the netCDF file
 
 # <codecell>
 
-print ('Reached end of routine')
+print ('Reached end of routine at ', time.asctime(time.localtime(time.time())))
 
 # <headingcell level=2>
 
@@ -402,21 +465,27 @@ print (' w standard deviation is ', np.std(WDiff[np.isnan(WDiff) ==  False]))
 
 # <codecell>
 
-# work space: can delete this and preceding cell
-clf ()
-plot (RWT[6428:6668,2], label = 'RWTw')
-plot (RWR[6428:6668,2], label = 'RWRw')
-#plot (100.*DP[6428:6668], label = 'DP*100')
-DF = THDG[6428:6668]-CTHDG[6428:6668]
-#plot (DF, label = 'diff')
-ylim ([-5.,15.])
-legend ()
+#clf ()
+#plot (RWG[250000:310000,1], label='RWG')  # HR plot
+#plot (RWG[250000:310000,1] - GW [250000:310000,1], label='RWG-GW')
+#J1 = 2828+250000/50
+#J2 = 2828+310000/50
+#plot (RWG[J1:J2,1], label='RWG')  # LR plot
+#plot (RWG[J1:J2,1] - GW [J1:J2,1], label='RWG-GW')
+#legend ()
 #show ()
 
 # <codecell>
 
-print GW[IX]
-plot (GW[6400:6800,2])
+# work space: can delete this and preceding cell
+#clf ()
+#plot (RWT[6428*50:6668*50,2], label = 'RWTw')
+#plot (RWR[6428*50:6668*50,2], label = 'RWRw')
+#plot (100.*DP[6428:6668], label = 'DP*100')
+#DF = THDG[6428*50:6668*50]-CTHDG[6428*50:6668*50]
+#plot (DF, label = 'diff')
+#ylim ([-5.,15.])
+#legend ()
 #show ()
 
 # <codecell>
