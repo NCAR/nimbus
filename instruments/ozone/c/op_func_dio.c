@@ -66,6 +66,10 @@ BYTE Valve_GetPosition( WORD base )
 	valve_position is a 4 bit value with the position bit being zero, e.g. 1011 meaning position 3. If the valve
 	did not reach one of the proto sensors, the read will return 1111. We will convert it to position 0 if this is encountered.*/
 	valve_position = inb( base + 10 );
+
+	// Clear the 4 MSB in case they were used for something else. Only the 4 LSB are used for valve position.
+	valve_position <<= 4;
+	valve_position >>= 4;
 	
 	if ( valve_position == 7 )
 		return 4;
