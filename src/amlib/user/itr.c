@@ -51,7 +51,7 @@ void sfunc(DERTBL *varp)
   NR_TYPE M_air = a0 + a1*(detector1 - detector2) + a2*M_STR + a3*M_BEN + a4*M_SNK + a5*M_STR*M_STR;
 	
   NR_TYPE at = (Planck * StdSpeedOfLight / (Kelvin * lambda))
-	/ log10((2 * M_PI * Planck * Csquared) / (M_air * pow(lambda, 5.0)) + 1);
+	/ log(((2 * M_PI * Planck * Csquared) / (M_air * pow(lambda, 5.0))) + 1);
 
   PutSample(varp, at - Kelvin);
 
