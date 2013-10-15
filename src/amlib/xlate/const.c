@@ -54,9 +54,14 @@ const double Rd_DIV_Cpd = 2.0 / 7.0;
 // Boltzmann's constant
 const double  Boltzmann = 1.380658e-23;
 
+// Planck's Constant
+const double Planck = 6.62606957e-34;
+
 const double GRAVITY = 9.780327;	// Gravity at surface and equator.
 
 const double StdSpeedOfSound = sqrt(2.0 * Cp * Tr);
+
+const double StdSpeedOfLight = 299792458.0;	// m/s
 
 const double MolecularWeightDryAir = 28.9637;	// kg kmol-1
 const double MolecularWeightWater = 18.01523;	// kg kmol-1
