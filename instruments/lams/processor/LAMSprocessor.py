@@ -26,7 +26,8 @@ from netCDF4 import Dataset  # used to read and write the netCDF file
 import os             # for copying netCDF file before changing it
 import time           # just for timing execution
 
-localtime = time.asctime( time.localtime(time.time()) )
+Stime = time.time()
+localtime = time.asctime( time.localtime(Stime) )
 print "Processing started at ", localtime
 
 # <headingcell level=2>
@@ -58,6 +59,10 @@ print "Processing started at ", localtime
 # The polar and azimuthal angles of the three beams wrt the GV longitudinal axis
 Theta = np.array ([34.95, 34.96, 35.01]) * np.pi / 180. # values in radians
 Phi = np.array ([180.08, -60.07, 59.92]) * np.pi / 180. #  "  "
+
+# blatant fudge:
+#@@Theta += 0.6 * np.pi / 180.
+
 # also need the distances from the IRS to LAMS: (x,y,z)
 LL = ma.array ([-10.305, -6.319, 1.359])                # see Scott's email, recorded above.
 # unit vectors along beams are then:
@@ -82,9 +87,7 @@ DataDirectory = '/Data/LAMS/'
 FullFileName = DataDirectory + InputFile + 'SMS.nc'
 RevisedFileName = DataDirectory + InputFile + 'WAC.nc'
 copyCommand = 'cp ' + FullFileName + ' ' + RevisedFileName
-#print FullFileName
-#print RevisedFileName
-#print copyCommand
+
 os.system(copyCommand)
 #!cp /Data/LAMS/IDEASGrf04SMS.nc /Data/LAMS/IDEASGrf04WAC.nc  # shell command
 netCDFfile = Dataset (RevisedFileName, 'a')
@@ -92,7 +95,8 @@ DLEN = len (netCDFfile.dimensions['Time'])
 
 # variables from netCDF file needed for processing:
 varNames = ['TASX', 'THDG', 'PITCH', 'ROLL', 'AKRD', 'SSLIP', 'Time', \
-            'CPITCH_LAMS', 'CROLL_LAMS', 'CTHDG_LAMS', 'VNSC', 'VEWC', 'VSPD', \
+            'CPITCH_LAMS', 'CROLL_LAMS', 'CTHDG_LAMS', 'CVNS_LAMS', 'CVEW_LAMS', 'VSPD', \
+#            'BEAM1_speed', 'BEAM2_speed', 'BEAM3_speed']  # -- old names
             'Beam1_LAMS', 'Beam2_LAMS', 'Beam3_LAMS']
 # if any are not found, routine will crash when they are used
 Vars = []   # set up list used temporarily for transfer to masked arrays
@@ -133,32 +137,61 @@ BEAM1speed = ma.masked_where (BEAM1speed == -32767., BEAM1speed)
 BEAM2speed = ma.masked_where (BEAM2speed == -32767., BEAM2speed)
 BEAM3speed = ma.masked_where (BEAM3speed == -32767., BEAM3speed)
 CTHDG = ma.masked_where (CTHDG == -32767., CTHDG)
-CTHDG[abs (CTHDG-180.) < 3.] = ma.masked
 
-# special masked regions in IDEASG rf04 where CTHDG oscillates while going through 180 deg.
+#Fctr = 1.005    # alternately, theta=35.4 deg
+# see above definition of theta; have introduced this change there instead.
+# Don't uncomment these without considering if the theta fudge is still there
+#BEAM1speed *= Fctr
+#BEAM2speed *= Fctr
+#BEAM3speed *= Fctr
+
+# special masked regions in IDEASG rf04 50Hz, where CTHDG oscillates while going through 180 deg.
 #CTHDG[8680+250000:8780+250000] = ma.masked
 #CTHDG[18150+250000:18250+250000] = ma.masked
 #CTHDG[38310+250000:38410+250000] = ma.masked
 #CTHDG[48160+250000:48260+250000] = ma.masked
 
-# temporary: try using CTHDG values advanced by 1 sample:
+# <codecell>
 
-#XTHDG = np.append (CTHDG, 0.)
-#CTHDG = np.delete (XTHDG, [0])
+# advance CROLL, CPITCH, CTHDG by N 25-Hz samples
+if DL/DLEN == 25:
+    N = 0  # set this to advance (positive) or delay (negative) the sequences
+    if N > 0:
+        CROLL = np.append (CROLL, N*[0])
+        CROLL = np.delete (CROLL, arange(0,N))
+        CPITCH = np.append (CPITCH, N*[0])
+        CPITCH = np.delete (CPITCH, arange(0,N))
+        CTHDG = np.append (CTHDG, N*[0])
+        CTHDG = np.delete (CTHDG, arange(0,N))
+    if N < 0:
+        N *= -1 
+        CROLL = np.insert (CROLL, 0, N*[CROLL[0]])
+        CROLL = np.delete (CROLL, arange(DL-N,DL))
+        CPITCH = np.insert (CPITCH, 0, N*[CPITCH[0]])
+        CPITCH = np.delete (CPITCH, arange(DL-N,DL))
+        CTHDG = np.insert (CTHDG, 0, N*[CTHDG[0]])
+        CTHDG = np.delete (CTHDG, arange(DL-N,DL))
 
-#interpolate 23/50 ahead (later) in CTHDG
-# (here, 5/50 behind (earlier)
-#for i in range (0, DLEN-1):
-#    CTHDG[DLEN-1-i] = (CTHDG[DLEN-1-i] * 45. + CTHDG[DLEN-2-i] * 5.) / 50.
-
+# advance VNSC and VEWC by N samples;
+    N = 0  # set this to the advance (+ve) or delay (-ve) needed
+#@@    N = 2
+    if N > 0:
+        VNSC = np.append (VNSC, N*[0])
+        VEWC = np.append (VEWC, N*[0])
+        VNSC = np.delete (VNSC, arange(0,N))
+        VEWC = np.delete (VEWC, arange(0,N))
+    if N < 0:
+        N *= -1
+        VNSC = np.insert (VNSC, 0, N*[VNSC[0]])
+        VEWC = np.insert (VEWC, 0, N*[VEWC[0]])
+        VNSC = np.delete (VNSC, arange (DL-N,DL))
+        VEWC = np.delete (VEWC, arange (DL-N,DL))
+  
 # arrays used in setting up rotation matrices
 Z =   ma.zeros (DL)
 One = ma.ones (DL)
 
-# example 1-Hz index, center of 270 turn, R4 90-270 starting at 1900Z
-# used for debugging to print individual values
-IX = 6548
-print ('Have data in python arrays at', time.asctime (time.localtime (time.time ())))
+print 'Have data in python arrays at', time.time () - Stime, ' s'
 
 # <headingcell level=2>
 
@@ -176,7 +209,7 @@ WR = TASX * ma.tan (AKRD * pi/180.)
 
 # relative-wind array: RWR as measured by radome gust system
 RWR = transpose (ma.array([UR,VR,WR], fill_value=-32767.))
-print ('Have radome-based relative wind array at ', time.asctime (time.localtime (time.time ())))
+print 'Have radome-based relative wind array at ', time.time () - Stime, ' s'
 
 # <headingcell level=2>
 
@@ -195,7 +228,8 @@ print ('Have radome-based relative wind array at ', time.asctime (time.localtime
 # <codecell>
 
 # get rotation-rate-vector array:
-Omega = ma.array ([ROLL, PITCH, THDG], fill_value = -32767.) * pi / 180.
+Cradeg = pi / 180.  # convert to radians from degrees 
+Omega = ma.array ([ROLL, PITCH, THDG], fill_value = -32767.) * Cradeg
 Omega = np.diff (Omega.T, axis=0)                 # this differentiates step-wise to get the rotation rates
 Omega[:,2][Omega[:,2] > pi] -= 2.*pi              # handle where THDG goes through 360 degrees
 Omega[:,2][Omega[:,2] < -pi] += 2.*pi
@@ -204,7 +238,7 @@ Omega = np.append (Omega, ma.zeros((1,3)), axis=0) # to match dimensions of othe
 
 # get false contribution to relative wind from rotation:
 F = ma.array (np.cross (Omega, LL), fill_value=-32767.)
-print ('Rotation-rate correction generated at ', time.asctime (time.localtime (time.time ())))
+print 'Rotation-rate correction generated at ', time.time () - Stime, ' s'
 
 # <headingcell level=2>
 
@@ -221,7 +255,6 @@ print ('Rotation-rate correction generated at ', time.asctime (time.localtime (t
 # <codecell>
 
 A = transpose (ma.array ([BEAM1speed, BEAM2speed, BEAM3speed], fill_value=-32767.))
-print ('Load 3-beam measurements at ', time.asctime (time.localtime (time.time ())))
 
 # <headingcell level=3>
 
@@ -230,7 +263,6 @@ print ('Load 3-beam measurements at ', time.asctime (time.localtime (time.time (
 # <codecell>
 
 RW = transpose (ma.dot (Si, A.T)) - F  # F is the rotation-rate correction
-print ('Transformed to relative-wind components at ', time.asctime (time.localtime (time.time ())))
 
 # <headingcell level=3>
 
@@ -249,10 +281,27 @@ print ('Transformed to relative-wind components at ', time.asctime (time.localti
 
 # <codecell>
 
+# first, correct for an assumed misalignment between the LAMS and CMIGITS reference frames
+#@@CR = ma.ones (DL) * (2.) * Cradeg 
+CR = ma.ones (DL) * (0.) * Cradeg 
+CP = ma.ones (DL) * 0. * Cradeg
+#@@CH = ma.ones (DL) * 0.3 * Cradeg
+CH = ma.ones (DL) * 0.0 * Cradeg
+T1 = ma.array ([One,Z,Z, Z,cos(CR),-sin(CR), Z,sin(CR),cos(CR)])  # rotation about x
+T2 = ma.array ([cos(CP),Z,sin(CP), Z,One,Z, -sin(CP),Z,cos(CP)])  # rotation about y
+T3 = ma.array ([cos(CH),-sin(CH),Z, sin(CH),cos(CH),Z, Z,Z,One])  # rotation about z
+T1.shape = (3,3,len(CH))
+T2.shape = (3,3,len(CH))
+T3.shape = (3,3,len(CH))
+for i in range (0,DL):
+    RW[i,:] = ma.dot (T3[...,i], ma.dot (T2[...,i], ma.dot (T1[...,i], RW[i,:])))
+print 'Rotated relative wind to assumed CMIGITS reference frame at ', time.time () - Stime, ' s'
+
+# <codecell>
+
 # 5% of run time
 #RWT = np.dot (T3, np.dot(T2, np.dot(T1, RW))) -- I wish! Try later to get an array statement to work
 RWT = ma.empty (shape (RW))
-Cradeg = pi / 180.  # convert to radians from degrees 
 CR = CROLL * Cradeg
 CP = CPITCH * Cradeg
 CH = CTHDG * Cradeg
@@ -264,7 +313,7 @@ T2.shape = (3,3,len(CP))
 T3.shape = (3,3,len(CH))
 for i in range (0,DL):
     RWT[i,:] = ma.dot (T3[...,i], ma.dot (T2[...,i], ma.dot (T1[...,i], RW[i,:])))
-print ('Rotated relative wind to Earth reference frame at ', time.asctime (time.localtime (time.time ())))
+print 'Rotated relative wind to Earth reference frame at ', time.time () - Stime, ' s'
  
 
 # <headingcell level=2>
@@ -293,7 +342,7 @@ print ('Rotated relative wind to Earth reference frame at ', time.asctime (time.
 RWG = RWT  # relative wind wrt ground; save for use later
 GWA = transpose (ma.array([VNSC, VEWC, -1.*VSPD], fill_value=-32767.))
 GW = RWG - GWA
-print ('Have Earth-relative wind at ', time.asctime (time.localtime (time.time ())))
+print 'Have Earth-relative wind at ', time.time () - Stime, ' s'
 
 # <headingcell level=2>
 
@@ -319,7 +368,7 @@ T2.shape = (3,3,len(CP))
 T3.shape = (3,3,len(CH))
 for i in range (0,DL):  # note reversal in order of transformations
     RWT[i,:] = ma.dot (T1[...,i], ma.dot (T2[...,i], ma.dot (T3[...,i], RWT[i,:])))
-print ('Transformed back to aircraft reference frame at ', time.asctime (time.localtime (time.time ())))
+print 'Transformed back to aircraft reference frame at ', time.time () - Stime, ' s'
 
 # <headingcell level=2>
 
@@ -345,7 +394,7 @@ else:
     WDLAMSCDF = netCDFfile.createVariable ('WD_LAMS', 'f4', ('Time', HRdimName), fill_value=-32767.)
     WSLAMSCDF = netCDFfile.createVariable ('WS_LAMS', 'f4', ('Time', HRdimName), fill_value=-32767.)
     WILAMSCDF = netCDFfile.createVariable ('WI_LAMS', 'f4', ('Time', HRdimName), fill_value=-32767.)
-print ('Created new netCDF variables at ', time.asctime (time.localtime (time.time ())))
+print 'Created new netCDF variables at ', time.time () - Stime, ' s'
 
 # <codecell>
 
@@ -372,7 +421,8 @@ WDLAMSCDF.standard_name = 'WS_LAMS'
 WILAMSCDF.standard_name = 'WI_LAMS'
 #print (RWT[0,np.unravel_index (RWT[0,:].argmax (), RWT[0,:].shape)])
 
-# is actual_range attribute needed?-- not supplied here
+# is actual_range attribute needed? Present for normal nimbus-generated
+# variables, but not supplied here
 ULAMSCDF.Category = 'Winds'
 VLAMSCDF.Category = 'Winds'
 WLAMSCDF.Category = 'Winds'
@@ -391,7 +441,7 @@ WLAMSCDF.Dependencies = '9 BEAM1speed BEAM2speed BEAM3speed ROLL PITCH THDG CROL
 WDLAMSCDF.Dependencies = '11 BEAM1speed BEAM2speed BEAM3speed ROLL PITCH THDG CROLL_LAMS CPITCH_LAMS CTHDG_LAMS VNSC VEWC'
 WSLAMSCDF.Dependencies = '11 BEAM1speed BEAM2speed BEAM3speed ROLL PITCH THDG CROLL_LAMS CPITCH_LAMS CTHDG_LAMS VNSC VEWC'
 WILAMSCDF.Dependencies = '10 BEAM1speed BEAM2speed BEAM3speed ROLL PITCH THDG CROLL_LAMS CPITCH_LAMS CTHDG_LAMS VSPD'
-print ('Created netcdf attributes at ', time.asctime (time.localtime (time.time ())))
+print 'Created netcdf attributes at ', time.time () - Stime, ' s'
 
 # <codecell>
 
@@ -435,17 +485,14 @@ else:
     WDLAMSCDF[:] = ma.array (WDL, fill_value=-32767.).data.reshape (DLEN, Shape[1])
     WSLAMSCDF[:] = ma.array (WSL, fill_value=-32767.).data.reshape (DLEN, Shape[1])
     WILAMSCDF[:] = GW[:,2].data.reshape (DLEN, Shape[1])
-print ('Have netCDF variables; ready to write and close file at', time.asctime (time.localtime (time.time ())))
 
 netCDFfile.close () # writes the netCDF file
-
-# <codecell>
-
-print ('Reached end of routine at ', time.asctime(time.localtime(time.time())))
+print 'Elapsed time: ', time.time () - Stime, ' s'
+print 'Reached end of routine at ', time.asctime(time.localtime(time.time()))
 
 # <headingcell level=2>
 
-# Find how the result differs from the starting values
+# Find how the results differ from the starting values
 
 # <codecell>
 
@@ -463,30 +510,35 @@ print (' w standard deviation is ', np.std(WDiff[np.isnan(WDiff) ==  False]))
 
 # The following cells are temporary work space and can be deleted or changed
 
-# <codecell>
+# <rawcell>
 
-#clf ()
-#plot (RWG[250000:310000,1], label='RWG')  # HR plot
-#plot (RWG[250000:310000,1] - GW [250000:310000,1], label='RWG-GW')
-#J1 = 2828+250000/50
-#J2 = 2828+310000/50
-#plot (RWG[J1:J2,1], label='RWG')  # LR plot
-#plot (RWG[J1:J2,1] - GW [J1:J2,1], label='RWG-GW')
-#legend ()
-#show ()
+# # to use, change from 'raw text' to 'code', or vv to skip
+# Fig=figure()
+# Fig.subplots_adjust(hspace=0.35)
+# Panel1 = Fig.add_subplot (211)
+# RG = arange (137125,137625)
+# plot (ROLL[RG], label='ROLL')
+# plot (CROLL[RG], label='CROLL')
+# legend ()
+# RG2 = arange (137126,137626)
+# Panel2=Fig.add_subplot (212)
+# plot (ROLL[RG]-CROLL[RG], label='no adjustment')
+# ylabel('ROLL-CROLL')
+# plot (ROLL[RG]-CROLL[RG2], color='r', label='CROLL+1')
+# ylabel('ROLL-CROLL')
+# legend(loc=4)
+# show()
 
-# <codecell>
+# <rawcell>
 
-# work space: can delete this and preceding cell
-#clf ()
-#plot (RWT[6428*50:6668*50,2], label = 'RWTw')
-#plot (RWR[6428*50:6668*50,2], label = 'RWRw')
-#plot (100.*DP[6428:6668], label = 'DP*100')
-#DF = THDG[6428*50:6668*50]-CTHDG[6428*50:6668*50]
-#plot (DF, label = 'diff')
-#ylim ([-5.,15.])
-#legend ()
-#show ()
+# # find the delay giving the best correlation:
+# start = 124500
+# end = start + 30000
+# RG = arange(start, end)
+# for i in range (-25,25):
+#     RG2 = arange(start+i, end+i)
+#     correlation = np.corrcoef (ROLL[RG], CROLL[RG2])
+#     print i,correlation[0,1]
 
 # <codecell>
 
