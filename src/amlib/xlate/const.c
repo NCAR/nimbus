@@ -52,7 +52,7 @@ const double Lv = -2370.0;
 const double Rd_DIV_Cpd = 2.0 / 7.0;
 
 // Boltzmann's constant
-const double  Boltzmann = 1.380658e-23;
+const double Boltzmann = 1.380658e-23;
 
 // Planck's Constant
 const double Planck = 6.62606957e-34;

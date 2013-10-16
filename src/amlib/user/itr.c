@@ -14,7 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2013
 #include "nimbus.h"
 #include "amlib.h"
 
-static const double lambda = 4.3e-6;
+static const double lambda = 4.333e-6;	// wavelength
 static const double Csquared = StdSpeedOfLight * StdSpeedOfLight;
 
 // Move to Defaults file.
@@ -36,7 +36,7 @@ NR_TYPE ThermalRadiance(NR_TYPE raw_temp)	// in Kelvin
 }
 
 /* -------------------------------------------------------------------- */
-void sfunc(DERTBL *varp)
+void sitrAT(DERTBL *varp)
 {
   NR_TYPE detector1 = GetSample(varp, 0);
   NR_TYPE detector2 = GetSample(varp, 1);
@@ -50,11 +50,11 @@ void sfunc(DERTBL *varp)
 	
   NR_TYPE M_air = a0 + a1*(detector1 - detector2) + a2*M_STR + a3*M_BEN + a4*M_SNK + a5*M_STR*M_STR;
 	
-  NR_TYPE at = (Planck * StdSpeedOfLight / (Kelvin * lambda))
+  NR_TYPE at = (Planck * StdSpeedOfLight / (Boltzmann * lambda))
 	/ log(((2 * M_PI * Planck * Csquared) / (M_air * pow(lambda, 5.0))) + 1);
 
   PutSample(varp, at - Kelvin);
 
-}	/* END SFUNC */
+}	/* END SIRTAT */
 
-/* END FUNC.C */
+/* END ITR.C */
