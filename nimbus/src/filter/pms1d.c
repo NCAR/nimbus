@@ -249,7 +249,7 @@ void PMS1D_SetupForADS3()
 
     if (cfg.FlightDate().compare("10/18/2013") >= 0) 
     {
-      setSerialNumberAndProbeType("ACDP_LWII", "CDP016", PROBE_PMS1D | PROBE_CDP);
+      setSerialNumberAndProbeType("ACDP_RWOI", "CDP016", PROBE_PMS1D | PROBE_CDP);
       setSerialNumberAndProbeType("ACDP_LWIO", "CDP058", PROBE_PMS1D | PROBE_CDP);
     }
   }
