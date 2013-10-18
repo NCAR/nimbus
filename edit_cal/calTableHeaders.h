@@ -2,7 +2,7 @@
 #define _calTableHeaders_h_
 
 #define DB_DRIVER  "QPSQL"
-#define DB_HOST    "barolo.eol.ucar.edu"
+#define DB_HOST    "localhost"
 #define DB_USER    "ads"
 #define DB_NAME    "calibrations"
 #define MAX_ORDER  3

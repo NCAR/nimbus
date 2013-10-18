@@ -269,6 +269,8 @@ void MainWindow::setupTable()
 
     connect(_table, SIGNAL( customContextMenuRequested( const QPoint & )),
             this,     SLOT(              showTableMenu( const QPoint & )));
+
+    _table->resizeColumnsToContents();
 }
 
 /* -------------------------------------------------------------------- */
@@ -823,17 +825,17 @@ void MainWindow::setupMenus()
 
     QMenu *colsMenu = new QMenu(tr("&Columns"));
 
-    // true == unhidden
+    // Set up default columns, true == visible
     i = 0;
     addColAction(colsMenu, tr("Row Id"),        colsGrp, colsMapper, i++, false); // rid
     addColAction(colsMenu, tr("Parent Id"),     colsGrp, colsMapper, i++, false); // pid
     addColAction(colsMenu, tr("Site"),          colsGrp, colsMapper, i++, true);  // Site
     addColAction(colsMenu, tr("Pulled"),        colsGrp, colsMapper, i++, false); // pulled
-    addColAction(colsMenu, tr("Removed"),       colsGrp, colsMapper, i++, true);  // removed
-    addColAction(colsMenu, tr("Exported"),      colsGrp, colsMapper, i++, true);  // exported
+    addColAction(colsMenu, tr("Removed"),       colsGrp, colsMapper, i++, false); // removed
+    addColAction(colsMenu, tr("Exported"),      colsGrp, colsMapper, i++, false); // exported
     addColAction(colsMenu, tr("Date"),          colsGrp, colsMapper, i++, true);  // cal_date
     addColAction(colsMenu, tr("Project"),       colsGrp, colsMapper, i++, true);  // project_name
-    addColAction(colsMenu, tr("User"),          colsGrp, colsMapper, i++, false); // username
+    addColAction(colsMenu, tr("User"),          colsGrp, colsMapper, i++, true);  // username
     addColAction(colsMenu, tr("Sensor Type"),   colsGrp, colsMapper, i++, false); // sensor_type
     addColAction(colsMenu, tr("Serial #"),      colsGrp, colsMapper, i++, true);  // serial_number
     addColAction(colsMenu, tr("Variable"),      colsGrp, colsMapper, i++, true);  // var_name
@@ -848,7 +850,7 @@ void MainWindow::setupMenus()
     addColAction(colsMenu, tr("StdDev Values"), colsGrp, colsMapper, i++, false); ///stddevs
     addColAction(colsMenu, tr("Calibration"),   colsGrp, colsMapper, i++, true);  // cal
     addColAction(colsMenu, tr("Temperature"),   colsGrp, colsMapper, i++, false); // temperature
-    addColAction(colsMenu, tr("Comment"),       colsGrp, colsMapper, i++, false); // comment
+    addColAction(colsMenu, tr("Comment"),       colsGrp, colsMapper, i++, true);  // comment
 
     viewMenu->addMenu(colsMenu);
 
