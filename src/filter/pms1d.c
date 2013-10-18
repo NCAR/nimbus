@@ -30,7 +30,7 @@ static int getCellSizes(const var_base * rp, float cellSizes[]);
 static void setSerialNumberAndProbeType(const char * name, const char * serialNum, int probeType)
 {
   int raw_indx, der_indx;
-  char tmp[64], * location;
+  char tmp[64], *location;
 
   strcpy(tmp, name); tmp[0] = 'C';
   if (strrchr(name, '_'))	// If this is a specific probe & location.
@@ -225,8 +225,14 @@ void PMS1D_SetupForADS3()
   else
   if (cfg.ProjectName().compare("IDEAS-4") == 0 && cfg.Aircraft() == Config::HIAPER)
   {
-    setSerialNumberAndProbeType("A1DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
+
+    if (cfg.FlightNumber().compare("rf08") <= 0) 
+    {
+      setSerialNumberAndProbeType("A1DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+      setSerialNumberAndProbeType("A2DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    }
+
     if (cfg.FlightNumber().compare("rf03") >= 0 && cfg.FlightNumber().compare("rf05") <= 0) 
     {
       setSerialNumberAndProbeType("A1DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
@@ -237,9 +243,10 @@ void PMS1D_SetupForADS3()
       setSerialNumberAndProbeType("A1DC_RWOI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
       setSerialNumberAndProbeType("A2DC_RWOI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
     }
+
     if (cfg.FlightNumber().compare("rf05") >= 0) 
       setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    else
+
     if (cfg.FlightDate().compare("10/18/2013") >= 0) 
     {
       setSerialNumberAndProbeType("ACDP_LWII", "CDP016", PROBE_PMS1D | PROBE_CDP);
