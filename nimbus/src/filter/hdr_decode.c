@@ -317,7 +317,7 @@ int DecodeHeader3(const char header_file[])
       size_t i = 0;
       files[i++] = (char*)"sync_server";
       files[i++] = (char*)"-l";
-      files[i++] = (char*)"300";	// 300 second time-sorter.
+      files[i++] = (char*)"60";	// 60 second time-sorter.
       files[i++] = (char*)"-p";
       files[i++] = sync_server_pipe;
       std::set<std::string>::iterator it;
