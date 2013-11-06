@@ -11,6 +11,14 @@ asc2cdf
   NCAR-RAF/nimbus conventions.  Usable by ncplot, etc.  man asc2cdf.
 
 
+caledit
+  Qt based GUI for editing the Master Calibration Database.  Facilitates
+  pulling calibrations from various systems on which they are acquired, 
+  storing them in the database, writing them to cal files (used by nidas), 
+  and cloning cals to allow for adjustments to date application and set 
+  points.
+
+
 dnload
   Exabyte tape downloader and copier, also seperates 2d and MCR data into
   seperate files.  Directory also contains misc quick and dirty programs
