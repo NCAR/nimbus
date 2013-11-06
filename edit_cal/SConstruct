@@ -39,12 +39,12 @@ sources = Split("""
     ViewTextDialog.cc
 """)
 
-edit_cal = env.Program('edit_cal', sources,
+caledit = env.Program('caledit', sources,
     LIBS=[env['LIBS']], LIBPATH=[env['LIBPATH']])
 
-name = env.subst("${TARGET.filebase}", target=edit_cal)
+name = env.subst("${TARGET.filebase}", target=caledit)
 
-inode = env.Install('/opt/local/bin',edit_cal)
+inode = env.Install('/opt/local/bin',caledit)
 env.Clean('install',inode)
 
 options = env.GlobalOptions()
