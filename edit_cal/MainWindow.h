@@ -30,7 +30,9 @@ class BackgroundColorDelegate;
 
 /**
  * @class MainWindow
- * Provides an editable QDataTable to display the main calibration SQL table.
+ * Provides an interface to allow updating, viewing, QA, editing, 
+ * and exporting (individual calibrations) of the "master" calibration 
+ * database table.
  */
 class MainWindow : public QMainWindow
 {
