@@ -88,7 +88,7 @@ end
 
 # Programs using "scons".
 
-foreach file ( nimbus edit_cal kml_tools/acTrack2kml instruments/pms2d/process2d instruments/pms2d/oapinfo instruments/sid2h instruments/cpi/cpidisplay nc_utils/ncReorder nc_utils/ncvarlist nc_utils/nc_gap )
+foreach file ( nimbus caledit kml_tools/acTrack2kml instruments/pms2d/process2d instruments/pms2d/oapinfo instruments/sid2h instruments/cpi/cpidisplay nc_utils/ncReorder nc_utils/ncvarlist nc_utils/nc_gap )
   (cd $file; echo $file; scons install)
   if ($num > 0) then
     echo "$file BUILT"
