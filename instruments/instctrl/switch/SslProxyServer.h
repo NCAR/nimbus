@@ -27,8 +27,8 @@ class SslProxyServer: public ProxyServer {
 			QSslCertificate _sslCert;
 			InstConfig _instConfig;
 		};
-		/// @param keyFile Path to the file containing the private key.
-		/// @param certFile Path to the file containing the certificate that matched the private key.
+		/// @param sslKeyFile Path to the file containing the private key.
+		/// @param sslCertificate Path to the file containing the certificate that matched the private key.
 		/// @param switchPort The server port number.
 		/// @param proxies The allowable proxies.
 		SslProxyServer(std::string sslKeyFile,
@@ -52,7 +52,7 @@ class SslProxyServer: public ProxyServer {
 		void connectionStateChanged(Ssl::SslConnection*, Ssl::SslSocket::SocketState);
 		/// Receive a proxy message. Emit it as: msgFromProxy(Protocols::Message)
 		/// @param msg The message
-		void msgFromProxySlot(Protocols::Message message);
+		void msgFromProxySlot(Protocols::Message msg);
 
 	protected:
 		/// Log the currently active SSL connections.

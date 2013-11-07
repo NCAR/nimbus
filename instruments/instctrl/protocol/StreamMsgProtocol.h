@@ -35,7 +35,7 @@ namespace Protocols {
 		/// @return Complete messages, if available.
 		virtual std::vector<std::string> incoming(std::string s);
 		/// Convert a message into an outgoing protocol stream.
-		/// @param msg The message to be sent.
+		/// @param s The message to be sent.
 		/// @return Data block ready for transmision, if available.
 		virtual std::vector<std::string> outgoing(std::string s);
 

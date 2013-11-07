@@ -14,7 +14,7 @@
 class EmbeddedProxyServer: public ProxyServer {
 	Q_OBJECT
 public:
-	/// @param instFiles A list of instrument configuration files.
+	/// @param instConfigs A list of instrument configuration files.
 	/// One proxy will be created for each instrument file.
 	EmbeddedProxyServer(std::vector<InstConfig> instConfigs) throw(std::string);
 	/// Destructor.

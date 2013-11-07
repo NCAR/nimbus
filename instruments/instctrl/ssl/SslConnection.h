@@ -64,11 +64,13 @@ namespace Ssl {
 		void connectionStateChanged(Ssl::SslConnection*, Ssl::SslSocket::SocketState);
 		/// Emitted when a new message has been received over SSL link.
 		/// @param msg The message.
-		void msgFromSslLink(Protocols::Message);
+		void msgFromSslLink(Protocols::Message msg);
 		/// Emmitted when there has been an error in the connection.
 		/// Right now just pass on the Qt socket error. Perhaps we will later change
 		/// this to something specific to SslConnection.
-		void connectionError(QAbstractSocket::SocketError, std::string);
+		/// @param err The error code.
+		/// @param s The associated error message.
+		void connectionError(QAbstractSocket::SocketError err, std::string s);
 
 	public slots:
 		/// Capture a change in the SslSocket state.

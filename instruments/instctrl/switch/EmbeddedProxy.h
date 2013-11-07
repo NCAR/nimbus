@@ -25,7 +25,7 @@ public:
 	/// @return the ID of proxy
 	std::string Id();
 	/// Send a message to the user/instrument
-	/// @param The message that is to be sent as a datagram.
+	/// @param msg The message that is to be sent as a datagram.
 	void send(Protocols::Message msg);
 
 signals:

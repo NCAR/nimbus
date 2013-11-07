@@ -38,7 +38,7 @@ namespace Ssl {
 
 	signals:
 		/// Emitted when a new connection is made
-		/// @param descriptor Pointer to the new socket
+		/// @param sslSocket Pointer to the new socket
 		void newConnection(Ssl::SslSocket* sslSocket);
 
 	protected slots:

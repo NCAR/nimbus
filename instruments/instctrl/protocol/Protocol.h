@@ -45,7 +45,7 @@ namespace Protocols {
 		/// @param msg The message to be sent.
 		/// @return Data block ready for transmision, if available.
 		virtual std::vector<std::string> outgoing(std::string msg);
-		/// @retun The most recent error messages. If there have been no
+		/// @return The most recent error messages. If there have been no
 		/// errors, the returned list is empty. Calling this function
 		/// resets the accumulated error messages.
 		std::vector<std::string> errors();
