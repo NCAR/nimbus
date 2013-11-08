@@ -38,8 +38,11 @@
 /// @section RICTesting Testing
 ///
 /// With proper configuration and supporting applications, the Remote Instrument Control system can be
-/// tested on a single computer. One such setup is described here. The AVAPS Ground System (AGS) user
-/// interface application and the AGS AVAPS simulator provide the instrument and user functions.
+/// tested on a single computer. One such setup is described here.
+///
+/// The AVAPS Ground System (AGS) user
+/// interface application and the AGS AVAPS simulator, which are not discussed here,
+/// can be used to provide the instrument and user functions.
 /// A proxy, an SSL switch, and a switch with embedded proxies simulate the remote user,
 /// ground switch and aircraft switch environments respectively. The documentation on RIC configuration
 /// (see below) shows the configuration settings used for this test.
@@ -55,17 +58,17 @@
 /// Aircraft switch:
 /// @code
 /// cd switch
-/// ./ric_switch -c ACSwitch.ini
+/// ./ric_switch -c ACSwitch-local.ini
 /// @endcode
 /// Ground switch:
 /// @code
 /// cd switch
-/// ./ric_switch -c GroundSwitch.ini
+/// ./ric_switch -c GroundSwitch-local.ini
 /// @endcode
 /// User proxy:
 /// @code
 /// cd Proxy
-/// ./ric_proxy -c Proxy.ini
+/// ./ric_proxy -c Proxy-local.ini
 /// @endcode
 ///
 /// AVAPS status messages from the AVAPS simulator will transit the aircraft switch, ground switch and proxy, to be delivered to the AGS
