@@ -77,8 +77,15 @@ void SslSocket::init() {
 	}
 
 	setLocalCertificate(_sslCert);
-	if (localCertificate().isNull() || !localCertificate().isValid()) {
-			qDebug() << "Invalid certificate specified in " << _sslCert;
+	QSslCertificate localCert = localCertificate();
+
+	if (!localCert.isValid()) {
+			qDebug() << "Invalid certificate specified in " << _sslCert
+					<< " (Valid " << localCert.effectiveDate().toString() << " to "
+					<< localCert.expiryDate().toString() << ")";
+	}
+	if (localCert.isNull()) {
+			qDebug() << "Null certificate specified in " << _sslCert;
 	}
 }
 

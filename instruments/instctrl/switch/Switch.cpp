@@ -44,8 +44,16 @@ _msgsFromProxiesDropped(0)
 
 		QSslCertificate serverCert(QSslCertificate::fromPath(serverCertFile.c_str())[0]);
 		if (serverCert.isNull() || !serverCert.isValid()) {
-			std::cout << "Invalid certificate specified in "
-					<< serverCertFile << ", switch cannot start" << std::endl;
+			if (!serverCert.isValid()) {
+					std::cout << "Invalid certificate specified in " << serverCertFile
+							<< " (Valid " << serverCert.effectiveDate().toString().toStdString() << " to "
+							<< serverCert.expiryDate().toString().toStdString() << "), switch cannot start"
+							<< std::endl;
+			}
+			if (serverCert.isNull()) {
+					std::cout << "Null certificate specified in " << serverCertFile
+							<< ", switch cannot start" << std::endl;
+			}
 			exit(1);
 		}
 
@@ -58,8 +66,15 @@ _msgsFromProxiesDropped(0)
 			std::string sslCertFile = proxiesConfig[i]["SSLCertFile"];
 			QSslCertificate cert(QSslCertificate::fromPath(sslCertFile.c_str())[0]);
 			if (cert.isNull() || !cert.isValid()) {
-				std::cout << "Invalid certificate specified in "
-						<< sslCertFile << ", proxy will not be registered";
+				if (!cert.isValid()) {
+						std::cout << "Invalid certificate specified in " << sslCertFile
+								<< " (Valid " << cert.effectiveDate().toString().toStdString() << " to "
+								<< cert.expiryDate().toString().toStdString() << "), proxy will not be registered"
+								<< std::endl;
+				}
+				if (cert.isNull()) {
+						std::cout << "Null certificate specified in " << sslCertFile << std::endl;
+				}
 			} else {
 				proxy._sslCert = cert;
 				proxy._instConfig = InstConfig(proxiesConfig[i]["InstrumentFile"]);
