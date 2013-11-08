@@ -41,7 +41,8 @@ static void AverageReal(NR_TYPE * data, size_t count[]);
 int ReadInputFile(char fileName[])
 {
   VARTBL	*vp;
-  int		i, indx, len, nVars, nDims, dimIDs[3];
+  int		i, indx, nVars, nDims, dimIDs[3];
+  size_t	len;
   int		startSortIndx = 0;
   char		name[NAMELEN];
 
@@ -144,8 +145,8 @@ void CreateNetCDF(const char file_name[])
   VARTBL	*vp;
   char		name[100];
 
-  int	nDims, dims[3];
-  size_t	size, TimeDim, LowRateDim;
+  int		nDims, dims[3], TimeDim, LowRateDim;
+  size_t	size;
 
   if (nc_create(file_name, NC_CLOBBER, &OutputFile) != NC_NOERR)
   {
