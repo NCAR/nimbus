@@ -134,7 +134,7 @@ void checkForOverlappingTimeSegments()
 
   if (et1 != et2)
   {
-    printf("Time dimensions are of differeing length, %u vs. %u\n", et1, et2);
+    printf("Time dimensions are of differeing length, %zu vs. %zu\n", et1, et2);
   }
 
   char units1[60], units2[60];
@@ -174,11 +174,11 @@ void checkForOverlappingTimeSegments()
 
   if (bt1 != bt2) {
     printf("Start time does not match exactly, this has potential to produce inconsistent results.\n");
-    printf("  %d vs. %d\n", bt1, bt2);
+    printf("  %zu vs. %zu\n", bt1, bt2);
   }
   if (et1 != et2) {
     printf("End time does not match exactly, this has potential to produce inconsistent results.\n");
-    printf("  %d vs. %d\n", et1, et2);
+    printf("  %zu vs. %zu\n", et1, et2);
   }
 }
 
