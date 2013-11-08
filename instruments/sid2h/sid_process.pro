@@ -376,8 +376,9 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
                IF op.textfile eq 1 THEN BEGIN
                   IF (time[index] gt pbprange.start) and (time[index] lt pbprange.stop) THEN $
                   printf,2,(sid_date((b.elaptime[i]-footer.reftime)/100+footer.acqstart)).time + op.clockoffset, $
-                  a.size,a.af,a.branches,b.mux[i],b.sensor[i],b.tof[i],b.missed[i],mean(scatter_adjusted), reject, a.nsat, a.tbsize,$ ;b.elaptime[i]-footer.reftime,
+                  a.size,a.af,a.branches,b.mux[i],b.sensor[i],b.tof[i],b.missed[i],mean(scatter_adjusted), reject, a.nsat, a.tbsize,$ 
                   format='(f15.5,2f7.1,i3,i3,i6,i6,i6,i6,i3,i3,f7.1)' 
+                  ;scatter_adjusted,format='(f15.5,2f7.1,i3,i3,i6,i6,i6,i6,i3,i3,f7.1,28f8.1)' 
                ENDIF
                         
                

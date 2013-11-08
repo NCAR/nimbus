@@ -60,9 +60,15 @@ PRO sid_windowplot,topid,p1,pinfo,pop,noset=noset
             xyouts,0.5,0.5,'Raw data files not found.',align=0.5,/norm
             return
          ENDIF
-         
+       
          ;Plot axis
          plot,[0,2000],[0,1],/nodata,ysty=4,xsty=8,xtickint=200,xminor=1,pos=[0.02,0.05,0.98,0.98],xtit='Mean Raw Scatter' ;Axis
+         IF (*pop).peak eq 1 THEN BEGIN
+            maxsize=50>(sid_size(transpose(fltarr(28)+2000), transpose(fltarr(28)+2000), (*p1).pmtgain[i], 0, (*p1).tas[i],(*pop).sizegain,peak=(*pop).peak)).size
+            labelvalues=round(10*findgen(11)/10 * maxsize)/10.0
+            plot,[0,2000],[0,1],/nodata,ysty=4,xsty=8,xtickint=200,xminor=1,pos=[0.02,0.05,0.98,0.98],$
+               xtit='Diameter [!4l!3m]',xtickname=string(labelvalues,form='(f4.1)'),charsize=1.4
+         ENDIF   
 
          ;The raw data exists
          nt=(*p1).accept_count[i]+(*p1).reject_count[i] < 1000;Number of particles to plot
@@ -92,11 +98,9 @@ PRO sid_windowplot,topid,p1,pinfo,pop,noset=noset
 
               IF ngood eq 0 THEN sizecol=9 ELSE $
                  sizecol=fix(mean(scatter_adjusted[good],/nan))/200 >0<(nx-1)     ;Quick sizing (0-9) to put into the correct column
-              IF nplotted[sizecol] lt 10 THEN BEGIN
-                               
-               ;Size and reject            
-               a=sid_size(b.scatter[k,*],scatter_adjusted,(*p1).pmtgain[i],b.tof[k],(*p1).tas[i],(*pop).sizegain,peak=(*pop).peak)
-
+                 a=sid_size(b.scatter[k,*],scatter_adjusted,(*p1).pmtgain[i],b.tof[k],(*p1).tas[i],(*pop).sizegain,peak=(*pop).peak)
+                 IF (*pop).peak eq 1 THEN sizecol=max(where(a.size ge labelvalues)) < 9       
+              IF nplotted[sizecol] lt 10 THEN BEGIN                              
                reject=sid_reject(a,b.tof[k],(*p1).endbins,(*p1).intendbins[1],(*p1).intendbins,a.nsat,(*pop).maxsaturated,(*p1).tas[i],210,speedreject=(*pop).speedreject)
                
                ;Plot the particle
@@ -104,7 +108,8 @@ PRO sid_windowplot,topid,p1,pinfo,pop,noset=noset
                pos=[sizecol/10.4+0.02,nplotted[sizecol]/10.7+0.055,(sizecol+1)/10.4+0.02,(nplotted[sizecol]+1)/10.7+0.055] + margin
                plot,temp,findgen(29)/28*2*!pi,/polar,xs=4,ys=4,/iso,color=70+sizecol*(180.0/nx),line=(reject<1)*5,position=pos,/norm,/noerase 
                oplot,[0],[0],color=250,psym=1
-               xyouts,0.1,0.1,' '+strtrim(string(round(a.size)),2) + '.' +strtrim(string(round(a.branches)),2),charsize=1 
+               ;xyouts,0.1,0.1,' '+strtrim(string(round(a.size)),2) + ' ' +strtrim(string(round(a.branches)),2),charsize=1 
+               xyouts,0.1,0.1,' '+strtrim(string(round(a.branches)),2),charsize=1
                nplotted[sizecol]=nplotted[sizecol]+1 
               ENDIF               
                tnplotted=tnplotted+1

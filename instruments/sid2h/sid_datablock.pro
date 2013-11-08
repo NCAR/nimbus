@@ -37,8 +37,9 @@ FUNCTION sid_datablock, lun
     FOR i=0,num-1 DO BEGIN
       readu,lun,a
       
-      bintime=ishft(ulong64(a[9]) and '00000000000fffff'x,20)+(a[4] and '000fffff'x)
+      bintime=ishft(ulong64(a[9]) and '00000000000fffff'x,20)+(ulong64(a[4]) and '000fffff'x)
       elaptime[i]=bintime*50
+      
       IF bintime lt lastbintime THEN errorfound=1
       lastbintime=bintime
          

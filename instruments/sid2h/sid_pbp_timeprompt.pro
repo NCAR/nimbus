@@ -22,8 +22,8 @@ PRO sid_pbp_timeprompt_event, ev
 END 
    
 FUNCTION sid_pbp_timeprompt, starttime, stoptime
-   IF !version.os_family eq 'windows' THEN widget_control,default_font='Helvetica*fixed*12'
-   IF !version.os_family eq 'unix' THEN widget_control,default_font='-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1'
+   ;IF !version.os_family eq 'windows' THEN widget_control,default_font='Helvetica*fixed*12'
+   ;IF !version.os_family eq 'unix' THEN widget_control,default_font='-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1'
    ptr=ptr_new({start:sid_sfm2hms(starttime), stop:sid_sfm2hms(stoptime)})
    
    ;----------Main widget setup-------------------------------------------
