@@ -26,6 +26,21 @@ SwitchConfig::~SwitchConfig()
 /////////////////////////////////////////////////////////////////////
 void SwitchConfig::init() throw (std::string)
 {
+	// Load the configuration
+	loadConfig();
+
+	// Validate the configuration.
+	std::string e;
+	if (!validate(e)) {
+		std::string errmsg = "Errors found in the configuration(";
+		errmsg += fileName();
+		errmsg += "):\n";
+		errmsg += e;
+		throw (errmsg);
+	}
+}
+/////////////////////////////////////////////////////////////////////
+void SwitchConfig::loadConfig() {
 	// Get configuration values. Default values will be created in the
 	// configuration file if they don't exist, so that running the program
 	// for the first time will create a configuration template.
@@ -37,17 +52,6 @@ void SwitchConfig::init() throw (std::string)
 	_cipherKey  = getString("SwitchCipherKey",  "./udpcipher.key");
 	_sslProxy   = getBool  ("SslProxy",         true);
 	_logInterval= getInt   ("LogInterval",      300);
-
-	// If the port number is 0 or no IP address, it indicates that the user
-	// has not configured the application yet. We wait until this point so
-	// that all of the default values will have been added to the configuration
-	// file. Force them to take a stab at configuration.
-	if (_localPort == 0 || _remotePort == 0 || _remoteIP.empty()) {
-		std::string errmsg = "SwitchConfig: Please create a usable configuration by editing ";
-		errmsg += fileName();
-		errmsg += " (make sure ports and IP addresses are valid)";
-		throw (errmsg);
-	}
 
 	if (_sslProxy) {
 		// Get parameters for SSL proxy switch
@@ -62,7 +66,6 @@ void SwitchConfig::init() throw (std::string)
 		_instruments = getArray("Instruments", _instruments);
 	}
 }
-
 /////////////////////////////////////////////////////////////////////
 int SwitchConfig::localPort()
 {
@@ -129,3 +132,67 @@ int SwitchConfig::logInterval()
 	return _logInterval;
 }
 
+/////////////////////////////////////////////////////////////////////
+bool SwitchConfig::validate(std::string& errMsg) {
+
+	bool valid = true;
+	std::string msg;
+	std::string e;
+
+	if (_localPort == 0 ) {
+		msg += "SwitchLocalPort must be non-zero. ";
+		valid = false;
+	}
+	if ( _remotePort == 0) {
+		msg += msg.size()?"\n":"";
+		msg += "SwitchRemotePort must be non-zero. ";
+		valid = false;
+	}
+
+	if (!fileReadable(_cipherKey, "SwitchCipherKey", e)) {
+		msg += msg.size()?"\n":"";
+		msg += e;
+		valid = false;
+	}
+
+	if (_sslProxy) {
+		if (_proxyPort == 0 ) {
+			msg += msg.size()?"\n":"";
+			msg += "SSLProxyPort must be non-zero. ";
+			valid = false;
+		}
+		if (!fileReadable(_serverKeyFile, "SwitchSSLKeyFile", e)) {
+			msg += msg.size()?"\n":"";
+			msg += e;
+			valid = false;
+		}
+		if (!fileReadable(_serverCertFile, "SwitchSSLCertFile", e)) {
+			msg += msg.size()?"\n":"";
+			msg += e;
+			valid = false;
+		}
+		// Check instruments
+		//_instruments
+	} else {
+		// Check instruments
+		//_instruments
+	}
+
+	// Set the error messages.
+	errMsg = msg;
+
+	return valid;
+}
+/////////////////////////////////////////////////////////////////////
+bool SwitchConfig::fileReadable(std::string path,
+		std::string prefix, std::string& errMsg) {
+
+	QFileInfo fileInfo(path.c_str());
+
+	if (!fileInfo.isReadable()) {
+		errMsg = prefix + "(" + path
+				+ ") does not specify an accessible file. ";
+		return false;
+	}
+	return true;
+}

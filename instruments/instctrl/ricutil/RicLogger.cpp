@@ -42,7 +42,11 @@ RicLogger::log(std::string msg) {
 	// Get the identifier, if present.
 	std::string id = _ident? *_ident:"";
 #ifndef WIN32
-	syslog(LOG_INFO, "%s", msg.c_str());
+	std::vector<std::string> ss;
+	boost::split(ss, msg, boost::is_any_of("\n"));
+	for (size_t i = 0; i < ss.size(); i++) {
+		syslog(LOG_INFO, "%s", ss[i].c_str());
+	}
 	if (_toStdOut) {
 		std::cout << st << " " << id << ": " << msg << std::endl;
 	}

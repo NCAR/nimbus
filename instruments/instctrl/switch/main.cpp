@@ -56,9 +56,10 @@ parseCommandLine(int argc, char** argv,
 /////////////////////////////////////////////////////////////////////
 int main(int  argc, char** argv)
 {
+    std::string logId = "RICSwitch-" + std::string(SVNREVISION);
+	RicLogger logger(logId, true);
+
 	try {
-        std::string logId = "RICSwitch-" + std::string(SVNREVISION);
-		RicLogger logger(logId, true);
 		std::string msg("Starting RIC switch: ");
 		msg += std::string(argv[0]);
 		msg += std::string(" r") + std::string(SVNREVISION);
@@ -93,7 +94,7 @@ int main(int  argc, char** argv)
 		return app.exec();
 	}
 	catch (std::string msg) {
-		std::cerr << msg << std::endl;
+		logger.log(msg);
 		return 1;
 	}
 }

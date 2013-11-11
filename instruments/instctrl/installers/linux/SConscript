@@ -2,13 +2,13 @@ env = Environment(tools = ['default','svninfo'])
 
 # Copy other artifacts into the Linux deployment
 sources_targets = [
-  ['run_proxy',                                  '/bin/run_proxy'              ],
-  ['#/Resources/proxy/proxyIcon_512x512x32.png', '/resources/proxyIcon.png'    ],
-  ['#/configurations/Proxy.ini',                  '/resources/Proxy.ini'        ],
-  ['#/configurations/Proxy-AVAPS.ini',            '/resources/Proxy-AVAPS.ini'  ],
-  ['#/test_certs/client.key',                     '/test_certs/client.key'     ],
-  ['#/test_certs/client.crt',                     '/test_certs/client.crt'     ],
-  ['#/test_certs/eol-rt-data.crt',                '/test_certs/eol-rt-data.crt'],
+  ['run_proxy',                                  '/bin/run_proxy'             ],
+  ['#/Resources/proxy/proxyIcon_512x512x32.png', '/resources/proxyIcon.png'   ],
+  ['#/configurations/Proxy.ini',                 '/resources/Proxy.ini'       ],
+  ['#/configurations/Proxy-AVAPS.ini',           '/resources/Proxy-AVAPS.ini' ],
+  ['#/test_certs/client.key',                    '/test_certs/client.key'     ],
+  ['#/test_certs/client.crt',                    '/test_certs/client.crt'     ],
+  ['#/test_certs/eol-rt-data.crt',               '/test_certs/eol-rt-data.crt'],
 ]
 
 for pair in sources_targets:

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <QtCore>
 #include "QtConfig.h"
 
 /// Manage the configuration for a switch.
@@ -38,7 +39,6 @@ public:
 	std::string serverCertFile();
 	/// @returns The proxy definitions
 	std::vector<std::map<std::string, std::string> > proxies();
-
     /// @returns The instrument definition files
     std::vector<std::map<std::string, std::string> > instruments();
 
@@ -46,6 +46,22 @@ protected:
 	/// Common initialization. Read the configuration. Throw an exception
     /// error message if there is a problem with the configuration.
 	void init() throw (std::string);
+	/// Load the configuration into data members.
+	void loadConfig();
+	/// Make sure that the configuration is somewhat sane. Provide
+	/// some diagnostics for detected errors.
+	/// @param errMsg The error diagnostics are returned here.
+	/// @return True if it passes muster, false otherwise.
+	bool validate(std::string& errMsg);
+	/// See if the specified file is readable. If not,
+	/// return an error message. The message will have the
+	/// prefix prepended.
+	/// @param path The file path.
+	/// @param prefix The error message prefix.
+	/// @param errMsg The error message.
+	/// @return True if the file is readable, false otherwise.
+	bool fileReadable(std::string path,
+			std::string prefix, std::string& errMsg);
 
 	/// Parameters shared by SSL proxy and embedded proxy switches
 	//////////////////////////////////////////////////////////////

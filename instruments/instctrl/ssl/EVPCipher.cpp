@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <assert.h>
 
 /////////////////////////////////////////////////////////////////////
 EVPCipher::EVPCipher(std::vector<unsigned char>& key):
@@ -21,7 +22,8 @@ _cipherBlockSize(16)
 
 	if (key.size() != _cipherBlockSize) {
 		/// @ this should be changed to an exception rather than an exit.
-		std::cerr << __PRETTY_FUNCTION__ << " cipher key length does not match the cipher block length" << std::cerr;
+		std::cerr << __PRETTY_FUNCTION__ << " cipher key length does not match the cipher block length" << std::endl;
+		assert(0==1);
 		exit(1);
 	}
 

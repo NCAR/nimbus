@@ -6,6 +6,8 @@
 #endif
 
 #include "boost/date_time/posix_time/posix_time.hpp"
+#include <boost/algorithm/string.hpp>
+#include <vector>
 #include <string>
 
 /// A logging facility for the Remote Instrument Control package.
@@ -25,7 +27,8 @@ public:
 	RicLogger(std::string logId = std::string(""), bool toStdOut = false);
 	/// Destructor
 	virtual ~RicLogger();
-	/// Log a message
+	/// Log a message. The message will be split into individual syslog
+	/// messages for tokens delimited by newline.
 	/// @param msg The message.
 	void log(std::string msg);
 
