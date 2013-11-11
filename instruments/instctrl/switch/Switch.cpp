@@ -265,10 +265,9 @@ bool Switch::logCertError(QSslCertificate& cert, std::string& path) {
 	std::string msg;
 
 	if (!cert.isValid()) {
-			msg += "Invalid certificate: " + path + ", Valid:\n"
-					+ cert.effectiveDate().toString().toStdString() + " to\n"
-					+ cert.expiryDate().toString().toStdString() + ",\n"
-					+ "proxy will not be registered.";
+			msg += "Illegal certificate: " + path + ",\nvalid "
+					+ cert.effectiveDate().toString().toStdString() + " to "
+					+ cert.expiryDate().toString().toStdString();
 	}
 	if (cert.isNull()) {
 			msg += "Null certificate specified in " + path;
