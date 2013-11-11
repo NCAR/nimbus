@@ -4,8 +4,8 @@ env = Environment(tools = ['default','svninfo'])
 sources_targets = [
   ['run_proxy',                                  '/bin/run_proxy'              ],
   ['#/Resources/proxy/proxyIcon_512x512x32.png', '/resources/proxyIcon.png'    ],
-  ['#/proxy/Proxy.ini',                          '/resources/Proxy.ini'        ],
-  ['#/proxy/Proxy-AVAPS.ini',                    '/resources/Proxy-AVAPS.ini'  ],
+  ['#/configurations/Proxy.ini',                  '/resources/Proxy.ini'        ],
+  ['#/configurations/Proxy-AVAPS.ini',            '/resources/Proxy-AVAPS.ini'  ],
   ['#/test_certs/client.key',                     '/test_certs/client.key'     ],
   ['#/test_certs/client.crt',                     '/test_certs/client.crt'     ],
   ['#/test_certs/eol-rt-data.crt',                '/test_certs/eol-rt-data.crt'],
