@@ -57,7 +57,7 @@ parseCommandLine(int argc, char** argv,
 int main(int  argc, char** argv)
 {
 	try {
-                std::string logId = "RICSwitch-" + std::string(SVNREVISION);
+        std::string logId = "RICSwitch-" + std::string(SVNREVISION);
 		RicLogger logger(logId, true);
 		std::string msg("Starting RIC switch: ");
 		msg += std::string(argv[0]);
@@ -80,12 +80,14 @@ int main(int  argc, char** argv)
 		if (configFile.size()) {
 			config = new SwitchConfig(configFile);
 		} else {
-			config = new SwitchConfig("NCAR", "Switch");
+			config = new SwitchConfig();
 		}
+		msg = "Configuration: " + config->fileName();
+		logger.log(msg);
 
 		/////////////////////////////////////////////////////////////////
 		// Create the switch
-		Switch* swtch = new Switch(config, verbose);
+		Switch* swtch = new Switch(config, verbose, config->logInterval());
 
 		// Run the event loop
 		return app.exec();

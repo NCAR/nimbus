@@ -1,4 +1,5 @@
 #include "Switch.h"
+#include <sstream>
 
 /////////////////////////////////////////////////////////////////////
 Switch::Switch(SwitchConfig* config, bool verbose, int reportPeriodSecs) :
@@ -43,41 +44,27 @@ _msgsFromProxiesDropped(0)
 		std::string serverCertFile(config->serverCertFile());
 
 		QSslCertificate serverCert(QSslCertificate::fromPath(serverCertFile.c_str())[0]);
-		if (serverCert.isNull() || !serverCert.isValid()) {
-			if (!serverCert.isValid()) {
-					std::cout << "Invalid certificate specified in " << serverCertFile
-							<< " (Valid " << serverCert.effectiveDate().toString().toStdString() << " to "
-							<< serverCert.expiryDate().toString().toStdString() << "), switch cannot start"
-							<< std::endl;
-			}
-			if (serverCert.isNull()) {
-					std::cout << "Null certificate specified in " << serverCertFile
-							<< ", switch cannot start" << std::endl;
-			}
+		if (logCertError(serverCert, serverCertFile)) {
 			exit(1);
 		}
 
-		// Get the proxy definitions
-		std::vector<std::map<std::string, std::string> > proxiesConfig;
-		proxiesConfig = config->proxies();
+		// Get the proxy specifications
+		std::vector<std::map<std::string, std::string> > proxySpecs;
+		proxySpecs = config->proxies();
+
 		std::vector<SslProxyServer::SslProxyDef> proxies;
-		for (int i = 0; i < proxiesConfig.size(); i++) {
-			SslProxyServer::SslProxyDef proxy;
-			std::string sslCertFile = proxiesConfig[i]["SSLCertFile"];
-			QSslCertificate cert(QSslCertificate::fromPath(sslCertFile.c_str())[0]);
-			if (cert.isNull() || !cert.isValid()) {
-				if (!cert.isValid()) {
-						std::cout << "Invalid certificate specified in " << sslCertFile
-								<< " (Valid " << cert.effectiveDate().toString().toStdString() << " to "
-								<< cert.expiryDate().toString().toStdString() << "), proxy will not be registered"
-								<< std::endl;
-				}
-				if (cert.isNull()) {
-						std::cout << "Null certificate specified in " << sslCertFile << std::endl;
-				}
-			} else {
+		for (int i = 0; i < proxySpecs.size(); i++) {
+
+			// Process the next specified SSL proxy certificate
+			std::string proxyCertFile = proxySpecs[i]["SSLCertFile"];
+			QSslCertificate cert(QSslCertificate::fromPath(proxyCertFile.c_str())[0]);
+
+			// Check for a certificate error, and if no error, create the proxy definition.
+			if (!logCertError(cert, proxyCertFile)) {
+				// Create a proxy definition
+				SslProxyServer::SslProxyDef proxy;
 				proxy._sslCert = cert;
-				proxy._instConfig = InstConfig(proxiesConfig[i]["InstrumentFile"]);
+				proxy._instConfig = InstConfig(proxySpecs[i]["InstrumentFile"]);
 				proxies.push_back(proxy);
 			}
 		}
@@ -269,4 +256,28 @@ void Switch::msgFromRemoteSwitch(Protocols::Message message)
 
 	// Tell the server to forward the message to the proxy
 	_server->sendToProxy(message);
+}
+
+/////////////////////////////////////////////////////////////////////
+bool Switch::logCertError(QSslCertificate& cert, std::string& path) {
+
+	// Build the error message here.
+	std::string msg;
+
+	if (!cert.isValid()) {
+			msg += "Invalid certificate specified in " + path
+					+ " (Valid " + cert.effectiveDate().toString().toStdString() + " to "
+					+ cert.expiryDate().toString().toStdString() + "), proxy will not be registered";
+	}
+	if (cert.isNull()) {
+			msg += "Null certificate specified in " + path;
+	}
+
+	if (msg.size()) {
+		std::cout << msg << std::endl;
+		_logger.log(msg);
+		return true;
+	}
+
+	return false;
 }

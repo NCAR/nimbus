@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sstream>
+#include <QDir.h>
 
 /////////////////////////////////////////////////////////////////////
 SwitchConfig::SwitchConfig(const std::string configPath) throw (std::string) :
@@ -11,8 +12,8 @@ QtConfig(configPath)
 }
 
 /////////////////////////////////////////////////////////////////////
-SwitchConfig::SwitchConfig(const std::string organization, const std::string application) throw (std::string) :
-QtConfig(organization, application)
+SwitchConfig::SwitchConfig() throw (std::string) :
+QtConfig(QString(QDir::homePath()+"/.ric/Switch.ini").toStdString())
 {
 	init();
 }
@@ -35,6 +36,7 @@ void SwitchConfig::init() throw (std::string)
 	_remotePort = getInt   ("SwitchRemotePort", 0);
 	_cipherKey  = getString("SwitchCipherKey",  "./udpcipher.key");
 	_sslProxy   = getBool  ("SslProxy",         true);
+	_logInterval= getInt   ("LogInterval",      300);
 
 	// If the port number is 0 or no IP address, it indicates that the user
 	// has not configured the application yet. We wait until this point so
@@ -50,13 +52,13 @@ void SwitchConfig::init() throw (std::string)
 	if (_sslProxy) {
 		// Get parameters for SSL proxy switch
 		_proxyPort      = getInt   ("SSLProxyPort",      0);
-		_serverKeyFile  = getString("SwitchSSLKeyFile",  "./switch.key");
-		_serverCertFile = getString("SwitchSSLCertFile", "./switch.crt");
+		_serverKeyFile  = getString("SwitchSSLKeyFile",  "~/.ric/SwitchCerts/switch.key");
+		_serverCertFile = getString("SwitchSSLCertFile", "~/.ric/SwitchCerts/switch.crt");
 
 		// Get the proxy definitions
 		_proxies = getArray("SSLProxies", _proxies);
 	} else {
-		// Get the instrument definition files for embedded proxy switch
+		// Get the instrument definition files for an embedded proxy switch
 		_instruments = getArray("Instruments", _instruments);
 	}
 }
@@ -120,3 +122,10 @@ std::vector<std::map<std::string, std::string> > SwitchConfig::instruments()
 {
 	return _instruments;
 }
+
+/////////////////////////////////////////////////////////////////////
+int SwitchConfig::logInterval()
+{
+	return _logInterval;
+}
+

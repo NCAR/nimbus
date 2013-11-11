@@ -40,8 +40,8 @@ public:
 	/// Constructor
 	/// @param config The switch configuration
 	/// @param verbose If true print messages passing through the switch.
-	/// @param reportPeriodSecs The system log reporting period, in secods.
-	Switch(SwitchConfig* config, bool verbose, int reportPeriodSecs = 60);
+	/// @param reportPeriodSecs The system log reporting period, in seconds.
+	Switch(SwitchConfig* config, bool verbose, int reportPeriodSecs = 300);
 	/// Destructor
 	virtual ~Switch();
 	
@@ -64,6 +64,13 @@ protected:
 	/// @param msgId The SYS message ID
 	/// @param text The SYS message content
 	void sendSysMsg(std::string msgId, std::string text="");
+	/// Check the certificate for errors. If found, print and
+	/// log an error message.
+	/// @param cert The certificate to be checked.
+	/// @param path The path to the certificate. This will
+	/// be included in the error message.
+	/// @return True if an error was encountered, false if not.
+	bool logCertError(QSslCertificate& cert, std::string& path);
 	/// The server that manages the connections to the proxies.
 	ProxyServer* _server;
 	/// The connection between us and the remote switch
