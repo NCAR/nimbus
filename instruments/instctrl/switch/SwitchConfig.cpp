@@ -2,7 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sstream>
-#include <QDir.h>
+#include <QtCore>
 
 /////////////////////////////////////////////////////////////////////
 SwitchConfig::SwitchConfig(const std::string configPath) throw (std::string) :
