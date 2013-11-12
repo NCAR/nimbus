@@ -1022,8 +1022,8 @@ void MainWindow::importRemoteCalibTable(QString remote)
       "temperature double precision,"
       "comment character varying(256));").arg(connectStr);
 
-    QString pulledStr = QString(
-      "SELECT cal_date, site, var_name FROM "DB_TABLE""
+    QString pulledQueryStr = QString(
+      "SELECT cal_date, site, cal_type, serial_number, var_name FROM "DB_TABLE""
       " WHERE pulled=\'0\' ORDER BY cal_date");
 
     QString updateMasterStr = QString(
@@ -1045,10 +1045,13 @@ void MainWindow::importRemoteCalibTable(QString remote)
     query.finish();
 
     // briefly show what was just pulled in
-    qDebug() << "pulledStr:" << pulledStr;
+    qDebug() << "pulledQueryStr:" << pulledQueryStr;
     qDebug() << "briefly show what was just pulled in";
     std::ostringstream brief;
-    QSqlQuery briefQuery(pulledStr);
+    QSqlQuery briefQuery(pulledQueryStr);
+
+    brief << "Calibration Date    Site    Type   S/N   Var Name\n";
+    brief << "------------------  ------  -----  ----  --------\n";
     while (briefQuery.next()) {
         for (int i=0; i<3; i++)
             brief << briefQuery.value(i).toString().toStdString() << " ";
