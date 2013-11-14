@@ -1049,11 +1049,12 @@ void MainWindow::importRemoteCalibTable(QString remote)
     qDebug() << "briefly show what was just pulled in";
     std::ostringstream brief;
     QSqlQuery briefQuery(pulledQueryStr);
+    QSqlRecord rec = briefQuery.record();
 
-    brief << "Calibration Date    Site    Type   S/N   Var Name\n";
-    brief << "------------------  ------  -----  ----  --------\n";
+    brief << "Calibration Date     Site         Type    S/N     Var Name\n";
+    brief << "-------------------  --------     -----   ------  ------------\n";
     while (briefQuery.next()) {
-        for (int i=0; i<3; i++)
+        for (int i=0; i<rec.count(); i++)
             brief << briefQuery.value(i).toString().toStdString() << " ";
         brief << "\n";
     }
