@@ -113,6 +113,12 @@ main(int argc, char *argv[])
   NcVar * time_var = ncFile->get_var("Time");
   time_t start_t = getStartTime(time_var);
 
+  // If file format has units as seconds since midnight and Time var starting at
+  // a non-zero value, add that value to the flight start time.
+  NcVar * starttime = ncFile->get_var(0);
+  //cout << "FirstTime: " << starttime->as_int(0) << "\n";
+  start_t=start_t+time_data->as_int(0);
+
   if (start_t <= 0)
   {
     cerr << "Invalid start time, fatal.\n";
