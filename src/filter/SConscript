@@ -9,10 +9,6 @@ env.Append(LIBPATH=['$JLOCAL/lib'])
 if os.path.exists('/usr/lib/openmotif'):
   env.Append(LIBPATH=['/usr/lib/openmotif'])
 
-# For Motif on FC6/7
-if os.path.exists('/opt/local/lib'):
-  env.Append(_LIBFLAGS=['-Wl,-R', '/opt/local/lib'])
-
 # In order:
 #  AMLIB (Atmospheric Mathmatical Library) calculations.
 #  raf 'building blocks'.
