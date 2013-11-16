@@ -66,7 +66,7 @@ static void setNIDASDynamicLags(short lr[])
   {
     raw[i]->DynamicLag = 0;  // reset.
 
-    if (raw[i]->LAGstart > 0);
+    if (raw[i]->LAGstart > 0)
     {
       NR_TYPE lag = rec_p[raw[i]->LAGstart];
       if (!isnan(lag))
