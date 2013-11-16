@@ -6,10 +6,12 @@ Import('env')
 
 env.Append(LIBPATH=['#/lib'])
 env.Append(LIBPATH=['$JLOCAL/lib'])
-env.Append(LIBPATH=['/usr/lib/openmotif'])
+if os.path.exists('/usr/lib/openmotif'):
+  env.Append(LIBPATH=['/usr/lib/openmotif'])
 
 # For Motif on FC6/7
-env.Append(_LIBFLAGS=['-Wl,-R', '/opt/local/lib'])
+if os.path.exists('/opt/local/lib'):
+  env.Append(_LIBFLAGS=['-Wl,-R', '/opt/local/lib'])
 
 # In order:
 #  AMLIB (Atmospheric Mathmatical Library) calculations.
@@ -90,7 +92,7 @@ timeseg.c
 if int(env.realtime):
   env.Append(CPPPATH=[os.path.join(env['NIDAS_PATH'],'include')])
   sources = [sources, 'rtloop3.cc']
-  env.Append(LIBS=['nidas', 'nidas_dynld', 'nidas_util', 'XmlRpcpp', 'xerces-c', 'bz2', 'z'])
+  env.Append(LIBS=['nidas', 'nidas_dynld', 'nidas_util', 'XmlRpcpp', 'xerces-c', 'bz2', 'z', 'pthread'])
   if (platform.machine() == 'x86_64'):
     nlibpath = os.path.join(env['NIDAS_PATH'],'lib64')
   else:

@@ -112,7 +112,7 @@ end
 
 # Qt / qmake
 foreach file ( nc2iwg1 )
-  (cd $file; echo $file; qmake; make )
+  (cd $file; echo $file; qmake-qt4; make )
   if ($num > 0) then
     echo "$file BUILT"
     sleep $num

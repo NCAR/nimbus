@@ -22,6 +22,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2011
 
 #include <netcdfcpp.h>
 
+#include <unistd.h> // usleep()
+
 using namespace std;
 
 struct _var
