@@ -120,18 +120,18 @@ long UTSeconds(NR_TYPE *record)	// Seconds since midnight
 /* -------------------------------------------------------------------- */
 void SetBaseTime(NR_TYPE *record)
 {
-  time_t BaseTime;
-
   StartFlight.tm_isdst	= -1;
 
   StartFlight.tm_hour = (int)record[timeIndex[0]],
   StartFlight.tm_min = (int)record[timeIndex[1]],
   StartFlight.tm_sec = (int)record[timeIndex[2]];
 
+  TimeVar = StartFlight.tm_hour * 3600 + StartFlight.tm_min * 60 + StartFlight.tm_sec;
+
   if (cfg.isADS3())	// We don't support BaseTime anymore.
     return;
 
-  BaseTime = timegm(&StartFlight);
+  time_t BaseTime = timegm(&StartFlight);
   nc_put_var1_long(fd, baseTimeID, NULL, &BaseTime);
 
   if (BaseTime <= 0)
@@ -1049,7 +1049,7 @@ static void writeTimeUnits()
   strftime(buffer, 256, ISO8601_Z, &StartFlight);
   putGlobalAttribute("time_coverage_start", buffer);
 
-  time_t endTime = timegm(&StartFlight);
+  time_t endTime = timegm(&tmp);
   endTime += (TimeVar - 1);
   struct tm EndFlight;
   gmtime_r(&endTime, &EndFlight);
