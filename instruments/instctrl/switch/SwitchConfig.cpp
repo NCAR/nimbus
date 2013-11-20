@@ -67,6 +67,80 @@ void SwitchConfig::loadConfig() {
 	}
 }
 /////////////////////////////////////////////////////////////////////
+bool SwitchConfig::validate(std::string& errMsg) {
+
+	bool valid = true;
+	std::string msg;
+	std::string e;
+
+	if (_localPort == 0 ) {
+		msg += "SwitchLocalPort must be non-zero. ";
+		valid = false;
+	}
+	if ( _remotePort == 0) {
+		msg += msg.size()?"\n":"";
+		msg += "SwitchRemotePort must be non-zero. ";
+		valid = false;
+	}
+
+	if (!fileReadable(_cipherKey, "SwitchCipherKey", e)) {
+		msg += msg.size()?"\n":"";
+		msg += e;
+		valid = false;
+	}
+
+	if (_sslProxy) {
+		if (_proxyPort == 0 ) {
+			msg += msg.size()?"\n":"";
+			msg += "SSLProxyPort must be non-zero. ";
+			valid = false;
+		}
+		/// @todo Add check for user readonly.
+		if (!fileReadable(_serverKeyFile, "SwitchSSLKeyFile", e)) {
+			msg += msg.size()?"\n":"";
+			msg += e;
+			valid = false;
+		}
+		if (!fileReadable(_serverCertFile, "SwitchSSLCertFile", e)) {
+			msg += msg.size()?"\n":"";
+			msg += e;
+			valid = false;
+		}
+		// Check proxies
+		for (std::vector<std::map<std::string, std::string> >::iterator i = _proxies.begin();
+				i != _proxies.end(); i++) {
+			if (i->find("InstrumentFile")==i->end()) {
+				msg += msg.size()?"\n":"";
+				msg += "InstrumentFile not specified for SSLProxy";
+				valid = false;
+				break;
+			}
+			std::string proxyName = (*i)["InstrumentFile"];
+			if (i->find("SSLCertFile")==i->end()) {
+				msg += msg.size()?"\n":"";
+				msg += "SSLCertFile not specified for SSLProxy " + proxyName;
+				valid = false;
+			} else {
+				if (!fileReadable((*i)["SSLCertFile"], "SSLCertFile for proxy " + proxyName, e)) {
+					msg += msg.size()?"\n":"";
+					msg += e;
+					valid = false;
+				}
+			}
+		}
+		// Check instruments
+		//_instruments
+	} else {
+		// Check instruments
+		//_instruments
+	}
+
+	// Set the error messages.
+	errMsg = msg;
+
+	return valid;
+}
+/////////////////////////////////////////////////////////////////////
 int SwitchConfig::localPort()
 {
 	return _localPort;
@@ -132,57 +206,6 @@ int SwitchConfig::logInterval()
 	return _logInterval;
 }
 
-/////////////////////////////////////////////////////////////////////
-bool SwitchConfig::validate(std::string& errMsg) {
-
-	bool valid = true;
-	std::string msg;
-	std::string e;
-
-	if (_localPort == 0 ) {
-		msg += "SwitchLocalPort must be non-zero. ";
-		valid = false;
-	}
-	if ( _remotePort == 0) {
-		msg += msg.size()?"\n":"";
-		msg += "SwitchRemotePort must be non-zero. ";
-		valid = false;
-	}
-
-	if (!fileReadable(_cipherKey, "SwitchCipherKey", e)) {
-		msg += msg.size()?"\n":"";
-		msg += e;
-		valid = false;
-	}
-
-	if (_sslProxy) {
-		if (_proxyPort == 0 ) {
-			msg += msg.size()?"\n":"";
-			msg += "SSLProxyPort must be non-zero. ";
-			valid = false;
-		}
-		if (!fileReadable(_serverKeyFile, "SwitchSSLKeyFile", e)) {
-			msg += msg.size()?"\n":"";
-			msg += e;
-			valid = false;
-		}
-		if (!fileReadable(_serverCertFile, "SwitchSSLCertFile", e)) {
-			msg += msg.size()?"\n":"";
-			msg += e;
-			valid = false;
-		}
-		// Check instruments
-		//_instruments
-	} else {
-		// Check instruments
-		//_instruments
-	}
-
-	// Set the error messages.
-	errMsg = msg;
-
-	return valid;
-}
 /////////////////////////////////////////////////////////////////////
 bool SwitchConfig::fileReadable(std::string path,
 		std::string prefix, std::string& errMsg) {

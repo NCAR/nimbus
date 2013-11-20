@@ -66,6 +66,8 @@ _msgsFromProxiesDropped(0)
 				proxy._sslCert = cert;
 				proxy._instConfig = InstConfig(proxySpecs[i]["InstrumentFile"]);
 				proxies.push_back(proxy);
+			} else {
+				exit(1);
 			}
 		}
 
@@ -265,7 +267,7 @@ bool Switch::logCertError(QSslCertificate& cert, std::string& path) {
 	std::string msg;
 
 	if (!cert.isValid()) {
-			msg += "Illegal certificate: " + path + ",\nvalid "
+			msg += "Invalid certificate: " + path + ",\nvalid "
 					+ cert.effectiveDate().toString().toStdString() + " to "
 					+ cert.expiryDate().toString().toStdString();
 	}
@@ -274,7 +276,6 @@ bool Switch::logCertError(QSslCertificate& cert, std::string& path) {
 	}
 
 	if (msg.size()) {
-		std::cout << msg << std::endl;
 		_logger.log(msg);
 		return true;
 	}
