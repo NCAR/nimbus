@@ -6,7 +6,7 @@
 int main(int argc, char** argv) {
 
 	// Read the proxy configuration
-	InstConfig instConfig("Test", "InstConfigTest");
+	InstConfig instConfig;
 
 	// Get the instrument information
 	std::cout << "Instrument name:  " << instConfig.instrumentName() << std::endl;

@@ -36,12 +36,24 @@ public:
 	/// Constructor for a specified configuration file path.
 	/// @param configFile Path to the configuration file that holds the parameters.
 	InstConfig(const std::string configFile) throw (std::string);
-	/// Constructor for a configuration in the default location.
-    /// @param organization The organization.
-    /// @param application The application.
-	InstConfig(const std::string organization, const std::string application) throw (std::string);
 	/// destructor
 	virtual ~InstConfig();
+	/// Load the configuration.
+	void loadConfig();
+	/// Make sure that the configuration is somewhat sane. Provide
+	/// some diagnostics for detected errors.
+	/// @param errMsg The error diagnostics are returned here.
+	/// @return True if it passes muster, false otherwise.
+	bool validate(std::string& errMsg);
+	/// See if the specified file is readable. If not,
+	/// return an error message. The message will have the
+	/// prefix prepended.
+	/// @param path The file path.
+	/// @param prefix The error message prefix.
+	/// @param errMsg The error message.
+	/// @return True if the file is readable, false otherwise.
+	bool fileReadable(std::string path,
+			std::string prefix, std::string& errMsg);
 	/// @returns The port number that will be read for incoming message datagrams
 	/// from the user or instrument.
 	int incomingPort();
@@ -69,14 +81,8 @@ protected:
 	int _destPort;
 	/// Our messages
 	std::vector<MessageInfo> _messages;
-	/// The path to the instrument configuration. If blank,
-	/// The standard location will be used with organization, application
-	std::string _instConfigPath;
-	/// Use for configuration organization when path is not provided.
-	std::string _instConfigOrg;
-	/// Use for configuration application when path is not provided
-	std::string _instConfigApp;
-
+	/// The path to the instrument configuration.
+	std::string _fileName;
 };
 
 #endif /* INSTCONFIG_H_ */

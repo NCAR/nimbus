@@ -5,14 +5,14 @@
 #include <QtCore>
 
 /////////////////////////////////////////////////////////////////////
-SwitchConfig::SwitchConfig(const std::string configPath) throw (std::string) :
+SwitchConfig::SwitchConfig(const std::string configPath) throw (std::string):
 QtConfig(configPath)
 {
 	init();
 }
 
 /////////////////////////////////////////////////////////////////////
-SwitchConfig::SwitchConfig() throw (std::string) :
+SwitchConfig::SwitchConfig() throw (std::string):
 QtConfig(QString(QDir::homePath()+"/.ric/Switch.ini").toStdString())
 {
 	init();

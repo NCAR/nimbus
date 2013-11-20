@@ -7,7 +7,7 @@
 #include "QtConfig.h"
 
 /// Manage the configuration for a switch.
-class SwitchConfig : public QtConfig {
+class SwitchConfig: public QtConfig {
 
 public:
 	/// Constructor for a specified configuration file path.
