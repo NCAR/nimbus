@@ -32,7 +32,7 @@ void InstConfig::init() throw (std::string) {
 	// Validate the configuration.
 	std::string e;
 	if (!validate(e)) {
-		std::string errmsg = "Errors found in the configuration(";
+		std::string errmsg = "Errors found in the instrument configuration(";
 		errmsg += _fileName;
 		errmsg += "):\n";
 		errmsg += e;
@@ -44,8 +44,7 @@ void InstConfig::init() throw (std::string) {
 void InstConfig::loadConfig() {
 
 	std::string errMsg;
-
-	if (!fileReadable("Instrument configuration file", _fileName, errMsg)) {
+	if (!fileReadable( _fileName, "Instrument configuration file", errMsg)) {
 		throw (errMsg);
 	}
 
@@ -139,7 +138,7 @@ bool InstConfig::fileReadable(std::string path,
 	QFileInfo fileInfo(path.c_str());
 
 	if (!fileInfo.isReadable()) {
-		errMsg = prefix + "(" + path
+		errMsg = prefix + " (" + path
 				+ ") does not specify an accessible file. ";
 		return false;
 	}
