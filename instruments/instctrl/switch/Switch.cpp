@@ -97,7 +97,6 @@ _msgsFromProxiesDropped(0)
 		for (int i = 0; i < instruments.size(); i++) {
 			/// @todo Need error checking for missing map key
 			std::string fileName = instruments[i]["InstrumentFile"];
-			/// @todo Need to add error handling to the InstConfig constructor.
 			instConfigs.push_back(InstConfig(fileName));
 		}
 
@@ -164,20 +163,22 @@ void Switch::setRateLimiter(SwitchConfig* config)
 		proxiesConfig = config->proxies();
 
 		for (int i = 0; i < proxiesConfig.size(); i++) {
-			InstConfig* instConfig = new InstConfig(proxiesConfig[i]["InstrumentFile"]);
-			std::vector<InstConfig::MessageInfo> msgs = instConfig->messages();
-			for (int j = 0; j < msgs.size(); j++)
+			InstConfig instConfig(proxiesConfig[i]["InstrumentFile"]);
+			std::vector<InstConfig::MessageInfo> msgs = instConfig.messages();
+			for (int j = 0; j < msgs.size(); j++) {
 				_rateLimiter->addMsgType(msgs[j].msgID, msgs[j].rateLimit);
+			}
 		}
 	} else {
 		std::vector<std::map<std::string, std::string> > instruments;
 		instruments = config->instruments();
 
 		for (int i = 0; i < instruments.size(); i++) {
-			InstConfig* instConfig = new InstConfig(instruments[i]["InstrumentFile"]);
-			std::vector<InstConfig::MessageInfo> msgs = instConfig->messages();
-			for (int j = 0; j < msgs.size(); j++)
+			InstConfig instConfig(instruments[i]["InstrumentFile"]);
+			std::vector<InstConfig::MessageInfo> msgs = instConfig.messages();
+			for (int j = 0; j < msgs.size(); j++) {
 				_rateLimiter->addMsgType(msgs[j].msgID, msgs[j].rateLimit);
+			}
 		}
 	}
 }
