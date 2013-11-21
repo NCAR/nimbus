@@ -48,7 +48,12 @@ void RateLimiter::addMsgType(std::string msgId, double rate)
 
 	  // log a message about this new entry
 	  std::stringstream logMsg;
-	  logMsg << "RateLimiter::addMsgType " << msgId.c_str() << " rate " << rate << " (new)";
+	  logMsg << "Message " << msgId << " limit";
+	  if (rate == 0.0) {
+		  logMsg << " none";
+	  } else {
+		  logMsg << " 1 per " << rate << "s";
+	  }
 	  _logger.log(logMsg.str()); 
 
 	  int* timer;
@@ -72,7 +77,12 @@ void RateLimiter::addMsgType(std::string msgId, double rate)
 
 	  // log a message about this existing entry
 	  std::stringstream logMsg;
-	  logMsg << "RateLimiter::addMsgType " << msgId.c_str() << " rate " << rate << " (existing)";
+	  logMsg << "Message " << msgId << " limit";
+	  if (rate == 0.0) {
+		  logMsg << " none";
+	  } else {
+		  logMsg << " 1 per " << rate << "s";
+	  }
 	  _logger.log(logMsg.str()); 
 
 	  // Map the message type to the timer

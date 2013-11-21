@@ -64,13 +64,16 @@ _msgsFromProxiesDropped(0)
 				proxy._instConfig = InstConfig(proxySpecs[i]["InstrumentFile"]);
 				proxies.push_back(proxy);
 				// log this proxy
+				QDateTime expiry = proxy._sslCert.expiryDate();
+				int daysToExpiry = QDateTime::currentDateTime().daysTo(expiry);
 				std::string msg;
 				msg += "SSLProxy created for ";
 				msg += proxy._instConfig.instrumentName() + ":\n";
 				msg += "  SSL certificate OU:"
 						+ proxy._sslCert.issuerInfo(QSslCertificate::OrganizationalUnitName).toStdString() + "\n";
 				msg += "  SSL certificate expires:"
-						+ proxy._sslCert.expiryDate().toString().toStdString();
+						+ expiry.toString().toStdString()
+						+ QString(" (%1 days)").arg(daysToExpiry).toStdString();
 				_logger.log(msg);
 			} else {
 				exit(1);
