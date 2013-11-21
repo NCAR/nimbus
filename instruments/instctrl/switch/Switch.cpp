@@ -11,6 +11,14 @@ _msgsToProxies(0),
 _msgsFromProxiesDropped(0)
 {
 
+	// Create the SwitchMonitor
+	_switchMonitor = new SwitchMonitor(reportPeriodSecs,
+									   _msgsFromProxies,
+									   _msgsToSwitch,
+									   _msgsFromSwitch,
+									   _msgsToProxies,
+									   _msgsFromProxiesDropped);
+
 	// The SslProxy parameter in the configuration determines the type
 	// of switch to be created. If SslProxy is true, an SSL proxy switch
 	// is created. Otherwise, an embedded proxy switch is created.
@@ -21,17 +29,6 @@ _msgsFromProxiesDropped(0)
 		          	  	  	  	  	  	     config->remoteIP(),
 		          	  	  	  	  	  	     config->remotePort(),
 		          	  	  	  	  	  	     config->cipherKey());
-
-	// Create the SwitchMonitor
-	_switchMonitor = new SwitchMonitor(reportPeriodSecs,
-									   _msgsFromProxies,
-									   _msgsToSwitch,
-									   _msgsFromSwitch,
-									   _msgsToProxies,
-									   _msgsFromProxiesDropped);
-
-	// Set up switch rate limiter
-	setRateLimiter(config);
 
 	if (_SslProxy) {
 		/// The flavor of Switch for remote proxies that connect via SSL.
@@ -106,13 +103,21 @@ _msgsFromProxiesDropped(0)
 		_logger.log("EmbeddedProxy switch was initialized");
 	}
 
+	// The server emits all proxy messages. We will capture them.
+	connect(_server, SIGNAL(msgFromProxy(Protocols::Message)),
+			this, SLOT(msgFromProxySlot(Protocols::Message)));
+
+	// Capture the messages from the remote switch
+	connect(_switchConnection, SIGNAL(msgFromRemoteSwitch(Protocols::Message)),
+			this, SLOT(msgFromRemoteSwitch(Protocols::Message)));
+
+	// Set up the switch rate limiter
+	setRateLimiter(config);
+
 	// Send a heartbeat and start switch heartbeat timer
 	sendSysMsg("HEARTBEAT");
 	_heartbeat = startTimer(reportPeriodSecs * 1000);
 	
-	// Initialize the switch
-	init();
-
 	// Log a few details about the switch to switch connection
 	QString msg;
 	msg = QString("Inter-switch messages received on port %1").arg(config->localPort());
@@ -137,18 +142,6 @@ void Switch::timerEvent(QTimerEvent* event)
 {
 	if (event->timerId() == _heartbeat)
 		sendSysMsg("HEARTBEAT");
-}
-
-/////////////////////////////////////////////////////////////////////
-void Switch::init()
-{
-	// The server emits all proxy messages. We will capture them.
-	connect(_server, SIGNAL(msgFromProxy(Protocols::Message)),
-			this, SLOT(msgFromProxySlot(Protocols::Message)));
-
-	// Capture the messages from the remote switch
-	connect(_switchConnection, SIGNAL(msgFromRemoteSwitch(Protocols::Message)),
-			this, SLOT(msgFromRemoteSwitch(Protocols::Message)));
 }
 
 /////////////////////////////////////////////////////////////////////

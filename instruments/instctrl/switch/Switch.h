@@ -56,8 +56,6 @@ protected slots:
 	void msgFromRemoteSwitch(Protocols::Message msg);
 
 protected:
-	/// Create the signal/slot connections.
-	void init();
 	/// Set up rate limiter for the switch
 	void setRateLimiter(SwitchConfig* config);
 	/// Send a SYS message to remote switch
