@@ -63,6 +63,15 @@ _msgsFromProxiesDropped(0)
 				proxy._sslCert = cert;
 				proxy._instConfig = InstConfig(proxySpecs[i]["InstrumentFile"]);
 				proxies.push_back(proxy);
+				// log this proxy
+				std::string msg;
+				msg += "SSLProxy created for ";
+				msg += proxy._instConfig.instrumentName() + ":\n";
+				msg += "  SSL certificate OU:"
+						+ proxy._sslCert.issuerInfo(QSslCertificate::OrganizationalUnitName).toStdString() + "\n";
+				msg += "  SSL certificate expires:"
+						+ proxy._sslCert.expiryDate().toString().toStdString();
+				_logger.log(msg);
 			} else {
 				exit(1);
 			}
@@ -78,7 +87,6 @@ _msgsFromProxiesDropped(0)
 									 config->proxyPort(),
 									 proxies);
 
-		_logger.log("SSL switch was initialized");
 	}
 	else {
 		/// The flavor of switch which contains embedded proxies. It does not
@@ -99,8 +107,6 @@ _msgsFromProxiesDropped(0)
 
 		// Create an embedded proxy server
 		_server = new EmbeddedProxyServer(instConfigs);
-
-		_logger.log("EmbeddedProxy switch was initialized");
 	}
 
 	// The server emits all proxy messages. We will capture them.
