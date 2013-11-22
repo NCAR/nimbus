@@ -5,6 +5,7 @@
 #include <vector>
 #include <QtCore>
 #include "QtConfig.h"
+#include "InstConfig.h"
 
 /// Manage the configuration for a switch.
 class SwitchConfig: public QtConfig {
@@ -62,6 +63,10 @@ protected:
 	/// @return True if the file is readable, false otherwise.
 	bool fileReadable(std::string path,
 			std::string prefix, std::string& errMsg);
+	/// Expand tilde to home in a path.
+	/// @param path The path to be expanded.
+	/// @returns The path with tilde expansion.
+	std::string expandPath(std::string path);
 
 	/// Parameters shared by SSL proxy and embedded proxy switches
 	//////////////////////////////////////////////////////////////
@@ -73,10 +78,10 @@ protected:
 	int _remotePort;
 	/// The file containing the key for symmetric cipher encryption over
 	/// SwitchConnection. This file must be kept private!
-	std::string _cipherKey;
+	std::string _cipherKeyFile;
 	/// If true, this is for an SSL proxy switch. Otherwise, it is
 	/// for an embedded proxy switch.
-	bool _sslProxy;
+	bool _sslServer;
 
 	/// Parameters for SSL proxy switch
 	///////////////////////////////////
@@ -88,13 +93,11 @@ protected:
 	std::string _serverCertFile;
 	/// The logging interval, in seconds
 	int _logInterval;
-
-	/// The proxy definitions
+	/// The top of the configration directory.
+	std::string _topDir;
+	/// Proxy definitios
 	std::vector<std::map<std::string, std::string> > _proxies;
-
-	/// Parameters for embedded proxy switch
-	////////////////////////////////////////
-	/// Instrument definition files
+	/// Instrument definition filesname
 	std::vector<std::map<std::string, std::string> > _instruments;
 
 };
