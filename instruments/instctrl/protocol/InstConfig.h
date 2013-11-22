@@ -55,12 +55,19 @@ public:
 	bool fileReadable(std::string path,
 			std::string prefix, std::string& errMsg);
 	/// @returns The port number that will be read for incoming message datagrams
-	/// from the user or instrument.
-	int incomingPort();
-	/// @returns The port number that outgoing message datagrams will be sent to.
-	int destPort();
-	/// @returns The IP name or address of the destination for outgoing message datagrams.
-	std::string destHost();
+	/// from the instrument.
+	int instIncomingPort();
+	/// @returns The instrument port number that outgoing message datagrams will be sent to.
+	int instDestPort();
+	/// @returns The IP name or address of the instrument for outgoing message datagrams.
+	std::string instDestHost();
+	/// @returns The port number that will be read for incoming message datagrams
+	/// from the user.
+	int userIncomingPort();
+	/// @returns The user port number that outgoing message datagrams will be sent to.
+	int userDestPort();
+	/// @returns The IP name or address of the user for outgoing message datagrams.
+	std::string userDestHost();
 	/// @returns The instrument name.
     std::string instrumentName();
     /// @returns The collection of defined messages for this instrument.
@@ -73,12 +80,19 @@ protected:
     /// The instrument name.
     std::string _instName;
     /// The port number that will be read for incoming message datagrams
-	/// from the user or instrument.
-	int _incomingPort;
-	/// The IP name or address of the destination for outgoing message datagrams.
-	std::string _destHost;
-	/// The port number that outgoing message datagrams will be sent to.
-	int _destPort;
+	/// from the instrument.
+	int _instIncomingPort;
+	/// The IP name or address of the instrument for outgoing message datagrams.
+	std::string _instDestHost;
+	/// The instrument port number that outgoing message datagrams will be sent to.
+	int _instDestPort;
+    /// The port number that will be read for incoming message datagrams
+	/// from the user.
+	int _userIncomingPort;
+	/// The IP name or address of the user for outgoing message datagrams.
+	std::string _userDestHost;
+	/// The user port number that outgoing message datagrams will be sent to.
+	int _userDestPort;
 	/// Our messages
 	std::vector<MessageInfo> _messages;
 	/// The path to the instrument configuration.

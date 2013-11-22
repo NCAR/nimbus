@@ -114,15 +114,15 @@ namespace Ssl {
 		/// The connection to the switch.
 		Ssl::SslConnection* _sslConnection;
 		/// Port number for incoming datagrams (from user)
-		int _incomingUdpPort;
+		int _incomingPort;
 		/// The incoming datagram socket.
-		QUdpSocket* _incomingUdpSocket;
+		QUdpSocket* _incomingSocket;
 		/// Destination IP or hostname for outgoing datagrams (to user)
 		std::string _destHost;
 		/// Port number for outgoing datagrams (to user)
 		int _destPort;
 		/// The outgoing datagram socket.
-		QUdpSocket* _outgoingUdpSocket;
+		QUdpSocket* _outgoingSocket;
 		/// Routing information for message types.
 		std::map<std::string, InstConfig::MessageInfo> _imessages;
 		/// The system logger

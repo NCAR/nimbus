@@ -8,8 +8,8 @@ using namespace Protocols;
 SslProxy::SslProxy(ProxyConfig* config) :
 _proxyState(PROXY_Unconnected),
 _sslConnection(0),
-_incomingUdpSocket(0),
-_outgoingUdpSocket(0)
+_incomingSocket(0),
+_outgoingSocket(0)
 {
 	_proxyID = config->id();
 	_keyFile = config->keyFile();
@@ -18,9 +18,9 @@ _outgoingUdpSocket(0)
 
 	// Get the configuration for the instrument.
 	InstConfig instConfig(config->instrumentFile());
-	_incomingUdpPort = instConfig.incomingPort();
-	_destHost        = instConfig.destHost();
-	_destPort        = instConfig.destPort();
+	_destHost     = instConfig.userDestHost();
+	_incomingPort = instConfig.userIncomingPort();
+	_destPort     = instConfig.userDestPort();
 
 	// Get the messages for this instrument
 	std::vector<InstConfig::MessageInfo> instMessages = instConfig.messages();
@@ -75,12 +75,12 @@ SslProxy::~SslProxy()
 	// be happening during a slot invocation, and there may be
 	// pending signals for the object being deleted.
 
-	if (_incomingUdpSocket) {
-		_incomingUdpSocket->deleteLater();
+	if (_incomingSocket) {
+		_incomingSocket->deleteLater();
 	}
 
-	if (_outgoingUdpSocket) {
-		_outgoingUdpSocket->deleteLater();
+	if (_outgoingSocket) {
+		_outgoingSocket->deleteLater();
 	}
 
 	if (_sslConnection) {
@@ -151,27 +151,27 @@ void SslProxy::closeSslConnection()
 /////////////////////////////////////////////////////////////////////
 void SslProxy::initIncomingUDPsockets()
 {
-	_incomingUdpSocket = new QUdpSocket(this);
+	_incomingSocket = new QUdpSocket(this);
 
-	bool status = _incomingUdpSocket->bind(QHostAddress::Any, _incomingUdpPort,
+	bool status = _incomingSocket->bind(QHostAddress::Any, _incomingPort,
 			QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
 	if (!status) {
-		qDebug() << "unable to bind to UDP port " << _incomingUdpPort;
+		qDebug() << "unable to bind to UDP port " << _incomingPort;
 		return;
 	}
 
-	connect(_incomingUdpSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
+	connect(_incomingSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
 
 	QString msg = QString("Proxy %1 will listen on port %2")
-			      .arg(_proxyID.c_str()).arg(_incomingUdpPort);
+			      .arg(_proxyID.c_str()).arg(_incomingPort);
 	_logger.log(msg.toStdString());
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslProxy::initOutgoingUDPsocket()
 {
-	_outgoingUdpSocket = new QUdpSocket(this);
+	_outgoingSocket = new QUdpSocket(this);
 
 	std::map<std::string, InstConfig::MessageInfo>::iterator it;
 	for (it = _imessages.begin(); it != _imessages.end(); it++) {
@@ -251,12 +251,12 @@ void SslProxy::connectionErrorSlot(QAbstractSocket::SocketError err, std::string
 void SslProxy::udpReadyRead()
 {
 	// A message has arrived from the instrument/controller
-	while (_incomingUdpSocket->hasPendingDatagrams()) {
+	while (_incomingSocket->hasPendingDatagrams()) {
 		// read the datagram
-		int dataSize = _incomingUdpSocket->pendingDatagramSize();
+		int dataSize = _incomingSocket->pendingDatagramSize();
 		QByteArray data;
 		data.resize(dataSize);
-		_incomingUdpSocket->readDatagram(data.data(), dataSize);
+		_incomingSocket->readDatagram(data.data(), dataSize);
 
 		// create a Message
 		std::string text = QString(data).toStdString();
@@ -319,14 +319,14 @@ void SslProxy::sendMsg(InstConfig::MessageInfo& info, Protocols::Message& msg)
 
 	if (info.broadcast) {
 		// message will be broadcast
-		sent = _outgoingUdpSocket->writeDatagram(
+		sent = _outgoingSocket->writeDatagram(
 				text.c_str(),
 				text.size(),
 				QHostAddress::Broadcast,
 				_destPort);
 	} else {
 		// message will be unicast
-		sent = _outgoingUdpSocket->writeDatagram(
+		sent = _outgoingSocket->writeDatagram(
 				text.c_str(),
 				text.size(),
 				QtAddress::address(_destHost),
@@ -336,7 +336,7 @@ void SslProxy::sendMsg(InstConfig::MessageInfo& info, Protocols::Message& msg)
 		qDebug() << "Warning, only" << sent << "bytes out of" << text.size() <<
 				"were sent to port" << _destPort << "for message ID " << info.msgID.c_str();
 		if (sent == -1) {
-			qDebug() << "The socket error is:" << _outgoingUdpSocket->error();
+			qDebug() << "The socket error is:" << _outgoingSocket->error();
 		}
 	}
 }

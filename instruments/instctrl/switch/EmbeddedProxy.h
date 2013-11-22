@@ -54,15 +54,15 @@ protected:
 	/// The messages that this proxy can handle.
 	std::map<std::string, InstConfig::MessageInfo> _messages;
 	/// Port number for incoming datagrams (from instrument)
-	int _incomingUdpPort;
+	int _incomingPort;
 	/// The incoming datagram socket.
-	QUdpSocket* _incomingUdpSocket;
+	QUdpSocket* _incomingSocket;
 	/// Destination IP or hostname for outgoing datagrams (to instrument)
 	std::string _destHost;
 	/// Port number for outgoing datagrams (to instrument)
 	int _destPort;
 	/// The outgoing datagram socket.
-	QUdpSocket* _outgoingUdpSocket;
+	QUdpSocket* _outgoingSocket;
 	/// The system logger
 	RicLogger _logger;
 

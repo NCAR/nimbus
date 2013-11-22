@@ -5,8 +5,10 @@
 
 /////////////////////////////////////////////////////////////////////
 InstConfig::InstConfig() throw (std::string):
-_incomingPort(0),
-_destPort(0)
+_instIncomingPort(0),
+_instDestPort(0),
+_userIncomingPort(0),
+_userDestPort(0)
 {
 
 }
@@ -58,9 +60,12 @@ void InstConfig::loadConfig() {
 	// If these items don't exist in the configuration,
 	// they will be created as default values.
     _instName     = config->getString("InstName",         "INSTRUMENT");
-	_incomingPort = config->getInt   ("InstIncomingPort", 0);
-	_destHost     = config->getString("InstHostName",     "127.0.0.1");
-	_destPort     = config->getInt   ("InstDestPort",     0);
+	_instDestHost     = config->getString("InstHostName",     "127.0.0.1");
+	_userDestHost     = config->getString("UserHostName",     "127.0.0.1");
+	_instIncomingPort = config->getInt   ("InstIncomingPort", 0);
+	_userIncomingPort = config->getInt   ("UserIncomingPort", 0);
+	_instDestPort     = config->getInt   ("InstDestPort",     0);
+	_userDestPort     = config->getInt   ("UserDestPort",     0);
 
 	// Get the message definitions. Create a default entry in case
 	// none are there yet.
@@ -116,13 +121,22 @@ bool InstConfig::validate(std::string& errMsg) {
 	std::string msg;
 	std::string e;
 
-	if (_incomingPort == 0 ) {
+	if (_instIncomingPort == 0 ) {
 		msg += "InstIncomingPort must be non-zero. ";
 		valid = false;
 	}
-	if ( _destPort == 0) {
+	if ( _instDestPort == 0) {
 		msg += msg.size()?"\n":"";
 		msg += "InstDestPort must be non-zero. ";
+		valid = false;
+	}
+	if (_userIncomingPort == 0 ) {
+		msg += "UserIncomingPort must be non-zero. ";
+		valid = false;
+	}
+	if ( _userDestPort == 0) {
+		msg += msg.size()?"\n":"";
+		msg += "UserDestPort must be non-zero. ";
 		valid = false;
 	}
 
@@ -149,22 +163,30 @@ std::string InstConfig::instrumentName() {
 	// The default value was set in the constructor
 	return _instName;
 }
-
 /////////////////////////////////////////////////////////////////////
-int InstConfig::incomingPort() {
-	return _incomingPort;
+int InstConfig::instIncomingPort() {
+	return _instIncomingPort;
 }
-
 /////////////////////////////////////////////////////////////////////
-std::string InstConfig::destHost() {
-	return _destHost;
+std::string InstConfig::instDestHost() {
+	return _instDestHost;
 }
-
 /////////////////////////////////////////////////////////////////////
-int InstConfig::destPort() {
-	return _destPort;
+int InstConfig::instDestPort() {
+	return _instDestPort;
 }
-
+/////////////////////////////////////////////////////////////////////
+int InstConfig::userIncomingPort() {
+	return _userIncomingPort;
+}
+/////////////////////////////////////////////////////////////////////
+std::string InstConfig::userDestHost() {
+	return _userDestHost;
+}
+/////////////////////////////////////////////////////////////////////
+int InstConfig::userDestPort() {
+	return _userDestPort;
+}
 /////////////////////////////////////////////////////////////////////
 std::vector<InstConfig::MessageInfo> InstConfig::messages() {
 	return _messages;

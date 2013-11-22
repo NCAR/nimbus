@@ -3,10 +3,10 @@
 /////////////////////////////////////////////////////////////////////
 EmbeddedProxy::EmbeddedProxy(InstConfig& config)
 {
-	_proxyId         = config.instrumentName();
-	_incomingUdpPort = config.incomingPort();
-	_destHost        = config.destHost();
-	_destPort        = config.destPort();
+	_proxyId      = config.instrumentName();
+	_destHost     = config.instDestHost();
+	_incomingPort = config.instIncomingPort();
+	_destPort     = config.instDestPort();
 
 	// Create a message entry for each message defined in the instrument configuration.
 	std::vector<InstConfig::MessageInfo> instMessages = config.messages();
@@ -35,25 +35,25 @@ std::string EmbeddedProxy::Id()
 /////////////////////////////////////////////////////////////////////
 void EmbeddedProxy::initIncomingUDPsockets()
 {
-	_incomingUdpSocket = new QUdpSocket(this);
+	_incomingSocket = new QUdpSocket(this);
 
-	bool status = _incomingUdpSocket->bind(QHostAddress::Any, _incomingUdpPort,
+	bool status = _incomingSocket->bind(QHostAddress::Any, _incomingPort,
 			QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
 	if (!status) {
-		qDebug() << "Unable to bind to UDP port " << _incomingUdpPort;
+		qDebug() << "Unable to bind to UDP port " << _incomingPort;
 		return;
 	}
 
-	connect(_incomingUdpSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
+	connect(_incomingSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
 
-	qDebug() << "Proxy" << _proxyId.c_str() << "will listen on port" << _incomingUdpPort;
+	qDebug() << "Proxy" << _proxyId.c_str() << "will listen on port" << _incomingPort;
 }
 
 /////////////////////////////////////////////////////////////////////
 void EmbeddedProxy::initOutgoingUDPsocket()
 {
-	_outgoingUdpSocket = new QUdpSocket(this);
+	_outgoingSocket = new QUdpSocket(this);
 
 	std::map<std::string, InstConfig::MessageInfo>::iterator it;
 	for (it = _messages.begin(); it != _messages.end(); it++) {
@@ -67,13 +67,13 @@ void EmbeddedProxy::initOutgoingUDPsocket()
 void EmbeddedProxy::udpReadyRead()
 {
 	// A message has arrived from the instrument/controller
-	while (_incomingUdpSocket->hasPendingDatagrams()) {
+	while (_incomingSocket->hasPendingDatagrams()) {
 
 		// read the datagram
-		int dataSize = _incomingUdpSocket->pendingDatagramSize();
+		int dataSize = _incomingSocket->pendingDatagramSize();
 		QByteArray data;
 		data.resize(dataSize);
-		_incomingUdpSocket->readDatagram(data.data(), dataSize);
+		_incomingSocket->readDatagram(data.data(), dataSize);
 
 		// create a Message
 		std::string text = QString(data).toStdString();
@@ -120,14 +120,14 @@ void EmbeddedProxy::sendMsg(InstConfig::MessageInfo& info, Protocols::Message& m
 
 	if (info.broadcast) {
 		// message will be broadcast
-		sent = _outgoingUdpSocket->writeDatagram(
+		sent = _outgoingSocket->writeDatagram(
 				text.c_str(),
 				text.size(),
 				QHostAddress::Broadcast,
 				_destPort);
 	} else {
 		// message will be unicast
-		sent = _outgoingUdpSocket->writeDatagram(
+		sent = _outgoingSocket->writeDatagram(
 				text.c_str(),
 				text.size(),
 				QtAddress::address(_destHost),
@@ -137,7 +137,7 @@ void EmbeddedProxy::sendMsg(InstConfig::MessageInfo& info, Protocols::Message& m
 		qDebug() << "Warning, only" << sent << "bytes out of" << text.size() <<
 				"were sent to port" << _destPort << "for message ID " << info.msgID.c_str();
 		if (sent == -1) {
-			qDebug() << "The socket error is:" << _outgoingUdpSocket->error();
+			qDebug() << "The socket error is:" << _outgoingSocket->error();
 		}
 	}
 }
