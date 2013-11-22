@@ -153,7 +153,7 @@ bool SwitchConfig::validate(std::string& errMsg) {
 			InstConfig instConfig(instFile);
 			std::string instName = instConfig.instrumentName();
 			std::string instCertFile = _topDir + "/Certs/" + instName + ".crt";
-			if (!fileReadable(instFile, "Instrument certificate file", e)) {
+			if (!fileReadable(instCertFile, "Instrument certificate file", e)) {
 				msg += msg.size()?"\n":"";
 				msg += e;
 				valid = false;
