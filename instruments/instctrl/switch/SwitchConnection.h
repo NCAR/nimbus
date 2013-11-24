@@ -8,6 +8,7 @@
 #include "Message.h"
 #include "SymCipherProtocol.h"
 #include "QtAddress.h"
+#include "RicLogger.h"
 
 /// The communication connection between two switches. It is bi-directional,
 /// exchanging messages with a remote instance of the switch.
@@ -60,6 +61,9 @@ protected:
 	Protocols::SymCipherProtocol _switchToSwitchProtocol;
 	/// The file containing the switch udp cipher key
 	std::string _switchCipherKey;
+	/// The system logger
+	RicLogger _logger;
+
 };
 
 #endif /* SWITCHCONNECTION_H_ */

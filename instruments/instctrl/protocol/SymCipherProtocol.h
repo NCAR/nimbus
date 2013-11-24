@@ -39,7 +39,7 @@ namespace Protocols
 		/// @param s The incoming data bytes. It must be one complete
 		/// message from the corresponding outgoing() encryption.
 		/// @return Complete messages, if available.
-		virtual std::vector<std::string> incoming(std::string s);
+		virtual std::vector<std::string> incoming(std::string s) throw (std::string);
 		/// Convert a message into an outgoing protocol stream.
 		/// @param s The message to be sent.
 		/// @return Data block ready for transmision, if available.

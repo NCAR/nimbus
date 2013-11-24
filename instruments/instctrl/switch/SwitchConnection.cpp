@@ -43,14 +43,19 @@ void SwitchConnection::readyRead() {
        /// @todo Validate that the datagram came from an acceptable sender
 
        // Decode it
-        std::vector<std::string> decoded =
-        		_switchToSwitchProtocol.incoming(std::string(datagram.begin(), datagram.end()));
+       try {
+		   std::vector<std::string> decoded =
+					_switchToSwitchProtocol.incoming(std::string(datagram.begin(), datagram.end()));
 
-        // Send the message to clients
-        for (int i = 0; i < decoded.size(); i++) {
-        	Protocols::Message msg(decoded[i]);
-        	emit msgFromRemoteSwitch(msg);
-        }
+			// Send the message to clients
+			for (int i = 0; i < decoded.size(); i++) {
+				Protocols::Message msg(decoded[i]);
+				emit msgFromRemoteSwitch(msg);
+			}
+       }
+       catch (std::string e) {
+    	   _logger.log(e);
+       }
     }
 }
 

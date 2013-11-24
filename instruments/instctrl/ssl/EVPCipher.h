@@ -52,13 +52,13 @@ public:
 	/// sizes. It must match the IV used to encrypt the input.
 	/// @param input The bytes to be decrypted.
 	/// @returns The decrypted values, as binary bytes.
-	std::vector<unsigned char> decrypt(std::vector<unsigned char>& iv, std::string& input);
+	std::vector<unsigned char> decrypt(std::vector<unsigned char>& iv, std::string& input) throw (std::string);
 	/// Decrypt a collection of bytes.
 	/// @param iv The initialization vector. It must have the same length as the cipher block
 	/// sizes. It must match the IV used to encrypt the input.
 	/// @param input The bytes to be decrypted.
 	/// @returns The decrypted values, as binary bytes.
-	std::vector<unsigned char> decrypt(std::vector<unsigned char>& iv, std::vector<unsigned char>& input);
+	std::vector<unsigned char> decrypt(std::vector<unsigned char>& iv, std::vector<unsigned char>& input) throw (std::string);
 	/// Make an encryption key. It is simply a very random number of the desired length. It
 	/// calls RAND_load_file("/dev/urandom", 1024) and RAND_bytes(&key, bytes);
 	/// @param bytes The length, in bytes.

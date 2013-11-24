@@ -75,7 +75,7 @@ std::vector<unsigned char> EVPCipher::encrypt(std::vector<unsigned char>& iv, st
 }
 
 /////////////////////////////////////////////////////////////////////
-std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, std::string& input) {
+std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, std::string& input) throw (std::string) {
 
 	std::vector<unsigned char> vectorinput(input.begin(), input.end());
 	return (decrypt(iv, vectorinput));
@@ -83,10 +83,11 @@ std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, st
 }
 
 /////////////////////////////////////////////////////////////////////
-std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, std::vector<unsigned char>& input) {
+std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv,
+		std::vector<unsigned char>& input) throw (std::string) {
 
 	if (iv.size() != _cipherBlockSize) {
-		std::cerr << "EVPCipher: initilization vector must match the cipher block size of "
+		std::cerr << "EVPCipher: initialization vector must match the cipher block size of "
 				<< _cipherBlockSize << std::endl;
 		exit(1);
 	}
@@ -105,12 +106,12 @@ std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, st
 	int n_final = 0;
 	status = EVP_DecryptUpdate(&_decrypt, &result[0], &n, &input[0], input.size());
 	if (!status) {
-		std::cerr << __PRETTY_FUNCTION__ << ":" << __LINE__ << " decryption error" << std::endl;
+		throw (std::string("Decryption failed (are the cipher keys correct?)"));
 	}
 	n_final += n;
 	status = EVP_DecryptFinal_ex(&_decrypt, &result[n], &n);
 	if (!status) {
-		std::cerr << __PRETTY_FUNCTION__ << ":" << __LINE__ << " decryption error" << std::endl;
+		throw (std::string("Decryption failed (are the cipher keys correct?)"));
 	}
 	n_final += n;
 

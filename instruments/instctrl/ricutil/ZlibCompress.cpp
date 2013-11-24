@@ -20,7 +20,7 @@ std::string ZlibCompress::compress(std::string s) throw (std::string) {
 	int status = ::compress(&outbuf[0], &sz, &inbuf[0], inbuf.size());
 	if (status != Z_OK) {
 		std::string msg;
-		msg += "Error compressing data in ";
+		msg += "Msg compression failed";
 		msg += __PRETTY_FUNCTION__;
 		msg += ":";
 		msg += __LINE__;
@@ -62,10 +62,7 @@ std::string ZlibCompress::uncompress(std::string s) throw (std::string) {
 	int status = ::uncompress(&outbuf[0], &sz, &inbuf[0], inbuf.size());
 	if (status != Z_OK) {
 		std::string msg;
-		msg += "Error uncompressing data in ";
-		msg += __PRETTY_FUNCTION__;
-		msg += ":";
-		msg += __LINE__;
+		msg += "Msg uncompression failed (are the cipher keys correct?)";
 		throw (msg);
 	}
 

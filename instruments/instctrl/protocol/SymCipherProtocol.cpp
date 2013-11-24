@@ -51,7 +51,7 @@ std::vector<std::string> SymCipherProtocol::outgoing(std::string s) {
 }
 
 /////////////////////////////////////////////////////////////////////
-std::vector<std::string> SymCipherProtocol::incoming(std::string s) {
+std::vector<std::string> SymCipherProtocol::incoming(std::string s) throw (std::string) {
 
 	// Perform the inverse encoding
 	std::vector<unsigned char> tmp;
