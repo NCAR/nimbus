@@ -281,6 +281,11 @@ void PMS1D_SetupForADS3()
   {
     setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
   }
+  else
+  if (cfg.ProjectName().compare("CONTRAST") == 0)
+  {
+      setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+  }
 }
 
 /* -------------------------------------------------------------------- */
