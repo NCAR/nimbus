@@ -12,7 +12,7 @@ O2D	= ../class
 
 #       Linux
 #
-DEFINES	= -DPNG
+DEFINES	= -D_FILE_OFFSET_BITS=64 -DPNG
 INCLUDES= -I../class -I../src -I${RAFINC}
 LIB_DIRS= -L${JLOCAL}/lib
 LIBS   = -lraf++ -lXm -lXt -lXext -lX11 -lpng -lz
@@ -29,7 +29,7 @@ ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RHEL6
 #
 # Build libraf++ first.
 #
-#DEFINES	= -DPNG
+#DEFINES	= -D_FILE_OFFSET_BITS=64 -DPNG
 #INCLUDES= -I../src -I${INC} -I${RAFINC} -I${LOCAL}/include -I/usr/OpenMotif/include
 #LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib -L${LOCAL}/lib -L/usr/OpenMotif/lib
 #LIBS   = -lraf++ -lXm -lXt -lICE -lXext -lX11 -lpng -lz

@@ -188,7 +188,7 @@ trc = XmCreateRowColumn(Window(), (char *)"trc", args, 0);
   for (i = 0; i < 4; ++i)
     {
     n = 0;
-    sprintf(buffer, "conc%d", i);
+    sprintf(buffer, "conc%zu", i);
     cncB[i] = XmCreateToggleButton(RC[2], buffer, NULL, 0);
     XtAddCallback(cncB[i], XmNvalueChangedCallback,
                   (XtCallbackProc)SetConcentration, (XtPointer)i);

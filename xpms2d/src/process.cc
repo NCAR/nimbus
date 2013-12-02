@@ -223,7 +223,7 @@ if (debug)
 
     /* Have particle, will travel.
      */
-if (debug) printf("%08lx %08lx %08lx\n", ppSlice, pSlice, slice);
+if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, slice);
     if (slice == syncWord && ppSlice == 0xffffffff && pSlice != 0xffffffff)
       {
       Particle * cp = new Particle();
@@ -296,7 +296,7 @@ if (debug) printf("%08lx %08lx %08lx\n", ppSlice, pSlice, slice);
       cp->msec /= 1000;
 
 if (debug)
-  printf("%06lx %zu %zu\n", cp->timeWord, cp->w, cp->h);
+  printf("%06x %zu %zu\n", cp->timeWord, cp->w, cp->h);
 
 
       // This will not get caught in checkRejectionCriteria(), so do it here.
@@ -546,7 +546,7 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, p[0]);
       cp->msec /= 1000;
 
 if (debug)
-  printf("%06lx %zu %zu\n", cp->timeWord, cp->w, cp->h);
+  printf("%06x %zu %zu\n", cp->timeWord, cp->w, cp->h);
 
       totalLiveTime += checkRejectionCriteria(cp, output);
 
@@ -764,7 +764,7 @@ if (debug)
     cp->liveTime = (unsigned long)((float)(cp->w) * output.frequency);
 
 if (debug)
-  printf("%06lx %zu %zu\n", cp->timeWord, cp->w, cp->h);
+  printf("%06x %zu %zu\n", cp->timeWord, cp->w, cp->h);
   }
 
   output.SampleVolume *= output.tas *

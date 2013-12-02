@@ -191,7 +191,7 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
     if (ps) ps->SetColor(color->GetColorPS(RED));
     else pen->SetColor(color->GetColor(RED));
 
-    sprintf(buffer, "%6ld", stats.DASelapsedTime / 1000);
+    sprintf(buffer, "%6u", stats.DASelapsedTime / 1000);
     }
   else {
     sprintf(buffer, "%6.3f", (float)stats.DASelapsedTime / 1000);
@@ -257,7 +257,7 @@ colWidth = Width() / nCols;
       break;
 
     case DIAGNOSTIC:
-      sprintf(buffer, "freq = %f,  mean=%lu min=%lu max=%lu",
+      sprintf(buffer, "freq = %f,  mean=%u min=%u max=%u",
 	stats.frequency * 1000, stats.meanBar, stats.minBar, stats.maxBar);
 
       if (ps) { ps->MoveTo(505, 750-(y+62)); ps->ShowStr(buffer); }
@@ -325,13 +325,13 @@ void MainCanvas::drawPMS2D(P2d_rec * record, struct recStats &stats, float versi
       if ((cp = (Particle *)stats.particles.DeQueue()) == NULL)
         break;
 
-if (debug) { if (cp) printf("dq: %06lx %lu %lu\n", cp->timeWord, cp->h, cp->w); else printf("NULL\n"); }
+if (debug) { if (cp) printf("dq: %06x %zu %zu\n", cp->timeWord, cp->h, cp->w); else printf("NULL\n"); }
 
       uint32_t timeWord = (uint32_t)((float)cp->timeWord * stats.frequency);
 
       if (timeWord >= stats.DASelapsedTime)
         {
-        sprintf(buffer, "%lu", timeWord);
+        sprintf(buffer, "%u", timeWord);
 
         if (ps) {
           ps->SetColor(color->GetColorPS(RED));
@@ -733,7 +733,7 @@ void MainCanvas::enchiladaLineItem(PostScript *ps, int i, int cnt, Particle *cp)
   s = cp->time - (h*3600) - (m*60);
 
   // Particle #, time stamp, timeword, reject, h, w, a
-  sprintf(buffer, "%03d %02d:%02d:%02d.%03ld  %8ld %2d %3zu %3zu %3zu %6ld %6ld",
+  sprintf(buffer, "%03d %02d:%02d:%02d.%03ld  %8u %2d %3zu %3zu %3zu %6u %6u",
 	cnt, h, m, s, cp->msec, cp->timeWord, cp->reject, cp->h, cp->w,
 	cp->area, cp->deltaTime, cp->liveTime);
 

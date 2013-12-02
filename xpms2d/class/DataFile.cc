@@ -107,7 +107,7 @@ ADS_DataFile::ADS_DataFile(const char fName[])
     gz_fd = gzopen(_fileName.c_str(), "rb");
   else
 #endif
-    fp = fopen64(_fileName.c_str(), "rb");
+    fp = fopen(_fileName.c_str(), "rb");
 
   if ((_gzipped && gz_fd <= 0) || (!_gzipped && fp == NULL))
     {
@@ -220,7 +220,7 @@ void ADS_DataFile::initADS3(char *hdrString)
     }
 
   // Position at first record for buildIndices.
-  fseeko64(fp, endHdr - buffer + strlen("</OAP>\n"), SEEK_SET);
+  fseeko(fp, endHdr - buffer + strlen("</OAP>\n"), SEEK_SET);
 
 
   // Read pertinent meta-data from header.
@@ -389,7 +389,7 @@ bool ADS_DataFile::FirstPMS2dRecord(P2d_rec *buff)
   else
 #endif
     {
-    fseeko64(fp, indices[0].index, SEEK_SET);
+    fseeko(fp, indices[0].index, SEEK_SET);
     fread(physRecord, sizeof(P2d_rec), P2dLRpPR, fp);
     }
 
@@ -446,7 +446,7 @@ bool ADS_DataFile::NextPMS2dRecord(P2d_rec *buff)
     else
 #endif
       {
-      fseeko64(fp, indices[currPhys].index, SEEK_SET);
+      fseeko(fp, indices[currPhys].index, SEEK_SET);
       fread(physRecord, sizeof(P2d_rec), P2dLRpPR, fp);
       }
     }
@@ -499,7 +499,7 @@ bool ADS_DataFile::PrevPMS2dRecord(P2d_rec *buff)
     else
 #endif
       {
-      fseeko64(fp, indices[currPhys].index, SEEK_SET);
+      fseeko(fp, indices[currPhys].index, SEEK_SET);
       fread(physRecord, sizeof(P2d_rec), P2dLRpPR, fp);
       }
     }
@@ -591,7 +591,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
 /* -------------------------------------------------------------------- */
 void ADS_DataFile::buildIndices()
 {
-  size_t	cnt;
+  size_t cnt = 0;
   int	rc;
   short	*word;
   FILE	*fpI;

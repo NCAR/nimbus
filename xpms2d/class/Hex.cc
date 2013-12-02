@@ -37,7 +37,7 @@ void Hex::Update(size_t nBuffs, P2d_rec sets[])
   /* Records */
   for (size_t i = 0; i < nSlices_32bit; ++i)
     {
-    sprintf(buffer, "%4d  ", i);
+    sprintf(buffer, "%4zu  ", i);
 
     for (size_t j = 0; j < nBuffs; ++j)
       if (((char *)&sets[j].id)[1] >= '4')
