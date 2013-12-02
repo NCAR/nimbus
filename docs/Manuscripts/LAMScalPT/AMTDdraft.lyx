@@ -7,7 +7,7 @@
 \use_default_options true
 \maintain_unincluded_children false
 \language british
-\language_package default
+\language_package none
 \inputencoding default
 \fontencoding global
 \font_roman default
@@ -33,8 +33,8 @@
 \pdf_bookmarksopen false
 \pdf_bookmarksopenlevel 1
 \pdf_breaklinks false
-\pdf_pdfborder false
-\pdf_colorlinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
 \pdf_backref false
 \pdf_pdfusetitle true
 \papersize default
@@ -61,19 +61,18 @@
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes true
-\output_changes true
+\tracking_changes false
+\output_changes false
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
-\author 1934758928 "Al Cooper" cooperw@ucar.edu
 \end_header
 
 \begin_body
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -92,20 +91,26 @@ f that is part of the copernicus LaTeX-package.
 \end_inset
 
 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+To prepare for Discussions format, use copernicus article class but AMTD
+ for journal, then edit the latex file (exported via pdflatex option) to
+ change from copernicus to copernicus_discussions.
+ Turning off color in PDF properties for links causes a pdflatex failure.
+ Run pdflatex AMTDdraft twice, add bibtex AMTDdraft, then another pdflatex
+ AMTDdraft to get the PDF file.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Title
-Calibrating 
-\change_inserted 1934758928 1378589124
-airborne 
-\change_unchanged
-measurements 
-\change_deleted 1934758928 1378589138
-from a research aircraft 
-\change_inserted 1934758928 1378589167
-of airspeed, pressure and temperature 
-\change_unchanged
-using a Doppler laser air-motion sensor
+Calibrating airborne measurements of airspeed, pressure and temperature
+ using a Doppler laser air-motion sensor
 \end_layout
 
 \begin_layout Author
@@ -180,9 +185,9 @@ status open
 
 \begin_layout Plain Layout
 
-
+$
 \backslash
-,$
+,
 \backslash
 unit{m
 \backslash
@@ -192,27 +197,11 @@ unit{m
 \end_inset
 
  (standard error) and so reduces uncertainty in the measured component of
- the 
-\change_inserted 1934758928 1378589237
-relative 
-\change_unchanged
-wind along the 
-\change_inserted 1934758928 1378589243
-longitudinal 
-\change_unchanged
-axis of the aircraft to about the same level.
- The calculated 
-\change_deleted 1934758928 1378589331
-excess 
-\change_unchanged
-pressure 
-\change_deleted 1934758928 1378589370
-produced by that airspeed 
-\change_inserted 1934758928 1378589423
-expected from that airspeed 
-\change_unchanged
-at the inlet of a pitot tube then provides a basis for calibrating the measureme
-nts of dynamic and static pressure, reducing uncertainty in those measurements
+ the relative wind along the longitudinal axis of the aircraft to about
+ the same level.
+ The calculated pressure expected from that airspeed at the inlet of a pitot
+ tube then provides a basis for calibrating the measurements of dynamic
+ and static pressure, reducing standard-error uncertainty in those measurements
  to less than 0.3
 \begin_inset space \thinspace{}
 \end_inset
@@ -226,21 +215,21 @@ hPa.
  measurements of geometric altitude from the Global Positioning System,
  then indicate (via integrations of the hydrostatic equation during climbs
  and descents) that the offset and uncertainty in temperature measurement
- for one research aircraft is +0.3
-\begin_inset Formula $\pm0.3\unit{\degree C}$
+ for one research aircraft are 
+\begin_inset Formula $+0.3\pm0.3\unit{\degree C}$
 \end_inset
 
 .
- 
-\change_inserted 1934758928 1378589647
-In airspeed, pressure and temperature these are significant reductions in
- previous uncertainties obtained by standard calibration techniques.
- 
-\change_unchanged
-Finally, it is shown that the new sensor, combined with parametrized fits
- to correction factors for the measured dynamic and ambient pressure, provides
- a measurement of temperature that is independent of any other temperature
- sensor.
+ For airspeed, pressure and temperature these are significant reductions
+ in uncertainty vs.
+\begin_inset space ~
+\end_inset
+
+those obtained from calibrations using standard techniques.
+ Finally, it is shown that the new laser air-motion sensor, combined with
+ parametrized fits to correction factors for the measured dynamic and ambient
+ pressure, provides a measurement of temperature that is independent of
+ any other temperature sensor.
 \end_layout
 
 \begin_layout Introduction
@@ -277,21 +266,14 @@ If one could obtain a reliable reference for any of these interlinked measuremen
 ts, it could be of great value in reducing measurement uncertainty.
  A new instrument, a Laser Air Motion Sensor (LAMS), now provides such a
  reference on the National Science Foundation / National Center for Atmospheric
- Research (NSF/NCAR) Gulfstream 
-\change_inserted 1934758928 1378543852
-G
-\change_unchanged
-V and C-130 research aircraft (hereafter referred to as the GV and C-130).
+ Research (NSF/NCAR) Gulfstream GV and C-130 research aircraft (hereafter
+ referred to as the GV and C-130).
  This paper explores how measurements from that instrument can reduce measuremen
 t uncertainties in some key measurements made on those aircraft.
-
-\change_inserted 1934758928 1378590155
  The new sensor is compact and designed to be mounted in standard instrument
  canisters, so the measurements and approach taken here can be extended
  readily to most other research aircraft.
  
-\change_unchanged
-
 \end_layout
 
 \begin_layout Standard
@@ -333,20 +315,30 @@ The trailing cone.
  aircraft, The inlets are connected by tubing to sensors inside the aircraft,
  and the measurement so obtained is compared to that from the sensors being
  calibrated.
- For an example and early description, see 
+ 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "IkhtiariMarth1964"
 
 \end_inset
 
-\SpecialChar \@.
- The system can be used while the aircraft airspeed, altitude and attitude
- angles are changed through the normal flight envelope.
+ and many others have described this system.
+ It can be used while the aircraft airspeed, altitude and attitude angles
+ are changed through the normal flight envelope.
  Disadvantages are that the system usually requires a special and difficult
  installation, which can be particularly problematic for a pressurized aircraft
  flying at low pressure, and the trailing cone is not suitable for routine
  measurement.
+ When available, though, it provides accurate calibration; 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "BrownTN1988"
+
+\end_inset
+
+ obtained a pressure calibration of a high-speed aircraft with standard-error
+ uncertainty of about 0.2 hPa, in ideal conditions, using a trailing cone.
+ (Throughout this paper, standard-error uncertainties will be quoted.)
 \end_layout
 
 \begin_layout Enumerate
@@ -377,13 +369,10 @@ Flight past towers.
 \begin_layout Enumerate
 
 \emph on
-Calibration by the Global Positioning System (GPS) where the wind is known
+Calibration by the Global Positioning System (GPS) where the wind is known.
+ 
 \emph default
-\bar under
-.
-
-\bar default
- If the wind is known accurately by independent measurement, the drift measured
+If the wind is known accurately by independent measurement, the drift measured
  by GPS can be compared to the drift expected in the wind measured by the
  aircraft, and the associated dynamic pressure can be corrected to minimize
  the difference from the independent measurement of wind.
@@ -437,22 +426,8 @@ key "RodiLeon2012"
 
 \begin_layout Standard
 The analysis that follows demonstrates that the LAMS provides another means
- of calibrating pressure, one that 
-\change_inserted 1934758928 1378590553
-matches the trailing cone for accuracy while providing calibrations that
- 
-\change_unchanged
-can be available 
-\change_inserted 1934758928 1378590586
-for 
-\change_unchanged
-routine
-\change_deleted 1934758928 1378590590
-ly
-\change_inserted 1934758928 1378590593
- use
-\change_unchanged
-.
+ of calibrating pressure, one that matches the trailing cone for accuracy
+ while providing calibrations that can be available for routine use.
  The operating principles of the LAMS are discussed in the next section.
  The absolute measurement of airspeed that the LAMS provides makes it possible
  to deduce the expected dynamic pressure (or the pressure increase above
@@ -498,12 +473,8 @@ key "SpulerEtAl2011"
 .
  It is a single-beam system in which a laser is focused ahead of the aircraft
  in undisturbed air so that, from the Doppler shift in laser light returned
- from 
-\change_inserted 1934758928 1378590743
-ambient 
-\change_unchanged
-aerosols, the airspeed can be measured outside the disturbed airflow caused
- by the aircraft.
+ from ambient aerosols, the airspeed can be measured outside the disturbed
+ airflow caused by the aircraft.
  Two different configurations were used in this study.
  In both cases, the instrument was mounted on the wing and was aligned about
  3
@@ -512,11 +483,11 @@ status open
 
 \begin_layout Plain Layout
 
-
+$
 \backslash
 unit{
 \backslash
-degree}
+degree}$
 \end_layout
 
 \end_inset
@@ -553,17 +524,53 @@ The wing pod design was changed between the August 2010 flights on the GV
 
 \end_inset
 
-In both cases, the returned signal was dominantly from a volume extending
- about 2.5
+Different lens sizes were used, such that in both cases the returned signal
+ was dominantly from a volume extending about 2.5
 \begin_inset space \thinspace{}
 \end_inset
 
 m along the direction of flight, as given by the full-width-half-maximum
  distance of the telescope gain pattern.
- A small inertial system mounted in the wing pod housing the instrument
- measured deviations in orientation caused by wing flex or other vibration
- of the pod relative to the aircraft centre axis, where the aircraft orientation
- was measured by a separate inertial reference system.
+ A small inertial system (Systron Donner C-MIGITS INS/GPS) mounted in the
+ wing pod with the LAMS measured deviations in orientation caused by wing
+ flex or other vibration of the pod relative to the aircraft centre axis,
+ where the aircraft orientation was measured by a separate Honeywell Laseref
+ IV SM inertial reference system.
+ Both provided measurements of attitude angles with standard-error uncertainties
+ of about 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+1
+\backslash
+,
+\backslash
+unit{mrad}
+\end_layout
+
+\end_inset
+
+ and about 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$0.1
+\backslash
+,
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+ uncertainty in aircraft velocity.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -571,7 +578,11 @@ Earlier versions of laser wind sensors operating at 10.6
 \begin_inset space \thinspace{}
 \end_inset
 
-μm wavelength were designed for use on NCAR aircraft in the 1980s and 1990s,
+
+\begin_inset Formula $\mu$
+\end_inset
+
+m wavelength were designed for use on NCAR aircraft in the 1980s and 1990s,
  as discussed by 
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -599,7 +610,11 @@ key "MayorEtAl1997"
 \begin_inset space \thinspace{}
 \end_inset
 
-μm; 
+
+\begin_inset Formula $\mu$
+\end_inset
+
+m; 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "SpulerEtAl2011"
@@ -612,9 +627,9 @@ status open
 
 \begin_layout Plain Layout
 
-2
+$2
 \backslash
-,$
+,
 \backslash
 unit{cm^{-3}}$
 \end_layout
@@ -625,16 +640,28 @@ unit{cm^{-3}}$
 \begin_inset space \thinspace{}
 \end_inset
 
-μm are needed to provide a detectable signal, but the sensitivity has been
+
+\begin_inset Formula $\mu$
+\end_inset
+
+m are needed to provide a detectable signal, but the sensitivity has been
  improved since that early test.
  Successful detection of the backscattered signal has been possible at altitudes
  extending to above 13
-\begin_inset space \thinspace{}
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,
+\end_layout
+
 \end_inset
 
 km, although with present sensitivity there are still times when the signal
- is lost during flight.
- 
+ is too small for a valid measurement.
 \end_layout
 
 \begin_layout Standard
@@ -645,15 +672,15 @@ key "SpulerEtAl2011"
 
 \end_inset
 
- is <0.05
+ is 0.05
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-
+$
 \backslash
-,$
+,
 \backslash
 unit{m
 \backslash
@@ -928,8 +955,11 @@ reference "eq:qFromLAMS-1"
 
 \end_inset
 
-) to the direct measurement of dynamic pressure is an exaggeration of the
- improvement that LAMS provides.
+) to the uncorrected measurement of dynamic pressure 
+\begin_inset Formula $q_{m}$
+\end_inset
+
+ is an exaggeration of the improvement that LAMS provides.
  Nevertheless, Fig.
 \begin_inset space ~
 \end_inset
@@ -964,92 +994,36 @@ The normal measurement of total pressure
 \begin_inset Formula $p_{t}=p+q$
 \end_inset
 
- is obtained on the GV
-\change_inserted 1934758928 1378591006
- and C-130
-\change_unchanged
- and most
-\change_inserted 1934758928 1378591010
- other
-\change_unchanged
- research aircraft by measuring the pressure delivered by a pitot tube aligned
- approximately along the airflow.
- 
-\change_deleted 1934758928 1378591046
-On the GV,
-\change_unchanged
- 
-\change_deleted 1934758928 1378591050
-t
-\change_inserted 1934758928 1378591051
-T
-\change_unchanged
-his measurement is made by adding two measurements, 
-\change_deleted 1934758928 1378591082
-that
-\change_inserted 1934758928 1378591088
-one of ambient pressure
-\change_deleted 1934758928 1378591092
- of
-\change_unchanged
+ is obtained on the GV and C-130 and most other research aircraft by measuring
+ the pressure delivered by a pitot tube aligned approximately along the
+ airflow.
+ This measurement is made by adding two measurements, one of ambient pressure
  
 \begin_inset Formula $p$
 \end_inset
 
  (measured by a Parascientific Model 1000 absolute pressure transducer with
- 
-\change_deleted 1934758928 1378591236
-accuracy
-\change_inserted 1934758928 1378591239
-measurement uncertainty
-\change_unchanged
- 0.1
+ measurement uncertainty 0.1
 \begin_inset space \thinspace{}
 \end_inset
 
-hPa, connected 
-\change_inserted 1934758928 1378591313
-in parallel 
-\change_unchanged
-to static ports on 
-\change_inserted 1934758928 1378591117
-each side of 
-\change_unchanged
-the fuselage of the aircraft) and 
-\change_inserted 1934758928 1378591127
-a second
-\change_deleted 1934758928 1378591131
-that
-\change_unchanged
- of 
-\change_inserted 1934758928 1378591143
-dynamic pressure
-\change_unchanged
-
+hPa, connected in parallel to static ports on each side of the fuselage
+ of the aircraft) and a second of dynamic pressure 
 \begin_inset Formula $q$
 \end_inset
 
- (measured by a Mensor Model 6100 differential sensor with 
-\change_deleted 1934758928 1378591250
-accuracy
-\change_inserted 1934758928 1378591254
-measurement uncertainty
-\change_unchanged
- 0.02
+ (measured by a Honeywell PPT (0-5 PSI) differential sensor with measurement
+ uncertainty 0.02
 \begin_inset space \thinspace{}
 \end_inset
 
 hPa, connected between the static ports and the pressure delivered by a
  pitot tube).
- 
-\change_inserted 1934758928 1378591431
-Two independent systems, with separate static ports, are available on the
+ Two independent systems, with separate static ports, are available on the
  C-130, but only one on the GV.
  On both, there are also measurements from another independent system that
  supplies information to the flight crew but is also recorded for research
  use.
-\change_unchanged
-
 \end_layout
 
 \begin_layout Standard
@@ -1153,7 +1127,7 @@ reference "fig:Pt-comparison"
 
 \end_inset
 
- compares the redundant measurements of total pressure on the C-130, each
+ compares two redundant measurements of total pressure on the C-130, each
  based on a different pitot source and static source.
  This and other similar comparisons suggest that a good approximation is
  to consider 
@@ -1213,10 +1187,6 @@ reference "eq:qFromLAMS-1"
 \end_inset
 
 ):
-\begin_inset Newline newline
-\end_inset
-
-
 \begin_inset Formula 
 \[
 \Delta q=q_{m}-p\chi(v,T)
@@ -1288,17 +1258,13 @@ reference "eq:PCOR2-1"
 \end_layout
 
 \begin_layout Subsection
-Some 
-\change_deleted 1934758928 1378545016
-necessary 
-\change_unchanged
-refinements
+Some refinements
 \end_layout
 
 \begin_layout Standard
-The goal of these analyses is to determine characteristics like pressure
- significantly more accurately than has been possible in the past, so this
- objective requires attention to some minor error sources.
+The goal of these analyses is to determine state variables like pressure
+ with significantly less uncertainty than has been possible in the past,
+ so this objective requires attention to some minor error sources.
  Specifically, it was necessary to consider: (i) the humidity of the air
  and its effect on thermodynamic properties like the gas constant and specific
  heats; (ii) possible effects of flow angles on the total pressure measured
@@ -1376,9 +1342,12 @@ degree}
  To verify that the pitot-tube measurements are insensitive to the variations
  in flow angles expected in normal flight, an analysis is presented in Appendix
  B based on yaw manoeuvres flown with the LAMS\SpecialChar \@.
- The analysis supports the
- insensitivity of the total-pressure measurement to flow angles at angles
- from 0--3
+ The analysis indicates that
+ measured total pressure remains constant, at a level of about 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, for flow angles from 0--3
 \begin_inset ERT
 status open
 
@@ -1394,16 +1363,7 @@ degree}
 \end_inset
 
  from the centreline of the pitot tube, as is characteristic of most flight
- conditions on the 
-\change_deleted 1934758928 1378591498
-RAF
-\change_inserted 1934758928 1378591503
-GV and C-130
-\change_deleted 1934758928 1378591511
- aircraft
-\change_unchanged
-.
- 
+ conditions on the GV and C-130, 
 \begin_inset Note Note
 status open
 
@@ -1534,19 +1494,7 @@ al axis level; rotate about y, roll, to wings level.
 \end_layout
 
 \begin_layout Subsection
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Determining-the-Corrections"
-
-\end_inset
-
-
-\change_deleted 1934758928 1378546359
-Determining the corrections and f
-\change_inserted 1934758928 1378546359
-F
-\change_unchanged
-its to the corrections
+Uncertainty in the corrections
 \end_layout
 
 \begin_layout Standard
@@ -1565,8 +1513,8 @@ reference "eq:PCOR2-1"
 
 \end_inset
 
-), so this provides results for both that have much stronger justification
- than empirical corrections used previously.
+), and these corrections have much stronger justification than the empirical
+ corrections used previously.
  The LAMS evaluation (
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -1574,11 +1522,11 @@ key "SpulerEtAl2011"
 
 \end_inset
 
-) suggests that the uncertainty in 
+) suggests that the uncertainty in line-of-sight 
 \begin_inset Formula $v$
 \end_inset
 
- is about 0.1
+ is about 0.05
 \begin_inset ERT
 status open
 
@@ -1595,8 +1543,8 @@ unit{m
 
 \end_inset
 
-, so this is directly the uncertainty in the component of the relative wind
- along the axis of LAMS\SpecialChar \@.
+, so this is also approximately the uncertainty in the component of the
+ relative wind along the axis of LAMS\SpecialChar \@.
  The total derivative of (
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1623,8 +1571,8 @@ reference "eq:qFromLAMS-1"
 
 \end_inset
 
-This shows that the temperature uncertainty contributes significantly to
- the uncertainty in 
+The temperature uncertainty thus contributes significantly to the uncertainty
+ in 
 \begin_inset Formula $q$
 \end_inset
 
@@ -1633,10 +1581,10 @@ This shows that the temperature uncertainty contributes significantly to
 \end_inset
 
  from LAMS, because 
-\begin_inset Formula $\delta v/v\approx0.1/220\approx0.000$
+\begin_inset Formula $\delta v/v\approx0.05/220\approx0.000$
 \end_inset
 
-45 while for temperature an uncertainty of 0.3
+23 while for temperature an uncertainty of 0.3
 \begin_inset ERT
 status open
 
@@ -1651,7 +1599,7 @@ degree C}
 
 \end_inset
 
- contributes typically a comparable fractional contribution of 0.5
+ contributes typically a larger fractional contribution of 0.5
 \begin_inset Formula $\times0.3/223$
 \end_inset
 
@@ -1673,7 +1621,7 @@ reference "eq:qFromLAMS-1"
  That is, the temperature should be determined directly from
 \begin_inset Formula 
 \begin{equation}
-T=T_{r}-\frac{v_{l}^{2}}{2c_{p}}\label{eq:dynHeatingcorrUsingLAMS}
+T=T_{r}-\alpha\frac{v_{l}^{2}}{2c_{p}}\label{eq:dynHeatingcorrUsingLAMS}
 \end{equation}
 
 \end_inset
@@ -1690,7 +1638,15 @@ recovery
 \begin_inset Quotes erd
 \end_inset
 
- temperature and 
+ temperature, 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ the recovery factor for the sensor measuring 
+\begin_inset Formula $T_{r}$
+\end_inset
+
+, and 
 \begin_inset Formula $v_{l}^{2}$
 \end_inset
 
@@ -1755,71 +1711,32 @@ degree C}$
 \end_inset
 
 ).
- Other indications are that the uncertainty in total pressure measurement
- is also about 0.1
+ The uncertainty in the uncorrected measurement of 
+\begin_inset Formula $p_{m}$
+\end_inset
+
+, from instrument characteristics, is also about 0.1
 \begin_inset space \thinspace{}
 \end_inset
 
-hPa, so using the LAMS correction yields a correction to the ambient pressure
- that has an uncertainty of around 0.15
+hPa, so using the LAMS correction yields an ambient pressure that has an
+ uncertainty of around 0.16
 \begin_inset space \thinspace{}
 \end_inset
 
 hPa.
- Another case more representative of higher-level flight of the GV is flight
- at a pressure level of 150
-\begin_inset space \thinspace{}
-\end_inset
-
-hPa, with temperature -60
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-unit{
-\backslash
-degree C}
-\end_layout
-
-\end_inset
-
-, at an airspeed of about 235
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-,$
-\backslash
-unit{m
-\backslash
-,s^{-1}}$
-\end_layout
-
-\end_inset
-
-; this leads to an uncertainty in total pressure measurement after correction
- via LAMS of about 0.15
-\begin_inset space \thinspace{}
-\end_inset
-
-hPa also.
+ Evaluation at 150 hPa leads to a similar estimate of uncertainty.
  When LAMS is present, it is thus possible to be confident that the measurements
  of the longitudinal component of the relative wind and of the ambient pressure
- have associated uncertainties of only about 0.1
+ have associated standard-error uncertainties of 
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-
+$<0.1
 \backslash
-,$
+,
 \backslash
 unit{m
 \backslash
@@ -1828,24 +1745,29 @@ unit{m
 
 \end_inset
 
- and 0.15
+ and 0.16
 \begin_inset space \thinspace{}
 \end_inset
 
 hPa, respectively.
 \end_layout
 
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Determining-the-Corrections-1"
+
+\end_inset
+
+Fits to the corrections
+\end_layout
+
 \begin_layout Standard
-There is still value i
-\change_deleted 1934758928 1378543852
-s
-\change_inserted 1934758928 1378543852
-n
-\change_unchanged
- determining fits to the corrections provided by LAMS in terms of flight
- characteristics like flight level, angle of attack, Mach number, etc., because
- then corrections can be applied in cases where the LAMS is not present
- or does not detect enough signal to provide a valid airspeed.
+There is still value in determining fits to the corrections provided by
+ LAMS in terms of flight characteristics like flight level, angle of attack,
+ Mach number, etc., because then corrections can be applied in cases where
+ the LAMS is not present or does not detect enough signal to provide a valid
+ airspeed.
  Such fits can be applied retrospectively to data collected before the LAMS
  was available, and the fits can also be compared to other means of estimating
  the corrections.
@@ -1858,13 +1780,7 @@ s present at the nose, and averaging over such fluctuations as provided
 \begin_inset Formula $v_{l}$
 \end_inset
 
-
-\change_deleted 1934758928 1378543852
-,
-\change_inserted 1934758928 1378543852
 .
-
-\change_unchanged
  For these reasons, fits to the measurements provided by (
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2221,17 +2137,8 @@ The range of ADIFR/QCR used here was (-0.2, -0.03) and the fit extrapolates
 \end_layout
 
 \begin_layout Standard
-The LAMS measurements indicate that
-\change_inserted 1934758928 1378544608
-, for this set of flight conditions, the ambient pressure should be corrected
- by
-\change_unchanged
- 
-\change_deleted 1934758928 1378544629
-the mean correction required to the ambient pressure, for this set of flight
- conditions, is 
-\change_unchanged
-3.5
+The LAMS measurements indicate that, for this set of flight conditions,
+ the ambient pressure should be corrected by 3.5
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -2508,7 +2415,15 @@ with values of the coefficients {
 \begin_inset Formula $a_{i,i=0-3}^{\prime}$
 \end_inset
 
-} respectively {-0.00071, 0.073, -0.0861, 0.0460}.
+} respectively {
+\begin_inset Formula $-0.00071$
+\end_inset
+
+, 0.073, 
+\begin_inset Formula $-0.0861$
+\end_inset
+
+, 0.0460}.
  
 \begin_inset Note Note
 status open
@@ -2735,43 +2650,19 @@ where
 
  but for the side-slip angle.
  The 
-\change_deleted 1934758928 1378545180
-best-fit coefficients were {
-\begin_inset Formula $b_{i,i=0-6}$
-\end_inset
-
-}={-0.04165, 0.01485, 0.3730, -1.170, 0.9016, 0.2315, 0.002394}
 \begin_inset Note Note
 status collapsed
 
 \begin_layout Plain Layout
-reduce significant figures quoted here
-\end_layout
-
-\end_inset
-
-, and the 
-\change_inserted 1934758928 1378545180
-
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-
-\change_inserted 1934758928 1378545315
 best-fit coefficients were {
 \begin_inset Formula $b_{i,i=0-6}$
 \end_inset
 
 }={0.0146, 0.0204, -0.101, 0.342, -0.338, 0.00185}, and the 
-\change_unchanged
-
 \end_layout
 
 \end_inset
 
-
-\change_unchanged
 standard error for this fit was 0.00042, corresponding to a pressure uncertainty
  at 700
 \begin_inset space \thinspace{}
@@ -2803,7 +2694,11 @@ The data constrained the mean of the function to more than a factor of 100
 
  The second term gave the largest reduction in residual error; using this
  variation alone gave a residual standard error of 0.00050.
- The least significant was the last term, only reducing the residual standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+The least significant was the last term, only reducing the residual standard
  error by 0.000013 for a typical effect on pressure of 0.01
 \begin_inset space \thinspace{}
 \end_inset
@@ -2819,8 +2714,9 @@ hPa, so this term will be dropped even though the fit indicated that it
  
 \end_layout
 
-\begin_layout Standard
-An adequate and simpler fit using only the first three terms on the right
+\end_inset
+
+ An adequate and simpler fit using only the first three terms on the right
  side of (
 \begin_inset ERT
 status open
@@ -2876,18 +2772,22 @@ status open
 \end_inset
 
 hPa, which is insignificant in comparison to other expected error sources.
- The recommended coefficients (with quoted significant digits determined
- with consideration the standard errors in the fit) are {
+ The coefficients, with quoted significant digits determined with consideration
+ the standard errors in the fit, are {
 \begin_inset Formula $b_{0}^{\prime},\, b_{1}^{\prime},\, b_{2}^{\prime}$
 \end_inset
 
-}={
-\change_deleted 1934758928 1378545409
-0.00163, 0.0214, 0.0145
-\change_inserted 1934758928 1378545485
-0.00186, 0.0202, 0.0135
-\change_unchanged
-}.
+}={0.00186, 0.0202, 0.0135}.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+For PSFRD, the corresponding coefficients are -0.004433, 0.006133, and 0.03599
+ with residual 0.00049
+\end_layout
+
+\end_inset
+
  While the residuals from this fit are small, the mean offset it produces
  is about 2
 \begin_inset space \thinspace{}
@@ -3063,14 +2963,10 @@ status open
 \end_inset
 
 ) for the GV or (
-\change_inserted 1934758928 1378543852
-
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
-
-\change_inserted 1934758928 1378543852
 
 
 \backslash
@@ -3080,8 +2976,6 @@ iftwocol{
 \end_inset
 
 
-\change_unchanged
-
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:PCORfitQCF-1"
@@ -3089,14 +2983,10 @@ reference "eq:PCORfitQCF-1"
 \end_inset
 
 
-\change_inserted 1934758928 1378543852
-
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
-
-\change_inserted 1934758928 1378543852
 
 }{
 \end_layout
@@ -3116,15 +3006,11 @@ status open
 
 \begin_layout Plain Layout
 
-\change_inserted 1934758928 1378543852
-
 }
 \end_layout
 
 \end_inset
 
-
-\change_unchanged
 ) for the C-130.
  The expectation is that the longitudinal component of the wind given by
  (
@@ -3187,8 +3073,8 @@ reference "eq:PCOR_GV_simple"
 
 \end_inset
 
- The mean difference on legs along opposing headings was -0.12
-\begin_inset Formula $\pm0.91$
+ The mean difference on legs along opposing headings was 
+\begin_inset Formula $-0.12\pm0.91$
 \end_inset
 
 
@@ -3275,10 +3161,17 @@ unit{m
 \end_inset
 
 , which is consistent with estimates of the uncertainty associated with
- the LAMS measurements of airspeed on which these corrections are based.
- This provides evidence that the standard-error uncertainty in the measurement
- of the longitudinal component of the relative wind after correction is
- about 0.1
+ the fitted correction to airspeed based on (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR_GV_simple"
+
+\end_inset
+
+), which was used for these measurements.
+ This provides supporting evidence that the standard-error uncertainty in
+ the measurement of the longitudinal component of the relative wind after
+ correction is about 0.1
 \begin_inset ERT
 status open
 
@@ -3305,8 +3198,9 @@ The avionics pressure system of the GV
 \begin_layout Standard
 The ambient pressure measurement from the avionics system on the GV is more
  reliable than those on many research aircraft because the GV is certified
- to fly on RVSM (reduced vertical separation minimum) levels so must meet
- strict Federal Aviation Administration requirements.
+ to fly on RVSM (reduced vertical separation minimum) levels so the flight-deck
+ pressure measurement has met strict Federal Aviation Administration requirement
+s.
  Appendix G to Federal Aviation Regulations Part 91 specifies that the maximum
  allowable error in altitude is 80
 \begin_inset space \thinspace{}
@@ -3667,14 +3561,10 @@ reference "fig:ATLvsATX"
 \end_layout
 
 \begin_layout Section
-
-\change_inserted 1934758928 1378551071
 Correcting the measured airspeed
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 1934758928 1378553294
 The LAMS provides a direct measurement of airspeed, but it is still useful
  to use the pressures as determined in the preceding section to determine
  airspeed by solving (
@@ -3708,8 +3598,6 @@ status open
 
 \begin_layout Plain Layout
 
-\change_inserted 1934758928 1378553031
-
 
 \backslash
 ,$
@@ -3730,20 +3618,16 @@ unit{m
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 1934758928 1378553113
 On the GV, the mean change in true airspeed introduced by this calibration
- is -0.8
+ is 
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-\change_inserted 1934758928 1378553051
-
-
+$-0.8
 \backslash
-,$
+,
 \backslash
 unit{m
 \backslash
@@ -3760,8 +3644,6 @@ status open
 
 \begin_layout Plain Layout
 
-\change_inserted 1934758928 1378553063
-
 
 \backslash
 ,$
@@ -3773,17 +3655,15 @@ unit{m
 
 \end_inset
 
-), so calibration using LAMS has removed a -0.8
+), so calibration using LAMS has removed a 
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-\change_inserted 1934758928 1378553072
-
-
+$-0.8
 \backslash
-,$
+,
 \backslash
 unit{m
 \backslash
@@ -3792,17 +3672,15 @@ unit{m
 
 \end_inset
 
- error and reduced the uncertainty in this measurement to <0.1
+ error and reduced the uncertainty in this measurement to 
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-\change_inserted 1934758928 1378553079
-
-
+$<0.1
 \backslash
-,$
+,
 \backslash
 unit{m
 \backslash
@@ -3812,17 +3690,15 @@ unit{m
 \end_inset
 
 .
- For the C-130, the corresponding correction is +0.5
+ For the C-130, the corresponding correction is 
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-\change_inserted 1934758928 1378553093
-
-
+$+0.5
 \backslash
-,$
+,
 \backslash
 unit{m
 \backslash
@@ -3834,17 +3710,15 @@ unit{m
 .
  These measurements are used along with measurements from GPS and an inertial
  reference system (IRS) to determine the wind, and the GPS/IRS also provides
- measurements with an uncertainty of about 0.1
+ measurements with an uncertainty of about 
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-\change_inserted 1934758928 1378553107
-
-
+$0.1
 \backslash
-,$
+,
 \backslash
 unit{m
 \backslash
@@ -3854,17 +3728,15 @@ unit{m
 \end_inset
 
 , so the calibration based on LAMS has reduced the uncertainty in the component
- of the wind along the aircraft axis to <0.2
+ of the wind along the aircraft axis to 
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-\change_inserted 1934758928 1378553113
-
-
+$<0.2
 \backslash
-,$
+,
 \backslash
 unit{m
 \backslash
@@ -3874,8 +3746,6 @@ unit{m
 \end_inset
 
 .
-\change_unchanged
-
 \end_layout
 
 \begin_layout Section
@@ -3949,18 +3819,19 @@ degree C}$
 
 \end_inset
 
-) requires at least 0.1% accuracy in the measurement of 
+) requires at least 0.1% precision in the measurement of 
 \begin_inset Formula $\delta z$
 \end_inset
 
-, an accuracy readily obtained by differential GPS over intervals as small
- as 10
+, a precision now provided by differential GPS receivers (such as the NovAtel
+ Model OEM-4 L1/L2 Differential GPS system in use on both NCAR aircraft)
+ for height differences as small as 100
 \begin_inset space \thinspace{}
 \end_inset
 
 m.
  The requirement is more stringent on the measurement of pressure.
- In 1
+ In 10
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -3981,7 +3852,7 @@ unit{m
 
 \end_inset
 
- climb the pressure change is less than 1
+ climb the pressure change is less than 10
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -3990,10 +3861,10 @@ hPa, and it seems likely that differences in pressure cannot be measured
 \begin_inset space \thinspace{}
 \end_inset
 
-hPa, so this would introduce an error of 10% in the deduced (absolute) temperatu
-re.
- This is inadequate, so larger differences (or the average of many measurements)
- are required to obtain a useful estimate of the temperature.
+hPa, so this would introduce an error of 1% in the deduced (absolute) temperatur
+e.
+ This is inadequate, so a larger altitude difference or the average of many
+ measurements is required to obtain a useful estimate of the temperature.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -4220,8 +4091,9 @@ For the record: I did try to fit a linear correction using the measurements
 
 \end_inset
 
- Investigation after this result was obtained discovered a calibration error
- of about this magnitude.
+ Investigation after this result was obtained discovered an error of about
+ this magnitude in the calibration of the temperature sensor, illustrating
+ the value of this calibration.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -4413,14 +4285,8 @@ reference "eq:AltitudeChangeEquation-1"
 \end_layout
 
 \begin_layout Standard
-It is useful to express this in terms of d-value, the difference between
- geometric altitude and pressure altitude
-\change_deleted 1934758928 1378543852
-.
-\change_inserted 1934758928 1378543852
-,
-\change_unchanged
- because that is measured routinely.
+It is convenient to express this in terms of d-value, the difference between
+ geometric altitude and pressure altitude, because that is measured routinely.
  Part of the change in d-value during a climb results from the horizontal
  pressure gradient, while another part arises from the climb in an atmosphere
  that differs from the standard atmosphere.
@@ -5028,10 +4894,6 @@ R Core Team (2013).
  routine 
 \emph on
 optim
-\change_deleted 1934758928 1378592044
-()
-\change_unchanged
-
 \emph default
  
 \begin_inset Note Note
@@ -5097,9 +4959,33 @@ reference "eq:ChiSq Equation-1"
 \end_inset
 
 ) depended on the accuracy of the ambient temperature after application
- of the recovery factor, so the constraint on measurement uncertainty includes
- uncertainty in the recovery factor as well as the calibration of the temperatur
-e sensor and digitization system.
+ of the recovery factor (using 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ = 0.988+0.053 log
+\begin_inset Formula $_{10}M$
+\end_inset
+
++0.090
+\begin_inset space \thinspace{}
+\end_inset
+
+log
+\begin_inset Formula $_{10}M^{2}$
+\end_inset
+
++0.091
+\begin_inset space \thinspace{}
+\end_inset
+
+log
+\begin_inset Formula $_{10}M^{3}$
+\end_inset
+
+), so the constraint on measurement uncertainty includes uncertainty in
+ the recovery factor as well as the calibration of the temperature sensor
+ and digitization system.
 \begin_inset Note Note
 status open
 
@@ -5178,8 +5064,12 @@ unit{K}
 \end_inset
 
 , so there is low uncertainty in the implied adjustment needed for temperature.
- A more significant source of error, however, is the effect of measurements
- that for some reason are questionable or erroneous.
+ 
+\end_layout
+
+\begin_layout Standard
+A potentially more significant source of error, however, is the effect of
+ measurements that for some reason are questionable or erroneous.
  As discussed above, such measurements were excluded where they were identified,
  but some may remain.
  To check on the effects of variations in the measurements entering the
@@ -5891,7 +5781,8 @@ key "KeelerEtAl1987"
 \end_inset
 
  who recommended modified processing techniques selecting the peak rather
- than the mean in the shifted wavelength spectrum for measurements in cloud.
+ than the mean in the Doppler-shifted wavelength spectrum, as used here,
+ for measurements in cloud.
  Indeed, too low a measurement of airspeed would cause the deduced temperature
  to be too low, as is the trend in this figure.
  The small extinction lengths shown in Fig.
@@ -6005,15 +5896,9 @@ nts of ambient and dynamic pressure as well as angle of attack, support
 \end_layout
 
 \begin_layout Standard
-Once an accurate measurement of airspeed is available, the 
-\change_deleted 1934758928 1378592125
-excess 
-\change_unchanged
-pressure 
-\change_inserted 1934758928 1378592135
-excess above ambient 
-\change_unchanged
-produced by that airflow at the inlet of a pitot tube can be calculated.
+Once an accurate measurement of airspeed is available, the expected pressure
+ excess above ambient produced by that airflow at the inlet of a pitot tube
+ can be calculated.
  The pressure at flight level can then be determined with low uncertainty
  by subtracting that excess pressure from the measured total pressure at
  the pitot tube.
@@ -6027,8 +5912,9 @@ hPa, and the precision (relevant to pressure mapping while the aircraft
 \end_inset
 
 hPa.
- Calibration to this level of precision and accuracy enables the measurement
- of mesoscale pressure fields in the atmosphere, as demonstrated by 
+ Calibration to this level of precision enables improved measurement of
+ mesoscale pressure fields in the atmosphere, following the methods developed
+ by 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "ParishEtAl2007"
@@ -6164,11 +6050,9 @@ Stith (IDEAS), during which the Research Aviation Facility pilots, mechanics,
 \begin_inset space ~
 \end_inset
 
-
-\change_inserted 1934758928 1378543852
-G
-\change_unchanged
-V and Lockheed C-130 research aircraft.
+GV and Lockheed C-130 research aircraft.
+ The authors also thank Jorgen Jensen and Jeff Stith for comments and advice
+ on the manuscript.
  The National Center for Atmospheric Research is sponsored by the National
  Science Foundation.
  
@@ -6248,7 +6132,7 @@ For air the specific heats
 \begin_inset Formula $c_{vp}$
 \end_inset
 
-are very close to those for a diatomic molecule with five degrees of freedom,
+ are very close to those for a diatomic molecule with five degrees of freedom,
  while for water the values are approximately those for six degrees of freedom
  (i.e., 
 \begin_inset Formula $c_{v}=3R_{w})$
@@ -6369,7 +6253,7 @@ unit{J
 
  were then used, adjusted for the humidity at each 1-Hz measurement, in
  the equations of this paper.
- These values do not differ significantly from the approximate formulas
+ These adjustments do not differ significantly from the approximate formulas
  of 
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -6527,7 +6411,7 @@ degree}
  is characteristic of normal flight of both NCAR aircraft.
  This is justification for neglecting possible dependence of the total pressure
  measurement on flow angles, at least for the small angles characteristic
- of normal flight conditions.
+ of normal flight.
 \end_layout
 
 \begin_layout Standard
@@ -8379,7 +8263,11 @@ name "fig:QvsQLAMS"
 
 \end_inset
 
-The direct measurement of dynamic pressure on the C-130 
+The direct measurement of dynamic pressure (
+\begin_inset Formula $q_{m})$
+\end_inset
+
+ on the C-130 
 \begin_inset Note Note
 status open
 
@@ -8389,7 +8277,21 @@ QCF
 
 \end_inset
 
-vs that deduced using the LAMS measurement of airspeed.
+vs that deduced using the LAMS measurement of airspeed, via (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR1-1"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2-1"
+
+\end_inset
+
+).
  All one-second-average points from one C-130 research flight on which the
  LAMS was tested (17 November 2011) are shown.
 \end_layout
@@ -8545,7 +8447,7 @@ hPa, and the corresponding values of the Mach number (large blue dots, plotted
  relative to the right axis).
  It might be expected that the d-value would change smoothly, as suggested
  by the solid red line.
- GV flight of 12 Aug 2010, Boulder CO to St.
+ GV flight of 12 Aug 2010, Colorado USA to St.
  Croix, Virgin Islands.
  Gaps in data show portions omitted because the LAMS signal was too weak
  to be reliable.
@@ -8622,7 +8524,7 @@ status open
 
 \end_inset
 
-for the ferry flight from Colorado to St.
+for the ferry flight from Colorado USA to St.
 \begin_inset space ~
 \end_inset
 
@@ -8917,11 +8819,7 @@ The total pressure (from the sum of the ambient pressure measurement and
  of the side-slip angle during yaw manoeuvres in which sideslip angles were
  forced by rudder action while the aircraft continued on approximately a
  straight-and-level course.
- The mean total pressure of 760
-\change_inserted 1934758928 1378587969
-.6
-\change_unchanged
-
+ The mean total pressure of 760.6
 \begin_inset space \thinspace{}
 \end_inset
 

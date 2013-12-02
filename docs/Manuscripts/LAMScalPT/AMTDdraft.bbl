@@ -1,4 +1,4 @@
-\begin{thebibliography}{28}
+\begin{thebibliography}{29}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{{\tt #1}}
 \providecommand{\urlprefix}{URL }
@@ -21,6 +21,13 @@ Bellamy, J.~C.: {The use of pressure altitude and altimeter corrections in
 Betts, A.~K.: {Thermodynamics of mixed stratocumulus layers - Saturation point
   budgets}, {J. Atmos. Sci.}, {40}, {2655--2670},
   \doi{{10.1175/1520-0469(1983)040<2655:TOMSLS>2.0.CO;2}}, {1983}.
+
+\bibitem[{Brown(1988)}]{BrownTN1988}
+Brown, E.~N.: Position Error Calibration of a Pressure Survey Aircraft Using a
+  Trailing Cone, NCAR technical note NCAR/TN-313+STR, Atmospheric Technology
+  Division, NCAR, Boulder, CO, USA,
+  \urlprefix\url{http://nldr.library.ucar.edu/repository/collections/TECH-NOTE-000-000-000-579},
+  1988.
 
 \bibitem[{Brown et~al.({1981})Brown, Shapiro, Kennedy, and
   Friehe}]{BrownEtAl1981}
