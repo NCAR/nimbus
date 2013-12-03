@@ -3,6 +3,9 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+
+\end_preamble
 \use_default_options true
 \begin_modules
 hanging
@@ -160,8 +163,26 @@ GPS
 \end_inset
 
 .
- Both are described in this section, as well as combined results that merge
- the best features of each into composite variables for location and motion.
+ Both are described in this section, and combined results that merge the
+ best features of each into composite variables for location and motion
+ are also discussed.
+ Useful references for material in this section are 
+\begin_inset CommandInset href
+LatexCommand href
+name "Lenschow (1972)"
+target "http://nldr.library.ucar.edu/repository/assets/technotes/TECH-NOTE-000-000-000-064.pdf"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset href
+LatexCommand href
+name "RAF Bulletin 23"
+target "http://www.eol.ucar.edu/raf/Bulletins/bulletin23.html"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -169,6 +190,15 @@ Inertial Reference Systems
 \end_layout
 
 \begin_layout Standard
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+needs review; rbf?
+\end_layout
+
+\end_inset
+
 An Inertial Reference System (IRS) or Inertial Reference Unit (IRU) provides
  measurements of aircraft position, velocity relative to the Earth, acceleration
  and attitude or orientation.
@@ -182,7 +212,8 @@ IRU!GV
 
 \end_inset
 
- Honeywell Laseref III/IV Inertial Reference System.
+ Honeywell Laseref III/IV SM Inertial Reference System; for the C-130, it
+ is a Honeywell Model HG1095-AC03 Laseref SM Inertial Reference System.
  Data from the IRS come via a serial digital bit stream (the ARINC digital
  bus) to the ADS
 \begin_inset Index idx
@@ -196,7 +227,17 @@ ADS=aircraft data system
 
  (Aircraft Data System).
  Because there is some delay in transmission and recording of these variables,
- adjustments for this delay are made when the measurements are merged into
+ 
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+cjw will provide
+\end_layout
+
+\end_inset
+
+adjustments for this delay are made when the measurements are merged into
  the processed data files, as documented in the NetCDF
 \begin_inset Index idx
 status open
@@ -207,7 +248,15 @@ NetCDF!header
 
 \end_inset
 
- header files.
+ header files and section XXX [needed new section re time interpolation/adjustme
+nt, see 
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch1.3"
+
+\end_inset
+
+].
  Some of the variables are recorded only on the original 
 \begin_inset Quotes eld
 \end_inset
@@ -217,7 +266,7 @@ raw
 \end_inset
 
  data tapes and are not usually included on final archived data files; these
- are discussed at the end of this section.
+ are discussed at the end of this subsection.
  
 \begin_inset Note Note
 status open
@@ -228,7 +277,18 @@ need identification of what the C-130 system is
 
 \end_inset
 
- See also Section XXX
+
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+this section XXX is still needed; rbf? Perhaps in obsolete var section at
+ end?
+\end_layout
+
+\end_inset
+
+See also Section XXX
 \begin_inset Note Note
 status open
 
@@ -240,6 +300,13 @@ needed
 
  for information on results from inertial systems that were used prior to
  installation of the present Honeywell systems.
+\begin_inset CommandInset label
+LatexCommand label
+name "punch3.1"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -533,7 +600,7 @@ heading!magnetic
 
 \end_inset
 
-, the heading that would be measured by a magnetic-compass needle.
+, the heading that would be measured by a magnetic compass.
  For more information on the coordinate system used, see 
 \begin_inset CommandInset href
 LatexCommand href
@@ -553,6 +620,13 @@ Bulletin 23
 \end_inset
 
 .
+\begin_inset CommandInset label
+LatexCommand label
+name "punch3.2"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -598,7 +672,7 @@ PITCH
 
 \emph on
 The angle between the centerline of the aircraft (pointing ahead, toward
- the nose) and the horizontal plan in a reference frame relative to the
+ the nose) and the horizontal plane in a reference frame relative to the
  Earth with polar axis upward.
 \emph default
 
@@ -763,7 +837,7 @@ IRU
 
 \emph default
  With IRUs now in use, the internal drift is removed by the IRU via pressure
- damping
+ damping through reference to the pressure altitude
 \begin_inset Index idx
 status open
 
@@ -883,12 +957,12 @@ IRU!Litton LTN-51
 \end_inset
 
 , to update the value of the acceleration.
- It is also filtered within the IRS so that there is little variance with
- frequency higher than 0.1 Hz.
+ This variable is also filtered within the IRS so that there is little variance
+ with frequency higher than 0.1 Hz.
  
 \end_layout
 
-\begin_layout Hanging
+\begin_layout Standard
 
 \series bold
 Pressure-Damped Aircraft Vertical Velocity (m/s): 
@@ -924,6 +998,16 @@ WP3
 \begin_inset CommandInset label
 LatexCommand label
 name "WP3 algorithm"
+
+\end_inset
+
+
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+XXX
+\end_layout
 
 \end_inset
 
@@ -997,7 +1081,7 @@ the true altitude..
 s in historical use and not updated to the recommendations elsewhere in
  this technical note):
 \begin_inset Foot
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Regarding signs, note that ACINS is a number near zero, not near g, and
@@ -1122,6 +1206,43 @@ acz
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\align center
+[See next page]
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Box Boxed
 position "t"
 hor_pos "c"
@@ -1163,8 +1284,8 @@ s
 \begin_inset Formula $^{-6}$
 \end_inset
 
- s
-\begin_inset Formula $^{-2}$
+ m
+\begin_inset Formula $^{-1}$
 \end_inset
 
 
@@ -1272,8 +1393,8 @@ height "1pt"
 \end_layout
 
 \begin_layout Enumerate
-From the pressure altitude PALT (in m) and the latitude LAT (converted to
- radians), estimate the acceleration of gravity:
+From the pressure altitude PALT (in m) and the latitude LAT, estimate the
+ acceleration of gravity:
 \begin_inset Newline newline
 \end_inset
 
@@ -1331,27 +1452,23 @@ a_{c}=2\Omega\mathrm{\{VEW\}}\cos(C_{r}\mathrm{\{LAT\}})+\frac{\mathrm{\{VEW\}}^
 
 \end_inset
 
+Estimate the acceleration 
+\begin_inset Formula $a_{z}$
+\end_inset
 
-\end_layout
-
-\begin_layout Enumerate
-Estimate the acceleration experienced by the aircraft as follows:
+ (code variable 'acz') experienced by the aircraft as follows:
 \begin_inset Newline newline
 \end_inset
 
 
 \begin_inset Formula 
 \[
-\mathrm{acz}=a_{z}=\mathrm{\{ACINS\}}+G_{L}-g_{f}+a_{c}
+\mathrm{\{acz\}}=a_{z}=\mathrm{\{ACINS\}}+G_{L}-g_{f}+a_{c}
 \]
 
 \end_inset
 
- 
-\end_layout
-
-\begin_layout Enumerate
-Use a feedback loop to update the integrated value of the accelerationt.
+Use a feedback loop to update the integrated value of the acceleration.
  The following code segment uses 
 \emph on
 acz
@@ -1362,7 +1479,7 @@ acz
 
 , 
 \emph on
-deltaT[]
+deltaT
 \emph default
  to represent the time between updates, and 
 \emph on
@@ -1377,14 +1494,14 @@ hxx
 \end_inset
 
 
-\begin_inset Box Frameless
+\begin_inset Box Boxed
 position "t"
 hor_pos "c"
 has_inner_box 1
 inner_pos "t"
-use_parbox 0
+use_parbox 1
 use_makebox 0
-width "100col%"
+width "95text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1409,14 +1526,14 @@ Update the feedback terms:
 \end_inset
 
 
-\begin_inset Box Frameless
+\begin_inset Box Boxed
 position "t"
 hor_pos "c"
 has_inner_box 1
 inner_pos "t"
-use_parbox 0
+use_parbox 1
 use_makebox 0
-width "100col%"
+width "95text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1773,7 +1890,11 @@ conversion factor, degrees latitude to km
 
 \end_inset
 
- = 111.12 km /
+ 
+\begin_inset Formula $\equiv$
+\end_inset
+
+ 111.12 km /
 \begin_inset Formula $\text{º}$
 \end_inset
 
@@ -2251,7 +2372,7 @@ Global Positioning Systems
 \end_layout
 
 \begin_layout Standard
-GPS
+Primary GPS
 \begin_inset Index idx
 status open
 
@@ -2282,74 +2403,87 @@ GPS
 
 \end_inset
 
- variables aboard RAF aircraft are provided by a Trimble TANS-III GPS
+ variables specifying the position and velocity of the aircraft are provided
+ by 
 \begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
-GPS!Trimble TANS-III
+GPS receivers
 \end_layout
 
 \end_inset
 
- receiver.
- 
-\begin_inset Note Note
+ GPS receivers, currently a NovAtel Model OEM 5 
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
-update this
+GPS!NovAtel
 \end_layout
 
 \end_inset
 
-It has the ability to track up to 6 satellites at a time but needs only
- 4 to provide 3-dimensional position and velocity data (3 satellites for
- 2-dimensions).
- The accuracy of the position measurements is stated to be 25 meters (horizontal
-) and 35 meters (vertical) under 
-\begin_inset Quotes eld
+unit on the GV and a NovAtel Model OEM-4 receiver on the C-130 (to be replaced
+ by an OEM-6 after January 2014).
+ The coordinate system used for all GPS measurements is the World Geodetic
+ System WGS-84; for details, see 
+\begin_inset CommandInset href
+LatexCommand href
+name "this link"
+target "http://earth-info.nga.mil/GandG/publications/tr8350.2/wgs84fin.pdf"
+
 \end_inset
 
-steady-state conditions.
-\begin_inset Quotes erd
-\end_inset
-
-
-\begin_inset Foot
-status collapsed
+.
+ The 
+\begin_inset Marginal
+status open
 
 \begin_layout Plain Layout
-Note: The GPS signals at one time suffered from 
-\begin_inset Quotes eld
+thanks to Stuart for this info
+\end_layout
+
 \end_inset
 
-selective availability,
-\begin_inset Quotes erd
+uncertainty of the position measurements is specified by the manufacturer
+ to be 1.5 m CEP horizontal (3.3 m 95% CEP).
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+CEP is the Circular Error Probability, the radius of a circle that contains
+ 50% of the measurements; 95% CEP contains 95% of the measurements.
+ When OnmiSTAR corrections are available (involving extra cost and not available
+ in all areas of the globe, so not available for all projects) the uncertainty
+ decreases to 0.15 m 95% CEP.
+ The vertical uncertainty is about twice as great as the horizontal uncertainty.
+ Because variables are stored as 4-byte single-precision floating point
+ numbers, the inherent storage precision can limit the precision of the
+ recorded position to about 1 m.
+\end_layout
+
 \end_inset
 
- a US DOD term for a dithered signal that degrades GPS absolute accuracy
- to 100 meters.
- This was especially noticeable in the altitude measurement, so GALT normally
- was not useful.
- As of 1 May 2000, selective availability was deactivated to allow everyone
- to obtain better position measurements.
- (See the Interagency GPS Executive Board web site for more information.)
+ The accuracy of velocity measurements is 0.03 m/s RMS for all axes.
+ All variables are provided by the GPS receivers at 5 Hz.
+ Latitude and longitude are recorded in a special log file (called the GPGGA
+ log) with a resolution of 0.0001 degree, while Earth-relative velocity is
+ recorded in the GPRMC log with resolution of 0.1 m/s.
+ Starting in January 2014 new logs (named BESTPOS and BESTVEL) will also
+ be recorded to preserve more significant digits in the measurements.
+ The BESTPOS log will have a position resolution of 
+\begin_inset Formula $10^{-11}\deg$
+\end_inset
+
+, while the BESTVEL log will be recorded with 0.0001 m/s resolution.
  
 \end_layout
 
-\end_inset
-
- Likewise, velocity measurements are within 0.2 m/s for all axes.
- Measurement resolution is that of 4-byte IEEE format (about 6 significant
- digits).
- All variables are output at a sample rate of 1 Hz.
-\end_layout
-
 \begin_layout Standard
-Some of the following variables are also available from a second unit and
- are qualified by the name of that unit; e.g., GGLAT_GMN for GGLAT as measured
- by a Garmin GPS
+Some of the following variables are also available from alternate Garmin
+ GPS16 receivers, for which the variable name is qualified by the name of
+ that unit; e.g., GGLAT_GMN for GGLAT as measured by a Garmin GPS
 \begin_inset Index idx
 status open
 
@@ -2388,6 +2522,74 @@ _A
 \end_inset
 
 .
+ Measurements from before about 2000 used Trimble TANS-III receivers,
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GPS!Trimble TANS-III
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "punch3.3"
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+update this
+\end_layout
+
+\end_inset
+
+with the ability to track up to 6 satellites at a time but needing only
+ 4 to provide 3-dimensional position and velocity data (3 satellites for
+ 2-dimensions).
+ The accuracy of the position measurements for that unit was stated to be
+ 25 meters (horizontal) and 35 meters (vertical) under 
+\begin_inset Quotes eld
+\end_inset
+
+steady-state conditions.
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Note: The GPS signals at one time suffered from 
+\begin_inset Quotes eld
+\end_inset
+
+selective availability,
+\begin_inset Quotes erd
+\end_inset
+
+ a US DOD term for a perturbed signal that degraded GPS absolute accuracy
+ to 100 meters.
+ This was especially noticeable in the altitude measurement, so GALT normally
+ was not useful.
+ As of 1 May 2000, selective availability was deactivated to allow everyone
+ to obtain better position measurements.
+ See the Interagency GPS Executive Board web site for more information on
+ selective availability and GPS measurements prior to 2000.
+\end_layout
+
+\end_inset
+
+ Likewise, velocity measurements are within 0.2 m/s for all axes.
+ Measurement resolution is that of 4-byte IEEE format (about 6 significant
+ digits).
+ All variables were provided by the Trimble receivers at 1 Hz.
 \begin_inset Newline newline
 \end_inset
 
@@ -2500,6 +2702,7 @@ The aircraft latitude measured by a global positioning system.
 
 \emph default
  Positive values are north of the equator; negative values are south.
+ Because these variables are recorded in netCDF files as single-precision
  GGLAT is provided by the data-system GPS; LAT_G and LATF_G are from the
  avionics system GPS.
  LATF_G is a fine-resolution measurement that requires special processing.
@@ -2633,6 +2836,32 @@ need to explain how these are used together...
 \series bold
 GPS Ground Speed (m/s): 
 \bar under
+GGSPD
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GGSPD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGSPD
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
 GSF
 \bar default
 _
@@ -2661,31 +2890,8 @@ GSF_G
 
 \end_inset
 
-, 
-\bar under
-GGSPD
+
 \series default
-\bar default
-
-\begin_inset Index var
-status open
-
-\begin_layout Plain Layout
-GGSPD
-\end_layout
-
-\end_inset
-
-
-\begin_inset Index idx
-status open
-
-\begin_layout Plain Layout
-GGSPD
-\end_layout
-
-\end_inset
-
 
 \begin_inset Newline newline
 \end_inset
@@ -2693,10 +2899,10 @@ GGSPD
 
 \emph on
 The aircraft ground speed measured by a global positioning system.
-
+ 
 \emph default
- GSF_G originates from an avionics-system GPS; GGSPD originates from a data-syst
-em GPS.
+GGSPD originates from a data-system GPS; GSF_G originates from an avionics-syste
+m GPS.
 \end_layout
 
 \begin_layout Hanging
@@ -2762,7 +2968,7 @@ VEW_G
 The east component of ground speed measured by a global positioning system.
 
 \emph default
- VEW_G originates from an avionics-system GPS; GGVEW originates from a data-syst
+ GGVEW originates from a data-system GPS; VEW_G originates from an avionics-syst
 em GPS.
 \end_layout
 
@@ -2831,8 +3037,9 @@ The northward component of ground speed as measured by a global positioning
  system.
 
 \emph default
- VNS_G originates from an avionics-system GPS; GGVNS originates from a data-syst
+ GGVNS originates from a data-system GPS; VNS_G originates from an avionics-syst
 em GPS.
+ 
 \end_layout
 
 \begin_layout Hanging
@@ -2866,9 +3073,9 @@ VSPD_G
 
 
 \bar default
-, 
+,
 \series default
-(obsolete) 
+ 
 \series bold
 \bar under
 GVZI
@@ -2894,16 +3101,33 @@ GVZI
 
 \end_inset
 
-
+ (obsolete)
 \begin_inset Newline newline
 \end_inset
 
 
 \emph on
-The aircraft vertical velocity provided by a GPS unit.
+The aircraft vertical velocity provided by an avionics GPS unit.
 
 \emph default
  Positive values are upward.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+why isn't there a data-system vertical velocity?
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "punch3.9"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -2988,7 +3212,7 @@ altitude!aircraft!GPS
 
 \emph default
  The measurement is with respect to a geopotential surface (MSL) defined
- by the GPS's built-in earth model.
+ by the GPS's built-in earth model, WGS84.
  Positive values are above the reference surface.
  GGALT originates from a data-system GPS; ALT_G originates from an avionics-syst
 em GPS.
@@ -3112,16 +3336,13 @@ GGEOIDHT
 \series default
 \emph on
 \bar default
-Height of geoid (MSL) above the WGS84 ellipsoid.
+Height of geoid, approximating mean sea level, above the WGS84 ellipsoid.
 
 \emph default
  
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Check on this terminology; seems confusing to me
-\end_layout
+\begin_inset CommandInset label
+LatexCommand label
+name "punch3.4"
 
 \end_inset
 
@@ -3205,7 +3426,148 @@ GGQUAL
 \emph on
 GPS quality flag:
 \emph default
- 0, 1, 2 for invalid, normal GPS, and differential GPS, respectively.
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "95col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+0 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlength{
+\backslash
+itemsep}{-1
+\backslash
+parsep}
+\end_layout
+
+\end_inset
+
+Invalid
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+1 Valid measurement but without quality enhancement
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+2 Measurement enhanced by the Satellite-Based Augmentation System, a means
+ of improving GPS accuracy and integrity by broadcasting from geostationary
+ satellites wide area corrections for GPS satellite orbits and ionospheric
+ delays.
+ In the US, this uses the Wide-Area Augmentation System or WAAS.
+ This is described in some data files as a differential-GPS measurement.
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+5 Fully locked-in OmniSTAR XP, usually starting after about 20 minutes of
+ tracking the GPS satellites and receiving the OmniSTAR data feed.
+ This mode tracks the carrier phases of the L1 and L2 GPS carrier frequencies
+ and provides about 15 cm accuracy in position.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
@@ -3242,7 +3604,7 @@ GMODE
 \begin_inset Newline newline
 \end_inset
 
-This is the former output from the GPS indicating the mode of operation.
+This is the former output from the Trimble GPS indicating the mode of operation.
  The normal value is 4, indicating automatic (not manual) mode and that
  the receiver is operating in 4-satellite (as opposed to fewer) mode.
 \begin_inset Note Note
@@ -3251,6 +3613,13 @@ status open
 \begin_layout Plain Layout
 add meaning of other modes here
 \end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "punch3.5"
 
 \end_inset
 
@@ -3371,6 +3740,21 @@ Get Dick Friesen or someone to review and update this
 \end_inset
 
 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vfill
+\backslash
+eject
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -3380,37 +3764,9 @@ Other Measurements of Aircraft Altitude
 \begin_layout Hanging
 
 \series bold
-Altitude, Reference (MSL): 
+Geometric Radio Altitude (m): 
 \bar under
-ALTX
-\bar default
-
-\begin_inset Index var
-status open
-
-\begin_layout Plain Layout
-
-\series medium
-ALTX
-\end_layout
-
-\end_inset
-
-
-\begin_inset Index idx
-status open
-
-\begin_layout Plain Layout
-
-\series medium
-ALTX
-\end_layout
-
-\end_inset
-
-, 
-\bar under
-GALTC
+HGM
 \series default
 \bar default
 
@@ -3418,7 +3774,7 @@ GALTC
 status open
 
 \begin_layout Plain Layout
-GALTC
+HGM
 \end_layout
 
 \end_inset
@@ -3428,17 +3784,74 @@ GALTC
 status open
 
 \begin_layout Plain Layout
-GALTC
+HGM
+\end_layout
+
+\end_inset
+
+ 
+\emph on
+- (obsolete)
+\emph default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The distance to the surface below the aircraft,
+\emph default
+ measured by a radar
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+radio?
+\end_layout
+
+\end_inset
+
+ altimeter
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+altimeter!radar
+\end_layout
+
+\end_inset
+
+.
+ The maximum range is 762m (2,500 ft).
+ The instrument changes in accuracy at an altitude of 152 m: The estimated
+ error from 152 m to 762 m is 7%, while the estimated error for altitudes
+ below 152 m is 1.5 m or 5%, whichever is greater.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Geometric Radar Altitude (Extended Range) (APN-159) (m): 
+\bar under
+HGME
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+HGME
 \end_layout
 
 \end_inset
 
 
-\begin_inset Note Note
+\begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
-this needs revision and perhaps a new algorithm; add ALTC?
+HGME
 \end_layout
 
 \end_inset
@@ -3448,63 +3861,131 @@ this needs revision and perhaps a new algorithm; add ALTC?
 \end_inset
 
 
-\begin_inset Marginal
-status collapsed
-
-\begin_layout Plain Layout
-revise this as described in the GGALTC algorithm note of 10 Dec
-\end_layout
-
-\end_inset
-
-
 \emph on
-Derived altitude above the geopotential surface.
+The distance to the surface below the aircraft, measured by a radar altimeter.
  
 \emph default
-This variable is derived primarily from GGALT, the GPS
+There are two outputs from an APN-159 radar altimeter
 \begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
-GGALT
+altimeter!radar
 \end_layout
 
 \end_inset
 
- altitude, with help from another reference altitude, typically ALT
+
 \begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
-ALT
+APN-159
 \end_layout
 
 \end_inset
 
-, the inertial altitude.
- The GPS signals at times are degraded, most often during aircraft turns.
- Two GPS status measurements are used to detect this, but sometimes the
- information comes too late.
- A 10-second running average is calculated of the difference between the
- GPS altitude and the reference altitude.
- When the sample-to-sample altitude difference changes more than 50 meters
- or when the GPS status detects a degraded signal, the altitude from this
- measurement changes from GPS altitude to an adjusted reference altitude
- (defined as reference altitude plus the running difference average).
- When the GPS altitude is again 
-\begin_inset Quotes eld
+, one with coarse resolution (CHGME) and one with fine resolution (HGME).
+ Both raw outputs cycle through the range 0-360 degrees, where one cycle
+ corresponds to 4,000 feet for HGME and to 100,000 feet for CHGME.
+ To resolve the ambiguity arising from these cycles, 4,000-foot increments
+ are added to HGME to maintain agreement with CHGME.
+ This preserves the fine resolution of HGME (1.86 m) throughout the altitude
+ range of the APN-159.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Geometric Radar Altitude (Extended Range) (APN-232) (m): 
+\bar under
+HGM232
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+HGM232
+\end_layout
+
 \end_inset
 
-good
-\begin_inset Quotes erd
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+HGM232
+\end_layout
+
 \end_inset
 
- and to avoid a sudden altitude transition, the output linearly steps back
- to the GPS altitude over the next 10 seconds.
- *** 
+
+\begin_inset Newline newline
+\end_inset
+
+
 \emph on
-REVISE THIS, NEW ALGORITHM
+Altitude above the ground
+\emph default
+ as measured by an APN-232 radar altimeter.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Pressure-Damped Inertial Altitude (m): 
+\bar under
+HI3
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+HI3 (obsolete)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+HI3
+\end_layout
+
+\end_inset
+
+ (obsolete)
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+The aircraft altitude obtained from the twice-integrated IRU acceleration
+ (ACINS), pressure-adjusted to obtain long-term agreement with PALT.
+ 
+\emph default
+Note that this variable has mixed character, producing short-term variations
+ that accurately track the inertial system changes but with adjustment to
+ the pressure altitude, which is not a true altitude.
+ The variable is not appropriate for estimates of true altitude, but proves
+ useful in the updating algorithm used with the LTN-51 IRU for vertical
+ wind.
+ See the discussion of WP3 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "WP3 algorithm"
+
+\end_inset
+
+.
+ This variable is now obsolete.
 \end_layout
 
 \begin_layout Hanging
@@ -3544,7 +4025,11 @@ PALT
 status open
 
 \begin_layout Plain Layout
-Revised Nov 2010
+Revised
+\begin_inset Newline newline
+\end_inset
+
+ Nov 2010
 \end_layout
 
 \end_inset
@@ -3698,7 +4183,7 @@ target "http://wiki.eol.ucar.edu/rafscience/ProcessingAlgorithms?action=AttachFi
 \end_inset
 
  describes the pressure altitude in more detail and documents the change
- that was implemented in November 2010.
+ that was made in November 2010.
 \begin_inset Newline newline
 \end_inset
 
@@ -3733,7 +4218,7 @@ status open
 \end_inset
 
 
-\begin_inset Formula $\lambda^{\ddagger}$
+\begin_inset Formula $\lambda_{a}^{\ddagger}$
 \end_inset
 
  
@@ -3741,8 +4226,8 @@ status open
 status open
 
 \begin_layout Plain Layout
-lambda@
-\begin_inset Formula $\lambda$
+lambdaa@
+\begin_inset Formula $\lambda_{a}$
 \end_inset
 
 = tropospheric lapse rate, standard atmosphere
@@ -3871,7 +4356,7 @@ s
 \end_inset
 
 
-\begin_inset Formula $x=R_{0}^{\ddagger}\lambda/(M_{d}^{\ddagger}g^{\ddagger})$
+\begin_inset Formula $x=R_{0}^{\ddagger}\lambda_{a}^{\ddagger}/(M_{d}^{\ddagger}g^{\ddagger})$
 \end_inset
 
  
@@ -4051,22 +4536,31 @@ palt = 11000.0 + 14602.12 * log10(ISAP1/psxc);
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Hanging
 
 \series bold
-Geometric Radio Altitude (m): 
+Altitude, Reference (MSL): 
 \bar under
-HGM
-\series default
+ALTX
 \bar default
 
 \begin_inset Index var
 status open
 
 \begin_layout Plain Layout
-HGM
+
+\series medium
+ALTX
 \end_layout
 
 \end_inset
@@ -4076,142 +4570,220 @@ HGM
 status open
 
 \begin_layout Plain Layout
-HGM
+
+\series medium
+ALTX
+\end_layout
+
+\end_inset
+
+ 
+\series default
+\emph on
+(Obsolete)
+\series bold
+\emph default
+, 
+\bar under
+GGALTC
+\series default
+\bar default
+
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+GGALTC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+GGALTC
 \end_layout
 
 \end_inset
 
  
 \emph on
-- (obsolete)
+(Obsolete) 
 \emph default
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+this needs revision and perhaps a new algorithm; add ALTC?
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "punch3.6"
+
+\end_inset
+
 
 \begin_inset Newline newline
 \end_inset
 
 
 \emph on
-The distance to the surface below the aircraft,
+
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+
+\emph on
+note rec to treat as obsolete, and see ALTC below
+\end_layout
+
+\end_inset
+
+Derived altitude above the geopotential surface, 
 \emph default
- measured by a radio
+obtained by combining information from a GPS receiver and an inertial reference
+ system.
+ This variable was intended to compensate for times when GPS reception was
+ lost by incorporating information from the IRS measurement of altitude.
+ GPS status measurements were used to detect signal loss, although sometimes
+ this signal was delayed for a few seconds after the signal was lost.
+ A 10-second running average was calculated of the difference between the
+ GPS altitude and the reference altitude.
+ When the sample-to-sample altitude difference changed more than 50 meters
+ or when the GPS status detected a degraded signal, the derived variable
+ (ALTX or GGALTC) became the alternate reference altitude adjusted by the
+ latest running-average difference between that reference altitude and GGALT.
+ When reception was recovered, to avoid a sudden discontinuity in altitude,
+ the derived variable was adjusted back to the GPS altitude gradually over
+ the next 10 seconds.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This obsolete variable should be used with caution because the reference
+ altitude used in past calculations was the IRS altitude updated to the
+ pressure altitude of the aircraft.
+ To account for the difference between pressure and geometric altitude,
+ a regression equation was used, normally 
+\begin_inset Formula $z=a_{0}+a_{1}\mathrm{*{PALT}}$
+\end_inset
+
+ where 
+\begin_inset Formula $a_{0}=-46.3$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+m and 
+\begin_inset Formula $a_{1}=0.97866$
+\end_inset
+
+ but often adjusted dependent on project conditions.
+ This introduced problems in early applications with the GV because it did
+ not account for the pressure-altitude transition at the ISA tropopause.
+ Use of a pressure altitude as reference introduces additional errors in
+ altitude in regions that are not barotropic.
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-radar?
+When OmniSTAR corrections are available and satellite reception is good,
+ the GPS altitude variable GGALT has very low associated uncertainty.
+ However, sometimes reception is lost (esp.
+\begin_inset space ~
+\end_inset
+
+in turns), and OmniSTAR is not available in some locations and for some
+ projects.
+ In those cases, a variable that combines information from the GPS receiver
+ and an inertial reference unit can provide higher-quality measurements
+ than either alone.
 \end_layout
 
 \end_inset
 
- altimeter
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+This variable is derived primarily from GGALT, the GPS
 \begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
-altimeter!radio
+GGALT
 \end_layout
 
 \end_inset
 
-.
- The maximum range is 762m (2,500 ft).
- The instrument changes in accuracy at an altitude of 152 m: The estimated
- error from 152 m to 762 m is 7%, while the estimated error for altitudes
- below 152 m is 1.5 m or 5%, whichever is greater.
-\end_layout
-
-\begin_layout Hanging
-
-\series bold
-Geometric Radar Altitude (Extended Range) (APN-159) (m): 
-\bar under
-HGME
-\series default
-\bar default
-
-\begin_inset Index var
-status open
-
-\begin_layout Plain Layout
-HGME
-\end_layout
-
-\end_inset
-
-
+ altitude, with help from another reference altitude, typically ALT
 \begin_inset Index idx
 status open
 
 \begin_layout Plain Layout
-HGME
+ALT
 \end_layout
 
 \end_inset
 
-
-\begin_inset Newline newline
+, the inertial altitude.
+ The GPS signals at times are degraded, most often during aircraft turns.
+ Two GPS status measurements are used to detect this, but sometimes the
+ information comes too late.
+ A 10-second running average is calculated of the difference between the
+ GPS altitude and the reference altitude.
+ When the sample-to-sample altitude difference changes more than 50 meters
+ or when the GPS status detects a degraded signal, the altitude from this
+ measurement changes from GPS altitude to an adjusted reference altitude
+ (defined as reference altitude plus the running difference average).
+ When the GPS altitude is again 
+\begin_inset Quotes eld
 \end_inset
 
+good
+\begin_inset Quotes erd
+\end_inset
 
+ and to avoid a sudden altitude transition, the output linearly steps back
+ to the GPS altitude over the next 10 seconds.
+ *** 
 \emph on
-The distance to the surface below the aircraft, measured by a radar altimeter.
+REVISE THIS, NEW ALGORITHM
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The two measurements of altitude can be combined in a way that preserves
+ the absolute accuracy of the GPS measurement and the high-frequency response
+ of the INS measurement.
  
-\emph default
-There are two outputs from an APN-159 radar altimeter
-\begin_inset Index idx
-status open
+\emph on
 
-\begin_layout Plain Layout
-altimeter!radar
-\end_layout
-
-\end_inset
-
-
-\begin_inset Index idx
-status open
-
-\begin_layout Plain Layout
-APN-159
-\end_layout
-
-\end_inset
-
-, one with coarse resolution (CHGME) and one with fine resolution (HGME).
- Both raw outputs cycle through the range 0-360 degrees, where one cycle
- corresponds to 4,000 feet for HGME and to 100,000 feet for CHGME.
- To resolve the ambiguity arising from these cycles, 4,000-foot increments
- are added to HGME to maintain agreement with CHGME.
- This preserves the fine resolution of HGME (1.86 m) throughout the altitude
- range of the APN-159.
-\end_layout
-
-\begin_layout Hanging
-
-\series bold
-Geometric Radar Altitude (Extended Range) (APN-232) (m): 
-\bar under
-HGM232
-\series default
-\bar default
-
-\begin_inset Index var
-status open
-
-\begin_layout Plain Layout
-HGM232
-\end_layout
-
-\end_inset
-
-
-\begin_inset Index idx
-status open
-
-\begin_layout Plain Layout
-HGM232
-\end_layout
-
+\begin_inset Newline newline
 \end_inset
 
 
@@ -4219,65 +4791,11 @@ HGM232
 \end_inset
 
 
-\emph on
-Altitude above the ground
-\emph default
- as measured by an APN-232 radar altimeter.
-\end_layout
-
-\begin_layout Hanging
-
-\series bold
-Pressure-Damped Inertial Altitude (m): 
-\bar under
-HI3
-\series default
-\bar default
-
-\begin_inset Index var
-status open
-
-\begin_layout Plain Layout
-HI3 (obsolete)
 \end_layout
 
 \end_inset
 
 
-\begin_inset Index idx
-status open
-
-\begin_layout Plain Layout
-HI3
-\end_layout
-
-\end_inset
-
- (obsolete)
-\begin_inset Newline newline
-\end_inset
-
-
-\emph on
-The aircraft altitude obtained from the twice-integrated IRU acceleration
- (ACINS), pressure-adjusted to obtain long-term agreement with PALT.
- 
-\emph default
-Note that this variable has mixed character, producing short-term variations
- that accurately track the inertial system changes but with adjustment to
- the pressure altitude, which is not a true altitude.
- The variable is not appropriate for estimates of true altitude, but proves
- useful in the updating algorithm used with the LTN-51 IRU for vertical
- wind.
- See the discussion of WP3 
-\begin_inset CommandInset ref
-LatexCommand vpageref
-reference "WP3 algorithm"
-
-\end_inset
-
-.
- This variable is now obsolete.
 \end_layout
 
 \begin_layout Subsection
@@ -4341,7 +4859,7 @@ flat-lines
  empirically, and one should assume that it is within the manufacturer's
  specification (1 nautical mile of error per hour of flight, 90% CEP).
  When the GPS is active, RAF estimates that the correction algorithm produces
- a position with an error less than 100 meters.
+ a position with an error less than 1.5 m.
 \begin_inset Note Note
 status open
 
@@ -4351,7 +4869,14 @@ I think it's probably better than this; what evidence is there for this?
 
 \end_inset
 
- Due to the nature of the algorithm, the error will increase fromabout 100
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "punch3.7"
+
+\end_inset
+
+Due to the nature of the algorithm, the error will increase from about 1.5
  meters to the IRU specification in about one-half hour after GPS information
  is lost.
 \begin_inset Note Note
@@ -4491,7 +5016,7 @@ fc@
 \begin_inset Formula $f_{c}$
 \end_inset
 
-= cutoff frequency fo the filter 
+= cutoff frequency for the filter 
 \begin_inset Formula $F_{L}$
 \end_inset
 
@@ -4554,6 +5079,10 @@ p.
  from the transition.
  The net result then is the sum of these two filtered signals, calculated
  as described in the following box:
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -4697,6 +5226,16 @@ This result is used as long as the GPS signals are continuous and flagged
 \end_inset
 
 
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+this differs slightly from current practice
+\end_layout
+
+\end_inset
+
+
 \begin_inset Box Frameless
 position "t"
 hor_pos "c"
@@ -4704,13 +5243,29 @@ has_inner_box 1
 inner_pos "t"
 use_parbox 0
 use_makebox 0
-width "100col%"
+width "94col%"
 special "none"
 height "1in"
 height_special "totalheight"
 status open
 
 \begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlength{
+\backslash
+itemsep}{-1
+\backslash
+parsep}
+\end_layout
+
+\end_inset
+
 If GPS reception has never been valid earlier in the flight, use the IRU
  values without correction.
  
@@ -4900,8 +5455,8 @@ update constant for exponential updating
  min.
  This has the potential to introduce some artificial variance at this scale
  and so should be considered in cases where variance spectra are analyzed
- in detail, but it has much less influence on such spectra than would introducin
-g a discontinuous transition.
+ in detail, but it has much less influence on such spectra than a discontinuous
+ transition would.
  Ideally, the current fit and the last filtered discrepancy (VNSC
 \begin_inset Formula $_{0}$
 \end_inset
@@ -4912,7 +5467,7 @@ g a discontinuous transition.
 
 ) should be about equal, so this should not introduce a significant change.
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 it would be desirable to use a gradual transition back to the complementary-filt
@@ -4940,6 +5495,13 @@ ered solution, but this apparently isn't done now; instead, there is a hard
  It may be acceptable to apply this correction always, instead of switching
  it on and off when transitions occur.
 \end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "punch3.8"
 
 \end_inset
 
@@ -5151,6 +5713,22 @@ height "1pt"
 \end_layout
 
 \begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlength{
+\backslash
+itemsep}{-1
+\backslash
+parsep}
+\end_layout
+
+\end_inset
+
 Initialize the corrected position at the IRS position at the start of the
  flight or after any large change (>5
 \begin_inset Formula $\text{º}$
@@ -5196,11 +5774,351 @@ specifically, LATC +=
 \begin_layout Enumerate
 To handle periods when the GPS becomes invalid, use an approach analogous
  to that for groundspeed, whereby a Schuler-oscillation fit to the difference
- between the GPS and IRS measurements is developed and used to extrapolate
+ between the GPS and IRS measurements is accumulated and used to extrapolate
  through periods when the GPS is invalid.
  
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\bar under
+ALTC
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+ALTC
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+ALTC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+proposed new 2014
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+Derived altitude above the WGS84 surface, 
+\emph default
+obtained by combining information from a GPS receiver and an IRU.
+ When OmniSTAR corrections are available and satellite reception is good,
+ the GPS altitude variable GGALT has very low associated uncertainty and
+ the change represented by this variable is not useful so in those cases
+ ALTC is set equal to GGALT.
+ However, sometimes reception is lost (esp.
+\begin_inset space ~
+\end_inset
+
+in turns), and OmniSTAR is not available in some locations and for some
+ projects.
+ Therefore, a variable that combines information from the GPS receiver and
+ an inertial reference unit can be useful.
+ As provided by the current Honeywell IRUs, the vertical motion and position
+ of the aircraft is adjusted via a baro-inertial feedback loop to match
+ the pressure altitude.
+ To obtain a variable that is based on the WGS84 coordinate system, the
+ longer-term fluctuations in the GPS measurement of altitude are combined
+ with the shorter-term fluctuations from the IRU measurement of altitude
+ to obtain the new derived variable ALTC.
+ The approach resembles that described above for LATC and LONC, except that
+ a fit to the Schuler oscillation is not used and integration of the hydrostatic
+ equation is used for updating of the IRU altitude in the absence of GPS
+ reception.
+ The steps are as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlength{
+\backslash
+itemsep}{-1
+\backslash
+parsep}
+\end_layout
+
+\end_inset
+
+Initialize by setting the components of the filters below and the PID feedback
+ loop, and by setting the two integration heights used below and the new
+ variable ALTC to the first valid measurement of GPS altitude.
+\end_layout
+
+\begin_layout Enumerate
+Increment a variable 
+\begin_inset Formula $h$
+\end_inset
+
+, representing the IRU altitude, by integrating the IRU-provided vertical
+ velocity VSPD one time step.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+altvc in my memo
+\end_layout
+
+\end_inset
+
+ Also increment the value of the new variable ALTC in the same way.
+ For both increments, subtract the value 
+\begin_inset Formula $V_{b}$
+\end_inset
+
+ from VSPD; 
+\begin_inset Formula $V_{b}$
+\end_inset
+
+ is determined as the bias term in a PID feedback loop described below.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Increment the height 
+\begin_inset Formula $h_{h}$
+\end_inset
+
+ obtained from integration of the hydrostatic equation, using the measured
+ pressure change and temperature.
+\end_layout
+
+\begin_layout Enumerate
+Use the difference between 
+\begin_inset Formula $h$
+\end_inset
+
+ and 
+\begin_inset Formula $h_{h}$
+\end_inset
+
+ as an error term in a PID feedback loop, to obtain an estimate of the bias
+ 
+\begin_inset Formula $V_{b}$
+\end_inset
+
+ in the vertical velocity measurement.
+ There is already updating of the IRU-provided vertical velocity, to pressure
+ altitude, but this updating is instead to geometric altitude as represented
+ by integration of the hydrostatic equation so it helps remove some of the
+ false effects on altitude that arise from using pressure altitude.
+\end_layout
+
+\begin_layout Enumerate
+If the GPS-measured vertical altitucde GGALT is valid:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlength{
+\backslash
+itemsep}{-1
+\backslash
+parsep}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlength{
+\backslash
+itemsep}{-1
+\backslash
+parsep}
+\end_layout
+
+\end_inset
+
+Determine an updated filtered value of 
+\begin_inset Formula $\Delta h$
+\end_inset
+
+, the difference between GGALT and 
+\begin_inset Formula $h$
+\end_inset
+
+, as for LATC or LONC but with a time constant of 200 s.
+\end_layout
+
+\begin_layout Itemize
+Apply exponential updates with 60 s time constants to 
+\begin_inset Formula $h$
+\end_inset
+
+ and 
+\begin_inset Formula $h_{h}$
+\end_inset
+
+, updating both to GGALT.
+\end_layout
+
+\begin_layout Plain Layout
+Otherwise:
+\end_layout
+
+\begin_layout Itemize
+Update 
+\begin_inset Formula $\Delta h$
+\end_inset
+
+ instead to the difference between 
+\begin_inset Formula $h_{h}$
+\end_inset
+
+ and 
+\begin_inset Formula $h$
+\end_inset
+
+.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Adjust ALTV via exponential filtering to add the difference 
+\begin_inset Formula $\Delta h$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\bar under
+VSPDC
+\begin_inset Index var
+status open
+
+\begin_layout Plain Layout
+VSPDC
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+
+\begin_inset Index idx
+status open
+
+\begin_layout Plain Layout
+VSPDC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+proposed new 2014
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+Derived variable representing the vertical velocity of the aircraft, 
+\emph default
+obtained by combining measurements from a GPS receiver and an IRU.
+ The calculation applies the bias term 
+\begin_inset Formula $V_{b}$
+\end_inset
+
+ calculated above to the IRU-provided measurement of vertical velocity,
+ and uses a complementary filter to combine the GPS and IRU measurements
+ as for VNSC or VEWC.
+ If GPS OmniSTAR reception is available (i.e., GGQUAL is 5), the GPS measurement
+ of vertical velocity is used without change.
+\begin_inset Newline newline
 \end_inset
 
 

@@ -14,6 +14,8 @@
 \let\OrgIndex\index 
 \renewcommand*{\index}[1]{\OrgIndex{#1}}
 \usepackage{splitidx}
+\marginparsep 0.3 cm
+\marginparwidth 2 cm 
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -180,10 +182,207 @@ eject
 \end_inset
 
 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+Punch List
+\begin_inset Quotes erd
+\end_inset
+
+:
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
+Section 1,2:
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "Punch1.1"
+
+\end_inset
+
+ Add, to constants table, a reference to what has been in use previously
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch1.2"
+
+\end_inset
+
+Get Teresa to review the discussion re trace-gas units
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch1.3"
+
+\end_inset
+
+Get info from Chris W describing interpolation and time adjustments, for
+ inclusion as an addition to the section on times.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch1.4"
+
+\end_inset
+
+Get place to put algorithm notes, and include links to those additional
+ discussions in this document.
+\end_layout
+
+\begin_layout Plain Layout
+Section 3 (State of the Aircraft)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch3.1"
+
+\end_inset
+
+Get description of the C-130 IRU and also the history of what was used when,
+ with characteristics for the Litton at least.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch3.2"
+
+\end_inset
+
+Reference the NCAR TN instead of Bulletin 23?
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch3.3"
+
+\end_inset
+
+Update info on GPS systems in use now, and add history section noting what
+ was used in the past.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch3.4"
+
+\end_inset
+
+Clarify discussion of height-above-geoid (and, generally, geopotential vs
+ geometric vs geoid height)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch3.5"
+
+\end_inset
+
+Clarify meaning of mode and status for old GPS units, and if used anymore
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch3.6"
+
+\end_inset
+
+Add new section on ALTC?
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch3.7"
+
+\end_inset
+
+revise uncertainty estimate for GPS/INS-merged position, velocity? 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand pageref
+reference "punch3.8"
+
+\end_inset
+
+revise compl-filter as described in presentation 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "punch3.9"
+
+\end_inset
+
+should there be a vertical velocity of the AC based on data-system GPS?
+ Perhaps this, rather than VSPD, should be used for WIC?
+\end_layout
+
+\begin_layout Plain Layout
+Section 4: State of the Atmosphere
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "punch4.1"
+
+\end_inset
+
+Check/update sensors used on both aircraft.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "punch4.2"
+
+\end_inset
+
+Revise historical description of PCORs, esp.
+ re subroutine references (QCF, MACH_A, ADIFR)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "punch4.3"
+
+\end_inset
+
+Add a discussion of additional corrections to QCR that could make this less
+ sensitive to AOA?
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
 \end_inset
 
 
@@ -204,6 +403,32 @@ filename "Section1.lyx"
 LatexCommand include
 filename "Section3.lyx"
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vfill
+\backslash
+eject
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newpage cleardoublepage
 \end_inset
 
 

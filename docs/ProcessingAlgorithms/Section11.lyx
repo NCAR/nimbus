@@ -587,7 +587,7 @@ status open
 
 \begin_layout Plain Layout
 Lv@
-\begin_inset Formula $L_{V}$
+\begin_inset Formula $L_{v}$
 \end_inset
 
 = latent heat of vaporization of water
@@ -670,6 +670,7 @@ K
 status open
 
 \begin_layout Plain Layout
+lambdac@
 \begin_inset Formula $\lambda_{c}$
 \end_inset
 

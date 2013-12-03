@@ -29,7 +29,16 @@ hanging
 \index_command makeindex
 \paperfontsize default
 \spacing single
-\use_hyperref false
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
 \papersize default
 \use_geometry false
 \use_amsmath 1
@@ -263,8 +272,9 @@ nimbus
 \emph default
  again processes the data.
  At this stage, measurements can be re-sampled with averaging and/or interpolati
-on to produce different time frequencies, and known lags in measurements
- can be introduced to adjust measurements to a common time basis.
+on to produce various data rates, usually 1 Hz or 25 Hz, and known lags
+ in measurements can be introduced to adjust measurements to a common time
+ basis.
  As part of this processing, 
 \emph on
 nimbus
@@ -476,7 +486,7 @@ status open
 \begin_layout Plain Layout
 ADS III is the name given to the full data system, which includes these
  components: NIDAS (for data acquisition and recording); NIMBUS (for data
- processing,(both in flight and after the flight); AEROS (for data display
+ processing, both in flight and after the flight); AEROS (for data display
  in flight); and the Mission Coordinator Station and satellite communications
  system (for transmission of data to and from the aircraft, display of such
  data for mission decisions, and support for written 
@@ -533,6 +543,10 @@ GV, C-130 (2007)
 
 \end_layout
 
+\end_inset
+
+
+\begin_inset Newline newline
 \end_inset
 
 
@@ -601,7 +615,7 @@ Alphabetical List of Variables
 \end_layout
 
 \begin_layout Standard
-At the end of this section, 
+At the end of this document, 
 \begin_inset CommandInset ref
 LatexCommand vpageref
 reference "List of Variables"
@@ -694,7 +708,7 @@ Some that do not follow this convention are ATTACK and SSLIP; see the individual
 \end_layout
 
 \begin_layout Subsection
-Constants Used in Data Processing
+Constants Used in Data Processing, with List of Symbols
 \begin_inset Note Note
 status open
 
@@ -708,9 +722,16 @@ add footnote here with historical usage, but update to be current
 \end_layout
 
 \begin_layout Standard
-The following box contains values used for some constants in this document.
- For reference, the symbols used here also appear at the start of the index
- along with their meanings and links to where they are defined.
+\begin_inset CommandInset label
+LatexCommand label
+name "Punch1.1"
+
+\end_inset
+
+The following table contains values used for some constants in this document.
+ For reference, the symbols used here and elsewhere in this document are
+ defined in the List of Symbols that follows the table, and links are provided
+ to where they are used.
  Where references are to the 
 \begin_inset Quotes eld
 \end_inset
@@ -780,6 +801,16 @@ P.
 \end_inset
 
  to indicate that the values used are those in the following table.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+is this footnote needed?
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1143,10 +1174,15 @@ m
 status open
 
 \begin_layout Plain Layout
+T0@
 \begin_inset Formula $T_{0}$
 \end_inset
 
-= 273.15
+=temperature in kelvin corresponding to 
+\begin_inset Formula $0{}^{\circ}C$
+\end_inset
+
+ = 273.15
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -1176,14 +1212,11 @@ K
 status open
 
 \begin_layout Plain Layout
+T3@
 \begin_inset Formula $T_{3}$
 \end_inset
 
-= 273.16
-\begin_inset space \thinspace{}
-\end_inset
-
-K
+= triple point temperature of water
 \end_layout
 
 \end_inset
@@ -1862,7 +1895,7 @@ cp@
 \begin_inset Formula $c_{p}$
 \end_inset
 
-= specific head of dry air at constant pressure
+= specific heat of dry air at constant pressure
 \end_layout
 
 \end_inset
@@ -2266,10 +2299,7 @@ status open
 \end_layout
 
 \begin_layout Standard
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:List of Symbols"
-
+\begin_inset Newpage newpage
 \end_inset
 
 
@@ -2283,6 +2313,16 @@ symbols!table of
 \end_inset
 
 
+\begin_inset CommandInset label
+LatexCommand label
+name "List of Symbols"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset CommandInset index_print
 LatexCommand printindex
 type "lis"
@@ -2318,7 +2358,7 @@ name "sub:System-of-Units"
 \end_layout
 
 \begin_layout Standard
-This report will use the SI system of units
+This report uses the SI system of units
 \begin_inset Index idx
 status open
 
@@ -2343,8 +2383,8 @@ millibar
 
 \end_inset
 
- (mb), equal to one hectopascal (hPa), is sometimes used for pressure.
- 
+ (mb), equal to one hectopascal (hPa), was used for pressure with some older
+ variables.
 \end_layout
 
 \begin_layout Enumerate
@@ -2634,14 +2674,18 @@ nautical mile
 
 \end_inset
 
-s (= 1852 m).
+s 
+\begin_inset Formula $\equiv$
+\end_inset
+
+ 1852 m).
 \end_layout
 
 \begin_layout Standard
 There is a list of symbols used in this report, on page 
 \begin_inset CommandInset ref
 LatexCommand pageref
-reference "sub:List of Symbols"
+reference "List of Symbols"
 
 \end_inset
 
@@ -2657,8 +2701,16 @@ status open
 \end_inset
 
 .
- The next table defines some abbreviations and symbols used in this report,
- in addition to the standard abbreviations for the mks system of units:
+ The next table defines some abbreviations and additional symbols used for
+ units in this report, in addition to the standard abbreviations for the
+ mks system of units:
+\begin_inset CommandInset label
+LatexCommand label
+name "punch1.2"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3010,10 +3062,10 @@ Time Variables
 Although there are some exceptions in old archived data files, the data
  in all modern output files are referenced to Coordinated Universal Time
  (UTC).
- The time and date of the data acquisition system are synchronized to the
- Global Positioning System (GPS) at the beginning of each flight, and for
- data acquired by the present ADS-3 (NIDAS) data acquisition system time
- is synchronized continuously with the GPS time.
+ The time and date of the data acquisition system are synchronized to time
+ from the Global Positioning System (GPS) at the beginning of each flight,
+ and for data acquired by the present ADS-3 (NIDAS) data acquisition system
+ time is synchronized continuously with the GPS time.
  Time variables vary for older archived data files; some of the following
  are obsolete, but are included here for reference because they are important
  to those wanting to use those archives.
@@ -3096,8 +3148,7 @@ Time:units
 \begin_inset Quotes erd
 \end_inset
 
- attribute found in the NETCDF header section for this variable to obtain
- the UTC measurement time.
+ attribute found in the NETCDF header section to obtain the UTC time.
 \begin_inset Newline newline
 \end_inset
 
@@ -3232,8 +3283,7 @@ The reference time for the NETCDF output data files for data system versions
 \emph default
 It represents the time of the first data record.
  Its format is Unix time (elapsed seconds after midnight 1 January 1970).
- Use this measurement and add time_offset (below) to obtain the time for
- each data record.
+ Add time_offset (below) to obtain the time for each data record.
  (Note: base_time is a single scalar, not a 
 \begin_inset Quotes eld
 \end_inset
@@ -3460,6 +3510,13 @@ Consider adding a section, here or elsewhere, on how data are modified to
 \end_inset
 
 
+\begin_inset CommandInset label
+LatexCommand label
+name "punch1.3"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -3474,12 +3531,12 @@ Variable Names In Equations
 This report often uses variable names in equations, and sometimes there
  is potential for confusion because the variable names consist of multiple
  characters.
- In many cases, to denote that the variable name is the variable in the
+ In most cases, to denote that the variable name is the variable in the
  equation (as opposed to each of the letters in the variable name representing
  quantities to be multiplied together), the variable name has been enclosed
  in brackets, as in {TASX}.
  In addition, variable names are displayed with upright Roman character
- sets, while other nomenclature in equations is represented by slanted (script)
+ sets, while other symbols in equations are shown using slanted (script)
  character sets as is conventional for mathematical equations.
  In cases where code segments (usually expressed in C code) are included
  to document how calculations are performed, typewriter character sets indicate
@@ -3557,9 +3614,9 @@ Calibration coefficients, e.g.
 \begin_inset Formula $\text{º}$
 \end_inset
 
-C), are not included or discussed in this report but are part of project
- reports and, in recent years, are included in the header of the NETCDF
- file.
+C), are not included or discussed in this report.
+ They are normally included in project reports and, in recent years, many
+ are included in the header of the NETCDF file.
 \end_layout
 
 \end_inset
@@ -3596,6 +3653,13 @@ status open
 adding links to discussion of those variables referenced in the algorithm
  discussions would be useful...
 \end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "punch1.4"
 
 \end_inset
 
