@@ -24,14 +24,16 @@ ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RHEL6
 # and get OpenMotif from here (OpenMotif from Macports was not working for us):
 #  http://www.ist-inc.com/downloads/motif_download.html
 #
-# setenv LOCAL /opt/local
-# setenv JLOCAL /usr/local
+# Mountain Lion update.  Need to get XQuartz download for X11, it is no longer bundled
+# with MacOS.  Using Homebrew instead of MacPorts now.
+#
+# setenv JLOCAL /usr/local (or 'export JLOCAL=/usr/local').
 #
 # Build libraf++ first.
 #
-#DEFINES	= -D_FILE_OFFSET_BITS=64 -DPNG
-#INCLUDES= -I../src -I${INC} -I${RAFINC} -I${LOCAL}/include -I/usr/OpenMotif/include
-#LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib -L${LOCAL}/lib -L/usr/OpenMotif/lib
+#DEFINES	= -D_FILE_OFFSET_BITS=64 -DPNG -DPNG15
+#INCLUDES= -I../src -I${INC} -I${RAFINC} -I/opt/X11/include -I/usr/OpenMotif/include
+#LIB_DIRS= -L/opt/X11/lib -L${JLOCAL}/lib -L/usr/OpenMotif/lib
 #LIBS   = -lraf++ -lXm -lXt -lICE -lXext -lX11 -lpng -lz
 
 # Don't use optimization with gcc (2.95.2 and earlier) and C++.
