@@ -1,7 +1,6 @@
 #
 # Makefile for ncpp
 #
-CXX	= g++
 BIN	= ${JLOCAL}/bin
 WWW	= /net/www/docs/raf/Software
 RELEASE = ${JLOCAL}/ncpp
@@ -24,16 +23,19 @@ ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RHEL6
 # and get OpenMotif from here (OpenMotif from Macports was not working for us):
 #  http://www.ist-inc.com/downloads/motif_download.html
 #
-# setenv LOCAL /opt/local
+# Mountain Lion update.  Need to get XQuartz download for X11, it is no longer bundled
+# with MacOS.  Using Homebrew instead of MacPorts now.
+#
 # setenv JLOCAL /usr/local
 #
 # Build libraf++ first.
 #
-#DEFINES	= -DPNG
-#INCLUDES= -I${INC} -I/usr/OpenMotif/include -I${RAFINC} -I${LOCAL}/include
-#LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib -L/usr/OpenMotif/lib -L${LOCAL}/lib
+#DEFINES	= -DPNG -DPNG15
+#INCLUDES= -I${INC} -I/usr/OpenMotif/include -I${RAFINC} -I/opt/X11/include
+#LIB_DIRS= -L/opt/X11/lib -L${JLOCAL}/lib -L/usr/OpenMotif/lib
 #LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -lnetcdf_c++ -lnetcdf -lpng -lz
 
+CXX	= g++
 CXXFLAGS= -g -O ${INCLUDES} ${DEFINES}
 
 PROG	= ncpp
