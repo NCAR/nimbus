@@ -525,7 +525,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
   else
 #endif
     {
-    savePos = ftello64(fp);
+    savePos = ftello(fp);
 //  if ((nBytes = read(fileno(fp), buff, size)) == 0 && GetNextADSfile())
     rc = fread(buff, size, 1, fp);
     }
