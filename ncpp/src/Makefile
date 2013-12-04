@@ -36,7 +36,7 @@ ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RHEL6
 #LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -lnetcdf_c++ -lnetcdf -lpng -lz
 
 CXX	= g++
-CXXFLAGS= -g -O ${INCLUDES} ${DEFINES}
+CXXFLAGS= -g -O -Wno-write-strings ${INCLUDES} ${DEFINES}
 
 PROG	= ncpp
 HDRS	= ${INC}/define.h
