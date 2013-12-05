@@ -14,7 +14,7 @@
 /* -------------------------------------------------------------------- */
 void srhum(DERTBL *varp)
 {
-  NR_TYPE atx, psxc, e, rhum;
+  NR_TYPE atx, psxc, e, esa, rhum;
 
   atx = GetSample(varp, 0);
   if (varp->ndep == 3)	// Old method for computing RHUM.
@@ -22,17 +22,17 @@ void srhum(DERTBL *varp)
     double esubt(double, double);
     psxc = GetSample(varp, 1);
     e	= GetSample(varp, 2);
-    rhum = (NR_TYPE)esubt(atx, psxc);
+    esa = (NR_TYPE)esubt(atx, psxc);
   }
   else	// New method.
   {
     double WaterVaporPressureOfWater(double);
     e = GetSample(varp, 1);
-    rhum = (NR_TYPE)WaterVaporPressureOfWater(atx + Kelvin);
+    esa = (NR_TYPE)WaterVaporPressureOfWater(atx + Kelvin);
   }
 
   if (rhum != 0.0)
-    rhum = 100.0 * e / rhum;
+    rhum = 100.0 * e / esa;
 
   PutSample(varp, rhum);
 
