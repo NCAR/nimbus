@@ -942,6 +942,7 @@
 	"DPLA",		NULL,		NULL,		sdprho,
 	"DPLA1",	NULL,		NULL,		sdprho,
 	"RHUM",		NULL,		NULL,		srhum,
+	"RHUMI",	NULL,		NULL,		srhumi,
 	"RHLA",		NULL,		NULL,		srhrho,
 	"RHLA1",	NULL,		NULL,		srhrho,
 	"SERIAL",	NULL,		xlserial,	NULL,
