@@ -1,11 +1,18 @@
-/*******       RELATIVE HUMIDITY (PER CENT)                             RHUM
-                  REQUIRES --- EDPC, ATX, ESUBT FUNCTION
- 	Input:
- 		atx - derived ambient temperature
- 		edpc - derived vapor pressure
- 	Output:
- 		rhum - derived relative humidity
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:	rhum.c
+
+FULL NAME:	Relative Humidity
+
+ENTRY POINTS:	srhum()		RH wrt Water
+		srhumi()	RH wrt Ice
+
+DESCRIPTION:	Relative Humidity calculations.
+
+COPYRIGHT:	University Corporation for Atmospheric Research, 1990-2014
+-------------------------------------------------------------------------
 */
+
 
 #include "nimbus.h"
 #include "amlib.h"
@@ -19,7 +26,7 @@ void srhum(DERTBL *varp)
   NR_TYPE atx, e, esa, rhum = 0.0;
 
   atx = GetSample(varp, 0);
-  if (varp->ndep == 3)	// Old method for computing RHUM.
+  if (varp->ndep == 3)	// Old method for computing RHUM via ESUBT.
   {
     double esubt(double, double);
     NR_TYPE psxc = GetSample(varp, 1);
@@ -58,6 +65,4 @@ void srhumi(DERTBL *varp)
 
   PutSample(varp, rhum);
 
-}	/* END SRHUM */
-
-/* END RHUM.C */
+}
