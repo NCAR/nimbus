@@ -46,7 +46,18 @@ CircularBuffer *CreateCircularBuffer(int nbuffers, int nbytes)
   cb->buffer = new char*[nbuffers];
 
   for (int i = 0; i < nbuffers; ++i)
+  {
     cb->buffer[i] = new char[nbytes];
+    // Some of the algorithms (eg, Despike) expect the preceding buffers to
+    // be valid even when only one buffer has been read so far.  So the
+    // best work-around I can think for this is to initialize the buffer
+    // with NaNs.  To see the code which assumes valid preceding buffers,
+    // remove these lines and run nimbus through valgrind.
+    for (unsigned int j = 0; j < nbytes/sizeof(NR_TYPE); ++j)
+    {
+      ((NR_TYPE*)(cb->buffer[i]))[j] = floatNAN;
+    }
+  }
 
   return(cb);
 

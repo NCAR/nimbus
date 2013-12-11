@@ -46,6 +46,8 @@ void ReadModuloVariables()
     mp->bound[0]	= val[0] + ten_percent;
     mp->bound[1]	= val[1] - ten_percent;
 
+  // Each raw and derived variable gets its own new copy of the Modulo
+  // struct, so each instance can delete its copy when it gets destroyed.
   if ((index = SearchTableSansLocation(raw, target)) != ERR)
     {
     raw[index]->Modulo = mp;
@@ -54,7 +56,7 @@ void ReadModuloVariables()
 
     while (++index < (int)raw.size() &&
 	strncmp((char *)raw[index]->name, target, strlen(target)) == 0)
-      raw[index]->Modulo = mp;
+      raw[index]->Modulo = new MOD(*mp);
     }
   else
   if ((index = SearchTableSansLocation(derived, target)) != ERR)
@@ -65,7 +67,7 @@ void ReadModuloVariables()
 
     while (++index < (int)derived.size() &&
 	strncmp((char *)derived[index]->name,target,strlen(target)) == 0)
-      derived[index]->Modulo = mp;
+      derived[index]->Modulo = new MOD(*mp);
     }
   else
     delete mp;

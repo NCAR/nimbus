@@ -23,6 +23,16 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 
 extern NR_TYPE	*SampledData, *AveragedData;
 
+#ifdef DEBUG
+#include "decode.h"
+#include <nidas/util/UTime.h>
+using nidas::util::UTime;
+
+void
+break_average()
+{
+}
+#endif
 
 /* -------------------------------------------------------------------- */
 void AverageSampledData()
@@ -30,6 +40,11 @@ void AverageSampledData()
   for (size_t i = 0; i < raw.size(); ++i)
   {
     RAWTBL *rp = raw[i];
+
+#ifdef DEBUG
+    if (strcmp(rp->name, "CAVP_DPR") == 0)
+      break_average();
+#endif
 
     if (rp->SampleRate <= 1)
       memcpy( (char *)&AveragedData[rp->LRstart],
@@ -41,6 +56,15 @@ void AverageSampledData()
               rp->SampleRate,
               rp->Length,
               rp->Modulo);
+
+#ifdef DEBUG
+    {
+      static std::string tfmt("At %Y/%m/%d;%H:%M:%S.%3f, computed: ");
+      time_t thisTime = SampledDataTimeToSeconds(SampledData);
+      std::cerr << UTime(thisTime).format(tfmt)
+		<< rp->name << " = " << AveragedData[rp->LRstart] << std::endl;
+    }
+#endif
   }
 }	/* END AVERAGESAMPLEDDATA */
 

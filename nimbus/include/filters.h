@@ -42,7 +42,7 @@ typedef struct
 	ushort	coefPhase;	/* Index for first coef of 'polyphase' filter */
 	ushort	task;		/* Current filter activity	*/
 	ushort	currentHz;	/* Index into current second	*/
-	MOD	*modulo;	/* Is this variable circular (i.e. Heading) */
+	const MOD *modulo;	/* Is this variable circular (i.e. Heading) */
 	} mRFilterData, *mRFilterPtr;
 
 
@@ -50,7 +50,7 @@ typedef struct
 #define OUT_AVAIL   69
 #define GET_INPUT   55
 
-static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, MOD *modvar);
+static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, const MOD *modvar);
 static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output);
 static int disposMultiRateFilter(mRFilterPtr aMRFPtr);
 static void initMultiRateFilter(mRFilterPtr aMRFPtr);

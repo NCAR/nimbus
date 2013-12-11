@@ -667,7 +667,7 @@ void preProcessData(var_base *varp, int32_t input[], int thisLabel)
 //  if (zeroCnt > 1)
   {
     sprintf(buffer,
-	"irsHw: %s: %d of %d zero values this second.",
+	"irsHw: %s: %d of %zd zero values this second.",
 	varp->name, zeroCnt, varp->SampleRate);
     LogXlateMsg(buffer);
   }

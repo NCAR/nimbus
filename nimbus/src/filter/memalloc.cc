@@ -102,8 +102,15 @@ void AllocateDataArrays()
     get_lrlen(&lrlen);
     ADSrecord = new char[lrlen];
   }
-  else // ADS3 will be put here, then copied out in rec_decode.c
+  else
+  {
+    // ADS3 will be put here, then copied out in rec_decode.c
     ADSrecord = new char[nSRfloats * sizeof(NR_TYPE)];
+#ifdef DEBUG
+    std::cerr << "Allocated ADSrecord with " << nSRfloats << " values, or "
+	      << nSRfloats*sizeof(NR_TYPE) << " bytes." << std::endl;
+#endif
+  }
 
   if (cfg.ProcessingRate() == Config::HighRate)
     HighRateData = new NR_TYPE[nHRfloats];

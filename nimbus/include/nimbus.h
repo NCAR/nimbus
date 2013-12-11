@@ -1,4 +1,4 @@
-/*
+/* -*- mode: C++; -*-
 -------------------------------------------------------------------------
 OBJECT NAME:	nimbus.h
 
@@ -64,6 +64,7 @@ class var_base
 {
 public:
   var_base(const char s[]);
+  ~var_base();
 
   char name[NAMELEN];	// Variable name
 
@@ -88,7 +89,7 @@ public:
 			// Used by AMLIB
   bool DependedUpon;	// Is this variable depended upon?
 
-  MOD *Modulo;		// Pointer for modulo data, if any
+  const MOD *Modulo;	// Pointer for modulo data, if any
 
   bool Dirty;		// Was variable modified by user
   bool Output;		// Is this going into the output file?
