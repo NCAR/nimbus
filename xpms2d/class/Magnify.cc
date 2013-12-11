@@ -39,14 +39,14 @@ void Magnify::ProcessInput(XmDrawingAreaCallbackStruct *evt)
 {
   XButtonEvent  *xb = (XButtonEvent *)evt->event;
   static bool   cancel = false;
- 
+
   if (xb->button != Button1)
     return;
  
-  if (xb->state == 0)
+  if ((xb->state & Button1Mask) == 0)
     startX = startY = endX = endY = 0;
  
-  if (xb->state == 0x100)
+  if ((xb->state & Button1Mask) == Button1Mask)
     {
     XtRemoveEventHandler(mainPlot->Wdgt(), Button1MotionMask, False,
                          (XtEventHandler)DoTheBox, NULL);
@@ -54,11 +54,11 @@ void Magnify::ProcessInput(XmDrawingAreaCallbackStruct *evt)
     pen->SetFunction(GXcopy);
     }
  
-  if (xb->state != 0)
+  if ((xb->state & Button1Mask) != 0)
     if (cancel || endX < startX || endY < startY)
       return;
  
-  if (xb->state == 0)
+  if ((xb->state & Button1Mask) == 0)
     {
     cancel = false;
  
@@ -71,7 +71,7 @@ void Magnify::ProcessInput(XmDrawingAreaCallbackStruct *evt)
     XtAddEventHandler(mainPlot->Wdgt(), Button1MotionMask, False,
                       (XtEventHandler)DoTheBox, NULL);
     }
-  else if (xb->state == 0x100)
+  else if ((xb->state & Button1Mask) == Button1Mask)
     {
     if (abs(startX - xb->x) < 10 || abs(startY - xb->y) < 10)
       return;
