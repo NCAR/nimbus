@@ -4,11 +4,15 @@
 
 QT += network
 TEMPLATE = app
-TARGET = 
-DESTDIR = /opt/local/bin
 DEPENDPATH += .
 INCLUDEPATH += .
 LIBS += -lnetcdf_c++ -lnetcdf -lhdf5 -lhdf5_hl
 
 # Input
 SOURCES += nc2iwg1.cc
+
+# The leading slash is to make it look absolute so qmake does not append it
+# to the current directory.  It should not hurt anything since JLOCAL is
+# always absolute.
+target.path = /$(JLOCAL)/bin
+INSTALLS += target

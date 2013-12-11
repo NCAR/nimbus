@@ -75,7 +75,7 @@ foreach file ( libraf libraf++ ads2/hdr_api libpms vardb/lib )
   endif
 end
 
-# Programs with "install" target.
+# Programs using 'make install'.
 
 foreach file ( ads2/hdrbld ncplot ncpp/src vardb/editor ads2/xhd xpms2d/src instruments/rdma ads_utils/edADShdr vardb/utils vardb/utils/vdb2ncml )
   (cd $file; echo ""; make install)
@@ -86,7 +86,7 @@ foreach file ( ads2/hdrbld ncplot ncpp/src vardb/editor ads2/xhd xpms2d/src inst
   endif
 end
 
-# Programs using "scons".
+# Programs using 'scons' and 'scons install'.
 
 foreach file ( nimbus caledit kml_tools/acTrack2kml instruments/pms2d/process2d instruments/pms2d/oapinfo instruments/sid2h instruments/cpi/cpidisplay nc_utils/ncReorder nc_utils/ncvarlist nc_utils/nc_gap )
   (cd $file; echo $file; scons install)
@@ -98,7 +98,7 @@ foreach file ( nimbus caledit kml_tools/acTrack2kml instruments/pms2d/process2d 
 end
 
 
-# Programs with "install" target.
+# nc_utils using "make install" target.
 
 cd nc_utils
 foreach file ( asc2cdf flt_time nc_compare ncav ncextr ncfillvar ncmerge nc_sane )
@@ -112,7 +112,7 @@ end
 
 # Qt / qmake
 foreach file ( nc2iwg1 )
-  (cd $file; echo $file; qmake-qt4; make )
+  (cd $file; echo $file; qmake-qt4; make install )
   if ($num > 0) then
     echo "$file BUILT"
     sleep $num
