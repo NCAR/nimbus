@@ -2,7 +2,7 @@
 
 Import('env')
 
-thisEnv = env.Clone(CC = 'gcc')
+thisEnv = env.Clone(CC = 'gcc', CCFLAGS=[])
 
 sources = Split("""
         conversion.c
