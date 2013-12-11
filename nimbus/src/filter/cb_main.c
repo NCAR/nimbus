@@ -307,7 +307,8 @@ void ConfigurationDump()
 	cfg.ProcessingMode() == Config::RealTime ? "Real-time" : "Post-processing");
 	LogMessage(buffer);
   sprintf(buffer, "  %s rate.",
-	cfg.ProcessingRate() == Config::HighRate ? "Low" : "High");
+	cfg.ProcessingRate() == Config::HighRate ? "High" : 
+	  (cfg.ProcessingRate() == Config::LowRate ? "Low" : "Sample"));
 	LogMessage(buffer);
   sprintf(buffer, "  %s run.",
 	cfg.ProductionRun() ? "Production" : "Preliminary"); LogMessage(buffer);
