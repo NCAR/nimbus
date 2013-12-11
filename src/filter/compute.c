@@ -22,7 +22,19 @@ extern NR_TYPE	*HighRateData, *AveragedData;
 
 bool blankOutThisValue(var_base * var, time_t thistime);
 
-static int thisTime;
+// Why was this here?  It is shadowed by the thisTime parameter to all the
+// functions in this module, so perhaps it is a leftover global variable...
+//
+// static int thisTime;
+
+#ifdef DEBUG
+#include <nidas/util/UTime.h>
+using nidas::util::UTime;
+
+void
+compute_break()
+{}
+#endif
 
 /* -------------------------------------------------------------------- */
 void ComputeLowRateDerived(time_t thisTime)
@@ -33,8 +45,21 @@ void ComputeLowRateDerived(time_t thisTime)
   {
     DERTBL *dp = ComputeOrder[i];
 
+#ifdef DEBUG
+    if (strcmp(dp->name, "EW_DPR") == 0 || 
+	strcmp(dp->name, "EWX") == 0 ||
+	strcmp(dp->name, "DP_DPR") == 0)
+      compute_break();
+#endif
     if (dp->compute)
       (*dp->compute)(dp);
+#ifdef DEBUG
+    {
+      static std::string tfmt("At %Y/%m/%d;%H:%M:%S.%3f, computed: ");
+      std::cerr << UTime(thisTime).format(tfmt)
+		<< dp->name << " = " << AveragedData[dp->LRstart] << std::endl;
+    }
+#endif
 
     if (blankOutThisValue(dp, thisTime) == true || dp->compute == 0)
     {

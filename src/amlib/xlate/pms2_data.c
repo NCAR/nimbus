@@ -434,7 +434,7 @@ static void AddMore2dData(Queue *probe, int32_t thisTime, int probeCnt)
 		Next2dRecord(&rec, probeCnt, probeIDorder[probeCnt]))
     {
     if (debug)
-      printf("  %x thisTime=%ld, newRec=%d tail=%ld, ol=%d\n", rec.id, thisTime, rec.hour*3600+rec.minute*60+rec.second, ((Particle *)probe->tail->datum)->time, rec.overld);
+      printf("  %x thisTime=%d, newRec=%d tail=%d, ol=%d\n", rec.id, thisTime, rec.hour*3600+rec.minute*60+rec.second, ((Particle *)probe->tail->datum)->time, rec.overld);
 
     Process(probe, &rec, probeCnt);
 
@@ -646,14 +646,14 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
    */
   if (partCnt < 20)
     {
-    sprintf(buffer, "Rejecting 2D record: %x %02d:%02d:%02d.%d, too few particles, nPart=%d", rec->id, rec->hour, rec->minute, rec->second, rec->msec, partCnt);
+    sprintf(buffer, "Rejecting 2D record: %x %02d:%02d:%02d.%d, too few particles, nPart=%zd", rec->id, rec->hour, rec->minute, rec->second, rec->msec, partCnt);
     Log2dXlateMsg(rec, buffer);
     goto cleanup;
     }
 
   if (DASelapsedTime > 8000000)	/* 8 seconds */
     {
-    sprintf(buffer, "Rejecting 2D record: %x %02d:%02d:%02d.%d, too much elapsed time, %ld seconds.", rec->id, rec->hour, rec->minute, rec->second, rec->msec, DASelapsedTime / 1000000);
+    sprintf(buffer, "Rejecting 2D record: %x %02d:%02d:%02d.%d, too much elapsed time, %d seconds.", rec->id, rec->hour, rec->minute, rec->second, rec->msec, DASelapsedTime / 1000000);
     Log2dXlateMsg(rec, buffer);
     goto cleanup;
     }
@@ -777,7 +777,7 @@ void ScanForStreakers(P2d_rec * rec)
   }
 
   for (size_t i = 0; i < 32; ++i)
-    printf("%d ", cntrs[i]);
+    printf("%zd ", cntrs[i]);
 
   printf("\n");
 
