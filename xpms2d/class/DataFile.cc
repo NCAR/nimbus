@@ -201,9 +201,9 @@ void ADS_DataFile::initADS3(char *hdrString)
 
   // Extract version number.  ADS2 versions are less than 5.0.
   strcpy(_version, "5");
-  char *endHdr = strstr(hdrString, "</OAP>");
+  char *endHdr = strstr(hdrString, "</OAP>") + strlen("</OAP>\n");
   if (endHdr == 0)
-    endHdr = strstr(hdrString, "</PMS2D>");
+    endHdr = strstr(hdrString, "</PMS2D>") + strlen("</PMS2D>\n");
   else
     {
     char *p = strstr(hdrString, "<OAP version");
