@@ -220,7 +220,7 @@ void ADS_DataFile::initADS3(char *hdrString)
     }
 
   // Position at first record for buildIndices.
-  fseeko(fp, endHdr - buffer + strlen("</OAP>\n"), SEEK_SET);
+  fseeko(fp, endHdr - hdrString, SEEK_SET);
 
 
   // Read pertinent meta-data from header.
