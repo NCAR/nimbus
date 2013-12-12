@@ -1,7 +1,7 @@
 Summary: Spec file for xpms2d
 Name: xpms2d
 Version: 2.6
-Release: 1
+Release: 2
 License: GPL
 Group: System Environment/Daemons
 Url: http://www.eol.ucar.edu/
@@ -39,5 +39,12 @@ rm -rf %{buildroot}
 %{_bindir}/%{name}
 
 %changelog
-* Wed Jul 13 2011 Chris Webster <cjw@ucar.edu> - 1.0-1
+
+* Wed Dec 12 2013 Chris Webster <cjw@ucar.edu> - 2.6-2
+- bug fixes.
+- Magnify box issue - XButtonEvent needed update, wasn't detecting if NumLock was off (or on).
+- Merge in branch file positioning.
+- Replace fopen64() freado64(), fseeko64(), etc with fopen() fread(), fseeko()
+- Clean up Mac build for Mountian Lion
+* Wed Jul 13 2011 Chris Webster <cjw@ucar.edu> - 2.6-1
 - initial version
