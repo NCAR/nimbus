@@ -717,8 +717,6 @@
 	"ATBH",		(void(*)(void*))atfhInit,	NULL,		satfh,
 	"ATF",		NULL,		NULL,		satf,
 	"ATFH",		(void(*)(void*))atfhInit,	NULL,		satfh,
-	"ATKP",		NULL,		NULL,		satkp,
-	"ATRF",		NULL,		NULL,		satrf,
 	"ATW",		NULL,		NULL,		satf,
 	"ATX",		NULL,		NULL,		sRefer,
 	"ATRR",		(void(*)(void*))atbInit,	NULL,		satb,
