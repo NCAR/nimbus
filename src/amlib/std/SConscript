@@ -15,8 +15,6 @@ atb.c
 atf.c
 atfh.c
 ath_gv.c
-atkp.c
-atrf.c
 boomln.c
 cdp.c
 cnctr.c
