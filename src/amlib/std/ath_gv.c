@@ -145,12 +145,16 @@ void satfhGVharco(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void satfhGVrose(DERTBL *varp)
 {
-  NR_TYPE ttfh, xmach2, recovery, atfh;
+  NR_TYPE ttfh, xmach2, recovery, atfh, logMach = 0.0;
 
   ttfh = GetSample(varp, 0);
   xmach2 = GetSample(varp, 1);
 
-  recovery = 0.988 + 0.036 * (log10(xmach2) / 2);
+  if (xmach2 > 0.0)
+    logMach = log10(xmach2);
+
+//  recovery = 0.988 + 0.036 * (log10(xmach2) / 2);
+  recovery = 0.988 + 0.053 * logMach + 0.090 * logMach * logMach + 0.091 * logMach * logMach * logMach;
 
   atfh = AMBIENT(ttfh, recovery, xmach2);
 
