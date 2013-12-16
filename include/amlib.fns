@@ -746,6 +746,7 @@
 #
 #	Total Temperature
 #
+	"RTX",		NULL,		NULL,		sRefer,
 	"TTX",		NULL,		NULL,		sRefer,
 #
 #	CN Counter.
