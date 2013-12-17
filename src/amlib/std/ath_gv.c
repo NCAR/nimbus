@@ -82,61 +82,25 @@ void atfhGV_Init(var_base *varp)
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
-void stthcGV(DERTBL *varp)	// HARCO
+double heatedRecoveryFactor(double mach)
 {
-  NR_TYPE zee, tth, xmach2, psxc;
-  static bool firstTime[nFeedBackTypes] = { true, true };
-
-  tth = GetSample(varp, 0);
-  xmach2 = GetSample(varp, 1);
-  psxc = GetSample(varp, 2);
-
-  if (isnan(tth) || isnan(xmach2))
-  {
-    PutSample(varp, floatNAN);
-    return;
-  }
-
-  if (firstTime[FeedBack])
-  {
-    firstTime[FeedBack] = false;
-    atfh[FeedBack][varp->ProbeCount] = tth;
-  }
-
-  if (tth < -Kelvin)
-    tth = -Kelvin;
-
-  if (xmach2 <= 0.0 || isnan(xmach2))
-    xmach2 = 0.0001;
-
-  if (strchr(varp->name, '1'))
-//    zee = (1.007093  + psxc * (-0.00001809 + 0.00000001 * psxc));	// TTH?1
-    zee = gsl_poly_eval(tt1_cals, 6, psxc);
-  else
-    zee = (1.0071235 + psxc * (-0.00001574 + 0.00000001 * psxc));	// TTH?2
-
-  tth = ((tth + Kelvin) * zee) - Kelvin; 
-
-  if (tth < -Kelvin)
-    tth = -Kelvin;
-
-  PutSample(varp, tth);
+  double logMach = log10(mach);
+  return 0.988 + 0.053 * logMach + 0.090 * logMach * logMach + 0.091 * logMach * logMach * logMach;
 }
 
 /* -------------------------------------------------------------------- */
 void satfhGVharco(DERTBL *varp)
 {
-  NR_TYPE ttfh, xmach2, recovery, atfh;
-
-  ttfh = GetSample(varp, 0);
-  xmach2 = GetSample(varp, 1);
-
+  NR_TYPE ttfh = GetSample(varp, 0);
+  NR_TYPE xmach2 = GetSample(varp, 1);
+  NR_TYPE recovery = heatedRecoveryFactor(sqrt(xmach2));
+/*
   if (strchr(varp->name, '1'))
     recovery = recfrhGV[0];	// TTH?1
   else
     recovery = recfrhGV[1];	// TTH?2
-
-  atfh = AMBIENT(ttfh, recovery, xmach2);
+*/
+  NR_TYPE atfh = AMBIENT(ttfh, recovery, xmach2);
 
   PutSample(varp, atfh);
 
@@ -145,18 +109,10 @@ void satfhGVharco(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void satfhGVrose(DERTBL *varp)
 {
-  NR_TYPE ttfh, xmach2, recovery, atfh, logMach = 0.0;
-
-  ttfh = GetSample(varp, 0);
-  xmach2 = GetSample(varp, 1);
-
-  if (xmach2 > 0.0)
-    logMach = log10(xmach2);
-
-//  recovery = 0.988 + 0.036 * (log10(xmach2) / 2);
-  recovery = 0.988 + 0.053 * logMach + 0.090 * logMach * logMach + 0.091 * logMach * logMach * logMach;
-
-  atfh = AMBIENT(ttfh, recovery, xmach2);
+  NR_TYPE ttfh = GetSample(varp, 0);
+  NR_TYPE xmach2 = GetSample(varp, 1);
+  NR_TYPE recovery = heatedRecoveryFactor(sqrt(xmach2));
+  NR_TYPE atfh = AMBIENT(ttfh, recovery, xmach2);
 
   PutSample(varp, atfh);
 
