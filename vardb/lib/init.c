@@ -214,19 +214,18 @@ static bool performCorrections(void *varDB)
   }
 
 /*
-  struct var_v2 mach;
-  memset(&mach, 0, sizeof(mach));
-  strcpy(mach.Name, "THETAP");
-  strcpy(mach.Units, "K");
-  strcpy(mach.Title, "Pseudo-adiabatic Equivalent Potential Temperature");
-  mach.is_analog = false;
-  mach.Category = 2;
-  mach.standard_name = 25;
-  mach.reference = false;
-  addVariable(varDB, &mach);
+  struct var_v2 newVar;
+  memset(&newVar, 0, sizeof(newVar));
+  strcpy(newVar.Name, "RTX");
+  strcpy(newVar.Units, "deg_C");
+  strcpy(newVar.Title, "Recovery Temperature, Reference");
+  newVar.is_analog = false;
+  newVar.Category = 6;
+  newVar.standard_name = 0;
+  newVar.reference = true;
+  addVariable(varDB, &newVar);
 modified = true;
 */
-
   return(modified);
 }
 
