@@ -41,6 +41,11 @@ void DecodeADSrecord(
   {
     // Forcing ADS3 into the ADS2 architecture.  FindNextRecord will
     // put it into ADSrecord, copy it out here.
+#ifdef DEBUG
+    std::cerr << "memcpy(" << (void*)nlr << "," << (void*)lr << "," 
+	      << nSRfloats * sizeof(NR_TYPE) << "(" << nSRfloats << " doubles))"
+	      << std::endl;
+#endif
     memcpy((void *)nlr, (void *)lr, nSRfloats * sizeof(NR_TYPE));
 
     // Set dynamic lags.
@@ -66,7 +71,7 @@ static void setNIDASDynamicLags(short lr[])
   {
     raw[i]->DynamicLag = 0;  // reset.
 
-    if (raw[i]->LAGstart > 0);
+    if (raw[i]->LAGstart > 0)
     {
       NR_TYPE lag = rec_p[raw[i]->LAGstart];
       if (!isnan(lag))

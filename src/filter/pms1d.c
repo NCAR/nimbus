@@ -30,7 +30,7 @@ static int getCellSizes(const var_base * rp, float cellSizes[]);
 static void setSerialNumberAndProbeType(const char * name, const char * serialNum, int probeType)
 {
   int raw_indx, der_indx;
-  char tmp[64], * location;
+  char tmp[64], *location;
 
   strcpy(tmp, name); tmp[0] = 'C';
   if (strrchr(name, '_'))	// If this is a specific probe & location.
@@ -215,12 +215,43 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
   }
   else
-  if (cfg.ProjectName().compare("IDEAS-4") == 0)
+  if (cfg.ProjectName().compare("IDEAS-4") == 0 && cfg.Aircraft() == Config::C130)
   {
     setSerialNumberAndProbeType("A1DC_LPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC_LPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A1DC_LPI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC_LPI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+  }
+  else
+  if (cfg.ProjectName().compare("IDEAS-4") == 0 && cfg.Aircraft() == Config::HIAPER)
+  {
+    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
+
+    if (cfg.FlightNumber().compare("rf08") <= 0) 
+    {
+      setSerialNumberAndProbeType("A1DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+      setSerialNumberAndProbeType("A2DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    }
+
+    if (cfg.FlightNumber().compare("rf03") >= 0 && cfg.FlightNumber().compare("rf05") <= 0) 
+    {
+      setSerialNumberAndProbeType("A1DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+      setSerialNumberAndProbeType("A2DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    }
+    else
+    {
+      setSerialNumberAndProbeType("A1DC_RWOI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+      setSerialNumberAndProbeType("A2DC_RWOI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    }
+
+    if (cfg.FlightNumber().compare("rf05") >= 0) 
+      setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+
+    if (cfg.FlightDate().compare("10/18/2013") >= 0) 
+    {
+      setSerialNumberAndProbeType("ACDP_RWOI", "CDP016", PROBE_PMS1D | PROBE_CDP);
+      setSerialNumberAndProbeType("ACDP_LWIO", "CDP058", PROBE_PMS1D | PROBE_CDP);
+    }
   }
   else
   if (cfg.ProjectName().compare("ICE-T") == 0)
@@ -249,6 +280,11 @@ void PMS1D_SetupForADS3()
   if (cfg.ProjectName().compare("NOMADSS") == 0)
   {
     setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
+  }
+  else
+  if (cfg.ProjectName().compare("CONTRAST") == 0)
+  {
+      setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
   }
 }
 
@@ -489,7 +525,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
      */
 // Note: ADS3 is propogating the problem until netCDF file refactor.
 // Then we should remove all evidence of this 0th bin from ADS2 & ADS3.
-    sprintf(buffer, "CELL_SIZE_%u", rp->Length - 1);
+    sprintf(buffer, "CELL_SIZE_%lu", rp->Length - 1);
     p = GetPMSparameter(rp->SerialNumber.c_str(), buffer);
   }
 

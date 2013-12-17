@@ -155,7 +155,7 @@ void cfsspInit(var_base *varp)
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
     char s[32];
-    sprintf(s, "CELL_SIZE_%d", varp->Length - 1);
+    sprintf(s, "CELL_SIZE_%zd", varp->Length - 1);
     if ((p = GetPMSparameter(serialNumber, s)) == NULL) {
       sprintf(buffer, "fssp: serial number = [%s]: %s not found.", serialNumber, s);
       }

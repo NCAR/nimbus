@@ -82,80 +82,38 @@ void atfhGV_Init(var_base *varp)
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
-void stthcGV(DERTBL *varp)	// HARCO
+double heatedRecoveryFactor(double mach)
 {
-  NR_TYPE zee, tth, mach, psxc;
-  static bool firstTime[nFeedBackTypes] = { true, true };
-
-  tth	= GetSample(varp, 0);
-  mach	= GetSample(varp, 1);
-  psxc	= GetSample(varp, 2);
-
-  if (isnan(tth) || isnan(mach))
-  {
-    PutSample(varp, floatNAN);
-    return;
-  }
-
-  if (firstTime[FeedBack])
-  {
-    firstTime[FeedBack] = false;
-    atfh[FeedBack][varp->ProbeCount] = tth;
-  }
-
-  if (tth < -Kelvin)
-    tth = -Kelvin;
-
-  if (mach <= 0.0 || isnan(mach))
-    mach = 0.0001;
-
-  if (strchr(varp->name, '1'))
-//    zee = (1.007093  + psxc * (-0.00001809 + 0.00000001 * psxc));	// TTH?1
-    zee = gsl_poly_eval(tt1_cals, 6, psxc);
-  else
-    zee = (1.0071235 + psxc * (-0.00001574 + 0.00000001 * psxc));	// TTH?2
-
-  tth = ((tth + Kelvin) * zee) - Kelvin; 
-
-  if (tth < -Kelvin)
-    tth = -Kelvin;
-
-  PutSample(varp, tth);
+  double logMach = log10(mach);
+  return 0.988 + 0.053 * logMach + 0.090 * logMach * logMach + 0.091 * logMach * logMach * logMach;
 }
 
 /* -------------------------------------------------------------------- */
 void satfhGVharco(DERTBL *varp)
 {
-  NR_TYPE ttfh, mach, recovery, atfh;
-
-  ttfh	= GetSample(varp, 0);
-  mach	= GetSample(varp, 1);
-
+  NR_TYPE ttfh = GetSample(varp, 0);
+  NR_TYPE mach = GetSample(varp, 1);
+  NR_TYPE recovery = heatedRecoveryFactor(mach);
+/*
   if (strchr(varp->name, '1'))
     recovery = recfrhGV[0];	// TTH?1
   else
     recovery = recfrhGV[1];	// TTH?2
-
-  atfh = AMBIENT(ttfh, recovery, mach*mach);
+*/
+  NR_TYPE atfh = AMBIENT(ttfh, recovery, mach*mach);
 
   PutSample(varp, atfh);
-
 }
 
 /* -------------------------------------------------------------------- */
 void satfhGVrose(DERTBL *varp)
 {
-  NR_TYPE ttfh, mach, recovery, atfh;
-
-  ttfh = GetSample(varp, 0);
-  mach = GetSample(varp, 1);
-
-  recovery = 0.988 + 0.036 * (log10(mach*mach) / 2);
-
-  atfh = AMBIENT(ttfh, recovery, mach*mach);
+  NR_TYPE ttfh = GetSample(varp, 0);
+  NR_TYPE mach = GetSample(varp, 1);
+  NR_TYPE recovery = heatedRecoveryFactor(mach);
+  NR_TYPE atfh = AMBIENT(ttfh, recovery, mach*mach);
 
   PutSample(varp, atfh);
-
 }
 
 /* END ATH_GV.C */

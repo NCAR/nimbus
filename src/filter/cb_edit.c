@@ -193,7 +193,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
            tempvar.value=constsynthval;
            sd.registervar(tempvar);
            }
-         else if(!(p=="none"))
+         else if (strcmp(p, "none") != 0)
            {
            tempvar.type='r';
            tempvar.name=rp->name;

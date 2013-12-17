@@ -56,7 +56,7 @@ char *GetProcessedBuffer(CircularBuffer *, CircularBuffer *, int offset, var_bas
 /* -------------------------------------------------------------------- */
 void InitMRFilters()
 {
-  MOD	*mv_p;
+  const MOD *mv_p;
   filterPtr fromOne, fromFive, fromEight, fromTen, fromThirteen, fromSixteen, 
     fromTwentyFive, fromFifty, fromOneHundred, fromTwoFifty, fromFiveHundred, 
     fromOneThousand, vspd, acins, gsf;
@@ -261,7 +261,7 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
   }
   else if (vpFilter == (mRFilterPtr)BadFilter)
   {
-    fprintf(stderr, "No good filter for %ld Hz to %ld Hz, variable %s!\n", vp->SampleRate,
+    fprintf(stderr, "No good filter for %zd Hz to %d Hz, variable %s!\n", vp->SampleRate,
 	    cfg.HRTRate(), vp->name);
     return;
   }
@@ -405,7 +405,7 @@ void ClearMRFilters()
 }	/* END CLEARMRFILTER */
 
 /* -------------------------------------------------------------------- */
-static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, MOD *modvar)
+static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, const MOD *modvar)
 {
   if (filter == 0)
     return 0;

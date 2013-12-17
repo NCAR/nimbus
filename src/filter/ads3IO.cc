@@ -46,6 +46,51 @@ time_t xlateToSecondsSinceMidnight(time_t ut) // Unused now.
 
 }	// END XLATETOSECONDSSINCEMIDNIGHT
 
+
+#ifdef DEBUG
+#include <sstream>
+#include <nidas/dynld/raf/SyncRecordVariable.h>
+#include <nidas/util/UTime.h>
+using nidas::util::UTime;
+using namespace nidas::dynld::raf;
+
+static void
+sync_read_debug(SyncRecordReader* srr, nidas::core::dsm_time_t tt, 
+		char record[], int rc)
+{
+  static std::string tfmt("At %Y/%m/%d;%H:%M:%S.%3f: ");
+  NR_TYPE* dp = (NR_TYPE*)record;
+  const char* vnames[] = { "CAVP_DPR" };
+  std::vector<std::string> vdebug(vnames, vnames + sizeof(vnames)/sizeof(vnames[0]));
+  std::ostringstream msg;
+  msg << UTime(tt).format(tfmt);
+  for (std::vector<std::string>::iterator vp = vdebug.begin(); 
+       vp != vdebug.end(); ++vp)
+  {
+    const SyncRecordVariable* var = srr->getVariable(*vp);
+    if (var)
+    {
+      msg << var->getName() << " = ";
+      NR_TYPE* first = dp + var->getSyncRecOffset();
+      for (NR_TYPE* fp = first ; fp < first+25; ++fp)
+      {
+	msg << *fp << ", ";
+      }
+    }
+  }
+  msg << "\n";
+  for (int i = 0; i < 6; ++i)
+  {
+    msg << "record@timeIndex[" << i << "] = " << dp[timeIndex[i]] << ", ";
+  }
+  msg << "\n"
+      << "read() returned " << rc << " values, or " << rc*sizeof(NR_TYPE) << " bytes.";
+
+  std::cerr << msg.str() << std::endl;
+}
+#endif
+
+
 /* -------------------------------------------------------------------- */
 int32_t FindFirstLogicalADS3(
 	char	record[],	// First Data Record, for start time
@@ -71,6 +116,9 @@ int32_t FindFirstLogicalADS3(
   while (!(startTime == BEG_OF_TAPE || recTime >= startTime));
 
   processTimeADS3((NR_TYPE *)record, recTime);
+#ifdef DEBUG
+  sync_read_debug(syncRecReader, tt, record, rc);
+#endif
   return rc * sizeof(NR_TYPE);
 
 }	// END FINDFIRSTLOGICALADS3
@@ -99,6 +147,9 @@ int32_t FindNextLogicalADS3(char record[], time_t endTime)
   }
 
   processTimeADS3((NR_TYPE *)record, recTime);
+#ifdef DEBUG
+  sync_read_debug(syncRecReader, tt, record, rc);
+#endif
   return rc * sizeof(NR_TYPE);
 
 }	// END FINDNEXTLOGICALADS3

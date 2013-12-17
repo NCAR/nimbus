@@ -25,7 +25,7 @@ static NR_TYPE P3_FUSELAGE_PCORS[3] = { -0.046, -0.0265, 0.000087 };
 
 extern int	FlightDate[];
 
-NR_TYPE	recfb, recff, recfkp, recfrh, recfrn, recfw, recfra, recfrhGV[2];
+NR_TYPE	recfb, recff, recfrh, recfw, recfra, recfrhGV[2];
 
 NR_TYPE	(*pcorPSF)(NR_TYPE, NR_TYPE), (*pcorQCF)(NR_TYPE, NR_TYPE),
 	(*pcorPSFD)(NR_TYPE, NR_TYPE), (*pcorQCR)(NR_TYPE, NR_TYPE),
@@ -72,17 +72,11 @@ void InitAircraftDependencies()
   tfher1 = -1.7841;
   tfher2 = -1.4025;
 
-  // RECRN = recovery factor for reverse flow temp
-  recfrn = 0.625;
-
   // RECFB = Rosemount 102E2AL (boom) recovery factor
   recfb = 0.95;
 
   // RECFF = Rosemount 102E2AL (fuselage) recovery factor
   recff = 0.985;
-
-  // RECFKP = Fast response temp recovery factor
-  recfkp = 0.80;
 
   // RECFRH= Rosemount 102E2AL (Heated) recovery factor
   recfrh = 0.985;
@@ -116,7 +110,6 @@ void InitAircraftDependencies()
     case Config::ELECTRA:
       LogMessage("NCAR Electra pcor's installed.");
       jwref	= 300 * XMPHMS;
-      recfrn	= 0.65;
 
       pcorQCW	= pcorw8;
       pcorPSW	= pcorw8;
@@ -129,7 +122,6 @@ void InitAircraftDependencies()
     case Config::NRL_P3:
       LogMessage("NRL P3 pcor's installed.");
       jwref	= 300 * XMPHMS;
-      recfrn	= 0.65;
 
       if ((tmp = GetDefaultsValue("P3_RADOME_PCORS", "INIT_AC")) != NULL)
       {
@@ -161,7 +153,6 @@ void InitAircraftDependencies()
     case Config::NOAA_G4:
       LogMessage("NOAA G4 pcor's installed.");
       jwref	= 1 * XMPHMS;
-      recfrn	= 0.65;
 
       pcorPSFD	= pcorf1;
       pcorQCR	= pcorr1;
@@ -181,7 +172,6 @@ void InitAircraftDependencies()
     case Config::TADS:	/* Ground systems */
       LogMessage("NCAR C-130 pcor's installed.");
       jwref	= 1 * XMPHMS;
-      recfrn	= 0.65;
 
       sprintf(buffer, "%04d%02d", FlightDate[2], FlightDate[0]);
 //printf("[%s] == [%s]\n", buffer, "200309");
@@ -266,11 +256,6 @@ void InitAircraftDependencies()
     LogMessage("initAC.c: RECFRH found in Defaults, using.");
     recfrhGV[0] = tmp[0];
     recfrhGV[1] = tmp[1];
-  }
-  if ( (tmp = GetDefaultsValue("RECFRN", "INIT_AC")) )
-  {
-    LogMessage("initAC.c: RECFRN found in Defaults, using.");
-    recfrn = tmp[0];
   }
   if ( (tmp = GetDefaultsValue("RECFB", "INIT_AC")) )
   {

@@ -15,10 +15,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2013
 
 static const NR_TYPE denominator = 3.8235391; // exp(17.67*(20/263.5) 
 
-//static NR_TYPE	cal[] = { 58.915, 33.57, 1.0 };
-
-static NR_TYPE	esw(NR_TYPE T);
-
 
 /* -------------------------------------------------------------------- */
 // A calculation of cabin RH at 20 degrees celcius given to me by 

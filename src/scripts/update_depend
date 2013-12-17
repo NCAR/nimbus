@@ -1,0 +1,22 @@
+#!/bin/csh -f
+
+#
+# Temporary script to merge DependTable, DerivedNames and other nimbus
+# support files into the VarDB, creating VarDB.nc.  VarDB.nc must be
+# removed first.
+#
+
+if ($#argv != 1) then
+  echo "Usage: update_depend project_name"
+  exit 1
+endif
+
+echo ">>>>  Removing VarDB.nc and generating a new one.  <<<<"
+
+cd ${PROJ_DIR}/$argv[1]
+foreach file (*)
+  cd $file
+  /bin/rm -f VarDB.nc
+  vdb2ncml ./VarDB
+  cd ..
+end

@@ -108,8 +108,11 @@ static RAWTBL	*initSDI_ADS3(nidas::dynld::raf::SyncRecordVariable* var);
 static RAWTBL	*add_name_to_RAWTBL(const char []);
 static DERTBL	*add_name_to_DERTBL(const char []);
 
-static void	add_file_to_RAWTBL(const std::string&),
-		add_file_to_DERTBL(const std::string&),
+#ifdef notdef
+static void	add_file_to_RAWTBL(const std::string&);
+#endif
+
+static void	add_file_to_DERTBL(const std::string&),
 	initHDR(char vn[]), initSDI(char vn[]), initHoneywell(char vn[]),
 	initOphir3(char vn[]), initPMS1D(char vn[]), initPMS1Dv2(char vn[]),
 	initGustCorrected(), initLitton51(char vn[]),
@@ -317,7 +320,7 @@ int DecodeHeader3(const char header_file[])
       size_t i = 0;
       files[i++] = (char*)"sync_server";
       files[i++] = (char*)"-l";
-      files[i++] = (char*)"300";	// 300 second time-sorter.
+      files[i++] = (char*)"60";	// 60 second time-sorter.
       files[i++] = (char*)"-p";
       files[i++] = sync_server_pipe;
       std::set<std::string>::iterator it;
@@ -1269,7 +1272,7 @@ static void initLitton51(char vn[])
 
   for (int i = 0; names[i]; ++i)
     {
-    sscanf(names[i], "%s %ld", name, &rate);
+    sscanf(names[i], "%s %d", name, &rate);
     add_name_to_RAWTBL(name);
     }
 
@@ -2052,6 +2055,7 @@ static void add_file_to_DERTBL(const std::string& filename)
 
 }	/* END ADD_FILE_TO_DERTBL */
 
+#ifdef notdef
 /* -------------------------------------------------------------------- */
 static void add_file_to_RAWTBL(const std::string& filename)
 {
@@ -2066,6 +2070,7 @@ static void add_file_to_RAWTBL(const std::string& filename)
   fclose(fp);
 
 }	/* END ADD_FILE_TO_RAWTBL */
+#endif
 
 /* -------------------------------------------------------------------- */
 static RAWTBL *add_name_to_RAWTBL(const char name[])
@@ -2382,6 +2387,17 @@ var_base::var_base(const char s[])
   max = -FLT_MAX;
 
   badLagCntr = 0;
+}
+
+var_base::~var_base()
+{
+#ifdef DEBUG
+  if (Modulo)
+  {
+    std::cerr << "deleting modulo for variable " << name << std::endl;
+  }
+#endif
+  delete Modulo;
 }
 
 RAWTBL::RAWTBL(const char s[]) : var_base(s)

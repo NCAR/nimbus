@@ -530,8 +530,8 @@ void createProcessingRate(Widget parent)
 					   args, n);
   XtAddCallback(highRate100Button, XmNvalueChangedCallback,
 		(XtCallbackProc)SetHighRate, (void*)100);
-  XtManageChild(highRate100Button);
-
+// Not supported at this time, so comment it out.
+//  XtManageChild(highRate100Button);
 
 }	/* END CREATEPROCESSINGRATE */
 

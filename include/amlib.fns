@@ -707,29 +707,23 @@
 #
 #	Flying in circles.
 #
-	"CIRHDGC",	(void(*)(void*))initCircles,	NULL,		scircP,
-	"CIRHDGN",	NULL,		NULL,		scircN,
-	"CIRRAD",	NULL,		NULL,		scircR,
+	"CIRHDGC",	(void(*)(void*))initCircles,	NULL,	scircP,
+	"CIRHDGN",	NULL,				NULL,	scircN,
+	"CIRRAD",	NULL,				NULL,	scircR,
 #
 #	Ambient Temperature.
 #
-	"ATB",		NULL,		NULL,		satb,
-	"ATBH",		(void(*)(void*))atfhInit,	NULL,		satfh,
-	"ATF",		NULL,		NULL,		satf,
-	"ATFH",		(void(*)(void*))atfhInit,	NULL,		satfh,
-	"ATKP",		NULL,		NULL,		satkp,
-	"ATRF",		NULL,		NULL,		satrf,
-	"ATW",		NULL,		NULL,		satf,
-	"ATX",		NULL,		NULL,		sRefer,
-	"ATRR",		(void(*)(void*))atbInit,	NULL,		satb,
-	"ATRL",		(void(*)(void*))atbInit,	NULL,		satb,
-	"ATFR",		(void(*)(void*))atbInit,	NULL,		satb,
-	"TTWHC",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
-	"ATWH",		(void(*)(void*))atfhInit,	NULL,		satfh,
-	"TTHR1C",	NULL,		NULL,		stthcGV,
-	"TTHR2C",	NULL,		NULL,		stthcGV,
-	"TTHL1C",	NULL,		NULL,		stthcGV,
-	"TTHL2C",	NULL,		NULL,		stthcGV,
+	"ATB",		NULL,				NULL,	satb,
+	"ATBH",		(void(*)(void*))atfhInit,	NULL,	satfh,
+	"ATF",		NULL,				NULL,	satf,
+	"ATFH",		(void(*)(void*))atfhInit,	NULL,	satfh,
+	"ATW",		NULL,				NULL,	satf,
+	"ATX",		NULL,				NULL,	sRefer,
+	"ATRR",		(void(*)(void*))atbInit,	NULL,	satb,
+	"ATRL",		(void(*)(void*))atbInit,	NULL,	satb,
+	"ATFR",		(void(*)(void*))atbInit,	NULL,	satb,
+	"TTWHC",	(void(*)(void*))tthcInit,	NULL,	sttwhc,
+	"ATWH",		(void(*)(void*))atfhInit,	NULL,	satfh,
 	"ATFH1",	(void(*)(void*))atfhGV_Init,	NULL,	satfhGVrose,
 	"ATFH2",	(void(*)(void*))atfhGV_Init,	NULL,	satfhGVrose,
 	"ATHR1",	(void(*)(void*))atfhGV_Init,	NULL,	satfhGVharco,
@@ -748,6 +742,7 @@
 #
 #	Total Temperature
 #
+	"RTX",		NULL,		NULL,		sRefer,
 	"TTX",		NULL,		NULL,		sRefer,
 #
 #	CN Counter.
@@ -942,6 +937,7 @@
 	"DPLA",		NULL,		NULL,		sdprho,
 	"DPLA1",	NULL,		NULL,		sdprho,
 	"RHUM",		NULL,		NULL,		srhum,
+	"RHUMI",	NULL,		NULL,		srhumi,
 	"RHLA",		NULL,		NULL,		srhrho,
 	"RHLA1",	NULL,		NULL,		srhrho,
 	"SERIAL",	NULL,		xlserial,	NULL,

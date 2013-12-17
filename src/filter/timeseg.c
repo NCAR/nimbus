@@ -30,6 +30,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 #include "gui.h"
 #include <raf/header.h>
 
+#include <sstream>
+using std::ostringstream;
+
 #define NEW_SEG		(-1)
 
 static int	nTimeIntervals;
@@ -110,12 +113,17 @@ void GetUserTimeIntervals() /* From TimeSliceWindow	*/
   /* And while we're here let's get the indices for the time variables,
    * HOUR, MINUTE, SECOND, used by UpdateTime().
    */
-  timeIndex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
-  timeIndex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
-  timeIndex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
-  timeIndex[3] = raw[SearchTable(raw, "YEAR")]->SRstart;
-  timeIndex[4] = raw[SearchTable(raw, "MONTH")]->SRstart;
-  timeIndex[5] = raw[SearchTable(raw, "DAY")]->SRstart;
+  ostringstream msg;
+  const char* fields[] = { "HOUR", "MINUTE", "SECOND", "YEAR", "MONTH", "DAY" };
+  for (int i = 0; i < 6; ++i)
+  {
+    RAWTBL* vp = raw[SearchTable(raw, fields[i])];
+    timeIndex[i] = vp->SRstart;
+    msg << "timeIndex[" << i << "] (" << vp->name << ") = " << timeIndex[i] << ", ";
+  }
+#ifdef DEBUG
+  std::cerr << msg.str() << "\n";
+#endif
 
 }	/* END GETUSERTIMEINTERVALS */
 
@@ -169,6 +177,9 @@ time_t HdrBlkTimeToSeconds(Hdr_blk * hdr)
 time_t SampledDataTimeToSeconds(NR_TYPE * record)
 {
   struct tm ft;
+
+  // Quell valgrind concerns
+  memset(&ft, 0, sizeof(ft));
 
   ft.tm_hour = (int)record[timeIndex[0]];
   ft.tm_min = (int)record[timeIndex[1]];
