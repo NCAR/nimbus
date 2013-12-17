@@ -71,6 +71,7 @@ void SetCategory(Widget w, XtPointer client, XtPointer call)
   XmString	name;
 
   currentCategory = (long)client;
+  if (currentCategory < 0 || currentCategory > 100) currentCategory = 0;
 
   if (!w)	/* If this is being called from EditVariable()	*/
     {
@@ -89,6 +90,7 @@ void SetStandardName(Widget w, XtPointer client, XtPointer call)
   XmString	name;
 
   currentStdName = (long)client;
+  if (currentStdName < 0 || currentStdName > 100) currentStdName = 0;
 
   if (!w)	/* If this is being called from EditVariable()	*/
     {
