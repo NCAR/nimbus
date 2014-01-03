@@ -72,7 +72,7 @@ static struct tm StartFlight;
 static long	recordNumber = 0;
 static long	TimeVar = 0;
 
-// To be depracated.
+// To be deprecated.
 static int	baseTimeID;
 static float	TimeOffset = 0.0;
 
