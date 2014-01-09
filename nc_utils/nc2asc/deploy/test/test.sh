@@ -3,9 +3,12 @@
 for file in *.batch ; do
 	echo ""
 	echo $file
-	java -jar nc2asc.jar -b $file
 	rfile=`basename $file .batch`.asc
-	echo "rfile=lrt-$rfile      dir+rfile=test-std/lrt-$rfile"
-	diff "lrt-$rfile" "test-std/lrt-$rfile"
+	outfile="lrt-$rfile"
+	rm -f "$outfile"
+	# java -jar nc2asc.jar -b $file
+	nc2asc -b $file
+	echo "rfile=$outfile      dir+rfile=test-std/$outfile"
+	diff "$outfile" "test-std/$outfile"
 done
 
