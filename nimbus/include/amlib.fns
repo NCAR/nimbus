@@ -1026,6 +1026,9 @@
 	"HGM232",	NULL,		xlhgm232,	NULL,
 	"HGM232S",	NULL,		xlhgm232s,	NULL,
 #
+# HARP
+	"JNO2",         NULL,		NULL,	        sjno2,
+#
 # AVAPS DropSonde
 	"DSTIME",	NULL,		xldstime,	NULL,
 	"DSPS",		NULL,		xldsps,		NULL,
