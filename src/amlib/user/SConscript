@@ -24,6 +24,7 @@ efield.c
 flux.c
 geopot.c
 gerber.c
+harp.c
 itr.c
 lams.c
 licor.c
