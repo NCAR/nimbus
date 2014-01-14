@@ -25,7 +25,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2008
 
 #include <gsl/gsl_poly.h>
 
-extern NR_TYPE	recfrhGV[];
+//extern NR_TYPE	recfrhGV[];
 
 static const int MAX_TT = 8;
 static int ProbeCount = 0;
@@ -45,7 +45,7 @@ void atfhGV_Init(var_base *varp)
     HandleFatalError("\natfh.c: atfhInit: MAX_TT exceeded, get a programmer to fix.  Fatal.");
   }
 
-
+/*
   if (strncmp(varp->name, "ATH", 3) == 0)	// HARCO only.
   {
     std::vector<float> values;
@@ -56,7 +56,7 @@ void atfhGV_Init(var_base *varp)
 
     AddToDefaults(varp->name, "RecoveryFactor", values);
   }
-
+*/
   /* Frequently ProbeCount gets set in hdr_decode.c, but we are doing it here for
    * this instrument.
    */
