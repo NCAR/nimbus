@@ -37,7 +37,7 @@ static NR_TYPE	tWire[nLWC] = {130.0, 130.0};	// Wire temperature (C)
 static NR_TYPE	dWire[nLWC] = {0.1805e-2, 0.1805e-2}; // Wire Diameter
 static NR_TYPE	lWire[nLWC] = {2.1e-2, 2.1e-2};	// Wire length (mm)
 static int	tau_Nu[nLWC] = {120, 120};		// Nusselt-number time constant.
-static NR_TYPE	cloud_conc_threshold = 0.25;		// Cloud Concentration Baseline Threshold
+static NR_TYPE	cloud_conc_threshold = 1.0;		// Cloud Concentration Baseline Threshold
 
 
 static NR_TYPE CooperLWC_GV(const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE atx,
