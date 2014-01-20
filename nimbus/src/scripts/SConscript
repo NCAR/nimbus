@@ -1,0 +1,6 @@
+# -*- python -*-
+
+Import('env')
+
+env.Install('$JLOCAL/bin', 'update_depend')
+
