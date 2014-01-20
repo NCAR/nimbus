@@ -58,6 +58,11 @@ SConscript('src/amlib/SConscript')
 ##
 SConscript('src/filter/SConscript')
 
+##
+##  Install support scripts.
+##
+SConscript('src/scripts/SConscript')
+
 Alias('install', [env['JLOCAL'] + '/bin'])
 
 
