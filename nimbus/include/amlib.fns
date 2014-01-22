@@ -1028,6 +1028,7 @@
 #
 # HARP
 	"JNO2",         NULL,		NULL,	        sjno2,
+	"JBRO",         NULL,		NULL,	        sjbro,
 #
 # AVAPS DropSonde
 	"DSTIME",	NULL,		xldstime,	NULL,
