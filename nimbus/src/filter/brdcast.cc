@@ -18,15 +18,16 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 
 #include <sstream>
 
-const size_t Broadcast::RADAR_ALT_INDX = 5;
-const size_t Broadcast::NOCAL_ALT_INDX = 31;
-const size_t Broadcast::NOREC_ALT_INDX = 32;
-const std::string Broadcast::InterfacePrefix = "192.168";
 
 using namespace nidas::util;
 
 /* -------------------------------------------------------------------- */
-Broadcast::Broadcast() : UDP_Base(7071)
+Broadcast::Broadcast() : 
+  UDP_Base(7071),
+  RADAR_ALT_INDX(5),
+  NOCAL_ALT_INDX(-1),
+  NOREC_ALT_INDX(-1),
+  InterfacePrefix("192.168")
 {
   _varList = readFile(BROADCAST);
 
@@ -49,6 +50,26 @@ Broadcast::Broadcast() : UDP_Base(7071)
       _mcInterfaces.push_back(*it);
     }
   }
+
+  // Setup indices for variables which get special treatment.
+  for (size_t i = 0; i < _varList.size(); ++i)
+  {
+    std::string name;
+    if (_varList[i])
+    {
+      name = _varList[i]->name;
+    }
+    if (name == "NOREC")
+    {
+      NOREC_ALT_INDX = i;
+    }
+    else if (name == "NOCAL")
+    {
+      NOCAL_ALT_INDX = i;
+    }
+  }
+  std::cerr << "NOCAL_ALT_INDX=" << NOCAL_ALT_INDX << ", " 
+	    << "NOREC_ALT_INDX=" << NOREC_ALT_INDX << "." << std::endl;
 }
 
 /* -------------------------------------------------------------------- */
@@ -65,29 +86,39 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
 
   extern NR_TYPE * AveragedData;
 
-  for (size_t i = 0; i < _varList.size(); ++i)
+  for (int i = 0; i < (int)_varList.size(); ++i)
   {
-//  printf("_varList[%d]->name = %s\n", i, _varList[i]->name);
     bcast << ",";
     if (_varList[i])
     {
-      switch (i)
+#ifdef DEBUG
+      if ((strcmp(_varList[i]->name, "HCN_TOGA") == 0 ||
+	   strcmp(_varList[i]->name, "BUTANE_TOGA") == 0 ||
+	   strcmp(_varList[i]->name, "CONC_ISAF") == 0) &&
+	  !isnan(AveragedData[_varList[i]->LRstart]))
       {
-        case RADAR_ALT_INDX: // Our radar alt is in m, convert to ft as required by IWG1
-          if (!isnan(AveragedData[_varList[i]->LRstart]))
-            bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
-          break;
-        case NOCAL_ALT_INDX: // Do Not Calibrate flag
-        case NOREC_ALT_INDX: // Do Not Record flag
-          if (isnan(AveragedData[_varList[i]->LRstart]))
-            bcast << 0;
-          else
-            bcast << AveragedData[_varList[i]->LRstart];
-          break;
-        default:
-          if (!isnan(AveragedData[_varList[i]->LRstart]))
-            bcast << AveragedData[_varList[i]->LRstart];
-          break;
+	printf("_varList[%d]->name(%s) = %f\n", (int)i, _varList[i]->name,
+	       AveragedData[_varList[i]->LRstart]);
+      }
+#endif
+      if (i == RADAR_ALT_INDX)
+      {
+	// Our radar alt is in m, convert to ft as required by IWG1
+	if (!isnan(AveragedData[_varList[i]->LRstart]))
+	  bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
+      }
+      else if (i == NOCAL_ALT_INDX || // Do Not Calibrate flag
+	       i == NOREC_ALT_INDX)   // Do Not Record flag
+      {
+	if (isnan(AveragedData[_varList[i]->LRstart]))
+	  bcast << 0;
+	else
+	  bcast << AveragedData[_varList[i]->LRstart];
+      }
+      else
+      {
+	if (!isnan(AveragedData[_varList[i]->LRstart]))
+	  bcast << AveragedData[_varList[i]->LRstart];
       }
     }
   }
