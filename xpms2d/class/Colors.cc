@@ -161,7 +161,7 @@ void Colors::SavePNG(const char file_name[], XImage *image)
     }
 
 
-#ifdef PNG15
+#if PNG_LIBPNG_VER >= 10500
   if (setjmp(png_jmpbuf(png_ptr))) {
 #else
    if (setjmp(png_ptr->jmpbuf)) {
@@ -192,7 +192,7 @@ void Colors::SavePNG(const char file_name[], XImage *image)
     palette[i].blue  = s[2];
     }
 
-  palette[i-1].red = palette[i-1].green = palette[i-1].blue = 0xffff;
+  palette[i-1].red = palette[i-1].green = palette[i-1].blue = (png_byte)0xff;
 
   png_set_PLTE(png_ptr, info_ptr, palette, NumberOfColors());
 //  png_set_bKGD(png_ptr, info_ptr, NumberOfColors()-1);
