@@ -868,7 +868,8 @@ void updateData(PGresult *res, int indx)
   lon = extractPQvalue<float>(PQgetvalue(res, indx, LON));
   alt = extractPQvalue<float>(PQgetvalue(res, indx, ALT));
 
-  if (lat == missing_value || lon == missing_value)
+  if (lat == missing_value || lon == missing_value
+     || lat == 0.0 || lon == 0.0)
     return;
 
   if (cfg.altMode == "absolute" && alt == missing_value)
