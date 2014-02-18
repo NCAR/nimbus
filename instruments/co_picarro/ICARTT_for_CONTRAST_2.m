@@ -6,21 +6,24 @@ close all
 % data are stored in rf1 array
 % cd C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08\
 % dirname='C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08\';
-flight = '09';
+flight = '11';
 slash = '/';
-rafPath='/Users/campos/Documents/macBak/campos/chemData/2014contrast/ifpRAF/';
+picPath='/net/work/Projects/CONTRAST/PICARRO/matlab/';
+rafPath = [picPath,'RF',flight];
 cd(rafPath);
+
 if ~exist('pix')
     mkdir('pix');
 end
 dirname=rafPath;
-filename=uigetfile('*.mat','Select files','MultiSelect','off');
+%filename=uigetfile('*.mat','Select files','MultiSelect','off');
+filename=['RF',flight,'preICARTT_data.mat'];
 
 
 % for kk=1%:length(filename)
 % 
 % if length(filename)==23;%27;
-    load([dirname,filename])    
+    load([dirname,slash,filename])    
 % else load([dirname,char(filename(kk))])
 % end
 
@@ -144,7 +147,7 @@ plot(rf1(:,1),rf1(:,2))
 %% open new file and write data to file
 % change filename!
 
-filenamexp=[rafPath,'COCO2CH4_GV_',date3,'_RA.ict'];
+filenamexp=[rafPath,'slash','COCO2CH4_GV_',date3,'_RA.ict'];
 
 fid = eval(['fopen(''',filenamexp ''',''w+'')'])
 
@@ -274,42 +277,42 @@ fclose(fid);
 % % % 
 % O3_interp=interp1(unique(UTC(A)),ICTdata(A,3),utc);
 
-O3_interp=interp1(GV.TIME,GV.FO3,utc);
+% O3_interp=interp1(GV.TIME,GV.FO3,utc);
 
-set(0,'DefaultLineLineWidth',2)
-set(0, 'DefaultAxesFontSize',20)
+% set(0,'DefaultLineLineWidth',2)
+% set(0, 'DefaultAxesFontSize',20)
 
 
-figure()
-plotyy(utc,preICARTT.CO_PPBV,utc,O3_interp)
-legend('CO','O3')
+% figure()
+% plotyy(utc,preICARTT.CO_PPBV,utc,O3_interp)
+% legend('CO','O3')
 % xlim([utc(1) utc(end)])
-grid on
-set(gcf, 'Color', 'white'); % white bckgr
-screen_size = get(0, 'ScreenSize');
-set(gcf, 'Position', [0 0 screen_size(3) screen_size(4) ] );
+% grid on
+% set(gcf, 'Color', 'white'); % white bckgr
+% screen_size = get(0, 'ScreenSize');
+% set(gcf, 'Position', [0 0 screen_size(3) screen_size(4) ] );
 % cd C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08\
-saveas(gcf, ...
-    ['pix',slash,'O3_CO_RF',flight,'.jpg'],'jpg');
+% saveas(gcf, ...
+%     ['pix',slash,'O3_CO_RF',flight,'.jpg'],'jpg');
 
 % export_fig( gcf, ...      % figure handle
 %     ['pix',slash,'O3_CO_RF',flight,'.jpg'],... % name of output file without extension
 %     '-painters', ...      % renderer
 %     '-pdf', ...           % file format
 %     '-r300' );             % resolution in dpi
-saveas(gcf, ...
-    ['pix',slash,'O3_CO_RF',flight,'.fig'],... % name of output file without extension
-'fig');
+% saveas(gcf, ...
+%     ['pix',slash,'O3_CO_RF',flight,'.fig'],... % name of output file without extension
+% 'fig');
 
-figure()
-scatter(double(preICARTT.CO_PPBV),double(O3_interp),50,double(preICARTT.PALTF))
-xlabel('CO [ppbv]')
-ylabel('O_3 [ppbv]')
-colorbar;
-grid on
-set(gcf, 'Color', 'white'); % white bckgr
-screen_size = get(0, 'ScreenSize');
-set(gcf, 'Position', [0 0 screen_size(3) screen_size(4) ] );
+% figure()
+% scatter(double(preICARTT.CO_PPBV),double(O3_interp),50,double(preICARTT.PALTF))
+% xlabel('CO [ppbv]')
+% ylabel('O_3 [ppbv]')
+% colorbar;
+% grid on
+% set(gcf, 'Color', 'white'); % white bckgr
+% screen_size = get(0, 'ScreenSize');
+% set(gcf, 'Position', [0 0 screen_size(3) screen_size(4) ] );
 % cd C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08\
 % export_fig( gcf, ...      % figure handle
 %     ['pix',slash,'O3_CO_scatter_with_height_RF08'],... % name of output file without extension
@@ -319,9 +322,9 @@ set(gcf, 'Position', [0 0 screen_size(3) screen_size(4) ] );
 % saveas(gcf, ...
 %     ['pix',slash,'O3_CO_scatter_with_height_RF',flight,'.jpg'],... % name of output file without extension
 % 'jpg');
-saveas(gcf, ...
-    ['pix',slash,'O3_CO_scatter_with_height_RF',flight,'.fig'],... % name of output file without extension
-'fig');
+% saveas(gcf, ...
+%     ['pix',slash,'O3_CO_scatter_with_height_RF',flight,'.fig'],... % name of output file without extension
+% 'fig');
 % 
 % 
 % O3_interp=O3_interp';
@@ -443,7 +446,7 @@ saveas(gcf, ...
 %     '-r300' );             % resolution in dpi
 
 
-figure()
-plot(utc)
-hold on
-plot(UTC,'r')
+% figure()
+% plot(utc)
+% hold on
+% plot(UTC,'r')

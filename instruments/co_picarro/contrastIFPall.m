@@ -6,24 +6,27 @@ close all
 
 %% insert RF number and flight day
 %%info: RF4 (2014,01,19); RF5 (2014,01,21); RF08 (2014,02,01);
-result=['09'];
-doy_start=datenum(2014,02,04);
-
+result=['11'];
+doy_start=datenum(2014,02,12);
 
 % cd C:\Users\kaser\Documents\CONTRAST\infield\Picarro\RF08\Private
 % 
 % dirname='C:\Users\kaser\Documents\CONTRAST\infield\Picarro\RF08\Private\';
-picPath='/Users/campos/Documents/macBak/campos/chemData/2014contrast/picarro/';
-rafPath='/Users/campos/Documents/macBak/campos/chemData/2014contrast/ifpRAF/';
-ncFile = ['CONTRAST_rf', result, '.nc'];
+picPath='/net/work/Projects/CONTRAST/PICARRO/matlab/';
+rafPath = [picPath,'RF',result];
+ncFile = ['/CONTRAST_rf', result, '.nc'];
 
-dirname = [picPath, 'Research Flights/RF', result, '/Private/'];
+dirname = [picPath, 'RF', result, '/raw_data/Private/'];
 cd(dirname);
 % dirname='C:\Users\kaser\Documents\CONTRAST\infield\Picarro\RF08\Private\';
 
-filename=uigetfile('*.h5','Select files','MultiSelect','on');
+% Update this to say
+% If starting in gui mode
+% filename=uigetfile('*.h5','Select files','MultiSelect','on');
+% else if in -nodisplay mode
+filename=dir('*h5');
 
-file=[dirname,char(filename(1))];
+file=[dirname,char(filename(1).name)];
 data = h5read(file,'/results');
 
 all_fieldnames=fieldnames(data);
@@ -38,7 +41,7 @@ end
 for kk=1:length(filename)
 clear data
 
-file=[dirname,char(filename(kk))];
+file=[dirname,char(filename(kk).name)];
 
 
 data = h5read(file,'/results');
@@ -64,8 +67,10 @@ picOutfilename=['RF', result, '_PICARRO_data.mat'];
 % cd C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08
 save(picOutfilename,'PICARRO')
 
-figure()
+fig=figure()
 plot(PICARRO.JULIAN_DAYS,PICARRO.CO2_dry)
+saveas(fig,'CO2_dry','jpg')
+saveas(fig,'CO2_dry','fig')
 toc
 
 % Read in data from RAF netCDF file
@@ -147,7 +152,8 @@ GV.PALTF=PALTF;
 GV.PSXC=PSXC;
 GV.TIME=TIME;
 GV.DOY=DOY;
-GV.JD=DOY;%% needs to be +1 sometimes if start after UTC 00 (e.g. for RF05)
+GV.JD=DOY;%% needs to be +1 if start after UTC 00 (e.g. for RF05), zero otherwise
+
 GV.INLETP_AL=INLETP_AL;
 GV.FO3 = FO3;
 GV.THETA = THETA;

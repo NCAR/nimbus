@@ -1,16 +1,17 @@
 %% CONTRAST combine CO and PICARRO DATA
 %%info: RF4 (2014,01,19); RF5 (2014,01,21);
-% clc
-% clear all 
-% close all
-flight = '09';
-badBefore = 5;
-badAfter = 6;
+clc
+clear all 
+close all
+flight = '11';
+adBefore = 44;
+adAfter = 44.26;
 
 set(0, 'DefaultAxesFontSize',20)
 set(0,'DefaultLineLineWidth',2)
 
-rafPath='/Users/campos/Documents/macBak/campos/chemData/2014contrast/ifpRAF/';
+picPath='/net/work/Projects/CONTRAST/PICARRO/matlab/';
+rafPath = [picPath,'RF',flight];
 cd(rafPath);
 
 % cd C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08
@@ -21,22 +22,36 @@ load(['RF', flight, '_CO_data.mat'])
 switch flight
     case '08'
         %% remove data from start and land as we turnd the pumps off then
-START_LAND=find(GV.JD<32.16 | GV.JD>32.05);
+START_LAND=find(GV.JD>32.16 & GV.JD<32.05);
 TAKEOFF=find(GV.JD<32.16);%find(GV.PALTF<200);
     case '09'
-START_LAND=find(GV.JD<36.002 | GV.JD>36.305);
+START_LAND=find(GV.JD>36.002 & GV.JD<36.305);
 TAKEOFF=find(GV.JD<36.002);%find(GV.PALTF<200);
 takeoff_t=36.002;
 land_t=36.305;
     case '11'
-START_LAND=find(GV.JD<43.30 | GV.JD>43.27)
-TAKEOFF=find(GV.JD<43.00);%find(GV.PALTF<200);
+takeoff_t=44.00;
+land_t=44.26;
+START_LAND=find(GV.JD>44.00 & GV.JD<44.26)
+TAKEOFF=find(GV.JD<44.26);%find(GV.PALTF<200);
 end
 
-figure()
+GV.CORAW_AL=GV.CORAW_AL(START_LAND);
+GV.DOY=GV.DOY(START_LAND);
+GV.GGLAT=GV.GGLAT(START_LAND);
+GV.INLETP_AL=GV.INLETP_AL(START_LAND);
+GV.JD=GV.JD(START_LAND);
+GV.PALTF=GV.PALTF(START_LAND);
+GV.TIME=GV.TIME(START_LAND);
+
+
+fig=figure()
 plot(GV.JD,GV.CORAW_AL)
 hold on
 plot(GV.JD,GV.PALTF./300,'k')
+legend('CO','PALT')
+saveas(fig,'CORAW_JD','jpg')
+saveas(fig,'CORAW_JD','fig')
 
 
 % %% remove all the datapoints that are bad because of the reboot of CO necessary each hour in RF08
@@ -62,11 +77,13 @@ plot(GV.JD,GV.PALTF./300,'k')
 %% load PICARRO DATA
 load(['RF',flight,'_PICARRO_data'])
 
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL)
 hold on
 plot(PICARRO.JULIAN_DAYS,PICARRO.CO2_dry,'r')
 legend('CO','CO2')
+saveas(fig,'CO_CO2','jpg')
+saveas(fig,'CO_CO2','fig')
 
 %% interpolate all the PICARRO DATA to the CO time stamp
 all_fieldname=fieldnames(PICARRO);
@@ -84,12 +101,14 @@ end
 
 
 
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL)
 hold on
 plot(GV.JD,PICARRO_interp.CO2_dry,'r')
 legend('CO','CO2')
 plot(GV.JD,GV.PALTF./300,'k')
+saveas(fig,'CO_CO2_interp','jpg')
+saveas(fig,'CO_CO2_interp','fig')
 
 
 
@@ -147,14 +166,15 @@ plot(GV.JD,GV.PALTF./300,'k')
 
 
 
-%% pressure drop in RF5 remove that data
+%% pressure drop in RF05 remove that data
 BAD_PRESSURE=find(PICARRO_interp.CavityPressure<151.3 | PICARRO_interp.CavityPressure>151.7);
 
-figure()
+fig=figure()
 plot(PICARRO_interp.JULIAN_DAYS,PICARRO_interp.CavityPressure,'ro')
 hold on
 plot(PICARRO_interp.JULIAN_DAYS(BAD_PRESSURE),PICARRO_interp.CavityPressure(BAD_PRESSURE),'bx')
-
+saveas(fig,'CavityPressure','jpg')
+saveas(fig,'CavityPressure','fig')
 
 %% remove all bad data
 
@@ -187,30 +207,33 @@ PICARRO_CAL=intersect(CO2_CAL,CH4_CAL);
 ALL_CAL=intersect(PICARRO_CAL,CO_CAL);
 
 
-figure()
+fig=figure()
 subplot(3,1,1)
 plot(PICARRO_interp.JULIAN_DAYS,PICARRO_interp.CO2_dry,'gx')
 hold on
 plot(PICARRO_interp.JULIAN_DAYS(ALL_CAL),PICARRO_interp.CO2_dry(ALL_CAL),'kx')
-legend('CO2 dry','CO2 dry CAL')
+%legend('CO2 dry','CO2 dry CAL')
 subplot(3,1,2)
 plot(PICARRO_interp.JULIAN_DAYS,PICARRO_interp.CH4_dry,'b')
 hold on
 plot(PICARRO_interp.JULIAN_DAYS(ALL_CAL),PICARRO_interp.CH4_dry(ALL_CAL),'kx')
-legend('CH4 dry','CH4 dry CAL')
+%legend('CH4 dry','CH4 dry CAL')
 subplot(3,1,3)
 plot(PICARRO_interp.JULIAN_DAYS,GV.CORAW_AL,'r')
 hold on
 plot(PICARRO_interp.JULIAN_DAYS(ALL_CAL),GV.CORAW_AL(ALL_CAL),'kx')
-legend('CO','CO CAL')
+%legend('CO','CO CAL')
 title('CALIBRATIONS')
+saveas(fig,'cals','jpg')
+saveas(fig,'cals','fig')
 
-
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL,'r')
 hold on
 plot(GV.JD(CO_CAL),GV.CORAW_AL(CO_CAL),'kx')
 legend('CO','CO CAL')
+saveas(fig,'CO_cal','jpg')
+saveas(fig,'CO_cal','fig')
 
 %% find all call times (and delete those points that are not real cals!
 
@@ -219,7 +242,7 @@ ZZ=[find(PICARRO_interp.JULIAN_DAYS<takeoff_t);find(PICARRO_interp.JULIAN_DAYS>l
 % ZZZ=setdiff(ALL_CAL,ZZ);
 CAL=setdiff(ALL_CAL,ZZ);
 
-figure()
+fig=figure()
 subplot(3,1,1)
 plot(PICARRO_interp.JULIAN_DAYS(CAL),GV.CORAW_AL(CAL),'kx')
 % xlim([19.059 19.312])
@@ -239,19 +262,22 @@ plot(PICARRO_interp_NANs.JULIAN_DAYS(CAL),PICARRO_interp_NANs.CH4(CAL),'bx')
 % xlim([19.059 19.312])
 grid on
 legend('CH4 dry','CH4')
-
 title('CALIBRATIONS')
+saveas(fig,'CH4_cal','jpg')
+saveas(fig,'CH4_cal','fig')
 
 %% find CO zeros
 
 CO_BG=find(GV.CORAW_AL>-5 & GV.CORAW_AL<5);
 
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL,'b')
 hold on
 plot(GV.JD(CO_BG),GV.CORAW_AL(CO_BG),'kx')
 legend('CO')
 title('CO BG MEASUREMENTS')
+saveas(fig,'CO_bg','jpg')
+saveas(fig,'CO_bg','fig')
 
 
 %% CO calibration
@@ -263,10 +289,12 @@ mean_CO_CAL=mean(GV.CORAW_AL(CO_CAL));
 
 
 
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL,'bx')
 hold on
 plot(GV.JD,(GV.CORAW_AL-mean_CO_BG).*141./(mean_CO_CAL-mean_CO_BG),'ro')
+saveas(fig,'mean_CO_bg','jpg')
+saveas(fig,'mean_CO_bg','fig')
 
 
 
@@ -281,7 +309,7 @@ indexi=[1;find((CO_CAL-CO_CAL_2)<-100);length(CO_CAL)];
 CO_CAL_individual=[];
 CO_CAL_times=[];
 
-for iii=1:(length(indexi)-1)
+for iii=2:(length(indexi)-2)
     iii
     CO_CAL_i=mean(GV.CORAW_AL(CO_CAL(indexi(iii)+3):CO_CAL(indexi(iii+1)-3)));
     CO_CAL_time_i=median(GV.JD(CO_CAL(indexi(iii)+3):CO_CAL(indexi(iii+1)-3)));
@@ -291,12 +319,14 @@ for iii=1:(length(indexi)-1)
 end
 
 
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL,'b')
 hold on
 plot(GV.JD(CO_CAL),GV.CORAW_AL(CO_CAL),'rx')
 hold on
 plot(CO_CAL_times,CO_CAL_individual,'ko')
+saveas(fig,'CO_CAL_ind','jpg')
+saveas(fig,'CO_CAL_ind','fig')
 
 % clc;
 % close all;
@@ -319,13 +349,15 @@ CO_CAL_interp = interp1(xs, ys, xi);
 % plot(xi, yi, '.b')
 % % axis equal
 
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL,'b')
 hold on
 plot(GV.JD(CO_CAL),GV.CORAW_AL(CO_CAL),'rx')
 hold on
 plot(CO_CAL_times,CO_CAL_individual,'ko')
 plot(xi, CO_CAL_interp, 'g')
+saveas(fig,'CO_CAL_interp','jpg')
+saveas(fig,'CO_CAL_interp','fig')
 
 %add the first cal to the times before the first cal and the last cal
 %number to after the last cal
@@ -338,16 +370,19 @@ after_last_cal=find(GV.JD>xi(end));
 CO_CAL_ALL=zeros(1,length(GV.JD))*NaN;
 
 CO_CAL_ALL(before_first_cal)=ones(1,length(before_first_cal))*CO_CAL_individual(1);
-CO_CAL_ALL(during_the_cals)=CO_CAL_interp(1:(end-1));
+CO_CAL_ALL(during_the_cals)=CO_CAL_interp(1:end);
 CO_CAL_ALL(after_last_cal)=ones(1,length(after_last_cal))*CO_CAL_individual(end);
 
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL,'b')
 hold on
 plot(GV.JD(CO_CAL),GV.CORAW_AL(CO_CAL),'rx')
 hold on
 plot(CO_CAL_times,CO_CAL_individual,'ko')
 plot(GV.JD, CO_CAL_ALL, 'g')
+saveas(fig,'CO_CAL_ALL','jpg')
+saveas(fig,'CO_CAL_ALL','fig')
+
 
 %% Linear interpolation of BG
 % find each calibration separately
@@ -368,12 +403,14 @@ for iii=1:(length(indexi)-1)
 end
 
 
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL,'b')
 hold on
 plot(GV.JD(CO_BG),GV.CORAW_AL(CO_BG),'rx')
 hold on
 plot(CO_BG_times,CO_BG_individual,'ko')
+saveas(fig,'CO_BG_ind','jpg')
+saveas(fig,'CO_BG_ind','fig')
 
 % clc;
 % close all;
@@ -396,13 +433,15 @@ CO_BG_interp = interp1(xs, ys, xi);
 % plot(xi, yi, '.b')
 % % axis equal
 
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL,'b')
 hold on
 plot(GV.JD(CO_BG),GV.CORAW_AL(CO_BG),'rx')
 hold on
 plot(CO_BG_times,CO_BG_individual,'ko')
 plot(xi, CO_BG_interp, 'g')
+saveas(fig,'CO_BG_int','jpg')
+saveas(fig,'CO_BG_int','fig')
 
 %add the first cal to the times before the first cal and the last cal
 %number to after the last cal
@@ -418,56 +457,51 @@ CO_BG_ALL(before_first_BG)=ones(1,length(before_first_BG))*CO_BG_individual(1);
 CO_BG_ALL(during_the_BGs)=CO_BG_interp;
 CO_BG_ALL(after_last_BG)=ones(1,length(after_last_BG))*CO_BG_individual(end);
 
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL,'b')
 hold on
 plot(GV.JD(CO_BG),GV.CORAW_AL(CO_BG),'rx')
 hold on
 plot(CO_BG_times,CO_BG_individual,'ko')
 plot(GV.JD, CO_BG_ALL, 'g')
+saveas(fig,'CO_BG_ALL','jpg')
+saveas(fig,'CO_BG_ALL','fig')
 %%
 
 
 GV.CO_PPB=(GV.CORAW_AL-CO_BG_ALL').*140./(CO_CAL_ALL'-CO_BG_ALL');
 
-figure()
+fig=figure()
 plot(GV.JD,GV.CORAW_AL,'b')
 hold on
 plot(GV.JD,GV.CO_PPB,'rx')
+legend('CORAW','CO PPB')
+saveas(fig,'CO_PPB','jpg')
+saveas(fig,'CO_PPB','fig')
+
+length(GV.JD)
+length(GV.CO_PPB)
 
 GV.CO_PPB(CAL)=NaN;
 GV.CO_PPB(CO_BG)=NaN;
 % GV.CO_PPB(BAD)=NaN;
 GV.CO_PPB(BAD_PRESSURE)=NaN;
-GV.CO_PPB(TAKEOFF)=NaN;
+%GV.CO_PPB(TAKEOFF)=NaN;
 
-for ix = 1:length(CO_BG_times)
-%     if (CO_BG_times(ix) + badAfter) <= GV.TIME(end)
-%         tempvar = sort(ix+after,length(GV.CO_PPB));
-%     else tempvar = sort(length(GV.CO_PPB),length(GV.CO_PPB);
-%     end
-    if (CO_BG_times(ix)-badBefore) >= CO_BG_times(1) && ( (CO_BG_times(ix)+badAfter) <= CO_BG_times(end) )
-        GV.CO_PPB(ix-badBefore:ix+badAfter)= NaN;
-    end
-end
-    
-for ix = 1:length(CO_CAL_times)
-    if (CO_CAL_times(ix)-badBefore) >= CO_CAL_times(1) && ( (CO_CAL_times(ix)+badAfter) <= CO_CAL_times(end) )
-        GV.CO_PPB(ix-badBefore:ix+badAfter)= NaN;
-    end
-end
+length(GV.JD)
+length(GV.CO_PPB)
 
-
-figure()
+fig=figure()
 plot(GV.JD,GV.CO_PPB,'bx')
 legend('CO PPBV')
+saveas(fig,'CO_PPBV','jpg')
+saveas(fig,'CO_PPBV','fig')
 
 
 %% CO2 Calibration
 
 % FILTER=[find(GV.JD>32.184 & GV.JD<32.1844);find(GV.JD>32.4341 & GV.JD<32.4358);find(GV.JD>32.4760 & GV.JD<32.4762);find(GV.JD>32.2263 & GV.JD<32.2264);find(GV.JD>32.3935 & GV.JD<32.3940);find(GV.JD>32.4765 & GV.JD<32.4777)]; % Data that was not filtered by any other reason but clearly is bg or cal data.
-FILTER=[find(GV.JD<36);find(GV.JD>36.082&GV.JD<36.0837);find(GV.JD>36.2468 & GV.JD<36.2469);...
-    find(GV.JD>36.288 & GV.JD<36.2897)];
+FILTER=[find(GV.JD<36);find(GV.JD>36.082&GV.JD<36.0837);find(GV.JD>36.2468 & GV.JD<36.2469);find(GV.JD>36.288 & GV.JD<36.2897)];
 FILTER2=find(GV.CO_PPB<10);
 
 PICARRO_CALIBRATED.CO2_dry_ppm=PICARRO_interp_NANs.CO2_dry+1.38;
@@ -480,7 +514,7 @@ PICARRO_CALIBRATED.CH4_dry_ppm([ALL_CAL;CO_BG;FILTER;FILTER2])=NaN;
 GV.CO_PPB([FILTER;FILTER2])=NaN;
 
 
-figure()
+fig=figure()
 subplot(3,1,1)
 plot(GV.JD,GV.CO_PPB,'bx')
 % hold on
@@ -501,6 +535,8 @@ legend('CH4 [ppmv]')
 grid on
 % xlim([19.059 19.312])
 ylim([1.79 1.88])
+saveas(fig,'final','jpg')
+saveas(fig,'final','fig')
 
 
 
