@@ -6,7 +6,7 @@ close all
 % data are stored in rf1 array
 % cd C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08\
 % dirname='C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08\';
-flight = '11';
+flight = '12';
 slash = '/';
 picPath='/net/work/Projects/CONTRAST/PICARRO/matlab/';
 rafPath = [picPath,'RF',flight];
@@ -147,7 +147,7 @@ plot(rf1(:,1),rf1(:,2))
 %% open new file and write data to file
 % change filename!
 
-filenamexp=[rafPath,'slash','COCO2CH4_GV_',date3,'_RA.ict'];
+filenamexp=[rafPath,slash,'COCO2CH4_GV_',date3,'_RA.ict'];
 
 fid = eval(['fopen(''',filenamexp ''',''w+'')'])
 

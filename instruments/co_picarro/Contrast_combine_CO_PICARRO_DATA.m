@@ -3,9 +3,12 @@
 clc
 clear all 
 close all
-flight = '11';
-adBefore = 44;
-adAfter = 44.26;
+%flight = '11';
+%adBefore = 44;
+%adAfter = 44.26;
+flight = '12';
+adBefore = 48.998;
+adAfter = 49.232;
 
 set(0, 'DefaultAxesFontSize',20)
 set(0,'DefaultLineLineWidth',2)
@@ -34,16 +37,20 @@ takeoff_t=44.00;
 land_t=44.26;
 START_LAND=find(GV.JD>44.00 & GV.JD<44.26)
 TAKEOFF=find(GV.JD<44.26);%find(GV.PALTF<200);
+    case '12'
+takeoff_t=adBefore;
+land_t=adAfter;
+START_LAND=find(GV.JD>takeoff_t & GV.JD<land_t)
+TAKEOFF=find(GV.JD<land_t);%find(GV.PALTF<200);
 end
 
 GV.CORAW_AL=GV.CORAW_AL(START_LAND);
 GV.DOY=GV.DOY(START_LAND);
 GV.GGLAT=GV.GGLAT(START_LAND);
 GV.INLETP_AL=GV.INLETP_AL(START_LAND);
-GV.JD=GV.JD(START_LAND);
+GV.JD=GV.JD(START_LAND)-1;
 GV.PALTF=GV.PALTF(START_LAND);
 GV.TIME=GV.TIME(START_LAND);
-
 
 fig=figure()
 plot(GV.JD,GV.CORAW_AL)
@@ -501,8 +508,9 @@ saveas(fig,'CO_PPBV','fig')
 %% CO2 Calibration
 
 % FILTER=[find(GV.JD>32.184 & GV.JD<32.1844);find(GV.JD>32.4341 & GV.JD<32.4358);find(GV.JD>32.4760 & GV.JD<32.4762);find(GV.JD>32.2263 & GV.JD<32.2264);find(GV.JD>32.3935 & GV.JD<32.3940);find(GV.JD>32.4765 & GV.JD<32.4777)]; % Data that was not filtered by any other reason but clearly is bg or cal data.
-FILTER=[find(GV.JD<36);find(GV.JD>36.082&GV.JD<36.0837);find(GV.JD>36.2468 & GV.JD<36.2469);find(GV.JD>36.288 & GV.JD<36.2897)];
-FILTER2=find(GV.CO_PPB<10);
+% FILTER=[find(GV.JD<36);find(GV.JD>36.082&GV.JD<36.0837);find(GV.JD>36.2468 & GV.JD<36.2469);find(GV.JD>36.288 & GV.JD<36.2897)];
+FILTER=find(GV.CO_PPB>100);
+FILTER2=find(GV.CO_PPB<50);
 
 PICARRO_CALIBRATED.CO2_dry_ppm=PICARRO_interp_NANs.CO2_dry+1.38;
 PICARRO_CALIBRATED.CO2_dry_ppm([ALL_CAL;CO_BG;FILTER;FILTER2])=NaN;

@@ -6,8 +6,10 @@ close all
 
 %% insert RF number and flight day
 %%info: RF4 (2014,01,19); RF5 (2014,01,21); RF08 (2014,02,01);
-result=['11'];
-doy_start=datenum(2014,02,12);
+% result=['11'];
+% doy_start=datenum(2014,02,12);
+result=['12'];
+doy_start=datenum(2014,02,17);
 
 % cd C:\Users\kaser\Documents\CONTRAST\infield\Picarro\RF08\Private
 % 
