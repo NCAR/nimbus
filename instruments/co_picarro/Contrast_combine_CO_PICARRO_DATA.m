@@ -1,21 +1,47 @@
-%% CONTRAST combine CO and PICARRO DATA
-%%info: RF4 (2014,01,19); RF5 (2014,01,21);
+%-------------------------------------------------------------------------------
+% Combine CO and PICARRO DATA
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+% When working in interactive mode, you want to clear everything before you 
+% rerun. Makes debugging alot easier if declared vars aren't hanging around 
+% with their previous values.
+%-------------------------------------------------------------------------------
 clc
 clear all 
 close all
+
+%%------------------------------------------------------------------------------
+% Set project- and flight-specific constants
+% UPGRADE: This section should be in an input file that all three matlab scripts% can call.
+%-------------------------------------------------------------------------------
+
+project=['CONTRAST'];
+year=[2014];
 %flight = '11';
 %adBefore = 44;
 %adAfter = 44.26;
+% filterLow=10;
 %flight = '12';
 %adBefore = 48.998;
 %adAfter = 49.232;
 picPath='/net/work/Projects/CONTRAST/PICARRO/';
+%filterHigh=100;
+%filterLow=50);
 flight = '13';
 adBefore = 50.709;
 adAfter = 51.016;
 picPath='/Users/janine/Desktop/CONTRAST/PICARRO/';
+% apply brute force filtering of CO if nothing else worked
+filterLow=60;
+filterHigh=120;
+
 % offset needs to be +1 if start after UTC 00 (e.g. for RF05), zero otherwise
 offset=0;
+
+% ranges to look for cal values. This misses values on the way in and out of the cal, so...
+% UPGRADE: Change this part of the code to look for the steep changes that mark the start and
+% end of a cal.
 zeroLow=-5;
 zeroHigh=50;
 COcalLow=91;
@@ -24,23 +50,18 @@ CH4calLow=1.75;
 CH4calHigh=1.78;
 CO2calLow=382;
 CO2calHigh=390;
-% Brute force filtering of CO if nothing else works
-filterLow=60;
-filterHigh=120;
-% FILTER=[find(AC.JD>32.184 & AC.JD<32.1844);find(AC.JD>32.4341 & AC.JD<32.4358);find(AC.JD>32.4760 & AC.JD<32.4762);find(AC.JD>32.2263 & AC.JD<32.2264);find(AC.JD>32.3935 & AC.JD<32.3940);find(AC.JD>32.4765 & AC.JD<32.4777)]; % Data that was not filtered by any other reason but clearly is bg or cal data.
-% FILTER=[find(AC.JD<36);find(AC.JD>36.082&AC.JD<36.0837);find(AC.JD>36.2468 & AC.JD<36.2469);find(AC.JD>36.288 & AC.JD<36.2897)];
-%FILTER2=find(AC.CO_PPB<10);
-%FILTER=find(AC.CO_PPB>100);
-%FILTER2=find(AC.CO_PPB<50);
 
 
-set(0, 'DefaultAxesFontSize',20)
+
+set(0,'DefaultAxesFontSize',20)
 set(0,'DefaultLineLineWidth',2)
 
 rafPath = [picPath,'RF',flight];
 cd(rafPath);
 
-%% load CO DATA
+%%------------------------------------------------------------------------------
+% load CO DATA
+%------------------------------------------------------------------------------
 load(['RF', flight, '_CO_data.mat'])
 
 %% remove data from start and land as we turnd the pumps off then
@@ -66,8 +87,10 @@ legend('CO','PALT')
 saveas(fig,'CORAW_JD','jpg')
 saveas(fig,'CORAW_JD','fig')
 
-
-%% remove all the datapoints that are bad because of the reboot of CO necessary each hour in RF08
+%%------------------------------------------------------------------------------
+% remove all the datapoints that are bad because of the reboot of CO necessary
+% each hour in RF08
+%------------------------------------------------------------------------------
 switch flight
     case '08'
         reboot=find(AC.CORAW_AL==-32767);
@@ -88,7 +111,9 @@ switch flight
  
         AC.CORAW_AL(reboot3)=NaN;
 end
-%% load PICARRO DATA
+%%------------------------------------------------------------------------------
+% load PICARRO DATA
+%------------------------------------------------------------------------------
 load(['RF',flight,'_PICARRO_data'])
 
 fig=figure()
@@ -99,7 +124,9 @@ legend('CO','CO2')
 saveas(fig,'CO_CO2','jpg')
 saveas(fig,'CO_CO2','fig')
 
-%% interpolate all the PICARRO DATA to the CO time stamp
+%%------------------------------------------------------------------------------
+% interpolate all the PICARRO DATA to the CO time stamp
+%------------------------------------------------------------------------------
 all_fieldname=fieldnames(PICARRO);
 
 for i=1:length(fieldnames(PICARRO))
@@ -123,7 +150,9 @@ title('CO CO2 Interpolated')
 saveas(fig,'CO_CO2_interp','jpg')
 saveas(fig,'CO_CO2_interp','fig')
 
-%% remove all the data where we have backflow (where CO2_dry>420)
+%%------------------------------------------------------------------------------
+% remove all the data where we have backflow (where CO2_dry>420)
+%------------------------------------------------------------------------------
 
 % BAD1=find(PICARRO_interp.CO2_dry>420);
 % % also remove 3 datapoints before and 10 datapoints after
@@ -166,13 +195,9 @@ saveas(fig,'CO_CO2_interp','fig')
 % plot(AC.JD(BAD),PICARRO_interp.CO2_dry(BAD),'kx')
 % legend('CO','CO2')
 
-
-
-
-
-
-
-%% pressure drop in RF05 remove that data
+%%------------------------------------------------------------------------------
+% pressure drop in RF05 remove that data
+%------------------------------------------------------------------------------
 % switch flight
 %     case '05'
         BAD_PRESSURE=find(PICARRO_interp.CavityPressure<151.3 | PICARRO_interp.CavityPressure>151.7);
@@ -188,8 +213,9 @@ title('Cavity Pressure')
 saveas(fig,'CavityPressure','jpg')
 saveas(fig,'CavityPressure','fig')
 
-%% remove all bad data
-
+%%------------------------------------------------------------------------------
+% remove all bad data
+%------------------------------------------------------------------------------
 
 all_fieldname=fieldnames(PICARRO_interp);
 
@@ -209,8 +235,9 @@ end
 end
 
 
-
-%% find calibration times CO2 between 382 and 390 and CO between 168 and 178 and methane between 1.75 and 1.78
+%%------------------------------------------------------------------------------
+% find calibration times: constants are set at top of code 
+%------------------------------------------------------------------------------
 
 CO2_CAL=find(PICARRO_interp.CO2_dry>CO2calLow & PICARRO_interp.CO2_dry<CO2calHigh);
 CH4_CAL=find(PICARRO_interp.CH4_dry>CH4calLow & PICARRO_interp.CH4_dry<CH4calHigh);
