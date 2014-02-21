@@ -4,11 +4,12 @@ close all
 %% to calculate UTC time: http://www.mbari.org/staff/rich/utccalc.htm
 %% this segment reads data where the first row is a header
 % data are stored in rf1 array
-% cd C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08\
-% dirname='C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08\';
-flight = '12';
+flight = '13';
+year = [2014];
+month = [02];
+day = [21];
 slash = '/';
-picPath='/net/work/Projects/CONTRAST/PICARRO/matlab/';
+picPath='/Users/janine/Desktop/CONTRAST/PICARRO/';
 rafPath = [picPath,'RF',flight];
 cd(rafPath);
 
@@ -29,9 +30,9 @@ filename=['RF',flight,'preICARTT_data.mat'];
 
 
 if preICARTT.TIME(1)<43200 
-date_start=datevec(preICARTT.DOY(1)+datenum('12-31-2013')+1);%% add 1 for the day if take off is after Midnight UTC (==10AM in Guam)
+date_start=datevec(preICARTT.DOY(1)+datenum(year-1,12,31)+1);%% add 1 for the day if take off is after Midnight UTC (==10AM in Guam)
 else
-date_start=datevec(preICARTT.DOY(1)+datenum('12-31-2013'));%% add 1 for the day if take off is after Midnight UTC (==10AM in Guam)    
+date_start=datevec(preICARTT.DOY(1)+datenum(year-1,12,31));%% add 1 for the day if take off is after Midnight UTC (==10AM in Guam)    
 end
 
 
@@ -129,7 +130,7 @@ saveas(gcf, ...
 %     '-r300' );             % resolution in dpi
 
 saveas(gcf, ...
-    ['pix',slash,'CO_CO2_CH4_RF08'],... % name of output file without extension
+    ['pix',slash,'CO_CO2_CH4_RF',flight],... % name of output file without extension
 'fig');    
 
 
@@ -143,6 +144,7 @@ rf1=[utc_2',conc_data2];
 
 figure()
 plot(rf1(:,1),rf1(:,2))
+legend('missing converted to -9999')
 
 %% open new file and write data to file
 % change filename!
@@ -157,7 +159,7 @@ fprintf(fid,'%s\n','NCAR');
 fprintf(fid,'%s\n','NCAR Aerolaser');
 fprintf(fid,'%s\n','CONTRAST');
 fprintf(fid,'%s\n','1, 1');%?
-fprintf(fid,'%s\n',[date3(1:4),', ',date3(5:6),', ',date3(7:8),', ','2014, 02, 06']); %change dates: %UTC date when data begin, UTC date of data reduction or revision - comma delimited (yyyy, mm, dd, yyyy, mm, dd).
+fprintf(fid,'%s\n',[date3(1:4),', ',date3(5:6),', ',date3(7:8),', ',year,', ',month,', ',day]); %change dates: %UTC date when data begin, UTC date of data reduction or revision - comma delimited (yyyy, mm, dd, yyyy, mm, dd).
 fprintf(fid,'%s\n','1');%Data interval 1s --> 1???
 fprintf(fid,'%s\n','UTC, seconds'); %needs to be in UTC
 fprintf(fid,'%s\n','3'); %change - number of columns - this would be 13 columns (first start time column is not included here)
