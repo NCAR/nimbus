@@ -1,4 +1,4 @@
-%load PICARRO data
+%load picarro data
 tic
 clc
 clear all
@@ -10,17 +10,17 @@ close all
 % doy_start=datenum(2014,02,12);
 result=['12'];
 doy_start=datenum(2014,02,17);
+slash=['/'];
 
 % cd C:\Users\kaser\Documents\CONTRAST\infield\Picarro\RF08\Private
 % 
 % dirname='C:\Users\kaser\Documents\CONTRAST\infield\Picarro\RF08\Private\';
 picPath='/net/work/Projects/CONTRAST/PICARRO/matlab/';
 rafPath = [picPath,'RF',result];
-ncFile = ['/CONTRAST_rf', result, '.nc'];
+ncFile = [slash,'CONTRAST_rf', result, '.nc'];
 
-dirname = [picPath, 'RF', result, '/raw_data/Private/'];
+dirname = [picPath, 'RF', result, slash, 'raw_data', slash, 'Private', slash];
 cd(dirname);
-% dirname='C:\Users\kaser\Documents\CONTRAST\infield\Picarro\RF08\Private\';
 
 % Update this to say
 % If starting in gui mode
@@ -29,7 +29,7 @@ cd(dirname);
 filename=dir('*h5');
 
 file=[dirname,char(filename(1).name)];
-data = h5read(file,'/results');
+data = h5read(file, slash, 'results');
 
 all_fieldnames=fieldnames(data);
 % 
@@ -46,7 +46,7 @@ clear data
 file=[dirname,char(filename(kk).name)];
 
 
-data = h5read(file,'/results');
+data = h5read(file, slash, 'results');
 
 % 
     for i=1:length(fieldnames(data))
@@ -138,13 +138,11 @@ iflt = 1;
       %
 
 
+%%%%%
+% Write a .mat file with the CO data in it to be used in the next step of the processing
+%%%%%
 TIME=double(TIME);
-
-
 DOY=doy_start+datenum(0,0,0,0,0,TIME)-datenum('12-31-2013');
-
-
-
 
 filename=['RF', result, '_CO_data.mat'];
 
@@ -162,11 +160,8 @@ GV.THETA = THETA;
 GV.PLWCC=PLWCC;
 GV.PLWCD_RWOO=PLWCD_RWOO;
 
-% cd C:\Users\kaser\Documents\CONTRAST\infield\matlab_data\
-% cd C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08
 save(filename,'GV')
 
 
 % Now combine picarro and co data onto common time base
-
-% Contrast_combine_CO_PICARRO_DATA
+% by running 'Contrast_combine_CO_PICARRO_DATA'
