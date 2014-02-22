@@ -12,60 +12,33 @@ clear all
 close all
 
 %%------------------------------------------------------------------------------
-% Set project- and flight-specific constants
-% UPGRADE: This section should be in an input file that all three matlab scripts% can call.
+% read flight-specific constants from input file
 %-------------------------------------------------------------------------------
+flightConstants
 
-project=['CONTRAST'];
-year=[2014];
-%flight = '11';
-%adBefore = 44;
-%adAfter = 44.26;
-% filterLow=10;
-%flight = '12';
-%adBefore = 48.998;
-%adAfter = 49.232;
-picPath='/net/work/Projects/CONTRAST/PICARRO/';
-%filterHigh=100;
-%filterLow=50);
-flight = '13';
-adBefore = 50.709;
-adAfter = 51.016;
-picPath='/Users/janine/Desktop/CONTRAST/PICARRO/';
-% apply brute force filtering of CO if nothing else worked
-filterLow=60;
-filterHigh=120;
-
-% offset needs to be +1 if start after UTC 00 (e.g. for RF05), zero otherwise
-offset=0;
-
-% ranges to look for cal values. This misses values on the way in and out of the cal, so...
-% UPGRADE: Change this part of the code to look for the steep changes that mark the start and
-% end of a cal.
-zeroLow=-5;
-zeroHigh=50;
-COcalLow=91;
-COcalHigh=110;
-CH4calLow=1.75;
-CH4calHigh=1.78;
-CO2calLow=382;
-CO2calHigh=390;
-
-
-
+%%------------------------------------------------------------------------------
+% Set some constants.
+%
+% This section assumes that the following structure is under the PICARRO dir:
+%  RF##
+%        <project>_RF##.nc	 % Aircraft .nc file for flight
+%        Private
+%                *.h5		 % PICARRO .h5 files for flight
+%-------------------------------------------------------------------------------
 set(0,'DefaultAxesFontSize',20)
 set(0,'DefaultLineLineWidth',2)
 
-rafPath = [picPath,'RF',flight];
+rafPath = [picPath,'RF',flightNum];
 cd(rafPath);
 
 %%------------------------------------------------------------------------------
 % load CO DATA
-%------------------------------------------------------------------------------
-load(['RF', flight, '_CO_data.mat'])
+%-------------------------------------------------------------------------------
+load(['RF', flightNum, '_CO_data.mat'])
 
-%% remove data from start and land as we turnd the pumps off then
-
+%-------------------------------------------------------------------------------
+%% remove data from start and land as we turned the pumps off then
+%-------------------------------------------------------------------------------
 takeoff_t=adBefore;
 land_t=adAfter;
 START_LAND=find(AC.JD>takeoff_t & AC.JD<land_t)
@@ -84,14 +57,15 @@ plot(AC.JD,AC.CORAW_AL)
 hold on
 plot(AC.JD,AC.PALTF./300,'k')
 legend('CO','PALT')
+title('CO (CORAW_JD)')
 saveas(fig,'CORAW_JD','jpg')
 saveas(fig,'CORAW_JD','fig')
 
 %%------------------------------------------------------------------------------
 % remove all the datapoints that are bad because of the reboot of CO necessary
 % each hour in RF08
-%------------------------------------------------------------------------------
-switch flight
+%-------------------------------------------------------------------------------
+switch flightNum
     case '08'
         reboot=find(AC.CORAW_AL==-32767);
         AC.CORAW_AL(reboot)=NaN;
@@ -113,20 +87,21 @@ switch flight
 end
 %%------------------------------------------------------------------------------
 % load PICARRO DATA
-%------------------------------------------------------------------------------
-load(['RF',flight,'_PICARRO_data'])
+%-------------------------------------------------------------------------------
+load(['RF',flightNum,'_PICARRO_data'])
 
 fig=figure()
 plot(AC.JD,AC.CORAW_AL)
 hold on
 plot(PICARRO.JULIAN_DAYS,PICARRO.CO2_dry,'r')
 legend('CO','CO2')
+title('CO2 dry from PICARRO (CO_CO2)')
 saveas(fig,'CO_CO2','jpg')
 saveas(fig,'CO_CO2','fig')
 
 %%------------------------------------------------------------------------------
 % interpolate all the PICARRO DATA to the CO time stamp
-%------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
 all_fieldname=fieldnames(PICARRO);
 
 for i=1:length(fieldnames(PICARRO))
@@ -146,13 +121,13 @@ hold on
 plot(AC.JD,PICARRO_interp.CO2_dry,'r')
 plot(AC.JD,AC.PALTF./300,'k')
 legend('CO','CO2','PALTF')
-title('CO CO2 Interpolated')
+title('CO2 Interpolated to CO timestamp (CO_CO2_interp)')
 saveas(fig,'CO_CO2_interp','jpg')
 saveas(fig,'CO_CO2_interp','fig')
 
 %%------------------------------------------------------------------------------
 % remove all the data where we have backflow (where CO2_dry>420)
-%------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
 
 % BAD1=find(PICARRO_interp.CO2_dry>420);
 % % also remove 3 datapoints before and 10 datapoints after
@@ -183,6 +158,12 @@ saveas(fig,'CO_CO2_interp','fig')
 % % 
 % 
 % BAD=BAD(find(BAD<length(AC.JD)));
+% for i=1:length(fieldnames(PICARRO_interp))
+%    fieldname=char(all_fieldname(i));
+%    PICARRO_interp_i=PICARRO_interp.(fieldname);
+%    PICARRO_interp_i(BAD)=NaN;
+%    AC.CO_PPB(BAD)=NaN;
+% end
 % 
 % figure()
 % plot(AC.JD,AC.CORAW_AL,'bo')
@@ -197,11 +178,19 @@ saveas(fig,'CO_CO2_interp','fig')
 
 %%------------------------------------------------------------------------------
 % pressure drop in RF05 remove that data
-%------------------------------------------------------------------------------
-% switch flight
-%     case '05'
+%-------------------------------------------------------------------------------
+switch flightNum
+    case '05'
         BAD_PRESSURE=find(PICARRO_interp.CavityPressure<151.3 | PICARRO_interp.CavityPressure>151.7);
-% end
+    for i=1:length(fieldnames(PICARRO_interp))
+        fieldname=char(all_fieldname(i));
+        PICARRO_interp_i=PICARRO_interp.(fieldname);
+        if exist('BAD_PRESSURE','var')
+            PICARRO_interp_i(BAD_PRESSURE)=NaN;
+            AC.CO_PPB(BAD_PRESSURE)=NaN;
+        end
+    end
+end
 
 fig=figure()
 plot(PICARRO_interp.JULIAN_DAYS,PICARRO_interp.CavityPressure,'ro')
@@ -214,37 +203,29 @@ saveas(fig,'CavityPressure','jpg')
 saveas(fig,'CavityPressure','fig')
 
 %%------------------------------------------------------------------------------
-% remove all bad data
-%------------------------------------------------------------------------------
-
+% set up interp_NAN arrays from which to remove all bad data
+%-------------------------------------------------------------------------------
 all_fieldname=fieldnames(PICARRO_interp);
 
 for i=1:length(fieldnames(PICARRO_interp))
-fieldname=char(all_fieldname(i));
-PICARRO_interp_i=PICARRO_interp.(fieldname);
-if strcmp(fieldname,'JULIAN_DAYS')==1
-PICARRO_interp_NANs.(fieldname)=PICARRO_interp.JULIAN_DAYS; 
-else
-    if exist('BAD_PRESSURE','var')
-        % PICARRO_interp_i(BAD)=NaN;
-        PICARRO_interp_i(BAD_PRESSURE)=NaN;
+    fieldname=char(all_fieldname(i));
+    PICARRO_interp_i=PICARRO_interp.(fieldname);
+    if strcmp(fieldname,'JULIAN_DAYS')==1
+        PICARRO_interp_NANs.(fieldname)=PICARRO_interp.JULIAN_DAYS; 
+    else
+        PICARRO_interp_NANs.(fieldname)=PICARRO_interp_i;
     end
-% PICARRO_interp_i(BAD_STRANGE)=NaN;
-PICARRO_interp_NANs.(fieldname)=PICARRO_interp_i;
 end
-end
-
 
 %%------------------------------------------------------------------------------
-% find calibration times: constants are set at top of code 
-%------------------------------------------------------------------------------
+% find CO, CH4, CO2 calibration times based on ranges set in constants file
+% UPGRADE: This misses cal values on the way up and down that should be eliminated
+%-------------------------------------------------------------------------------
 
 CO2_CAL=find(PICARRO_interp.CO2_dry>CO2calLow & PICARRO_interp.CO2_dry<CO2calHigh);
 CH4_CAL=find(PICARRO_interp.CH4_dry>CH4calLow & PICARRO_interp.CH4_dry<CH4calHigh);
 CO_CAL=find(AC.CORAW_AL>COcalLow & AC.CORAW_AL<COcalHigh);
-
 PICARRO_CAL=intersect(CO2_CAL,CH4_CAL);
-
 ALL_CAL=intersect(PICARRO_CAL,CO_CAL);
 
 
@@ -277,7 +258,9 @@ title('CO Calibrations')
 saveas(fig,'CO_cal','jpg')
 saveas(fig,'CO_cal','fig')
 
-%% find all call times (and delete those points that are not real cals!
+%%------------------------------------------------------------------------------
+% remove cals that are before takeoff or after landing
+%-------------------------------------------------------------------------------
 
 ZZ=[find(PICARRO_interp.JULIAN_DAYS<takeoff_t);find(PICARRO_interp.JULIAN_DAYS>land_t & PICARRO_interp.JULIAN_DAYS<takeoff_t)];
 CAL=setdiff(ALL_CAL,ZZ);
@@ -303,8 +286,10 @@ legend('CH4 dry','CH4')
 saveas(fig,'CH4_cal','jpg')
 saveas(fig,'CH4_cal','fig')
 
-%% find CO zeros
-
+%%------------------------------------------------------------------------------
+% find CO zeros based on ranges set in constants file
+% UPGRADE: This misses cal values on the way up and down that should be eliminated
+%-------------------------------------------------------------------------------
 CO_BG=find(AC.CORAW_AL>zeroLow & AC.CORAW_AL<zeroHigh);
 
 fig=figure()
@@ -316,30 +301,33 @@ title('CO BG identification')
 saveas(fig,'CO_bg','jpg')
 saveas(fig,'CO_bg','fig')
 
-
-%% CO calibration
-
-% rough calculation of sensitivity (mean of all call and zero values)
+%%------------------------------------------------------------------------------
+% rough calculation of CO sensitivity (mean of all call and zero values)
+%-------------------------------------------------------------------------------
 mean_CO_BG=mean(AC.CORAW_AL(CO_BG));
 mean_CO_CAL=mean(AC.CORAW_AL(CO_CAL));
 
-
-
-
+%-------------------------------------------------------------------------------
+% Plot the mean and cal_COMR adjusted CO, but don't save it anywhere (!!!!)
+% cal_COMR is a fn of the canister and is defined in the constants file
+%-------------------------------------------------------------------------------
 fig=figure()
 plot(AC.JD,AC.CORAW_AL,'bx')
 hold on
-plot(AC.JD,(AC.CORAW_AL-mean_CO_BG).*141./(mean_CO_CAL-mean_CO_BG),'ro')
-legend('CO','CO-BG')
+plot(AC.JD,(AC.CORAW_AL-mean_CO_BG).*cal_COMR./(mean_CO_CAL-mean_CO_BG),'ro')
+legend('CO','CO-BG_(mean)')
+title('CO minus mean BG, then scaled to cal gas')
 saveas(fig,'mean_CO_bg','jpg')
 saveas(fig,'mean_CO_bg','fig')
 
-
-
-%% better calibration using a linear interpolation between the different cals
-
+%%------------------------------------------------------------------------------
+% better calibration of CO using a linear interpolation between the different 
+% cals instead of a simple mean.
+%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
 % Linear interpolation of calibration
 % find each calibration separately
+%-------------------------------------------------------------------------------
 CO_CAL_2=[CO_CAL(2:end);CO_CAL(1)];
 
 indexi=[1;find((CO_CAL-CO_CAL_2)<-100);length(CO_CAL)];
@@ -356,38 +344,18 @@ for iii=2:(length(indexi)-2)
     CO_CAL_times=[CO_CAL_times,CO_CAL_time_i];
 end
 
-
-fig=figure()
-plot(AC.JD,AC.CORAW_AL,'b')
-hold on
-plot(AC.JD(CO_CAL),AC.CORAW_AL(CO_CAL),'rx')
-hold on
-plot(CO_CAL_times,CO_CAL_individual,'ko')
-title('individual CO CALs')
-legend('CORAW','CALS','CO CAL ind')
-saveas(fig,'CO_CAL_ind','jpg')
-saveas(fig,'CO_CAL_ind','fig')
-
-% clc;
-% close all;
-% clear all;
-
-% Stützstellen
-xs = CO_CAL_times;%[0, 35, 75, 110, 150];
-ys = CO_CAL_individual;%[20, 0, -50, 40, 20];
+%-------------------------------------------------------------------------------
+% Stützstellen (grid points)
+%-------------------------------------------------------------------------------
+xs = CO_CAL_times;
+ys = CO_CAL_individual;
 timestep= AC.TIME(2)-AC.TIME(1);
-% Interpolationspunkte
+
+%-------------------------------------------------------------------------------
+% Interpolationspunkte (Interpolation)
+%-------------------------------------------------------------------------------
 xi = CO_CAL_times(1):timestep:CO_CAL_times(end);
-
-% Interpolation
 CO_CAL_interp = interp1(xs, ys, xi);
-
-% % Plotten
-% figure()
-% plot(xs, ys, 'or')
-% hold on
-% plot(xi, yi, '.b')
-% % axis equal
 
 fig=figure()
 plot(AC.JD,AC.CORAW_AL,'b')
@@ -402,16 +370,15 @@ legend('CORAW','CO cals','CO cal ind','CO CAL interp')
 saveas(fig,'CO_CAL_interp','jpg')
 saveas(fig,'CO_CAL_interp','fig')
 
-%add the first cal to the times before the first cal and the last cal
-%number to after the last cal
-
+%-------------------------------------------------------------------------------
+% Add the first cal to the times before the first cal and the last cal
+% number to after the last cal
+%-------------------------------------------------------------------------------
 before_first_cal=find(AC.JD<xi(1));
 during_the_cals=find(AC.JD>=xi(1) & AC.JD<=xi(end));%<=
 after_last_cal=find(AC.JD>xi(end));
 
-
 CO_CAL_ALL=zeros(1,length(AC.JD))*NaN;
-
 CO_CAL_ALL(before_first_cal)=ones(1,length(before_first_cal))*CO_CAL_individual(1);
 CO_CAL_ALL(during_the_cals)=CO_CAL_interp(1:end);
 CO_CAL_ALL(after_last_cal)=ones(1,length(after_last_cal))*CO_CAL_individual(end);
@@ -429,8 +396,10 @@ saveas(fig,'CO_CAL_ALL','jpg')
 saveas(fig,'CO_CAL_ALL','fig')
 
 
-%% Linear interpolation of BG
+%%------------------------------------------------------------------------------
+% Linear interpolation of CO background
 % find each calibration separately
+%-------------------------------------------------------------------------------
 CO_BG_2=[CO_BG(2:end);CO_BG(1)];
 
 indexi=[1;find((CO_BG-CO_BG_2)<-100);length(CO_BG)];
@@ -448,36 +417,18 @@ for iii=1:(length(indexi)-1)
 end
 
 
-fig=figure()
-plot(AC.JD,AC.CORAW_AL,'b')
-hold on
-plot(AC.JD(CO_BG),AC.CORAW_AL(CO_BG),'rx')
-hold on
-plot(CO_BG_times,CO_BG_individual,'ko')
-legend('CORAW','CO BG','CO BG ind')
-saveas(fig,'CO_BG_ind','jpg')
-saveas(fig,'CO_BG_ind','fig')
-
-% clc;
-% close all;
-% clear all;
-
-% Stützstellen
+%-------------------------------------------------------------------------------
+% Stützstellen (grid points)
+%-------------------------------------------------------------------------------
 xs = CO_BG_times;%[0, 35, 75, 110, 150];
 ys = CO_BG_individual;%[20, 0, -50, 40, 20];
 timestep= AC.TIME(2)-AC.TIME(1);
-% Interpolationspunkte
+
+%-------------------------------------------------------------------------------
+% Interpolationspunkte (Interpolation)
+%-------------------------------------------------------------------------------
 xi = CO_BG_times(1):timestep:CO_BG_times(end);
-
-% Interpolation
 CO_BG_interp = interp1(xs, ys, xi);
-
-% % Plotten
-% figure()
-% plot(xs, ys, 'or')
-% hold on
-% plot(xi, yi, '.b')
-% % axis equal
 
 fig=figure()
 plot(AC.JD,AC.CORAW_AL,'b')
@@ -491,16 +442,16 @@ legend('CORAW','CO BG','CO BG ind','interp')
 saveas(fig,'CO_BG_int','jpg')
 saveas(fig,'CO_BG_int','fig')
 
-%add the first cal to the times before the first cal and the last cal
-%number to after the last cal
-
+%-------------------------------------------------------------------------------
+% Add the first cal to the times before the first cal and the last cal
+% number to after the last cal
+%-------------------------------------------------------------------------------
 before_first_BG=find(AC.JD<xi(1));
 during_the_BGs=find(AC.JD>=xi(1) & AC.JD<=xi(end));
 after_last_BG=find(AC.JD>xi(end));
 
 
 CO_BG_ALL=zeros(1,length(AC.JD))*NaN;
-
 CO_BG_ALL(before_first_BG)=ones(1,length(before_first_BG))*CO_BG_individual(1);
 CO_BG_ALL(during_the_BGs)=CO_BG_interp;
 CO_BG_ALL(after_last_BG)=ones(1,length(after_last_BG))*CO_BG_individual(end);
@@ -515,10 +466,13 @@ plot(AC.JD, CO_BG_ALL, 'g')
 legend('CORAW','CO BG','CO BG ind','CO BG fit')
 saveas(fig,'CO_BG_ALL','jpg')
 saveas(fig,'CO_BG_ALL','fig')
-%%
 
 
-AC.CO_PPB=(AC.CORAW_AL-CO_BG_ALL').*140./(CO_CAL_ALL'-CO_BG_ALL');
+%-------------------------------------------------------------------------------
+% Correct the CO for the interpolated cal values and the cal gas canister ppb.
+% cal_COMR is a fn of the canister and is defined in the constants file
+%-------------------------------------------------------------------------------
+AC.CO_PPB=(AC.CORAW_AL-CO_BG_ALL').*cal_COMR./(CO_CAL_ALL'-CO_BG_ALL');
 
 fig=figure()
 plot(AC.JD,AC.CORAW_AL,'b')
@@ -528,33 +482,48 @@ legend('CORAW','CO PPB')
 saveas(fig,'CO_PPB','jpg')
 saveas(fig,'CO_PPB','fig')
 
-length(AC.JD)
-length(AC.CO_PPB)
+%-------------------------------------------------------------------------------
+% Blank out the zeros and the cals, and make sure the array length didn't change.
+%-------------------------------------------------------------------------------
+before=length(AC.JD)
+after=length(AC.CO_PPB)
 
 AC.CO_PPB(CAL)=NaN;
 AC.CO_PPB(CO_BG)=NaN;
-% AC.CO_PPB(BAD)=NaN;
-if exist('BAD_PRESSURE','var')
-    AC.CO_PPB(BAD_PRESSURE)=NaN;
-end
 %AC.CO_PPB(TAKEOFF)=NaN;
 
 length(AC.JD)
 length(AC.CO_PPB)
 
+if (before ~= length(AC.JD)) 
+	error('CO array length changed when cal vals removed')
+end
+if (before ~= length(AC.CO_PPB)) 
+	error('CO array length changed when bg vals removed')
+end
+
 fig=figure()
 plot(AC.JD,AC.CO_PPB,'bx')
-title('CO PPBV')
+title('CO PPBV - almost there, just need to remove remaining cals')
 saveas(fig,'CO_PPBV','jpg')
 saveas(fig,'CO_PPBV','fig')
 
 
-%% CO2 Calibration
-
+%%------------------------------------------------------------------------------
+% This is a final kludge. If we didn't catch and eliminate all the cal points
+% try to get more by simply drawing a straight line above and below the good data
+% and removing all points outside that.
+% UPGRADE: Identify the step function transitions and eliminate cal points 
+% by that.
+%-------------------------------------------------------------------------------
 FILTER=find(AC.CO_PPB>filterHigh);
 FILTER2=find(AC.CO_PPB<filterLow);
 
+AC.CO_PPB([FILTER;FILTER2])=NaN;
 
+%%------------------------------------------------------------------------------
+% Now can do the CO2 and CH4 Calibrations based on the CO calibration
+%-------------------------------------------------------------------------------
 PICARRO_CALIBRATED.CO2_dry_ppm=PICARRO_interp_NANs.CO2_dry+1.38;
 PICARRO_CALIBRATED.CO2_dry_ppm([ALL_CAL;CO_BG;FILTER;FILTER2])=NaN;
 
@@ -562,7 +531,6 @@ PICARRO_CALIBRATED.CH4_dry_ppm=PICARRO_interp_NANs.CH4_dry+0.0339;
 PICARRO_CALIBRATED.CH4_dry_ppm([ALL_CAL;CO_BG;FILTER;FILTER2])=NaN;
 
 
-AC.CO_PPB([FILTER;FILTER2])=NaN;
 
 
 fig=figure()
@@ -589,7 +557,9 @@ saveas(fig,'final','fig')
 
 
 
+%%------------------------------------------------------------------------------
 %% save the pre_ICARTT file
+%-------------------------------------------------------------------------------
 TAKEOFF2=find(AC.PALTF>200);%take only data after takeoff
 
 preICARTT.CO_PPBV=AC.CO_PPB(TAKEOFF2);
@@ -603,8 +573,7 @@ preICARTT.H2O=PICARRO_interp_NANs.H2O(TAKEOFF2);
 
 
 
-filename=['RF', flight, 'preICARTT_data.mat'];
+filename=['RF', flightNum, 'preICARTT_data.mat'];
 
-% cd C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08\
 save(filename,['preICARTT'])
-save(['RF', flight, 'quicklook.mat']);
+save(['RF', flightNum, 'quicklook.mat']);

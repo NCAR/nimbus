@@ -16,23 +16,9 @@ clear all
 close all
 
 %%------------------------------------------------------------------------------
-% insert RF number and flight day
-% UPGRADE: This section should be in an input file that all three matlab scripts% can call.
+% read flight-specific constants from input file
 %-------------------------------------------------------------------------------
-project=['CONTRAST'];
-year=[2014];
-%info: RF4 (2014,01,19); RF5 (2014,01,21); RF08 (2014,02,01);
-% result=['11'];
-% doy_start=datenum(2014,02,12);
-% picPath=['/net/work/Projects/', project, '/PICARRO/matlab/'];
-% result=['12'];
-% doy_start=datenum(2014,02,17);
-result=['13'];
-doy_start=datenum(2014,02,19);
-picPath='/Users/janine/Desktop/CONTRAST/PICARRO/';
-
-% offset needs to be +1 if start after UTC 00 (e.g. for RF05), zero otherwise
-offset=0;
+flightConstants
 
 %%------------------------------------------------------------------------------
 % Set some constants.
@@ -44,9 +30,10 @@ offset=0;
 %                *.h5		 % PICARRO .h5 files for flight
 %-------------------------------------------------------------------------------
 
+doy_start=datenum(flightYear,flightMonth,flightDay);
 slash=['/'];
-rafPath = [picPath,'RF',result];
-ncFile = [slash, project,'_rf', result, '.nc'];
+rafPath = [picPath,'RF',flightNum];
+ncFile = [slash, project,'_rf', flightNum, '.nc'];
 dirname = [rafPath, slash, 'Private', slash];
 
 cd(dirname);
@@ -111,7 +98,7 @@ cd(rafPath);
 
 PICARRO=DATA;
 PICARRO.DOY=DATA.JULIAN_DAYS;
-picOutfilename=['RF', result, '_PICARRO_data.mat'];
+picOutfilename=['RF', flightNum, '_PICARRO_data.mat'];
 
 save(picOutfilename,'PICARRO')
 
@@ -198,9 +185,9 @@ iflt = 1;
 % the processing
 %-------------------------------------------------------------------------------
 TIME=double(TIME);
-DOY=doy_start+datenum(0,0,0,0,0,TIME)-datenum(year-1,12,31);
+DOY=doy_start+datenum(0,0,0,0,0,TIME)-datenum(flightYear-1,12,31);
 
-filename=['RF', result, '_CO_data.mat'];
+filename=['RF', flightNum, '_CO_data.mat'];
 
 AC.CORAW_AL=CORAW_AL;
 AC.GGLAT=GGLON;

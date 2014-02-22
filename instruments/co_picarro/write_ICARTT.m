@@ -1,70 +1,94 @@
+%-------------------------------------------------------------------------------
+% Write final data out in ICARTT format.
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+% When working in interactive mode, you want to clear everything before you 
+% rerun. Makes debugging alot easier if declared vars aren't hanging around 
+% with their previous values.
+%-------------------------------------------------------------------------------
 clc
 clear all
 close all
-%% to calculate UTC time: http://www.mbari.org/staff/rich/utccalc.htm
-%% this segment reads data where the first row is a header
-% data are stored in rf1 array
-flight = '13';
-year = [2014];
-month = [02];
-day = [21];
+
+%%------------------------------------------------------------------------------
+% read flight-specific constants from input file
+%-------------------------------------------------------------------------------
+flightConstants
+
+%%------------------------------------------------------------------------------
+% Set some constants.
+%
+% This section assumes that the following structure is under the PICARRO dir:
+%  RF##
+%        <project>_RF##.nc	 % Aircraft .nc file for flight
+%        Private
+%                *.h5		 % PICARRO .h5 files for flight
+%	 pix			 % dir for output files created with previous 
+%				 % script
+%-------------------------------------------------------------------------------
 slash = '/';
-picPath='/Users/janine/Desktop/CONTRAST/PICARRO/';
-rafPath = [picPath,'RF',flight];
+rafPath = [picPath,'RF',flightNum];
 cd(rafPath);
 
 if ~exist('pix')
     mkdir('pix');
 end
 dirname=rafPath;
-%filename=uigetfile('*.mat','Select files','MultiSelect','off');
-filename=['RF',flight,'preICARTT_data.mat'];
+
+%%------------------------------------------------------------------------------
+% load pre-ICARTT data
+%-------------------------------------------------------------------------------
+filename=['RF',flightNum,'preICARTT_data.mat'];
+load([dirname,slash,filename])    
 
 
-% for kk=1%:length(filename)
-% 
-% if length(filename)==23;%27;
-    load([dirname,slash,filename])    
-% else load([dirname,char(filename(kk))])
-% end
-
-
+%-------------------------------------------------------------------------------
+% add 1 for the day if take off is after Midnight UTC (==10AM in Guam)
+%-------------------------------------------------------------------------------
 if preICARTT.TIME(1)<43200 
-date_start=datevec(preICARTT.DOY(1)+datenum(year-1,12,31)+1);%% add 1 for the day if take off is after Midnight UTC (==10AM in Guam)
+    date_start=datevec(preICARTT.DOY(1)+datenum(flightYear-1,12,31)+1);
 else
-date_start=datevec(preICARTT.DOY(1)+datenum(year-1,12,31));%% add 1 for the day if take off is after Midnight UTC (==10AM in Guam)    
+    date_start=datevec(preICARTT.DOY(1)+datenum(flightYear-1,12,31));
 end
 
 
-
-date2=num2str(date_start(1:3));
+%-------------------------------------------------------------------------------
+% Create date string YYYYMMDD for use in ICARTT filename
+% (pad single digit months/days with zeros)
+%-------------------------------------------------------------------------------
 datestr=date_start(1:3);
-
 if datestr(2)<10 & datestr(3)>9
-date3=[num2str(datestr(1)),'0',num2str(datestr(2)),num2str(datestr(3))];
+    date3=[num2str(datestr(1)),'0',num2str(datestr(2)),num2str(datestr(3))];
 elseif datestr(2)<10 & datestr(3)<10
-date3=[num2str(datestr(1)),'0',num2str(datestr(2)),'0',num2str(datestr(3))];
+    date3=[num2str(datestr(1)),'0',num2str(datestr(2)),'0',num2str(datestr(3))];
 end
 
+
+%%------------------------------------------------------------------------------
+% calculate utc
+% To calculate UTC time: http://www.mbari.org/staff/rich/utccalc.htm
+% this segment reads data where the first row is a header
+% data are stored in rf1 array
+%-------------------------------------------------------------------------------
 doy=preICARTT.DOY;
 tag=floor(doy(1));
-%% calculate utc
+
 utc=[];
 for i=1:length(doy)
     
- A=datevec(doy(i)-tag);
-utc_i=A(3)*60*60*24+A(4)*60*60+A(5)*60+A(6);%
+    A=datevec(doy(i)-tag);
+    utc_i=A(3)*60*60*24+A(4)*60*60+A(5)*60+A(6);%
 
-utc=[utc,utc_i];
+    utc=[utc,utc_i];
 end
 
 
-
-
-
+%-------------------------------------------------------------------------------
+% make a time trace with no missing values, missing seconds in the ICARTT format
+% does not work
+%-------------------------------------------------------------------------------
 conc_data=[preICARTT.CO_PPBV,preICARTT.CO2_dry_ppm,preICARTT.CH4_dry_ppm];
-%% make a time trace with no missing values, missing seconds in the ICARTT format does not work
-
 
 utc_test=floor(utc);
 utc_2=utc_test(1):1:utc_test(end);
@@ -84,6 +108,10 @@ for i=1:length(aa)
 end
 
 
+%-------------------------------------------------------------------------------
+% Make a nice plot of the final data suitable for display at science meetings in 
+% the field.
+%-------------------------------------------------------------------------------
 figure()
 subplot(4,1,1)
 plot(utc,preICARTT.CO_PPBV,'g.')
@@ -120,23 +148,19 @@ ylim([min(preICARTT.H2O) max(preICARTT.H2O)])
 set(gcf, 'Color', 'white'); % white bckgr
 screen_size = get(0, 'ScreenSize');
 set(gcf, 'Position', [0 0 screen_size(3) screen_size(4) ] );
-% cd C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08\
 saveas(gcf, ...
-    ['pix',slash,'CO_CO2_CH4_RF',flight,'.jpg'],'jpg');
-% export_fig( gcf, ...      % figure handle
-%     ['pix',slash,'CO_CO2_CH4_RF',flight],... % name of output file without extension
-%     '-painters', ...      % renderer
-%     '-pdf', ...           % file format
-%     '-r300' );             % resolution in dpi
-
+    ['pix',slash,'CO_CO2_CH4_RF',flightNum,'.jpg'],'jpg');
 saveas(gcf, ...
-    ['pix',slash,'CO_CO2_CH4_RF',flight],... % name of output file without extension
+    ['pix',slash,'CO_CO2_CH4_RF',flightNum],... % name of output file without extension
 'fig');    
 
 
+%-------------------------------------------------------------------------------
+% Make a plot of data vals converted to missing as a sanity check. This is not 
+% saved anywhere, so currently doesn't work in command-line mode.
+% UPGRADE: Save this for viewing in command-line mode.
+%-------------------------------------------------------------------------------
 conc_data2=all_data_2;
-
-
 
 conc_data2(isnan(conc_data2))=-9999;
 clear rf1
@@ -146,22 +170,25 @@ figure()
 plot(rf1(:,1),rf1(:,2))
 legend('missing converted to -9999')
 
-%% open new file and write data to file
-% change filename!
-
+%%------------------------------------------------------------------------------
+% open new file and write data to file
+% UPGRADE: This has lots of constants that need to move to the constants file.
+% PIstring='Campos, T.L.; Kaser, L.; Stell, M.; Munnerlyn, J.; Weinheimer, A.J.; Flocke, F.M;'
+% DataInterval = 1; % seconds
+%-------------------------------------------------------------------------------
 filenamexp=[rafPath,slash,'COCO2CH4_GV_',date3,'_RA.ict'];
 
 fid = eval(['fopen(''',filenamexp ''',''w+'')'])
 
 fprintf(fid,'%s\n','35, 1001'); %change number of header lines
-fprintf(fid,'%s\n','Campos, T.L.; Kaser, L.; Stell, M.; Munnerlyn, J.; Weinheimer, A.J.; Flocke, F.M;');
+fprintf(fid,'%s\n', PIstring);
 fprintf(fid,'%s\n','NCAR');
 fprintf(fid,'%s\n','NCAR Aerolaser');
-fprintf(fid,'%s\n','CONTRAST');
+fprintf(fid,'%s\n',project);
 fprintf(fid,'%s\n','1, 1');%?
-fprintf(fid,'%s\n',[date3(1:4),', ',date3(5:6),', ',date3(7:8),', ',year,', ',month,', ',day]); %change dates: %UTC date when data begin, UTC date of data reduction or revision - comma delimited (yyyy, mm, dd, yyyy, mm, dd).
-fprintf(fid,'%s\n','1');%Data interval 1s --> 1???
-fprintf(fid,'%s\n','UTC, seconds'); %needs to be in UTC
+fprintf(fid,'%s\n',[date3(1:4),', ',date3(5:6),', ',date3(7:8),', ',flightYear,', ',flightMonth,', ',flightDay]); 
+fprintf(fid,'%s\n',DataInterval);
+fprintf(fid,'%s\n','UTC, seconds'); % needs to be in UTC
 fprintf(fid,'%s\n','3'); %change - number of columns - this would be 13 columns (first start time column is not included here)
 fprintf(fid,'%s\n','1,1,1'); % add or delete 1s according to number of columns
 fprintf(fid,'%s\n','-9999,-9999,-9999'); % add or delete -9999s according to number of columns
@@ -170,8 +197,8 @@ fprintf(fid,'%s\n','-9999,-9999,-9999'); % add or delete -9999s according to num
 fprintf(fid,'%s\n','CO, ppbv'); % name of first species after the 3 time columns
 fprintf(fid,'%s\n','CO2, ppmv'); 
 fprintf(fid,'%s\n','CH4, ppmv'); 
-fprintf(fid,'%s\n','1');% was macht diese Zeile? hier stand 1 jetzt 0
-fprintf(fid,'%s\n','Data is reported in 1s.'); % replace the time by averaging time here
+fprintf(fid,'%s\n','1');% Number of comment lines
+fprintf(fid,'%s\n','Data is reported in ',DataInterval,'s.');
 fprintf(fid,'%s\n','17'); % this is the number of lines after this line including this line
 fprintf(fid,'%s\n','PI_CONTACT_INFOs: campos@ucar.edu, kaser@ucar.edu');
 fprintf(fid,'%s\n','PLATFORM: NCAR GV');
@@ -185,13 +212,13 @@ fprintf(fid,'%s\n','ULOD_VALUE: N/A');
 fprintf(fid,'%s\n','LLOD_FLAG: N/A');	% typically people like -8888, but here we use a flag for everything (missing + LOD) and say it is missing -9999									
 fprintf(fid,'%s\n','LLOD_VALUE: N/A');	% you could choose something here or leave as is -									
 fprintf(fid,'%s\n','DM_CONTACT_INFOs: N/A');										
-fprintf(fid,'%s\n','PROJECT_INFO: CONTRAST');										
+fprintf(fid,'%s\n','PROJECT_INFO: ',project);										
 fprintf(fid,'%s\n','STIPULATIONS_ON_USE: PRELIMINARY DATA. DO NOT USE WITHOUT TALKING TO PIs');										
 fprintf(fid,'%s\n','OTHER_COMMENTS: N/A');
 % fprintf(fid,'%s\n','REVISION: R1');
 % fprintf(fid,'%s\n','R1: Some previously missing datapoints added');
 fprintf(fid,'%s\n','REVISION: RA');
-% fprintf(fid,'%s\n','RA: Preliminary Data.');	
+fprintf(fid,'%s\n','RA: Preliminary Data.');	
 % important down below is the format
 fprintf(fid,'%s','utc,');
 % fprintf(fid,'%s',' stop_time,');% , sec');
@@ -250,10 +277,13 @@ fclose(fid);
 % end
 
 % 
+%%------------------------------------------------------------------------------
+% load NONO2O3 data (if have it)
+%-------------------------------------------------------------------------------
+if ~exist('NONO2O3')
 
-% % load NONO2O3
-% 
-% cd C:\Users\kaser\Documents\CONTRAST\infield\NONO2O3
+    load(['*NONO2O3*ict'])
+
 % 
 % dirname='C:\Users\kaser\Documents\CONTRAST\infield\NONO2O3\';
 % filename=uigetfile('*.ict','Select files','MultiSelect','off');
@@ -295,15 +325,15 @@ fclose(fid);
 % set(gcf, 'Position', [0 0 screen_size(3) screen_size(4) ] );
 % cd C:\Users\kaser\Documents\CONTRAST\matlab\RF08\resultsRF08\
 % saveas(gcf, ...
-%     ['pix',slash,'O3_CO_RF',flight,'.jpg'],'jpg');
+%     ['pix',slash,'O3_CO_RF',flightNum,'.jpg'],'jpg');
 
 % export_fig( gcf, ...      % figure handle
-%     ['pix',slash,'O3_CO_RF',flight,'.jpg'],... % name of output file without extension
+%     ['pix',slash,'O3_CO_RF',flightNum,'.jpg'],... % name of output file without extension
 %     '-painters', ...      % renderer
 %     '-pdf', ...           % file format
 %     '-r300' );             % resolution in dpi
 % saveas(gcf, ...
-%     ['pix',slash,'O3_CO_RF',flight,'.fig'],... % name of output file without extension
+%     ['pix',slash,'O3_CO_RF',flightNum,'.fig'],... % name of output file without extension
 % 'fig');
 
 % figure()
@@ -322,10 +352,10 @@ fclose(fid);
 %     '-pdf', ...           % file format
 %     '-r300' );             % resolution in dpi
 % saveas(gcf, ...
-%     ['pix',slash,'O3_CO_scatter_with_height_RF',flight,'.jpg'],... % name of output file without extension
+%     ['pix',slash,'O3_CO_scatter_with_height_RF',flightNum,'.jpg'],... % name of output file without extension
 % 'jpg');
 % saveas(gcf, ...
-%     ['pix',slash,'O3_CO_scatter_with_height_RF',flight,'.fig'],... % name of output file without extension
+%     ['pix',slash,'O3_CO_scatter_with_height_RF',flightNum,'.fig'],... % name of output file without extension
 % 'fig');
 % 
 % 
@@ -373,12 +403,16 @@ fclose(fid);
 %     '-r300' );             % resolution in dpi
 % 
 % 
-% 
-% % load PICARRO
-% 
-% 
-% 
-% load('C:\Users\kaser\Documents\CONTRAST\infield\matlab_data\RF05_PICARRO_calibrated_data.mat')
+end
+
+%%------------------------------------------------------------------------------
+% Additional plotting for RF05 - leave commented out for now
+%-------------------------------------------------------------------------------
+
+%%------------------------------------------------------------------------------
+% load PICARRO
+%-------------------------------------------------------------------------------
+% load('RF05_PICARRO_calibrated_data.mat')
 % 
 % figure()
 % plot(utc,PICARRO_CALIBRATED.CO2_dry_ppm)
