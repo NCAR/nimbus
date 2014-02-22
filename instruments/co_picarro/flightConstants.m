@@ -9,6 +9,10 @@ offset=0;
 % so I am assuming 140 is correct).
 cal_COMR=140;
 
+% UPGRADE: Figure out how to get MATLAB to tell me the current date!
+todayYear='2014'
+todayMonth='02'
+todayDay='22'
 
 % ------ RF04 ---------
 % flightNum='04';

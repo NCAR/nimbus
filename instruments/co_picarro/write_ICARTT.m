@@ -173,8 +173,10 @@ legend('missing converted to -9999')
 %%------------------------------------------------------------------------------
 % open new file and write data to file
 % UPGRADE: This has lots of constants that need to move to the constants file.
-% PIstring='Campos, T.L.; Kaser, L.; Stell, M.; Munnerlyn, J.; Weinheimer, A.J.; Flocke, F.M;'
-% DataInterval = 1; % seconds
+% Here's a start...
+PIstring='Campos, T.L.; Kaser, L.; Stell, M.; Munnerlyn, J.; Weinheimer, A.J.; Flocke, F.M;'
+DataInterval = '1'; % seconds
+ProcessDate = [date3(1:4),', ',date3(5:6),', ',date3(7:8),', ',todayYear,', ',todayMonth,', ',todayDay]
 %-------------------------------------------------------------------------------
 filenamexp=[rafPath,slash,'COCO2CH4_GV_',date3,'_RA.ict'];
 
@@ -186,7 +188,7 @@ fprintf(fid,'%s\n','NCAR');
 fprintf(fid,'%s\n','NCAR Aerolaser');
 fprintf(fid,'%s\n',project);
 fprintf(fid,'%s\n','1, 1');%?
-fprintf(fid,'%s\n',[date3(1:4),', ',date3(5:6),', ',date3(7:8),', ',flightYear,', ',flightMonth,', ',flightDay]); 
+fprintf(fid,'%s\n',ProcessDate); 
 fprintf(fid,'%s\n',DataInterval);
 fprintf(fid,'%s\n','UTC, seconds'); % needs to be in UTC
 fprintf(fid,'%s\n','3'); %change - number of columns - this would be 13 columns (first start time column is not included here)
@@ -198,7 +200,7 @@ fprintf(fid,'%s\n','CO, ppbv'); % name of first species after the 3 time columns
 fprintf(fid,'%s\n','CO2, ppmv'); 
 fprintf(fid,'%s\n','CH4, ppmv'); 
 fprintf(fid,'%s\n','1');% Number of comment lines
-fprintf(fid,'%s\n','Data is reported in ',DataInterval,'s.');
+fprintf(fid,'%s\n',['Data is reported in ',DataInterval,'s.']);
 fprintf(fid,'%s\n','17'); % this is the number of lines after this line including this line
 fprintf(fid,'%s\n','PI_CONTACT_INFOs: campos@ucar.edu, kaser@ucar.edu');
 fprintf(fid,'%s\n','PLATFORM: NCAR GV');
@@ -281,8 +283,6 @@ fclose(fid);
 % load NONO2O3 data (if have it)
 %-------------------------------------------------------------------------------
 if ~exist('NONO2O3')
-
-    load(['*NONO2O3*ict'])
 
 % 
 % dirname='C:\Users\kaser\Documents\CONTRAST\infield\NONO2O3\';
