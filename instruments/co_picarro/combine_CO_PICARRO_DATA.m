@@ -7,6 +7,7 @@
 % rerun. Makes debugging alot easier if declared vars aren't hanging around 
 % with their previous values.
 %-------------------------------------------------------------------------------
+tic
 clc
 clear all 
 close all
@@ -14,6 +15,7 @@ close all
 %%------------------------------------------------------------------------------
 % read flight-specific constants from input file
 %-------------------------------------------------------------------------------
+cd ('../src');
 flightConstants
 
 %%------------------------------------------------------------------------------
@@ -57,7 +59,7 @@ plot(AC.JD,AC.CORAW_AL)
 hold on
 plot(AC.JD,AC.PALTF./300,'k')
 legend('CO','PALT')
-title('CO (CORAW_JD)')
+title('CO (CORAW JD)')
 saveas(fig,'CORAW_JD','jpg')
 saveas(fig,'CORAW_JD','fig')
 
@@ -86,7 +88,7 @@ switch flightNum
         AC.CORAW_AL(reboot3)=NaN;
 end
 %%------------------------------------------------------------------------------
-% load PICARRO DATA
+%% load PICARRO DATA
 %-------------------------------------------------------------------------------
 load(['RF',flightNum,'_PICARRO_data'])
 
@@ -95,12 +97,12 @@ plot(AC.JD,AC.CORAW_AL)
 hold on
 plot(PICARRO.JULIAN_DAYS,PICARRO.CO2_dry,'r')
 legend('CO','CO2')
-title('CO2 dry from PICARRO (CO_CO2)')
+title('CO2 dry from PICARRO (CO CO2)')
 saveas(fig,'CO_CO2','jpg')
 saveas(fig,'CO_CO2','fig')
 
 %%------------------------------------------------------------------------------
-% interpolate all the PICARRO DATA to the CO time stamp
+%% interpolate all the PICARRO DATA to the CO time stamp
 %-------------------------------------------------------------------------------
 all_fieldname=fieldnames(PICARRO);
 
@@ -121,12 +123,12 @@ hold on
 plot(AC.JD,PICARRO_interp.CO2_dry,'r')
 plot(AC.JD,AC.PALTF./300,'k')
 legend('CO','CO2','PALTF')
-title('CO2 Interpolated to CO timestamp (CO_CO2_interp)')
+title('CO2 Interpolated to CO timestamp (CO CO2 interp)')
 saveas(fig,'CO_CO2_interp','jpg')
 saveas(fig,'CO_CO2_interp','fig')
 
 %%------------------------------------------------------------------------------
-% remove all the data where we have backflow (where CO2_dry>420)
+%% remove all the data where we have backflow (where CO2_dry>420)
 %-------------------------------------------------------------------------------
 
 % BAD1=find(PICARRO_interp.CO2_dry>420);
@@ -162,7 +164,7 @@ saveas(fig,'CO_CO2_interp','fig')
 %    fieldname=char(all_fieldname(i));
 %    PICARRO_interp_i=PICARRO_interp.(fieldname);
 %    PICARRO_interp_i(BAD)=NaN;
-%    AC.CO_PPB(BAD)=NaN;
+%    AC.CORAW_AL(BAD)=NaN;
 % end
 % 
 % figure()
@@ -177,17 +179,40 @@ saveas(fig,'CO_CO2_interp','fig')
 % legend('CO','CO2')
 
 %%------------------------------------------------------------------------------
-% pressure drop in RF05 remove that data
+%% pressure drop in CONTRAST RF05 
+% pressure spike in CONTRAST RF14
+% remove that data
 %-------------------------------------------------------------------------------
-switch flightNum
+if strcmp(project,'CONTRAST')==1
+  switch flightNum
+    case '14'
+        BAD_PRESSURE=find(PICARRO_interp.CavityPressure>154.0);
+        BAD_PRESSURE
+        for i=1:length(fieldnames(PICARRO_interp))
+            fieldname=char(all_fieldname(i));
+            if strcmp(fieldname,'timestamp')==1
+    
+            else
+                PICARRO_interp_i=PICARRO_interp.(fieldname);
+                if exist('BAD_PRESSURE','var')
+                    PICARRO_interp_i(BAD_PRESSURE)=NaN;
+                    AC.CORAW_AL(BAD_PRESSURE)=NaN;
+                end
+            end
+        end 
     case '05'
         BAD_PRESSURE=find(PICARRO_interp.CavityPressure<151.3 | PICARRO_interp.CavityPressure>151.7);
-    for i=1:length(fieldnames(PICARRO_interp))
-        fieldname=char(all_fieldname(i));
-        PICARRO_interp_i=PICARRO_interp.(fieldname);
-        if exist('BAD_PRESSURE','var')
-            PICARRO_interp_i(BAD_PRESSURE)=NaN;
-            AC.CO_PPB(BAD_PRESSURE)=NaN;
+        for i=1:length(fieldnames(PICARRO_interp))
+            fieldname=char(all_fieldname(i));
+            if strcmp(fieldname,'timestamp')==1
+    
+            else
+                PICARRO_interp_i=PICARRO_interp.(fieldname);
+                if exist('BAD_PRESSURE','var')
+                    PICARRO_interp_i(BAD_PRESSURE)=NaN;
+                    AC.CORAW_AL(BAD_PRESSURE)=NaN;
+                end
+            end
         end
     end
 end
@@ -203,7 +228,7 @@ saveas(fig,'CavityPressure','jpg')
 saveas(fig,'CavityPressure','fig')
 
 %%------------------------------------------------------------------------------
-% set up interp_NAN arrays from which to remove all bad data
+%% set up interp_NAN arrays from which to remove all bad data
 %-------------------------------------------------------------------------------
 all_fieldname=fieldnames(PICARRO_interp);
 
@@ -225,8 +250,12 @@ end
 CO2_CAL=find(PICARRO_interp.CO2_dry>CO2calLow & PICARRO_interp.CO2_dry<CO2calHigh);
 CH4_CAL=find(PICARRO_interp.CH4_dry>CH4calLow & PICARRO_interp.CH4_dry<CH4calHigh);
 CO_CAL=find(AC.CORAW_AL>COcalLow & AC.CORAW_AL<COcalHigh);
-PICARRO_CAL=intersect(CO2_CAL,CH4_CAL);
-ALL_CAL=intersect(PICARRO_CAL,CO_CAL);
+
+% This was intersect, but the if found a cal value in CO2, but not CH4, it
+% wasn't removed. Should be union so that if we identify it in any var,
+% it's removed from all.
+PICARRO_CAL=union(CO2_CAL,CH4_CAL);
+ALL_CAL=union(PICARRO_CAL,CO_CAL);
 
 
 fig=figure()
@@ -259,7 +288,7 @@ saveas(fig,'CO_cal','jpg')
 saveas(fig,'CO_cal','fig')
 
 %%------------------------------------------------------------------------------
-% remove cals that are before takeoff or after landing
+%% remove cals that are before takeoff or after landing
 %-------------------------------------------------------------------------------
 
 ZZ=[find(PICARRO_interp.JULIAN_DAYS<takeoff_t);find(PICARRO_interp.JULIAN_DAYS>land_t & PICARRO_interp.JULIAN_DAYS<takeoff_t)];
@@ -302,7 +331,7 @@ saveas(fig,'CO_bg','jpg')
 saveas(fig,'CO_bg','fig')
 
 %%------------------------------------------------------------------------------
-% rough calculation of CO sensitivity (mean of all call and zero values)
+%% rough calculation of CO sensitivity (mean of all call and zero values)
 %-------------------------------------------------------------------------------
 mean_CO_BG=mean(AC.CORAW_AL(CO_BG));
 mean_CO_CAL=mean(AC.CORAW_AL(CO_CAL));
@@ -316,12 +345,12 @@ plot(AC.JD,AC.CORAW_AL,'bx')
 hold on
 plot(AC.JD,(AC.CORAW_AL-mean_CO_BG).*cal_COMR./(mean_CO_CAL-mean_CO_BG),'ro')
 legend('CO','CO-BG_(mean)')
-title('CO minus mean BG, then scaled to cal gas')
+title('CO minus mean BG, scaled to cal gas')
 saveas(fig,'mean_CO_bg','jpg')
 saveas(fig,'mean_CO_bg','fig')
 
 %%------------------------------------------------------------------------------
-% better calibration of CO using a linear interpolation between the different 
+%% better calibration of CO using a linear interpolation between the different 
 % cals instead of a simple mean.
 %-------------------------------------------------------------------------------
 %-------------------------------------------------------------------------------
@@ -420,8 +449,8 @@ end
 %-------------------------------------------------------------------------------
 % Stützstellen (grid points)
 %-------------------------------------------------------------------------------
-xs = CO_BG_times;%[0, 35, 75, 110, 150];
-ys = CO_BG_individual;%[20, 0, -50, 40, 20];
+xs = CO_BG_times;
+ys = CO_BG_individual;
 timestep= AC.TIME(2)-AC.TIME(1);
 
 %-------------------------------------------------------------------------------
@@ -469,7 +498,7 @@ saveas(fig,'CO_BG_ALL','fig')
 
 
 %-------------------------------------------------------------------------------
-% Correct the CO for the interpolated cal values and the cal gas canister ppb.
+%% Correct the CO for the interpolated cal values and the cal gas canister ppb.
 % cal_COMR is a fn of the canister and is defined in the constants file
 %-------------------------------------------------------------------------------
 AC.CO_PPB=(AC.CORAW_AL-CO_BG_ALL').*cal_COMR./(CO_CAL_ALL'-CO_BG_ALL');
@@ -483,7 +512,7 @@ saveas(fig,'CO_PPB','jpg')
 saveas(fig,'CO_PPB','fig')
 
 %-------------------------------------------------------------------------------
-% Blank out the zeros and the cals, and make sure the array length didn't change.
+%% Blank out the zeros and the cals, and make sure the array length didn't change.
 %-------------------------------------------------------------------------------
 before=length(AC.JD)
 after=length(AC.CO_PPB)
@@ -504,17 +533,18 @@ end
 
 fig=figure()
 plot(AC.JD,AC.CO_PPB,'bx')
-title('CO PPBV - almost there, just need to remove remaining cals')
+title('CO PPBV - still need to remove remaining cals')
 saveas(fig,'CO_PPBV','jpg')
 saveas(fig,'CO_PPBV','fig')
 
 
 %%------------------------------------------------------------------------------
-% This is a final kludge. If we didn't catch and eliminate all the cal points
+%% This is a final kludge. If we didn't catch and eliminate all the cal points
 % try to get more by simply drawing a straight line above and below the good data
 % and removing all points outside that.
-% UPGRADE: Identify the step function transitions and eliminate cal points 
-% by that.
+% This misses values on the way in and out of 
+% the cal, so... UPGRADE: Change this part of the code to look for the steep 
+% changes that mark the start and end of a cal.
 %-------------------------------------------------------------------------------
 FILTER=find(AC.CO_PPB>filterHigh);
 FILTER2=find(AC.CO_PPB<filterLow);
@@ -522,7 +552,7 @@ FILTER2=find(AC.CO_PPB<filterLow);
 AC.CO_PPB([FILTER;FILTER2])=NaN;
 
 %%------------------------------------------------------------------------------
-% Now can do the CO2 and CH4 Calibrations based on the CO calibration
+%% Now can do the CO2 and CH4 Calibrations based on the CO calibration
 %-------------------------------------------------------------------------------
 PICARRO_CALIBRATED.CO2_dry_ppm=PICARRO_interp_NANs.CO2_dry+1.38;
 PICARRO_CALIBRATED.CO2_dry_ppm([ALL_CAL;CO_BG;FILTER;FILTER2])=NaN;
@@ -530,8 +560,10 @@ PICARRO_CALIBRATED.CO2_dry_ppm([ALL_CAL;CO_BG;FILTER;FILTER2])=NaN;
 PICARRO_CALIBRATED.CH4_dry_ppm=PICARRO_interp_NANs.CH4_dry+0.0339;
 PICARRO_CALIBRATED.CH4_dry_ppm([ALL_CAL;CO_BG;FILTER;FILTER2])=NaN;
 
-
-
+if exist('BAD_PRESSURE','var')
+    PICARRO_CALIBRATED.CO2_dry_ppm([BAD_PRESSURE])=NaN;
+    PICARRO_CALIBRATED.CH4_dry_ppm([BAD_PRESSURE])=NaN;
+end
 
 fig=figure()
 subplot(3,1,1)

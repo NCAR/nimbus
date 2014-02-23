@@ -67,25 +67,23 @@ end
 
 
 for kk=1:length(filename)
-clear data
+  clear data
 
-% UPGRADE: - NOT TESTED YET
-% if usejava('Desktop')
-% If starting in gui mode
-% file=[dirname,char(filename(kk))];
-% else
-% if in -nodisplay or -nodesktop mode
-file=[dirname,char(filename(kk).name)];
-% end
+  % UPGRADE: - NOT TESTED YET
+  % if usejava('Desktop')
+  % If starting in gui mode
+  % file=[dirname,char(filename(kk))];
+  % else
+  % if in -nodisplay or -nodesktop mode
+    file=[dirname,char(filename(kk).name)];
+  % end
 
-data = h5read(file, [slash, 'results']);
+  data = h5read(file, [slash, 'results']);
 
-% 
     for i=1:length(fieldnames(data))
-    fieldname=char(all_fieldnames(i));
-    data_i=data.(fieldname);
-    DATA.(fieldname)=[DATA.(fieldname);data_i];
-
+       fieldname=char(all_fieldnames(i));
+       data_i=data.(fieldname);
+       DATA.(fieldname)=[DATA.(fieldname);data_i];
     end
 
 end
@@ -103,7 +101,22 @@ picOutfilename=['RF', flightNum, '_PICARRO_data.mat'];
 save(picOutfilename,'PICARRO')
 
 %%------------------------------------------------------------------------------
-% Plot the PICARRO dry CO2 so can determine start and end times of flight. 
+% Plot the PICARRO data so can determine start and end times of flight. 
+% Also visually inspect to be sure all values look resonable:
+%
+% CO2_dry < 400 (Values 400-600 indicate a cabin air leak that needs to be
+%                investigated before the next flight)
+% CH4_dry ~= 1.8
+% H2O < 0.1     (at altitude, Will be much higher on the ground and takes a
+%                while to dry out after takeoff/dips - exponential decay. If stays
+%                above 0.1 at altitude, need to dry out dessicant before next 
+%                flight.)
+% Confirm cals were run as expected.
+%
+% This is as far as you have to go to be confident PICARRO is working for next 
+% flight.
+% If the RAF PM hasn't processed the flight data yet, you won't be able to 
+% go past this point - code will crash in next section.
 %-------------------------------------------------------------------------------
 fig=figure()
 plot(PICARRO.JULIAN_DAYS,PICARRO.CO2_dry)
@@ -111,6 +124,16 @@ title('CO2 dry')
 saveas(fig,'CO2_dry','jpg')
 saveas(fig,'CO2_dry','fig')
 toc
+fig=figure()
+plot(PICARRO.JULIAN_DAYS,PICARRO.CH4_dry)
+title('CH4 dry')
+saveas(fig,'CH4_dry','jpg')
+saveas(fig,'CH4_dry','fig')
+fig=figure()
+plot(PICARRO.JULIAN_DAYS,PICARRO.H2O)
+title('H2O')
+saveas(fig,'H2O_dry','jpg')
+saveas(fig,'H2O_dry','fig')
 
 %%------------------------------------------------------------------------------
 % Read in data from RAF netCDF file

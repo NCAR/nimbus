@@ -59,18 +59,33 @@ flightMonth=02;
 flightDay=19;
 adBefore = 50.709;
 adAfter = 51.016;
-% apply brute force filtering of CO if nothing else worked
+
 filterHigh=120;
 filterLow=60;
-
-% ranges to look for cal values. This misses values on the way in and out of the cal, so...
-% UPGRADE: Change this part of the code to look for the steep changes that mark the start and
-% end of a cal.
 zeroLow=-5;
 zeroHigh=50;
 COcalLow=91;
 COcalHigh=110;
-CH4calLow=1.75;
-CH4calHigh=1.78;
 CO2calLow=382;
 CO2calHigh=390;
+CH4calLow=1.75;
+CH4calHigh=1.78;
+
+% ------ RF14 ---------
+flightNum='14';
+flightYear=2014;
+flightMonth=02;
+flightDay=21;
+adBefore = 53.005;
+adAfter = 53.379;
+
+filterHigh=120;
+filterLow=50;
+zeroLow=-5;
+zeroHigh=40;
+COcalLow=80;
+COcalHigh=110;
+CH4calLow=1.70;
+CH4calHigh=1.73;
+CO2calLow=382;
+CO2calHigh=392;
