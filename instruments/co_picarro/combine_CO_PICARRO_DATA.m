@@ -364,7 +364,7 @@ indexi=[1;find((CO_CAL-CO_CAL_2)<-100);length(CO_CAL)];
 CO_CAL_individual=[];
 CO_CAL_times=[];
 
-for iii=2:(length(indexi)-2)
+for iii=1:(length(indexi)-1)
     iii
     CO_CAL_i=mean(AC.CORAW_AL(CO_CAL(indexi(iii)+3):CO_CAL(indexi(iii+1)-3)));
     CO_CAL_time_i=median(AC.JD(CO_CAL(indexi(iii)+3):CO_CAL(indexi(iii+1)-3)));
@@ -383,6 +383,9 @@ timestep= AC.TIME(2)-AC.TIME(1);
 %-------------------------------------------------------------------------------
 % Interpolationspunkte (Interpolation)
 %-------------------------------------------------------------------------------
+% The units in this command are mixed. CO_CAL_times are in decimal days, timestep 
+% is in seconds. Convert timestep to decimal days.
+timestep=timestep/(3600*24);
 xi = CO_CAL_times(1):timestep:CO_CAL_times(end);
 CO_CAL_interp = interp1(xs, ys, xi);
 
@@ -409,7 +412,7 @@ after_last_cal=find(AC.JD>xi(end));
 
 CO_CAL_ALL=zeros(1,length(AC.JD))*NaN;
 CO_CAL_ALL(before_first_cal)=ones(1,length(before_first_cal))*CO_CAL_individual(1);
-CO_CAL_ALL(during_the_cals)=CO_CAL_interp(1:end);
+CO_CAL_ALL(during_the_cals)=CO_CAL_interp(1:end-1);
 CO_CAL_ALL(after_last_cal)=ones(1,length(after_last_cal))*CO_CAL_individual(end);
 
 fig=figure()
@@ -445,7 +448,6 @@ for iii=1:(length(indexi)-1)
     CO_BG_times=[CO_BG_times,CO_BG_time_i];
 end
 
-
 %-------------------------------------------------------------------------------
 % Stützstellen (grid points)
 %-------------------------------------------------------------------------------
@@ -456,6 +458,9 @@ timestep= AC.TIME(2)-AC.TIME(1);
 %-------------------------------------------------------------------------------
 % Interpolationspunkte (Interpolation)
 %-------------------------------------------------------------------------------
+% The units in this command are mixed. CO_CAL_times are in decimal days, timestep 
+% is in seconds. Convert timestep to decimal days.
+timestep=timestep/(3600*24);
 xi = CO_BG_times(1):timestep:CO_BG_times(end);
 CO_BG_interp = interp1(xs, ys, xi);
 
@@ -467,6 +472,7 @@ hold on
 plot(CO_BG_times,CO_BG_individual,'ko')
 hold on
 plot(xi, CO_BG_interp, 'gx')
+title('individual CAL interpolations')
 legend('CORAW','CO BG','CO BG ind','interp')
 saveas(fig,'CO_BG_int','jpg')
 saveas(fig,'CO_BG_int','fig')
@@ -479,10 +485,9 @@ before_first_BG=find(AC.JD<xi(1));
 during_the_BGs=find(AC.JD>=xi(1) & AC.JD<=xi(end));
 after_last_BG=find(AC.JD>xi(end));
 
-
 CO_BG_ALL=zeros(1,length(AC.JD))*NaN;
 CO_BG_ALL(before_first_BG)=ones(1,length(before_first_BG))*CO_BG_individual(1);
-CO_BG_ALL(during_the_BGs)=CO_BG_interp;
+CO_BG_ALL(during_the_BGs)=CO_BG_interp(1:end-1);
 CO_BG_ALL(after_last_BG)=ones(1,length(after_last_BG))*CO_BG_individual(end);
 
 fig=figure()
