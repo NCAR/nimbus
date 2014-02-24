@@ -12,11 +12,13 @@ clc
 clear all 
 close all
 
+
 %%------------------------------------------------------------------------------
 % read flight-specific constants from input file
 %-------------------------------------------------------------------------------
 cd ('../src');
 flightConstants
+userpath([picPath,'src'])
 
 %%------------------------------------------------------------------------------
 % Set some constants.
@@ -357,149 +359,8 @@ saveas(fig,'mean_CO_bg','fig')
 % Linear interpolation of calibration
 % find each calibration separately
 %-------------------------------------------------------------------------------
-CO_CAL_2=[CO_CAL(2:end);CO_CAL(1)];
-
-indexi=[1;find((CO_CAL-CO_CAL_2)<-100);length(CO_CAL)];
-
-CO_CAL_individual=[];
-CO_CAL_times=[];
-
-for iii=1:(length(indexi)-1)
-    iii
-    CO_CAL_i=mean(AC.CORAW_AL(CO_CAL(indexi(iii)+3):CO_CAL(indexi(iii+1)-3)));
-    CO_CAL_time_i=median(AC.JD(CO_CAL(indexi(iii)+3):CO_CAL(indexi(iii+1)-3)));
-    
-    CO_CAL_individual=[CO_CAL_individual,CO_CAL_i];
-    CO_CAL_times=[CO_CAL_times,CO_CAL_time_i];
-end
-
-%-------------------------------------------------------------------------------
-% Stützstellen (grid points)
-%-------------------------------------------------------------------------------
-xs = CO_CAL_times;
-ys = CO_CAL_individual;
-timestep= AC.TIME(2)-AC.TIME(1);
-
-%-------------------------------------------------------------------------------
-% Interpolationspunkte (Interpolation)
-%-------------------------------------------------------------------------------
-% The units in this command are mixed. CO_CAL_times are in decimal days, timestep 
-% is in seconds. Convert timestep to decimal days.
-timestep=timestep/(3600*24);
-xi = CO_CAL_times(1):timestep:CO_CAL_times(end);
-CO_CAL_interp = interp1(xs, ys, xi);
-
-fig=figure()
-plot(AC.JD,AC.CORAW_AL,'b')
-hold on
-plot(AC.JD(CO_CAL),AC.CORAW_AL(CO_CAL),'rx')
-hold on
-plot(CO_CAL_times,CO_CAL_individual,'ko')
-hold on
-plot(xi, CO_CAL_interp, 'gx')
-title('individual CAL interpolations')
-legend('CORAW','CO cals','CO cal ind','CO CAL interp')
-saveas(fig,'CO_CAL_interp','jpg')
-saveas(fig,'CO_CAL_interp','fig')
-
-%-------------------------------------------------------------------------------
-% Add the first cal to the times before the first cal and the last cal
-% number to after the last cal
-%-------------------------------------------------------------------------------
-before_first_cal=find(AC.JD<xi(1));
-during_the_cals=find(AC.JD>=xi(1) & AC.JD<=xi(end));%<=
-after_last_cal=find(AC.JD>xi(end));
-
-CO_CAL_ALL=zeros(1,length(AC.JD))*NaN;
-CO_CAL_ALL(before_first_cal)=ones(1,length(before_first_cal))*CO_CAL_individual(1);
-CO_CAL_ALL(during_the_cals)=CO_CAL_interp(1:end-1);
-CO_CAL_ALL(after_last_cal)=ones(1,length(after_last_cal))*CO_CAL_individual(end);
-
-fig=figure()
-plot(AC.JD,AC.CORAW_AL,'b')
-hold on
-plot(AC.JD(CO_CAL),AC.CORAW_AL(CO_CAL),'rx')
-hold on
-plot(CO_CAL_times,CO_CAL_individual,'ko')
-plot(AC.JD, CO_CAL_ALL, 'g')
-title('CO CAL interpolation fit')
-legend('CORAW','CO cals','CO cal ind','CO CAL fit')
-saveas(fig,'CO_CAL_ALL','jpg')
-saveas(fig,'CO_CAL_ALL','fig')
-
-
-%%------------------------------------------------------------------------------
-% Linear interpolation of CO background
-% find each calibration separately
-%-------------------------------------------------------------------------------
-CO_BG_2=[CO_BG(2:end);CO_BG(1)];
-
-indexi=[1;find((CO_BG-CO_BG_2)<-100);length(CO_BG)];
-
-CO_BG_individual=[];
-CO_BG_times=[];
-
-for iii=1:(length(indexi)-1)
-    iii
-    CO_BG_i=mean(AC.CORAW_AL(CO_BG(indexi(iii)+3):CO_BG(indexi(iii+1)-3)));
-    CO_BG_time_i=median(AC.JD(CO_BG(indexi(iii)+3):CO_BG(indexi(iii+1)-3)));
-    
-    CO_BG_individual=[CO_BG_individual,CO_BG_i];
-    CO_BG_times=[CO_BG_times,CO_BG_time_i];
-end
-
-%-------------------------------------------------------------------------------
-% Stützstellen (grid points)
-%-------------------------------------------------------------------------------
-xs = CO_BG_times;
-ys = CO_BG_individual;
-timestep= AC.TIME(2)-AC.TIME(1);
-
-%-------------------------------------------------------------------------------
-% Interpolationspunkte (Interpolation)
-%-------------------------------------------------------------------------------
-% The units in this command are mixed. CO_CAL_times are in decimal days, timestep 
-% is in seconds. Convert timestep to decimal days.
-timestep=timestep/(3600*24);
-xi = CO_BG_times(1):timestep:CO_BG_times(end);
-CO_BG_interp = interp1(xs, ys, xi);
-
-fig=figure()
-plot(AC.JD,AC.CORAW_AL,'b')
-hold on
-plot(AC.JD(CO_BG),AC.CORAW_AL(CO_BG),'rx')
-hold on
-plot(CO_BG_times,CO_BG_individual,'ko')
-hold on
-plot(xi, CO_BG_interp, 'gx')
-title('individual CAL interpolations')
-legend('CORAW','CO BG','CO BG ind','interp')
-saveas(fig,'CO_BG_int','jpg')
-saveas(fig,'CO_BG_int','fig')
-
-%-------------------------------------------------------------------------------
-% Add the first cal to the times before the first cal and the last cal
-% number to after the last cal
-%-------------------------------------------------------------------------------
-before_first_BG=find(AC.JD<xi(1));
-during_the_BGs=find(AC.JD>=xi(1) & AC.JD<=xi(end));
-after_last_BG=find(AC.JD>xi(end));
-
-CO_BG_ALL=zeros(1,length(AC.JD))*NaN;
-CO_BG_ALL(before_first_BG)=ones(1,length(before_first_BG))*CO_BG_individual(1);
-CO_BG_ALL(during_the_BGs)=CO_BG_interp(1:end-1);
-CO_BG_ALL(after_last_BG)=ones(1,length(after_last_BG))*CO_BG_individual(end);
-
-fig=figure()
-plot(AC.JD,AC.CORAW_AL,'b')
-hold on
-plot(AC.JD(CO_BG),AC.CORAW_AL(CO_BG),'rx')
-hold on
-plot(CO_BG_times,CO_BG_individual,'ko')
-plot(AC.JD, CO_BG_ALL, 'g')
-legend('CORAW','CO BG','CO BG ind','CO BG fit')
-saveas(fig,'CO_BG_ALL','jpg')
-saveas(fig,'CO_BG_ALL','fig')
+[CO_CAL_ALL] = interpolate(CO_CAL,AC.CORAW_AL,AC.JD,AC.TIME,'CAL')
+[CO_BG_ALL] = interpolate(CO_BG,AC.CORAW_AL,AC.JD,AC.TIME,'BG')
 
 
 %-------------------------------------------------------------------------------
