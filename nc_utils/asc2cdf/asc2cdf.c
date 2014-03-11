@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
     else
     if (currSecond == prevSecond)
       {
-      printf("Duplicate time stamp, ignoring.\n");
+      printf("Duplicate time stamp, ignoring, utsecs = %ld\n", (long int)currSecond);
       prevSecond = int(currSecond);
       continue;
       }
