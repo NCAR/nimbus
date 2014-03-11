@@ -14,9 +14,14 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-9
 
 #include <Xm/TextF.h>
 
+static float	cdpDefSize[] =
+	{ 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0,
+	  13.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0,
+	  32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0, 50.0 };
+
 static float	pcasDefSize[] =
-        { 0.1, 0.12, 0.14, 0.17, 0.2, 0.25, 0.3, 0.4,
-                0.5, 0.7, 0.9, 1.2, 1.5, 2.0, 2.5, 3.0 };
+	{ 0.1, 0.12, 0.14, 0.17, 0.2, 0.25, 0.3, 0.4,
+	  0.5, 0.7, 0.9, 1.2, 1.5, 2.0, 2.5, 3.0 };
 
 static float	f300DefSize[] =
         { 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7,
@@ -196,6 +201,10 @@ Probe::Probe(NcFile *file, NcVar *av) : _avar(av), _firstBin(0), _lastBin(Vector
     if (Type() == Y200)
       for (i = 0; i < 16; ++i)
         _diameter[i] = 150 + i * 300;
+    else
+    if (Type() == CDP)
+      for (i = 0; i < 31; ++i)
+        _diameter[i] = cdpDefSize[i];
     else
     if (Type() == PCASP)
       for (i = 0; i < 16; ++i)
