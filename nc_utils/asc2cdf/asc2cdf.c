@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     if (dataRate > 1) 
       {
       /* parse out the subsecond component */
-      currSecond -= second; subsec = int(currSecond*dataRate+.5);
+      currSecond -= second; subsec = int(currSecond*dataRate);
       }
     else
       {
