@@ -12,28 +12,28 @@
 
 using namespace std;
 
-netCDF::netCDF(Config & cfg) : _file(0), _mode(NcFile::Write), _tas(0)
+netCDF::netCDF(Config & cfg) : _outputFile(cfg.outputFile), _file(0), _mode(NcFile::Write), _tas(0)
 {
   // No file to pre-open or file does not exist.  Bail out.
-  if (cfg.outputFile.size() == 0 || access(cfg.outputFile.c_str(), F_OK))
+  if (_outputFile.size() == 0 || access(_outputFile.c_str(), F_OK))
     return;
 
   // Check for write permission.
-  if (access(cfg.outputFile.c_str(), W_OK))
+  if (access(_outputFile.c_str(), W_OK))
   {
     cerr << "Write permission failure on output file "
-	<< cfg.outputFile << endl;
+	<< _outputFile << endl;
     exit(1);
   }
 
   // Attempt to open for writing.
-  _file = new NcFile(cfg.outputFile.c_str(), _mode);
+  _file = new NcFile(_outputFile.c_str(), _mode);
 
   // Failed to open netCDF file for writing....
   if (!_file->is_valid())
   {
     cerr << "Failed to open netCDF output file "
-	<< cfg.outputFile << endl;
+	<< _outputFile << endl;
     exit(1);
   }
 
@@ -73,7 +73,7 @@ netCDF::~netCDF()
   _file->close();
 }
 
-void netCDF::CreateNetCDFfile(Config & cfg)
+void netCDF::CreateNetCDFfile(const Config & cfg)
 {
   if (_file && _file->is_valid())	// Was successfully opened in ctor, leave.
     return;
@@ -81,22 +81,22 @@ void netCDF::CreateNetCDFfile(Config & cfg)
   /* If user did not specify output file, then create base + .nc of input file.
    * And destroy an existing file if it exists.
    */
-  if (cfg.outputFile.size() == 0) {
+  if (_outputFile.size() == 0) {
     string ncfilename;
     size_t pos = cfg.inputFile.find_last_of("/\\");
     ncfilename = cfg.inputFile.substr(pos+1);
     pos = ncfilename.find_last_of(".");
-    cfg.outputFile = ncfilename.substr(0,pos) + ".nc";
+    _outputFile = ncfilename.substr(0,pos) + ".nc";
     _mode = NcFile::Replace;
   }
   else {
     // User specified an output filname on command line, see if file exists.
-    NcFile test(cfg.outputFile.c_str(), NcFile::Write);
+    NcFile test(_outputFile.c_str(), NcFile::Write);
     if (!test.is_valid())
       _mode = NcFile::New;
   }
 
-  _file = new NcFile(cfg.outputFile.c_str(), _mode);
+  _file = new NcFile(_outputFile.c_str(), _mode);
 
   /* If we are creating a file from scratch, perform the following.
    */
@@ -203,7 +203,7 @@ NcDim *netCDF::addDimension(const char name[], int size)
   return dim;
 }
 
-NcVar *netCDF::addTimeVariable(Config & cfg, int size)
+NcVar *netCDF::addTimeVariable(const Config & cfg, int size)
 {
   _timevar = _file->get_var("Time");
 
@@ -237,7 +237,7 @@ NcVar *netCDF::addTimeVariable(Config & cfg, int size)
   return _timevar;
 }
 
-void netCDF::CreateDimensions(int numtimes, ProbeInfo &probe, Config &cfg)
+void netCDF::CreateDimensions(int numtimes, ProbeInfo &probe, const Config &cfg)
 {
   char tmp[1024];
 

@@ -16,9 +16,9 @@ public:
 
   NcFile *ncid() const { return _file; }
 
-  void CreateNetCDFfile(Config & cfg);
+  void CreateNetCDFfile(const Config & cfg);
 
-  void CreateDimensions(int numtimes, ProbeInfo &probe, Config &cfg);
+  void CreateDimensions(int numtimes, ProbeInfo &probe, const Config &cfg);
 
   /**
    * Add dimension to netCDF file.  If dimension already exists,
@@ -26,7 +26,7 @@ public:
    */
   NcDim *addDimension(const char name[], int size);
 
-  NcVar *addTimeVariable(Config & cfg, int size);
+  NcVar *addTimeVariable(const Config & cfg, int size);
 
   bool hasTASX()
   { return _tas ? true : false; }
@@ -55,6 +55,8 @@ private:
   void InitVarDB();
 
   void readStartEndTime(Config & cfg);
+
+  std::string _outputFile;
 
   NcFile *_file;
   NcFile::FileMode _mode;
