@@ -889,6 +889,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
           data.round.lwc[i]	+= conc_round[i][bin] * dia3[bin-binoffset];
           z_round		+= conc_round[i][bin] * zFac[bin-binoffset];
         }
+        else
+          conc_all[i][bin] = conc_round[i][bin] = 0.0;
       }
     }
 
