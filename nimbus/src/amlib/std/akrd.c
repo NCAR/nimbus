@@ -20,6 +20,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2013
 // Serial number for GV radome.  #2 was installed in January of 2013.
 static int	gv_radome_ssn = 1;	// default to first radome.
 
+// Serial number for C130 radome.  #2 was installed in May of 2013.
+static int      c130_radome_ssn = 1;      // default to first radome.
+
 static NR_TYPE coeff[2];
 
 /* -------------------------------------------------------------------- */
@@ -29,6 +32,10 @@ void initAKRD(var_base *varp)
   switch (cfg.Aircraft())
   {
     case Config::C130:
+      float *tmp;
+      if ( (tmp = GetDefaultsValue("C130_RADOME_SSN", varp->name)) )
+        c130_radome_ssn = (int)tmp[0];
+
       coeff[0] = 0.3843;
       coeff[1] = 0.06653;
       break;
