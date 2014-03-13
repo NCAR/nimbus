@@ -24,11 +24,12 @@ extern int	FlightDate[];
 /* -------------------------------------------------------------------- */
 void initSSRD(var_base *varp)
 {
+  float *tmp;
+
   /* Set default values per aircraft. */
   switch (cfg.Aircraft())
   {
     case Config::C130:
-      float *tmp;
       if ( (tmp = GetDefaultsValue("C130_RADOME_SSN", varp->name)) )
         c130_radome_ssn = (int)tmp[0];
 
@@ -63,7 +64,6 @@ void initSSRD(var_base *varp)
       break;
 
     case Config::HIAPER:
-      float *tmp;
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
         gv_radome_ssn = (int)tmp[0];
 
