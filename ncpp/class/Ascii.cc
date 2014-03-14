@@ -95,16 +95,20 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
+        double sum = 0.0;
         for (j = 0; j < set->probe()->FirstBin(); ++j)
           strcat(buffer, dashes);
 
         for (; j <= set->probe()->LastBin(); ++j)
+          {
           sprintf(&buffer[strlen(buffer)], "%11.3e", set->Surface(i, j));
+          sum += set->Surface(i, j);
+          }
 
         for (; j < set->probe()->VectorLength(); ++j)
           strcat(buffer, dashes);
 
-        strcat(buffer, "\n");
+        sprintf(&buffer[strlen(buffer)], "  total=%e\n", sum);
         Append(buffer);
         buffer[0] = '\0';
         }
@@ -118,16 +122,20 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
+        double sum = 0.0;
         for (j = 0; j < set->probe()->FirstBin(); ++j)
           strcat(buffer, dashes);
 
         for (; j <= set->probe()->LastBin(); ++j)
+          {
           sprintf(&buffer[strlen(buffer)], "%11.3e", set->Volume(i, j));
+          sum += set->Volume(i, j);
+          }
 
         for (; j < set->probe()->VectorLength(); ++j)
           strcat(buffer, dashes);
 
-        strcat(buffer, "\n");
+        sprintf(&buffer[strlen(buffer)], "  total=%e\n", sum);
         Append(buffer);
         buffer[0] = '\0';
         }
