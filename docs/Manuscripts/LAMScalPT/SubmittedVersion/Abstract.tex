@@ -1,7 +1,8 @@
 %% LyX 2.0.7 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
-\documentclass[amtd]{copernicus_discussions}
+\documentclass[amtd,hvmath]{copernicus_discussions}
 \usepackage[T1]{fontenc}
+\pagestyle{empty}
 \usepackage{color}
 \usepackage{verbatim}
 \usepackage{float}
@@ -12,7 +13,7 @@
 \usepackage{ulem}
 \usepackage[unicode=true,pdfusetitle,
  bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
- breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false]
+ breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=true]
  {hyperref}
 
 \makeatletter
@@ -23,7 +24,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \usepackage{lineno}
-\linenumbers
+%\linenumbers
 
 \makeatother
 
@@ -38,7 +39,7 @@ using a Doppler laser air-motion sensor}
 \author{W. A. Cooper}
 
 
-\author{S. Spuler}
+\author{S. M. Spuler}
 
 
 \author{M. Spowart}
@@ -84,6 +85,8 @@ to correction factors for the measured dynamic and ambient pressure,
 provides a measurement of temperature that is independent of any other
 temperature sensor.
 \end{abstract}
+\vfill\eject
+
 
 \introduction{}
 
@@ -1288,7 +1291,7 @@ advice on the manuscript. The National Center for Atmospheric Research
 is sponsored by the National Science Foundation. 
 \end{acknowledgements}
 \bibliographystyle{copernicus}
-\bibliography{AMT}
+\phantomsection\addcontentsline{toc}{section}{\refname}\bibliography{Cooper2014}
 
 
 \begin{table}[H]

@@ -1,14 +1,14 @@
 This is BibTeX, Version 0.99d (TeX Live 2013)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
-The top-level auxiliary file: AMTDdraft.aux
+The top-level auxiliary file: Abstract.aux
 The style file: copernicus.bst
-Database file #1: AMT.bib
+Database file #1: Cooper2014.bib
 Warning--empty chapter and pages in FosterCunningham2010
 Warning--missing institution in NCAR_OpenSky_TECH-NOTE-000-000-000-064
 Warning--empty chapter and pages in MartosEtAl2011
 You've used 30 entries,
             2811 wiz_defined-function locations,
-            1259 strings with 15799 characters,
+            1259 strings with 15804 characters,
 and the built_in function-call counts, 28826 in all, are:
 = -- 3483
 > -- 770

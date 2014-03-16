@@ -5,7 +5,7 @@
 \textclass copernicus
 \begin_preamble
 \usepackage{lineno}
-\linenumbers
+%\linenumbers
 \end_preamble
 \options amt
 \use_default_options true
@@ -64,7 +64,7 @@
 \quotes_language english
 \papercolumns 1
 \papersides 1
-\paperpagestyle default
+\paperpagestyle empty
 \tracking_changes false
 \output_changes false
 \html_math_output 0
@@ -102,8 +102,9 @@ status open
 To prepare for Discussions format, use copernicus article class but AMTD
  for journal, then edit the latex file (exported via pdflatex option) to
  change from copernicus to copernicus_discussions.
- Turning off color in PDF properties for links causes a pdflatex failure.
- Run pdflatex AMTDdraft twice, add bibtex AMTDdraft, then another pdflatex
+ Turning off color in PDF properties for links causes a pdflatex failure,
+ but changing color to false in .tex file worked.
+  Run pdflatex AMTDdraft twice, add bibtex AMTDdraft, then another pdflatex
  AMTDdraft to get the PDF file.
 \end_layout
 
@@ -125,6 +126,7 @@ W.
 
 \begin_layout Author
 S.
+ M.
  Spuler
 \end_layout
 
@@ -234,6 +236,24 @@ those obtained from calibrations using standard techniques.
  parametrized fits to correction factors for the measured dynamic and ambient
  pressure, provides a measurement of temperature that is independent of
  any other temperature sensor.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vfill
+\backslash
+eject
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Introduction
@@ -6623,8 +6643,8 @@ GV and Lockheed C-130 research aircraft.
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
-bibfiles "AMT"
-options "copernicus"
+bibfiles "Cooper2014"
+options "bibtotoc,copernicus"
 
 \end_inset
 
@@ -8991,7 +9011,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Fig1.png
+	filename Fig1.pdf
 	lyxscale 75
 	width 90col%
 
@@ -9076,7 +9096,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Fig2.png
+	filename Fig2.pdf
 	lyxscale 50
 	height 60pheight%
 
@@ -9171,7 +9191,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig3.png
+	filename Fig3.pdf
 	lyxscale 50
 	height 65pheight%
 
@@ -9240,7 +9260,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig4.png
+	filename Fig4.pdf
 	lyxscale 50
 	height 60pheight%
 
@@ -9311,7 +9331,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig5.png
+	filename Fig5.pdf
 	lyxscale 50
 	width 90col%
 
@@ -9361,7 +9381,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig6.png
+	filename Fig6.pdf
 	lyxscale 50
 	width 90col%
 
@@ -9423,7 +9443,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig7.png
+	filename Fig7.pdf
 	lyxscale 50
 	width 90col%
 
@@ -9553,7 +9573,7 @@ status open
 
 
 \begin_inset Graphics
-	filename FigB1.png
+	filename FigB1.pdf
 	lyxscale 50
 	height 60pheight%
 

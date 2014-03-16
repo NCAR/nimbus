@@ -102,8 +102,9 @@ status open
 To prepare for Discussions format, use copernicus article class but AMTD
  for journal, then edit the latex file (exported via pdflatex option) to
  change from copernicus to copernicus_discussions.
- Turning off color in PDF properties for links causes a pdflatex failure.
- Run pdflatex AMTDdraft twice, add bibtex AMTDdraft, then another pdflatex
+ Turning off color in PDF properties for links causes a pdflatex failure,
+ but changing color to false in .tex file worked.
+  Run pdflatex AMTDdraft twice, add bibtex AMTDdraft, then another pdflatex
  AMTDdraft to get the PDF file.
 \end_layout
 
@@ -125,6 +126,7 @@ W.
 
 \begin_layout Author
 S.
+ M.
  Spuler
 \end_layout
 
@@ -1632,10 +1634,14 @@ The temperature uncertainty thus contributes significantly to the uncertainty
 \end_inset
 
  from LAMS, because 
-\begin_inset Formula $\delta v/v\approx0.05/220\approx0.000$
+\begin_inset Formula $\delta v/v\approx0.05/220$
 \end_inset
 
-23 while for temperature an uncertainty of 0.3
+ 
+\begin_inset Formula $\approx$
+\end_inset
+
+ 0.00023 while for temperature an uncertainty of 0.3
 \begin_inset ERT
 status open
 
@@ -1654,11 +1660,11 @@ degree C}
 \begin_inset Formula $\times0.3/223$
 \end_inset
 
-
+ 
 \begin_inset Formula $\approx$
 \end_inset
 
-0.00067 (for the GV).
+ 0.00067 (for the GV).
  To reduce the uncertainty in temperature used in Eq.
 \begin_inset space ~
 \end_inset
@@ -4013,7 +4019,7 @@ e.
  measurements is required to obtain a useful estimate of the temperature.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 C-130:
 \end_layout
 
@@ -4250,7 +4256,7 @@ After this result was obtained, an investigation discovered an error of
  the value of the independent calibration provided by the LAMS.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 GV:
 \end_layout
 
@@ -4332,7 +4338,8 @@ reference "eq:ChiSq Equation-1"
 
 \end_inset
 
-) In these equations, 
+).
+ In these equations, 
 \begin_inset Formula $R_{a}$
 \end_inset
 
@@ -5749,7 +5756,7 @@ d by the dynamic pressure
 \end_inset
 
  and the sensed airspeed 
-\begin_inset Formula $v_{L}$
+\begin_inset Formula $v_{l}$
 \end_inset
 
  are different.
@@ -6063,7 +6070,7 @@ Conclusions
 
 \begin_layout Standard
 A new laser air-motion sensor, capable of measuring airspeed via the Doppler
- shift in a laser beam focussed about 15 to 30
+ shift in a laser beam focused about 15 to 30
 \begin_inset space \thinspace{}
 \end_inset
 
@@ -6623,8 +6630,8 @@ GV and Lockheed C-130 research aircraft.
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
-bibfiles "AMT"
-options "copernicus"
+bibfiles "Cooper2014"
+options "bibtotoc,copernicus"
 
 \end_inset
 
@@ -8433,6 +8440,9 @@ mean offset,
 \end_inset
 
 Figure Captions:
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 placement H
 wide false
@@ -8924,6 +8934,10 @@ hPa has been subtracted from the measurements.
 \end_layout
 
 \begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -8972,7 +8986,16 @@ arabic{figure}}
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
@@ -8991,7 +9014,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Fig1.png
+	filename Fig1.pdf
 	lyxscale 75
 	width 90col%
 
@@ -9057,7 +9080,7 @@ reference "eq:PCOR2-1"
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
@@ -9076,7 +9099,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Fig2.png
+	filename Fig2.pdf
 	lyxscale 50
 	height 60pheight%
 
@@ -9156,7 +9179,7 @@ hPa.
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
@@ -9171,7 +9194,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig3.png
+	filename Fig3.pdf
 	lyxscale 50
 	height 65pheight%
 
@@ -9225,7 +9248,7 @@ enlarge labels and tick labels
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
@@ -9240,7 +9263,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig4.png
+	filename Fig4.pdf
 	lyxscale 50
 	height 60pheight%
 
@@ -9296,7 +9319,7 @@ Croix, Virgin Islands, on 10 August 2010.
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
@@ -9311,7 +9334,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig5.png
+	filename Fig5.pdf
 	lyxscale 50
 	width 90col%
 
@@ -9346,7 +9369,7 @@ Temperature determined from LAMS plotted with the standard measurement of
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
@@ -9361,7 +9384,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig6.png
+	filename Fig6.pdf
 	lyxscale 50
 	width 90col%
 
@@ -9408,7 +9431,7 @@ reference "eq:TfromVL-1"
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
@@ -9423,7 +9446,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig7.png
+	filename Fig7.pdf
 	lyxscale 50
 	width 90col%
 
@@ -9461,7 +9484,7 @@ Top panel: Temperature determined by the LAMS during a C-130 cloud pass
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -9477,7 +9500,7 @@ setcounter{figure}{0}%
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -9512,7 +9535,7 @@ thefigure{B1}
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -9553,7 +9576,7 @@ status open
 
 
 \begin_inset Graphics
-	filename FigB1.png
+	filename FigB1.pdf
 	lyxscale 50
 	height 60pheight%
 
@@ -9587,6 +9610,11 @@ hPa has been subtracted from the measurements.
  Corrections for deviations from a level course and for small variations
  in airspeed have been applied, as discussed in the text.
  
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset

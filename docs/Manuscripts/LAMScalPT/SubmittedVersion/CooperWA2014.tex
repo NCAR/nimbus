@@ -1,6 +1,6 @@
 %% LyX 2.0.7 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
-\documentclass[amtd]{copernicus_discussions}
+\documentclass[amt]{copernicus}
 \usepackage[T1]{fontenc}
 \usepackage{color}
 \usepackage{verbatim}
@@ -12,7 +12,7 @@
 \usepackage{ulem}
 \usepackage[unicode=true,pdfusetitle,
  bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
- breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false]
+ breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=true]
  {hyperref}
 
 \makeatletter
@@ -38,7 +38,7 @@ using a Doppler laser air-motion sensor}
 \author{W. A. Cooper}
 
 
-\author{S. Spuler}
+\author{S. M. Spuler}
 
 
 \author{M. Spowart}
@@ -448,9 +448,9 @@ estimated from Eq.~(\ref{eq:qFromLAMS-1}):
 \end{equation}
 The temperature uncertainty thus contributes significantly to the
 uncertainty in $q$, often more than the uncertainty in $v$ from
-LAMS, because $\delta v/v\approx0.05/220\approx0.000$23 while for
-temperature an uncertainty of 0.3\unit{\degree C} contributes typically
-a larger fractional contribution of 0.5$\times0.3/223$$\approx$0.00067
+LAMS, because $\delta v/v\approx0.05/220$ $\approx$ 0.00023 while
+for temperature an uncertainty of 0.3\unit{\degree C} contributes
+typically a larger fractional contribution of 0.5$\times0.3/223$$\approx$0.00067
 (for the GV). To reduce the uncertainty in temperature used in Eq.~(\ref{eq:qFromLAMS-1}),
 the airspeed from LAMS can be used directly in the correction for
 dynamic heating, avoiding uncertainty in the conventional airspeed
@@ -1288,7 +1288,7 @@ advice on the manuscript. The National Center for Atmospheric Research
 is sponsored by the National Science Foundation. 
 \end{acknowledgements}
 \bibliographystyle{copernicus}
-\bibliography{AMT}
+\phantomsection\addcontentsline{toc}{section}{\refname}\bibliography{Cooper2014}
 
 
 \begin{table}[H]
@@ -1365,102 +1365,9 @@ RF08, 23:56:00--24:01:00 & -9.5 & -8.4 & -1.1\tabularnewline
 \end{table}
 
 
-\pagebreak{}Figure Captions:
-\begin{figure}[H]
-\caption{\label{fig:QvsQLAMS}The direct measurement of dynamic pressure ($q_{m})$
-on the C-130 vs. that deduced using the LAMS measurement of airspeed,
-via Eqs.~(\ref{eq:PCOR1-1}) and (\ref{eq:PCOR2-1}). All one-second-average
-points from one C-130 research flight on which the LAMS was tested
-(17 November 2011) are shown.}
-\end{figure}
+\pagebreak{}
 
 
-\begin{figure}[H]
-\caption{\label{fig:Pt-comparison}Measurements made at 1\,Hz during the
-17 November 2011 flight of the C-130. All measurements are included
-for times when the true airspeed exceeded 50\,$\unit{m\,s^{-1}}$
-(to exclude a short period with flaps deployed at the end of the flight).
-The measurements plotted are the total pressure $p_{t}$ measured
-by two independent systems using two different pitot tubes and sets
-of static buttons. The root-mean-square deviation from this line is
-0.1\,hPa, and the similar deviation from a best-fit line is less
-than 0.04\,hPa.}
-\end{figure}
-
-
-\begin{figure}[H]
-\caption{\label{fig:D-value-measurements}D-value measurements as a function
-of time for a flight segment at about 450\,hPa, and the corresponding
-values of the Mach number (plotted relative to the right axis). It
-might be expected that the d-value would change smoothly, as suggested
-by the solid red line. GV flight of 12 August 2010, Colorado USA to
-St. Croix, Virgin Islands. Gaps in data show portions omitted because
-the LAMS signal was too weak to be reliable.}
-\end{figure}
-
-
-\begin{figure}[H]
-\caption{\label{fig:ATL}Temperature determined from LAMS using Eq.~(\ref{eq:TfromVL-1})
-plotted as a function of the corresponding direct measurement of temperature
-for the ferry flight from Colorado USA to St.~Croix, Virgin Islands,
-on 10 August 2010. Each plotted point represents a measurement over
-one second of flight. }
-\end{figure}
-
-
-\begin{figure}[H]
-\caption{\label{fig:TLAMSvsATX}Temperature determined from LAMS plotted with
-the standard measurement of temperature for a flight segment from
-the C-130 flight of 17 November 2011. The bottom panel shows the 1-Hz
-measurements from LAMS; in the top panel, these have been smoothed
-by an 11-s box average.}
-\end{figure}
-
-
-\begin{figure}[H]
-\caption{\label{fig:ATLinCirrus}Top panel: Temperature determined from LAMS
-measurements of airspeed using Eq.~(\ref{eq:TfromVL-1}), compared
-to the temperature measured by a conventional immersion temperature
-sensor during a descent through a cirrus cloud layer. Bottom panel:
-The measured ice concentration from a two-dimensional cloud (2DC)
-imaging probe.}
-\end{figure}
-
-
-\begin{figure}[H]
-\caption{\label{fig:ATLinWaterCloud}Top panel: Temperature determined by the
-LAMS during a C-130 cloud pass on 15 November 2011. The temperature
-measured by a conventional temperature probe is also shown. Middle
-panel: Extinction length or distance corresponding to unity optical
-depth, determined from the measured droplet size distribution. Bottom
-panel: Cloud droplet concentration measured by a cloud droplet probe. }
-\end{figure}
-
-
-\setcounter{figure}{0}%
-
-\def\thefigure{\thesection 1}\def\thefigure{B1}
-
-\appendix\addtocounter{section}{1}
-
-\begin{figure}[H]
-\caption{\label{fig:PtvsSSLIP}The total pressure (from the sum of the ambient
-pressure measurement and the dynamic pressure measurement) on the
-C-130 as a function of the magnitude of the side-slip angle during
-yaw manoeuvres in which sideslip angles were forced by rudder action
-while the aircraft continued on approximately a straight-and-level
-course. The mean total pressure of 760.6\,hPa has been subtracted
-from the measurements. Error bars are standard deviations in the measurements
-for the total-pressure axis and are the range of the bin used in sideslip.
-Corrections for deviations from a level course and for small variations
-in airspeed have been applied, as discussed in the text. }
-\end{figure}
-
-
-\noappendix
-%\def\thefigure{\addtocounter{figure}{1}\the\figure}%
-\setcounter{figure}{0}%
-\renewcommand{\thefigure}{\arabic{figure}}
 
 \begin{figure}[H]
 \begin{centering}
@@ -1472,11 +1379,11 @@ in airspeed have been applied, as discussed in the text. }
 \includegraphics[width=0.9\columnwidth]{Fig1}
 \par\end{centering}
 
-\caption{\label{fig:QvsQLAMS-1}The direct measurement of dynamic pressure
-($q_{m})$ on the C-130 vs that deduced using the LAMS measurement
-of airspeed, via Eqs.~(\ref{eq:PCOR1-1}) and (\ref{eq:PCOR2-1}).
-All one-second-average points from one C-130 research flight on which
-the LAMS was tested (17 November 2011) are shown.}
+\caption{\label{fig:QvsQLAMS}The direct measurement of dynamic pressure ($q_{m})$
+on the C-130 vs that deduced using the LAMS measurement of airspeed,
+via Eqs.~(\ref{eq:PCOR1-1}) and (\ref{eq:PCOR2-1}). All one-second-average
+points from one C-130 research flight on which the LAMS was tested
+(17 November 2011) are shown.}
 \end{figure}
 
 
@@ -1490,7 +1397,7 @@ the LAMS was tested (17 November 2011) are shown.}
 \includegraphics[height=0.6\paperheight]{Fig2}
 \par\end{centering}
 
-\caption{\label{fig:Pt-comparison-1}Measurements made at 1\,Hz during the
+\caption{\label{fig:Pt-comparison}Measurements made at 1\,Hz during the
 17 November 2011 flight of the C-130. All measurements are included
 for times when the true airspeed exceeded 50\,$\unit{m\,s^{-1}}$
 (to exclude a short period with flaps deployed at the end of the flight).
@@ -1508,7 +1415,7 @@ than 0.04\,hPa.}
 \includegraphics[height=0.65\paperheight]{Fig3}
 \par\end{centering}
 
-\caption{\label{fig:D-value-measurements-1}D-value measurements as a function
+\caption{\label{fig:D-value-measurements}D-value measurements as a function
 of time for a flight segment at about 450\,hPa, and the corresponding
 values of the Mach number (plotted relative to the right axis). It
 might be expected that the d-value would change smoothly, as suggested
@@ -1524,7 +1431,7 @@ the LAMS signal was too weak to be reliable.}
 \includegraphics[height=0.6\paperheight]{Fig4}
 \par\end{centering}
 
-\caption{\label{fig:ATL-1}Temperature determined from LAMS using (\ref{eq:TfromVL-1})
+\caption{\label{fig:ATL}Temperature determined from LAMS using (\ref{eq:TfromVL-1})
 plotted as a function of the corresponding direct measurement of temperature
 for the ferry flight from Colorado USA to St.~Croix, Virgin Islands,
 on 10 August 2010. Each plotted point represents a measurement over
@@ -1538,11 +1445,11 @@ one second of flight. }
 \includegraphics[width=0.9\columnwidth]{Fig5}
 \par\end{centering}
 
-\caption{\label{fig:TLAMSvsATX-1}Temperature determined from LAMS plotted
-with the standard measurement of temperature for a flight segment
-from the C-130 flight of 17 November 2011. The bottom panel shows
-the 1-Hz measurements from LAMS; in the top panel, these have been
-smoothed by an 11-s box average.}
+\caption{\label{fig:TLAMSvsATX}Temperature determined from LAMS plotted with
+the standard measurement of temperature for a flight segment from
+the C-130 flight of 17 November 2011. The bottom panel shows the 1-Hz
+measurements from LAMS; in the top panel, these have been smoothed
+by an 11-s box average.}
 \end{figure}
 
 
@@ -1552,7 +1459,7 @@ smoothed by an 11-s box average.}
 \includegraphics[width=0.9\columnwidth]{Fig6}
 \par\end{centering}
 
-\caption{\label{fig:ATLinCirrus-1}Top panel: Temperature determined from LAMS
+\caption{\label{fig:ATLinCirrus}Top panel: Temperature determined from LAMS
 measurements of airspeed using Eq.~(\ref{eq:TfromVL-1}), compared
 to the temperature measured by a conventional immersion temperature
 sensor during a descent through a cirrus cloud layer. Bottom panel:
@@ -1567,8 +1474,8 @@ imaging probe.}
 \includegraphics[width=0.9\columnwidth]{Fig7}
 \par\end{centering}
 
-\caption{\label{fig:ATLinWaterCloud-1}Top panel: Temperature determined by
-the LAMS during a C-130 cloud pass on 15 November 2011. The temperature
+\caption{\label{fig:ATLinWaterCloud}Top panel: Temperature determined by the
+LAMS during a C-130 cloud pass on 15 November 2011. The temperature
 measured by a conventional temperature probe is also shown. Middle
 panel: Extinction length or distance corresponding to unity optical
 depth, determined from the measured droplet size distribution. Bottom
@@ -1587,7 +1494,7 @@ panel: Cloud droplet concentration measured by a cloud droplet probe. }
 \includegraphics[height=0.6\paperheight]{FigB1}
 \par\end{centering}
 
-\caption{\label{fig:PtvsSSLIP-1}The total pressure (from the sum of the ambient
+\caption{\label{fig:PtvsSSLIP}The total pressure (from the sum of the ambient
 pressure measurement and the dynamic pressure measurement) on the
 C-130 as a function of the magnitude of the side-slip angle during
 yaw manoeuvres in which sideslip angles were forced by rudder action

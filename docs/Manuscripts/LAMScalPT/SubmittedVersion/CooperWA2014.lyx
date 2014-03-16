@@ -102,8 +102,9 @@ status open
 To prepare for Discussions format, use copernicus article class but AMTD
  for journal, then edit the latex file (exported via pdflatex option) to
  change from copernicus to copernicus_discussions.
- Turning off color in PDF properties for links causes a pdflatex failure.
- Run pdflatex AMTDdraft twice, add bibtex AMTDdraft, then another pdflatex
+ Turning off color in PDF properties for links causes a pdflatex failure,
+ but changing color to false in .tex file worked.
+  Run pdflatex AMTDdraft twice, add bibtex AMTDdraft, then another pdflatex
  AMTDdraft to get the PDF file.
 \end_layout
 
@@ -125,6 +126,7 @@ W.
 
 \begin_layout Author
 S.
+ M.
  Spuler
 \end_layout
 
@@ -1632,10 +1634,14 @@ The temperature uncertainty thus contributes significantly to the uncertainty
 \end_inset
 
  from LAMS, because 
-\begin_inset Formula $\delta v/v\approx0.05/220\approx0.000$
+\begin_inset Formula $\delta v/v\approx0.05/220$
 \end_inset
 
-23 while for temperature an uncertainty of 0.3
+ 
+\begin_inset Formula $\approx$
+\end_inset
+
+ 0.00023 while for temperature an uncertainty of 0.3
 \begin_inset ERT
 status open
 
@@ -6623,8 +6629,8 @@ GV and Lockheed C-130 research aircraft.
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
-bibfiles "AMT"
-options "copernicus"
+bibfiles "Cooper2014"
+options "bibtotoc,copernicus"
 
 \end_inset
 
@@ -8433,6 +8439,9 @@ mean offset,
 \end_inset
 
 Figure Captions:
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 placement H
 wide false
@@ -8445,7 +8454,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:QvsQLAMS"
+name "fig:QvsQLAMS-1"
 
 \end_inset
 
@@ -8503,6 +8512,600 @@ placement H
 wide false
 sideways false
 status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Pt-comparison-1-1"
+
+\end_inset
+
+Measurements made at 1
+\begin_inset space \thinspace{}
+\end_inset
+
+Hz during 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+flight 8 of IDEAS-4
+\end_layout
+
+\end_inset
+
+the 17 November 2011 flight of the C-130.
+ All measurements are included for times when the true airspeed exceeded
+ 50
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+ (to exclude a short period with flaps deployed at the end of the flight).
+ The measurements plotted are the total pressure 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ measured by two independent systems using two different pitot tubes and
+ sets of static buttons.
+ The root-mean-square deviation from this line is 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, and the similar deviation from a best-fit line is less than 0.04
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:D-value-measurements-1-1"
+
+\end_inset
+
+D-value measurements as a function of time for a flight segment at about
+ 450
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, and the corresponding values of the Mach number (plotted relative to
+ the right axis).
+ It might be expected that the d-value would change smoothly, as suggested
+ by the solid red line.
+ GV flight of 12 August 2010, Colorado USA to St.
+ Croix, Virgin Islands.
+ Gaps in data show portions omitted because the LAMS signal was too weak
+ to be reliable.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+enlarge labels and tick labels
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ATL-1-1"
+
+\end_inset
+
+Temperature determined from LAMS using Eq.
+\begin_inset space ~
+\end_inset
+
+(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TfromVL-1"
+
+\end_inset
+
+) plotted as a function of the corresponding direct measurement of temperature
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+(ATHR1C) 
+\end_layout
+
+\end_inset
+
+for the ferry flight from Colorado USA to St.
+\begin_inset space ~
+\end_inset
+
+Croix, Virgin Islands, on 10 August 2010.
+ Each plotted point represents a measurement over one second of flight.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:TLAMSvsATX-1-1"
+
+\end_inset
+
+Temperature determined from LAMS plotted with the standard measurement of
+ temperature for a flight segment from the C-130 flight of 17 November 2011.
+ The bottom panel shows the 1-Hz measurements from LAMS; in the top panel,
+ these have been smoothed by an 11-s box average.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ATLinCirrus-1-1"
+
+\end_inset
+
+Top panel: Temperature determined from LAMS measurements of airspeed using
+ Eq.
+\begin_inset space ~
+\end_inset
+
+(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TfromVL-1"
+
+\end_inset
+
+), compared to the temperature measured by a conventional immersion temperature
+ sensor during a descent through a cirrus cloud layer.
+ Bottom panel: The measured ice concentration from a two-dimensional cloud
+ (2DC) imaging probe.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ATLinWaterCloud-1-1"
+
+\end_inset
+
+Top panel: Temperature determined by the LAMS during a C-130 cloud pass
+ on 15 November 2011.
+ The temperature measured by a conventional temperature probe is also shown.
+ Middle panel: Extinction length or distance corresponding to unity optical
+ depth, determined from the measured droplet size distribution.
+ Bottom panel: Cloud droplet concentration measured by a cloud droplet probe.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setcounter{figure}{0}%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+def
+\backslash
+thefigure{
+\backslash
+thesection 1}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+def
+\backslash
+thefigure{B1}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+appendix
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+addtocounter{section}{1}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:PtvsSSLIP-1-1"
+
+\end_inset
+
+The total pressure (from the sum of the ambient pressure measurement and
+ the dynamic pressure measurement) on the C-130 as a function of the magnitude
+ of the side-slip angle during yaw manoeuvres in which sideslip angles were
+ forced by rudder action while the aircraft continued on approximately a
+ straight-and-level course.
+ The mean total pressure of 760.6
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa has been subtracted from the measurements.
+ Error bars are standard deviations in the measurements for the total-pressure
+ axis and are the range of the bin used in sideslip.
+ Corrections for deviations from a level course and for small variations
+ in airspeed have been applied, as discussed in the text.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+noappendix
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+def
+\backslash
+thefigure{
+\backslash
+addtocounter{figure}{1}
+\backslash
+the
+\backslash
+figure}%
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+setcounter{figure}{0}%
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+thefigure}{
+\backslash
+arabic{figure}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Fig1.pdf
+	lyxscale 75
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:QvsQLAMS"
+
+\end_inset
+
+The direct measurement of dynamic pressure (
+\begin_inset Formula $q_{m})$
+\end_inset
+
+ on the C-130 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+QCF
+\end_layout
+
+\end_inset
+
+vs that deduced using the LAMS measurement of airspeed, via Eqs.
+\begin_inset space ~
+\end_inset
+
+(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR1-1"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2-1"
+
+\end_inset
+
+).
+ All one-second-average points from one C-130 research flight on which the
+ LAMS was tested (17 November 2011) are shown.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Fig2.pdf
+	lyxscale 50
+	height 60pheight%
+
+\end_inset
+
+
+\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Caption
@@ -8575,12 +9178,29 @@ hPa.
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
 sideways false
 status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\begin_inset Graphics
+	filename Fig3.pdf
+	lyxscale 50
+	height 65pheight%
+
+\end_inset
+
+
+\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Caption
@@ -8627,12 +9247,29 @@ enlarge labels and tick labels
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
 sideways false
 status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\begin_inset Graphics
+	filename Fig4.pdf
+	lyxscale 50
+	height 60pheight%
+
+\end_inset
+
+
+\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Caption
@@ -8641,621 +9278,6 @@ status open
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:ATL"
-
-\end_inset
-
-Temperature determined from LAMS using Eq.
-\begin_inset space ~
-\end_inset
-
-(
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:TfromVL-1"
-
-\end_inset
-
-) plotted as a function of the corresponding direct measurement of temperature
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-(ATHR1C) 
-\end_layout
-
-\end_inset
-
-for the ferry flight from Colorado USA to St.
-\begin_inset space ~
-\end_inset
-
-Croix, Virgin Islands, on 10 August 2010.
- Each plotted point represents a measurement over one second of flight.
- 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:TLAMSvsATX"
-
-\end_inset
-
-Temperature determined from LAMS plotted with the standard measurement of
- temperature for a flight segment from the C-130 flight of 17 November 2011.
- The bottom panel shows the 1-Hz measurements from LAMS; in the top panel,
- these have been smoothed by an 11-s box average.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:ATLinCirrus"
-
-\end_inset
-
-Top panel: Temperature determined from LAMS measurements of airspeed using
- Eq.
-\begin_inset space ~
-\end_inset
-
-(
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:TfromVL-1"
-
-\end_inset
-
-), compared to the temperature measured by a conventional immersion temperature
- sensor during a descent through a cirrus cloud layer.
- Bottom panel: The measured ice concentration from a two-dimensional cloud
- (2DC) imaging probe.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:ATLinWaterCloud"
-
-\end_inset
-
-Top panel: Temperature determined by the LAMS during a C-130 cloud pass
- on 15 November 2011.
- The temperature measured by a conventional temperature probe is also shown.
- Middle panel: Extinction length or distance corresponding to unity optical
- depth, determined from the measured droplet size distribution.
- Bottom panel: Cloud droplet concentration measured by a cloud droplet probe.
- 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-setcounter{figure}{0}%
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-def
-\backslash
-thefigure{
-\backslash
-thesection 1}
-\end_layout
-
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-def
-\backslash
-thefigure{B1}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-appendix
-\end_layout
-
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-addtocounter{section}{1}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:PtvsSSLIP"
-
-\end_inset
-
-The total pressure (from the sum of the ambient pressure measurement and
- the dynamic pressure measurement) on the C-130 as a function of the magnitude
- of the side-slip angle during yaw manoeuvres in which sideslip angles were
- forced by rudder action while the aircraft continued on approximately a
- straight-and-level course.
- The mean total pressure of 760.6
-\begin_inset space \thinspace{}
-\end_inset
-
-hPa has been subtracted from the measurements.
- Error bars are standard deviations in the measurements for the total-pressure
- axis and are the range of the bin used in sideslip.
- Corrections for deviations from a level course and for small variations
- in airspeed have been applied, as discussed in the text.
- 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-noappendix
-\end_layout
-
-\begin_layout Plain Layout
-
-%
-\backslash
-def
-\backslash
-thefigure{
-\backslash
-addtocounter{figure}{1}
-\backslash
-the
-\backslash
-figure}%
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-setcounter{figure}{0}%
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-renewcommand{
-\backslash
-thefigure}{
-\backslash
-arabic{figure}}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset VSpace 2mm*
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\noindent
-\align center
-\begin_inset Graphics
-	filename Fig1.png
-	lyxscale 75
-	width 90col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:QvsQLAMS-1"
-
-\end_inset
-
-The direct measurement of dynamic pressure (
-\begin_inset Formula $q_{m})$
-\end_inset
-
- on the C-130 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-QCF
-\end_layout
-
-\end_inset
-
-vs that deduced using the LAMS measurement of airspeed, via Eqs.
-\begin_inset space ~
-\end_inset
-
-(
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:PCOR1-1"
-
-\end_inset
-
-) and (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:PCOR2-1"
-
-\end_inset
-
-).
- All one-second-average points from one C-130 research flight on which the
- LAMS was tested (17 November 2011) are shown.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset VSpace 2mm*
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\noindent
-\align center
-\begin_inset Graphics
-	filename Fig2.png
-	lyxscale 50
-	height 60pheight%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Pt-comparison-1"
-
-\end_inset
-
-Measurements made at 1
-\begin_inset space \thinspace{}
-\end_inset
-
-Hz during 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-flight 8 of IDEAS-4
-\end_layout
-
-\end_inset
-
-the 17 November 2011 flight of the C-130.
- All measurements are included for times when the true airspeed exceeded
- 50
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-,$
-\backslash
-unit{m
-\backslash
-,s^{-1}}$
-\end_layout
-
-\end_inset
-
- (to exclude a short period with flaps deployed at the end of the flight).
- The measurements plotted are the total pressure 
-\begin_inset Formula $p_{t}$
-\end_inset
-
- measured by two independent systems using two different pitot tubes and
- sets of static buttons.
- The root-mean-square deviation from this line is 0.1
-\begin_inset space \thinspace{}
-\end_inset
-
-hPa, and the similar deviation from a best-fit line is less than 0.04
-\begin_inset space \thinspace{}
-\end_inset
-
-hPa.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\noindent
-\align center
-\begin_inset VSpace 2mm*
-\end_inset
-
-
-\begin_inset Graphics
-	filename Fig3.png
-	lyxscale 50
-	height 65pheight%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:D-value-measurements-1"
-
-\end_inset
-
-D-value measurements as a function of time for a flight segment at about
- 450
-\begin_inset space \thinspace{}
-\end_inset
-
-hPa, and the corresponding values of the Mach number (plotted relative to
- the right axis).
- It might be expected that the d-value would change smoothly, as suggested
- by the solid red line.
- GV flight of 12 August 2010, Colorado USA to St.
- Croix, Virgin Islands.
- Gaps in data show portions omitted because the LAMS signal was too weak
- to be reliable.
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-enlarge labels and tick labels
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\noindent
-\align center
-\begin_inset VSpace 2mm*
-\end_inset
-
-
-\begin_inset Graphics
-	filename Fig4.png
-	lyxscale 50
-	height 60pheight%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:ATL-1"
 
 \end_inset
 
@@ -9296,7 +9318,7 @@ Croix, Virgin Islands, on 10 August 2010.
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
@@ -9311,7 +9333,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig5.png
+	filename Fig5.pdf
 	lyxscale 50
 	width 90col%
 
@@ -9326,7 +9348,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:TLAMSvsATX-1"
+name "fig:TLAMSvsATX"
 
 \end_inset
 
@@ -9346,7 +9368,7 @@ Temperature determined from LAMS plotted with the standard measurement of
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
@@ -9361,7 +9383,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig6.png
+	filename Fig6.pdf
 	lyxscale 50
 	width 90col%
 
@@ -9376,7 +9398,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:ATLinCirrus-1"
+name "fig:ATLinCirrus"
 
 \end_inset
 
@@ -9408,7 +9430,7 @@ reference "eq:TfromVL-1"
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Float figure
 placement H
 wide false
@@ -9423,7 +9445,7 @@ status open
 
 
 \begin_inset Graphics
-	filename Fig7.png
+	filename Fig7.pdf
 	lyxscale 50
 	width 90col%
 
@@ -9438,7 +9460,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:ATLinWaterCloud-1"
+name "fig:ATLinWaterCloud"
 
 \end_inset
 
@@ -9461,7 +9483,7 @@ Top panel: Temperature determined by the LAMS during a C-130 cloud pass
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -9477,7 +9499,7 @@ setcounter{figure}{0}%
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -9512,7 +9534,7 @@ thefigure{B1}
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -9553,7 +9575,7 @@ status open
 
 
 \begin_inset Graphics
-	filename FigB1.png
+	filename FigB1.pdf
 	lyxscale 50
 	height 60pheight%
 
@@ -9568,7 +9590,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:PtvsSSLIP-1"
+name "fig:PtvsSSLIP"
 
 \end_inset
 
@@ -9587,6 +9609,11 @@ hPa has been subtracted from the measurements.
  Corrections for deviations from a level course and for small variations
  in airspeed have been applied, as discussed in the text.
  
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
