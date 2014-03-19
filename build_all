@@ -10,18 +10,6 @@ if ( ! $?JLOCAL ) then
     setenv JLOCAL /opt/local
     echo "Environment variable JLOCAL not set, setting to $JLOCAL."
 endif
-# setenv LOCAL /opt/local
-# setenv WINDS $JLOCAL
-
-# For a stand alone installation such as a groundstation or aircraft
-# server, JLOCAL will most likely be the same as LOCAL.  In-house
-# LOCAL points to the EOL wide installation area and JLOCAL points to
-# RAF specific installation area.
-
-if ( ! $?LOCAL ) then
-    echo "Need to set environment variables LOCAL."
-    exit 1
-endif
 
 # Check for netCDF installation.
 if (`uname -i` == x86_64) then
