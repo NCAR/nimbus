@@ -3,6 +3,7 @@
 #include "osm.hh"
 
 #include <cmath>
+#include <cstdio>
 #include <iostream>
 
 OSM::
