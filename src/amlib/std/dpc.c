@@ -37,15 +37,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2012
 #include "amlib.h"
 #include <map>
 
-#include <gsl/gsl_spline.h>
+#include "Interpolator.h"
 
 static const size_t TableSize = 300;
 static double ttable[TableSize];
 static double etable[TableSize];
 
-static gsl_interp_accel *acc;
-static gsl_interp *linear = 0;
-
+static Interpolator interp = Interpolator();
 
 /* -------------------------------------------------------------------- */
 void sdpc_GG(DERTBL *varp)	// Goff-Gratch.
@@ -63,7 +61,7 @@ void sdpc_MK(DERTBL *varp)	// Murphy-Koop.
 {
   double e = GetSample(varp, 0);
 
-  NR_TYPE dp = gsl_interp_eval(linear, etable, ttable, e, acc);
+  NR_TYPE dp = interp.eval(e);
 
   PutSample(varp, (NR_TYPE)dp);
 }
@@ -83,7 +81,7 @@ void dpmkInit(var_base *varp)
   AddToAttributes(varp->name, "Method", "Murphy-Koop");
 
   // Bail out if we've already initialized the interp stuff.  Only needed once.
-  if (linear)
+  if (interp.isValid())
     return;
 
   // Setup temperature / water vapor table in half degC increments for Murphy-Koop.
@@ -96,7 +94,5 @@ void dpmkInit(var_base *varp)
   }
 
   // Initialize gsl interpolation.
-  acc = gsl_interp_accel_alloc();
-  linear = gsl_interp_alloc(gsl_interp_linear, TableSize);
-  gsl_interp_init(linear, etable, ttable, TableSize);
+  interp.setup(etable, ttable, TableSize);
 }

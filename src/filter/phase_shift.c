@@ -22,8 +22,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 #include "nimbus.h"
 #include "decode.h"
 #include "circbuff.h"
+#include "Interpolator.h"
 
-#include <gsl/gsl_spline.h>
+#ifdef DEBUG
+#include "decode.h"
+#include <nidas/util/UTime.h>
+using nidas::util::UTime;
+#endif
 
 /* Global to ease parameter pushing in intensive loops.	*/
 static NR_TYPE *recPtrs[32], *prev_rec, *this_rec, *next_rec;
@@ -137,12 +142,29 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 
   double	x[nPoints], y[nPoints], startTime;
 
+#ifdef DEBUG
+  static std::string tfmt("%Y/%m/%d;%H:%M:%S.%3f");
+  time_t firstRecTime = SampledDataTimeToSeconds(recPtrs[0]);
+#endif
+
   // Loop through all 5 (7?) records (above) and pull out all the valid data
   // points and make one big record.
   for (size_t ri = 0; recPtrs[ri] != 0; ++ri)
   {
     NR_TYPE *curPtr = &recPtrs[ri][vp->SRstart];
     NR_TYPE dynLag = 0;
+
+#ifdef DEBUG
+    bool watch = (strcmp(vp->name, "CAVP_DPR") == 0);
+    if (watch)
+    {
+      time_t thisTime = SampledDataTimeToSeconds(recPtrs[ri]);
+      std::cerr << "resample() buffer " << ri << " accumulating "
+		<< vp->SampleRate << " "
+		<< vp->name << " samples for record " 
+		<< UTime(thisTime).format(tfmt) << std::endl;
+    }
+#endif
 
     if (vp->LAGstart != -1)
     {
@@ -237,34 +259,25 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
     }
   }
 
-
-  gsl_interp_accel *acc = gsl_interp_accel_alloc();
-  gsl_interp *linear = 0;
-  gsl_spline *spline = 0;
-
-  if (cfg.InterpolationType() == Config::Linear)
-  {
-    linear = gsl_interp_alloc(gsl_interp_linear, goodPoints);
-    gsl_interp_init(linear, x, y, goodPoints);
-  }
-  else
-  {
-    if (cfg.InterpolationType() == Config::AkimaSpline && goodPoints >= 5)
-      spline = gsl_spline_alloc(gsl_interp_akima, goodPoints);
-    else
-      spline = gsl_spline_alloc(gsl_interp_cspline, goodPoints);
-
-    gsl_spline_init(spline, x, y, goodPoints);
-  }
+  Interpolator interp(static_cast<Interpolator::InterpolationType>(cfg.InterpolationType()),
+		      x, y, goodPoints);
 
   if (srt_out)
   {
     double rqst = startTime;
     for (size_t i = 0; i < vp->SampleRate; ++i, rqst += gap_size)
-      if (cfg.InterpolationType() == Config::Linear)
-        srt_out[vp->SRstart+i] = gsl_interp_eval(linear, x, y, rqst, acc);
-      else
-        srt_out[vp->SRstart+i] = gsl_spline_eval(spline, rqst, acc);
+    {
+      srt_out[vp->SRstart+i] = interp.eval(rqst);
+#ifdef DEBUG
+      if (interp.outOfBounds())
+      {
+	// X = (ri * 1000) + (gap_size * i) + dynLag, in ms from time of first record.
+	std::cerr << vp->name << "@"
+		  << UTime((long long)firstRecTime*1e6 + rqst*1000).format(tfmt)
+		  << ": " << interp.errorMessage(rqst) << std::endl;
+      }
+#endif
+    }
   }
 
   if (hrt_out)
@@ -273,19 +286,16 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
     gap_size = 1000 / cfg.HRTRate();
 
     for (size_t i = 0; i < (size_t)cfg.HRTRate(); ++i, rqst += gap_size)
-      if (cfg.InterpolationType() == Config::Linear)
-        hrt_out[vp->HRstart+i] = gsl_interp_eval(linear, x, y, rqst, acc);
-      else
-        hrt_out[vp->HRstart+i] = gsl_spline_eval(spline, rqst, acc);
+    {
+      hrt_out[vp->HRstart+i] = interp.eval(rqst);
+#ifdef DEBUG
+      if (interp.outOfBounds())
+      {
+	std::cerr << vp->name << ": " << interp.errorMessage(rqst) << std::endl;
+      }
+#endif
+    }
   }
-
-  if (cfg.InterpolationType() == Config::Linear)
-    gsl_interp_free(linear);
-  else
-    gsl_spline_free(spline);
-
-  gsl_interp_accel_free(acc);
-
 
   if (vp->Modulo)	// Go back through and move to within bounds.
   {

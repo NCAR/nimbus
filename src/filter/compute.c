@@ -46,14 +46,16 @@ void ComputeLowRateDerived(time_t thisTime)
     DERTBL *dp = ComputeOrder[i];
 
 #ifdef DEBUG
-    if (strcmp(dp->name, "EW_DPR") == 0 || 
-	strcmp(dp->name, "EWX") == 0 ||
-	strcmp(dp->name, "DP_DPR") == 0)
+    bool watch = (strcmp(dp->name, "EW_DPR") == 0 || 
+		  strcmp(dp->name, "EWX") == 0 ||
+		  strcmp(dp->name, "DP_DPR") == 0);
+    if (watch)
       compute_break();
 #endif
     if (dp->compute)
       (*dp->compute)(dp);
 #ifdef DEBUG
+    if (watch)
     {
       static std::string tfmt("At %Y/%m/%d;%H:%M:%S.%3f, computed: ");
       std::cerr << UTime(thisTime).format(tfmt)

@@ -52,7 +52,6 @@ hdr_decode.c
 hrloop.c
 init.c
 injectsd.cc
-interp.c
 log.c
 logfile.c
 lrloop.c
@@ -83,6 +82,12 @@ setup.c
 textfile.c
 timeseg.c
 """)
+# interp.c
+
+objects = env.StaticObject(Split("""
+Interpolator.cc
+"""))
+
 
 md5o = env.StaticObject('md5.cc', CCFLAGS=env['CCFLAGS']+['-Wno-parentheses'])
 
@@ -101,8 +106,22 @@ if int(env.realtime):
   env.Append(_LIBFLAGS=['-Wl,-R', nlibpath])
 
 
-nimbus = env.Program('nimbus', sources)
+nimbus = env.Program('nimbus', sources + objects)
 
 env.Install('$JLOCAL/bin', nimbus)
 
 env.Default(nimbus)
+
+
+
+test_sources = Split("""
+tests/test_Interpolator.cc
+tests/test_parseInt.cc
+""")
+
+nt = env.Program('nimbus_tests', test_sources + objects, 
+                 LIBS=env['LIBS']+['gtest_main', 'gtest'])
+env.Alias('nimbus_tests', nt)
+
+env.Alias('test', env.Command('xtest', nt, nt[0].abspath))
+

@@ -108,6 +108,15 @@ void RealTimeLoop()
   do
     {
     hdr = (Hdr_blk *)ADSrecord;
+    struct tm tm;
+    memset(&tm, 0, sizeof(tm));
+    tm.tm_sec = ntohs(hdr->second);
+    tm.tm_min = ntohs(hdr->minute);
+    tm.tm_hour = ntohs(hdr->hour);
+    tm.tm_year = ntohs(hdr->year) + 100;
+    tm.tm_mon = ntohs(hdr->month) - 1;
+    tm.tm_mday = ntohs(hdr->day);
+    long long microsecs = mktime(&tm) * 1e6;
     sprintf(timeStamp, "%04d%02d%02dT%02d%02d%02d",
 		ntohs(hdr->year)+2000, ntohs(hdr->month), ntohs(hdr->day),
 		ntohs(hdr->hour), ntohs(hdr->minute), ntohs(hdr->second));
@@ -128,10 +137,10 @@ pts = ts;
     if (cfg.OutputSQL())
       psql->WriteSQL(timeStamp);
 
-    bcast->BroadcastData(timeStamp);
+    bcast->BroadcastData(microsecs);
 
     if (cfg.TransmitToGround())
-      grnd_feed->BroadcastData(timeStamp);
+      grnd_feed->BroadcastData(microsecs);
 
     if (cfg.OutputNetCDF())
       WriteNetCDF();

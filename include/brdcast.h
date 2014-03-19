@@ -1,4 +1,4 @@
-/*
+/* -*- C++ -*-
 -------------------------------------------------------------------------
 OBJECT NAME:	brdcast.h
 
@@ -23,7 +23,12 @@ class Broadcast : public UDP_Base
 public:
   Broadcast();
 
-  void	BroadcastData(const std::string & timeStamp);
+  void
+  BroadcastData(nidas::core::dsm_time_t tt);
+
+  virtual
+  std::string
+  formatVariable(int i);
 
 protected:
   /**
