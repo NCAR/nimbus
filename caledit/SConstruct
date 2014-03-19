@@ -1,21 +1,19 @@
 # -*- python -*-
 ##  Copyright 2013 UCAR, NCAR, All Rights Reserved
 
-import os
+from SCons.Errors import StopError
 
-env = Environment()
-#ENV = {'PATH' : os.environ['PATH']},
-    #tools=['default','svninfo'])
-
-env = env.Clone(tools = ['qt4', 'qwt', 'gsl'])
+env = Environment(tools = ['default', 'qt4', 'qwt', 'gsl'])
 
 qt4Modules = Split('QtSql QtGui QtCore QtNetwork')
 if not env.EnableQt4Modules(qt4Modules):
-    Return()
+    raise StopError("qt4 modules could not be enabled.")
 
 if not env.EnableQwt():
-    print "qwt.h not found.  Do \"scons --config=force\" to redo the check. See config.log for more information"
-    Return()
+    raise StopError("qwt.h not found.  "
+                    "Do \"scons --config=force\" to redo the check, "
+                    "or set QWTDIR.  "
+                    "See config.log for more information")
 
 # Compilation generates numerous warnings relative to the Qt4 code base itself when -Weffc++ is enabled
 #env['CXXFLAGS'] = ['-Weffc++','-Wall','-O2' ]
@@ -39,13 +37,10 @@ sources = Split("""
     ViewTextDialog.cc
 """)
 
-caledit = env.Program('caledit', sources,
-    LIBS=[env['LIBS']], LIBPATH=[env['LIBPATH']])
+caledit = env.Program('caledit', sources)
 
-name = env.subst("${TARGET.filebase}", target=caledit)
-
-inode = env.Install('/opt/local/bin',caledit)
-env.Clean('install',inode)
+inode = env.Install('/opt/local/bin', caledit)
+env.Clean('install', inode)
 
 options = env.GlobalOptions()
 options.Update(env)
