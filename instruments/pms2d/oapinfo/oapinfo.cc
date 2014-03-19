@@ -23,7 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2012
 
 #include <netinet/in.h>
 
-#include "/opt/local/include/raf/header.h"
+#include <raf/header.h>
 
 using namespace std;
 
