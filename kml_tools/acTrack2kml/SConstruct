@@ -4,9 +4,9 @@ import os
 env = Environment(platform = 'posix',ENV= os.environ)
 env['JLOCAL'] = os.environ['JLOCAL']
 
-env.Append(CXXFLAGS='-g -Werror')
+env.Append(CXXFLAGS='-g -Werror -Wall')
 env.Append(CPPPATH = '/usr/include/netcdf')
-env.Append(LIBS = ['pq'])
+env.Append(LIBS = ['pq', 'boost_date_time'])
 
 # To get netcdf libraries on the link command line with static linking,
 # they need to be added to the end of the link command.  Adding them to
@@ -56,6 +56,11 @@ conf = Configure(env.Clone())
 
 # print env.Dump()
 
-env.Program('acTrack2kml.cc')
+env.Program(['acTrack2kml.cc', 'Config.cc',
+             'AircraftTrackKML.cc',
+             'AircraftTrack.cc',
+             'acDatabase.cc',
+             'ncTrack.cc',
+             'osm.cc'])
 
 Alias('install', env.Install('$JLOCAL/bin', 'acTrack2kml'))

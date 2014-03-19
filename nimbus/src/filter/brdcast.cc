@@ -17,7 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include "brdcast.h"
 
 #include <sstream>
-
+#include <stdlib.h>  // getenv()
 
 using namespace nidas::util;
 
@@ -29,7 +29,24 @@ Broadcast::Broadcast() :
   NOREC_ALT_INDX(-1),
   InterfacePrefix("192.168")
 {
-  _varList = readFile(BROADCAST);
+  // Look for a latch-specific version of ascii_parms first, so that
+  // existing ascii_parms files remain backwards-compatible with other
+  // nimbus versions.
+  std::string apfile(BROADCAST);
+  apfile += ".latches";
+  if (! readFile(apfile.c_str()))
+  {
+    readFile(BROADCAST);
+  }
+
+  // For debugging, allow broadcast to be redirected.
+  const char* debug_interface = 0;
+  if ((debug_interface = getenv("NIMBUS_DEBUG_BROADCAST_INTERFACE")) != 0)
+  {
+    InterfacePrefix = debug_interface;
+    std::cerr << "WARNING: switching iwg broadcast interface to "
+	      << InterfacePrefix << std::endl;
+  }
 
   _socket = new MulticastSocket;
   _socket->setBroadcastEnable(true);
@@ -73,54 +90,24 @@ Broadcast::Broadcast() :
 }
 
 /* -------------------------------------------------------------------- */
-void Broadcast::BroadcastData(const std::string & timeStamp) 
+void Broadcast::BroadcastData(nidas::core::dsm_time_t tt) 
 {
+  std::string timeStamp = formatTimestamp(tt);
+
   if (_varList.size() == 0)
   {
     fprintf(stderr, "Broadcast.cc: No ascii_parms!\n");
     return;
   }
 
+  updateData(tt);
+
   std::stringstream bcast;
   bcast << "IWG1," << timeStamp;
 
-  extern NR_TYPE * AveragedData;
-
   for (int i = 0; i < (int)_varList.size(); ++i)
   {
-    bcast << ",";
-    if (_varList[i])
-    {
-#ifdef DEBUG
-      if ((strcmp(_varList[i]->name, "HCN_TOGA") == 0 ||
-	   strcmp(_varList[i]->name, "BUTANE_TOGA") == 0 ||
-	   strcmp(_varList[i]->name, "CONC_ISAF") == 0) &&
-	  !isnan(AveragedData[_varList[i]->LRstart]))
-      {
-	printf("_varList[%d]->name(%s) = %f\n", (int)i, _varList[i]->name,
-	       AveragedData[_varList[i]->LRstart]);
-      }
-#endif
-      if (i == RADAR_ALT_INDX)
-      {
-	// Our radar alt is in m, convert to ft as required by IWG1
-	if (!isnan(AveragedData[_varList[i]->LRstart]))
-	  bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
-      }
-      else if (i == NOCAL_ALT_INDX || // Do Not Calibrate flag
-	       i == NOREC_ALT_INDX)   // Do Not Record flag
-      {
-	if (isnan(AveragedData[_varList[i]->LRstart]))
-	  bcast << 0;
-	else
-	  bcast << AveragedData[_varList[i]->LRstart];
-      }
-      else
-      {
-	if (!isnan(AveragedData[_varList[i]->LRstart]))
-	  bcast << AveragedData[_varList[i]->LRstart];
-      }
-    }
+    bcast << "," << formatVariable(i);
   }
 
   bcast << "\r\n";
@@ -149,4 +136,44 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
   }
 
   printf(bcast.str().c_str());
+}
+
+
+std::string
+Broadcast::
+formatVariable(int i)
+{
+  var_base* vp = _varList[i];
+  if (vp && vp->Length > 1)
+  {
+    // Pass 2D vars to the generic formatter.  It is enough of a special
+    // case that it may as well use the same format.
+    return UDP_Base::formatVariable(i);
+  }
+
+  std::ostringstream bcast;
+  if (vp)
+  {
+    NR_TYPE& current = _lastGoodData[i][0];
+    if (i == RADAR_ALT_INDX)
+    {
+      // Our radar alt is in m, convert to ft as required by IWG1
+      if (!isnan(current))
+	bcast << current * 3.2808;
+    }
+    else if (i == NOCAL_ALT_INDX || // Do Not Calibrate flag
+	     i == NOREC_ALT_INDX)   // Do Not Record flag
+    {
+      if (isnan(current))
+	bcast << 0;
+      else
+	bcast << current;
+    }
+    else
+    {
+      if (!isnan(current))
+	bcast << current;
+    }
+  }
+  return bcast.str();
 }

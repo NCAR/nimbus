@@ -113,6 +113,11 @@ env['BUILDERS']['NimbusBatchFile'] = nimbus_batch_builder
 batchfile = env.NimbusBatchFile('batch_rf02', 'IDEAS-4-GV/20130926_183907_rf02.ads')
 
 
+btest = env.Command('btest', ['src/filter/nimbus', batchfile],
+                    '${SOURCES[0]} -b ${SOURCES[1]}')
+env.Alias('btest', btest)
+
+
 env['VALGRIND'] = 'valgrind'
 env['VALGRIND_OPTS'] = Split("""
 --gen-suppressions=all

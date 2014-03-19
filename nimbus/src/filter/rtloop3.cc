@@ -32,8 +32,6 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 
 #include <iomanip>
 
-static Broadcast *bcast;
-static GroundFeed *grnd_feed;
 extern PostgreSQL *psql;
 
 extern NR_TYPE	*SampledData, *AveragedData;
@@ -130,6 +128,8 @@ void RealTimeLoop3()
 {
   char timeStamp[32];
   size_t cntr = 0;
+  Broadcast *bcast;
+  GroundFeed *grnd_feed;
   nidas::core::dsm_time_t tt;
 
   ILOG(("RealTimeLoop3 entered."));
@@ -186,10 +186,10 @@ void RealTimeLoop3()
     if (cfg.OutputSQL())
       psql->WriteSQL(timeStamp);
 
-    bcast->BroadcastData(timeStamp);
+    bcast->BroadcastData(tt);
 
     if (cfg.TransmitToGround())
-      grnd_feed->BroadcastData(timeStamp);
+      grnd_feed->BroadcastData(tt);
 
     if (cfg.OutputNetCDF())
       WriteNetCDF();
