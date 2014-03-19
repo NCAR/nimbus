@@ -29,15 +29,7 @@ Broadcast::Broadcast() :
   NOREC_ALT_INDX(-1),
   InterfacePrefix("192.168")
 {
-  // Look for a latch-specific version of ascii_parms first, so that
-  // existing ascii_parms files remain backwards-compatible with other
-  // nimbus versions.
-  std::string apfile(BROADCAST);
-  apfile += ".latches";
-  if (! readFile(apfile.c_str()))
-  {
-    readFile(BROADCAST);
-  }
+  readFile(BROADCAST);
 
   // For debugging, allow broadcast to be redirected.
   const char* debug_interface = 0;
