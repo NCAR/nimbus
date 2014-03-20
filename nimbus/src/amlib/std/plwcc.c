@@ -165,6 +165,8 @@ NR_TYPE CooperLWC_GV(const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE atx,
 	const NR_TYPE psxc, const NR_TYPE concf, const int indx)
 {
   static NR_TYPE Nu_a0 = 1.8679, Nu_b0 = 0.13506, Nu_c0 = 0.13289;
+  static NR_TYPE prevTAS = 0.0, prevRe = 0.0;
+
   static const double Nu_a1 = 0.3433589;
   static const double Nu_b1 = 0.638318;
   static const double Nu_c1 = 0.3823;
@@ -184,12 +186,33 @@ NR_TYPE CooperLWC_GV(const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE atx,
   {
     Nu = plwc / (M_PI * lWire[indx] * cond * (tWire[indx] - atx));
     if (tasx < 150.0)
-      { Nu_c0 += (Nu / pow(Re, Nu_c1) - Nu_c0) / tau_Nu[indx]; }
+    {
+      if (prevTAS >= 150.0)
+        Nu_c0 = Nu_b0 * pow(Re, Nu_b1 - Nu_c1);
+
+      Nu_c0 += (Nu / pow(Re, Nu_c1) - Nu_c0) / tau_Nu[indx];
+    }
     else
     if (Re < 7244.0)
-      { Nu_a0 += (Nu / pow(Re, Nu_a1) - Nu_a0) / tau_Nu[indx]; }
+    {
+      if (prevTAS < 150.0)
+        Nu_a0 = Nu_c0 * pow(Re, Nu_c1 - Nu_a1);
+      else
+      if (prevRe >= 7244.0)
+        Nu_a0 = Nu_b0 * pow(Re, Nu_b1 - Nu_a1);
+
+      Nu_a0 += (Nu / pow(Re, Nu_a1) - Nu_a0) / tau_Nu[indx];
+    }
     else
-      { Nu_b0 += (Nu / pow(Re, Nu_b1) - Nu_b0) / tau_Nu[indx]; }
+    {
+      if (prevTAS < 150.0)
+        Nu_b0 = Nu_c0 * pow(Re, Nu_c1 - Nu_b1);
+      else
+      if (prevRe < 7244.0)
+        Nu_b0 = Nu_a0 * pow(Re, Nu_a1 - Nu_b1);
+
+      Nu_b0 += (Nu / pow(Re, Nu_b1) - Nu_b0) / tau_Nu[indx];
+    }
   }
 
   if (tasx < 150.0)
@@ -199,6 +222,9 @@ NR_TYPE CooperLWC_GV(const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE atx,
     { Nu = Nu_a0 * pow(Re, Nu_a1); }
   else
     { Nu = Nu_b0 * pow(Re, Nu_b1); }
+
+  prevTAS = tasx;
+  prevRe = Re;
 
   // Power required in dry air.
   NR_TYPE Pdry = M_PI * lWire[indx] * cond * (tWire[indx] - atx) * Nu;
