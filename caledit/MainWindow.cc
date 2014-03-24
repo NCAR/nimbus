@@ -24,6 +24,7 @@
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QHeaderView>
+//#include <QtGui/QLineEdit>
 #include <QtSql/QSqlTableModel>
 #include <QtSql/QSqlError>
 #include <QSqlDatabase>
@@ -2465,27 +2466,64 @@ void MainWindow::cloneButtonClicked()
 
 void MainWindow::removeButtonClicked()
 {
+    bool ok = true;
+    int numEmptyText = 0;
+    QInputDialog* inputDialog = new QInputDialog();
+    
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 
     // get selected row number
     int row = _table->selectionModel()->currentIndex().row();
 
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(0, tr("Delete"),
-                                  tr("Remove selected row?"),
-                                  QMessageBox::Yes | QMessageBox::No);
+    QString rid = modelData(row, clm_rid);
 
-    if (reply == QMessageBox::No) return;
+    QSqlQuery query(QSqlDatabase::database());
+    QString cmd;
+    cmd = QString("SELECT comment from calibrations "
+                      "WHERE rid='%1'").arg(rid);
+
+    QString comment;
+    if (query.exec(cmd) && query.first())
+        comment = query.value(0).toString();
+    query.finish();
+
+    std::cout << "Comment: " << comment.toStdString() << "\n";
+
+    QString text;
+
+    while (ok && text.isEmpty()) 
+        if (numEmptyText == 0) {
+            text = inputDialog->getText(NULL, "DeleteRow Reason", 
+                       "Delete Comment:", QLineEdit::Normal, 
+                       "DELETED because", &ok);
+            numEmptyText++;
+        }
+        else
+            text = inputDialog->getText(NULL, "DeleteRow Reason",
+                       "Please Enter Non-Blank Delete Comment:", 
+                       QLineEdit::Normal, "-DELETED because", &ok);
+
+    // Bail out if user clicks Cancel
+    if (!ok) return;
+
+    std::cout<<text.toStdString()<<std::endl;
+
+    // Update Commment field
+    comment = comment + " " + text;
+    std::cout<<comment.toStdString()<<"\n";
+    _proxy->setData(_proxy->index(row, clm_comment), comment);
 
     // mark what's removed
     _proxy->setData(_proxy->index(row, clm_removed), "1");
+
 }
 
 /* -------------------------------------------------------------------- */
 
 void MainWindow::changeFitButtonClicked(int row, int order)
 {
-    std::cout << __PRETTY_FUNCTION__ << " row: " << row << " order: " << order << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << " row: " << row << " order: " << order 
+         << std::endl;
 
     QStringList list_averages   = extractListFromBracedCSV(form_averages);
     if (list_averages.isEmpty()) return;
