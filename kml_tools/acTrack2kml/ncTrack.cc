@@ -79,25 +79,34 @@ fillAircraftTrack(AircraftTrack& track)
 
   NcAtt* attr;
   attr = file.get_att("FlightNumber");
-  projInfo.flightNumber = attr->as_string(0);
+  if (attr)
+    projInfo.flightNumber = attr->as_string(0);
 
   attr = file.get_att("ProjectName");
-  projInfo.projectName = attr->as_string(0);
+  if (attr)
+    projInfo.projectName = attr->as_string(0);
 
   attr = file.get_att("Platform");
-  projInfo.platform = attr->as_string(0);
+  if (attr)
+    projInfo.platform = attr->as_string(0);
 
   attr = file.get_att("landmarks");
-  projInfo.landmarks = attr->as_string(0);
+  if (attr)
+    projInfo.landmarks = attr->as_string(0);
+
+  char *lon = 0, *lat = 0, *tim = 0;
 
   attr = file.get_att("longitude_coordinate");
-  char *lon = attr->as_string(0);
+  if (attr)
+    lon = attr->as_string(0);
 
   attr = file.get_att("latitude_coordinate");
-  char *lat = attr->as_string(0);
+  if (attr)
+    lat = attr->as_string(0);
 
   attr = file.get_att("time_coordinate");
-  char *tim = attr->as_string(0);
+  if (attr)
+    tim = attr->as_string(0);
 
   NcVar *tim_v = getNetcdfVariable(tim);
   NcVar *tas_v = getNetcdfVariable("TASX");
