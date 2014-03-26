@@ -19,6 +19,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2009
 static const size_t MAX_ASAS = 3;
 static const int MAX_BINS = 101;
 
+static NR_TYPE USCAT_THRESHOLD = 3.95;
+
 static size_t FIRST_BIN[MAX_ASAS], LAST_BIN[MAX_ASAS], SampleRate[MAX_ASAS];
 
 static NR_TYPE	total_concen[MAX_ASAS], disp[MAX_ASAS], dbar[MAX_ASAS];
@@ -171,6 +173,7 @@ void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
   dia2		= cell_size2[probeNum];
   dia3		= cell_size3[probeNum];
 
+
   /* Fix overlapping gain stages.  The probe should be dynamically configured,
    * but there is no documentation to that at this time, so a fix gain stage
    * setting is used.  There are four gain stages, combine 8 bins into one bin
@@ -205,7 +208,23 @@ void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
 
 #include "pms1d_cv"
 
-}	/* END SCASAS */
+
+  // Check for USCAT in range, if not, nan everything.
+  if (varp->ndep > 2 && strncmp(varp->depend[2], "USCAT", 5) == 0)
+  {
+    NR_TYPE uscat = GetSample(varp, 2);
+
+    if (uscat > USCAT_THRESHOLD)
+    {
+    for (i = 0; i < varp->Length; ++i)
+      concentration[i] = floatNAN;
+
+    total_concen[probeNum] = disp[probeNum] = dbar[probeNum] = pvol[probeNum] = floatNAN;
+    return;
+    }
+  }
+
+}	/* END SCS200 */
 
 /* -------------------------------------------------------------------- */
 void spflwc(DERTBL *varp)
