@@ -39,7 +39,7 @@ getNetcdfVariable(const std::string& var_name)
   NcFile& file = *nc;
   NcVar *var;
 
-  if ((var = file.get_var(var_name.c_str())) == 0)
+  if (var_name.length() == 0 || (var = file.get_var(var_name.c_str())) == 0)
   {
     cerr << "acTrack2kml: unable to find variable "
 	 << var << " in netCDF file, fatal." << endl;;
@@ -94,7 +94,7 @@ fillAircraftTrack(AircraftTrack& track)
   if (attr)
     projInfo.landmarks = attr->as_string(0);
 
-  char *lon = 0, *lat = 0, *tim = 0;
+  char *lon = (char *)"LONC", *lat = (char *)"LATC", *tim = (char *)"Time";
 
   attr = file.get_att("longitude_coordinate");
   if (attr)
