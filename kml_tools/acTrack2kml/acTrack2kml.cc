@@ -31,6 +31,8 @@ static const string onboard_webHost = "acserver.raf.ucar.edu";
 #include "AircraftTrackKML.hh"
 #include "osm.hh"
 
+using namespace boost::posix_time;
+
 /* -------------------------------------------------------------------- */
 int usage(const char *argv0)
 {
@@ -49,7 +51,7 @@ int usage(const char *argv0)
 	<< "  -o                Run onboard, changes webhost to onboard server.\n"
 	<< "  -b barb_freq      Frequency of wind barbs in minutes, default is 5.\n"
 	<< "  -c                Clamp track to ground, ignore altitude.\n"
-	<< "  -v                Verbose output.\n"
+	<< "  -v                Each -v increases the verbose level.\n"
 	<< "  -t ts_freq        Frequency of time stamps in minutes, default is 2000 (off).\n"
 	<< "  -s time_step      Time interval of data points for track in seconds, default is 15.\n"
 	<< "  -i update_secs    In real-time mode, seconds between track updates, default is 30.\n"
@@ -122,7 +124,7 @@ parseRunstring(int argc, char** argv, Config& cfg)
       break;
 
     case 'v':
-      cfg.verbose = true;
+      cfg.verbose += 1;
       break;
 
     case 'f':
@@ -300,10 +302,15 @@ int main(int argc, char *argv[])
   acDatabase db;
   db.setConfig(cfg);
   osm.setConfig(cfg);
-  time_t last_kml = 0;
-  time_t last_json = 0;
+  ptime last_kml = from_time_t(0);
+  ptime last_json = from_time_t(0);
   while (1)
   {
+    ptime now = second_clock::universal_time();
+    if (cfg.verbose)
+    {
+      cerr << now << ": opening database to check for updates..." << endl;
+    }
     while (! db.openDatabase())
     {
       sleep(3);
@@ -311,9 +318,9 @@ int main(int argc, char *argv[])
 
     bool rewrite = db.fillAircraftTrack(track) && track.npoints() > 0;
     db.closeDatabase();
-    time_t now = time(0);
+    now = second_clock::universal_time();
 
-    if (now - last_kml >= cfg.update_interval_secs)
+    if (now - last_kml >= seconds(cfg.update_interval_secs))
     {
       last_kml = now;
       // Avoid writing a new track file if the track has not changed, and
@@ -331,11 +338,12 @@ int main(int argc, char *argv[])
 
       if (cfg.verbose && !rewrite)
       {
-	cerr << "Track has not changed, existing KML files not rewritten." << endl;
+	cerr << "Track has not changed, existing KML files not rewritten."
+	     << endl;
       }
     }
 
-    if (now - last_json >= cfg.position_interval_secs)
+    if (now - last_json >= seconds(cfg.position_interval_secs))
     {
       last_json = now;
       std::string filename = cfg.flightDataDir + "/position.json";
@@ -343,11 +351,13 @@ int main(int argc, char *argv[])
     }
 
     // Sleep until the next time for an update.
-    int delay = std::min(last_kml + cfg.update_interval_secs - now,
-			 last_json + cfg.position_interval_secs - now);
+    ptime next = std::min(last_kml + seconds(cfg.update_interval_secs),
+			  last_json + seconds(cfg.position_interval_secs));
+    int delay = (next - now).total_seconds();
     if (cfg.verbose)
     {
-      cerr << "Sleeping for " << delay << " seconds..." << endl;
+      cerr << now << ": sleeping for " << delay << " seconds..."
+	   << endl;
     }
     if (delay > 0)
       sleep(delay);

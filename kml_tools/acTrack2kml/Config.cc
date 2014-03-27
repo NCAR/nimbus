@@ -15,6 +15,7 @@ Config() :
   convertToFeet(1.0), 
   showit(true),
   onboard(false),
+  verbose(0),
   update_interval_secs(30),
   position_interval_secs(3)
 {
@@ -57,6 +58,6 @@ dump(std::ostream& out)
   out << "       netCDFinputFile: " << netCDFinputFile << "\n";
   out << "         Database host: " << database_host << "\n";
   out << "         Database name: " << dbname << "\n";
-  out << "          Verbose mode: " << verbose << "\n";
+  out << "         Verbose level: " << verbose << "\n";
 }
 

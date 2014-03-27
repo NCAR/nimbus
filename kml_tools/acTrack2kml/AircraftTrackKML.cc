@@ -735,7 +735,7 @@ setTrack(AircraftTrack* track_in)
   {
     cfg.TimeStep = track.projInfo.groundFeedDataRate;
   }
-  if (cfg.verbose)
+  if (cfg.verbose > 1)
     cerr << "KML.TimeStep = " << cfg.TimeStep << endl;
 }
 

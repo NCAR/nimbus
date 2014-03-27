@@ -98,7 +98,7 @@ loadDirectory(std::vector<std::string>& names)
   }
   query << ");";
 
-  if (cfg.verbose)
+  if (cfg.verbose > 1)
     cerr << query.str() << endl;
   PGresult* res = PQexec(db->_conn, query.str().c_str());
   int ntuples = PQntuples(res);
@@ -124,7 +124,7 @@ loadGlobalAttributes()
   // them up later as needed.
   query << "SELECT key, value FROM global_attributes;";
 
-  if (cfg.verbose)
+  if (cfg.verbose > 1)
     cerr << query.str() << endl;
   PGresult* res = PQexec(db->_conn, query.str().c_str());
   int ntuples = PQntuples(res);
@@ -165,7 +165,7 @@ addColumn(const std::string& name)
   // Add this name as a variable column.  If it's known in the directory,
   // then copy that Variable instance to get the units.  If not, then just
   // create a default.
-  if (cfg.verbose)
+  if (cfg.verbose > 1)
     cerr << "adding column " << name << endl;
   dir_t::iterator it = _directory.find(name);
   if (it != _directory.end())
@@ -204,7 +204,7 @@ setupVariables()
 
   loadDirectory(lookupnames);
   loadGlobalAttributes();
-  if (cfg.verbose)
+  if (cfg.verbose > 1)
     dump(cerr);
 
   const char** pvars;
@@ -369,7 +369,7 @@ fillProjectInfo(ProjectInfo& projInfo)
   if (dataRate <= 0)
     dataRate = 5;	// 5 second data is the default rate onboard.
   projInfo.groundFeedDataRate = dataRate;
-  if (cfg.verbose)
+  if (cfg.verbose > 1)
     cerr << "groundFeedDataRate set to " << dataRate << endl;
 }
 
@@ -447,7 +447,7 @@ fillAircraftTrack(AircraftTrack& track)
   string query = buildDataQueryString(track);
   int ntuples;
 
-  if (cfg.verbose)
+  if (cfg.verbose > 1)
   {
     cerr << "        dataQuery: " << query << endl;
     cerr << "              alt: " << variables[ALT].name

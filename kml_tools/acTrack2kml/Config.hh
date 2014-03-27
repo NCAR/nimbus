@@ -48,7 +48,7 @@ public:
 
   bool showit;
   bool onboard;
-  bool verbose;
+  int verbose;
 
   int update_interval_secs;
   int position_interval_secs;
