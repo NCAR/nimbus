@@ -5,6 +5,8 @@
 #include <cmath>
 #include <cstdio>
 #include <iostream>
+#include <sstream>
+#include <errno.h>
 
 OSM::
 OSM()
@@ -67,17 +69,29 @@ writePositionJSON(AircraftTrack& track, const std::string& filename)
   if ( strlen(output) )
   {
     FILE *fp;
+    int errnum = 0;
 
+    // Maybe better to write the whole contents once instead of two writes,
+    // in case that hangs up NFS.
+    strcat(output, "\n");
     if ( (fp = fopen(filename.c_str(), "w+")) )
     {
-      fprintf(fp, output);
-      fprintf(fp, "\n");
+      if (fprintf(fp, output) < 0)
+      {
+	errnum = errno;
+      }
       fclose(fp);
     }
     else
     {
-      std::cerr << "osm: error opening "
-		<< filename << std::endl;
+      errnum = errno;
+    }
+    if (errnum != 0)
+    {
+      std::ostringstream oss;
+      oss << "osm: error " << errnum << ": " << strerror(errnum)
+	  << ": " << filename;
+      std::cerr << oss.str() << std::endl;
     }
   }
 }
