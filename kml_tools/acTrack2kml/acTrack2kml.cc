@@ -4,24 +4,6 @@
  *
  * COPYRIGHT: University Corporation for Atmospheric Research, 2005-2012
  */
-#include <string>
-#include <vector>
-#include <iostream>
-#include <fstream>
-
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-
-using namespace std;
-
-// Output directories for .xml & .kml files.  Ground.
-static const string grnd_flightDataDir = "/net/www/docs/flight_data";
-static const string grnd_webHost = "www.eol.ucar.edu";
-
-// Output directories for .xml & .kml files.  Onboard.
-static const string onboard_flightDataDir = "/var/www/html/flight_data";
-static const string onboard_webHost = "acserver.raf.ucar.edu";
 
 #include "acDatabase.hh"
 #include "ncTrack.hh"
@@ -31,7 +13,27 @@ static const string onboard_webHost = "acserver.raf.ucar.edu";
 #include "AircraftTrackKML.hh"
 #include "osm.hh"
 
+#include <string>
+#include <vector>
+#include <iostream>
+#include <fstream>
+
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <unistd.h> // alarm()
+#include <signal.h>
+
+using namespace std;
 using namespace boost::posix_time;
+
+// Output directories for .xml & .kml files.  Ground.
+static const string grnd_flightDataDir = "/net/www/docs/flight_data";
+static const string grnd_webHost = "www.eol.ucar.edu";
+
+// Output directories for .xml & .kml files.  Onboard.
+static const string onboard_flightDataDir = "/var/www/html/flight_data";
+static const string onboard_webHost = "acserver.raf.ucar.edu";
 
 /* -------------------------------------------------------------------- */
 int usage(const char *argv0)
@@ -230,6 +232,49 @@ parseRunstring(int argc, char** argv, Config& cfg)
   return 0;
 }
 
+
+vector<string> startup_args;
+
+void
+store_args(int argc, char* argv[])
+{
+  startup_args.clear();
+  for (int i = 0; i < argc; ++i)
+  {
+    startup_args.push_back(argv[i]);
+  }
+}
+
+
+void
+handle_alarm(int sig)
+{
+  // Nothing to do but restart from scratch.
+  vector<char *> args;
+  for (unsigned int i = 0; i < startup_args.size(); ++i)
+  {
+    args.push_back((char*)(startup_args[i].c_str()));
+  }
+  std::cerr << "\n*** Restarting on alarm signal... ***\n" << std::endl;
+  execvp(args[0], &(args[0]));
+  exit(1);
+}
+
+void
+install_alarm_handler()
+{
+  struct sigaction sa;
+  struct sigaction oldsa;
+  sigset_t mask;
+
+  sa.sa_handler = handle_alarm;
+  sigemptyset(&mask);
+  sa.sa_mask = mask;
+  sa.sa_flags = 0;
+  sa.sa_restorer = 0;
+  sigaction(SIGALRM, &sa, &oldsa);
+}
+
 // build up config from command-line options
 // create our AircraftTrack "model"
 // if database:
@@ -254,6 +299,7 @@ int main(int argc, char *argv[])
   AircraftTrackKML kml;
   OSM osm;
 
+  store_args(argc, argv);
   if (argc == 1 || strstr(argv[1], "usage") || strstr(argv[1], "help"))
     return usage(argv[0]);
 
@@ -304,6 +350,7 @@ int main(int argc, char *argv[])
   osm.setConfig(cfg);
   ptime last_kml = from_time_t(0);
   ptime last_json = from_time_t(0);
+  install_alarm_handler();
   while (1)
   {
     ptime now = second_clock::universal_time();
@@ -315,6 +362,18 @@ int main(int argc, char *argv[])
     {
       sleep(3);
     }
+
+    // It is imperative that this loop not hang up, so use an alarm() to
+    // kill the process if the loop gets stuck.  I suspect that sometimes
+    // writing the KML file over NFS can get hung up, in which case it's
+    // better to kill the process and restart.  It's more heavy-handed than
+    // should be necessary, but oh well. The alarm() and sleep() call are
+    // not mixed in case sleep() uses alarm().  Someday it might be also
+    // necessary to re-exec the process in the signal handler, but this is
+    // a start.  The initial load of a large track can take a while, so
+    // this is a balance between minimizing gaps without restarting
+    // prematurely.
+    alarm(60);
 
     bool rewrite = db.fillAircraftTrack(track) && track.npoints() > 0;
     db.closeDatabase();
@@ -359,6 +418,7 @@ int main(int argc, char *argv[])
       cerr << now << ": sleeping for " << delay << " seconds..."
 	   << endl;
     }
+    alarm(0);
     if (delay > 0)
       sleep(delay);
   }
