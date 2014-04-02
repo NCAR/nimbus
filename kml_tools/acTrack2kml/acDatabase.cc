@@ -257,8 +257,10 @@ openDatabase()
 
   sprintf(conn_str, "host='%s' dbname='%s' user ='ads'", 
           cfg.database_host.c_str(), cfg.dbname.c_str());
-  if (cfg.verbose)
+  if (cfg.verbose > 1)
+  {
     cerr << "Connect string : [" << conn_str << "]" << endl;
+  }
   db->_conn = PQconnectdb(conn_str);
 
   /* check to see that the backend connection was successfully made
@@ -280,7 +282,10 @@ closeDatabase()
   if (db->_conn)
   {
     PQfinish(db->_conn);
-    cerr << "PQ database connection closed." << endl;
+    if (cfg.verbose > 1)
+    {
+      cerr << "PQ database connection closed." << endl;
+    }
     db->_conn = 0;
   }
 }

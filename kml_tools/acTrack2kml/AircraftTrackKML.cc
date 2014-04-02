@@ -283,7 +283,10 @@ WriteGoogleEarthKML(const std::string& finalfile)
     return;
   }
 
-  std::cout << "WriteGoogleEarthKML(" << finalfile << ", projectInfo);\n";
+  if (cfg.verbose)
+  {
+    cerr << "WriteGoogleEarthKML(" << finalfile << ", projectInfo);\n";
+  }
   ofstream googleEarth;
 
   string file = finalfile + ".tmp";

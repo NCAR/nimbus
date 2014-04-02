@@ -74,6 +74,8 @@ writePositionJSON(AircraftTrack& track, const std::string& filename)
     // Maybe better to write the whole contents once instead of two writes,
     // in case that hangs up NFS.
     strcat(output, "\n");
+    if (_config.verbose)
+      std::cerr << "writing " << filename << "..." << std::endl;
     if ( (fp = fopen(filename.c_str(), "w+")) )
     {
       if (fprintf(fp, output) < 0)
@@ -81,6 +83,8 @@ writePositionJSON(AircraftTrack& track, const std::string& filename)
 	errnum = errno;
       }
       fclose(fp);
+      if (_config.verbose)
+	std::cerr << "Done writing " << filename << std::endl;
     }
     else
     {
