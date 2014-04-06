@@ -70,7 +70,7 @@ void processArgs(int argc, char *argv[])
   if (argc < 2)
     Usage();
 
-  for (size_t aCnt = 1; aCnt < argc; ++aCnt)
+  for (int aCnt = 1; aCnt < argc; ++aCnt)
   {
     if (argv[aCnt][0] == '-')
     {
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
 // DMT CIP/PIP probes are run length encoded.  Decode here.
 int uncompress(unsigned char *dest, const unsigned char src[], int nbytes)
 {
-  int nslices = 0, d_idx = 0;
+  int d_idx = 0;
 
   static size_t nResidualBytes = 0;
   static unsigned char residualBytes[16];
@@ -198,9 +198,9 @@ void Output(const unsigned char buff[])
     size_t nSlices = uncompress(image, p2d->data, 4096);
 cout << "nSlices="<<nSlices<<endl;
 
-    for (int i = 0; i < nSlices; ++i)
+    for (size_t i = 0; i < nSlices; ++i)
     {
-      for (int j = bytesPerSlice-1; j >= 0; --j)
+      for (size_t j = bytesPerSlice-1; j >= 0; --j)
       {
         cout << hex << setw(2) << setfill('0') << (int)image[(i*bytesPerSlice) + j];
       }
@@ -222,7 +222,7 @@ void OutputParticleCount(pads_rec *p, size_t counts[], size_t n, bool output_mse
     cout << "." << setw(3) << setfill('0') << p->msec;
   cout << " - ";
 
-  for (int i = 0; i < n; ++i)
+  for (size_t i = 0; i < n; ++i)
   {
      cout << counts[i] << ' ';
      total += counts[i];
@@ -264,7 +264,7 @@ void ParticleCount(pads_rec *p2d, size_t nDiodes)
   unsigned char image[60000];
   size_t nSlices = uncompress(image, p2d->data, 4096);
 
-  for (int i = 0; i < nSlices; ++i)
+  for (size_t i = 0; i < nSlices; ++i)
   {
     if (memcmp(&image[i*bytesPerSlice], syncWord, nSyncB) == 0 && sizeCounter > 0)
     {

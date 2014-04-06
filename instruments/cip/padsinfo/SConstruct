@@ -4,7 +4,7 @@ import os
 env = Environment(platform = 'posix',ENV= os.environ)
 env['JLOCAL'] = os.environ['JLOCAL']
 
-env.Append(CXXFLAGS='-g -Werror')
+env.Append(CXXFLAGS='-g -Werror -Wall')
 env.Append(CPPPATH="$JLOCAL/include")
 
 env.Program('padsinfo.cc')
