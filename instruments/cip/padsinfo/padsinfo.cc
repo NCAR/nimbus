@@ -171,6 +171,27 @@ int uncompress(unsigned char *dest, const unsigned char src[], int nbytes)
 }
 
 /* -------------------------------------------------------------------- */
+long long CIPTimeWord_Microseconds(unsigned char *p)
+{
+  long long t = *(long long *)p & 0x000000FFFFFFFFFFLL;
+  long long output;
+
+  int hour = (t >> 35) & 0x001F;
+  int minute = (t >> 29) & 0x003F;
+  int second = (t >> 23) & 0x003F;
+  int msec = (t >> 13) & 0x03FF;
+  int usec = t & 0x1FFF;
+  output = (hour * 3600 + minute * 60 + second);
+  output *= 1000000;
+  output += msec * 1000;
+  output += usec / 8;	// 8 MHz clock or 125nS
+
+//printf("%02d:%02d:%02d.%03d - (%lld)\n", hour, minute, second, msec, output);
+
+  return output;
+}
+
+/* -------------------------------------------------------------------- */
 void Output(const unsigned char buff[])
 {
   pads_rec *p2d = (pads_rec *)buffer;
@@ -196,7 +217,6 @@ void Output(const unsigned char buff[])
     unsigned char image[60000];
 
     size_t nSlices = uncompress(image, p2d->data, 4096);
-cout << "nSlices="<<nSlices<<endl;
 
     for (size_t i = 0; i < nSlices; ++i)
     {
