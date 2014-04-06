@@ -129,7 +129,7 @@ int uncompress(unsigned char *dest, const unsigned char src[], int nbytes)
     nResidualBytes = 0;
   }
 
-  for (int i = 0; i < 4096; ++i)
+  for (int i = 0; i < nbytes; ++i)
   {
     unsigned char b = src[i];
 
