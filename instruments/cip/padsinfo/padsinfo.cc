@@ -213,14 +213,14 @@ void Output(const unsigned char buff[])
 
   if (cfg.fullHex)
   {
-    size_t bytesPerSlice = nDiodes / 8;
+    int bytesPerSlice = nDiodes / 8;
     unsigned char image[60000];
 
     size_t nSlices = uncompress(image, p2d->data, 4096);
 
     for (size_t i = 0; i < nSlices; ++i)
     {
-      for (size_t j = bytesPerSlice-1; j >= 0; --j)
+      for (int j = bytesPerSlice-1; j >= 0; --j)
       {
         cout << hex << setw(2) << setfill('0') << (int)image[(i*bytesPerSlice) + j];
       }
