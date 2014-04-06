@@ -139,6 +139,7 @@ void Output(char buff[])
     case 0x4334:	// USB 25um C probe.
     case 0x4335:	// USB 25um C probe (2nd one).
     case 0x4336:	// USB 10um C probe.
+    case 0x4338:	// DMT CIP
     case 0x5034:	// USB 200um P Probe.
       nDiodes = 64;
       break;
