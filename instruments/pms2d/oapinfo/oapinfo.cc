@@ -160,8 +160,10 @@ void Output(char buff[])
     ParticleCount(p2d, nDiodes);
   else
   {
-    cout << "  " << ((char*)p2d)[0] << ((char*)p2d)[1] << " ";
-    cout << setw(2) << setfill('0') << ntohs(p2d->hour) << ':' << ntohs(p2d->minute) << ':' << ntohs(p2d->second);
+    cout << dec << "  " << ((char*)p2d)[0] << ((char*)p2d)[1] << " ";
+    cout << setw(2) << setfill('0') << ntohs(p2d->hour) << ':';
+    cout << setw(2) << setfill('0') << ntohs(p2d->minute) << ':';
+    cout << setw(2) << setfill('0') << ntohs(p2d->second);
     cout << '.' << setw(3) << setfill('0') << ntohs(p2d->msec);
     cout << ", tas=" << ntohs(p2d->tas) << endl;
   }
