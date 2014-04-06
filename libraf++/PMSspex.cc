@@ -14,7 +14,7 @@ DESCRIPTION:
 
 NOTES:		
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2010
+COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2014
 -------------------------------------------------------------------------
 */
 
@@ -35,15 +35,12 @@ PMSspex::PMSspex(const std::string fileName)
   FILE	*fp;
 
   if ((fp = fopen(fileName.c_str(), "r")) == NULL)
-    {
     std::cerr << "PMSspex: Can't open " << fileName << ".\n";
-    exit(1);
-    }
 
 
   /* Read file and strip out comments.
    */
-  for (cnt = 0; fgets(PMSbuffer, 512, fp); )
+  for (cnt = 0; fp && fgets(PMSbuffer, 512, fp); )
     {
     if (PMSbuffer[0] == COMMENT)
       continue;
@@ -76,7 +73,7 @@ PMSspex::PMSspex(const std::string fileName)
       }
     }
 
-  fclose(fp);
+  if (fp) fclose(fp);
 
 
   PMSfile = new char *[cnt+1];
