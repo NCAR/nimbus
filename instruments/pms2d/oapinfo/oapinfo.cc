@@ -44,7 +44,7 @@ public:
 } cfg;
 
 void Output(char buff[]);
-void ParticleCount(P2d_rec *p2d, int nDiodes);
+void ParticleCount(P2d_rec *p2d, size_t nDiodes);
 
 
 void Usage()
@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
 void Output(char buff[])
 {
   P2d_rec *p2d = (P2d_rec *)buffer;
-  int nDiodes = 0;
+  size_t nDiodes = 0;
 
   switch (ntohs(*(unsigned short *)buff))
   {
@@ -170,8 +170,8 @@ void Output(char buff[])
 
   if (cfg.fullHex)
   {
-    int bytesPerSlice = nDiodes / 8;
-    int nSlices = 4096 / bytesPerSlice;
+    size_t bytesPerSlice = nDiodes / 8;
+    size_t nSlices = 4096 / bytesPerSlice;
     for (int i = 0; i < nSlices; ++i)
     {
       for (int j = 0; j < bytesPerSlice; ++j)
@@ -184,11 +184,18 @@ void Output(char buff[])
 }
 
 /* -------------------------------------------------------------------- */
-void OutputParticleCount(P2d_hdr *p, size_t counts[], size_t n)
+void OutputParticleCount(P2d_hdr *p, size_t counts[], size_t n, bool output_msec)
 {
   int total = 0;
 
-  cout << setw(2) << setfill('0') << ntohs(p->hour) << ':' << ntohs(p->minute) << ':' << ntohs(p->second) << " - ";
+  cout << setw(2) << setfill('0') << p->hour << ':';
+  cout << setw(2) << setfill('0') << p->minute << ':';
+  cout << setw(2) << setfill('0') << p->second;
+
+  if (output_msec)
+    cout << "." << setw(3) << setfill('0') << p->msec;
+  cout << " - ";
+
   for (int i = 0; i < n; ++i)
   {
      cout << counts[i] << ' ';
@@ -203,7 +210,7 @@ static const char syncWord[] = { 0xAA, 0xAA, 0xAA };
 static const size_t nSyncB = 3;
 
 
-void ParticleCount(P2d_rec *p2d, int nDiodes)
+void ParticleCount(P2d_rec *p2d, size_t nDiodes)
 {
   static bool firstTime = true;
   static size_t	perSecondCounts[512], sizeCounter = 0;
@@ -221,13 +228,13 @@ void ParticleCount(P2d_rec *p2d, int nDiodes)
   // Output 1 second totals.
   if (memcmp((void *)&p2d->hour, (void *)&prevRec.hour, 6) != 0)
   {
-    OutputParticleCount(&prevRec, perSecondCounts, nDiodes);
+    OutputParticleCount(&prevRec, perSecondCounts, nDiodes, false);
     memset((void *)perSecondCounts, 0, sizeof(perSecondCounts));
     cout << endl;
   }
 
-  int bytesPerSlice = nDiodes / 8;
-  int nSlices = 4096 / bytesPerSlice;
+  size_t bytesPerSlice = nDiodes / 8;
+  size_t nSlices = 4096 / bytesPerSlice;
   for (int i = 0; i < nSlices; ++i)
   {
     // Check both little and big endian.
@@ -244,6 +251,6 @@ void ParticleCount(P2d_rec *p2d, int nDiodes)
   }
 
   cout << ((char*)p2d)[0] << ((char*)p2d)[1] << " - ";
-  OutputParticleCount((P2d_hdr *)p2d, recordCounts, nDiodes);
+  OutputParticleCount((P2d_hdr *)p2d, recordCounts, nDiodes, true);
   memcpy((void *)&prevRec, (void *)p2d, sizeof(P2d_hdr));
 }
