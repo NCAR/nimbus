@@ -14,6 +14,7 @@
 #define PMS2D_C4         0x4334         // First RAF 64 diode 25 um Fast 2DC
 #define PMS2D_C5         0x4335         // Second RAF 64 diode 25 um Fast 2DC
 #define PMS2D_C6         0x4336         // First RAF 64 diode 10 um Fast 2DC
+#define PMS2D_C8         0x4338         // First DMT CIP probe.
 #define PMS2D_G1         0x4731		// First 2D Greyscale; unused to date
 #define PMS2D_H1         0x4831		// SPEC HVPS
 #define PMS2D_P1         0x5031		// First PMS-2DP
@@ -83,6 +84,8 @@ public:
    * will have this suffix.  See process2d(1) program
    */
   void AddProbe(uint16_t id, int resolution, int nDiodes, std::string serialnumber, std::string suffix);
+
+  Probe ProbeData(size_t indx)		{ return _probelist[indx]; }
 
   void WriteHeader();
   void WriteRecord(const OAP_rec&);

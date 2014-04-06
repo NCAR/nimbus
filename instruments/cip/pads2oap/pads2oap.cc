@@ -27,7 +27,11 @@ void defineProbes(OAPfile& oap)
   // Need a way to pass in probe list on command line....
 
   // DYNAMO setup; P4, 100um, 64 diodes, guessing serial#.
-  oap.AddProbe(PMS2D_P4, 100, 64, "2DP100", "_RWI");
+//  oap.AddProbe(PMS2D_P4, 100, 64, "2DP100", "_RWI");
+
+
+  // NCAR RAL - processing workshop.
+  oap.AddProbe(PMS2D_C8, 25, 64, "CIP001", "_RWI");
 
   // IDEAS-4
 //  oap.AddProbe(PMS2D_C4, 25, 64, "F2DC001", "_LWI");
@@ -76,7 +80,7 @@ int main(int argc, char *argv[])
 
   for (cnt = 0; fread(&pads_rec, sizeof(PADS_rec), 1, in); ++cnt)
   {
-    ConvertPADStoOAP(pads_rec, oap_rec, PMS2D_P1);
+    ConvertPADStoOAP(pads_rec, oap_rec, oap.ProbeData(0).id);
 
     if (cnt == 0)
     {
@@ -186,15 +190,15 @@ void OAPfile::WriteHeader()
   if (_flightdate.length())
     header << " <FlightDate>" << _flightdate << "</FlightDate>\n";
 
-  for (int i = 0; i < _probelist.size(); ++i)
+  for (size_t i = 0; i < _probelist.size(); ++i)
   {
     const char *id = (char *)&_probelist[i].id;
     header << "  <probe id=\""
-	<< id[1] << id[0]  << "\" type=\"TwoDP\" resolution=\""
+	<< id[1] << id[0]  << "\" type=\"CIP\" resolution=\""
 	<< _probelist[i].resolution << "\" nDiodes=\""
 	<< _probelist[i].nDiodes << "\" serialnumber=\""
 	<< _probelist[i].serialnumber << "\" suffix=\""
-	<< _probelist[i].suffix << "\"/>\n";
+	<< _probelist[i].suffix << "\" endian=\"little\" rle=\"true\"/>\n";
   }
 
   header << "</OAP>\n";
