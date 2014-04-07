@@ -36,7 +36,7 @@ using namespace std;
 const int binoffset = 1;  // Offset for RAF conventions, number of empty bins before counting begins 
 const string markerline = "</OAP>";  // Marks end of XML header
 
-const char syncString[3] = { 0xaa, 0xaa, 0xaa };
+const char syncString[8] = { 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa };
 
 
 struct struct_particle {
@@ -62,6 +62,84 @@ typedef struct type_buffer {
     unsigned char image[4096];
 } P2d_rec;
 
+
+
+/* -------------------------------------------------------------------- */
+long long CIPTimeWord_Microseconds(long long slice)
+{
+  long long output;
+
+  int hour = (slice >> 35) & 0x001F;
+  int minute = (slice >> 29) & 0x003F;
+  int second = (slice >> 23) & 0x003F;
+  int msec = (slice >> 13) & 0x03FF;
+  int usec = slice & 0x1FFF;
+  output = (hour * 3600 + minute * 60 + second);
+  output *= 1000000;
+  output += msec * 1000;
+  output += usec / 8;   // 8 MHz clock or 125nS
+
+//printf("%02d:%02d:%02d.%03d - (%lld)\n", hour, minute, second, msec, output);
+
+  return output;
+}
+
+/* -------------------------------------------------------------------- */
+// DMT CIP/PIP probes are run length encoded.  Decode here.
+int uncompressCIP(unsigned char *dest, const unsigned char src[], int nbytes)
+{
+  int d_idx = 0;
+
+  static size_t nResidualBytes = 0;
+  static unsigned char residualBytes[16];
+
+  if (nResidualBytes)
+  {
+    memcpy(dest, residualBytes, nResidualBytes);
+    d_idx = nResidualBytes;
+    nResidualBytes = 0;
+  }
+
+  for (int i = 0; i < nbytes; ++i)
+  {
+    unsigned char b = src[i];
+
+    int nBytes = (b & 0x1F) + 1;
+
+    if ((b & 0x20))     // This is a dummy byte; for alignment purposes.
+    {
+      continue;
+    }
+
+    if ((b & 0xE0) == 0)
+    {
+      memcpy(&dest[d_idx], &src[i+1], nBytes);
+      d_idx += nBytes;
+      i += nBytes;
+    }
+
+    if ((b & 0x80))
+    {
+      memset(&dest[d_idx], 0, nBytes);
+      d_idx += nBytes;
+    }
+    else
+    if ((b & 0x40))
+    {
+      memset(&dest[d_idx], 0xFF, nBytes);
+      d_idx += nBytes;
+    }
+  }
+
+  if (d_idx % 8)
+  {
+    size_t idx = d_idx / 8 * 8;
+    nResidualBytes = d_idx % 8;
+    memcpy(residualBytes, &dest[idx], nResidualBytes);
+  }
+
+  return d_idx / 8;     // return number of slices.
+}
 
 
 //--------Find index for maximum element of an array---------
@@ -542,8 +620,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   // allocate space for roi.
   int bytesPerSlice = probe.nDiodes / 8;
   int slicesPerRecord = 4096 / bytesPerSlice;
-  short *roi[slicesPerRecord];
-  for (int i = 0; i < slicesPerRecord; ++i)
+  short *roi[slicesPerRecord*3];
+  for (int i = 0; i < slicesPerRecord*3; ++i)
     roi[i] = new short[probe.nDiodes];
 
   probe.ComputeSamplearea(cfg.recon);
@@ -605,6 +683,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   do getline(input_file, line); while (line.compare(markerline)!=0);
 
   int buffcount;
+  unsigned char *image_buff = new unsigned char[50000];
+  double timeline_divisor = 12.0e+06;	// Default to Fast2D value.
 
   for (buffcount = 0; !input_file.eof(); ++buffcount)
   {
@@ -617,6 +697,15 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
      if (input_file.gcount() < (int)sizeof(buffer))
        break;
+
+
+     // Copy off / uncompress data buffer.
+     int nSlices = slicesPerRecord;
+     if (probe.rle)
+       nSlices = uncompressCIP(image_buff, buffer.image, sizeof(buffer.image));
+     else
+       memcpy(image_buff, buffer.image, sizeof(buffer.image));
+
 
      /* set next buffer time.  3V-CPI will decompress into many buffers with
       * same time stamp.  don't assign lastbuffertime until we have processed
@@ -651,32 +740,46 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
      if (cfg.debug)
        cout << "New buffer : " << fixed << buffertime << " msec=" << ntohs(buffer.msec) << endl;
 
+
      // Scroll through each slice, look for sync/time slices
-     for (int islice = 0; islice < slicesPerRecord; islice++)
+     for (int islice = 0; islice < nSlices; islice++)
      {
         bool syncWord = false;
-        double timeline_divisor = 12.0e+06;	// Default to Fast2D value.
 
         if (probetype == '3')		// 3V-CPI
         {
-           slice = *(unsigned long long *)&buffer.image[islice*bytesPerSlice];
+           slice = *(unsigned long long *)&image_buff[islice*bytesPerSlice];
 
            // Stored little-endian, check far side of 16 bytes.
-           if (memcmp(&buffer.image[(islice*bytesPerSlice)+bytesPerSlice-3], syncString, 3) == 0) {
+           if (memcmp(&image_buff[(islice*bytesPerSlice)+bytesPerSlice-3], syncString, 3) == 0) {
               timeline = slice & 0x000000ffffffffffULL;
               timeline_divisor = 2.0e+07;
               syncWord = true;
            }
         }
-        else				// Fast2D C/P
+        else
+        if (probetype == 'C' && probenumber == '8')	// CIP
         {
-           slice = endianswap_ull(((unsigned long long *)buffer.image)[islice]);
+           slice = ((unsigned long long *)image_buff)[islice];
 
            // Stored big-endian, check near side of 8 bytes.
-           if (memcmp(&buffer.image[islice*bytesPerSlice], syncString, 3) == 0) {
+           if (memcmp(&image_buff[islice*bytesPerSlice], syncString, 8) == 0) {
+              syncWord = true;
+              ++islice;
+              slice = *(unsigned long long *)&image_buff[islice*bytesPerSlice];
+              timeline = CIPTimeWord_Microseconds(slice);
+              timeline_divisor = 1.0e+06;	// already in microseconds
+           }
+        }
+        else					// Fast2D C/P
+        {
+           slice = endianswap_ull(((unsigned long long *)image_buff)[islice]);
+
+           // Stored big-endian, check near side of 8 bytes.
+           if (memcmp(&image_buff[islice*bytesPerSlice], syncString, 3) == 0) {
               syncWord = true;
               timeline = slice & 0x000000ffffffffffULL;
-              timeline_divisor = 12.0e+06;
+              timeline_divisor = 12.0e+06;	// 12Mhz clock
            }
         }
 
@@ -809,15 +912,15 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
            {
              for (int byte = bytesPerSlice-1; byte >= 0; byte--)
                for (int bit = 7; bit >= 0; bit--)
-                 roi[slice_count][diode++] = (bool)(buffer.image[islice*bytesPerSlice+byte] & (0x01 << bit));
+                 roi[slice_count][diode++] = (bool)(image_buff[islice*bytesPerSlice+byte] & (0x01 << bit));
            }
            else
            {
              for (int byte = 0; byte < bytesPerSlice; byte++)
                for (int bit = 7; bit >= 0; bit--)
-                 roi[slice_count][diode++] = (bool)(buffer.image[islice*bytesPerSlice+byte] & (0x01 << bit));
+                 roi[slice_count][diode++] = (bool)(image_buff[islice*bytesPerSlice+byte] & (0x01 << bit));
            }
-           slice_count=min(slice_count+1, slicesPerRecord-1);  // Increment slice_count, limit to 511
+           slice_count=min(slice_count+1, nSlices-1);  // Increment slice_count, limit to 511
         }
      } // end slice loop
 
@@ -833,7 +936,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
 
   // Free space.
-  for (int i = 0; i < slicesPerRecord; ++i)
+  delete [] image_buff;
+  for (int i = 0; i < slicesPerRecord*3; ++i)
     delete [] roi[i];
 
 
@@ -1083,6 +1187,7 @@ void ParseHeader(ifstream & input_file, Config & cfg, vector<ProbeInfo> & probe_
       cfg.flightDate = extractElement(line, "FlightDate");
 
     if (line.find("Fast2D") != string::npos ||	// Found a line describing a FAST2D probe
+        line.find("CIP") != string::npos ||	// or a DMT CIP
         line.find("3V-CPI") != string::npos)	// or a 3V-CPI
     {
       int ndiodes = atoi(extractAttribute(line, "nDiodes").c_str());
