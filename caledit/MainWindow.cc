@@ -1973,9 +1973,13 @@ void MainWindow::exportInstrument(int row)
     foreach (QString coeff, list_cal)
         ostr << " " << std::setw(9) << coeff.toStdString();
 
-    ostr << " # " << QString(getenv("USERNAME")).toStdString();
-    ostr << " " << modelData(row, clm_project_name).toStdString();
-    ostr << " " << modelData(row, clm_comment).toStdString();
+    ostr << " # " << QString(getenv("USER")).toStdString();
+    QString sernum = modelData(row, clm_serial_number);
+    ostr << " S/N:" << sernum.toStdString();
+    QString projname = modelData(row, clm_project_name);
+    ostr << " " << projname.toStdString();
+    QString comment = modelData(row, clm_comment);
+    ostr << ":" << comment.toStdString();
     ostr << std::endl;
 
     QString filename = calfile_dir;
