@@ -11,6 +11,8 @@
 class ProbeInfo
 {
 public:
+  enum ProbeType { UNKNOWN, PMS2D, HVPS, GREYSCALE, FAST2D, CIP };
+
   ProbeInfo(std::string new_id, std::string sn, int ndiodes, float res,
 		std::string sfx, int binoffset, int numbins)
 
@@ -18,16 +20,21 @@ public:
 	numBins(numbins), firstBin(binoffset), lastBin(numbins), armWidth(6.1),
 	dof_const(2.37), rle(false)
   {
-    if (id[0] == 'P') {		// 2DP
+    if (id[0] == 'P') {		// 2DP (P1 - P4)
       armWidth = 26.1;
     }
     if (id[0] == '3') {		// 3V-CPI
       armWidth = 5.08;
       dof_const = 5.13;
     }
-    if (id[1] == '8') {		// CIP
+    if (id[1] == '8') {		// CIP (C8)
       rle = true;
       armWidth = 10.0;
+      if (id[0] == 'P')
+      {
+        resolution = 100.0;
+        armWidth = 26.0;	// PIP (P8)
+      }
 //      dof_const = 5.13;
     }
   }

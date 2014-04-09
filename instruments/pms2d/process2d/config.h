@@ -10,7 +10,7 @@
 class Config
 {
 public:
-  Config() : nOutputBins(128), nInterarrivalBins(40), shattercorrect(true), recon(true), smethod('c'), verbose(false), debug(false) {}
+  Config() : nOutputBins(128), nInterarrivalBins(40), firstBin(0), shattercorrect(true), recon(true), smethod('c'), verbose(false), debug(false) {}
 
   std::string inputFile;
   std::string outputFile;
@@ -25,6 +25,8 @@ public:
 
   int nOutputBins;
   int nInterarrivalBins;
+
+  int firstBin;
 
   bool shattercorrect;
   bool recon;           // Particle reconstruction

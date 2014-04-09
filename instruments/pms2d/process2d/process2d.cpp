@@ -88,10 +88,28 @@ long long CIPTimeWord_Microseconds(long long slice)
 // DMT CIP/PIP probes are run length encoded.  Decode here.
 int uncompressCIP(unsigned char *dest, const unsigned char src[], int nbytes)
 {
-  int d_idx = 0;
+  int d_idx = 0, i = 0;
 
   static size_t nResidualBytes = 0;
   static unsigned char residualBytes[16];
+
+  static bool firstRecord = true;
+
+//  if (firstRecord)
+  if (0)
+  {
+    firstRecord = false;
+    for (i = 0; i < nbytes; ++i)
+    {
+      if (memcmp(&src[i], syncString, 8) == 0)
+      {
+        i += 16;	// skip this sync plus the timing word.
+printf("first sync word @ offset %d : %02x\n", i, src[i]);
+        break;
+      }
+    }
+  }
+
 
   if (nResidualBytes)
   {
@@ -100,7 +118,7 @@ int uncompressCIP(unsigned char *dest, const unsigned char src[], int nbytes)
     nResidualBytes = 0;
   }
 
-  for (int i = 0; i < nbytes; ++i)
+  for (; i < nbytes; ++i)
   {
     unsigned char b = src[i];
 
@@ -1213,6 +1231,9 @@ void ParseHeader(ifstream & input_file, Config & cfg, vector<ProbeInfo> & probe_
         thisProbe.lastBin = atoi(s.c_str());
       }
 
+      if (cfg.firstBin > 0)	// command line over-ride.
+        thisProbe.firstBin = cfg.firstBin;
+
       probe_list.push_back(thisProbe);
     }
   } while ((line.compare(markerline)!=0) && (!input_file.eof()));  
@@ -1227,6 +1248,7 @@ void processArgs(int argc, char *argv[], Config & config)
      string arg = argv[i];
      if ((arg.find("-sta") == 0) && (i<(argc-1))) config.starttime=atoi(argv[++i]); else
      if ((arg.find("-sto") == 0) && (i<(argc-1))) config.stoptime=atoi(argv[++i]); else
+     if (arg.find("-fb") == 0) config.firstBin=atoi(argv[++i]); else
      if (arg.find("-n") == 0) config.shattercorrect=0; else
      if (arg.find("-a") == 0) config.recon=0; else
      if (arg.find("-x") == 0) config.smethod='x'; else
@@ -1255,6 +1277,8 @@ int usage(const char* argv0)
   cerr << "         Require particles to be fully imaged"<<endl;
   cerr << "   -noshattercorrect"<<endl;
   cerr << "         Turn off shattering rejection and corrections"<<endl;
+  cerr << "   -fb #"<<endl;
+  cerr << "         Set first bin for accumulations and totals."<<endl;
   cerr << "   -verbose"<<endl;
   cerr << "         Send extra output to console"<<endl;;
   cerr << "   -o file_name"<<endl;
