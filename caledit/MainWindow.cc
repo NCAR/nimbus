@@ -2107,7 +2107,7 @@ void MainWindow::exportAnalog(int row)
     // extract temperature from the btmRow
     QString temperature = modelData(btmRow, clm_temperature);
 
-    // extract cal_date from channel 0
+    // extract cal_date and comment from channel 0
     int chn0idx = -1;
     QModelIndexList rowList = _table->selectionModel()->selectedRows();
     foreach (QModelIndex rowIndex, rowList) {
@@ -2117,11 +2117,13 @@ void MainWindow::exportAnalog(int row)
     }
     cal_date = modelData(chn0idx, clm_cal_date);
     ut = QDateTime::fromString(cal_date, Qt::ISODate);
+    QString comment = modelData(chn0idx, clm_comment);
 
     // record results to the device's CalFile
     std::ostringstream ostr;
     ostr << std::endl;
     ostr << "# temperature: " << temperature.toStdString() << std::endl;
+    ostr << "# Comment: " << comment.toStdString() << std::endl;
     ostr << "#  Date              Gain  Bipolar";
     for (uint ix=0; ix<8; ix++)
         ostr << "  CH" << ix << "-off   CH" << ix << "-slope";
