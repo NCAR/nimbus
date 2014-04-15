@@ -2039,8 +2039,9 @@ void MainWindow::exportAnalog(int row)
         ut = QDateTime::fromString(cal_date, Qt::ISODate);
         qDebug() << "| " << ut << " - " << ct << " | = "
                  << std::abs(ut.secsTo(ct))
-                 << " > " << 12*60*60;
-        if (std::abs(ut.secsTo(ct)) > 12*60*60) break;
+                 << " > " << 72*60*60;
+        // Calibrations should be within 3 days of one another
+        if (std::abs(ut.secsTo(ct)) > 72*60*60) break;
 
         cal = modelData(topRow, clm_cal);
         if (rxCoeff2.indexIn(cal) == -1) {
@@ -2073,8 +2074,9 @@ void MainWindow::exportAnalog(int row)
         ut = QDateTime::fromString(cal_date, Qt::ISODate);
         qDebug() << "| " << ut << " - " << ct << " | = "
                  << std::abs(ut.secsTo(ct))
-                 << " > " << 12*60*60;
-        if (std::abs(ut.secsTo(ct)) > 12*60*60) break;
+                 << " > " << 72*60*60;
+        // Calibrations should be within 3 days of one another
+        if (std::abs(ut.secsTo(ct)) > 72*60*60) break;
 
         cal = modelData(btmRow, clm_cal);
         if (rxCoeff2.indexIn(cal) == -1) {
