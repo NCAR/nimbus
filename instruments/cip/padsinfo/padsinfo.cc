@@ -37,6 +37,10 @@ struct pads_rec {
 typedef struct pads_rec pads_rec;
 
 
+static const unsigned char syncWord[] = { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA };
+static const size_t nSyncB = 8;
+
+
 using namespace std;
 
 unsigned char buffer[50000];
@@ -117,10 +121,16 @@ int main(int argc, char *argv[])
 // DMT CIP/PIP probes are run length encoded.  Decode here.
 int uncompress(unsigned char *dest, const unsigned char src[], int nbytes)
 {
-  int d_idx = 0;
+  int d_idx = 0, i = 0;
 
+  static size_t nNextCopyBytes = 0;
   static size_t nResidualBytes = 0;
   static unsigned char residualBytes[16];
+
+  if (nResidualBytes > 0 && nNextCopyBytes > 0)
+  {
+printf("uncompressCIP: invalid, both nResidualBytes & nNextCopyBytes greater than zero!\n");
+  }
 
   if (nResidualBytes)
   {
@@ -129,7 +139,17 @@ int uncompress(unsigned char *dest, const unsigned char src[], int nbytes)
     nResidualBytes = 0;
   }
 
-  for (int i = 0; i < nbytes; ++i)
+  if (nNextCopyBytes)
+  {
+printf("uncompressCIP: going past 4096.\n");
+    memcpy(&dest[d_idx], src, nNextCopyBytes);
+    d_idx += nNextCopyBytes;
+    i = nNextCopyBytes;
+    nNextCopyBytes = 0;
+  }
+
+
+  for (; i < nbytes; ++i)
   {
     unsigned char b = src[i];
 
@@ -142,6 +162,11 @@ int uncompress(unsigned char *dest, const unsigned char src[], int nbytes)
 
     if ((b & 0xE0) == 0)
     {
+      if (i + nBytes > nbytes)
+      {
+        nNextCopyBytes = i + nBytes - nbytes;
+        nBytes -= nNextCopyBytes;
+      }
       memcpy(&dest[d_idx], &src[i+1], nBytes);
       d_idx += nBytes;
       i += nBytes;
@@ -158,6 +183,21 @@ int uncompress(unsigned char *dest, const unsigned char src[], int nbytes)
       memset(&dest[d_idx], 0xFF, nBytes);
       d_idx += nBytes;
     }
+  }
+
+  // Align data.  Find a sync word and put record on mod 8.
+  for (i = 0; i < d_idx; ++i)
+  {
+     if (memcmp(&dest[i], syncWord, 8) == 0)
+     {
+       int n = (&dest[i] - dest) % 8;
+       if (n > 0)
+       {
+         memmove(dest, &dest[n], d_idx);
+         d_idx -= n;
+       }
+       break;
+     }
   }
 
   if (d_idx % 8)
@@ -252,10 +292,6 @@ void OutputParticleCount(pads_rec *p, size_t counts[], size_t n, bool output_mse
 }
 
 /* -------------------------------------------------------------------- */
-static const unsigned char syncWord[] = { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA };
-static const size_t nSyncB = 8;
-
-
 void ParticleCount(pads_rec *p2d, size_t nDiodes)
 {
   static bool firstTime = true;

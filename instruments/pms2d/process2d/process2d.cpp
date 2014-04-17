@@ -93,23 +93,6 @@ int uncompressCIP(unsigned char *dest, const unsigned char src[], int nbytes)
   static size_t nResidualBytes = 0;
   static unsigned char residualBytes[16];
 
-  static bool firstRecord = true;
-
-//  if (firstRecord)
-  if (0)
-  {
-    firstRecord = false;
-    for (i = 0; i < nbytes; ++i)
-    {
-      if (memcmp(&src[i], syncString, 8) == 0)
-      {
-        i += 16;	// skip this sync plus the timing word.
-printf("first sync word @ offset %d : %02x\n", i, src[i]);
-        break;
-      }
-    }
-  }
-
 
   if (nResidualBytes)
   {
@@ -147,6 +130,21 @@ printf("first sync word @ offset %d : %02x\n", i, src[i]);
       memset(&dest[d_idx], 0xFF, nBytes);
       d_idx += nBytes;
     }
+  }
+
+  // Align data.  Find a sync word and put record on mod 8.
+  for (i = 0; i < d_idx; ++i)
+  {
+     if (memcmp(&dest[i], syncString, 8) == 0)
+     {
+       int n = (&dest[i] - dest) % 8;
+       if (n > 0)
+       {
+         memmove(dest, &dest[n], d_idx);
+         d_idx -= n;
+       }
+       break;
+     }
   }
 
   if (d_idx % 8)
