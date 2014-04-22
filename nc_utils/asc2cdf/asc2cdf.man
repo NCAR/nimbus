@@ -4,7 +4,7 @@
 .SH NAME
 asc2cdf \- ASCII to netCDF converter
 .SH SYNOPSIS
-asc2cdf [-d yyyy-mm-dd] [-b time_t] [-g globalAttrFile] [-a] [-l] [-m] [-r
+asc2cdf [-d yyyy-mm-dd] [-b time_t] [-g globalAttrFile] [-a] [-i] [-l] [-m] [-r
 n] [-s n] [-v] [-h] [-:] ASCII_file netCDF_file
 .SH DESCRIPTION
 .B asc2cdf 
@@ -16,6 +16,9 @@ names, and time in the HH:MM:SS format in the left column.
 .PP
 The -a option tells asc2cdf that the input file will be following the NASA
 Data Exchange Format (Ames).
+.PP
+The -i option tells asc2cdf that the input file will be following the ICARTT
+format.   This is a CSV derivative of Ames DEF.
 .PP
 The -g option tells netCDF to read a file containing key/value pairs to
 be added as global attributes to the netCDF.  e.g.
