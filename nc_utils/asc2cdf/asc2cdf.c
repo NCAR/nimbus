@@ -184,9 +184,6 @@ int main(int argc, char *argv[])
     if (prevSecond == -1) // 1st time through loop.
     {
       firstSecond = int(currSecond);
-//      if (strlen(FlightDate) > 0)
-      if (fileType != NASA_AMES)
-        BaseTime += int(currSecond);
     }
 
     // Watch for midnight wrap around.
@@ -215,8 +212,8 @@ int main(int argc, char *argv[])
       }
 
     prevSecond = int(currSecond);
-    dataValue = currSecond - firstSecond;
-    size_t rec = int(dataValue);
+    dataValue = currSecond;
+    size_t rec = int(dataValue) - firstSecond;
     status = nc_put_var1_float(ncid, timeVarID, &rec, &dataValue);
     if (status != NC_NOERR) handle_error(status);
     status = nc_put_var1_float(ncid, timeOffsetID, &rec, &dataValue);

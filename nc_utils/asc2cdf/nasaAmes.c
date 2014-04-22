@@ -27,9 +27,9 @@ void SetNASABaseTime(int hour, int min, int sec)
   struct tm	*gt;
   char buff[512];
 
-  StartFlight.tm_hour	= hour;
-  StartFlight.tm_min	= min;
-  StartFlight.tm_sec	= sec;
+  StartFlight.tm_hour	= 0;
+  StartFlight.tm_min	= 0;
+  StartFlight.tm_sec	= 0;
   StartFlight.tm_isdst	= -1;
 
   BaseTime = mktime(&StartFlight);
