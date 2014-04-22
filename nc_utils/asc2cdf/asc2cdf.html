@@ -33,7 +33,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 
 <dl>
 <dt><h3>Synopsis</h3>
-<dd>asc2cdf [-d yyyy-mm-dd] [-b time_t] [-g globalAttrFile] [-a] [-l] [-m]
+<dd>asc2cdf [-d yyyy-mm-dd] [-b time_t] [-g globalAttrFile] [-a] [-i] [-l] [-m]
 [-r n] [-s n] [-:] [-v] [-h] ASCII_file netCDF_file
 <p>
 <dt><h3>Description</h3>
@@ -53,13 +53,13 @@ UTC             ATX           DPBC          GLAT          GLON          CONCF_IB
 </pre>
 </blockquote>
 
-Columns should be seperated with any combination of <b>tabs</b> or <b>spaces</b>.  The data maybe in any format acceptable to <b>atof(3)</b>, which is just about anything.
+Columns should be seperated with any combination of <b>commas</b>, <b>spaces</b> and <b>tabs</b>.  The data maybe in any format acceptable to <b>atof(3)</b>, which is just about anything.
 
 <p>
 <dt><h3>Command Line Options</h3>
-<dd>The <kbd class="att">-m</kbd> option tells asc2cdf that time in the left column will be in <b>seconds since midnight</b> format (with rounding).  This is automatically turned on with the <kbd class="att">-a</kbd> or <kbd class="att">-l</kbd> option.
+<dd>The <kbd class="att">-m</kbd> option tells asc2cdf that time in the left column will be in <b>seconds since midnight</b> format (with rounding).  This is automatically turned on with the <kbd class="att">-a</kbd>, <kbd class="att">-i</kbd> or <kbd class="att">-l</kbd> option.
 <p>
-<dd>The <kbd class="att">-b</kbd> option defines a <b>base_time</b> in Unix seconds since January 1st 1970. This is useful when trying to merge data back into a netCDF file, where <b>ncmerge</b> complains about no overlapping time segments.  The default value is 0.  This option has <b>no</b> affect when the <kbd class="att">-a</kbd> or <kbd class="att">-l</kbd> option is enabled.
+<dd>The <kbd class="att">-b</kbd> option defines a <b>base_time</b> in Unix seconds since January 1st 1970. This is useful when trying to merge data back into a netCDF file, where <b>ncmerge</b> complains about no overlapping time segments.  The default value is 0.  This option has <b>no</b> affect when the <kbd class="att">-a</kbd>, <kbd class="att">-i</kbd> or <kbd class="att">-l</kbd> option is enabled.
 <p>
 <dd>The <kbd class="att">-d</kbd> option lets the user specify a flight date.  This can be used
 in place of the <kbd class="att">-b</kbd> option.  If both options are specified, the
@@ -105,6 +105,9 @@ UTC      ADIFR  AKRD  ALT  ALT_G
 </pre>
 </blockquote>
 <p>
+<dd>The <kbd class="att">-i</kbd> option tells asc2cdf that the input file will be following the ICARTT Format.
+<p>
+<dd>The <kbd class="att">-:</kbd> option tells asc2cdf to interprete the time stamp as HHMMSS instead of HH:MM:SS.
 <dd>The <kbd class="att">-l</kbd> option tells asc2cdf that the input file will be following the NASA Data Exchange Format (Langley).
 <p>
 <dd>The <kbd class="att">-:</kbd> option tells asc2cdf to interprete the time stamp as HHMMSS instead of HH:MM:SS.
