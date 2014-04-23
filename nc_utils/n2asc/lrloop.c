@@ -246,8 +246,8 @@ static void PrintVariables()
 
       prevHour = currentTime->tm_hour;
     }
-    else
-      fprintf(OutputFile, "%ld", CurrentInputRecordNumber);
+//    else
+      fprintf(OutputFile, "  %ld", CurrentInputRecordNumber);
 
     if (highestRate > 1)
       fprintf(OutputFile, ".%03d", msec);

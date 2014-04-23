@@ -112,7 +112,7 @@ void ProcessArgv(int argc, char *argv[])
 }	/* END PROCESSARGV */
 
 /* -------------------------------------------------------------------- */
-void ReadBatchFile(char file[])
+void ReadBatchFile(const char file[])
 {
   char		*p;
   FILE		*fp;

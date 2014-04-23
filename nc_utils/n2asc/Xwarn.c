@@ -28,7 +28,7 @@ static int	inUse[nWarnings];
 void CancelWarning(Widget, XtPointer, XtPointer);
 
 /* -------------------------------------------------------------------- */
-void WarnUser(char str[], void (*okCB)(Widget, XtPointer, XtPointer), void (*cancelCB)(Widget, XtPointer, XtPointer))
+void WarnUser(const char str[], void (*okCB)(Widget, XtPointer, XtPointer), void (*cancelCB)(Widget, XtPointer, XtPointer))
 {
   int		i;
   Widget	label;
@@ -48,7 +48,7 @@ void WarnUser(char str[], void (*okCB)(Widget, XtPointer, XtPointer), void (*can
   inUse[i] = TRUE;
 
   label = XmMessageBoxGetChild(warnBox[i], XmDIALOG_MESSAGE_LABEL);
-  xStr = XmStringCreateLtoR(str, XmSTRING_DEFAULT_CHARSET);
+  xStr = XmStringCreateLtoR((char *)str, XmSTRING_DEFAULT_CHARSET);
   XtSetArg(args[0], XmNlabelString, xStr);
   XtSetValues(label, args, 1);
   XmStringFree(xStr);
