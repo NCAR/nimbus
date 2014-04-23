@@ -141,6 +141,7 @@ void Output(char buff[])
     case 0x4336:	// USB 10um C probe.
     case 0x4338:	// DMT CIP
     case 0x5034:	// USB 200um P Probe.
+    case 0x5038:	// DMT PIP
       nDiodes = 64;
       break;
 //    case 0x4831:	// HVPS
