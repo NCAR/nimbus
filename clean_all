@@ -13,13 +13,16 @@ end
 cd ..
 
 cd instruments
-foreach file ( mcr/display/sr mcr/processor/src rdma hvps/hvpsdiag usb2d/usb2diag )
+foreach file ( mcr/display/src mcr/processor/src rdma hvps/hvpsdiag pms2d/usb2d/usb2diag )
   (cd $file; echo $file; make clean)
+end
+foreach file ( instruments/pms2d/process2d instruments/pms2d/oapinfo instruments/cip/padsinfo )
+  (cd $file; echo $file; scons -c)
 end
 cd ..
 
 cd nc_utils
-foreach file ( asc2cdf flt_time n2asc nc_sane ncav ncextr ncfillvar ncmerge nc2iwg1 )
+foreach file ( asc2cdf flt_time n2asc nc_compare nc_sane ncav ncextr ncfillvar ncmerge nc2iwg1 )
   (cd $file; echo $file; make clean)
 end
 foreach file ( ncvarlist nc_gap mkcdf ncReorder nc_gap )
@@ -27,7 +30,7 @@ foreach file ( ncvarlist nc_gap mkcdf ncReorder nc_gap )
 end
 cd ..
 
-foreach file ( nimbus kml_tools/acTrack2kml kml_tools/avaps2kml edit_cal )
+foreach file ( nimbus kml_tools/acTrack2kml kml_tools/avaps2kml caledit )
   (cd $file; echo $file; scons -c)
 end
 
