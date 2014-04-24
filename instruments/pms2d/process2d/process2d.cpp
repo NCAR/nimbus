@@ -774,7 +774,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
            }
         }
         else
-        if (probetype == 'C' && probenumber == '8')	// CIP
+//        if (probetype == 'C' && probenumber == '8')	// CIP
+        if (probenumber == '8')	// CIP or PIP
         {
            slice = ((unsigned long long *)image_buff)[islice];
 
@@ -924,13 +925,20 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
         else {
            // Found an image slice, make the next slice part of binary image
            int diode = 0;
-           if (probetype == '3')
+           if (probetype == '3')	// 3V-CPI
            {
              for (int byte = bytesPerSlice-1; byte >= 0; byte--)
                for (int bit = 7; bit >= 0; bit--)
                  roi[slice_count][diode++] = (bool)(image_buff[islice*bytesPerSlice+byte] & (0x01 << bit));
            }
            else
+           if (probenumber == '8')	// CIP/PIP
+           {
+             for (int byte = bytesPerSlice-1; byte >= 0; byte--)
+               for (int bit = 7; bit >= 0; bit--)
+                 roi[slice_count][diode++] = (bool)(image_buff[islice*bytesPerSlice+byte] & (0x01 << bit));
+           }
+           else				// Fast 2D C/P
            {
              for (int byte = 0; byte < bytesPerSlice; byte++)
                for (int bit = 7; bit >= 0; bit--)

@@ -30,6 +30,7 @@ public:
     if (id[1] == '8') {		// CIP (C8)
       rle = true;
       armWidth = 10.0;
+//armWidth = 7.0;	// FAAM 100um CIP.
       if (id[0] == 'P')
       {
         resolution = 100.0;
