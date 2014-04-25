@@ -5,12 +5,13 @@ PRO sid_browse_event, ev
     widget_control,widget_info(ev.top,find='properties'),get_uvalue=pop
     widget_control,widget_info(ev.top,find='base'),get_uvalue=pinfo
     widget_control,widget_info(ev.top,find='tab'),get_uvalue=screen
+    widget_control,widget_info(ev.top,find='tab5'),get_uvalue=pmouse
     screen_x=screen[0]
     screen_y=screen[1]
     
     ;The draw windows have a different event structure.  Ignore unless it is a release event
-    IF (uname eq 'w1') or (uname eq 'w2') or (uname eq 'w3') or (uname eq 'wt') THEN BEGIN
-    ENDIF
+    ;IF (uname eq 'w1') or (uname eq 'w2') or (uname eq 'w3') or (uname eq 'wt') THEN BEGIN
+    ;ENDIF
 
     CASE 1 OF
         ;====================================================================================================
@@ -74,6 +75,11 @@ PRO sid_browse_event, ev
             widget_control,widget_info(ev.top,find='properties'),sensitive=1
             widget_control,widget_info(ev.top,find='color_invert'),sensitive=1
             widget_control,widget_info(ev.top,find='filedisplay'),set_value=file_basename(fn)
+            
+            ;Establish mouse info
+            mouse={down:0, pixid:0, wid:0, xsize:0, ysize:0, sx:0, sy:0, dx:0, dy:0}
+            pmouse=ptr_new(mouse)
+            widget_control,widget_info(ev.top,find='tab5'),set_uvalue=pmouse            
 
             ;Plot new data
             sid_windowplot,ev.top,p1,pinfo,pop
@@ -81,75 +87,154 @@ PRO sid_browse_event, ev
          END
         ;====================================================================================================
         (uname eq 'wt')  or (uname eq 'time') or (uname eq 'w1') or (uname eq 'w2') or (uname eq 'w3') or (uname eq 'w5'):BEGIN      
-            IF (uname ne 'time') THEN IF ((ev.release eq 0) and (ev.type ne 7)) THEN return ;Ignore non-release events
+      ;      IF (uname ne 'time') THEN IF ((ev.release eq 0) and (ev.type ne 7)) THEN return ;Ignore non-release events
             tabnum=widget_info(widget_info(ev.top,find='tab'),/tab_current)
             (*pinfo).b1i=-1 ;Reset particle buffer count
-            
+           
             advance=0
             i=(*pinfo).i
             i1=(*pinfo).i1
             i2=(*pinfo).i2
-            IF (uname eq 'w1') or (uname eq 'w2') or (uname eq 'w3') THEN BEGIN               
-               ;Left click, middle click, or scroll down
-               IF (ev.release eq 1) or (ev.release eq 2) or (ev.release eq 16) THEN advance=1
-               ;Right click or scroll up
-               IF (ev.release eq 4) or (ev.release eq 8) THEN advance=-1           
-               IF (ev.type eq 7) THEN advance=-(ev.clicks)   ;For Windows compatibility    
+            update=0
+            ;Mouse events draw selection boxes when in the time series tab
+            IF  (tabnum eq 4) THEN BEGIN              
+               ;Button press
+               IF ev.type eq 0 THEN BEGIN
+                  (*pmouse).down=1              
+                  IF (uname eq 'w5') THEN wid=(*pinfo).wid[tabnum]
+                  IF (uname eq 'wt') THEN wid=(*pinfo).wt              
+                  wset,wid
+                  xsize = !D.X_VSize
+                  ysize = !D.Y_VSize
+                  Window, /Pixmap, /Free, XSize=xsize, YSize=ysize
+                  pixID = !D.Window
+                  Device, Copy=[0, 0, xsize, ysize, 0, 0, wid]
+                  WSet, wid
+                  (*pmouse).sx=ev.x
+                  (*pmouse).sy=ev.y
+                  (*pmouse).pixid=pixid
+                  (*pmouse).wid=wid
+                  (*pmouse).xsize=xsize
+                  (*pmouse).ysize=ysize
+               ENDIF
+               ;Mouse motion
+               IF (ev.type eq 2) and ((*pmouse).down eq 1) THEN BEGIN
+                  dx=ev.x > 0 <(*pmouse).xsize
+                  dy=ev.y > 0 <(*pmouse).ysize
+                  sx=(*pmouse).sx
+                  sy=(*pmouse).sy
+                  wset,(*pmouse).wid
+                  ; Erase the old box.
+                  Device, Copy=[0, 0, (*pmouse).xsize, (*pmouse).ysize, 0, 0, (*pmouse).pixID]
+                  ; Draw the new box.
+                  PlotS, [sx, sx, dx, dx, sx], [sy, dy, dy, sy, sy], /Device, Color=250                  
+               ENDIF
+               ;Button Release
+               IF ev.type eq 1 THEN BEGIN
+                  (*pmouse).down=0
+                  dx=ev.x > 0 <(*pmouse).xsize
+                  dy=ev.y > 0 <(*pmouse).ysize 
+                  sx=(*pmouse).sx
+                  sy=(*pmouse).sy
+                  
+                  ; Erase the final box.
+                  wset,(*pmouse).wid
+                  Device, Copy=[ 0, 0, (*pmouse).xsize, (*pmouse).ysize, 0, 0, (*pmouse).pixID]
+                  ; Delete the pixmap.
+                  WDelete, (*pmouse).pixID
+                  ; Order the box coordinates and return.
+                  sx = Min([sx,dx], Max=dx)
+                  IF (uname eq 'w5')  THEN BEGIN                              
+                     xnorm_start=sx/float(screen_x)
+                     xnorm_stop=dx/float(screen_x)
+                     xnormplot_start=(xnorm_start-!x.window[0])/(!x.window[1]-!x.window[0])  ;Norm coord within the plot
+                     xnormplot_stop=(xnorm_stop-!x.window[0])/(!x.window[1]-!x.window[0])  ;Norm coord within the plot
+                     xnormplot_start=xnormplot_start>0<1 ;Enforce limits
+                     xnormplot_stop=xnormplot_stop>0<1 ;Enforce limits
+                     i1orig=i1
+                     i1=xnormplot_start*(i2-i1orig)+i1orig
+                     i2=xnormplot_stop*(i2-i1orig)+i1orig 
+                  ENDIF
+                  IF (uname eq 'wt')  THEN BEGIN
+                     i1=sx/float(screen_x) * n_elements((*p1).time)
+                     i2=dx/float(screen_x) * n_elements((*p1).time)
+                  ENDIF
+                  IF dx-sx gt 10 THEN update=1
+               ENDIF
             ENDIF
-            IF (uname eq 'w5')  THEN BEGIN                              
-               xnorm=ev.x/float(screen_x)
-               xnormplot=(xnorm-!x.window[0])/(!x.window[1]-!x.window[0])  ;Norm coord within the plot
-               IF (xnormplot le 0) or  (xnormplot ge 1) THEN return    ;Out of the plot range, return
-               IF (ev.release eq 8) or (ev.release eq 16) THEN return  ;Ignore scroll events here
-               IF (ev.release eq 1) THEN i1=xnormplot*(i2-i1)+i1
-               IF (ev.release eq 4) THEN i2=xnormplot*(i2-i1)+i1        
-            ENDIF
-            IF uname eq 'time' THEN BEGIN
-               widget_control,widget_info(ev.top,find='time'),get_value=texttime
-               time=long(texttime)
-               IF (*pinfo).timeformat eq 1 THEN time=sid_hms2sfm(time)
-               w=where((*p1).time eq time[0])
-               IF w[0] ne -1 THEN i=w[0]
-            ENDIF
-            IF uname eq 'wt' THEN BEGIN   ;Left click on the wt window moves to the click location
-               IF tabnum eq 4 THEN BEGIN
-                  IF (ev.release eq 1) THEN i1=ev.x/float(screen_x) * n_elements((*p1).time)
-                  IF (ev.release eq 4) THEN i2=ev.x/float(screen_x) * n_elements((*p1).time)
-               ENDIF ELSE BEGIN
-                  IF (ev.release eq 1) THEN i=ev.x/float(screen_x) * n_elements((*p1).time)
-               ENDELSE
-               IF (ev.release eq 8) THEN advance =-1
-               IF (ev.release eq 16) THEN advance=1  
-               IF (ev.type eq 7) THEN advance=-(ev.clicks)   ;For Windows compatibility
+
+            
+            
+            ;In other tabs just use release events
+            IF (tabnum ne 4) and ((ev.release ne 0) or (ev.type eq 7)) THEN BEGIN
+               IF (uname eq 'w1') or (uname eq 'w2') or (uname eq 'w3') THEN BEGIN               
+                  ;Left click, middle click, or scroll down
+                  IF (ev.release eq 1) or (ev.release eq 2) or (ev.release eq 16) THEN advance=1
+                  ;Right click or scroll up
+                  IF (ev.release eq 4) or (ev.release eq 8) THEN advance=-1           
+                  IF (ev.type eq 7) THEN advance=-(ev.clicks)   ;For Windows compatibility    
+                  update=1
+               ENDIF
+               IF (uname eq 'w5')  THEN BEGIN                              
+                  xnorm=ev.x/float(screen_x)
+                  xnormplot=(xnorm-!x.window[0])/(!x.window[1]-!x.window[0])  ;Norm coord within the plot
+                  IF (xnormplot le 0) or  (xnormplot ge 1) THEN return    ;Out of the plot range, return
+                  IF (ev.release eq 8) or (ev.release eq 16) THEN return  ;Ignore scroll events here
+                  IF (ev.release eq 1) THEN i1=xnormplot*(i2-i1)+i1
+                  IF (ev.release eq 4) THEN i2=xnormplot*(i2-i1)+i1        
+                  update=1
+               ENDIF
+               IF uname eq 'time' THEN BEGIN
+                  widget_control,widget_info(ev.top,find='time'),get_value=texttime
+                  time=long(texttime)
+                  IF (*pinfo).timeformat eq 1 THEN time=sid_hms2sfm(time)
+                  w=where((*p1).time eq time[0])
+                  IF w[0] ne -1 THEN i=w[0]
+                  update=1
+               ENDIF
+               IF uname eq 'wt' THEN BEGIN   ;Left click on the wt window moves to the click location
+                  IF tabnum eq 4 THEN BEGIN
+                     IF (ev.release eq 1) THEN i1=ev.x/float(screen_x) * n_elements((*p1).time)
+                     IF (ev.release eq 4) THEN i2=ev.x/float(screen_x) * n_elements((*p1).time)
+                  ENDIF ELSE BEGIN
+                     IF (ev.release eq 1) THEN i=ev.x/float(screen_x) * n_elements((*p1).time)
+                  ENDELSE
+                  IF (ev.release eq 8) THEN advance =-1
+                  IF (ev.release eq 16) THEN advance=1  
+                  IF (ev.type eq 7) THEN advance=-(ev.clicks)   ;For Windows compatibility
+                  update=1
+               ENDIF
             ENDIF
             
-            i=i + advance > 0 < (n_elements((*p1).time)-1)         
-
-            i1=i1 < (n_elements((*p1).time)-2) > 0
-            i2=i2 > (i1+1) < (n_elements((*p1).time)-1)
-            (*pinfo).i=i
-            (*pinfo).i1=i1
-            (*pinfo).i2=i2
-            ;Update the time indicator
-            IF (*pinfo).timeformat eq 1 THEN texttime=sid_sfm2hms((*p1).time[i]) ELSE texttime=(*p1).time[i]
-            widget_control,widget_info(ev.top,find='time'),set_value=strtrim(string(long(texttime)),2)
-            
-            ;Update the time plot
-            tsbmp=(*pinfo).bmp
-            it=((*p1).time[i]-(*p1).starttime)/((*p1).stoptime-(*p1).starttime)*(screen_x-1)
-            it1=((*p1).time[i1]-(*p1).starttime)/((*p1).stoptime-(*p1).starttime)*(screen_x-1)
-            it2=((*p1).time[i2]-(*p1).starttime)/((*p1).stoptime-(*p1).starttime)*(screen_x-1)
-            tsbmp[it1,indgen(25)*2]=150
-            tsbmp[it2,indgen(25)*2]=250
-            tsbmp[it,*]=100
-            tsbmp[(it+1)<(screen_x-1),*]=70
-            tsbmp[(it-1)>0,*]=70
-            wset,(*pinfo).wt
-            tv,tsbmp
-        
-            ;Plot new data         
-            sid_windowplot,ev.top,p1,pinfo,pop
-
+            ;Update the plot if flagged
+            IF update THEN BEGIN
+               i=i + advance > 0 < (n_elements((*p1).time)-1)         
+   
+               i1=i1 < (n_elements((*p1).time)-2) > 0
+               i2=i2 > (i1+1) < (n_elements((*p1).time)-1)
+               (*pinfo).i=i
+               (*pinfo).i1=i1
+               (*pinfo).i2=i2
+               ;Update the time indicator
+               IF (*pinfo).timeformat eq 1 THEN texttime=sid_sfm2hms((*p1).time[i]) ELSE texttime=(*p1).time[i]
+               widget_control,widget_info(ev.top,find='time'),set_value=strtrim(string(long(texttime)),2)
+               
+               ;Update the time plot
+               tsbmp=(*pinfo).bmp
+               it=((*p1).time[i]-(*p1).starttime)/((*p1).stoptime-(*p1).starttime)*(screen_x-1)
+               it1=((*p1).time[i1]-(*p1).starttime)/((*p1).stoptime-(*p1).starttime)*(screen_x-1)
+               it2=((*p1).time[i2]-(*p1).starttime)/((*p1).stoptime-(*p1).starttime)*(screen_x-1)
+               tsbmp[it1,indgen(25)*2]=150
+               tsbmp[it2,indgen(25)*2]=250
+               tsbmp[it,*]=100
+               tsbmp[(it+1)<(screen_x-1),*]=70
+               tsbmp[(it-1)>0,*]=70
+               wset,(*pinfo).wt
+               tv,tsbmp
+         
+               ;Plot new data         
+               sid_windowplot,ev.top,p1,pinfo,pop
+            ENDIF
         END
         ;====================================================================================================
         uname eq 'tab': BEGIN
@@ -332,7 +417,7 @@ PRO sid_browse
    
     ;Tab 5
     drawbase5=widget_base(tab,column=1,title='Time Series',uname='tab5')
-    plot5=widget_draw(drawbase5,xsize=screen_x,ysize=screen_y-30,uname='w5',/button_events)
+    plot5=widget_draw(drawbase5,xsize=screen_x,ysize=screen_y-30,uname='w5',/button_events,/motion_events)
     drawbase5b=widget_base(drawbase5,row=1)
     plottypes=['Total Concentration','LWC','Extinction','Asphericity','Harmonics','Diameter',$
         'Color Concentration','Color Concentration (Round)','Color Concentration (Non-Round)',$
@@ -348,7 +433,7 @@ PRO sid_browse
     
     ;Time series bar
     tsbase=widget_base(base,row=1)
-    tsID=widget_draw(tsbase,xsize=screen_x,ysize=50,uname='wt',/button_events,/wheel_events,sensitive=0,frame=3)
+    tsID=widget_draw(tsbase,xsize=screen_x,ysize=50,uname='wt',/button_events,/wheel_events,/motion_events,sensitive=0,frame=3)
     
     ;Time indicator and other info
     timebarbase=widget_base(base,row=1)
