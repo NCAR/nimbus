@@ -20,6 +20,7 @@
 #define PMS2D_P1         0x5031		// First PMS-2DP
 #define PMS2D_P2         0x5032		// Second PMS-2DP
 #define PMS2D_P4         0x5034		// First RAF 64 diode 200 um Fast 2DP
+#define PMS2D_P8         0x5038		// First DMT PIP probe
 #define PMS2D_3V         0x3348		// 3V-CPI 2DS Vertical
 #define PMS2D_3H         0x3356		// 3V-CPI 2DS Horizontal
 
