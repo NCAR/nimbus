@@ -16,6 +16,8 @@
 #include <ctype.h>
 #include <signal.h>
 #include <string.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 #define CRAY_PRIVATE
 
@@ -53,7 +55,7 @@ extern void	SplitDataset();
 extern CrayFile *OpenOutput();
 
 /*---------------------------------------------------------------------------*/
-main(argc, argv)
+int main(argc, argv)
 int	argc;
 char	*argv[];
 {
