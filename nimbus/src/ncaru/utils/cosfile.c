@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <unistd.h>
 
 #define CRAY_PRIVATE
 
@@ -62,7 +63,7 @@ extern void Usage();
 extern void exit();
 
 /*---------------------------------------------------------------------------*/
-main(argc, argv)
+int main(argc, argv)
 int	argc;
 char	*argv[];
 {
