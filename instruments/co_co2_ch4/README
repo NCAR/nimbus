@@ -1,0 +1,15 @@
+This processing code was used to generate quick-look data for CONTRAST.
+Interpolate.m is a function that is called from other code and is not run
+directly. To run the code:
+
+1) Modify flight_constants.m to contain the flight number, date, and filter
+thresholds for the flight you are processing.
+2) Run IFPall.m to load the PICARRO Private data (.h5) and aircraft .nc
+files and write them out as .mat files.
+3) Run combine_CO_PICARRO_DATA to read in the .mat files just written out
+and do the quick-look processing.
+4) Run write_ICARTT.m to write the final data out in ICARTT format.
+
+Plots are created throughout the process. As you proceed, review the plots
+and make changes to the filter thresholds as necessary, then rerun with the
+new thresholds and repeat.
