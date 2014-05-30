@@ -52,8 +52,8 @@ writePositionJSON(AircraftTrack& track, const std::string& filename)
     // while (thdg >= 360.0) thdg -= 360.0;
 
     sprintf(output,
-	    "{\"alt\":\"%.1f\",\"lat\":\"%f\",\"head\":\"%.1f\",\"declination\":\"0\",\"lon\":\"%f\"}", 
-	    alt, lat[1], thdg, lon[1]);
+	    "{\"timestamp\":\"%s\",\"alt\":\"%.1f\",\"lat\":\"%f\",\"head\":\"%.1f\",\"declination\":\"0\",\"lon\":\"%f\"}", 
+	    AircraftTrack::formatTimestamp(track.lastTime(), "%Y-%m-%d %H:%M:%S").c_str(), alt, lat[1], thdg, lon[1]);
     if (_config.verbose)
     {
       std::cerr << "JSON: " << output << std::endl;
