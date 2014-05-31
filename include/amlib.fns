@@ -48,7 +48,7 @@
 #
 	"TKE",		NULL,           NULL,		stke,
 	"ACVAR",	NULL,           NULL,		sacvar,
-	"TTC",		(void(*)(void*))initTTC,        NULL,		sttc,
+	"RTC",		(void(*)(void*))initTTC,        NULL,		sttc,
 	"ATC",		(void(*)(void*))initATC,        NULL,		satc,
 #
 # IDEAS
@@ -713,6 +713,7 @@
 #
 #	Ambient Temperature.
 #
+	"ATITR",	NULL,				NULL,	sitrAT,
 	"ATB",		NULL,				NULL,	satb,
 	"ATBH",		(void(*)(void*))atfhInit,	NULL,	satfh,
 	"ATF",		NULL,				NULL,	satf,
