@@ -235,12 +235,12 @@ void spflwc(DERTBL *varp)
   psx	= GetSample(varp, 1);
   atx	= GetSample(varp, 2);
 
-  /* In HIPPO-3 the UHSAS flow readout would periodically double to about 1.5
-   * even though the flow was actually correct.  Hold flow to average corerect
-   * value when this happens.  DC Rogers says average is 0.72623 with std dev
-   * of +-0.00023 sccs.  May 17 2010.
+  /* In HIPPO-3 the UHSAS flow readout would periodically saturate the A/2 to
+   * about 1.5 even though the flow was actually correct.  Hold flow to average
+   * correct value when this happens.  Dave Rogers says average is 0.72623 with
+   * std dev of +-0.00023 sccs.  May 17 2010.
    */
-  if (cfg.ProjectName().compare("HIPPO-3") == 0)
+//  if (cfg.ProjectName().compare("HIPPO-3") == 0) // Do it all the time, MikeReeves 5/1/2014
     if (flow > 1.0)
       flow = 0.72623;
 
