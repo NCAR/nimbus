@@ -96,7 +96,7 @@ void satc(DERTBL *varp)
 
     if (FeedBack == LOW_RATE_FEEDBACK) /* Only do this in the Low-rate pass */
       {
-      omegat = 2.0 * M_PI * time_duration[FeedBack] / 5040.0;
+      omegat = 2.0 * M_PI * time_duration[FeedBack] / 5067.0;
       sinwt = sin(omegat);
       coswt = cos(omegat);
 
