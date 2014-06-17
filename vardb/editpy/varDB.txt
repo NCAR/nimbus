@@ -1,0 +1,782 @@
+2D-C   none   2-D Cloud Probe Asynchronous Data ID   0
+2D-P   none   2-D Precip. Probe Asynchronous Data ID   0
+2DEE1   V   PMS-2D Probe Housekeeping   0
+2DEE32   V   PMS-2D Probe Housekeeping   0
+2DMTMP   V   PMS-2D Probe Housekeeping   0
+2DV15   V   PMS-2D Probe Housekeeping   0
+2DV5   V   PMS-2D Probe Housekeeping   0
+2DVN15   V   PMS-2D Probe Housekeeping   0
+A1DC   count   2D-C Accumulation, 260X Emulation (per cell)   0
+A1DP   count   2D-P Accumulation, 260X Emulation (per cell)   0
+A200X   count   200X Raw Accumulation (per cell)   0
+A200Y   count   200Y Raw Accumulation (per cell)   0
+A260X   count   260X Raw Accumulation (per cell)   0
+A2DC   count   2D-C Accumulation, Reconstruction (per cell)   0
+A2DCA   count res   Fast 2DC Corrected Accumulation per Channel, All P
+A2DCR   Julian   Fast 2DC Corrected Accumulation per Channel, Round
+A2DP   count   2D-P Accumulation, Reconstruction (per cell)   0
+A2DPA   count   Fast 2DC Corrected Accumulation per Channel, All P   0
+A2DPR   count   Fast 2DC Corrected Accumulation per Channel, Round   0
+ACDP   count   CDP Raw Accumulation (per cell)   0
+ACETONE   pptv   Acetone   0
+ACETONITRILE   pptv   Acetonitrile   0
+ACINS   m/s2   Aircraft Vertical Acceleration   0
+ADIF   hPa   Vertical Differential Pressure, Boom   0
+ADIFR   hPa   Vertical Differential Pressure, Radome   100 sps, -10 10 Vdc   0
+AF300   count   FSSP-300 Raw Accumulation (per cell)   0
+AFSSP   count   FSSP-100 Raw Accumulation (per cell)   0
+AK   degree   Attack Angle, Diff. Pressure   0
+AKDF   degree   Attack Angle, Boom Diff. Pressure   0
+AKRD   degree   Attack Angle, Radome Diff. Pressure   0
+ALT   m   IRS Baro-Inertial Altitude   0
+ALTX   m   Altitude, Reference (MSL)   0
+AO2CO2   ppmv   CO2 from AO2   10 sps, 0 5 Vdc   0
+AO2O2   per meg   O2 from AO2   10 sps, 0 5 Vdc   0
+AO2STAT   flag   AO2 Status flag   10 sps, 0 5 Vdc   0
+APCAS   count   PCAS Raw Accumulation (per cell)   0
+AQRATIO   Al's Fudge Factor   0
+ARDMA   count   RDMA Raw Accumulation (per cell)   0
+AS100   count   FSSP-100 Raw Accumulation (per cell) - DMT   0
+AS200   count   SPP-200 (PCASP) Raw Accumulation (per cell) - DMT   0
+AS300   count   FSSP-300 Raw Accumulation (per cell) - DMT   0
+ATB   deg_C   Ambient Temperature, Radome   0
+ATC   g/m3   Loose Coupled output of RHOUV and RHODT   0
+ATF   deg_C   Ambient Temperature, Fuselage   0
+ATFH   deg_C   Ambient Temperature, Deiced Fuselage   0
+ATFH1   deg_C   Ambient Temperature, Deiced Fuselage   0
+ATFH2   deg_C   Ambient Temperature, Deiced Fuselage   0
+ATFR   deg_C   Ambient Temperature, Fuselage   0
+ATHL1   deg_C   Ambient Temperature, Deiced Left   0
+ATHL2   deg_C   Ambient Temperature, Deiced Left   0
+ATHR1   deg_C   Ambient Temperature, Deiced Right   0
+ATHR2   deg_C   Ambient Temperature, Deiced Right   0
+ATLH   deg_C   Total Temperature, TDL Hygrometer   0
+ATOPH   deg_C   Ambient Temperature, Ophir III   0
+ATRF   deg_C   Ambient Temperature, Reverse Flow   0
+ATRL   deg_C   Ambient Temperature, Radome Left   0
+ATRR   deg_C   Ambient Temperature, Radome Right   0
+ATTACK   degree   Attack Angle, Reference   0
+ATW   deg_C   Ambient Temperature, Wing   0
+ATWH   deg_C   Ambient Temperature, Deiced Wing   0
+ATX   deg_C   Ambient Temperature, Reference   0
+AUHSAS   count   UHSAS Raw Accumulation (per cell)   0
+BDIF   hPa   Horizontal Differential Pressure, Boom   0
+BDIFR   hPa   Horizontal Differential Pressure, Radome   100 sps, -10 10 Vdc   0
+BENZENE   pptv   Benzene   0
+BITS   count   0
+BLATA   g   IRS Lateral Body Acceleration   0
+BLONA   g   IRS Longitudinal Body Acceleration   0
+BLONGA   g   IRS Longitudinal Body Acceleration   0
+BNORMA   g   IRS Normal Body Acceleration   0
+BPITCHR   deg/s   IRS Body Pitch Rate   0
+BROLLR   deg/s   IRS Body Roll Rate   0
+BUTANE   pptv   Butane   0
+BYAWR   deg/s   IRS Body Yaw Rate   0
+C1DC   #/L   2D-C Concentration, 260X Emulation (per cell)   0
+C1DP   #/L   2D-P Concentration, 260X Emulation (per cell)   0
+C200X   #/L   200X Concentration (per cell)   0
+C200Y   #/L   200Y Concentration (per cell)   0
+C260X   #/L   260X Concentration (per cell)   0
+C2DC   #/L   2D-C Concentration, Reconstruction (per cell)   0
+C2DCA   #/L   Fast 2DC Concentration per Channel, All Particles   0
+C2DCR   #/L   Fast 2DC Concentration per Channel, Round Particle   0
+C2DP   #/L   2D-P Concentration, Reconstruction (per cell)   0
+C2DPA   #/L   Fast 2DP Concentration per Channel, All Particles   0
+C2DPR   #/L   Fast 2DP Concentration per Channel, Round Particle   0
+CALT   m   CMIGITS-III Altitude   0
+CAVP   hPa   Dewpoint Cavity Pressure   10 sps, 0 5 Vdc   0
+CCDP   #/cm3   CDP Concentration (per cell)   0
+CCEP   nmi   LORAN-C Circular Error of Probability   0
+CF300   #/cm3   FSSP-300 Concentration (per cell)   0
+CFSSP   #/cm3   FSSP-100 Concentration (per cell)   0
+CGS   m/s   LORAN-C Ground Speed   0
+CGSF   m/s   LORAN-C Ground Speed   0
+CH2BR2   pptv   Methylbromide   0
+CH2CL2   pptv   Methylchloride   0
+CH3OH   pptv   Formaldehyde   0
+CH4   ppb   Methane Concentration   0
+CHBR3   pptv   Methylbromide   0
+CHGME   degree   Coarse Geometric Altitude (APN-159)   0
+CLAT   degree_N   CMIGITS-III Latitude   0
+CLON   degree_E   CMIGITS-III Longitude   0
+CMAGVR   degree   LORAN-C Magnetic Variation   0
+CMODE   V   Carbon Monoxide Analyzer Status   0
+CNTEMP   deg_C   BCN Counter Inlet Temperature   10 sps, -10 10 Vdc   0
+CNTS   count   TSI CN Counter Output   0
+CO   ppb   Raw Carbon Monoxide Concentration   0
+CO2   ppb   Raw Carbon Dioxide Concentration   0
+COCAL   ppbv   Corrected Carbon Monoxide Concentration   0
+COCOR   V   Raw Carbon Monoxide, Baseline Corrected   0
+CON2C1   #/L   2D-C Concentration   0
+CON2P1   #/L   2D-P Concentration   0
+CONC1DC   #/L   2D-C Concentration, 260X Emulation (all cells)   0
+CONC1DC050   #/L   2D-C Concentration 50u and larger, Center-in (all   0
+CONC1DC100   #/L   2D-C Concentration 100u and larger, Center-in (all   0
+CONC1DC150   #/L   2D-C Concentration 150u and larger, Center-in (all   0
+CONC1DP   #/L   2D-P Concentration, 260X Emulation (all cells)   0
+CONC2C   #/L   2D-C Concentration   0
+CONC2DC   #/L   2D-C Concentration, Reconstruction (all cells)   0
+CONC2DC050   #/L   2D-C Concentration 50u and larger, Reconstruction   0
+CONC2DC100   #/L   2D-C Concentration 100u and larger, Reconstruction   0
+CONC2DC150   #/L   2D-C Concentration 150u and larger, Reconstruction   0
+CONC2DCA   #/L   Total Fast 2DC Concentration, All Particles   0
+CONC2DCR   #/L   Total Fast 2DC Concentration, Round Particles   0
+CONC2DP   #/L   2D-P Concentration, Reconstruction (all cells)   0
+CONC2DPA   #/L   Total Fast 2DP Concentration, All Particles   0
+CONC2DPR   #/L   Total Fast 2DP Concentration, Round Particles   0
+CONC2P   #/L   2D-P Concentration   0
+CONC3   #/cm3   FSSP-300 Concentration (all cells)   0
+CONC6   #/L   260X Concentration (all cells)   0
+CONCA   #/cm3   PCAS Concentration (all cells)   0
+CONCD   #/cm3   CDP Concentration (all cells)   0
+CONCF   #/cm3   FSSP-100 Concentration (all cells)   0
+CONCM   #/cm3   MASP Concentration (all cells)   0
+CONCN   #/cm3   Condensation Nuclei (CN) Concentration   0
+CONCP   #/cm3   PCAS Concentration (all cells)   0
+CONCR   #/cm3   RDMA Concentration (all particles)   0
+CONCU   #/cm3   UHSAS Concentration (all cells)   0
+CONCU100   #/cm3   UHSAS Concentration, .1 micron and bigger   0
+CONCU500   #/cm3   UHSAS Concentration, .5 micron and bigger   0
+CONCV   #/cm3   VCSEL Moisture Number Density   0
+CONCX   #/L   200X Concentration (all cells)   0
+CONCY   #/L   200Y Concentration (all cells)   0
+CORAW   V   CO RAW value   10 sps, -10 10 Vdc   0
+COZRO   V   Carbon Monoxide Baseline Zero Signal   0
+CPCAS   #/cm3   PCAS Concentration (per cell)   0
+CPITCH   degree   CMIGITS-III Aircraft Pitch Angle   0
+CRDMA   #/cm3   RDMA Concentration (per cell)   0
+CRHP   hPa   Cryogenic Hygrometer Inlet Pressure   0
+CROLL   degree   CMIGITS-III Aircraft Roll Angle   0
+CS100   #/cm3   FSSP-100 Concentration (per cell) - DMT   0
+CS200   #/cm3   SPP-200 (PCASP) Concentration (per cell) - DMT   0
+CS300   #/cm3   FSSP-300 Concentration (per cell) - DMT   0
+CSTAT   none   LORAN-C Status   0
+CTHDG   degree_T   CMIGITS-III Aircraft True Heading Angle   0
+CTK   degree   LORAN-C Track Angle   0
+CTMLAG   s   Loran-C Data Time Offset   0
+CUHSAS   #/cm3   UHSAS Concentration (per cell)   0
+CVEW   m/s   CMIGITS-III Ground Speed Vector, East Component   0
+CVNS   m/s   CMIGITS-III Ground Speed Vector, North Component   0
+CVSPD   m/s   CMIGITS-III Computed Aircraft Vertical Velocity   1
+DAY   day   Raw Tape Date Component   0
+DBAR1DC   um   2D-C Mean Particle Diameter, 260X Emulation   1
+DBAR1DP   um   2D-P Mean Particle Diameter, 260X Emulation   0
+DBAR2DC   um   2D-C Mean Particle Diameter, Reconstruction   1
+DBAR2DCA   um   Fast 2DC Mean Particle Diameter, All Particles   0
+DBAR2DCR   um   Fast 2DC Mean Particle Diameter, Round Particles   0
+DBAR2DP   um   2D-P Mean Particle Diameter, Reconstruction   0
+DBAR2DPA   um   Fast 2DP Mean Particle Diameter, All Particles   0
+DBAR2DPR   um   Fast 2DP Mean Particle Diameter, Round Particles   0
+DBAR3   um   FSSP-300 Mean Particle Diameter   0
+DBAR6   um   260X Mean Particle Diameter   0
+DBARA   um   PCAS Mean Particle Diameter   0
+DBARD   um   CDP Mean Particle Diameter   0
+DBARF   um   FSSP-100 Mean Particle Diameter   0
+DBARM   um   MASP Mean Particle Diameter   0
+DBARP   um   PCAS Mean Particle Diameter   0
+DBARU   um   UHSAS Mean Particle Diameter   0
+DBARX   um   200X Mean Particle Diameter   0
+DBARY   um   200Y Mean Particle Diameter   0
+DBZ1DC   dBZ   2D-C Calculated Reflectivity, 260X Emulation   0
+DBZ1DP   dBZ   2D-P Calculated Reflectivity, 260X Emulation   0
+DBZ2DC   dBZ   2D-C Calculated Reflectivity, Reconstruction   0
+DBZ2DCA   dBZ   Fast 2DC Calculated Reflectivity, All Particles   0
+DBZ2DCR   dBZ   Fast 2DC Calculated Reflectivity, Round Particles   0
+DBZ2DP   dBZ   2D-P Calculated Reflectivity, Reconstruction   0
+DBZ2DPA   dBZ   Fast 2DP Calculated Reflectivity, All Particles   0
+DBZ2DPR   dBZ   Fast 2DP Calculated Reflectivity, Round Particles   0
+DBZ6   dBZ   260X Calculated Reflectivity   0
+DBZD   dBZ   CDP Calculated Reflectivity   0
+DBZF   dBZ   FSSP-100 Calculated Reflectivity   0
+DIFF1   Unk   User difference calculation   0
+DIFF2   Unk   User difference calculation   0
+DIFF3   Unk   User difference calculation   0
+DISP1DC   none   2D-C Dispersion, 260X Emulation (sigma/dbarx)   0
+DISP1DP   none   2D-P Dispersion, 260X Emulation (sigma/dbarx)   0
+DISP2DC   none   2D-C Dispersion, Reconstruction (sigma/dbarx)   0
+DISP2DCA   none   Fast 2DC Dispersion, All Particles   0
+DISP2DCR   none   Fast 2DC Dispersion, Round Particles   0
+DISP2DP   none   2D-P Dispersion, Reconstruction (sigma/dbarx)   0
+DISP2DPA   none   Fast 2DP Dispersion, All Particles   0
+DISP2DPR   none   Fast 2DP Dispersion, Round Particles   0
+DISP6   none   260X Dispersion (sigma/dbarx)   0
+DISPD   none   CDP Dispersion (sigma/dbarx)   0
+DISPF   none   FSSP-100 Dispersion (sigma/dbarx)   0
+DISPP   none   PCAS Dispersion (sigma/dbarx)   0
+DISPU   none   UHSAS Dispersion (sigma/dbarx)   0
+DISPY   none   200Y Dispersion (sigma/dbarx)   0
+DMS   pptv   Dimethylsulfide   0
+DP   deg_C   Dew/Frost Point Temperature   0
+DPB   deg_C   Raw Dew/Frost Point Temperature, Fuselage Bottom   0
+DPBC   deg_C   Dew/Frost Point Temperature, T-Electric Bottom   0
+DPCRC   deg_C   Dew/Frost Point Temperature, Cryogenic   0
+DPLA   deg_C   Dew Point Temperature, Fast Humidity   0
+DPLC   deg_C   Dew/Frost Point Temperature, T-Electric Left   0
+DPLS   deg_C   Raw Dew/Frost Point Temperature, T-Electric Left   0
+DPRC   deg_C   Dew/Frost Point Temperature, T-Electric Right   0
+DPRS   deg_C   Raw Dew/Frost Point Temperature, T-Electric Right   0
+DPT   deg_C   Raw Dew/Frost Point Temperature, Fuselage Top   0
+DPTC   deg_C   Dew/Frost Point Temperature, T-Electric Top   0
+DPXC   deg_C   Dew/Frost Point Temperature, Reference   0
+DRFTA   degree   IRS Drift Angle   0
+DSAT   deg_C   Dropsonde Ambient Temperature   0
+DSGALT   m   Dropsonde Geopotential Altitude   0
+DSID   #   Dropsonde ID number   0
+DSLAT   degree_N   Dropsonde GPS Latitude   0
+DSLON   degree_E   Dropsonde GPS Longitude   0
+DSPS   hPa   Dropsonde Static Pressure   0
+DSRH   %   Dropsonde Relative Humidity   0
+DSTANG   degree   Angle from Fixed Reference   0
+DSTE   km   Distance East of Fixed Reference   0
+DSTN   km   Distance North of Fixed Reference   0
+DSTRAD   km   Radial Distance from Fixed Reference   0
+DSVSPD   m/s   Dropsonde Vertical Velocity   0
+DSWD   degree_T   Dropsonde Horizontal Wind Direction   0
+DSWS   m/s   Dropsonde Horizontal Wind Speed   0
+DT1DC   ms   PMS-2D Cloud Probe Dead Time   0
+DT1DP   ms   PMS-2D Precip Probe Dead Time   0
+DT2DC   ms   PMS-2D Cloud Probe Dead Time   0
+DT2DP   ms   PMS-2D Precip Probe Dead Time   0
+DTB   deg_C   Pyrgeometer Dome Temperature, Bottom   10 sps, 0 10 Vdc   0
+DTT   deg_C   Pyrgeometer Housing Temperature, Top   10 sps, 0 10 Vdc   0
+DVALU   m   D-VALUE (HGME - PALT)   0
+DVALUE   m   D-VALUE (GGALT - PALT)   0
+EDPC   hPa   Ambient Water Vapor Pressure, Reference   0
+EW   hPa   Ambient Water Vapor Pressure   0
+EWX   hPa   Ambient Water Vapor Pressure, Reference   0
+EW_UVH   hPa   Ambient Water Vapor Pressure (UV Hygrometer)   0
+EW_VXL   hPa   Ambient Water Vapor Pressure (VCSEL)   0
+F2DIO1   V   Fast 2DC End Diode Voltage #1   10 sps, 0 5 Vdc   0
+F2DIO32   V   Fast 2DC End Diode Voltage #32   10 sps, 0 5 Vdc   0
+F2DIO64   V   Fast 2DC End Diode Voltage #64   10 sps, 0 5 Vdc   0
+FACT   none   FSSP-100 Activity Fraction   0
+FANV   V   FSSP-100 Annulus Baseline Voltage   0
+FBMFR   none   FSSP-100 Beam Fraction   0
+FCN   vlpm   Raw BCN Counter Sample Flow Rate   10 sps, -5 5 Vdc   0
+FCNC   vlpm   Corrected BCN Counter Sample Flow Rate   0
+FMB   kV/m   Field Mill Output, Bottom Fuselage   0
+FMRB   kV/m   Field Mill Output, Bottom Radome   0
+FMRL   kV/m   Field Mill Output, Left Radome   0
+FMRR   kV/m   Field Mill Output, Right Radome   0
+FMRT   kV/m   Field Mill Output, Top Radome   0
+FMT   kV/m   Field Mill Output, Top Fuselage   0
+FO3   ppb   Fast Ozone Mixing Ratio   0
+FPCRC   deg_C   Frost Point Temperature, Cryogenic   0
+FRANGE   none   FSSP-100 Size Range Category   0
+FREF   none   FSSP-100 Laser Reference Voltage   0
+FREF3   none   SPP-300 Laser Reference Voltage   0
+FRESET   count   FSSP-100 Fast Resets   0
+FRNG   none   FSSP-100 Size Range Category   0
+FRST   count   FSSP-100 Fast Resets   0
+FSIG   V   FSSP-100 Signal Voltage   0
+FSTB   count   FSSP-100 Strobes   0
+FSTROB   count   FSSP-100 Fast Strobes   0
+FSTT   count   FSSP-100 Signal Transit Time   0
+FTMP   deg_C   FSSP-100 Housekeeping Data   0
+FTMP3   deg_C   SPP-300 Housekeeping Data   0
+FXAZIM   degree   Radial Azimuth from Fixed Reference   0
+FXDIST   km   Radial Distance from Fixed Reference   0
+FZV   V   Fixed Zero Voltage   0
+FZVR   V   Fixed Zero Voltage (through resistor)   0
+GALT   m   GPS Altitude (MSL)   0
+GGALT   m   GPS Geopotential Altitude   0
+GGALTC   m   Corrected GPS Altitude   0
+GGLAT   degree_N   GPS Latitude   0
+GGLON   degree_E   GPS Longitude   0
+GGMODE   none   GPS Mode   0
+GGNSAT   count   GPS Number of Satellites   0
+GGSF   m/s   GPS Ground Speed   0
+GGTRK   degree_T   GPS Track Angle   0
+GGVEW   m/s   GPS Ground Speed Vector, East Component   0
+GGVNS   m/s   GPS Ground Speed Vector, North Component   0
+GLAT   degree_N   GPS Latitude   0
+GLON   degree_E   GPS Longitude   0
+GMODE   none   GPS Mode   0
+GNI1   V   GNI Slide Exposure Status   100 sps, 0 10 Vdc   0
+GNI2   V   GNI Slide Exposure Status   100 sps, 0 10 Vdc   0
+GSF   m/s   Inertial Ground Speed   0
+GSFC   m/s   Computed Ground Speed   0
+GSTAT   none   GPS Status   0
+GVEW   m/s   GPS Ground Speed Vector, East Component   0
+GVNS   m/s   GPS Ground Speed Vector, North Component   0
+GVZI   m/s   GPS-Computed Aircraft Vertical Velocity   0
+H2DEE1   V   PMS-2D Probe Housekeeping   0
+H2DEE32   V   PMS-2D Probe Housekeeping   0
+H2DV15   V   PMS-2D Probe Housekeeping   0
+H2DV5   V   PMS-2D Probe Housekeeping   0
+H2DVN15   V   PMS-2D Probe Housekeeping   0
+H2O   vol%   Water Vapor Mixing Ratio   0
+HCN   pptv   Hydrogen Cyanide   0
+HGM   m   Geometric (Radio) Altitude   0
+HGM232   feet   Geometric (Radar) Altitude (APN-232)   0
+HGM232S   Geometric Altitude Status Monitor (APN-232)   0
+HGME   m   Geometric (Radar) Altitude (APN-159)   0
+HI3   m   Pressure-Damped Inertial Altitude   0
+HK28AII   V   28 Vdc Power Housekeeping   0
+HK28AIV   V   28 Vdc Power Housekeeping   0
+HK28UI   V   28 Vdc Power Housekeeping   0
+HK28UV   V   28 Vdc Power Housekeeping   0
+HK400   V   400 Hz Power Housekeeping   0
+HK60D   V   60 Hz Power Housekeeping   0
+HK60L   V   60 Hz Power Housekeeping   0
+HK60R   V   60 Hz Power Housekeeping   0
+HOUR   hour   Raw Tape Time Component   0
+HVCBTMP   deg_C   HVPS Center Brace Temperature   0
+HVCMTMP   deg_C   HVPS Control Module Temperature   0
+HVDATMP   deg_C   HVPS Detector Arm Temperature   0
+HVLASER   mW   HVPS Laser Power   0
+HVLT   kV   High Voltage Skin Charge   0
+HVSATMP   deg_C   HVPS Source Arm Temperature   0
+HVUVV1   V   HVPS Upper Video Voltage   0
+HVUVV2   V   HVPS Upper Video Voltage   0
+HVWTMP   deg_C   HVPS Window Temperature   0
+I2DCA   count   Interarrival Time Accumulation, All Particles Incl   0
+I2DPA   count   Interarrival Time Accumulation, All Particles Incl   0
+IAS   knot   Indicated Airspeed   0
+IASX   knot   Aircraft Indicated Airspeed, Reference   0
+INFLOW   slpm   Wyoming Inlet Flow   10 sps, 0 10 Vdc   0
+INFLOWC   vlpm   SCAI Corrected Excess Flow   0
+IRBC   W/m2   Corrected Infrared Irradiance, Bottom   0
+IRBHT   deg_C   Pyrgeometer (IR) Housing Temperature, Bottom   10 sps, 0 10 Vdc   0
+IRBV   V   Pyrgeometer Raw Infrared Irradiance, Bottom   10 sps, 0 10 Vdc   0
+IRTC   W/m2   Corrected Infrared Irradiance, Top   0
+IRTHT   deg_C   Pyrgeometer (IR) Housing Temperature, Top   10 sps, 0 10 Vdc   0
+IRTV   V   Pyrgeometer Raw Infrared Irradiance, Top   10 sps, 0 10 Vdc   0
+ISOPRENE   pptv   Isoprene   0
+JNO2   1/sec   HARP JNO2 Proxy   0
+LAT   degree_N   Inertial Latitude   0
+LATC   degree_N   GPS-Corrected Inertial Latitude   0
+LCLP   hPa   Cloudbase Pressure   0
+LCLT   deg_C   Cloudbase Temperature   0
+LON   degree_E   Inertial Longitude   0
+LONC   degree_E   GPS-Corrected Inertial Longitude   0
+LWC   gram/m3   Raw C-T Liquid Water Content   0
+LWCC   gram/m3   Corrected C-T Liquid Water Content   0
+MACHF   none   Aircraft Mach Number, Fuselage   0
+MACHR   none   Aircraft Mach Number, Radome   0
+MACHX   none   Aircraft Mach Number, Reference   0
+MEDCO2   ppmv   Medusa CO2   10 sps, 0 10 Vdc   0
+MEDFLOW   V   Medusa Flow   10 sps, 0 10 Vdc   0
+MEDH2O   ppmv   Medusa H2O   10 sps, 0 10 Vdc   0
+MEDP1   torr   Medusa Presure 1   10 sps, 0 10 Vdc   0
+MEDP2   torr   Medusa Presure 2   10 sps, 0 10 Vdc   0
+MEDPBYP   torr   Medusa Presure Bypass   10 sps, 0 10 Vdc   0
+MEDSTAT1   flag   Medusa Status   10 sps, 0 10 Vdc   0
+MEDSTAT2   flag   Medusa Status   10 sps, 0 10 Vdc   0
+MEDSTAT3   flag   Medusa Status   10 sps, 0 10 Vdc   0
+MED_PSA   torr   Medusa Sample Pressure   10 sps, 0 5 Vdc   0
+METHACROLEIN   pptv   Methacrolein   0
+MILSEC   msec   Raw Tape Time Component   0
+MINUTE   minute   Raw Tape Time Component   0
+MONTH   month   Raw Tape Date Component   0
+MR   gram/kg   Mixing Ratio, T-Electric   1
+MRCR   gram/kg   Mixing Ratio, Cryogenic   0
+MRLA   gram/kg   Mixing Ratio, Lyman-alpha   0
+MRLA1   gram/kg   Mixing Ratio, Lyman-alpha   0
+MRTDLL   gram/kg   Mixing Ratio, TDL Long Absorption Path   0
+MRTDLS   gram/kg   Mixing Ratio, TDL Short Absorption Path   0
+MRUV   gram/kg   Mixing Ratio, UV Hygrometer   0
+MSPPD_CFDC   V   MSP Pressure Drop   10 sps, -10 10 Vdc   0
+NACCEPT2DCA   count   Number of Fast 2DC Particles Accepted, All Particl   0
+NACCEPT2DCR   count   Number of Fast 2DC Particles Accepted, Round Parti   0
+NACCEPT2DPA   count   Number of Fast 2DP Particles Accepted, All Particl   0
+NACCEPT2DPR   count   Number of Fast 2DP Particles Accepted, Round Parti   0
+NLWC   V   Raw Nevzorov Liquid Water Content   0
+NLWCC   gram/m3   Corrected Nevzorov Liquid Water Content   0
+NMODE   V   NO/NOY Analyzer Mode Status   0
+NO   V   Raw Nitric Oxide Output   0
+NO2   pptv   Nitrogen Dioxide   0
+NOC   ppb   Corrected Nitric Oxide Concentration   0
+NOF   sccm   NO/NOY Detector, Sample Flow Rate   0
+NOSETMP   deg_C   Radome Environmental Box Temperature   100 sps, 0 10 Vdc   0
+NOX   pptv   NOx Mixing Ratio   0
+NOY   V   Raw Oxides of Nitrogen Output   0
+NOYC   ppb   Corrected Oxides of Nitrogen Concentration   0
+NOZF   sccm   NO/NOY Detector Ozonizer Flow Rate   0
+NREJECT2DCA   count   Number of Fast 2DC Particles Rejected, All Particl   0
+NREJECT2DCR   count   Number of Fast 2DC Particles Rejected, Round Parti   0
+NREJECT2DPA   count   Number of Fast 2DP Particles Rejected, All Particl   0
+NREJECT2DPR   count   Number of Fast 2DP Particles Rejected, Round Parti   0
+NSYS   V   NO/NOY Analyzer System Monitor   0
+NTWC   V   Raw Nevzorov Total Water Content   0
+NTWCC   gram/m3   Corrected Nevzorov Total Water Content   0
+O3CF   slpm   Chemiluminescent Ozone Sample Flow Rate   0
+O3CP   hPa   Chemiluminescent Ozone Sample Pressure   0
+O3CS   V   Raw Chemiluminescent Ozone Output   0
+O3CSC   ppb   Corrected Chemiluminescent Ozone Concentration   0
+O3FC   ppbv   Corrected Fast-Response Ozone Concentration   0
+O3FF   slpm   Chemiluminescent Ozone Sample Flow Rate   0
+O3FN   slpm   Fast-Response Ozone Nitric Oxide Flow Rate   0
+O3FP   hPa   Fast-Response Ozone Reactor Sample Pressure   0
+O3FS   V   Chemiluminescent Ozone Signal   0
+O3FSC   ppb   Corrected Fast-Response Ozone Concentration   0
+O3FT   deg_C   Fast-Response Ozone Reactor Temperature   0
+OAT   deg_C   Ambient Temperature, Ophir III   0
+OBBCOD   count   Ophir-III Black Body Code   0
+OBBCR   W/m2/um   Ophir-III Hemispherical Black Body Radiance   0
+ODETDC   count   Ophir-III Detector Bias Voltage   0
+ODETOF   count   Ophir-III Detector Offset   0
+ODETSG   count   Ophir-III Raw Detector Signal   0
+ODSIGC   V   Ophir-III Detector Signal, Corrected   0
+OGAIN   count   Ophir-III Gain   0
+OGAINF   count   Ophir-III Detector Gain Factor   0
+ONE   none   Constant value of 1.   0
+OSMOTR   count   Ophir-III Chopper Motor Speed   0
+OTBBC   count   Ophir-III Controlled Black Body Temperature   0
+OTBBF   count   Ophir-III Free Black Body Temperature   0
+OTBNCH   count   Ophir-III Optical Bench Temperature   0
+OTBOX   count   Ophir-III Electronics Box Temperature   0
+OTDET   count   Ophir-III Detector Temperature   0
+OTDETC   K   Ophir-III Detector Temperature, Corrected   0
+OTSNT   count   Ophir-III Optics Temperature   0
+OVFLW   count   SPP-100 AtoD Converter Overflow/Overrange   0
+P6E01   V   260X End Diode Voltage   0
+P6E64   V   260X End Diode Voltage   0
+P6RST   count   260X Resets   0
+P6TMP   deg_C   260X Temperature   0
+PACT   count   PCAS Raw Activity   0
+PALT   m   NACA Pressure Altitude   0
+PALTF   feet   NACA Pressure Altitude   1
+PBRS   none   PCAS Beam Diffraction Ratio   0
+PCAB   hPa   Interior Cabin Static Pressure   10 sps, 0 10 Vdc   0
+PCN   hPa   BCN Counter Inlet Pressure   10 sps, 0 10 Vdc   1
+PDUMPPL   hPa   Pressure of instrument exhaust duct, left   10 sps, 0 10 Vdc   0
+PDUMPPR   hPa   Pressure of instrument exhaust duct, right   10 sps, 0 10 Vdc   0
+PERFA   slpm   Hydrogen Peroxide Sample Flow Rate A   0
+PERFB   slpm   Hydrogen Peroxide Sample Flow Rate B   0
+PERLM   V   Hydrogen Peroxide Lamp Intensity   0
+PERSA   V   Hydrogen Peroxide Signal A   0
+PERSB   V   Hydrogen Peroxide Signal B   0
+PFLW   std cm3/s   PCAS Flow   0
+PFLWC   vol cm3/s   PCAS Corrected Flow   0
+PFLWS   std cm3/s   SPP-200 Sheath Flow   0
+PFSSP   count   FSSP-100 Particle Spacing   0
+PHGB   V   SPP-200 High-Gain Baseline   0
+PITCH   degree   Aircraft Pitch Angle   0
+PLGB   V   SPP-200 Low-Gain Baseline   0
+PLWC   W   Raw PMS-King Liquid Water Content Output   10 sps, 0 10 Vdc   0
+PLWC1   W   Raw PMS-King Liquid Water Content Output   10 sps, 0 10 Vdc   0
+PLWC1DC   gram/m3   2D-C Water/Ice Content, 260X Emulation   0
+PLWC1DP   gram/m3   2D-P Water/Ice Content, 260X Emulation   0
+PLWC2   W   Raw PMS-King Liquid Water Content Output   100 sps, 0 10 Vdc   0
+PLWC2DC   gram/m3   2D-C Water/Ice Content, Reconstruction   0
+PLWC2DCA   gram/m3   Fast 2DC Liquid Water Content, All Particles   0
+PLWC2DCR   gram/m3   Fast 2DC Liquid Water Content, Round Particles   0
+PLWC2DP   gram/m3   2D-P Water/Ice Content, Reconstruction   0
+PLWC2DPA   gram/m3   Fast 2DP Liquid Water Content, All Particles   0
+PLWC2DPR   gram/m3   Fast 2DP Liquid Water Content, Round Particles   0
+PLWC3   gram/m3   FSSP-300 Water/Ice Content   0
+PLWC6   gram/m3   260X Water/Ice Content   0
+PLWCC   gram/m3   Corrected PMS-King Liquid Water Content   0
+PLWCC1   gram/m3   Corrected PMS-King Liquid Water Content   0
+PLWCC2   gram/m3   Corrected PMS-King Liquid Water Content   0
+PLWCD   gram/m3   CDP Water/Ice Content   0
+PLWCF   gram/m3   FSSP-100 Water/Ice Content   0
+PLWCX   gram/m3   200X Water/Ice Content   0
+PLWCY   gram/m3   200Y Water/Ice Content   0
+PMGB   V   SPP-200 Mid-Gain Baseline   0
+PMODE   V   Hydrogen Peroxide Analyzer Status   0
+PODFANL   boolean   Pod Fan Status, Left Wing   0
+PODFANR   boolean   Pod Fan Status, Right Wing   0
+PODTMPL   deg_C   Pod Temperature, Left Wing   0
+PODTMPR   deg_C   Pod Temperature, Right Wing   0
+PPS   V   1-PPS Signal   100 sps, 0 10 Vdc   0
+PREF   V   PCAS Laser Reference Voltage   0
+PSB   hPa   Raw Static Pressure, Boom   0
+PSBC   hPa   Corrected Static Pressure, Boom   0
+PSC   hPa   Corrected Static Pressure, Gust Pod   0
+PSF   hPa   Raw Static Pressure, Fuselage   0
+PSFC   hPa   Corrected Static Pressure, Fuselage   0
+PSFD   hPa   Raw Static Pressure, Fueselage Digital   0
+PSFD1   count   Raw PSFD, Low-order word   0
+PSFD2   count   Raw PSFD, High-order word   0
+PSFDC   hPa   Corrected Static Pressure, Fuselage Digital   0
+PSFRD   hPa   Raw Static Pressure, Fuselage (Ruska)   0
+PSLH   hPa   Raw Static Pressure, TDL Hygrometer   0
+PSTT   count   PCAS Signal Transit Time   0
+PSURF   hPa   Calculated Surface Pressure   0
+PSW   hPa   Raw Static Pressure, Wing   0
+PSWC   hPa   Corrected Static Pressure, Wing   0
+PSX   hPa   Raw Static Pressure, Reference   0
+PSXC   hPa   Corrected Static Pressure, Reference   0
+PTALT1   feet   Parcel Tracking, Altitude Difference   0
+PTALT2   feet   Parcel Tracking, Altitude Difference   0
+PTDST1   nmi   Parcel Tracking, Distance to Parcel   0
+PTDST2   nmi   Parcel Tracking, Distance to Parcel   0
+PTIME   s   Processor Time   0
+PTMP   deg_C   PCAS Detector Temperature   0
+PTRAD1   degree   Parcel Tracking, Heading to Parcel   0
+PTRAD2   degree   Parcel Tracking, Heading to Parcel   0
+PVOL3   um3/m3   SPP-300 Equivalent Volume   0
+PVOLP   um3/m3   PCASP Equivalent Volume   0
+PVOLU   um3/m3   UHSAS Equivalent Volume   0
+QCB   hPa   Raw Dynamic Pressure, Boom   0
+QCBC   hPa   Corrected Dynamic Pressure, Boom   0
+QCC   hPa   Corrected Dynamic Pressure, Gust Pod   0
+QCF   hPa   Raw Dynamic Pressure, Fuselage   100 sps, 0 10 Vdc   0
+QCFC   hPa   Corrected Dynamic Pressure, Fuselage   0
+QCFR   hPa   Raw Dynamic Pressure, Fuselage Right   100 sps, 0 10 Vdc   0
+QCFRC   hPa   Raw Dynamic Pressure, Fuselage Right, Corrected   0
+QCR   hPa   Raw Dynamic Pressure, Radome   100 sps, 0 10 Vdc   0
+QCRC   hPa   Corrected Dynamic Pressure, Radome   0
+QCW   hPa   Raw Dynamic Pressure, Wing   0
+QCWC   hPa   Corrected Dynamic Pressure, Wing   0
+QCX   hPa   Raw Dynamic Pressure, Reference   0
+QCXC   hPa   Corrected Dynamic Pressure, Reference   0
+RADCF   none   Radiation Correction Factor   0
+RALT   m   Geometric (Radar) Altitude (APN-232)   0
+RDMAHVPS   V   RDMA High Voltage Power Supply   0
+RDMAPABS   hPa   RDMA Absolute Pressure   0
+RDMAQA   L/min   RDMA Aerosol Inflow   0
+RDMAQEX   L/min   RDMA Excess Outflow   0
+RDMAQS   L/min   RDMA Classified Aerosol Outflow   0
+RDMAQSH   L/min   RDMA Sheath Inflow   0
+RDMARH   %   RDMA Relative Humidity   0
+RDMATEMP   deg_C   RDMA Sample Temperature   0
+RDMAVD   V   RDMA Dilution Valve Control Voltage   0
+RDMAVSH   V   RDMA Sheath Valve Control Voltage   0
+REFF2DC   um   1DC Effective Radius   0
+REFF2DCA   um   Fast 2DC Effective Radius, All Particles   0
+REFF2DCR   um   Fast 2DC Effective Radius, Round Particles   0
+REFF2DPA   um   Fast 2DP Effective Radius, All Particles   0
+REFF2DPR   um   Fast 2DP Effective Radius, Round Particles   0
+REFF6   um   260X Effective Radius   0
+REFFD   um   CDP Effective Radius   0
+REFFD2DC   um   1DC and CDP Effective Radius   0
+REFFF   um   FSSP-100 Effective Radius   0
+REFFF2DC   um   1DC and FSSP-100 Effective Radius   0
+REJAT   SPP-100 Average Transit Rejected Particles   0
+REJDOF   count   Particles Rejected (Outside Depth-of-Field))   0
+RHOCR   gram/m3   Absolute Humidity, Cryogenic   0
+RHODT   gram/m3   Absolute Humidity, T-Electric   0
+RHOLA   gram/m3   Absolute Humidity, Lyman-alpha   0
+RHOLA1   gram/m3   Absolute Humidity, Lyman-alpha   0
+RHOUV   gram/m3   Absolute Humidity, RAF Fast   0
+RHUM   %   Relative Humidity   0
+RHUMI   %   Relative Humidity with Respect to Ice   0
+RICE   V   Raw Icing-Rate Indicator   10 sps, -10 10 Vdc   0
+ROLL   degree   Aircraft Roll Angle   0
+RSTB   deg_C   Radiometric Surface Temperature   10 sps, -10 10 Vdc   0
+RSTB1   deg_C   Radiometric Surface Temperature   10 sps, -10 10 Vdc   0
+RSTT   deg_C   Radiometric Sky/Cloud-Base Temperature   10 sps, -10 10 Vdc   0
+RTFH   deg_C   Recovery Temperature, Deiced Fuselage   100 sps, 0 5 Vdc   0
+RTFH1   deg_C   Recovery Temperature, Deiced Left, Rosemount   10 sps, 0 5 Vdc   0
+RTFH2   deg_C   Recovery Temperature, Deiced Left, Rosemount   10 sps, 0 5 Vdc   0
+RTHL1   deg_C   Recovery Temperature, Deiced Left, HARCO   100 sps, 0 5 Vdc   0
+RTHR1   deg_C   Recovery Temperature, Deiced Right, HARCO   100 sps, 0 5 Vdc   0
+RTHR2   deg_C   Recovery Temperature, Deiced Right, HARCO   100 sps, 0 5 Vdc   0
+RTRL   deg_C   Recovery Temperature, Radome Left   100 sps, 0 5 Vdc   0
+RTRR   deg_C   Recovery Temperature, Radome Right   100 sps, 0 5 Vdc   0
+RTWH   deg_C   Recovery Temperature, Deiced Wing   100 sps, 0 5 Vdc   0
+RTX   deg_C   Recovery Temperature, Reference   0
+SDWC1   count   2D-C Shadow OR Counts   0
+SDWH1   count   HVPS Shadow OR Counts   0
+SDWP1   count   2D-P Shadow OR Counts   0
+SECOND   s   Raw Tape Time Component   0
+SFMB   kV/m   Sensitive Field Mill, Bottom Fuselage   0
+SFMRB   kV/m   Sensitive Field Mill, Bottom Radome   0
+SFMRL   kV/m   Sensitive Field Mill, Left Radome   0
+SFMRR   kV/m   Sensitive Field Mill, Right Radome   0
+SFMRT   kV/m   Sensitive Field Mill, Top Radome   0
+SFMT   kV/m   Sensitive Field Mill, Top Fuselage   0
+SHDORC   count   2D-C Shadow OR Counts   0
+SHDORP   count   2D-P Shadow OR Counts   0
+SO2   ppb   Raw Sulfur Dioxide Output   0
+SO2C   ppb   Corrected Sulfur Dioxide Concentration   0
+SO2P   hPa   Sulfur Dioxide Internal Pressure   0
+SOLAZ   radian   Solar Azimuth Angle   0
+SOLDE   radian   Solar Declination Angle   0
+SOLEL   radian   Solar Elevation Angle   0
+SOLZE   radian   Solar Zenith Angle   0
+SPBPITCH   degree   Bottom Pyrgeometer Stabilized Platform Pitch Angle   10 sps, 0 5 Vdc   0
+SPBROLL   degree   Bottom Pyrgeometer Stabilized Platform Roll Angle   10 sps, 0 5 Vdc   0
+SPTPITCH   degree   Top Pyrgeometer Stabilized Platform Pitch Angle   10 sps, 0 5 Vdc   0
+SPTROLL   degree   Top Pyrgeometer Stabilized Platform Roll Angle   10 sps, 0 5 Vdc   0
+SS   degree   Sideslip Angle, Diff. Pressure   0
+SSDF   degree   Sideslip Angle, Boom Diff. Pressure   0
+SSLIP   degree   Sideslip Angle, Reference   0
+SSRD   degree   Sideslip Angle, Radome Diff. Pressure   0
+STB   deg_C   Pyrgeometer Sink Temperature, Bottom   0
+STT   deg_C   Pyrgeometer Sink Temperature, Top   0
+SVR650   V   Spectral Vegetation Radiometer (650 nm)   0
+SVR862   V   Spectral Vegetation Radiometer (862 nm)   0
+SWB   W/m2   Shortwave Irradiance, Bottom   0
+SWT   W/m2   Shortwave Irradiance, Top   0
+SWTC   W/m2   Shortwave Irradiance, Top, (Attitude-Corrected)   0
+TA2D   deg_C   2D Can Temperature   0
+TAS   m/s   Aircraft True Airspeed   0
+TASB   m/s   Aircraft True Airspeed, Boom   0
+TASF   m/s   Aircraft True Airspeed, Fuselage   0
+TASHC   m/s   Aircraft True Airspeed, Humidity Corrected   0
+TASR   m/s   Aircraft True Airspeed, Radome   0
+TASW   m/s   Aircraft True Airspeed, Wing   0
+TASX   m/s   Aircraft True Airspeed, Reference   0
+TCAB   deg_C   Cabin Temperature at ADS Rack Location   10 sps, 0 5 Vdc   0
+TCABFWDB   deg_C   Cabin Temperature Forward Bottom   10 sps, 0 5 Vdc   0
+TCABFWDT   deg_C   Cabin Temperature Forward Top   10 sps, 0 5 Vdc   0
+TCAVB   deg_C   Cavity Temperature, Bottom PRT-5   0
+TCAVT   deg_C   Cavity Temperature, Top PRT-5   0
+TCNT3   count   FSSP-300 Total Counts (all cells)   0
+TCNT6   count   260X Total Counts (all cells)   0
+TCNTD   count   CDP Total Counts (all cells)   0
+TCNTF   count   FSSP-100 Total Counts (all cells)   0
+TCNTP   count   PCAS Total Counts (all cells)   0
+TCNTU   count   UHSAS Total Counts (all cells)   0
+TDCH1   none   HVPS Housekeeping   0
+TEO3   ppb   Raw TECO Ozone Output   0
+TEO3C   ppbv   Corrected TECO (UV) Ozone Concentration   0
+TEO3P   hPa   Internal TECO Ozone Sampling Pressure   0
+TEP   hPa   Internal TECO Ozone Sampling Pressure   0
+TET   deg_C   Internal TECO Ozone Sampling Temperature   0
+THC   ppb   Total Hydrocarbons (THC) Concentration   0
+THCF   sccm   Total Hydrocarbons, Sample Flow Rate   0
+THCH2   sccm   Total Hydrocarbons, Hydrogen Flow Rate   0
+THDG   degree_T   Aircraft True Heading Angle   0
+THETA   K   Potential Temperature   0
+THETAE   K   Equivalent Potential Temperature   0
+THETAP   K   Pseudo-adiabatic Equivalent Potential Temperature   0
+THETAQ   K   Wet Equivalent Potential Temperature   0
+THETAV   K   Virtual Potential Temperature   0
+THIML1   deg_C   HIMIL Tip Temperature   10 sps, 0 5 Vdc   0
+THIML2   deg_C   HIMIL Tip Temperature   10 sps, 0 5 Vdc   0
+THIML3   deg_C   HIMIL Tip Temperature   10 sps, 0 5 Vdc   0
+THIML4   deg_C   HIMIL Tip Temperature   10 sps, 0 5 Vdc   0
+TKAR   deg/s   IRS Track Angle Rate   0
+TKAT   degree_T   IRS Track Angle, True   0
+TLSI   deg_C   LSI System Temperature   0
+TMLAG   s   LTN-51 ARINC Time Lag   0
+TOLUENE   pptv   Toluene   0
+TPTIME   s   Unaltered Tape Time   0
+TRSTB   deg_C   RSTB Sensor Head Temperature   10 sps, -10 10 Vdc   0
+TS2D   deg_C   2D Can Temperature   0
+TSURF   deg_C   Sea Surface Temperature   0
+TTB   deg_C   Total Temperature, Radome   0
+TTC   deg_C   Loose Coupled Output of   0
+TTF   deg_C   Total Temperature, Fuselage   0
+TTFH   deg_C   Total Temperature, Deiced Fuselage   100 sps, 0 5 Vdc   0
+TTFH1   deg_C   Total Temperature, Deiced Left, Rosemount   10 sps, 0 5 Vdc   0
+TTFH2   deg_C   Total Temperature, Deiced Left, Rosemount   10 sps, 0 5 Vdc   0
+TTHL1   deg_C   Total Temperature, Deiced Left, HARCO   100 sps, 0 5 Vdc   0
+TTHL2   deg_C   Total Temperature, Deiced Left, HARCO   100 sps, 0 5 Vdc   0
+TTHR1   deg_C   Total Temperature, Deiced Right, HARCO   100 sps, 0 5 Vdc   0
+TTHR2   deg_C   Total Temperature, Deiced Right, HARCO   100 sps, 0 5 Vdc   0
+TTRF   deg_C   Total Temperature, Reverse Flow   0
+TTRL   deg_C   Total Temperature, Radome Left   100 sps, 0 5 Vdc   0
+TTRR   deg_C   Total Temperature, Radome Right   100 sps, 0 5 Vdc   0
+TTW   deg_C   Total Temperature, Wing   0
+TTWH   deg_C   Total Temperature, Deiced Wing   0
+TTWHC   deg_C   Total Temperature, Deiced Wing, Corrected   0
+TTX   deg_C   Total Temperature, Reference   0
+TV10   deg_C   Temperature of 10-Volt Reference   0
+TVIR   deg_C   Virtual Temperature   0
+UFLWC   vol cm3/s   UHSAS Corrected Flow   0
+UI   m/s   Wind Vector, East Component   0
+UIC   m/s   GPS-Corrected Wind Vector, East Component   0
+UVB   W/m2   Ultraviolet Irradiance, Bottom   0
+UVCHRF   count   UV Hygrometer Lamp-Off Reference Detector   0
+UVCHSP   count   UV Hygrometer Lamp-Off Signal Detector   0
+UVHREF   count   UV Hygrometer H-lamp Reference Detector   0
+UVHSMP   count   UV Hygrometer H-lamp Signal Detector   0
+UVKRRF   count   UV Hygrometer K-lamp Reference Detector   0
+UVKRSP   count   UV Hygrometer K-lamp Signal Detector   0
+UVPVOL   count   UV Hygrometer Sample Volume Pressure   0
+UVT   W/m2   Ultraviolet Irradiance, Top   0
+UVTVOL   count   UV Hygrometer Sample Volume Temperature   0
+UX   m/s   Wind Vector, Longitudinal Component   0
+UXC   m/s   GPS-Corrected Wind Vector, Longitudinal Component   0
+V10   V   10-Volt Reference   0
+V10R   V   10-Volt Reference (through resistor)   0
+V28   V   Aircraft DC Voltage Supply   0
+VCRH   deg_C   Dew/Frost Point Temperature, Cryogenic   0
+VDREF   V   Difference of 10-Vdc References   0
+VEW   m/s   Inertial Ground Speed Vector, East Component   0
+VEWC   m/s   GPS-Corrected Inertial Ground Speed Vector, East C   0
+VI   m/s   Wind Vector, North Component   0
+VIC   m/s   GPS-Corrected Wind Vector, North Component   0
+VISBC   W/m2   Pyrgeometer Raw Visible Irradiance, Bottom   10 sps, 0 10 Vdc   0
+VISBHT   deg_C   Pyrgeometer (Visible) Housing Temperature, Bottom   10 sps, 0 10 Vdc   0
+VISTC   W/m2   Pyrgeometer Raw Visible Irradiance, Top   10 sps, 0 10 Vdc   0
+VISTHT   deg_C   Pyrgeometer (Visible) Housing Temperature, Top   10 sps, 0 10 Vdc   0
+VLA   V   Raw Lyman-alpha Hygrometer Output   0
+VLA1   V   Raw Lyman-alpha Hygrometer Output   0
+VM15A   V   -15V Analog Voltage   0
+VMR   ppmv   Volume Mixing Ratio   0
+VNS   m/s   Inertial Ground Speed Vector, North Component   0
+VNSC   m/s   GPS-Corrected Inertial Ground Speed Vector, North   0
+VP15A   V   +15V Analog Voltage   0
+VP15D   V   +15V Digital Voltage   0
+VSPD   m/s   IRS-Computed Aircraft Vertical Velocity   0
+VY   m/s   Wind Vector, Lateral Component   0
+VYC   m/s   GPS-Corrected Wind Vector, Lateral Component   0
+VZI   m/s   Aircraft Integrated Vertical Velocity   0
+WD   degree_T   Horizontal Wind Direction   0
+WDC   degree_T   GPS-Corrected Horizontal Wind Direction   0
+WI   m/s   Wind Vector, Vertical Gust Component   0
+WIC   m/s   GPS-Corrected Wind Vector, Vertical Gust Component   0
+WI_GP   m/s   Wind Vector, Vertical Gust Component   0
+WP3   m/s   Damped Aircraft Vertical Velocity   0
+WS   m/s   Horizontal Wind Speed   0
+WSC   m/s   GPS-Corrected Horizontal Wind Speed   0
+XACCUX   g   Aircraft Acceleration, Lateral   0
+XACCVY   g   Aircraft Acceleration, Longitudinal   0
+XACCWZ   g   Aircraft Acceleration, Vertical   0
+XAERIF   vlpm   Wyoming Inlet Volume Flow Rate   0
+XAERIT   deg_C   Wyoming Inlet Tip Temperature   0
+XCELLPRESS   hPa   UV Hygrometer Cell Pressure   500 sps, -5 5 Vdc   0
+XCELLTEMP   deg_C   UV Hygrometer Cell Temperature   500 sps, -5 5 Vdc   0
+XCO   ppmv   Carbon Monoxide   0
+XCOCELL   V   Carbon Monoxide Cell Pressure   100 sps, 0 10 Vdc   0
+XCOFCAL   V   Carbon Monoxide Cal Gas Flow   100 sps, 0 10 Vdc   0
+XCOFS   V   Carbon Monoxide Sample Flow   100 sps, 0 10 Vdc   0
+XCOPIN   V   Carbon Monoxide Inlet Pressure   100 sps, 0 10 Vdc   0
+XFORF   V   Formaldehyde Sample Flow Rate   0
+XFORM   V   Formaldehyde Analyzer Status   0
+XFORS   V   Raw Formaldehyde Signal Output   0
+XFZV   V   Fixed Zero Voltage, External Chassis   0
+XGLWC   gram/m3   Gerber PV-100 Probe Liquid Water Content   500 sps, -5 5 Vdc   0
+XGMODE   count   Gerber PV-100 Probe Mode   0
+XGREFF   um   Gerber PV-100 Effective Droplet Radius   500 sps, -5 5 Vdc   0
+XGRFF   um   Gerber PV-100 Effective Droplet Radius   0
+XGSFC   cm2/m3   Gerber PV-100 Particle Surface Area (Raw)   500 sps, -5 5 Vdc   0
+XICN   vlpm   BCN Isokinetic Side Flow Rate   10 sps, -5 5 Vdc   0
+XICNC   vlpm   Corrected CN Isokinetic Side Flow Rate   0
+XINHUM   V   Inlet Humidity   10 sps, 0 10 Vdc   0
+XINLET   V   Inlet Aerosol Selection   0
+XINPRES   V   Inlet Pressure   10 sps, 0 10 Vdc   0
+XINTEMP   V   Inlet Temperature   10 sps, 0 10 Vdc   0
+XLATC   degree_N   GPS-Corrected Inertial Latitude   0
+XLHHI   V   TDL Hygrometer, High Bit   0
+XLHLO   V   TDL Hygrometer, Low Bit   0
+XLONC   degree_E   GPS-Corrected Inertial Longitude   0
+XMACH2   none   Aircraft Mach Number Squared   0
+XN9ATX   K   Nephelometer Air Temperature   0
+XN9BSCT   M-1   Nephelometer Light Scattering Extinction Coefficie   0
+XN9CAL   M-1   Nephelometer Calibration Gas   0
+XN9PSX   hPa   Nephelometer Pressure   0
+XN9RELA   none   Nephelometer Relay Status   0
+XN9RHUM   %   Nephelometer Relative Humidity   0
+XPFLW   std cm3/s   Derived PCAS Flow   0
+XPLWDMT   V   DMT Liquid Water Content   0
+XPODXAC   g   Pod Acceleration, Lateral   0
+XPODYAC   g   Pod Acceleration, Longitudinal   0
+XPODZAC   g   Pod Acceleration, Vertical   0
+XPSFD   hPa   Raw Static Pressure, Fuselage (Ruska)   0
+XRADCF   none   Radiation Correction Factor   0
+XSIGV   V   UV Hygrometer Intensity   500 sps, -5 5 Vdc   0
+XSWTC   W/m2   Shortwave Irradiance, Top, (Attitude-Corrected)   0
+XTUBETEMP   deg_C   UV Hygrometer Tube Temperature   500 sps, -5 5 Vdc   0
+XUFCN   Ultrafine CN   0
+XUIC   m/s   GPS-Corrected Wind Vector, East Component   0
+XUXC   m/s   GPS-Corrected Wind Vector, Longitudinal Component   0
+XV10   V   10-Volt Reference, External Chassis   0
+XVEWC   m/s   GPS-Corrected Inertial Ground Speed Vector, East C   0
+XVIC   m/s   GPS-Corrected Wind Vector, North Component   0
+XVNSC   m/s   GPS-Corrected Inertial Ground Speed Vector, North   0
+XVYC   m/s   GPS-Corrected Wind Vector, Lateral Component   0
+XWDC   degree   GPS-Corrected Horizontal Wind Direction   0
+XWIC   m/s   GPS-Corrected Wind Vector, Vertical Gust Component   0
+XWLCO2C   Unk   Wyoming LICOR CO2 Concentration   0
+XWLH2OC   Unk   Wyoming LICOR H2O Concentration   0
+XWSC   m/s   GPS-Corrected Horizontal Wind Speed   0
+XWYOT   deg_C   Wyoming Inlet Temperature   10 sps, -10 10 Vdc   0
+YEAR   year   Raw Tape Date Component   0
