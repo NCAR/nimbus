@@ -3,7 +3,6 @@
 2DEE1   V   PMS-2D Probe Housekeeping   0
 2DEE32   V   PMS-2D Probe Housekeeping   0
 2DMTMP   V   PMS-2D Probe Housekeeping   0
-2DV15   V   PMS-2D Probe Housekeeping   0
 2DV5   V   PMS-2D Probe Housekeeping   0
 2DVN15   V   PMS-2D Probe Housekeeping   0
 A1DC   count   2D-C Accumulation, 260X Emulation (per cell)   0
@@ -12,8 +11,7 @@ A200X   count   200X Raw Accumulation (per cell)   0
 A200Y   count   200Y Raw Accumulation (per cell)   0
 A260X   count   260X Raw Accumulation (per cell)   0
 A2DC   count   2D-C Accumulation, Reconstruction (per cell)   0
-A2DCA   count res   Fast 2DC Corrected Accumulation per Channel, All P
-A2DCR   Julian   Fast 2DC Corrected Accumulation per Channel, Round
+A2DCA   count   Fast 2DC Corrected Accumulation per Channel, All P   0
 A2DP   count   2D-P Accumulation, Reconstruction (per cell)   0
 A2DPA   count   Fast 2DC Corrected Accumulation per Channel, All P   0
 A2DPR   count   Fast 2DC Corrected Accumulation per Channel, Round   0
@@ -780,3 +778,4 @@ XWLH2OC   Unk   Wyoming LICOR H2O Concentration   0
 XWSC   m/s   GPS-Corrected Horizontal Wind Speed   0
 XWYOT   deg_C   Wyoming Inlet Temperature   10 sps, -10 10 Vdc   0
 YEAR   year   Raw Tape Date Component   0
+ZERO   none   Constant value of 0.   0

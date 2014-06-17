@@ -4,26 +4,33 @@ import getInfo
 from remove import rem
 from delete import delete
 from PyQt4 import QtGui, QtCore
+
 #Labes is used to store info for exec commands in textChange function
 #bools determines if text has been changed
 labes=[]
 global bools
 global previousnum
 bools=False
+
 #removes leading descriptior from static lable, appends to signal list
 def signalSet(right,name,signalist):
    exec('signalist.append(str(right.'+name+'.text()).lstrip("'+str(name)+': "))')
    return signalist
+#==============================================================================
 #When any text box is edited, this function is called
 def textChange(right,text,labes,num):
    global bools
+
    #info about new text is stored in static lable
    exec('right.'+labes[num]+'.setText(labes[num]+": "+text)')
    bools=True
+
+#==============================================================================
 #Creates right hand side lables and text boxes
 #right.lablename is static lable
 #right.edtlablename is text box whch can be edited
 def labler(lablename,signalname,right,number):
+
    #incoming signal names are local, must be global for use in exec
    global rite
    global num
@@ -38,6 +45,7 @@ def labler(lablename,signalname,right,number):
    #Connvects changes in text box to bools logic
    exec('right.edt'+lablename+'.textEdited.connect(lambda: textChange(rite,rite.edt'+lablename+'.text(),labes,'+str(num)+'))')
 
+#==============================================================================
 #num is signal's row in varDB.txt
 #Bool becomes true when text box(es) are edited
 #This function configures button settings based on which radio button is selected
@@ -46,11 +54,14 @@ def lookingAt(num,left,right,self): #displays metadata based on radiobutton sele
    from addSignal import addsignal
    global previousnum
    global bools
+
    #Eventually read headers from varDB
    headers=['name','units','description']
    entries=getInfo.getinfo()
-   #Check for changes to text boxes
-   if bools==True:
+
+   #Check for changes to text boxes with bool
+   #num =-1 is a flag that a variable is being deleted, and not to save changes made
+   if bools==True and num!=-1:
       bools=False
       reply=QtGui.QMessageBox.question(self, 'Save Changes?', 'Do you want to save these changes?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
       if reply==QtGui.QMessageBox.Yes:
@@ -65,10 +76,17 @@ def lookingAt(num,left,right,self): #displays metadata based on radiobutton sele
         addsignal(signalist,self,left,right,num)
         lookingAt(num,left,right,self)
         return
-   i=0
-   signals=[]
+
+   #If num is sent as a flag (-1)_, reset it to 0
+   #This indicates not to save changes, so bool is set to False
+   if num==-1:
+      bools=False
+      num=0
+
 #Create new lables and boxes for right side based on button selection
    #Get important info
+   i=0
+   signals=[]
    while i<len(headers):
      try:signals.append(entries[num][i])
      except Exception:pass
@@ -84,7 +102,9 @@ def lookingAt(num,left,right,self): #displays metadata based on radiobutton sele
    try: 
       self.saveButton.clicked.disconnect()
    except Exception: pass
+
    #Update delete button num refference
    self.deleteButton.clicked.connect(lambda: delete(num,left,right,self)) 
+   
    self.saveButton.clicked.connect(lambda: lookingAt(num,left,right,self))
    previousnum=num

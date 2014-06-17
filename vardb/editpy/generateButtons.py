@@ -6,6 +6,7 @@ from PyQt4 import QtGui, QtCore
 from makeSingleRadioButton import mkbut
 from getInfo import getinfo
 def generateButtons(left,right,self,filtering,num):
+
            #removes buttons from left
            for i in reversed(range(left.verticalLayoutScroll.count())): 
                left.verticalLayoutScroll.itemAt(i).widget().setParent(None)
@@ -13,6 +14,7 @@ def generateButtons(left,right,self,filtering,num):
            varDB=open('varDB.txt','r')
            i=0
            while i<len(entries): 
+
               #displayed buttons must start with filter phrase
               if str(entries[i][0]).startswith(filtering) or filtering=='':
                  if num!=i:

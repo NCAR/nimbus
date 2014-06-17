@@ -2,8 +2,10 @@
 #Sets up GUI Window, scroll area, and data lables
 from PyQt4 import QtGui, QtCore
 def setup(hbox,left,right,self):
+
       #Eventually Headers should be read from varDB
       headers=['name','units','description']
+
       #Create middle division
       splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal)
       splitter1.addWidget(left)
@@ -13,6 +15,7 @@ def setup(hbox,left,right,self):
       left.setFrameShape(QtGui.QFrame.StyledPanel)
       right.setFrameShape(QtGui.QFrame.StyledPanel)
       QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
+
       #Create scroll area
       left.scrollArea=QtGui.QScrollArea(left)
       left.scrollArea.setWidgetResizable(True)
@@ -21,12 +24,14 @@ def setup(hbox,left,right,self):
       left.verticalLayout=QtGui.QVBoxLayout(left)
       left.verticalLayout.addWidget(left.scrollArea)
       left.verticalLayoutScroll=QtGui.QVBoxLayout(left.scrollAreaWidgetContents)
+
       #Create search bar
       searchLabel = QtGui.QLabel(" Search", self)
       left.verticalLayout.addWidget(searchLabel)
       self.searchText = QtGui.QLineEdit()
       searchLabel.setBuddy(self.searchText)
       left.verticalLayout.addWidget(self.searchText)
+
       #create right information hub
       i=0
       while i<len(headers):

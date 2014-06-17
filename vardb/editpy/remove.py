@@ -3,6 +3,7 @@
 import makeSingleRadioButton
 from getInfo import getinfo
 def rem(num,left,right,self):
+      from generateButtons import generateButtons
       varDB=open('varDB.txt','r')
       lines = [line.strip() for line in varDB]
       varDB.close()
@@ -14,11 +15,12 @@ def rem(num,left,right,self):
       while i < len(lines):
          if i<num:
             varDB2.write(lines[i]+"\n")
-            makeSingleRadioButton.mkbut(i,entries[i][0],left,right,self,False)
+       #     makeSingleRadioButton.mkbut(i,entries[i][0],left,right,self,False)
          if i>num: #Prevent data shift
             varDB2.write(lines[i]+"\n")
-            makeSingleRadioButton.mkbut(i-1,entries[i][0],left,right,self,False)
+        #    makeSingleRadioButton.mkbut(i-1,entries[i][0],left,right,self,False)
          i+=1
       varDB2.close()
+      generateButtons(left,right,self,self.searchText.text(),0)
       print "Remove succesful: ",lines[num]
 

@@ -8,6 +8,8 @@ def delete(num,left,right,self):
    quit_messge='Are you sure you want to delete '+entries[num][0]
    reply=QtGui.QMessageBox.question(self, 'Warning: altering varDB', quit_messge, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
    if reply == QtGui.QMessageBox.Yes:
-      self.searchText.setText('')
+      from radioClickEvent import lookingAt
+     # self.searchText.setText('')
+      lookingAt(-1,left,right,self)
       remove.rem(num,left,right,self)
 
