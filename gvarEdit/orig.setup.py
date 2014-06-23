@@ -1,0 +1,46 @@
+from PyQt4 import QtGui, QtCore
+from generateTheButtons import generateButtons
+def setup(self):
+
+      self.tabs=QtGui.QTabWidget()
+      tab1=QtGui.QWidget()	
+      tab2=QtGui.QWidget()
+
+      #Create scroll area
+      self.scrollArea=QtGui.QScrollArea(self)
+      self.scrollArea.setWidgetResizable(True)
+      self.scrollAreaWidgetContents=QtGui.QWidget(self.scrollArea)
+      self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+      self.verticalLayout=QtGui.QVBoxLayout(self)
+ 
+      self.head = QtGui.QLabel("   SIGNAL NAME       INCLUDE IN GROUND SQL", self)
+      self.verticalLayout.addWidget(self.head)
+      self.verticalLayout.addWidget(self.scrollArea)
+      self.verticalLayoutScroll=QtGui.QVBoxLayout(self.scrollAreaWidgetContents)
+      searchLabel = QtGui.QLabel(" Search", self)
+      self.verticalLayout.addWidget(searchLabel)
+      self.searchText = QtGui.QLineEdit()
+      self.searchText.textChanged.connect(lambda:generateButtons(self,self.searchText.text()))
+      searchLabel.setBuddy(self.searchText)
+      self.verticalLayout.addWidget(self.searchText)
+
+      checkGroup=QtGui.QGroupBox('')
+      checkLays=QtGui.QHBoxLayout()      
+      checkLabel = QtGui.QLabel("Display signals with property: ", self)
+      self.cbyes = QtGui.QCheckBox('Yes', self)
+      self.cbno = QtGui.QCheckBox('No', self)
+      self.cbyes.click()
+      self.cbno.click()
+      self.cbyes.clicked.connect(lambda:generateButtons(self,self.searchText.text()))
+      self.cbno.clicked.connect(lambda:generateButtons(self,self.searchText.text()))
+      checkLays.addWidget(checkLabel)
+      checkLays.addWidget(self.cbyes)
+      checkLays.addWidget(self.cbno)
+      checkGroup.setLayout(checkLays)
+      self.verticalLayout.addWidget(checkGroup)
+      tab1.setLayout(self.verticalLayout)
+      self.tabs.addTab(tab1,"Tab 1")
+      self.tabs.addTab(tab2,"Tab 2")
+      self.tabs.show()
+      self.tabs.resize(400, 700)
+      self.tabs.move(700,100)

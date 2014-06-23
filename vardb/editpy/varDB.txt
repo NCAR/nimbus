@@ -1,9 +1,10 @@
+1   Voly   PMS-2D Probe Housekeeping
 2D-C   none   2-D Cloud Probe Asynchronous Data ID   0
 2D-P   none   2-D Precip. Probe Asynchronous Data ID   0
 2DEE1   V   PMS-2D Probe Housekeeping   0
 2DEE32   V   PMS-2D Probe Housekeeping   0
 2DMTMP   V   PMS-2D Probe Housekeeping   0
-2DV5   V   PMS-2D Probe Housekeeping   0
+2DV15   V   PMS-2D Probe Housekeeping   0
 2DVN15   V   PMS-2D Probe Housekeeping   0
 A1DC   count   2D-C Accumulation, 260X Emulation (per cell)   0
 A1DP   count   2D-P Accumulation, 260X Emulation (per cell)   0
@@ -12,6 +13,7 @@ A200Y   count   200Y Raw Accumulation (per cell)   0
 A260X   count   260X Raw Accumulation (per cell)   0
 A2DC   count   2D-C Accumulation, Reconstruction (per cell)   0
 A2DCA   count   Fast 2DC Corrected Accumulation per Channel, All P   0
+A2DCR   count   Fast 2DC Corrected Accumulation per Channel, Round   0
 A2DP   count   2D-P Accumulation, Reconstruction (per cell)   0
 A2DPA   count   Fast 2DC Corrected Accumulation per Channel, All P   0
 A2DPR   count   Fast 2DC Corrected Accumulation per Channel, Round   0
