@@ -1,8 +1,5 @@
-1   Voly   PMS-2D Probe Housekeeping
-2D-C   none   2-D Cloud Probe Asynchronous Data ID   0
 2D-P   none   2-D Precip. Probe Asynchronous Data ID   0
 2DEE1   V   PMS-2D Probe Housekeeping   0
-2DEE32   V   PMS-2D Probe Housekeeping   0
 2DMTMP   V   PMS-2D Probe Housekeeping   0
 2DV15   V   PMS-2D Probe Housekeeping   0
 2DVN15   V   PMS-2D Probe Housekeeping   0
@@ -18,11 +15,9 @@ A2DP   count   2D-P Accumulation, Reconstruction (per cell)   0
 A2DPA   count   Fast 2DC Corrected Accumulation per Channel, All P   0
 A2DPR   count   Fast 2DC Corrected Accumulation per Channel, Round   0
 ACDP   count   CDP Raw Accumulation (per cell)   0
-ACETONE   pptv   Acetone   0
 ACETONITRILE   pptv   Acetonitrile   0
 ACINS   m/s2   Aircraft Vertical Acceleration   0
 ADIF   hPa   Vertical Differential Pressure, Boom   0
-ADIFR   hPa   Vertical Differential Pressure, Radome   100 sps, -10 10 Vdc   0
 AF300   count   FSSP-300 Raw Accumulation (per cell)   0
 AFSSP   count   FSSP-100 Raw Accumulation (per cell)   0
 AK   degree   Attack Angle, Diff. Pressure   0

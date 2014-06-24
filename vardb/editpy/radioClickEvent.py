@@ -13,44 +13,44 @@ global previousnum
 bools=False
 
 #removes leading descriptior from static lable, appends to signal list
-def signalSet(right,name,signalist):
-   exec('signalist.append(str(right.'+name+'.text()).lstrip("'+str(name)+': "))')
+def signalSet(self,name,signalist):
+   exec('signalist.append(str(self.right.'+name+'.text()).lstrip("'+str(name)+': "))')
    return signalist
 #==============================================================================
 #When any text box is edited, this function is called
-def textChange(right,text,labes,num):
+def textChange(self,text,labes,num):
    global bools
 
    #info about new text is stored in static lable
-   exec('right.'+labes[num]+'.setText(labes[num]+": "+text)')
+   exec('self.right.'+labes[num]+'.setText(labes[num]+": "+text)')
    bools=True
 
 #==============================================================================
 #Creates right hand side lables and text boxes
 #right.lablename is static lable
 #right.edtlablename is text box whch can be edited
-def labler(lablename,signalname,right,number):
+def labler(lablename,signalname,self,number):
 
    #incoming signal names are local, must be global for use in exec
-   global rite
+   global selfglobal
    global num
    num=number
    num=number
-   rite=right
+   selfglobal=self
    #array created to refference different values in exec (patch)
    labes.append(str(lablename))
-   exec("right."+lablename+'.setText("'+lablename+': '+signalname+'")')
-   exec("right."+lablename+".setMinimumSize(right."+lablename+".sizeHint())")
-   exec("right."+'edt'+lablename+'.setText(signalname)')
+   exec("self.right."+lablename+'.setText("'+lablename+': '+signalname+'")')
+   exec("self.right."+lablename+".setMinimumSize(self.right."+lablename+".sizeHint())")
+   exec("self.right."+'edt'+lablename+'.setText(signalname)')
    #Connvects changes in text box to bools logic
-   exec('right.edt'+lablename+'.textEdited.connect(lambda: textChange(rite,rite.edt'+lablename+'.text(),labes,'+str(num)+'))')
+   exec('self.right.edt'+lablename+'.textEdited.connect(lambda: textChange(selfglobal,selfglobal.right.edt'+lablename+'.text(),labes,'+str(num)+'))')
 
 #==============================================================================
 #num is signal's row in varDB.txt
 #Bool becomes true when text box(es) are edited
 #This function configures button settings based on which radio button is selected
 #called by makeSingleRadioButton function (mkbut)
-def lookingAt(num,left,right,self): #displays metadata based on radiobutton selection
+def lookingAt(num,self): #displays metadata based on radiobutton selection
    from addSignal import addsignal
    global previousnum
    global bools
@@ -69,12 +69,12 @@ def lookingAt(num,left,right,self): #displays metadata based on radiobutton sele
         #Get new information from text boxes
         signalist=[]
         while i<len(headers):
-          signalist=signalSet(right,headers[i],signalist)
+          signalist=signalSet(self,headers[i],signalist)
           i+=1
         #Uses new information to replace previous information
-        rem(previousnum,left,right,self)
-        addsignal(signalist,self,left,right,num)
-        lookingAt(num,left,right,self)
+        rem(previousnum,self)
+        addsignal(signalist,self,num)
+        lookingAt(num,self)
         return
 
    #If num is sent as a flag (-1)_, reset it to 0
@@ -94,7 +94,7 @@ def lookingAt(num,left,right,self): #displays metadata based on radiobutton sele
    i=0
    #write info to screen
    while i<len(signals):
-      labler(headers[i],signals[i],right,i)
+      labler(headers[i],signals[i],self,i)
       i+=1
    try: 
       self.deleteButton.clicked.disconnect()
@@ -104,7 +104,7 @@ def lookingAt(num,left,right,self): #displays metadata based on radiobutton sele
    except Exception: pass
 
    #Update delete button num refference
-   self.deleteButton.clicked.connect(lambda: delete(num,left,right,self)) 
+   self.deleteButton.clicked.connect(lambda: delete(num,self)) 
    
-   self.saveButton.clicked.connect(lambda: lookingAt(num,left,right,self))
+   self.saveButton.clicked.connect(lambda: lookingAt(num,self))
    previousnum=num

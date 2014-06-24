@@ -4,12 +4,12 @@
 import sys
 from PyQt4 import QtGui, QtCore
 from radioClickEvent import lookingAt
-def mkbut(num,name,left,right,self,chekd):
-      button=QtGui.QRadioButton(name,left)
-      left.verticalLayoutScroll.addWidget(button)
+def mkbut(num,name,self,chekd):
+      button=QtGui.QRadioButton(name,self.left)
+      self.left.verticalLayoutScroll.addWidget(button)
       try:
          button.clicked.disconnect()
       except Exception: pass
-      button.clicked.connect(lambda: lookingAt(num,left,right,self))
+      button.clicked.connect(lambda: lookingAt(num,self))
       if chekd==True:
          button.click()

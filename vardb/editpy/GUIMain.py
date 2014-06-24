@@ -15,20 +15,20 @@ class GUI(QtGui.QWidget):
         self.setWindowTitle('varDB GUI')
         #Create option buttons
         addButton=QtGui.QPushButton("Add Variable")
-        addButton.clicked.connect(lambda: ads(self,left,right))
+        addButton.clicked.connect(lambda: ads(self))
         self.saveButton=QtGui.QPushButton("Save Changes")
         self.deleteButton=QtGui.QPushButton("Delete Selection")
         quitButton=QtGui.QPushButton("Quit")
         quitButton.clicked.connect(QtCore.QCoreApplication.instance().quit)
         #Creates left and right sections, search bar, scroll area
         hbox = QtGui.QHBoxLayout(self)
-        left = QtGui.QFrame(self)
-        right = QtGui.QFrame(self)
-        right=setup(hbox,left,right,self)
-        self.searchText.textEdited.connect(lambda: generateButtons(left,right,self,str(self.searchText.text()),0))
+        self.left = QtGui.QFrame(self)
+        self.right = QtGui.QFrame(self)
+        self=setup(hbox,self)
+        self.searchText.textEdited.connect(lambda: generateButtons(self,str(self.searchText.text()),0))
         self.setLayout(hbox)
         #Populates scroll area,selects 0th radio button
-        generateButtons(left,right,self,'',0)
+        generateButtons(self,'',0)
         #Option buttons layout
         hlox=QtGui.QHBoxLayout()
         hlox.addStretch(1)
@@ -40,7 +40,7 @@ class GUI(QtGui.QWidget):
         vbox=QtGui.QVBoxLayout()
         vbox.addStretch(1)
  	vbox.addLayout(hlox)
-        right.setLayout(vbox)
+        self.right.setLayout(vbox)
 
 def main():
     app = QtGui.QApplication(sys.argv)
