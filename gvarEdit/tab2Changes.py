@@ -1,6 +1,6 @@
 #Julian Quick
-#This function inputs a singnal name, a boolean variable 
-#denoting wheter the signal is to be commented or uncommented, and 'self'.
+#This function inputs a singnal name to be editted and a boolean variable 
+#denoting wheter the signal is to be commented or uncommented.
 #A signal will only be commented if it is above the ========= line in groundvars
 from getGroundInfo import getInfo
 from PyQt4 import QtGui, QtCore

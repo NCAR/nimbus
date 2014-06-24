@@ -78,8 +78,8 @@ def setup(self):
 
       tab1.setLayout(self.verticalLayout)
       tab2.setLayout(self.verticalLayout2)
-      self.tabs.addTab(tab1,"Add from SQL")
-      self.tabs.addTab(tab2,"Add from DB comments")
+      self.tabs.addTab(tab1,"Database")
+      self.tabs.addTab(tab2,"Groundvars")
       self.tabs.show()
       self.tabs.resize(800, 700)
       self.tabs.move(200,50)

@@ -1,7 +1,7 @@
 #Julian Quick
 #Generates "yes/no" radio buttons in tabs 1 and 2
 #Tab 1 shows signals found in the air SQL, and allows the user to activate them in groundvars
-#tab2 shows all potential signals found in groundvars (comented or not) and allws the user to activate them
+#tab 2 shows all potential signals found in groundvars (comented or not) and allows the user to activate them
 #self is input to this function, allowing refference to the scroll layout, search bars, and checkboxes
 from PyQt4 import QtGui, QtCore
 from getGroundInfo import getInfo
@@ -9,7 +9,6 @@ from tab1Changes import ads
 from tab2Changes import addit
 from removeLayout import deleteLayout
 def generateButtons(self):
-    print 'generation intialization'
 
     #Clear grids
     try:
