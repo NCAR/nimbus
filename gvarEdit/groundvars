@@ -52,10 +52,10 @@ PSF
 #TTRL
 #TTHL1
 #TTHL2
-#A2DTEMP_VID0
+A2DTEMP_VID0
 #A2DTEMP_VID1
 #A2DTEMP_FWDFS0
-#A2DTEMP_FWDFS1
+A2DTEMP_FWDFS1
 #IRIG_Status_319
 #IRIG_Status_320
 #IRIG_Status_321
@@ -67,3 +67,10 @@ PSF
 
 #=============================================== <-- All variables below this line will be deleted by groundVarEditGUI, not commented out.
 
+
+A2DTEMP_323A1
+A2DTEMP_323A0
+A2DTEMP_322A0
+A2DTEMP_320A0
+A2DTEMP_318A1
+A2DTEMP_318A0

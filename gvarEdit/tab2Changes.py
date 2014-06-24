@@ -1,7 +1,10 @@
 #Julian Quick
-#This function inputs a singnal name to be editted and a boolean variable 
-#denoting wheter the signal is to be commented or uncommented.
+#This function is called to edit groundvars based on instruction in the GUI's second tab
 #A signal will only be commented if it is above the ========= line in groundvars
+#input:
+#      signame-singnal name to be editted
+#      inDB-denotes whether the signal is to be commented or uncommented
+#      self-master object refference
 from getGroundInfo import getInfo
 from PyQt4 import QtGui, QtCore
 import fileinput
@@ -11,7 +14,6 @@ def addit(signame,inDB,self):
     pastPoint=False
     filename='groundvars'
     notused,groundlines=getInfo()
-
 #------------------------------------------------------
     if inDB==True:#commenting
         for line in fileinput.input(filename,inplace=1):
