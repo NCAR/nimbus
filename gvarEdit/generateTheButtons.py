@@ -9,6 +9,7 @@ from tab1Changes import ads
 from tab2Changes import addit
 from removeLayout import deleteLayout
 def generateButtons(self):
+    print 'generation intialization'
 
     #Clear grids
     try:
@@ -42,11 +43,11 @@ def generateButtons(self):
 #-----------------------TAB1-------------------------------------
 #Generates radio button set in tab 1
 
+    groupbox1=QtGui.QGroupBox('')
     i=0
     while i<len(sqlnames):
       if str(sqlnames[i]).startswith(filt1):
        if (sqlnames[i] in groundlines and self.cbyes.isChecked()) or (sqlnames[i] not in groundlines and self.cbno.isChecked()):
-         groupbox1=QtGui.QGroupBox('')
          HBLays=QtGui.QHBoxLayout()
          no=QtGui.QRadioButton("NO")
          exec('no.released.connect(lambda:ads("'+str(sqlnames[i])+'",False,selfglobal))')
@@ -81,10 +82,9 @@ def generateButtons(self):
     i=0   
     #Generate radio button set in tab 2
     linecounts=0
-    print sqlnames
     linecount=1
+    groupbox2=QtGui.QGroupBox('')
     while i<len(lines):
-      
       #end of potential signals
       if str(lines[i][1:]).startswith('======='):
          break
@@ -96,13 +96,12 @@ def generateButtons(self):
    
       #Signal detection
       #-search box, signal is listed in air SQL (ignores characters at and after _)
-      if (str(lines[i]).startswith(filt2) or (str(lines[i][1:]).startswith(filt2) and str(lines[i][0])=='#')) and str(lines[i][1:]).split('_',1)[0] in '\t'.join(sqlnames):
+      if (str(lines[i]).startswith(filt2) or (str(lines[i][1:]).startswith(filt2) and str(lines[i][0])=='#')) and str(lines[i][1:]) in '\t'.join(sqlnames):
        
        #Checkbox filtration
        if lines[i]!='#' and (str(lines[i][0])=='#' and self.cbno2.isChecked()) or (self.cbyes2.isChecked() and str(lines[i][0])!='#'):
 
           #radio button row initialization
-          groupbox2=QtGui.QGroupBox('')
           no=QtGui.QRadioButton("NO")
           exec('no.released.connect(lambda:addit("'+str(lines[i])+'",True,selfglobal))')
           yes=QtGui.QRadioButton("YES")

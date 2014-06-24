@@ -65,6 +65,5 @@ PSF
 #MIRRTMP_DPB
 #MIRRTMP_DPT
 
-#=================================  ============== <-- (keep the space in this line)
-#All variables below this line will be deleted by groundVarEditGUI, not commented out.
+#=============================================== <-- All variables below this line will be deleted by groundVarEditGUI, not commented out.
 

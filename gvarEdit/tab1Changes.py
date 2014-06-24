@@ -7,7 +7,6 @@
 #Result:
 #      this program edits groundvars to either: uncomment a signal, comment a signal, 
 #      append a signal, or remove an appended signal in ground vars
-#NOTE: Currently refferences ground SQL, must update
 from getGroundInfo import getInfo
 from PyQt4 import QtGui, QtCore
 import sys
@@ -27,8 +26,11 @@ def ads(strn,booladd,self):
      # if commented variable exists, uncomment
      for line in fileinput.input(filename,inplace=1):
          if line[1:].startswith(strn) and line.startswith('#') and pastPoint==False:
-             line=line.replace(line,line[1:])
+             line=line[1:]
              wroteLine=True
+         if pastPoint==True and strn in line:
+             fileinput.close()
+             return
          if line.startswith('#============='):
              pastPoint=True
          sys.stdout.write(line)
