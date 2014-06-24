@@ -1,7 +1,15 @@
+#Creates window with two tabs each woth a scroll area.
+#Tab 1 shows signals found in the real time aircraft database, and allows the user to activate them in groundvars
+#tab 2 shows all potential signals found in groundvars (comented or not) and allows the user to activate them
+#Headers describe the scroll area contents to the user. The search box allows the user to filter signals.
+#'checkbox filters' allow the user toggle viewing signals marked 'yes' or 'no'
 from PyQt4 import QtGui, QtCore
 from generateTheButtons import generateButtons
 from quitComment import comment
 def setup(self):
+      #groundvars location
+      self.gvfilename='$PROJ_DIR/$PROJECT/$AIRCRAFT/groundvars'
+
       #Create tabs
       self.tabs=QtGui.QTabWidget()
       tab1=QtGui.QWidget()	
@@ -15,6 +23,7 @@ def setup(self):
       self.scrollArea.setWidget(self.scrollAreaWidgetContents)
       self.verticalLayout=QtGui.QVBoxLayout(self) 
      
+      #Creates header and search box in tab 1
       self.head = QtGui.QLabel("   SIGNAL NAME \t \t \t INCLUDE IN GROUND SQL", self)
       self.verticalLayout.addWidget(self.head)
       self.verticalLayout.addWidget(self.scrollArea)
@@ -32,8 +41,9 @@ def setup(self):
       self.scrollArea2WidgetContents=QtGui.QWidget(self.scrollArea2)
       self.scrollArea2.setWidget(self.scrollArea2WidgetContents)
       self.verticalLayout2=QtGui.QVBoxLayout(tab2) #May wish to update verticalLayout as well
-      self.head2 = QtGui.QLabel("   SIGNAL NAME \t \t \t \t \t INCLUDE IN GROUND SQL", self)
+      self.head2 = QtGui.QLabel("   SIGNAL NAME \t \t \t \t \t     INCLUDE IN GROUND SQL", self)
 
+      #Creates header and search box in tab 2
       self.verticalLayout2.addWidget(self.head2)
       self.verticalLayout2.addWidget(self.scrollArea2)
       self.verticalLayout2Scroll=QtGui.QVBoxLayout(self.scrollArea2WidgetContents)
@@ -84,6 +94,7 @@ def setup(self):
       self.tabs.resize(800, 700)
       self.tabs.move(200,50)
 
+      #Popup which appears after closing window
       quitLays=QtGui.QVBoxLayout()
       self.quitMessage=QtGui.QLabel('Please comment on modifications',self)
       self.quitreply=QtGui.QLineEdit()
@@ -94,4 +105,3 @@ def setup(self):
       quitLays.addWidget(self.quitOK)
       self.setLayout(quitLays)
       self.move(400,400)
-

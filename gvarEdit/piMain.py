@@ -1,6 +1,10 @@
 #Julian Quick
-#This program provides a GUI to edit groundvars based on SQL information or 
-#commented signals in groundvars
+#This program provides a GUI to edit groundvars based on aircraft database information or 
+#commented signals in groundvars. Shows the user two tabs.
+#Tab 1 shows signals found in the air SQL, and allows the user to activate them in groundvars
+#tab 2 shows all potential signals found in groundvars (comented or not) and allows the user to activate them
+#Expects groundvars to have a line with value starting with '#=================', to seperate permanant signals
+#from temporary signals. A new signal is either uncommented above this line or appended below this line.
 import sys
 import os
 from getGroundInfo import getInfo

@@ -70,7 +70,7 @@ def generateButtons(self):
 
 
 #------------------TAB2-----------------------------------
-#Get useful entries is groundvars
+#Get useful entries in groundvars
 
     groundvars=open(filename,'r')
     lines=groundvars.readlines()

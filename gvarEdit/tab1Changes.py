@@ -19,7 +19,8 @@ def ads(strn,booladd,self):
    sqlnames,groundlines=getInfo()
 
 #--------------------------------------------------------------
-   if booladd==True: #adding to readable groundvar signals
+#adding to readable groundvar signals
+   if booladd==True: 
      pastPoint=False
      wroteLine=False
 

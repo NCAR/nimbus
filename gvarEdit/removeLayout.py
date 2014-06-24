@@ -1,3 +1,5 @@
+#Julian Quick
+#This function is used to clear any layouts's widgets
 import sip
 def deleteLayout(layout):
     if layout is not None:
