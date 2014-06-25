@@ -14,5 +14,4 @@ def comment(self,text):
          line=line.replace(line,'#'+text+'\n')
       sys.stdout.write(line)
    fileinput.close()
-   print 'commenting succesful'
    quit()

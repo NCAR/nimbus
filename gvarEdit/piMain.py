@@ -5,6 +5,7 @@
 #tab 2 shows all potential signals found in groundvars (comented or not) and allows the user to activate them
 #Expects groundvars to have a line with value starting with '#=================', to seperate permanant signals
 #from temporary signals. A new signal is either uncommented above this line or appended below this line.
+#If dsm_server is already running when this program starts, a warning appears
 import sys
 import os
 from getGroundInfo import getInfo
