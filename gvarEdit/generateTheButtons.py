@@ -8,6 +8,7 @@ from getGroundInfo import getInfo
 from tab1Changes import ads
 from tab2Changes import addit
 from removeLayout import deleteLayout
+import os
 def generateButtons(self):
 
     #Clear grids
@@ -31,8 +32,7 @@ def generateButtons(self):
     yOffSet1 = self.scrollArea.verticalScrollBar().value()
     yOffSet2 = self.scrollArea2.verticalScrollBar().value()
 
-    filename='groundvars'
-    sqlnames,groundlines=getInfo()
+    sqlnames,groundlines=getInfo(self)
 
     #Clear scroll areas
     for i in range(self.verticalLayoutScroll.count()): self.verticalLayoutScroll.itemAt(i).widget().close()
@@ -72,7 +72,7 @@ def generateButtons(self):
 #------------------TAB2-----------------------------------
 #Get useful entries in groundvars
 
-    groundvars=open(filename,'r')
+    groundvars=open(os.path.expandvars(self.gvfilename),'r')
     lines=groundvars.readlines()
     groundvars.close()
     lines = [x for x in lines if not x.startswith('\n')]

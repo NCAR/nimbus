@@ -8,7 +8,7 @@ from generateTheButtons import generateButtons
 from quitComment import comment
 def setup(self):
       #groundvars location
-      self.gvfilename='$PROJ_DIR/$PROJECT/$AIRCRAFT/groundvars'
+      self.gvfilename='/$PROJ_DIR/$PROJECT/$AIRCRAFT/groundvars'
 
       #Create tabs
       self.tabs=QtGui.QTabWidget()
@@ -99,7 +99,7 @@ def setup(self):
       self.quitMessage=QtGui.QLabel('Please comment on modifications',self)
       self.quitreply=QtGui.QLineEdit()
       self.quitOK=QtGui.QPushButton('OK')
-      self.quitOK.clicked.connect(lambda:comment(self.quitreply.text()))
+      self.quitOK.clicked.connect(lambda:comment(self,self.quitreply.text()))
       quitLays.addWidget(self.quitMessage)
       quitLays.addWidget(self.quitreply)
       quitLays.addWidget(self.quitOK)

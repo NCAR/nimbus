@@ -5,12 +5,12 @@
 1111337
 GGLAT
 GGLON
-GGALT
+#GGALT
 ATX
 DPXC
 PSXC
 TASX
-WSC
+#WSC
 WIC
 #  
 #  This portion of the list covers a request made by the Technician's group 
@@ -66,4 +66,7 @@ PSF
 #MIRRTMP_DPT
 
 #=============================================== <-- All variables below this line will be deleted by groundVarEditGUI, not commented out.
+
+# Comments from edit on (Y-M-D-H-M)  14-06-10-34
+#Julian
 

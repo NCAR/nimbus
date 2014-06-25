@@ -11,12 +11,12 @@ from getGroundInfo import getInfo
 from PyQt4 import QtGui, QtCore
 import sys
 import fileinput
+import os
 def ads(strn,booladd,self):
    global selfglobal
    selfglobal=self
    from generateTheButtons import generateButtons
-   filename='groundvars'
-   sqlnames,groundlines=getInfo()
+   sqlnames,groundlines=getInfo(self)
 
 #--------------------------------------------------------------
 #adding to readable groundvar signals
@@ -25,7 +25,7 @@ def ads(strn,booladd,self):
      wroteLine=False
 
      # if commented variable exists, uncomment
-     for line in fileinput.input(filename,inplace=1):
+     for line in fileinput.input(os.path.expandvars(self.gvfilename),inplace=1):
          if line[1:].startswith(strn) and line.startswith('#') and pastPoint==False:
              line=line[1:]
              wroteLine=True
@@ -39,7 +39,7 @@ def ads(strn,booladd,self):
 
      #if not, create at bottom
      if wroteLine==False:
-        groundDB=open(filename,'a')
+        groundDB=open(os.path.expandvars(self.gvfilename),'a')
         groundDB.write('\n'+strn)
         groundDB.close()
 
@@ -47,7 +47,7 @@ def ads(strn,booladd,self):
    if booladd==False:#make signal unreadable in groundvars
       pastPoint=False
       wroteLine=False
-      for line in fileinput.input(filename,inplace=1):
+      for line in fileinput.input(os.path.expandvars(self.gvfilename),inplace=1):
 
          #If signal is above ====, comment
          if line.startswith(strn) and pastPoint==False:

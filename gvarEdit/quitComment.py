@@ -4,9 +4,9 @@
 import fileinput
 import sys
 from datetime import datetime
-def comment(text):
-   filename='groundvars'
-   for line in fileinput.input(filename,inplace=1):
+import os
+def comment(self,text):
+   for line in fileinput.input(os.path.expandvars(self.gvfilename),inplace=1):
       if '===========' in line:
          sys.stdout.write(line)
          sys.stdout.write('\n')
