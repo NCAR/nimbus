@@ -23,6 +23,7 @@ def ads(strn,booladd,self):
    if booladd==True: 
      pastPoint=False
      wroteLine=False
+     print 'adding '+strn+'.'
 
      # if commented variable exists, uncomment
      for line in fileinput.input(os.path.expandvars(self.gvfilename),inplace=1):
@@ -40,23 +41,31 @@ def ads(strn,booladd,self):
      #if not, create at bottom
      if wroteLine==False:
         groundDB=open(os.path.expandvars(self.gvfilename),'a')
-        groundDB.write('\n'+strn)
+        groundDB.write('\n'+strn+'\n')
         groundDB.close()
 
 #--------------------------------------------------------------
    if booladd==False:#make signal unreadable in groundvars
       pastPoint=False
       wroteLine=False
+      print 'removing '+strn+'.'
+      stats='failed'
       for line in fileinput.input(os.path.expandvars(self.gvfilename),inplace=1):
 
          #If signal is above ====, comment
          if line.startswith(strn) and pastPoint==False:
-             line=line.replace(line,'#'+line)
+             line=line.replace(line,'#'+line+'\n')
              wroteLine=True
+             stats='successful'
          if line.startswith('#============='):
              pastPoint=True
          #If signal is below =====, delete
-         if not((wroteLine==False and line.startswith(strn)) and pastPoint==True):
-             sys.stdout.write(line)
+         if pastPoint==True and line.strip()==strn and wroteLine==False:
+             stats='successful'
+         elif not line.strip():
+             action=0 #arbitrary action
+         else:
+            sys.stdout.write(line)
       fileinput.close()
+      print 'remove '+stats
    generateButtons(self)
