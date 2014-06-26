@@ -105,3 +105,26 @@ def setup(self):
       quitLays.addWidget(self.quitOK)
       self.setLayout(quitLays)
       self.move(400,400)
+
+      #Popup which appears when data potential corruption is found
+      #self.dataDisplayCheck adds the option to not show this message in the future
+      #dataHBox and dataComment are objects of self so that dataComment can be deleted and initialized again,
+      #clearing it's previous signals
+      #See dataQualityCheck.py for process details
+      self.dataWarning=QtGui.QWidget()
+      self.dataWarning.resize(100,100)
+      self.move(400,400)
+      self.setWindowTitle('Potential Data Corruption')
+      self.dataComment=QtGui.QPushButton('Comment Signal(s)')
+      self.dataIgnore=QtGui.QPushButton('Ignore Warning')
+      self.dataHBox=QtGui.QHBoxLayout()
+      self.dataHBox.addWidget(self.dataComment)
+      self.dataHBox.addWidget(self.dataIgnore)
+      dataVBox=QtGui.QVBoxLayout()
+      self.dataMessage=QtGui.QLabel('No one should be seeing this text. Check software.',self)
+      dataVBox.addWidget(self.dataMessage)
+      self.dataDisplayCheck=QtGui.QCheckBox('Do not show this message again')
+      self.dataDisplayCheck.setChecked(False)
+      dataVBox.addWidget(self.dataDisplayCheck)
+      dataVBox.addLayout(self.dataHBox)
+      self.dataWarning.setLayout(dataVBox)

@@ -23,11 +23,11 @@ def ads(strn,booladd,self):
    if booladd==True: 
      pastPoint=False
      wroteLine=False
-     print 'adding '+strn+'.'
+     print 'added '+strn+'.'
 
      # if commented variable exists, uncomment
      for line in fileinput.input(os.path.expandvars(self.gvfilename),inplace=1):
-         if line[1:].startswith(strn) and line.startswith('#') and pastPoint==False:
+         if line[1:].strip()==strn and line.startswith('#') and pastPoint==False:
              line=line[1:]
              wroteLine=True
          if pastPoint==True and strn == line.strip():
@@ -54,7 +54,7 @@ def ads(strn,booladd,self):
       for line in fileinput.input(os.path.expandvars(self.gvfilename),inplace=1):
 
          #If signal is above ====, comment
-         if line.startswith(strn) and pastPoint==False:
+         if line.strip()==strn and pastPoint==False:
              line=line.replace(line,'#'+line+'\n')
              wroteLine=True
              stats='successful'

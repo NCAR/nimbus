@@ -17,17 +17,19 @@ def addit(signame,inDB,self):
 #------------------------------------------------------
     if inDB==True:#commenting
         for line in fileinput.input(os.path.expandvars(self.gvfilename),inplace=1):
-            if signame[1:] in line and pastPoint==False and line[0]!='#':
+            if signame==line.strip() and pastPoint==False and line[0]!='#':
                  line=line.replace(line,'#'+line)
             if line.startswith('#============='):
                  pastPoint=True
             sys.stdout.write(line)
         fileinput.close()
+        print 'succesfully removed ',signame
 #-----------------------------------------------------
     if inDB==False:#uncommenting
         for line in fileinput.input(os.path.expandvars(self.gvfilename),inplace=1):
-            if signame in line and line[0]=='#':
+            if signame == line.strip() and line[0]=='#':
                  line=line.replace(line,line[1:])
             sys.stdout.write(line)
         fileinput.close()
     generateButtons(self)
+    print 'added ', signame

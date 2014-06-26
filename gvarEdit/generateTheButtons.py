@@ -8,8 +8,14 @@ from getGroundInfo import getInfo
 from tab1Changes import ads
 from tab2Changes import addit
 from removeLayout import deleteLayout
+from dataQualityCheck import qualityCheck
 import os
 def generateButtons(self):
+
+    #Check for inconsistant data, unless user specifies not to. 
+    #See dataQualityCheck.py for process
+    if not self.dataDisplayCheck.isChecked():
+        qualityCheck(self)
 
     #Clear grids
     try:

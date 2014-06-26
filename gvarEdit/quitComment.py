@@ -9,9 +9,9 @@ def comment(self,text):
    for line in fileinput.input(os.path.expandvars(self.gvfilename),inplace=1):
       if '===========' in line:
          sys.stdout.write(line)
-         sys.stdout.write('\n')
+         sys.stdout.write('#\n')
          sys.stdout.write('# Comments from edit on (Y-M-D-H-M)  '+datetime.now().strftime('%y-%m-%H-%M')+'\n')
-         line=line.replace(line,'#'+text+'\n')
+         line=line.replace(line,'#'+text+'\n#\n')
       sys.stdout.write(line)
    fileinput.close()
    quit()

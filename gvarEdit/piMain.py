@@ -13,6 +13,7 @@ from PyQt4 import QtGui, QtCore
 from setup import setup
 from generateTheButtons import generateButtons
 from dsmCheck import dsmCheck
+from datacheck import qualityCheck
 class GUI(QtGui.QWidget):
     def __init__(self):
         super(GUI, self).__init__()
@@ -20,6 +21,7 @@ class GUI(QtGui.QWidget):
 
     def initUI(self):
         setup(self)
+    #    qualityCheck(self)
         dsmCheck(self)
         generateButtons(self)
 
