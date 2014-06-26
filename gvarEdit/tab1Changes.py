@@ -45,7 +45,8 @@ def ads(strn,booladd,self):
         groundDB.close()
 
 #--------------------------------------------------------------
-   if booladd==False:#make signal unreadable in groundvars
+#make signal unreadable in groundvars
+   if booladd==False:
       pastPoint=False
       wroteLine=False
       print 'removing '+strn+'.'
