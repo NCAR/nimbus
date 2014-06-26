@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #Julian Quick
 #This program provides a GUI to edit groundvars based on aircraft database information or 
 #commented signals in groundvars. Shows the user two tabs.
@@ -13,7 +14,6 @@ from PyQt4 import QtGui, QtCore
 from setup import setup
 from generateTheButtons import generateButtons
 from dsmCheck import dsmCheck
-from datacheck import qualityCheck
 class GUI(QtGui.QWidget):
     def __init__(self):
         super(GUI, self).__init__()
