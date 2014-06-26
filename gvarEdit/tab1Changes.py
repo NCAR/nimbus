@@ -30,7 +30,7 @@ def ads(strn,booladd,self):
          if line[1:].startswith(strn) and line.startswith('#') and pastPoint==False:
              line=line[1:]
              wroteLine=True
-         if pastPoint==True and strn in line:
+         if pastPoint==True and strn == line.strip():
              fileinput.close()
              return
          if line.startswith('#============='):
