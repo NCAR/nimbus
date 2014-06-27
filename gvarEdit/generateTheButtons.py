@@ -93,15 +93,16 @@ def generateButtons(self):
       #end of potential signals
       if str(lines[i][1:]).startswith('======='):
          break
-
+ 
+      isComment=False
       #Comments for project managers
-      if str(lines[i][0])=='#' and lines[i][1:] not in '\t'.join(sqlnames):
+      if str(lines[i][0])=='#' and lines[i][1:] not in sqlnames:
           commentLabel=QtGui.QLabel(lines[i])
           self.grid2.addWidget(commentLabel,i,1)#,i,3)
-   
+          isComment=True
       #Signal detection
       #-search box, signal is listed in air SQL (ignores characters at and after _)
-      if (str(lines[i]).startswith(filt2) or (str(lines[i][1:]).startswith(filt2) and str(lines[i][0])=='#')) and str(lines[i][1:]) in '\t'.join(sqlnames):
+      if (str(lines[i]).startswith(filt2) or (str(lines[i][1:]).startswith(filt2) and str(lines[i][0])=='#')) and isComment==False:
        
        #Checkbox filtration
        if lines[i]!='#' and (str(lines[i][0])=='#' and self.cbno2.isChecked()) or (self.cbyes2.isChecked() and str(lines[i][0])!='#'):
