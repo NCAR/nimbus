@@ -41,7 +41,7 @@ def ads(strn,booladd,self):
      #if not, create at bottom
      if wroteLine==False:
         groundDB=open(os.path.expandvars(self.gvfilename),'a')
-        groundDB.write('\n'+strn+'\n')
+        groundDB.write(strn+'\n')
         groundDB.close()
 
 #--------------------------------------------------------------
