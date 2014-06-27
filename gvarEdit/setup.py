@@ -54,35 +54,41 @@ def setup(self):
       searchLabel2.setBuddy(self.searchText2)
       self.verticalLayout2.addWidget(self.searchText2)
       
-      #Create checkbox filters in tab 1
+      #Create checkbox filters and quit button in tab 1
       checkGroup=QtGui.QGroupBox('')
       checkLays=QtGui.QHBoxLayout()      
       checkLabel = QtGui.QLabel("Display signals with property: ", self)
       self.cbyes = QtGui.QCheckBox('Yes', self)
       self.cbno = QtGui.QCheckBox('No', self)
+      self.quitButton=QtGui.QPushButton('Quit')
       self.cbyes.click()
       self.cbno.click()
       self.cbyes.clicked.connect(lambda:generateButtons(self))
       self.cbno.clicked.connect(lambda:generateButtons(self))
+      self.quitButton.clicked.connect(lambda:self.tabs.close())
       checkLays.addWidget(checkLabel)
       checkLays.addWidget(self.cbyes)
       checkLays.addWidget(self.cbno)
+      checkLays.addWidget(self.quitButton)
       checkGroup.setLayout(checkLays)
       self.verticalLayout.addWidget(checkGroup)
 
-      #Create checkbox filters in tab 2
+      #Create checkbox filters and quit button in tab 2
       checkGroup2=QtGui.QGroupBox('')
       checkLays2=QtGui.QHBoxLayout()      
       checkLabel2 = QtGui.QLabel("Display signals with property: ", self)
       self.cbyes2 = QtGui.QCheckBox('Yes', tab2)
       self.cbno2 = QtGui.QCheckBox('No', tab2)
+      self.quitButton2=QtGui.QPushButton('Quit')
       self.cbyes2.click()
       self.cbno2.click()
       self.cbyes2.clicked.connect(lambda:generateButtons(self))
       self.cbno2.clicked.connect(lambda:generateButtons(self))
+      self.quitButton2.clicked.connect(lambda:self.tabs.close())
       checkLays2.addWidget(checkLabel2)
       checkLays2.addWidget(self.cbyes2)
       checkLays2.addWidget(self.cbno2)
+      checkLays2.addWidget(self.quitButton2)
       checkGroup2.setLayout(checkLays2)
       self.verticalLayout2.addWidget(checkGroup2)
 
