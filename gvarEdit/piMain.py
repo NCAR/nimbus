@@ -21,7 +21,6 @@ class GUI(QtGui.QWidget):
 
     def initUI(self):
         setup(self)
-    #    qualityCheck(self)
         dsmCheck(self)
         generateButtons(self)
 
