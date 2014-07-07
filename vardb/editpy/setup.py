@@ -1,22 +1,33 @@
 #Julian QUick
 #Sets up GUI Window, scroll area, and data lables
 from PyQt4 import QtGui, QtCore
+
+def fileName():
+      return 'VDB.xml'
 def setup(hbox,self):
 
-      #Eventually Headers should be read from varDB
-      headers=['name','units','description']
+      self.booleanList=['reference','is_analog']
+
+      #Create division between right up and down layouts
+      splitter1=QtGui.QSplitter(QtCore.Qt.Vertical)
+      splitter1.addWidget(self.upright)
+      splitter1.addWidget(self.downright)
+      splitter1.setStretchFactor(1,0)
+      splitter1.setSizes([560,40])
+      hbox.addWidget(splitter1)
 
       #Create middle division
-      splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal)
-      splitter1.addWidget(self.left)
-      splitter1.addWidget(self.right)
-      splitter1.setStretchFactor(1,1)
-      hbox.addWidget(splitter1)
+      splitter2 = QtGui.QSplitter(QtCore.Qt.Horizontal)
+      splitter2.addWidget(self.left)
+      splitter2.addWidget(splitter1)
+      splitter2.setStretchFactor(1,1)
+      hbox.addWidget(splitter2)
       self.left.setFrameShape(QtGui.QFrame.StyledPanel)
-      self.right.setFrameShape(QtGui.QFrame.StyledPanel)
+      self.downright.setFrameShape(QtGui.QFrame.StyledPanel)
+      self.upright.setFrameShape(QtGui.QFrame.StyledPanel)
       QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
 
-      #Create scroll area
+      #Create scroll areas
       self.left.scrollArea=QtGui.QScrollArea(self.left)
       self.left.scrollArea.setWidgetResizable(True)
       self.left.scrollAreaWidgetContents=QtGui.QWidget(self.left.scrollArea)
@@ -25,6 +36,14 @@ def setup(hbox,self):
       self.left.verticalLayout.addWidget(self.left.scrollArea)
       self.left.verticalLayoutScroll=QtGui.QVBoxLayout(self.left.scrollAreaWidgetContents)
 
+      self.upright.scrollArea=QtGui.QScrollArea(self.upright)
+      self.upright.scrollArea.setWidgetResizable(True)
+      self.upright.scrollAreaWidgetContents=QtGui.QWidget(self.upright.scrollArea)
+      self.upright.scrollArea.setWidget(self.upright.scrollAreaWidgetContents)
+      self.upright.verticalLayout=QtGui.QVBoxLayout(self.upright)
+      self.upright.verticalLayout.addWidget(self.upright.scrollArea)
+      self.upright.verticalLayoutScroll=QtGui.QVBoxLayout(self.upright.scrollAreaWidgetContents)
+
       #Create search bar
       searchLabel = QtGui.QLabel(" Search", self)
       self.left.verticalLayout.addWidget(searchLabel)
@@ -32,13 +51,4 @@ def setup(hbox,self):
       searchLabel.setBuddy(self.searchText)
       self.left.verticalLayout.addWidget(self.searchText)
 
-      #create right information hub
-      i=0
-      while i<len(headers):
-          exec('self.right.'+headers[i]+'=QtGui.QLabel("'+headers[i]+'",self.right)')
-          exec('self.right.'+headers[i]+'.move(20,'+str(70*i)+')')
-          exec('self.right.'+'edt'+headers[i]+'=QtGui.QLineEdit(self.right)')
-          exec('self.right.'+'edt'+headers[i]+'.move(60,'+str(70*i+30)+')')
-          exec('self.right.'+'edt'+headers[i]+'.setFixedWidth(330)')
-          i+=1
       return self

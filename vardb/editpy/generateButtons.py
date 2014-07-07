@@ -6,8 +6,7 @@ from PyQt4 import QtGui, QtCore
 from makeSingleRadioButton import mkbut
 from getInfo import getinfo
 def generateButtons(self,filtering,num):
-           print 'probelerone',self.right
-
+           global rightInfoHub
            #removes buttons from left
            for i in reversed(range(self.left.verticalLayoutScroll.count())): 
                self.left.verticalLayoutScroll.itemAt(i).widget().setParent(None)
@@ -17,11 +16,11 @@ def generateButtons(self,filtering,num):
            while i<len(entries): 
 
               #displayed buttons must start with filter phrase
-              if str(entries[i][0]).startswith(filtering) or filtering=='':
+              if str(entries[i][1]).startswith(filtering) or filtering=='':
                  if num!=i:
-                    mkbut(i,entries[i][0],self,False)
+                    mkbut(i,entries[i][1],self,False)
                  if num==i:
                     #This button will be "machine clicked"
-                    mkbut(i,entries[i][0],self,True)
+                    mkbut(i,entries[i][1],self,True)
               i+=1
            varDB.close()

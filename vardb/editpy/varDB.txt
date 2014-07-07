@@ -1,4 +1,3 @@
-2D-C                   none         2-D Cloud Probe Asynchronous Data ID                                               0
 2D-P                   none         2-D Precip. Probe Asynchronous Data ID                                             0
 2DEE1                  V            PMS-2D Probe Housekeeping                                                          0
 2DEE32                 V            PMS-2D Probe Housekeeping                                                          0

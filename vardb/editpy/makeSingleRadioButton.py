@@ -5,6 +5,7 @@ import sys
 from PyQt4 import QtGui, QtCore
 from radioClickEvent import lookingAt
 def mkbut(num,name,self,chekd):
+      global rightInfoHub
       button=QtGui.QRadioButton(name,self.left)
       self.left.verticalLayoutScroll.addWidget(button)
       try:
