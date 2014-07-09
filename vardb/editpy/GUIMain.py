@@ -3,7 +3,7 @@
 #Several external functions are refferenced. See GUI.pdf for flowchart.
 import sys
 from PyQt4 import QtGui, QtCore
-from newSignalInput import ads
+from newSignal import newSig
 from generateButtons import generateButtons
 from setup import setup
 
@@ -14,15 +14,15 @@ class GUI(QtGui.QWidget):
     def initUI(self):      
         self.setGeometry(500, 300, 800, 600)
         self.setWindowTitle('varDB GUI')
+
         #Create option buttons
         addButton=QtGui.QPushButton("Add Variable")
-        addButton.pressed.connect(lambda: ads(self))
-        addButton.released.connect(lambda: corrector(self))
+        addButton.pressed.connect(lambda: newSig(self))
         self.saveButton=QtGui.QPushButton("Save Changes")
-        self.deleteButton=QtGui.QPushButton("Delete Selection")
-        self.deleteAttributeButton=QtGui.QPushButton("Delete an attribute")
+        self.deleteButton=QtGui.QPushButton("Delete Selected variable")
         quitButton=QtGui.QPushButton("Quit")
         quitButton.clicked.connect(QtCore.QCoreApplication.instance().quit)
+
         #Creates left and right sections, search bar, scroll area
         hbox = QtGui.QHBoxLayout(self)
         self.left = QtGui.QFrame(self)
@@ -31,15 +31,16 @@ class GUI(QtGui.QWidget):
         self=setup(hbox,self)
         self.searchText.textEdited.connect(lambda: generateButtons(self,str(self.searchText.text()),0))
         self.setLayout(hbox)
-        #Populates scroll area,selects 0th radio button
-        generateButtons(self,'',0)
+
+        #Populates scroll area
+        generateButtons(self,'',-1)
+
         #Option buttons layout
         hlox=QtGui.QHBoxLayout()
         hlox2=QtGui.QHBoxLayout()
         hlox.addStretch(1)
         hlox.addWidget(addButton,1)
         hlox.addWidget(self.saveButton,1)
-        hlox2.addWidget(self.deleteAttributeButton,1)
         hlox.addWidget(self.deleteButton,1)
         hlox.addWidget(quitButton,1)
         hlox.addStretch()

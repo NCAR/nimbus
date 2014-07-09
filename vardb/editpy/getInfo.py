@@ -1,9 +1,27 @@
 #Julian Quick
 #this function returns a list of each signal's properties
 from lxml import etree
-import setup
+from setup import fileName
+def getRef(name):
+   doc=etree.parse(fileName())
+   stdnames=[]
+   for elm in doc.getiterator(name):
+      i=0
+      while i<len(elm):
+         stdnames.append(elm[i].attrib['name'])
+         i+=1
+   return stdnames
+def getCategories():
+   doc=etree.parse(fileName())
+   stdnames=[]
+   for elm in doc.getiterator('Categories'):
+      i=0
+      while i<len(elm):
+         stdnames.append(elm[i].attrib['name'])
+         i+=1
+   return stdnames
 def getStandardNames():
-   doc=etree.parse(setup.fileName())
+   doc=etree.parse(fileName())
    stdnames=[]
    for elm in doc.getiterator('standardNames'):
       i=0
@@ -12,7 +30,7 @@ def getStandardNames():
          i+=1
    return stdnames
 def getinfo():
-   doc=etree.parse(setup.fileName())
+   doc=etree.parse(fileName())
    infoList=[[[]]for elm in doc.getiterator('variable')]
    j=0
    for elm in doc.getiterator('variable'):
@@ -27,7 +45,7 @@ def getinfo():
    return infoList
 
 def getDictionary():
-   doc=etree.parse(setup.fileName())
+   doc=etree.parse(fileName())
    dictionary=[]
    dictionary.append('name')
    for elm in doc.getiterator('Dictionary'):
@@ -36,4 +54,3 @@ def getDictionary():
          dictionary.append(elm[i].attrib['name'])
          i+=1
    return dictionary
-
