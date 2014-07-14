@@ -118,7 +118,7 @@ def setup(self):
       #clearing it's previous signals
       #See dataQualityCheck.py for process details
       self.dataWarning=QtGui.QWidget()
-      self.dataWarning.resize(100,100)
+      self.dataWarning.resize(500,200)
       self.move(400,400)
       self.setWindowTitle('Potential Data Corruption')
       self.dataComment=QtGui.QPushButton('Comment Signal(s)')
@@ -127,7 +127,8 @@ def setup(self):
       self.dataHBox.addWidget(self.dataComment)
       self.dataHBox.addWidget(self.dataIgnore)
       dataVBox=QtGui.QVBoxLayout()
-      self.dataMessage=QtGui.QLabel('No one should be seeing this text. Check software.',self)
+      self.dataMessage=QtGui.QLabel('No one should be seeing this text. Check setup #software.',self)
+      self.dataMessage.setWordWrap(True)
       dataVBox.addWidget(self.dataMessage)
       self.dataDisplayCheck=QtGui.QCheckBox('Do not show this message again')
       self.dataDisplayCheck.setChecked(False)

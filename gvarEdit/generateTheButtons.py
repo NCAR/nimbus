@@ -16,6 +16,7 @@ def generateButtons(self):
     #See dataQualityCheck.py for process
     if not self.dataDisplayCheck.isChecked():
         qualityCheck(self)
+    print 'Hello Julian'
 
     #Clear grids
     try:

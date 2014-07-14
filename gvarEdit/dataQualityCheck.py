@@ -41,6 +41,7 @@ def qualityCheck(self):
    self.dataComment.clicked.connect(lambda:fixprob(self,badStuff))
    self.dataIgnore.clicked.connect(lambda:ignore(self))
    sqlnames,groundlines=getInfo(self)
+   print 'probe'
    groundlines=filter(None,groundlines)
    i=0
 

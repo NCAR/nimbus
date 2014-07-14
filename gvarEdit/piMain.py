@@ -7,6 +7,8 @@
 #Expects groundvars to have a line with value starting with '#=================', to seperate permanant signals
 #from temporary signals. A new signal is either uncommented above this line or appended below this line.
 #If dsm_server is already running when this program starts, a warning appears
+
+#WARNING: hercules.raf-ext.ucar.edu real-time MUST be active for program to function
 import sys
 import os
 from getGroundInfo import getInfo
