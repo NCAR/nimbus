@@ -41,20 +41,8 @@ def signalSet(self,name):
 #-----------------------------------------------------------------------------
 #When any right info hub text box is edited, this function is called
 #Sets textbox label as text, used to access text later.
-def textChange(self,text,num):
+def textChange():
    global bools
-   global ifs
-   global rightInfoHub
-#   dictionary=getInfo.getDictionary()
-#
-#     #Correction for standard_names
-#      try:
-#          rightInfoHub['headers'][labes[num]].setText(labes[num]+': '+getInfo.getStandardNames()[int(text)])
-#      except:
-#          rightInfoHub['headers'][labes[num]].setText(labes[num]+reftex)
-#   else:
-#      rightInfoHub['headers'][labes[num]].setText(labes[num]+': '+text)
-#
    bools=True
    
    #check standard names
@@ -85,14 +73,11 @@ def labler(lablename,signalname,self,num):
    rightInfoHub['headers'][lablename].setText(lablename)
    rightInfoHub['headers'][lablename].setMinimumSize(rightInfoHub['headers'][lablename].sizeHint())
    if lablename not in self.booleanList and lablename not in (x[0] for x in self.catelogList):
-#     if lablename=='standard_name':
-#        try:signalname=getInfo.getStandardNames().index(signalname)
-#        except:pass
      rightInfoHub['textBoxes'][lablename].setText(str(signalname))
 
      #Connvects changes in text box to bools logic
-     rightInfoHub['textBoxes'][lablename].textEdited.connect(lambda: textChange(self,rightInfoHub['textBoxes'][lablename].text(),num))
-     textChange(self,rightInfoHub['textBoxes'][lablename].text(),num)
+     rightInfoHub['textBoxes'][lablename].textEdited.connect(lambda: textChange())
+     textChange()
 
    #global variable bools set False to indicate no changes have been made yet
    bools=False
@@ -117,7 +102,6 @@ def makeRightInfoHub(self,headers):
    global bools
    clearRightInfoHub()
    def onActivated(self,sig):
-    global headers
     global rightInfoHub
     global bools
     rightInfoHub['headers'][sig].setText(sig+': '+rightInfoHub['textBoxes'][sig].currentText())
@@ -128,6 +112,8 @@ def makeRightInfoHub(self,headers):
    while i<len(headers):
      rightInfoHub['headers'][headers[i]]=QtGui.QLabel(headers[i],self.upright)
      self.upright.verticalLayoutScroll.addWidget(rightInfoHub['headers'][headers[i]],i,1)
+
+     #Check for boolean variable
      if headers[i] in self.booleanList:
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
 
@@ -136,17 +122,20 @@ def makeRightInfoHub(self,headers):
         rightInfoHub['textBoxes'][headers[i]].addItem("true")
         rightInfoHub['textBoxes'][headers[i]].addItem("false")
         rightInfoHub['textBoxes'][headers[i]].activated.connect(partial(onActivated,self,headers[i]))
+     #Check if variable is in catalog list
      elif headers[i] in (entry[0] for entry in self.catelogList):
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
 
+        #Currently standard_names is a special case which is 
+        #stored as the catelog number, not the name
         if headers[i]==self.catelogList[0][0]:
            stdList=getInfo.getStandardNames()
-           #signalname=stdList[int(signalname)]
         else:
            stdList=getInfo.getCategories()
 
         for item in stdList:
           rightInfoHub['textBoxes'][headers[i]].addItem(item)
+        rightInfoHub['textBoxes'][headers[i]].currentIndexChanged.connect(lambda:textChange())
      else:
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QLineEdit(self.upright)
      self.upright.verticalLayoutScroll.addWidget(rightInfoHub['textBoxes'][headers[i]],i,2)

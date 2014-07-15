@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <VarDB>
   <Categories>
     <Category name="None" id="0"/>
@@ -118,13 +119,6 @@
       <standard_name>0</standard_name>
       <reference>false</reference>
     </variable>
-    <variable name="2KiloJoules">
-      <units>Awesomes</units>
-      <long_name>Jula</long_name>
-      <is_analog>false</is_analog>
-      <category>None</category>
-      <standard_name>0</standard_name>
-    </variable>
     <variable name="A1DC">
       <units>count</units>
       <long_name>2D-C Accumulation, 260X Emulation (per cell)</long_name>
@@ -178,7 +172,7 @@
       <long_name>Fast 2DC Corrected Accumulation per Channel, All Particles</long_name>
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
-      <standard_name>25</standard_name>
+      <standard_name>0</standard_name>
       <reference>false</reference>
     </variable>
     <variable name="A2DCR">
@@ -250,7 +244,7 @@
       <long_name>Vertical Differential Pressure, Boom</long_name>
       <is_analog>false</is_analog>
       <category>Uncorr'd Raw</category>
-      <standard_name>25</standard_name>
+      <standard_name>0</standard_name>
       <reference>false</reference>
     </variable>
     <variable name="ADIFR">
@@ -592,7 +586,7 @@
     </variable>
     <variable name="BITS">
       <units>count</units>
-      <long_name/>
+      <long_name></long_name>
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
       <standard_name>0</standard_name>
