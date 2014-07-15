@@ -121,7 +121,7 @@
     <variable name="2KiloJoules">
       <units>Awesomes</units>
       <long_name>Jula</long_name>
-      <is_analog>true</is_analog>
+      <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>0</standard_name>
     </variable>
@@ -178,7 +178,7 @@
       <long_name>Fast 2DC Corrected Accumulation per Channel, All Particles</long_name>
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
-      <standard_name>0</standard_name>
+      <standard_name>25</standard_name>
       <reference>false</reference>
     </variable>
     <variable name="A2DCR">
