@@ -207,6 +207,7 @@ WriteWindBarbsKML_Folder(ofstream& googleEarth)
       char url[8192];
 
       if (iws < 0) iws = 0;
+      if (iws > 200) iws = 200;	// we only have barbs to 200 Knots.
       if (iwd < 0 || iwd > 360) iwd = 0;
 
       sprintf(url, "<href>http://%s/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n",
