@@ -48,8 +48,8 @@ writePositionJSON(AircraftTrack& track, const std::string& filename)
     double x = cos(rlat[0]) * sin(rlat[1]) - sin(rlat[0]) * cos(rlat[1]) * cos(rlon[1]-rlon[0]);
     double thdg = int( (atan2(y, x) * 180.0 / M_PI + 360.0) + 0.5);
 
-    // while (thdg < 0.0) thdg += 360.0;
-    // while (thdg >= 360.0) thdg -= 360.0;
+    while (thdg < 0.0) thdg += 360.0;
+    while (thdg >= 360.0) thdg -= 360.0;
 
     sprintf(output,
 	    "{\"timestamp\":\"%s\",\"alt\":\"%.1f\",\"lat\":\"%f\",\"head\":\"%.1f\",\"declination\":\"0\",\"lon\":\"%f\"}", 
