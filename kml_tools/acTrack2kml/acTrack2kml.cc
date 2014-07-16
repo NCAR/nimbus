@@ -90,9 +90,10 @@ parseRunstring(int argc, char** argv, Config& cfg)
            cfg.platform.compare("A10") &&
            cfg.platform.compare("WKA") &&	// Wyoming King Air
            cfg.platform.compare("B146") &&	// UK BAE146
+           cfg.platform.compare("DLR") &&	// DLR Falcon
            cfg.platform.compare("C130") )
       {
-        cerr << "\n\tplatform must be GV, C130, WKA, DC8, A10, N42RF, N43RF, N49RF, B146\n\n";
+        cerr << "\n\tplatform must be GV, C130, WKA, DC8, A10, N42RF, N43RF, N49RF, DLR, B146\n\n";
         return usage(argv[0]);
       }
       break;
