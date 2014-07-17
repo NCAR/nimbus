@@ -1,0 +1,1 @@
+g++ VarDB.cc -o go -l xerces-c
