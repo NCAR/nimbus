@@ -89,8 +89,6 @@ public:
   //VDBVar* get_var(const std::string variable);
   VDBVar get_var(const string var);
   
-  //should eventually return DOMElement* element  
-
 private:
   bool _valid;
   DOMElement* _docRootNode;

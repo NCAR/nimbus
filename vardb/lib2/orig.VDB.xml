@@ -1,57 +1,57 @@
-<?xml version="1.0" encoding="UTF-16" standalone="no" ?><VarDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VDBSchema.xsd">
+<?xml version="1.0" encoding="UTF-8"?><VarDB xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='VDBSchema.xsd'>
   <Categories>
-    <Category id="0" name="None"/>
-    <Category id="1" name="Position"/>
-    <Category id="2" name="Thermodynamic"/>
-    <Category id="3" name="Aircraft State"/>
-    <Category id="4" name="Atmos. State"/>
-    <Category id="5" name="Liquid Water"/>
-    <Category id="6" name="Uncorr'd Raw"/>
-    <Category id="7" name="Wind"/>
-    <Category id="8" name="PMS Probe"/>
-    <Category id="9" name="Housekeeping"/>
-    <Category id="10" name="Chemistry"/>
-    <Category id="11" name="Radiation"/>
-    <Category id="12" name="Non-Standard"/>
+    <Category name="None" id="0"/>
+    <Category name="Position" id="1"/>
+    <Category name="Thermodynamic" id="2"/>
+    <Category name="Aircraft State" id="3"/>
+    <Category name="Atmos. State" id="4"/>
+    <Category name="Liquid Water" id="5"/>
+    <Category name="Uncorr'd Raw" id="6"/>
+    <Category name="Wind" id="7"/>
+    <Category name="PMS Probe" id="8"/>
+    <Category name="Housekeeping" id="9"/>
+    <Category name="Chemistry" id="10"/>
+    <Category name="Radiation" id="11"/>
+    <Category name="Non-Standard" id="12"/>
   </Categories>
   <standardNames>
-    <standardName id="0" name="None"/>
-    <standardName id="1" name="altitude"/>
-    <standardName id="2" name="air_potential_temperature"/>
-    <standardName id="3" name="air_pressure"/>
-    <standardName id="4" name="air_temperature"/>
-    <standardName id="5" name="dew_point_temperature"/>
-    <standardName id="6" name="geopotential_height"/>
-    <standardName id="7" name="eastward_wind"/>
-    <standardName id="8" name="latitude"/>
-    <standardName id="9" name="longitude"/>
-    <standardName id="10" name="northward_wind"/>
-    <standardName id="11" name="relative_humidity"/>
-    <standardName id="12" name="surface_air_pressure"/>
-    <standardName id="13" name="platform_speed_wrt_air"/>
-    <standardName id="14" name="upward_air_velocity"/>
-    <standardName id="15" name="wind_from_direction"/>
-    <standardName id="16" name="wind_speed"/>
-    <standardName id="17" name="water_vapor_pressure"/>
-    <standardName id="18" name="solar_zenith_angle"/>
-    <standardName id="19" name="platform_course"/>
-    <standardName id="20" name="platform_orientation"/>
-    <standardName id="21" name="platform_pitch_angle"/>
-    <standardName id="22" name="platform_roll_angle"/>
-    <standardName id="23" name="platform_speed_wrt_ground"/>
-    <standardName id="24" name="humidity_mixing_ratio"/>
-    <standardName id="25" name="equivelent_potential_temperature"/>
-    <standardName id="26" name="height"/>
-    <standardName id="27" name="atmosphere_cloud_liquid_water_content"/>
-    <standardName id="28" name="air_pressure_at_sea_level"/>
-    <standardName id="29" name="solar_azimuth_angle"/>
-    <standardName id="30" name="solar_elevation_angle"/>
-    <standardName id="31" name="virtual_temperature"/>
-    <standardName id="32" name="atmosphere_number_content_of_aerosol_particles"/>
-    <standardName id="33" name="mole_fraction_of_carbon_dioxide_in_air"/>
-    <standardName id="34" name="mole_fraction_of_methane_in_air"/>
-    <standardName id="35" name="mole_fraction_of_carbon_monoxide_in_air"/>
-    <standardName id="36" name="mole_fraction_of_ozone_in_air"/>
+    <standardName name="None" id="0"/>
+    <standardName name="altitude" id="1"/>
+    <standardName name="air_potential_temperature" id="2"/>
+    <standardName name="air_pressure" id="3"/>
+    <standardName name="air_temperature" id="4"/>
+    <standardName name="dew_point_temperature" id="5"/>
+    <standardName name="geopotential_height" id="6"/>
+    <standardName name="eastward_wind" id="7"/>
+    <standardName name="latitude" id="8"/>
+    <standardName name="longitude" id="9"/>
+    <standardName name="northward_wind" id="10"/>
+    <standardName name="relative_humidity" id="11"/>
+    <standardName name="surface_air_pressure" id="12"/>
+    <standardName name="platform_speed_wrt_air" id="13"/>
+    <standardName name="upward_air_velocity" id="14"/>
+    <standardName name="wind_from_direction" id="15"/>
+    <standardName name="wind_speed" id="16"/>
+    <standardName name="water_vapor_pressure" id="17"/>
+    <standardName name="solar_zenith_angle" id="18"/>
+    <standardName name="platform_course" id="19"/>
+    <standardName name="platform_orientation" id="20"/>
+    <standardName name="platform_pitch_angle" id="21"/>
+    <standardName name="platform_roll_angle" id="22"/>
+    <standardName name="platform_speed_wrt_ground" id="23"/>
+    <standardName name="humidity_mixing_ratio" id="24"/>
+    <standardName name="equivelent_potential_temperature" id="25"/>
+    <standardName name="height" id="26"/>
+    <standardName name="atmosphere_cloud_liquid_water_content" id="27"/>
+    <standardName name="air_pressure_at_sea_level" id="28"/>
+    <standardName name="solar_azimuth_angle" id="29"/>
+    <standardName name="solar_elevation_angle" id="30"/>
+    <standardName name="virtual_temperature" id="31"/>
+    <standardName name="atmosphere_number_content_of_aerosol_particles" id="32"/>
+    <standardName name="mole_fraction_of_carbon_dioxide_in_air" id="33"/>
+    <standardName name="mole_fraction_of_methane_in_air" id="34"/>
+    <standardName name="mole_fraction_of_carbon_monoxide_in_air" id="35"/>
+    <standardName name="mole_fraction_of_ozone_in_air" id="36"/>
   </standardNames>
   <variableCatalog>
     <variable name="2D-C">
@@ -60,7 +60,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>0</standard_name>
-      <reference>cheese</reference>
+      <reference>false</reference>
     </variable>
     <variable name="2D-P">
       <units>none</units>
@@ -585,7 +585,7 @@
     </variable>
     <variable name="BITS">
       <units>count</units>
-      <long_name/>
+      <long_name></long_name>
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
       <standard_name>0</standard_name>
@@ -6649,7 +6649,7 @@
       <reference>false</reference>
     </variable>
     <variable name="ZERO">
-      <units>cheese</units>
+      <units>none</units>
       <long_name>Constant value of 0.</long_name>
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
