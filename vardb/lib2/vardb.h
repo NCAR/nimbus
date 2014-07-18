@@ -15,9 +15,43 @@ using namespace xercesc;
 #include<iostream>
 #include<map>
 
-//Decalred so compiler knows VDCVar is a class
-class VDBVar;
+class VDBVar
+{
+public:
+  VDBVar(DOMNode* nod)
+  {
+    _variable=nod;
+  };
 
+  std::string get_attribute(const std::string attr_name) const
+		{ 
+                  DOMNodeList* x=_variable->getChildNodes();
+                  DOMNode* holder=x->item(1);
+                  //holder=x->item(2);
+                  for(int i=1;i<=x->getLength();i++)
+                  {
+                    if(XMLString::transcode(holder->getNodeName())==attr_name)
+                    {
+                      DOMNodeList* y=holder->getChildNodes();
+                      DOMNode* z=y->item(0);
+                      std::string answer=XMLString::transcode(z->getNodeValue());
+                      return answer;
+                    }
+                    holder=holder->getNextSibling();
+                    holder=holder->getNextSibling();
+                  }
+                  return "Hello Julian\n";
+                };
+
+  void set_attribute(const std::string attr_name, const std::string value)
+		{ _attrs[attr_name] = value; } ;
+
+private:
+  std::map<std::string, std::string> _attrs;
+
+  DOMNode* _variable;
+};
+//------------------------------------------------------------------------------
 //===============================================================================
 //This class is used to access VDB.xml
 class VDBFile
@@ -27,7 +61,7 @@ public:
   VDBFile() : _valid(false) 
 { 
 
-} ;
+};
 
   void open(const char file[]);
   void close();
@@ -36,14 +70,14 @@ public:
   void save(char* var);
 
   //VDBVar* get_var(const std::string variable);
-  DOMNode* get_var(const string var);
+  VDBVar get_var(const string var);
+  
   //should eventually return DOMElement* element  
 
 private:
   bool _valid;
   DOMElement* _docRootNode;
   DOMDocument* _doc;
-  DOMNodeIterator* _walker;
 };
 
 //---------------------------------------------------------------------------------------
@@ -98,26 +132,21 @@ void VDBFile::open(const char file[])
 //---------------------------------------------------------------------------------------
 //This function searches through the XML document for an element with a given name
 
-DOMNode* VDBFile::get_var(const string var)
+VDBVar VDBFile::get_var(const string var)
 {
   cout<<"finding "<<var<<"\n";
-
-  cout<<XMLString::transcode(_docRootNode->getTagName())<<"\n";
 
   //Get VariableCatalog node as varCat, x is intermediate domNodeList variable
   XMLCh *tag = XMLString::transcode("variableCatalog");
   DOMNodeList* x=_docRootNode->getElementsByTagName(tag);
   DOMNode* varCat=x->item(0);
   
-  cout<<XMLString::transcode(varCat->getNodeName())<<"\n";
-
   //search variables for name that matches input var
 
   DOMNodeList* elems=varCat->getChildNodes();
 
   DOMNode* holder=varCat->getFirstChild();
   holder=holder->getNextSibling();
-  cout<<XMLString::transcode(holder->getNodeName())<<"\n";
 
   DOMNamedNodeMap* atts;
   DOMNode* name;
@@ -125,10 +154,18 @@ DOMNode* VDBFile::get_var(const string var)
   {
     atts=holder->getAttributes();
     name=atts->getNamedItem(XMLString::transcode("name"));
+
+
     if(XMLString::transcode(name->getNodeValue())==var)
     {
       cout<<"Node is "<<XMLString::transcode(name->getNodeValue())<<"\n";
-      return holder;
+      
+      //Node has been found. A pointer is now created pointing to a VDBVar class 
+      //with _variable initialized as a pointer to the node
+
+      VDBVar v =holder;
+
+      return v;
     }
 
   //  cout<<"Current Node: "<<XMLString::transcode(name->getNodeValue())<<" and i is "<<i<<"/"<<elems->getLength()/2<<"\n";
@@ -140,23 +177,4 @@ DOMNode* VDBFile::get_var(const string var)
 
 //==================================================================================
 
-class VDBVar
-{
-public:
-  VDBVar();
-
-  std::string get_attribute(const std::string attr_name) const
-		{ return "hello world";};//_attrs[attr_name]; };
-
-  void set_attribute(const std::string attr_name, const std::string value)
-		{ _attrs[attr_name] = value; } ;
-
-private:
-  std::map<std::string, std::string> _attrs;
-
-  const char* _variable;
-};
 #endif
-
-
-//======================================================================================
