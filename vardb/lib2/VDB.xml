@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<VarDB xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='VDBSchema.xsd'>
+<?xml version="1.0" encoding="UTF-8"?><VarDB xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='VDBSchema.xsd'>
   <Categories>
     <Category name="None" id="0"/>
     <Category name="Position" id="1"/>

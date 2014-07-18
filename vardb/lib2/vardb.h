@@ -14,6 +14,8 @@ using namespace xercesc;
 #include <stdio.h>
 #include<iostream>
 #include<map>
+#include<fstream>
+
 
 class VDBVar
 {
@@ -27,7 +29,6 @@ public:
 		{ 
                   DOMNodeList* x=_variable->getChildNodes();
                   DOMNode* holder=x->item(1);
-                  //holder=x->item(2);
                   for(int i=1;i<=x->getLength();i++)
                   {
                     if(XMLString::transcode(holder->getNodeName())==attr_name)
@@ -40,14 +41,30 @@ public:
                     holder=holder->getNextSibling();
                     holder=holder->getNextSibling();
                   }
-                  return "Hello Julian\n";
+                  return NULL;
                 };
 
   void set_attribute(const std::string attr_name, const std::string value)
-		{ _attrs[attr_name] = value; } ;
+		{ 
+                  DOMNodeList* x=_variable->getChildNodes();
+                  DOMNode* holder=x->item(1);
+                  for(int i=1;i<=x->getLength();i++)
+                  {
+                    if(XMLString::transcode(holder->getNodeName())==attr_name)
+                    {
+                      DOMNodeList* y=holder->getChildNodes();
+                      DOMNode* z=y->item(0);
+                      z->setNodeValue(XMLString::transcode(value.c_str()));
+                      break;
+                    }
+                    holder=holder->getNextSibling();
+                    holder=holder->getNextSibling();
+                  }
+                  
+                };
 
 private:
-  std::map<std::string, std::string> _attrs;
+//  std::map<std::string, std::string> _attrs;
 
   DOMNode* _variable;
 };
@@ -67,7 +84,7 @@ public:
   void close();
   bool is_valid() { return _valid; };
 
-  void save(char* var);
+  void save();
 
   //VDBVar* get_var(const std::string variable);
   VDBVar get_var(const string var);
@@ -80,6 +97,36 @@ private:
   DOMDocument* _doc;
 };
 
+//---------------------------------------------------------------------------------------
+//Releases xerces memory
+void VDBFile::close()
+{
+  save();
+  _doc->release();
+};
+//---------------------------------------------------------------------------------------
+//This function writes the xerces document to a new XML file
+void VDBFile::save()
+{
+    DOMImplementation* impl = DOMImplementation::getImplementation();
+
+    DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+
+    XMLCh* toTranscode = theSerializer->writeToString(_doc);
+               
+    char* xmlChar = XMLString::transcode(toTranscode);
+    
+   std::string transcodedStr;
+   transcodedStr = string(xmlChar);
+
+   XMLString::release(&xmlChar);
+   XMLString::release(&toTranscode);
+   theSerializer->release(); 
+   ofstream outpt;
+   outpt.open("VDB.xml");
+   outpt<<transcodedStr<<"\n";
+   outpt.close();
+};
 //---------------------------------------------------------------------------------------
 //This function opens a given filename and initializes xerces
 void VDBFile::open(const char file[])
