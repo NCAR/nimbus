@@ -15,8 +15,11 @@ using namespace xercesc;
 #include<iostream>
 #include<map>
 #include<fstream>
-
-
+#include <boost/algorithm/string.hpp>
+//===============================================================================
+//=============================VDBVAR============================================
+//This class accesses a pointer to a DOMNode variable accessed by get_var in the VDBFile class.
+//ability to get and set variable attributes such as long_name or units
 class VDBVar
 {
 public:
@@ -31,7 +34,7 @@ public:
                   DOMNode* holder=x->item(1);
                   for(int i=1;i<=x->getLength();i++)
                   {
-                    if(XMLString::transcode(holder->getNodeName())==attr_name)
+                    if(boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
                     {
                       DOMNodeList* y=holder->getChildNodes();
                       DOMNode* z=y->item(0);
@@ -46,11 +49,13 @@ public:
 
   void set_attribute(const std::string attr_name, const std::string value)
 		{ 
+                  std::string currentName;
                   DOMNodeList* x=_variable->getChildNodes();
                   DOMNode* holder=x->item(1);
                   for(int i=1;i<=x->getLength();i++)
                   {
-                    if(XMLString::transcode(holder->getNodeName())==attr_name)
+                    currentName=XMLString::transcode(holder->getNodeName());
+                    if(boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
                     {
                       DOMNodeList* y=holder->getChildNodes();
                       DOMNode* z=y->item(0);
@@ -60,17 +65,16 @@ public:
                     holder=holder->getNextSibling();
                     holder=holder->getNextSibling();
                   }
-                  
                 };
-
 private:
 //  std::map<std::string, std::string> _attrs;
-
   DOMNode* _variable;
 };
 //------------------------------------------------------------------------------
-//===============================================================================
-//This class is used to access VDB.xml
+//==============================================================================
+//========================VDBFile===============================================
+//This class is used to access VDB.xml. Ability to open file, initiate VDBVar class with pointer
+//to Xerces DOMNode with that variable node, save changes by rewriting XML, and close off access to VDB.xml
 class VDBFile
 {
 public:
@@ -79,22 +83,16 @@ public:
 { 
 
 };
-
   void open(const char file[]);
   void close();
   bool is_valid() { return _valid; };
-
   void save();
-
-  //VDBVar* get_var(const std::string variable);
   VDBVar get_var(const string var);
-  
 private:
   bool _valid;
   DOMElement* _docRootNode;
   DOMDocument* _doc;
 };
-
 //---------------------------------------------------------------------------------------
 //Releases xerces memory
 void VDBFile::close()
@@ -106,17 +104,12 @@ void VDBFile::close()
 //This function writes the xerces document to a new XML file
 void VDBFile::save()
 {
-    DOMImplementation* impl = DOMImplementation::getImplementation();
-
-    DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
-
-    XMLCh* toTranscode = theSerializer->writeToString(_doc);
-               
-    char* xmlChar = XMLString::transcode(toTranscode);
-    
+   DOMImplementation* impl = DOMImplementation::getImplementation();
+   DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+   XMLCh* toTranscode = theSerializer->writeToString(_doc);
+   char* xmlChar = XMLString::transcode(toTranscode);
    std::string transcodedStr;
    transcodedStr = string(xmlChar);
-
    XMLString::release(&xmlChar);
    XMLString::release(&toTranscode);
    theSerializer->release(); 
@@ -129,11 +122,6 @@ void VDBFile::save()
 //This function opens a given filename and initializes xerces
 void VDBFile::open(const char file[])
 {
-  printf("opening %s\n",file);
-
-  //Made using tutorial http://blog.f85.net/2012/02/xerces-c-tutorial.html
-
-
   //initialize xerces
   try { XMLPlatformUtils::Initialize(); }
   catch (const XMLException& toCatch) 
@@ -152,35 +140,20 @@ void VDBFile::open(const char file[])
   parser->setValidationConstraintFatal(true);
   
   //open file
-  //parser->parse(XMLString::transcode(file.c_str()));
   parser->parse(XMLString::transcode("VDB.xml"));
 
   if (parser-> getErrorCount()>0)
   {
     printf("ERROR 1 READING XML\n");
   }
-
   _doc = parser->getDocument();
-
-  if (parser-> getErrorCount()>0)
-  {
-    printf("ERROR 2 READING XML\n");
-  }
-
   _docRootNode = _doc->getDocumentElement();
-
-  if (parser-> getErrorCount()>0)
-  {
-    printf("ERROR 3 READING XML\n");
-  }
 };
 //---------------------------------------------------------------------------------------
 //This function searches through the XML document for an element with a given name
 
 VDBVar VDBFile::get_var(const string var)
 {
-  cout<<"finding "<<var<<"\n";
-
   //Get VariableCatalog node as varCat, x is intermediate domNodeList variable
   XMLCh *tag = XMLString::transcode("variableCatalog");
   DOMNodeList* x=_docRootNode->getElementsByTagName(tag);
@@ -201,20 +174,16 @@ VDBVar VDBFile::get_var(const string var)
     name=atts->getNamedItem(XMLString::transcode("name"));
 
 
-    if(XMLString::transcode(name->getNodeValue())==var)
+    if(boost::iequals(XMLString::transcode(name->getNodeValue()),var))
     {
       cout<<"Node is "<<XMLString::transcode(name->getNodeValue())<<"\n";
       
       //Node has been found. A pointer is now created pointing to a VDBVar class 
       //with _variable initialized as a pointer to the node
-
       VDBVar v =holder;
 
       return v;
     }
-
-  //  cout<<"Current Node: "<<XMLString::transcode(name->getNodeValue())<<" and i is "<<i<<"/"<<elems->getLength()/2<<"\n";
-  
     holder=holder->getNextSibling();
     holder=holder->getNextSibling();
   }
