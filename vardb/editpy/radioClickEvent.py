@@ -34,8 +34,6 @@ def signalSet(self,name):
       s=rightInfoHub['textBoxes'][name].text()
    else:
       s=rightInfoHub['textBoxes'][name].currentText()
-      if name=='standard_name':
-         s=getStandardNames().index(s)
    return str(s)
    #return info
 #-----------------------------------------------------------------------------
@@ -64,7 +62,6 @@ def labler(lablename,signalname,self,num):
    if lablename in (x[0] for x in self.catelogList) and signalname!='':
       if lablename==self.catelogList[0][0]:
          stdList=getInfo.getStandardNames()
-         signalname=stdList[int(signalname)]
       else:
          stdList=getInfo.getCategories()
 
@@ -126,8 +123,6 @@ def makeRightInfoHub(self,headers):
      elif headers[i] in (entry[0] for entry in self.catelogList):
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
 
-        #Currently standard_names is a special case which is 
-        #stored as the catelog number, not the name
         if headers[i]==self.catelogList[0][0]:
            stdList=getInfo.getStandardNames()
         else:
