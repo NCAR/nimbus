@@ -60,7 +60,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>cheese</reference>
+      <reference>false</reference>
     </variable>
     <variable name="2D-P">
       <units>none</units>
@@ -6649,7 +6649,7 @@
       <reference>false</reference>
     </variable>
     <variable name="ZERO">
-      <units>queso</units>
+      <units>none</units>
       <long_name>Constant value of 0.</long_name>
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
