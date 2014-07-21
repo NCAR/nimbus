@@ -1,4 +1,4 @@
-<VarDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VDBSchema.xsd">
+<?xml version="1.0" encoding="UTF-16" standalone="no" ?><VarDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VDBSchema.xsd">
   <Categories>
     <Category name="None"/>
     <Category name="Position"/>
@@ -60,7 +60,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>false</reference>
+      <reference>cheese</reference>
     </variable>
     <variable name="2D-P">
       <units>none</units>
@@ -6649,7 +6649,7 @@
       <reference>false</reference>
     </variable>
     <variable name="ZERO">
-      <units>none</units>
+      <units>queso</units>
       <long_name>Constant value of 0.</long_name>
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
