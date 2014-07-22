@@ -1,0 +1,19 @@
+# -*- python -*-
+
+# Since site_scons is not located in this directory, it must be added to
+# the scons command line like so:
+#
+# scons -u --site-dir=/home/granger/code/raf-trunk/caledit/site_scons check 
+#
+
+env = Environment (tools = ['default', 'doxygen', 'pylint', 'pytest'])
+
+all_python_files = env.FindPythonFiles('.')
+env.PythonLint('check', all_python_files)
+
+# py.test -v -k -test_main_operations  iss/tests/.
+# py.test -v -s iss/tests/. --quick=1 --dlog
+
+
+test = env.Command("test", all_python_files, 'py.test ${SOURCES}')
+env.Alias("test", test)
