@@ -1,7 +1,22 @@
 #include "vardb.h"
 
-//This is an API to edit Vardb xml. Currently works with the xml in pwd.
+/* -*- mode: C++; c-basic-offset: 2; -*-
+ * -------------------------------------------------------------------------
+ *  OBJECT NAME:    vardb.cc
+ *
+ *  FULL NAME:      VarDB API
+ *
+ *  TYPE:           API
+ *
+ *  DESCRIPTION:    This is an API to edit Vardb xml.
+ *
+ *  COPYRIGHT:      University Corporation for Atmospheric Research, 2014
+ *  -------------------------------------------------------------------------
+ *  */
 
+//Currently works with xml in pwd. Entrance points are VDBFile:: save and open
+
+//---------------------------------------------------------------------------------------
 //Returns text associated with a variable's attribute
 //input: attr_name: attribute name, such as units, name, or longname
 //output: Text associated with variable's attribute
