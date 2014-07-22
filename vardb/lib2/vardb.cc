@@ -152,8 +152,6 @@ VDBVar VDBFile::get_var(const string var) const
 
     if(boost::iequals(XMLString::transcode(name->getNodeValue()),var))
     {
-      cout<<"Node is "<<XMLString::transcode(name->getNodeValue())<<"\n";
-      
       //Node has been found. A pointer is now created pointing to a VDBVar class 
       //with _variable initialized as a pointer to the node
       VDBVar v =holder;
