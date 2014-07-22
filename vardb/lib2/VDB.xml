@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-16" standalone="no" ?><VarDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VDBSchema.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><VarDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VDBSchema.xsd">
   <Categories>
     <Category name="None"/>
     <Category name="Position"/>
