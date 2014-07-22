@@ -6,45 +6,49 @@
 //input: attr_name: attribute name, such as units, name, or longname
 //output: Text associated with variable's attribute
 std::string VDBVar::get_attribute(const std::string attr_name) const
-		{ 
-                  DOMNodeList* x=_variable->getChildNodes();
-                  DOMNode* holder=x->item(1);
-                  for(int i=1;i<=x->getLength();i++)
-                  {
-                    if(boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
-                    {
-                      DOMNodeList* y=holder->getChildNodes();
-                      DOMNode* z=y->item(0);
-                      std::string answer=XMLString::transcode(z->getNodeValue());
-                      return answer;
-                    }
-                    holder=holder->getNextSibling();
-                    holder=holder->getNextSibling();
-                  }
-                  return NULL;
-                };
+{ 
+  DOMNodeList* x=_variable->getChildNodes();
+  DOMNode* holder=x->item(1);
+
+  for(int i=1; i <= x->getLength(); i++)
+  {
+    if(boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
+    {
+      DOMNodeList* y=holder->getChildNodes();
+      DOMNode* z=y->item(0);
+      std::string answer=XMLString::transcode(z->getNodeValue());
+      return answer;
+    }
+    holder=holder->getNextSibling();
+    holder=holder->getNextSibling();
+  }
+
+  return NULL;
+};
 //---------------------------------------------------------------------------------------
 //Sets a variable's information for specified attribute
 //input: attr_name: attribute name, such as units, name, or longname
 void VDBVar::set_attribute(const std::string attr_name, const std::string value)
 { 
-     std::string currentName;
-     DOMNodeList* x=_variable->getChildNodes();
-     DOMNode* holder=x->item(1);
-     for(int i=1;i<=x->getLength();i++)
-     {
-        currentName=XMLString::transcode(holder->getNodeName());
-        if(boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
-        {
-          DOMNodeList* y=holder->getChildNodes();
-          DOMNode* z=y->item(0);
-          z->setNodeValue(XMLString::transcode(value.c_str()));
-          break;
-        }
-        holder=holder->getNextSibling();
-        holder=holder->getNextSibling();
-     }
+  std::string currentName;
+  DOMNodeList* x=_variable->getChildNodes();
+  DOMNode* holder=x->item(1);
+
+  for(int i=1; i <= x->getLength(); i++)
+  {
+    currentName=XMLString::transcode(holder->getNodeName());
+    if(boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
+    {
+      DOMNodeList* y=holder->getChildNodes();
+      DOMNode* z=y->item(0);
+      z->setNodeValue(XMLString::transcode(value.c_str()));
+      break;
+    }
+    holder=holder->getNextSibling();
+    holder=holder->getNextSibling();
+  }
 };
+
 //---------------------------------------------------------------------------------------
 //Saves VDB changes, releases xerces memory
 void VDBFile::close()
@@ -52,24 +56,26 @@ void VDBFile::close()
   save();
   _doc->release();
 };
+
 //---------------------------------------------------------------------------------------
 //This function writes the current xerces tree to a new XML file
 void VDBFile::save()
 {
-   DOMImplementation* impl = DOMImplementation::getImplementation();
-   DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
-   XMLCh* toTranscode = theSerializer->writeToString(_doc);
-   char* xmlChar = XMLString::transcode(toTranscode);
-   std::string transcodedStr;
-   transcodedStr = string(xmlChar);
-   XMLString::release(&xmlChar);
-   XMLString::release(&toTranscode);
-   theSerializer->release(); 
-   ofstream outpt;
-   outpt.open("VDB.xml");
-   outpt<<transcodedStr<<"\n";
-   outpt.close();
+  DOMImplementation* impl = DOMImplementation::getImplementation();
+  DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+  XMLCh* toTranscode = theSerializer->writeToString(_doc);
+  char* xmlChar = XMLString::transcode(toTranscode);
+  std::string transcodedStr;
+  transcodedStr = string(xmlChar);
+  XMLString::release(&xmlChar);
+  XMLString::release(&toTranscode);
+  theSerializer->release(); 
+  ofstream outpt;
+  outpt.open("VDB.xml");
+  outpt<<transcodedStr<<"\n";
+  outpt.close();
 };
+
 //---------------------------------------------------------------------------------------
 //This function opens a given filename and initializes xerces
 void VDBFile::open(const char file[])
@@ -77,12 +83,12 @@ void VDBFile::open(const char file[])
   //initialize xerces
   try { XMLPlatformUtils::Initialize(); }
   catch (const XMLException& toCatch) 
-    {
+  {
     char* message = XMLString::transcode(toCatch.getMessage());
     cout << "Error during initialization! :\n"
          << message << "\n";
     XMLString::release(&message);
-    };
+  };
 
   //Create parser
   XercesDOMParser* parser = new XercesDOMParser();
@@ -96,14 +102,14 @@ void VDBFile::open(const char file[])
 
   if (parser-> getErrorCount()>0)
   {
-    printf("ERROR 1 READING XML\n");
+    std::cerr << "ERROR 1 READING XML\n";
   }
   _doc = parser->getDocument();
   _docRootNode = _doc->getDocumentElement();
 };
+
 //---------------------------------------------------------------------------------------
 //This function searches through the XML document for an element with a given name
-
 VDBVar VDBFile::get_var(const string var)
 {
   //Get VariableCatalog node as varCat, x is intermediate domNodeList variable
@@ -140,6 +146,3 @@ VDBVar VDBFile::get_var(const string var)
     holder=holder->getNextSibling();
   }
 };
-
-//==================================================================================
-
