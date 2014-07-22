@@ -14,8 +14,6 @@
  *  -------------------------------------------------------------------------
  *  */
 
-//Currently works with xml in pwd. Entrance points are VDBFile:: save and open
-
 //---------------------------------------------------------------------------------------
 //Returns text associated with a variable's attribute
 //input: attr_name: attribute name, such as units, name, or longname
@@ -86,15 +84,18 @@ void VDBFile::save()
   XMLString::release(&toTranscode);
   theSerializer->release(); 
   ofstream outpt;
-  outpt.open("VDB.xml");
+  outpt.open(_file.c_str());
   outpt<<transcodedStr<<"\n";
   outpt.close();
 };
 
 //---------------------------------------------------------------------------------------
 //This function opens a given filename and initializes xerces
-void VDBFile::open(const char file[])
+void VDBFile::open(const std::string file)
 {
+  //save location
+  _file=file;
+
   //initialize xerces
   try { XMLPlatformUtils::Initialize(); }
   catch (const XMLException& toCatch) 
@@ -103,6 +104,7 @@ void VDBFile::open(const char file[])
     cout << "Error during initialization! :\n"
          << message << "\n";
     XMLString::release(&message);
+    _valid=false;
   };
 
   //Create parser
@@ -113,10 +115,11 @@ void VDBFile::open(const char file[])
   parser->setValidationConstraintFatal(true);
   
   //open file
-  parser->parse(XMLString::transcode("VDB.xml"));
+  parser->parse(XMLString::transcode(file.c_str()));
 
   if (parser-> getErrorCount()>0)
   {
+    _valid=false;
     std::cerr << "ERROR 1 READING XML\n";
   }
   _doc = parser->getDocument();

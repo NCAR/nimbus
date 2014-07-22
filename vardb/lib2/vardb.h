@@ -57,14 +57,14 @@ public:
  *@param file[] is filename to open containing vardb xml. Vardb references a schema, 
  *which is important.
  */
-  void open(const char file[]);
+  void open(const std::string file);
 
   /**
  *severs contact with xerces xml tree
  */
   void close();
 
-  //not used
+  //file validation check
   bool is_valid() const { return _valid; };
 
   /**
@@ -83,5 +83,6 @@ private:
   bool _valid;
   DOMElement* _docRootNode;
   DOMDocument* _doc;
+  std::string _file;
 };
 #endif
