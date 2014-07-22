@@ -1,3 +1,17 @@
+/* -*- mode: C++; c-basic-offset: 2; -*-
+ * -------------------------------------------------------------------------
+ *  OBJECT NAME:    vardb.h
+ *
+ *  FULL NAME:      VarDB API header file
+ *
+ *  TYPE:           API header
+ *
+ *  DESCRIPTION:    This is the header for an API to edit Vardb xml.
+ *
+ *  COPYRIGHT:      University Corporation for Atmospheric Research, 2014
+ *  -------------------------------------------------------------------------
+ *  */
+
 #include <vector>
 #include <string>
 #include <iostream>
