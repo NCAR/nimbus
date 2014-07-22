@@ -18,7 +18,7 @@ class LDM(object):
     def setDryrun(self, enabled):
         self.dryrun = enabled
 
-    def insert(filepath):
+    def insert(self, filepath):
         cmd = [self.pqinsert]
         if self.verbose:
             cmd += ["-v"]

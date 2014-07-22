@@ -13,9 +13,7 @@ class Rsync(object):
     def __init__(self, source=None, dest=None, options=None):
         self.dryrun = False
         self.verbose = True
-        self.options = []
-        if options:
-            self.options = options
+        self.options = options
         self.source = source
         self.dest = dest
 
@@ -23,8 +21,7 @@ class Rsync(object):
         self.dryrun = enabled
 
     def setup(self, source, dest, options=None):
-        if options:
-            self.options = options
+        self.options = options
         self.source = source
         self.dest = dest
 
@@ -34,7 +31,8 @@ class Rsync(object):
             cmd += ["-n"]
         if self.verbose:
             cmd += ["-v"]
-        cmd += options
+        if self.options:
+            cmd += self.options
         cmd += [self.source, self.dest]
         return cmd
         

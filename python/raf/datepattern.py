@@ -142,8 +142,8 @@ class DatePattern(object):
         patterns = []
         tt = int(begin)
         while tt <= int(end):
-            logger.debug("checking time %s" % 
-                         (self.formatTime(tt, "%Y-%m-%d,%H:%M:%S")))
+            # logger.debug("checking time %s" % 
+            #              (self.formatTime(tt, "%Y-%m-%d,%H:%M:%S")))
             for p in self.periods.getPeriods():
                 if p.startPeriod(tt) == tt and p.nextPeriod(tt) - 1 <= end:
                     # All the times in this period are included, so replace

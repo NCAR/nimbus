@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import raf.rsync as rsync
-
+import raf.ldm as ldm
 
 class Config(object):
 
@@ -18,6 +18,7 @@ class Config(object):
         "Consume arguments which modify global configuration."
         i = 0
         while i < len(argv):
+            arg = argv[i]
             if arg == "--debug":
                 self.loglevel = logging.DEBUG
                 del argv[i]
