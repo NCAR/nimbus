@@ -13,11 +13,11 @@ INCLUDES=	-I${INCLUDEDIR}
 DEFINES=
 CFLAGS=		-g -O2 ${INCLUDES} ${DEFINES}
 
-OBJS=	Vardb.o
+OBJS=	vardb.o
 
-SRCS=	Vardb.c
+SRCS=	vardb.cc
 
-HDRS=	Vardb.h
+HDRS=	vardb.h
 
 .SUFFIXES: .o .h .c
 
@@ -39,10 +39,10 @@ lib${LIBNAME}_p.a: ${OBJS}
 install: all
 	install -p --mode=664 lib${LIBNAME}.a ${LIBDIR}
 	install -p --mode=444 ${HEADER} ${INCLUDEDIR}/raf
-	install -p --mode=664 vardb.3 ${MANDIR}
+#	install -p --mode=664 vardb.3 ${MANDIR}
 
 clean:
 	rm -f *.o *.a *.ln
 
 test:
-	g++ test.cc -L . -lVarDB -lxerces-c -o go;./go
+	g++ vdb_test.cc -L . -lVarDB -lxerces-c -o vdb_test
