@@ -10,9 +10,9 @@ std::string VDBVar::get_attribute(const std::string attr_name) const
   DOMNodeList* x=_variable->getChildNodes();
   DOMNode* holder=x->item(1);
 
-  for(int i=1; i <= x->getLength(); i++)
+  for (int i=1; i <= x->getLength(); i++)
   {
-    if(boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
+    if (boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
     {
       DOMNodeList* y=holder->getChildNodes();
       DOMNode* z=y->item(0);
@@ -34,10 +34,10 @@ void VDBVar::set_attribute(const std::string attr_name, const std::string value)
   DOMNodeList* x=_variable->getChildNodes();
   DOMNode* holder=x->item(1);
 
-  for(int i=1; i <= x->getLength(); i++)
+  for (int i=1; i <= x->getLength(); i++)
   {
     currentName=XMLString::transcode(holder->getNodeName());
-    if(boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
+    if (boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
     {
       DOMNodeList* y=holder->getChildNodes();
       DOMNode* z=y->item(0);
@@ -110,7 +110,7 @@ void VDBFile::open(const char file[])
 
 //---------------------------------------------------------------------------------------
 //This function searches through the XML document for an element with a given name
-VDBVar VDBFile::get_var(const string var)
+VDBVar VDBFile::get_var(const string var) const
 {
   //Get VariableCatalog node as varCat, x is intermediate domNodeList variable
   XMLCh *tag = XMLString::transcode("variableCatalog");
