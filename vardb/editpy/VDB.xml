@@ -1,4 +1,4 @@
-<VarDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VDBSchema.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><VarDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VDBSchema.xsd">
   <Categories>
     <Category name="None"/>
     <Category name="Position"/>
@@ -195,7 +195,7 @@
       <long_name>Fast 2DC Corrected Accumulation per Channel, All Particles</long_name>
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
-      <standard_name>geopotential_height</standard_name>
+      <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
     <variable name="A2DPR">
@@ -235,7 +235,7 @@
       <long_name>Aircraft Vertical Acceleration</long_name>
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
-      <standard_name>air_pressure_at_sea_level</standard_name>
+      <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
     <variable name="ADIF">
