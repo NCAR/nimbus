@@ -128,7 +128,7 @@ void VDBFile::open(const std::string file)
 
 //---------------------------------------------------------------------------------------
 //This function searches through the XML document for an element with a given name
-VDBVar VDBFile::get_var(const string var) const
+VDBVar *VDBFile::get_var(const string var) const
 {
   //Get VariableCatalog node as varCat, x is intermediate domNodeList variable
   XMLCh *tag = XMLString::transcode("variableCatalog");
@@ -154,7 +154,7 @@ VDBVar VDBFile::get_var(const string var) const
     {
       //Node has been found. A pointer is now created pointing to a VDBVar class 
       //with _variable initialized as a pointer to the node
-      VDBVar v =holder;
+      VDBVar *v = new VDBVar(holder);
 
       return v;
     }

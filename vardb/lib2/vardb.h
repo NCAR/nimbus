@@ -95,7 +95,7 @@ public:
    * @param variable name, not case-sensitive
    * @returns VDBVar class variable
    */
-  VDBVar get_var(const std::string var) const ;
+  VDBVar *get_var(const std::string var) const ;
 
 private:
   bool _valid;
