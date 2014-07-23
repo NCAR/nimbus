@@ -80,7 +80,7 @@ private:
 class VDBFile
 {
 public:
-  VDBFile() : _valid(false) { }
+  VDBFile(const std::string file) : _valid(false) { open(file); }
 
   /**
    * @param file[] is filename to open containing vardb xml. Vardb references a schema, 

@@ -2,8 +2,8 @@
 
 int main()
 {
-  VDBFile vdb;
-  vdb.open("VDB.xml"); 
+  VDBFile vdb("VDB.xml");
+
   VDBVar *zero = vdb.get_var("ZERO");
   if(zero->get_attribute("UnIts")=="none")
   {cout<<"Looks good!\n";
