@@ -50,6 +50,12 @@ public:
 
   /**
    * @param attr_name: name of attribute requested
+   * @returns the requested attribute value
+   */
+  std::string get_attribute(int index) const;
+
+  /**
+   * @param attr_name: name of attribute requested
    * @param value is what to set as the new attribute value
    * see VDBFile::get_var(var)
    */

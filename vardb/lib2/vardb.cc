@@ -15,6 +15,24 @@
  *  */
 
 //---------------------------------------------------------------------------------------
+//Returns text associated with attribute, given by index
+//input: index- attribute's position in vdb variable
+//output-attribute value
+std::string VDBVar::get_attribute(int index)const
+{
+  DOMNodeList* x=_variable->getChildNodes();
+  DOMNode* holder=x->item(1);
+  for (int i=0;i<index;i++)
+  {
+    holder=holder->getNextSibling();
+    holder=holder->getNextSibling();
+  } 
+  DOMNodeList* y=holder->getChildNodes();
+  DOMNode* z=y->item(0);
+  std::string answer=XMLString::transcode(z->getNodeValue());
+  return answer;
+};
+//---------------------------------------------------------------------------------------
 //Returns number of attributes associated sellected variable
 int VDBVar::num_atts()
 {
