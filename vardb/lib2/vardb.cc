@@ -15,6 +15,13 @@
  *  */
 
 //---------------------------------------------------------------------------------------
+//Returns number of attributes associated sellected variable
+int VDBVar::num_atts()
+{
+  DOMNodeList* x=_variable->getChildNodes();
+  return x->getLength()/2;
+};
+//---------------------------------------------------------------------------------------
 //Returns text associated with a variable's attribute
 //input: attr_name: attribute name, such as units, name, or longname
 //output: Text associated with variable's attribute
@@ -61,7 +68,7 @@ void VDBVar::set_attribute(const std::string attr_name, const std::string value)
     holder=holder->getNextSibling();
   }
 };
-
+//=======================================================================================
 //---------------------------------------------------------------------------------------
 //Saves VDB changes, releases xerces memory
 void VDBFile::close()
@@ -155,10 +162,45 @@ VDBVar *VDBFile::get_var(const string var) const
       //Node has been found. A pointer is now created pointing to a VDBVar class 
       //with _variable initialized as a pointer to the node
       VDBVar *v = new VDBVar(holder);
-
       return v;
     }
     holder=holder->getNextSibling();
     holder=holder->getNextSibling();
   }
+};
+//---------------------------------------------------------------------------------------
+//Returns variable at input index in vardb starting at zero
+VDBVar *VDBFile::get_var(int index)
+{
+  //Get VariableCatalog node as varCat, x is intermediate domNodeList variable
+  XMLCh *tag = XMLString::transcode("variableCatalog");
+  DOMNodeList* x=_docRootNode->getElementsByTagName(tag);
+  DOMNode* varCat=x->item(0);
+  
+  //search variables for name that matches input var
+
+  DOMNodeList* elems=varCat->getChildNodes();
+
+  DOMNode* holder=varCat->getFirstChild();
+  holder=holder->getNextSibling();
+
+  DOMNamedNodeMap* atts;
+  DOMNode* name;
+  for(int i=0;i<index;i++)
+  {
+    holder=holder->getNextSibling();
+    holder=holder->getNextSibling();
+  }
+  VDBVar *v = new VDBVar(holder);
+  return v;
+};
+//---------------------------------------------------------------------------------------
+//Returns number of variables in vardb
+int VDBFile::num_vars()
+{
+  XMLCh *tag = XMLString::transcode("variableCatalog");
+  DOMNodeList* x=_docRootNode->getElementsByTagName(tag);
+  DOMNode* varCat=x->item(0);
+  DOMNodeList* elems=varCat->getChildNodes();
+  return elems->getLength()/2;
 };

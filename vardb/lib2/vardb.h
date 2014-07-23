@@ -55,6 +55,11 @@ public:
    */
   void set_attribute(const std::string attr_name, const std::string value);
 
+  /**
+ *@returns # of attributes
+ */
+  int num_atts();
+
 private:
   DOMNode* _variable;
 };
@@ -96,6 +101,18 @@ public:
    * @returns VDBVar class pointer
    */
   VDBVar *get_var(const std::string var) const ;
+
+  /**
+   * @param variable position in varDB
+   * @returns VDBVar class pointer
+ */
+  VDBVar * get_var(int index);
+
+
+  /**
+ *@returns # of attributes
+ */
+  int num_vars();
 
 private:
   bool _valid;
