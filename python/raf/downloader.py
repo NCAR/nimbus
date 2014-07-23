@@ -1,5 +1,6 @@
 "Utility class to download images and kml files."
 
+import os
 import iss.time_tools as tt
 import raf.config as config
 from raf.datepattern import DatePattern

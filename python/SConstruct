@@ -9,7 +9,10 @@
 env = Environment (tools = ['default', 'doxygen', 'pylint', 'pytest'])
 
 all_python_files = env.FindPythonFiles('.')
+raf_python_files = env.FindPythonFiles('raf')
+iss_python_files = env.FindPythonFiles('iss')
 env.PythonLint('check', all_python_files)
+env.PythonLint('rafcheck', raf_python_files)
 
 # py.test -v -k -test_main_operations  iss/tests/.
 # py.test -v -s iss/tests/. --quick=1 --dlog
@@ -17,3 +20,7 @@ env.PythonLint('check', all_python_files)
 
 test = env.Command("test", all_python_files, 'py.test ${SOURCES}')
 env.Alias("test", test)
+
+raftest = env.Command("raftest", raf_python_files, 'py.test ${SOURCES}')
+env.Alias("raftest", raftest)
+

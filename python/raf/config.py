@@ -1,6 +1,6 @@
 "Global configuration dictionary for RAF python utilities."
 
-
+import os
 import logging
 
 logger = logging.getLogger(__name__)
@@ -18,9 +18,9 @@ class Config(object):
         self.plane = None
         self.tail = None
         # ftp defaults
-        self.ftp_site         = 'catalog.eol.ucar.edu'
-        self.ftp_login        = 'anonymous'
-        self.ftp_passwd       = ''
+        self.ftp_site = 'catalog.eol.ucar.edu'
+        self.ftp_login = 'anonymous'
+        self.ftp_passwd = ''
 
     def parseArgs(self, argv):
         "Consume arguments which modify global configuration."
@@ -46,8 +46,7 @@ class Config(object):
             return
         self.aircraft = os.environ.get('AIRCRAFT')
         if not self.aircraft:
-            raise Exception("AIRCRAFT environment variable not defined - exit!")
-            sys.exit()
+            raise Exception("AIRCRAFT environment variable not defined!")
         self.plane, self.tail = self.aircraft.split("_", 1)
 
     def getPlane(self):
