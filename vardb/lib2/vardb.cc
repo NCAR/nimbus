@@ -129,7 +129,7 @@ void VDBFile::open(const std::string file)
     cout << "Error during initialization! :\n"
          << message << "\n";
     XMLString::release(&message);
-    _valid=false;
+    return;
   };
 
   //Create parser
@@ -144,11 +144,12 @@ void VDBFile::open(const std::string file)
 
   if (parser-> getErrorCount()>0)
   {
-    _valid=false;
     std::cerr << "ERROR 1 READING XML\n";
+    return;
   }
   _doc = parser->getDocument();
   _docRootNode = _doc->getDocumentElement();
+  _valid = true;
 };
 
 //---------------------------------------------------------------------------------------
