@@ -7,12 +7,20 @@ logger = logging.getLogger(__name__)
 
 import raf.rsync as rsync
 import raf.ldm as ldm
+import iss.eol_ftp as eol_ftp
 
 class Config(object):
 
     def __init__(self):
         self.loglevel = logging.INFO
         self.dryrun = False
+        self.aircraft = None
+        self.plane = None
+        self.tail = None
+        # ftp defaults
+        self.ftp_site         = 'catalog.eol.ucar.edu'
+        self.ftp_login        = 'anonymous'
+        self.ftp_passwd       = ''
 
     def parseArgs(self, argv):
         "Consume arguments which modify global configuration."
@@ -32,6 +40,19 @@ class Config(object):
     def setupLogging(self):
         logging.basicConfig(level=self.loglevel)
 
+    def setupAircraft(self):
+        # Get information from AIRCRAFT environment variable
+        if self.aircraft:
+            return
+        self.aircraft = os.environ.get('AIRCRAFT')
+        if not self.aircraft:
+            raise Exception("AIRCRAFT environment variable not defined - exit!")
+            sys.exit()
+        self.plane, self.tail = self.aircraft.split("_", 1)
+
+    def getPlane(self):
+        self.setupAircraft()
+        return self.plane
 
     # Try a little dependency inversion and create the service objects from
     # Config factory methods, so the Config has a chance to modify the
@@ -47,3 +68,8 @@ class Config(object):
         target.setDryrun(self.dryrun)
         return target
 
+    def FTP(self, *args):
+        "Use iss.eol_ftp.FtpDataServer pointed at ftp_site."
+        target = eol_ftp.FtpDataServer(host=self.ftp_site, *args)
+        target.setCredentials(self.ftp_login, self.ftp_passwd)
+        return target
