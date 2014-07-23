@@ -153,7 +153,7 @@ def saveChanges(self,headers,num):
 
         #Get new information from text boxes
         signalist=[[]]
-        signalist[0]=[headers[0],signalSet(self,headers[0])]
+        signalist[0]=['name',signalSet(self,'name')]
         while i<len(headers):
 
            if signalSet(self,headers[i]):
