@@ -28,7 +28,7 @@ class GUI(QtGui.QWidget):
         self.left = QtGui.QFrame(self)
         self.upright = QtGui.QFrame(self)
         self.downright = QtGui.QFrame(self)
-        self=setup(hbox,self)
+        self=setup(hbox,self,"VDB.xml")
         self.searchText.textEdited.connect(lambda: generateButtons(self,str(self.searchText.text()),0))
         self.setLayout(hbox)
 

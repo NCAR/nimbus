@@ -5,11 +5,12 @@
 #    Filtering is search term
 from PyQt4 import QtGui, QtCore
 from getInfo import getinfo
+from setup import fileName
 def generateButtons(self,filtering,num):
            global rightInfoHub
            #removes buttons from left
            self.left.scrollAreaWidgetContents.clear()
-           entries=getinfo()
+           entries=getinfo(fileName())
            i=0
            while i<len(entries): 
 

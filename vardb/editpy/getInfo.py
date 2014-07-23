@@ -1,9 +1,8 @@
 #Julian Quick
 #this function returns a list of each signal's properties
 from lxml import etree
-from setup import fileName
-def getRef(name):
-   doc=etree.parse(fileName())
+def getRef(name,file):
+   doc=etree.parse(file)
    stdnames=[]
    for elm in doc.getiterator(name):
       i=0
@@ -11,8 +10,8 @@ def getRef(name):
          stdnames.append(elm[i].attrib['name'])
          i+=1
    return stdnames
-def getCategories():
-   doc=etree.parse(fileName())
+def getCategories(file):
+   doc=etree.parse(file)
    stdnames=[]
    for elm in doc.getiterator('Categories'):
       i=0
@@ -20,8 +19,8 @@ def getCategories():
          stdnames.append(elm[i].attrib['name'])
          i+=1
    return stdnames
-def getStandardNames():
-   doc=etree.parse(fileName())
+def getStandardNames(file):
+   doc=etree.parse(file)
    stdnames=[]
    for elm in doc.getiterator('standardNames'):
       i=0
@@ -29,8 +28,8 @@ def getStandardNames():
          stdnames.append(elm[i].attrib['name'])
          i+=1
    return stdnames
-def getinfo():
-   doc=etree.parse(fileName())
+def getinfo(file):
+   doc=etree.parse(file)
    infoList=[[[]]for elm in doc.getiterator('variable')]
    j=0
    for elm in doc.getiterator('variable'):
@@ -44,8 +43,8 @@ def getinfo():
       j+=1
    return infoList
 
-def getDictionary():
-   doc=etree.parse(fileName())
+def getDictionary(file):
+   doc=etree.parse(file)
    dictionary=[]
    dictionary.append('name')
    for elm in doc.getiterator('Dictionary'):

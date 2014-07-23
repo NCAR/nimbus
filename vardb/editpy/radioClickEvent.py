@@ -5,6 +5,7 @@ from delete import delete
 from PyQt4 import QtGui, QtCore
 from functools import partial 
 from comboBoxPopUp import ComboBox
+from setup import fileName
 
 #Labes is used to store info for exec commands in textChange function
 #bools determines if text has been changed
@@ -25,7 +26,6 @@ def boolsTrue():
 
 #removes leading descriptior from static lable, appends to signal list
 def signalSet(self,name):
-   from getInfo import getStandardNames
    global rightInfoHub
    if name not in self.booleanList and name not in (x[0] for x in self.catelogList):
       if str(rightInfoHub['textBoxes'][name].text())=='':
@@ -61,9 +61,9 @@ def labler(lablename,signalname,self,num):
         rightInfoHub['textBoxes'][lablename].setCurrentIndex(2)
    if lablename in (x[0] for x in self.catelogList) and signalname!='':
       if lablename==self.catelogList[0][0]:
-         stdList=getInfo.getStandardNames()
+         stdList=getInfo.getStandardNames(fileName())
       else:
-         stdList=getInfo.getCategories()
+         stdList=getInfo.getCategories(fileName())
 
       rightInfoHub['textBoxes'][lablename].setCurrentIndex(stdList.index(signalname))
       
@@ -82,7 +82,7 @@ def labler(lablename,signalname,self,num):
 #------------------------------------------------
 def clearRightInfoHub():
    global rightInfoHub
-   dictionary=getInfo.getDictionary()
+   dictionary=getInfo.getDictionary(fileName())
    i=0
    while i<len(dictionary):
       try: 
@@ -124,9 +124,9 @@ def makeRightInfoHub(self,headers):
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
 
         if headers[i]==self.catelogList[0][0]:
-           stdList=getInfo.getStandardNames()
+           stdList=getInfo.getStandardNames(fileName())
         else:
-           stdList=getInfo.getCategories()
+           stdList=getInfo.getCategories(fileName())
 
         for item in stdList:
           rightInfoHub['textBoxes'][headers[i]].addItem(item)
@@ -153,7 +153,6 @@ def saveChanges(self,headers,num):
 
         #Get new information from text boxes
         signalist=[[]]
-        print 'headers are ',headers
         signalist[0]=[headers[0],signalSet(self,headers[0])]
         while i<len(headers):
 
@@ -177,8 +176,8 @@ def lookingAt(self):
    global reftex
    global headers
 
-   entries=getInfo.getinfo()
-   dictionary=getInfo.getDictionary()
+   entries=getInfo.getinfo(fileName())
+   dictionary=getInfo.getDictionary(fileName())
 
    #Stiffle error message when no signal is selected
    try:text= str(self.left.scrollAreaWidgetContents.selectedItems()[0].text())
@@ -236,7 +235,7 @@ def lookingAt(self):
 
 
    #Connect buttons
-   self.deleteButton.clicked.connect(lambda: delete(str(rightInfoHub['headers']['name'].text()).split(': ')[1],self,num)) 
+   self.deleteButton.clicked.connect(lambda: delete(str(rightInfoHub['textBoxes']['name'].text()),self,num)) 
    self.saveButton.clicked.connect(lambda: saveChanges(self,headers,num))
 
    clearRightInfoHub()

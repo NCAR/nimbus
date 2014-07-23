@@ -1,5 +1,6 @@
 
 from getInfo import getDictionary
+from setup import fileName
 from radioClickEvent import *
 def newSig(self):
 
@@ -11,10 +12,10 @@ def newSig(self):
         self.left.scrollAreaWidgetContents.setItemSelected(item,False)
 
     clearRightInfoHub()
-    makeRightInfoHub(self,getDictionary())
+    makeRightInfoHub(self,getDictionary(fileName()))
 
     i=0
-    for entry in getDictionary():
+    for entry in getDictionary(fileName()):
         labler(entry,'',self,i) 
         i+=1
 

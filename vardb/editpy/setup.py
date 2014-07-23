@@ -1,13 +1,23 @@
 #Julian QUick
 #Sets up GUI Window, scroll area, and data lables
+import sys
 
+fileLocation='NULL'
 def fileName():
-      return 'VDB.xml'
-def setup(hbox,self):
+      return fileLocation
 
+def setup(hbox,self,file):
+
+      #Establish filename
+      global fileLocation
+      if len(sys.argv)==1:
+        print "please enter filename in command line"
+        quit()
+      fileLocation=str(sys.argv[1])
+
+      #some definitions
       from radioClickEvent import lookingAt
       from PyQt4 import QtGui, QtCore
-
       self.booleanList=['reference','is_analog']
       self.catelogList=[['standard_name','standardNames'],['category','Categories']]
 
