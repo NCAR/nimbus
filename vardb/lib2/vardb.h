@@ -91,9 +91,9 @@ public:
   void save();
 
   /**
-   * gets variable node from xml tree
+   * Gets variable node from xml tree.  Caller is responsible for freeing memory.
    * @param variable name, not case-sensitive
-   * @returns VDBVar class variable
+   * @returns VDBVar class pointer
    */
   VDBVar *get_var(const std::string var) const ;
 
