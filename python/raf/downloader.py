@@ -51,32 +51,3 @@ class Downloader(object):
                      tt.formatTime(self.begin), tt.formatTime(self.end)))
         return listing
 
-
-
-def test_downloader():
-    logging.basicConfig(level=logging.DEBUG)
-    dld = Downloader()
-    pattern = 'gis.CDPHE_Monitor.%Y%m%d%H*.ozone_obs.kml'
-    dld.setFiles('C130_cdphe_ozone', pattern)
-    dld.setFtpDirectory('/pub/incoming/OSM/C130')
-    assert dld.file_pattern == pattern
-    assert dld.file_type == 'C130_cdphe_ozone'
-    assert dld.ftp_dir == '/pub/incoming/OSM/C130'
-    assert dld.ftp.host == 'catalog.eol.ucar.edu'
-    begin = tt.parseTime('20120101')
-    end = tt.parseTime('20121231235959')
-    dld.setTimeRange(begin, end)
-    assert dld.begin == begin
-    assert dld.end == end
-    listing = dld.remoteListing()
-    assert not listing
-    end = tt.parseTime('now')
-    begin = end - 4*3600
-    dld.setTimeRange(begin, end)
-    listing = dld.remoteListing()
-    assert listing
-    assert listing[-1].path.endswith('ozone_obs.kml')
-    for de in listing:
-        print(de.path)
-
-
