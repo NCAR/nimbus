@@ -18,7 +18,7 @@ env.PythonLint('rafcheck', raf_python_files)
 # py.test -v -s iss/tests/. --quick=1 --dlog
 
 
-test = env.Command("test", all_python_files, 'py.test ${SOURCES}')
+test = env.Command("test", all_python_files, 'py.test --quick=1 ${SOURCES}')
 env.Alias("test", test)
 
 raftest = env.Command("raftest", raf_python_files, 'py.test ${SOURCES}')
