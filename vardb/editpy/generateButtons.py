@@ -15,7 +15,7 @@ def generateButtons(self,filtering,num):
            while i<len(entries): 
 
               #displayed buttons must start with filter phrase
-              if str(entries[i][1]).startswith(filtering) or filtering=='':
+              if filtering.upper() in str(entries[i][1]).upper() or filtering=='':
                     self.left.scrollAreaWidgetContents.addItem(entries[i][1])
                     if i==num:
                       self.left.scrollAreaWidgetContents.setItemSelected(self.left.scrollAreaWidgetContents.item(num),True)

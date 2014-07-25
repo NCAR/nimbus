@@ -15,31 +15,57 @@ from radioClickEvent import lookingAt
 from setup import fileName
 from lxml import etree
 def addsignal(signals,self,num,instructions):
-   print 'changing VDB'
    parser = etree.XMLParser(remove_blank_text=True)
    doc=etree.parse(fileName(),parser)
    root=doc.getroot()
-
 #+++++++++++
    if instructions['action']=='edit':
    #Expecting signals to be of form [ [attribute,new valie] * n ]
    #Edits existing attributes
-  
+
         added=False
+        newAtt=[]
+        j=0
         for elm in root.iter('variable'):
-           if elm.attrib['name'] == signals[0][1]:
+           if elm.attrib['name'] == signals[0][1].upper():
+
+               #variable is already in vardb
                added=True
-               i=1
-               while i<len(signals):
-                  if elm[i-1].tag==signals[i][0] and elm[i-1].text != signals[i][1]:
-                     elm[i-1].text=signals[i][1]
-                     print 'changed ', elm.attrib['name'],elm[i-1].tag,' to ',elm[i-1].text
+        
+               #edit exiting entries
+               i=0
+               while i<len(elm):
+                  for sig in signals:
+                     if elm[i].tag == sig[0] and elm[i].text != sig[1]:
+                        elm[i].text=sig[1]
+                        print 'changed ', elm.attrib['name'],": ",elm[i].tag,' to ',elm[i].text
                   i+=1
+
+               #Check for new entries
+               for sig in signals:
+                  inThere=False
+                  wasRemoved=False
+                  i=0
+                  while i<len(elm):
+                     if elm[i].tag==sig[0]:
+                        inThere=True
+                     i+=1
+                  if not inThere and sig[0] != 'name':
+                     newAtt.append(etree.SubElement(elm,sig[0]))
+                     newAtt[j].text=sig[1]
+                     elm.append(newAtt[j])
+                     j+=1
+                     print 'Added ',sig[0],' to ',elm.attrib['name'],' set as ',sig[1]
+
+                #check for blank entries, remove them
+               for att in elm:
+                   if str(att.text)=='':
+                      print 'removed ',att.tag,' from ',elm.attrib['name']
+                      elm=elm.remove(att)
         if added==False:
             instructions['action']='new signal'
             print signals[0][1],' not found in VDB. Creating new entry.'
 #++++++++++++
-
    if instructions['action']=='delete':
       for elm in root.iter('variable'):
           if elm.attrib['name']==signals:
@@ -53,21 +79,20 @@ def addsignal(signals,self,num,instructions):
 
        #Check for name input
        if signals[0][0]!='name' : 
-           print 'exit code 33 in addsignal.py: no name was input'
+           print 'exit code 1 in addsignal.py: no name was input'
            quit()
 
        #Insert element
        elms=[]
        for elm in root.iter('variable'):
            elms.append(str(elm.attrib['name']))
-       elms.append(signals[0][1])
+       elms.append(str(signals[0][1].upper()))
        elms.sort()
           
        added=False
        i=0
        for elm in root.iter('variable'):
           if str(elm.attrib['name'])!=elms[i] and added==False:
-             print 'adding...'
              new = etree.Element('variable',name=signals[0][1])
              l=1
              while l<len(signals):
@@ -76,31 +101,12 @@ def addsignal(signals,self,num,instructions):
                 l+=1
              elm.addprevious(new)
              added=True
+             num=i
              print 'added ',signals[0][1]
           i+=1
-
-
-   if instructions['action']=='new attribute':
-   #Expecting signals to be [name,attribute name,attribute text]
-
-      for elm in root.iter('variable'):
-         if str(elm.attrib['name'])==signals[0]:
-            subtext=etree.SubElement(elm,signals[1])
-            subtext.text=signals[2]
-            print 'added ',signals
-
-   if instructions['action']=='remove attribute':
-   #Expecting signals to be [varible name, attribute]
-
-      for elm in root.iter('variable'): 
-          if elm.attrib['name']==signals[0]:
-               for att in elm:
-                   if att.tag==signals[1]:
-                      print 'removed ',att.tag, ' from ',elm.attrib['name']
-                      elm=elm.remove(att)
-
+#=============
    doc.write('VDB.xml',pretty_print=True)
-   generateButtons(self,self.searchText.text(),num)
+   generateButtons(self,str(self.searchText.text()),num)
    return
 
 

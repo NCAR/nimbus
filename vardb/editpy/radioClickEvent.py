@@ -15,7 +15,6 @@ headers=[]
 #global previousnum
 bools=False
 rightInfoHub={'headers':{},'textBoxes':{}}
-
 #------------------------------------------------------------------------------
 #This function is used by newSignal.py to set the global variable bools true, indicating 
 #to save edits if the user switches from the addsignal screen
@@ -23,7 +22,6 @@ def boolsTrue():
    global bools
    bools=True
 #-----------------------------------------------------------------------------
-
 #removes leading descriptior from static lable, appends to signal list
 def signalSet(self,name):
    global rightInfoHub
@@ -42,9 +40,12 @@ def signalSet(self,name):
 def textChange():
    global bools
    bools=True
-   
-   #check standard names
-      
+   if str(rightInfoHub['textBoxes']['is_analog'].currentText())=='false':
+      rightInfoHub['textBoxes']['voltageRange'].setDisabled(True)
+      rightInfoHub['textBoxes']['defaultSampleRate'].setDisabled(True)
+   else:
+      rightInfoHub['textBoxes']['voltageRange'].setDisabled(False)
+      rightInfoHub['textBoxes']['defaultSampleRate'].setDisabled(False)
 #-----------------------------------------------------------------------------
 #Creates upright hand side lables and text boxes
 def labler(lablename,signalname,self,num):
@@ -56,9 +57,9 @@ def labler(lablename,signalname,self,num):
    #boolean logic
    if lablename in self.booleanList:
       if signalname=='true':
-        rightInfoHub['textBoxes'][lablename].setCurrentIndex(1)
+        rightInfoHub['textBoxes'][lablename].setCurrentIndex(0)
       elif signalname=='false':
-        rightInfoHub['textBoxes'][lablename].setCurrentIndex(2)
+        rightInfoHub['textBoxes'][lablename].setCurrentIndex(1)
    if lablename in (x[0] for x in self.catelogList) and signalname!='':
       if lablename==self.catelogList[0][0]:
          stdList=getInfo.getStandardNames(fileName())
@@ -75,7 +76,6 @@ def labler(lablename,signalname,self,num):
      #Connvects changes in text box to bools logic
      rightInfoHub['textBoxes'][lablename].textEdited.connect(lambda: textChange())
      textChange()
-
    #global variable bools set False to indicate no changes have been made yet
    bools=False
 
@@ -101,8 +101,6 @@ def makeRightInfoHub(self,headers):
    def onActivated(self,sig):
     global rightInfoHub
     global bools
-    rightInfoHub['headers'][sig].setText(sig+': '+rightInfoHub['textBoxes'][sig].currentText())
-    rightInfoHub['headers'][sig].adjustSize() 
     bools=True
 
    i=0
@@ -115,10 +113,11 @@ def makeRightInfoHub(self,headers):
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
 
         #warning: preserve assignment order
-        rightInfoHub['textBoxes'][headers[i]].addItem("")
         rightInfoHub['textBoxes'][headers[i]].addItem("true")
         rightInfoHub['textBoxes'][headers[i]].addItem("false")
+        rightInfoHub['textBoxes'][headers[i]].setCurrentIndex(1)
         rightInfoHub['textBoxes'][headers[i]].activated.connect(partial(onActivated,self,headers[i]))
+        rightInfoHub['textBoxes'][headers[i]].activated.connect(lambda:textChange())
      #Check if variable is in catalog list
      elif headers[i] in (entry[0] for entry in self.catelogList):
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
@@ -136,21 +135,22 @@ def makeRightInfoHub(self,headers):
      self.upright.verticalLayoutScroll.addWidget(rightInfoHub['textBoxes'][headers[i]],i,2)
      rightInfoHub['textBoxes'][headers[i]].setFixedWidth(500)
      i+=1
-
 #-------------------------------------------
 #This function saves edits which have been made
 #input:
 #    headers is a list of attributes editted
 #    num is the variable's alphanumeric position in vardb
 def saveChanges(self,headers,num):
+   global bools
+   global rightInfoHub
+   if bools==True:
       from addSignal import addsignal
-      global rightInfoHub
-      global bools
       bools=False
       reply=QtGui.QMessageBox.question(self, 'Save Changes?', 'Save these changes to '+rightInfoHub['textBoxes']['name'].text()+'?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
       if reply==QtGui.QMessageBox.Yes:
         i=1
 
+        headers=getInfo.getDictionary(fileName())
         #Get new information from text boxes
         signalist=[[]]
         signalist[0]=['name',signalSet(self,'name')]
@@ -163,8 +163,7 @@ def saveChanges(self,headers,num):
                 
              #Uses new information to replace previous information.
              #If entry with desired name exists, new entry is created
-        addsignal(signalist,self,num,{'action':'edit'})
-
+        addsignal(signalist,self,-1,{'action':'edit'})
 #==============================================================================
 #==============================================================================
 #This function displays editable information regarding the current selection
@@ -197,14 +196,15 @@ def lookingAt(self):
       saveChanges(self,headers,num)
       return
 
-   #If num is sent as a flag (-1)_, reset it to 0
+   #If num is set as flag -1, reset it to 0
    #This indicates not to save changes, so bool is set to False
    if num==-1:
       bools=False
       num=0
 
    #Get attributes
-   headers=entries[num][0]
+   #headers=entries[num][0]
+   headers=getInfo.getDictionary(fileName())
 
    #CLEAR RIGHT SIDE INFORMATION HUB
    clearRightInfoHub()
@@ -216,13 +216,18 @@ def lookingAt(self):
    i=1
    signals=[]
    while i<len(entries[num][0])+1:
+     
      signals.append(entries[num][i])
      i+=1
    i=0
 
    #write attribute info to screen
-   while i<len(signals):
-      labler(entries[num][0][i],signals[i],self,i)
+   while i<len(entries[num][0]):
+      if entries[num][0][i] in headers:
+        labler(entries[num][0][i],signals[i],self,i)
+        headers.remove(entries[num][0][i])
+      else:
+        labler(dictionary[0],'',self,i)
       i+=1
 
    #Disconnect buttons
