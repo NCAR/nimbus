@@ -173,6 +173,7 @@
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
+      <minLimit>5</minLimit>
     </variable>
     <variable name="A2DCR">
       <units>count</units>
@@ -184,7 +185,6 @@
     </variable>
     <variable name="A2DP">
       <units>count</units>
-      <long_name>2D-P Accumulation, Reconstruction (per cell)</long_name>
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
@@ -240,7 +240,7 @@
     </variable>
     <variable name="ADIF">
       <units>hPa</units>
-      <long_name>Vertical Differential Pressure, Boom</long_name>
+      <long_name/>
       <is_analog>false</is_analog>
       <category>Uncorr'd Raw</category>
       <standard_name>None</standard_name>
@@ -250,7 +250,7 @@
       <units>hPa</units>
       <long_name>Vertical Differential Pressure, Radome</long_name>
       <is_analog>true</is_analog>
-      <voltageRange>-10,10</voltageRange>
+      <voltageRange/>
       <defaultSampleRate>100</defaultSampleRate>
       <category>Uncorr'd Raw</category>
       <standard_name>None</standard_name>
@@ -2270,12 +2270,6 @@
       <long_name>FSSP-100 Fast Resets</long_name>
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="FS">
-      <is_analog>false</is_analog>
-      <category>None</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
@@ -5813,12 +5807,6 @@
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
-    <variable name="VBCCVB">
-      <is_analog>false</is_analog>
-      <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
     <variable name="VCRH">
       <units>deg_C</units>
       <long_name>Dew/Frost Point Temperature, Cryogenic</long_name>
@@ -5976,12 +5964,6 @@
       <long_name>IRS-Computed Aircraft Vertical Velocity</long_name>
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="VXZ">
-      <is_analog>false</is_analog>
-      <category>None</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
@@ -6182,12 +6164,6 @@
       <voltageRange>0,10</voltageRange>
       <defaultSampleRate>100</defaultSampleRate>
       <category>Housekeeping</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="XD">
-      <is_analog>false</is_analog>
-      <category>None</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
@@ -6664,21 +6640,9 @@
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
-    <variable name="XZ">
-      <is_analog>false</is_analog>
-      <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
     <variable name="YEAR">
       <units>year</units>
       <long_name>Raw Tape Date Component</long_name>
-      <is_analog>false</is_analog>
-      <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="ZASDX">
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>None</standard_name>
@@ -6689,42 +6653,6 @@
       <long_name>Constant value of 0.</long_name>
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="ZXASD">
-      <is_analog>false</is_analog>
-      <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="ZXCS">
-      <is_analog>false</is_analog>
-      <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="ZXCVBN">
-      <is_analog>false</is_analog>
-      <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="ZXCVXC">
-      <is_analog>false</is_analog>
-      <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="ZZZ">
-      <is_analog>false</is_analog>
-      <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="ZZZZZ">
-      <is_analog>false</is_analog>
-      <category>None</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>

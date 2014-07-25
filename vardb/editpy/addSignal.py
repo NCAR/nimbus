@@ -22,6 +22,7 @@ def addsignal(signals,self,num,instructions):
    if instructions['action']=='edit':
    #Expecting signals to be of form [ [attribute,new valie] * n ]
    #Edits existing attributes
+        print signals
 
         added=False
         newAtt=[]
@@ -50,7 +51,7 @@ def addsignal(signals,self,num,instructions):
                      if elm[i].tag==sig[0]:
                         inThere=True
                      i+=1
-                  if not inThere and sig[0] != 'name':
+                  if not inThere and sig[0] != 'name' and sig[1]!='':
                      newAtt.append(etree.SubElement(elm,sig[0]))
                      newAtt[j].text=sig[1]
                      elm.append(newAtt[j])
@@ -59,7 +60,7 @@ def addsignal(signals,self,num,instructions):
 
                 #check for blank entries, remove them
                for att in elm:
-                   if str(att.text)=='':
+                   if str(att.text)=='' and str(att.tag) not in [s[0] for s in self.catelogList]:
                       print 'removed ',att.tag,' from ',elm.attrib['name']
                       elm=elm.remove(att)
         if added==False:

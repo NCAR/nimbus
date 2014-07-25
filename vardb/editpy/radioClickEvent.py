@@ -26,8 +26,6 @@ def boolsTrue():
 def signalSet(self,name):
    global rightInfoHub
    if name not in self.booleanList and name not in (x[0] for x in self.catelogList):
-      if str(rightInfoHub['textBoxes'][name].text())=='':
-          return False
       s=rightInfoHub['textBoxes'][name].text()
       s=rightInfoHub['textBoxes'][name].text()
    else:
@@ -132,6 +130,7 @@ def makeRightInfoHub(self,headers):
         rightInfoHub['textBoxes'][headers[i]].currentIndexChanged.connect(lambda:textChange())
      else:
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QLineEdit(self.upright)
+        rightInfoHub['textBoxes'][headers[i]].textChanged.connect(lambda:textChange())
      self.upright.verticalLayoutScroll.addWidget(rightInfoHub['textBoxes'][headers[i]],i,2)
      rightInfoHub['textBoxes'][headers[i]].setFixedWidth(500)
      i+=1
@@ -156,9 +155,8 @@ def saveChanges(self,headers,num):
         signalist[0]=['name',signalSet(self,'name')]
         while i<len(headers):
 
-           if signalSet(self,headers[i]):
              #signalist is of the form [ [attribute name, attribute text] * N]
-                signalist.append([headers[i],signalSet(self,headers[i])])
+           signalist.append([headers[i],signalSet(self,headers[i])])
            i+=1
                 
              #Uses new information to replace previous information.
