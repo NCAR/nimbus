@@ -49,6 +49,11 @@ public:
   std::string get_attribute(const std::string attr_name) const;
 
   /**
+   * @returns variable name
+   */
+  std::string name();
+
+  /**
    * @param attr_name: name of attribute requested
    * @returns the requested attribute value
    */

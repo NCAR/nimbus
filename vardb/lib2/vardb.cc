@@ -15,6 +15,14 @@
  *  */
 
 //---------------------------------------------------------------------------------------
+//returns variable name
+std::string VDBVar::name()
+{
+  DOMNamedNodeMap* atts=_variable->getAttributes();
+  DOMNode*  name= atts->getNamedItem(XMLString::transcode("name"));
+  return XMLString::transcode(name->getNodeValue());
+};
+//---------------------------------------------------------------------------------------
 //Returns text associated with attribute, given by index
 //input: index- attribute's position in vdb variable
 //output-attribute value
@@ -48,7 +56,7 @@ std::string VDBVar::get_attribute(const std::string attr_name) const
   DOMNodeList* x=_variable->getChildNodes();
   DOMNode* holder=x->item(1);
 
-  for (int i=1; i <= x->getLength(); i++)
+  for (int i=0; i < int(x->getLength())/2; i++)
   {
     if (boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
     {
@@ -60,8 +68,7 @@ std::string VDBVar::get_attribute(const std::string attr_name) const
     holder=holder->getNextSibling();
     holder=holder->getNextSibling();
   }
-
-  return NULL;
+  return "None";
 };
 //---------------------------------------------------------------------------------------
 //Sets a variable's information for specified attribute
@@ -186,6 +193,7 @@ VDBVar *VDBFile::get_var(const string var) const
     holder=holder->getNextSibling();
     holder=holder->getNextSibling();
   }
+  cout<<"variable "<<var<<" not found\n";
 };
 //---------------------------------------------------------------------------------------
 //Returns variable at input index in vardb starting at zero
@@ -205,6 +213,10 @@ VDBVar *VDBFile::get_var(int index)
 
   DOMNamedNodeMap* atts;
   DOMNode* name;
+  if (index>elems->getLength()/2-1)
+  {
+    cout<<"variable "<<index<<" not found\n";
+  }
   for(int i=0;i<index;i++)
   {
     holder=holder->getNextSibling();
