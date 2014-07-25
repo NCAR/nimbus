@@ -64,7 +64,7 @@ def addsignal(signals,self,num,instructions):
                       elm=elm.remove(att)
         if added==False:
             instructions['action']='new signal'
-            print signals[0][1],' not found in VDB. Creating new entry.'
+            print str(signals[0][1]).upper(),' not found in VDB. Creating new entry.'
 #++++++++++++
    if instructions['action']=='delete':
       for elm in root.iter('variable'):
@@ -86,14 +86,14 @@ def addsignal(signals,self,num,instructions):
        elms=[]
        for elm in root.iter('variable'):
            elms.append(str(elm.attrib['name']))
-       elms.append(str(signals[0][1].upper()))
+       elms.append(str(signals[0][1]).upper())
        elms.sort()
           
        added=False
        i=0
        for elm in root.iter('variable'):
           if str(elm.attrib['name'])!=elms[i] and added==False:
-             new = etree.Element('variable',name=signals[0][1])
+             new = etree.Element('variable',name=signals[0][1].upper())
              l=1
              while l<len(signals):
                 subtext = etree.SubElement(new, signals[l][0])
@@ -104,6 +104,18 @@ def addsignal(signals,self,num,instructions):
              num=i
              print 'added ',signals[0][1]
           i+=1
+       if added==False:
+          new = etree.Element('variable',name=signals[0][1].upper())
+          l=1
+          while l<len(signals):
+             subtext = etree.SubElement(new, signals[l][0])
+             subtext.text = signals[l][1]
+             l+=1
+          elm.addnext(new)
+          added=True
+          num=i
+          print 'appended ',signals[0][1]
+           
 #=============
    doc.write('VDB.xml',pretty_print=True)
    generateButtons(self,str(self.searchText.text()),num)

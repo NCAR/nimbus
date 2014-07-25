@@ -54,23 +54,11 @@
     <standardName name="mole_fraction_of_ozone_in_air"/>
   </standardNames>
   <variableCatalog>
-    <variable name="123">
-      <is_analog>false</is_analog>
-      <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
     <variable name="2D-C">
       <units>none</units>
       <long_name>2-D Cloud Probe Asynchronous Data ID</long_name>
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="2D-F">
-      <is_analog>false</is_analog>
-      <category>None</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
@@ -130,12 +118,6 @@
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
-    <variable name="54354ll">
-      <units>oi89</units>
-      <is_analog>true</is_analog>
-      <category>None</category>
-      <standard_name>None</standard_name>
-    </variable>
     <variable name="A1DC">
       <units>count</units>
       <long_name>2D-C Accumulation, 260X Emulation (per cell)</long_name>
@@ -179,12 +161,10 @@
     <variable name="A2DC">
       <units>count</units>
       <long_name>2D-C Accumulation, Reconstruction (per cell)</long_name>
-      <is_analog>true</is_analog>
+      <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
-      <voltageRange>daf</voltageRange>
-      <defaultSampleRate>adf</defaultSampleRate>
     </variable>
     <variable name="A2DCA">
       <units>count</units>
@@ -217,7 +197,6 @@
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
-      <minLimit>123</minLimit>
     </variable>
     <variable name="A2DPR">
       <units>count</units>
@@ -407,12 +386,6 @@
       <long_name>FSSP-300 Raw Accumulation (per cell) - DMT</long_name>
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="asdfwe">
-      <is_analog>false</is_analog>
-      <category>None</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
@@ -2300,6 +2273,12 @@
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
+    <variable name="FS">
+      <is_analog>false</is_analog>
+      <category>None</category>
+      <standard_name>None</standard_name>
+      <reference>false</reference>
+    </variable>
     <variable name="FSIG">
       <units>V</units>
       <long_name>FSSP-100 Signal Voltage</long_name>
@@ -2381,22 +2360,6 @@
       <long_name>Fixed Zero Voltage (through resistor)</long_name>
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="sdfdfsew">
-      <long_name>wersd</long_name>
-      <is_analog>false</is_analog>
-      <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="gadfasd">
-      <alternativeUnits>asdf</alternativeUnits>
-      <is_analog>true</is_analog>
-      <voltageRange>2342</voltageRange>
-      <defaultSampleRate>234</defaultSampleRate>
-      <category>None</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
@@ -3244,26 +3207,6 @@
       <voltageRange>-10,10</voltageRange>
       <defaultSampleRate>10</defaultSampleRate>
       <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="sxa">
-      <units>asd</units>
-      <alternativeUnits>zxc</alternativeUnits>
-      <long_name>ds</long_name>
-      <is_analog>true</is_analog>
-      <voltageRange>a2</voltageRange>
-      <defaultSampleRate>123</defaultSampleRate>
-      <maxLimit>321</maxLimit>
-      <category>None</category>
-      <standard_name>None</standard_name>
-      <reference>false</reference>
-    </variable>
-    <variable name="myvar">
-      <units>;klads</units>
-      <alternativeUnits>kp[asfopkasf</alternativeUnits>
-      <is_analog>false</is_analog>
-      <category>Thermodynamic</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
@@ -5870,6 +5813,12 @@
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
+    <variable name="VBCCVB">
+      <is_analog>false</is_analog>
+      <category>None</category>
+      <standard_name>None</standard_name>
+      <reference>false</reference>
+    </variable>
     <variable name="VCRH">
       <units>deg_C</units>
       <long_name>Dew/Frost Point Temperature, Cryogenic</long_name>
@@ -6027,6 +5976,12 @@
       <long_name>IRS-Computed Aircraft Vertical Velocity</long_name>
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
+      <standard_name>None</standard_name>
+      <reference>false</reference>
+    </variable>
+    <variable name="VXZ">
+      <is_analog>false</is_analog>
+      <category>None</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
@@ -6227,6 +6182,12 @@
       <voltageRange>0,10</voltageRange>
       <defaultSampleRate>100</defaultSampleRate>
       <category>Housekeeping</category>
+      <standard_name>None</standard_name>
+      <reference>false</reference>
+    </variable>
+    <variable name="XD">
+      <is_analog>false</is_analog>
+      <category>None</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
@@ -6703,6 +6664,12 @@
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
+    <variable name="XZ">
+      <is_analog>false</is_analog>
+      <category>None</category>
+      <standard_name>None</standard_name>
+      <reference>false</reference>
+    </variable>
     <variable name="YEAR">
       <units>year</units>
       <long_name>Raw Tape Date Component</long_name>
@@ -6711,7 +6678,7 @@
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>
-    <variable name="zas">
+    <variable name="ZASDX">
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>None</standard_name>
@@ -6722,6 +6689,42 @@
       <long_name>Constant value of 0.</long_name>
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
+      <standard_name>None</standard_name>
+      <reference>false</reference>
+    </variable>
+    <variable name="ZXASD">
+      <is_analog>false</is_analog>
+      <category>None</category>
+      <standard_name>None</standard_name>
+      <reference>false</reference>
+    </variable>
+    <variable name="ZXCS">
+      <is_analog>false</is_analog>
+      <category>None</category>
+      <standard_name>None</standard_name>
+      <reference>false</reference>
+    </variable>
+    <variable name="ZXCVBN">
+      <is_analog>false</is_analog>
+      <category>None</category>
+      <standard_name>None</standard_name>
+      <reference>false</reference>
+    </variable>
+    <variable name="ZXCVXC">
+      <is_analog>false</is_analog>
+      <category>None</category>
+      <standard_name>None</standard_name>
+      <reference>false</reference>
+    </variable>
+    <variable name="ZZZ">
+      <is_analog>false</is_analog>
+      <category>None</category>
+      <standard_name>None</standard_name>
+      <reference>false</reference>
+    </variable>
+    <variable name="ZZZZZ">
+      <is_analog>false</is_analog>
+      <category>None</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
     </variable>

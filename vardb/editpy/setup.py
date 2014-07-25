@@ -48,11 +48,14 @@ def setup(hbox,self,file):
 #left area
   
       #Create scroll area
-      self.left.scrollArea=QtGui.QScrollArea(self.left)
-      self.left.scrollArea.setWidgetResizable(True)
-      self.left.scrollAreaWidgetContents=QtGui.QListWidget(self.left.scrollArea)
+#      self.left.scrollArea=QtGui.QScrollArea(self.left)
+#      self.left.scrollArea.setWidgetResizable(True)
+#      self.left.scrollAreaWidgetContents=QtGui.QListWidget(self.left.scrollArea)
+
+      self.left.scrollAreaWidgetContents=QtGui.QListWidget(self.left)
+
       self.left.scrollAreaWidgetContents.itemSelectionChanged.connect(lambda:lookingAt(self))
-      self.left.scrollArea.setWidget(self.left.scrollAreaWidgetContents)
+#      self.left.scrollArea.setWidget(self.left.scrollAreaWidgetContents)
       self.left.verticalLayout=QtGui.QVBoxLayout(self.left)
       self.left.verticalLayoutScroll=QtGui.QVBoxLayout(self.left.scrollAreaWidgetContents)
       
@@ -64,7 +67,7 @@ def setup(hbox,self,file):
       #Populate left side
       self.left.verticalLayout.addWidget(searchLabel)
       self.left.verticalLayout.addWidget(self.searchText)
-      self.left.verticalLayout.addWidget(self.left.scrollArea)
+      self.left.verticalLayout.addWidget(self.left.scrollAreaWidgetContents)
 
 #------------------------------------------------
 #right area
