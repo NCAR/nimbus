@@ -8,9 +8,12 @@
 
 env = Environment (tools = ['default', 'doxygen', 'pylint', 'pytest'])
 
-all_python_files = env.FindPythonFiles('.')
 raf_python_files = env.FindPythonFiles('raf')
 iss_python_files = env.FindPythonFiles('iss')
+iss_python_files = [ipf for ipf in iss_python_files 
+                    if str(ipf) not in ['iss/messaging/sounding.py']]
+all_python_files = raf_python_files + iss_python_files
+
 env.PythonLint('check', all_python_files)
 env.PythonLint('rafcheck', raf_python_files)
 
@@ -21,6 +24,9 @@ env.PythonLint('rafcheck', raf_python_files)
 test = env.Command("test", all_python_files, 'py.test --quick=1 ${SOURCES}')
 env.Alias("test", test)
 
-raftest = env.Command("raftest", raf_python_files, 'py.test ${SOURCES}')
-env.Alias("raftest", raftest)
+# raftest = env.Command("raftest", raf_python_files, 
+#                       'py.test --quick=1 ${SOURCES}')
+# isstest = env.Command("isstest", iss_python_files,
+#                       'py.test --quick=1 ${SOURCES}')
+# env.Alias("test", [raftest, isstest])
 

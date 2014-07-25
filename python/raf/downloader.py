@@ -9,6 +9,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+pytest_plugins = "iss.tests.conftest"
+
 class Downloader(object):
 
     def __init__(self):
