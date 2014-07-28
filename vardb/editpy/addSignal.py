@@ -9,7 +9,7 @@
 #                 how VDB will be editted, and what signals is expected to look like.      
 #example attribute: is_analog
 import csv
-from getInfo import getinfo
+from getInfo import *
 from generateButtons import generateButtons
 from radioClickEvent import lookingAt
 from setup import fileName
@@ -54,7 +54,13 @@ def addsignal(signals,self,num,instructions):
                   if not inThere and sig[0] != 'name' and sig[1]!='':
                      newAtt.append(etree.SubElement(elm,sig[0]))
                      newAtt[j].text=sig[1]
-                     elm.append(newAtt[j])
+                     #elm.append(newAtt[j])
+                     #print 'seeking ',getDictionary(fileName()),sig[0]
+                     #print 'index is ',getDictionary(fileName()).index(sig[0])
+                     for att in elm:
+                        if getDictionary(fileName()).index(att.tag)>getDictionary(fileName()).index(sig[0]):
+                           att.addnext(newAtt[j])
+                           break
                      j+=1
                      print 'Added ',sig[0],' to ',elm.attrib['name'],' set as ',sig[1]
 

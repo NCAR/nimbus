@@ -1,4 +1,4 @@
-<VarDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VDBSchema.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><VarDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VDBSchema.xsd">
   <Categories>
     <Category name="None"/>
     <Category name="Position"/>
@@ -173,7 +173,6 @@
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
       <reference>false</reference>
-      <minLimit>5</minLimit>
     </variable>
     <variable name="A2DCR">
       <units>count</units>
@@ -185,6 +184,7 @@
     </variable>
     <variable name="A2DP">
       <units>count</units>
+      <long_name>2D-P Accumulation, Reconstruction (per cell)</long_name>
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
@@ -240,7 +240,7 @@
     </variable>
     <variable name="ADIF">
       <units>hPa</units>
-      <long_name/>
+      <long_name>Vertical Differential Pressure, Boom</long_name>
       <is_analog>false</is_analog>
       <category>Uncorr'd Raw</category>
       <standard_name>None</standard_name>
@@ -250,7 +250,7 @@
       <units>hPa</units>
       <long_name>Vertical Differential Pressure, Radome</long_name>
       <is_analog>true</is_analog>
-      <voltageRange/>
+      <voltageRange>-10,10</voltageRange>
       <defaultSampleRate>100</defaultSampleRate>
       <category>Uncorr'd Raw</category>
       <standard_name>None</standard_name>
