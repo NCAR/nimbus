@@ -25,10 +25,10 @@ def boolsTrue():
 #removes leading descriptior from static lable, appends to signal list
 def signalSet(self,name):
    global rightInfoHub
-   if name not in self.booleanList and name not in (x[0] for x in self.catelogList):
+   try:
       s=rightInfoHub['textBoxes'][name].text()
       s=rightInfoHub['textBoxes'][name].text()
-   else:
+   except AttributeError:
       s=rightInfoHub['textBoxes'][name].currentText()
    return str(s)
    #return info
@@ -128,6 +128,26 @@ def makeRightInfoHub(self,headers):
         for item in stdList:
           rightInfoHub['textBoxes'][headers[i]].addItem(item)
         rightInfoHub['textBoxes'][headers[i]].currentIndexChanged.connect(lambda:textChange())
+     elif headers[i]=='defaultSampleRate':
+        rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
+        rightInfoHub['textBoxes'][headers[i]].addItem("")
+        rightInfoHub['textBoxes'][headers[i]].addItem("500")
+        rightInfoHub['textBoxes'][headers[i]].addItem("100")
+        rightInfoHub['textBoxes'][headers[i]].addItem("50")
+        rightInfoHub['textBoxes'][headers[i]].addItem("10")
+        rightInfoHub['textBoxes'][headers[i]].setCurrentIndex(0)
+        rightInfoHub['textBoxes'][headers[i]].activated.connect(partial(onActivated,self,headers[i]))
+        rightInfoHub['textBoxes'][headers[i]].activated.connect(lambda:textChange())
+     elif headers[i]=='voltageRange':
+        rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
+        rightInfoHub['textBoxes'][headers[i]].addItem("")
+        rightInfoHub['textBoxes'][headers[i]].addItem("-10 10")
+        rightInfoHub['textBoxes'][headers[i]].addItem("-5 5")
+        rightInfoHub['textBoxes'][headers[i]].addItem("-2.5 2.5")
+        rightInfoHub['textBoxes'][headers[i]].addItem("0 10")
+        rightInfoHub['textBoxes'][headers[i]].setCurrentIndex(0)
+        rightInfoHub['textBoxes'][headers[i]].activated.connect(partial(onActivated,self,headers[i]))
+        rightInfoHub['textBoxes'][headers[i]].activated.connect(lambda:textChange())
      else:
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QLineEdit(self.upright)
         rightInfoHub['textBoxes'][headers[i]].textChanged.connect(lambda:textChange())

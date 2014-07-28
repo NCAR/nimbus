@@ -22,7 +22,6 @@ def addsignal(signals,self,num,instructions):
    if instructions['action']=='edit':
    #Expecting signals to be of form [ [attribute,new valie] * n ]
    #Edits existing attributes
-        print signals
 
         added=False
         newAtt=[]
@@ -54,9 +53,6 @@ def addsignal(signals,self,num,instructions):
                   if not inThere and sig[0] != 'name' and sig[1]!='':
                      newAtt.append(etree.SubElement(elm,sig[0]))
                      newAtt[j].text=sig[1]
-                     #elm.append(newAtt[j])
-                     #print 'seeking ',getDictionary(fileName()),sig[0]
-                     #print 'index is ',getDictionary(fileName()).index(sig[0])
                      for att in elm:
                         if getDictionary(fileName()).index(att.tag)>getDictionary(fileName()).index(sig[0]):
                            att.addnext(newAtt[j])
