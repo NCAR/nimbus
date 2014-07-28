@@ -40,7 +40,9 @@ def textChange():
    bools=True
    if str(rightInfoHub['textBoxes']['is_analog'].currentText())=='false':
       rightInfoHub['textBoxes']['voltageRange'].setDisabled(True)
+      rightInfoHub['textBoxes']['voltageRange'].setCurrentIndex(0)
       rightInfoHub['textBoxes']['defaultSampleRate'].setDisabled(True)
+      rightInfoHub['textBoxes']['defaultSampleRate'].setCurrentIndex(0)
    else:
       rightInfoHub['textBoxes']['voltageRange'].setDisabled(False)
       rightInfoHub['textBoxes']['defaultSampleRate'].setDisabled(False)
@@ -68,7 +70,7 @@ def labler(lablename,signalname,self,num):
       
    rightInfoHub['headers'][lablename].setText(lablename)
    rightInfoHub['headers'][lablename].setMinimumSize(rightInfoHub['headers'][lablename].sizeHint())
-   if lablename not in self.booleanList and lablename not in (x[0] for x in self.catelogList):
+   if lablename not in self.booleanList and lablename not in (x[0] for x in self.catelogList) and lablename not in ['voltageRange','defaultSampleRate']:
      rightInfoHub['textBoxes'][lablename].setText(str(signalname))
 
      #Connvects changes in text box to bools logic

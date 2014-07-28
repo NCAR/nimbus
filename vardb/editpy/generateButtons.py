@@ -19,6 +19,5 @@ def generateButtons(self,filtering,num):
                     self.left.scrollAreaWidgetContents.addItem(entries[i][1])
               i+=1
            if num>=0:
-              print num
               self.left.scrollAreaWidgetContents.setItemSelected(self.left.scrollAreaWidgetContents.item(num),True)
               self.left.scrollAreaWidgetContents.scrollToItem(self.left.scrollAreaWidgetContents.selectedItems()[0])

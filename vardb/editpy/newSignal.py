@@ -19,7 +19,7 @@ def newSig(self):
         labler(entry,'',self,i) 
         i+=1
 
-    self.saveButton.clicked.connect(lambda:saveChanges(self,headers,0))
+    self.saveButton.clicked.connect(lambda:saveChanges(self,headers,-1))
 
 #def adding(self):
     
