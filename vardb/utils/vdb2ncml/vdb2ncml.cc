@@ -21,14 +21,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2006
 
 #include <raf/vardb.h>
 
-#include <stdio.h>
-#include <sys/types.h>
-
-#include "vardb.h"
-#include <netcdf.h>
-#include <raf/portable.h>
-
-
 static char defaultProjDir[1000];
 static char projDir[1000];
 
@@ -225,8 +217,6 @@ int main(int argc, char *argv[])
     }
 
 
-
-
     nc_def_var(ncid, vp->Name, NC_FLOAT, 1, &timeDim, &varID);
 
     nc_put_att_float(ncid, varID, "_FillValue", NC_FLOAT, 1, &fill_value);
@@ -264,16 +254,9 @@ int main(int argc, char *argv[])
 // What about default global_attrs; coordinates, etc.
   }
 
-
-
-
-
-
-
-
-
   ReleaseVarDB();
   nc_close(ncid);
+
   return(0);
 
 }	/* END MAIN */
