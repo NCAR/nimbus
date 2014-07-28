@@ -85,7 +85,7 @@ void scFlow(DERTBL *varp)
 
   /* Corrected sample flow rate in vlpm
    */
-  flowc = flow * (StdPress / pressure) * ((temperature + Kelvin) / 294.26);
+  flowc = flow * (StdPress / pressure) * ((temperature + Kelvin) / 294.15);
 
   if (flowc <= 0.0)
     flowc = 0.0001;

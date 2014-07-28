@@ -14,6 +14,9 @@
 // Serial number for GV radome.  #2 was installed in January of 2013.
 static int      gv_radome_ssn = 1;      // default to first radome.
 
+// Serial number for C130 radome.  #2 was installed in May of 2013.
+static int      c130_radome_ssn = 1;      // default to first radome.
+
 static NR_TYPE coeff[2];
 
 extern int	FlightDate[];
@@ -21,10 +24,15 @@ extern int	FlightDate[];
 /* -------------------------------------------------------------------- */
 void initSSRD(var_base *varp)
 {
+  float *tmp;
+
   /* Set default values per aircraft. */
   switch (cfg.Aircraft())
   {
     case Config::C130:
+      if ( (tmp = GetDefaultsValue("C130_RADOME_SSN", varp->name)) )
+        c130_radome_ssn = (int)tmp[0];
+
       if (FlightDate[2] < 1998)
       {
         coeff[0] = -0.07;
@@ -56,7 +64,6 @@ void initSSRD(var_base *varp)
       break;
 
     case Config::HIAPER:
-      float *tmp;
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
         gv_radome_ssn = (int)tmp[0];
 

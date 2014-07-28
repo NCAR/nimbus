@@ -1,4 +1,4 @@
-/*
+/* -*- C++ -*-
 -------------------------------------------------------------------------
 OBJECT NAME:	UDP_Base.h
 
@@ -17,6 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include <vector>
 
 #include <nidas/util/Socket.h>
+#include <nidas/core/Sample.h>
 
 class var_base;
 
@@ -33,11 +34,32 @@ public:
    * Generate broadcast string and send.
    */
   virtual void
-  BroadcastData(const std::string & timeStamp) = 0;
+  BroadcastData(nidas::core::dsm_time_t tt) = 0;
+
+  std::string
+  formatTimestamp(nidas::core::dsm_time_t tt);
+
+  /**
+   * Pull data for each of the variables in the _varList, updating the values that
+   * should be output according to whether the variable is a missing value and it's
+   * latch setting.
+   **/
+  void
+  updateData(nidas::core::dsm_time_t tt);
+
+  /**
+   * Format the current value for variable i into a string suitable for insertion into the
+   * UDP message.  For IWG1 this means blanks for missing values, and conversion of altitude units.
+   * The ground feed must account for vector variables.
+   **/
+  virtual
+  std::string
+  formatVariable(int i);
 
 protected:
   virtual
-  std::vector<var_base *> readFile(const std::string & fileName) const;
+  bool
+  readFile(const std::string & fileName);
 
   nidas::util::MulticastSocket * _socket;
 
@@ -45,6 +67,15 @@ protected:
   nidas::util::Inet4SocketAddress * _to;
 
   std::vector<var_base *> _varList;
+  std::vector<int> _latch_seconds;
+
+  /**
+   * Deal with the occasional existance of NaNs in the data that is about to be sent.
+   */
+  std::vector< std::vector<double> > _lastGoodData;
+  std::vector<nidas::core::dsm_time_t> _lastGoodTime;
+
+  int _default_latch_seconds;
 
   const int UDP_PORT;
 };

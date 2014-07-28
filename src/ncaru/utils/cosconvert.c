@@ -16,6 +16,7 @@
 #include <ctype.h>
 #include <signal.h>
 #include <string.h>
+#include <unistd.h>
 
 #define CRAY_PRIVATE
 
@@ -61,7 +62,7 @@ extern void	ConvertFile();
 extern void	RemoveBFI();
 
 /*---------------------------------------------------------------------------*/
-main(argc, argv)
+int main(argc, argv)
 int	argc;
 char	*argv[];
 {

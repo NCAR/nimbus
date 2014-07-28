@@ -42,7 +42,8 @@ void AverageSampledData()
     RAWTBL *rp = raw[i];
 
 #ifdef DEBUG
-    if (strcmp(rp->name, "CAVP_DPR") == 0)
+    bool watch = (strcmp(rp->name, "CAVP_DPR") == 0);
+    if (watch)
       break_average();
 #endif
 
@@ -58,6 +59,7 @@ void AverageSampledData()
               rp->Modulo);
 
 #ifdef DEBUG
+    if (watch)
     {
       static std::string tfmt("At %Y/%m/%d;%H:%M:%S.%3f, computed: ");
       time_t thisTime = SampledDataTimeToSeconds(SampledData);

@@ -18,6 +18,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include "grnd_feed.h"
 #include "md5.h"
 
+#include <unistd.h>  // gethostname()
 #include <sstream>
 #include <bzlib.h>
 #include <sys/stat.h>
@@ -27,10 +28,32 @@ const std::string GroundFeed::DEST_HOST_ADDR = "128.117.188.122";
 
 using namespace nidas::util;
 
+std::string
+GroundFeed::
+getDestHostName()
+{
+  char hostname[128];
+  if ((gethostname(hostname, sizeof(hostname)) == 0) &&
+      strncmp(hostname, "acserver", 8) == 0)
+  {
+    return DEST_HOST_ADDR;
+  }
+  std::cerr << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n"
+	    << "WARNING: GroundFeed DID NOT DETECT HOST 'acserver',\n"
+	    << "MESSAGES WILL BE SENT TO localhost\n"
+	    << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n";
+  return "127.0.0.1";
+}
+
 
 /* -------------------------------------------------------------------- */
-GroundFeed::GroundFeed(int rate) : UDP_Base(31007), _dataRate(rate)
+GroundFeed::
+GroundFeed(int rate) : 
+  UDP_Base(31007), 
+  _dataRate(rate)
 {
+  // maintain the 5-minute count from earlier implementations
+  _default_latch_seconds = 300;
   ILOG(("GroundFeed ctor"));
 
   if (cfg.GroundFeedType() != Config::UDP)
@@ -38,22 +61,12 @@ GroundFeed::GroundFeed(int rate) : UDP_Base(31007), _dataRate(rate)
 
   std::string fileName(XMIT_VARS);
   fileName += ".rt";
-  _varList = readFile(fileName);
+  readFile(fileName);
 
   setCoordinatesFrom(_varList);
 
   _socket = new nidas::util::MulticastSocket;
-  _to = new Inet4SocketAddress(Inet4Address::getByName(DEST_HOST_ADDR), UDP_PORT);
-
-  // Initialize vectors used for monitoring NaN values
-  for (size_t i = 0; i < _varList.size(); ++i)
-  {
-     for (size_t j = 0; j < _varList[i]->Length; j++)
-     {
-       _lastGoodData.push_back(-32767);
-       _lastGoodDataIncrement.push_back(0);
-     }
-  }
+  _to = new Inet4SocketAddress(Inet4Address::getByName(getDestHostName()), UDP_PORT);
 
   // compute checksum for this flight, store in cfg
   cfg.SetChecksum(calculateChecksum());
@@ -75,8 +88,9 @@ void GroundFeed::setCoordinatesFrom(const std::vector<var_base *> & list) const
   }
 }
 
+
 /* -------------------------------------------------------------------- */
-void GroundFeed::BroadcastData(const std::string & timeStamp)
+void GroundFeed::BroadcastData(nidas::core::dsm_time_t tt)
 	throw(IOException)
 {
   static int rate_cntr = 0;
@@ -87,7 +101,7 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
     
   rate_cntr++;
 
-  extern NR_TYPE * AveragedData;
+  std::string timeStamp = formatTimestamp(tt);
 
   // Only send data if ground connection is verified
   struct stat stFileInfo;
@@ -109,70 +123,12 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
 
   groundString << "," << timeStamp;
 
-  // Send data
-  size_t index = 0;
+  updateData(tt);
+
+  // Format data
   for (size_t i = 0; i < _varList.size(); ++i)
   {
-    if (_varList[i]->Length > 1) 
-    { 
-      // Vector data
-      // @todo when legacy zeroth bin goes away, then start with j = 0.
-      size_t s = 1;
-      for (size_t j = s; j < _varList[i]->Length; j++) 
-      {
-        if (!isnan(AveragedData[(_varList[i]->LRstart)+j]))
-        {
-          _lastGoodData[index] = AveragedData[(_varList[i]->LRstart)+j];
-          if (j == s) 
-            groundString << ",'{" << _lastGoodData[index];
-          else 
-            groundString << "," << _lastGoodData[index];
-          _lastGoodDataIncrement[index] = 0;
-        } else
-        {
-          // Ship last good value unless we've seen NaNs for quite a while (60 increments = 5 minutes if 5 second intervals)
-          if (_lastGoodDataIncrement[index] < (int) (300/_dataRate))  
-          {
-            if (j == s)
-              groundString << ",'{" << _lastGoodData[index];
-            else 
-              groundString << "," << _lastGoodData[index];
-            _lastGoodDataIncrement[index]++;
-          }
-          else
-          {
-            if (j == s)
-              groundString << ",'{" << "-32767";
-            else
-              groundString << "," << "-32767";
-          }
-        }
-        index++;
-      }
-      groundString << "}'";
-    } else {
-      // Scalar data
-      if (!isnan(AveragedData[(_varList[i]->LRstart)]))
-      {
-        _lastGoodData[index] = AveragedData[(_varList[i]->LRstart)];
-        groundString << "," << _lastGoodData[index];
-        _lastGoodDataIncrement[index] = 0;
-      }
-      else
-      {
-        // Ship last good value unless we've seen NaNs for quite a while (60 increments = 5 minutes if 5 second intervals)
-        if (_lastGoodDataIncrement[index] < (int) (300/_dataRate))  
-        {
-          groundString << "," << _lastGoodData[index];
-          _lastGoodDataIncrement[index]++;
-        }
-        else
-        {
-          groundString << "," << "-32767";
-        }
-      }
-      index++;
-    }
+    groundString << "," << formatVariable(i);
   }
   groundString << "\n";
 

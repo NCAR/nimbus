@@ -18,11 +18,11 @@ static NR_TYPE PSTcor, PSQcor;
 
 static NR_TYPE ak_coeff[] = { -0.0478, 0.1299 };
 
-// ADELE & PREDICT #'s - left wing.
-//static NR_TYPE ss_coeff[] = { -0.1564, 0.09218 };
+// ADELE, PREDICT, & DEEPWAVE #'s - left wing.
+static NR_TYPE ss_coeff[] = { -0.1564, 0.09218 };
 
-// DC3 - right wing
-static NR_TYPE ss_coeff[] = { 0.1662, 0.09218 };
+// DC3 - right wing - Change in the project/Defaults file.
+//static NR_TYPE ss_coeff[] = { 0.1662, 0.09218 };
 
 static NR_TYPE recfx = 0.985;
 

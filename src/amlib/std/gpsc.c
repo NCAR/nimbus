@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 
 static NR_TYPE
 	UPFCTR	= 0.999444,
-	FCTRF	= 0.997,
+	FCTRF	= 0.995,	// Previous values was 0.997.
 	TAUP	= 600.0,	// Very original value was 150.
 	TAU	= 600.0,
 	CDM	= 111120.0,
@@ -133,7 +133,8 @@ void slatc(DERTBL *varp)
 {
   int		i, j, k;
   NR_TYPE	alat, alon, vew, vns, roll, glat, glon, gvew, gvns;
-  NR_TYPE	omegat, sinwt, coswt, gvnsf, gvewf, vnsf, vewf;
+  NR_TYPE	omegat, sinwt, coswt;
+  /*NR_TYPE       gvnsf, gvewf, vnsf, vewf;*/
   long		gstat, gmode;
 
   double	det;
@@ -317,7 +318,7 @@ void slatc(DERTBL *varp)
             }
         }
 
-      omegat = 2.0 * M_PI * time_duration[FeedBack] / 5040.0;
+      omegat = 2.0 * M_PI * time_duration[FeedBack] / 5067.0;
       sinwt = sin(omegat);
       coswt = cos(omegat);
 
@@ -342,10 +343,15 @@ void slatc(DERTBL *varp)
        */
 /*      gpsflg = 0.001;
 */
-      dvy[FeedBack]	*= fctrf[FeedBack];
+      /* Adjust the correction factors coming from the complementary
+       * filter toward the IRU solution. There does not seem to be any
+       * benefit from doing this, instead of just continuing to apply the
+       * offset determined from the complementary filter. Comment out.*/
+/*      dvy[FeedBack]	*= fctrf[FeedBack];
       dvx[FeedBack]	*= fctrf[FeedBack];
       dlat[FeedBack]	*= fctrf[FeedBack];
       dlon[FeedBack]	*= fctrf[FeedBack];
+*/
       }
     }
   else
@@ -356,15 +362,23 @@ void slatc(DERTBL *varp)
     assert(!isnan(glon));
     assert(!isnan(gvew));
     assert(!isnan(gvns));
-    gvnsf	= filter((double)gvns, zf[FeedBack][0]);
+    /*gvnsf	= filter((double)gvns, zf[FeedBack][0]);
     gvewf	= filter((double)gvew, zf[FeedBack][1]);
     vnsf	= filter((double)vns, zf[FeedBack][2]);
-    vewf	= filter((double)vew, zf[FeedBack][3]);
+    vewf	= filter((double)vew, zf[FeedBack][3]);*/
 
-    dvy[FeedBack]	= gvnsf - vnsf;
-    dvx[FeedBack]	= gvewf - vewf;
-    dlat[FeedBack]	= glat - alat;
-    dlon[FeedBack]	= glon - alon;
+    /*dvy[FeedBack]	= gvnsf - vnsf;*/
+    dvy[FeedBack]	+= (1.-fctrf[FeedBack])\
+	   *(filter((double)(gvns-vns),zf[FeedBack][0])-dvy[FeedBack]);
+    /*dvx[FeedBack]	= gvewf - vewf;*/
+    dvx[FeedBack]	+= (1.-fctrf[FeedBack])\
+	   *(filter((double)(gvew-vew),zf[FeedBack][1])-dvx[FeedBack]);
+    /*dlat[FeedBack]	= glat - alat;*/
+    dlat[FeedBack]	+= (1.-fctrf[FeedBack])\
+	   *(filter((double)(glat-alat),zf[FeedBack][2])-dlat[FeedBack]);
+    /*dlon[FeedBack]	= glon - alon;*/
+    dlon[FeedBack]	+= (1.-fctrf[FeedBack])\
+	   *(filter((double)(glon-alon),zf[FeedBack][3])-dlon[FeedBack]);
 
     if (FeedBack == LOW_RATE_FEEDBACK) /* Only do this in the Low-rate pass */
       {

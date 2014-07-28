@@ -1,4 +1,4 @@
-/*
+/* -*- C++ -*-
 -------------------------------------------------------------------------
 OBJECT NAME:	brdcast.h
 
@@ -23,7 +23,12 @@ class Broadcast : public UDP_Base
 public:
   Broadcast();
 
-  void	BroadcastData(const std::string & timeStamp);
+  void
+  BroadcastData(nidas::core::dsm_time_t tt);
+
+  virtual
+  std::string
+  formatVariable(int i);
 
 protected:
   /**
@@ -40,13 +45,13 @@ protected:
    * In order to conform to the IWGADTS IWG1 packet, radar altimeter needs to be
    * in feet, not meters.
    */
-  static const size_t RADAR_ALT_INDX;
+  int RADAR_ALT_INDX;
 
   /// Do Not Calibrate and Record flags
-  static const size_t NOCAL_ALT_INDX;
-  static const size_t NOREC_ALT_INDX;
+  int NOCAL_ALT_INDX;
+  int NOREC_ALT_INDX;
 
-  static const std::string InterfacePrefix;
+  std::string InterfacePrefix;
 };
 
 #endif

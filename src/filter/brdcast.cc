@@ -17,18 +17,28 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include "brdcast.h"
 
 #include <sstream>
-
-const size_t Broadcast::RADAR_ALT_INDX = 5;
-const size_t Broadcast::NOCAL_ALT_INDX = 31;
-const size_t Broadcast::NOREC_ALT_INDX = 32;
-const std::string Broadcast::InterfacePrefix = "192.168";
+#include <stdlib.h>  // getenv()
 
 using namespace nidas::util;
 
 /* -------------------------------------------------------------------- */
-Broadcast::Broadcast() : UDP_Base(7071)
+Broadcast::Broadcast() : 
+  UDP_Base(7071),
+  RADAR_ALT_INDX(5),
+  NOCAL_ALT_INDX(-1),
+  NOREC_ALT_INDX(-1),
+  InterfacePrefix("192.168")
 {
-  _varList = readFile(BROADCAST);
+  readFile(BROADCAST);
+
+  // For debugging, allow broadcast to be redirected.
+  const char* debug_interface = 0;
+  if ((debug_interface = getenv("NIMBUS_DEBUG_BROADCAST_INTERFACE")) != 0)
+  {
+    InterfacePrefix = debug_interface;
+    std::cerr << "WARNING: switching iwg broadcast interface to "
+	      << InterfacePrefix << std::endl;
+  }
 
   _socket = new MulticastSocket;
   _socket->setBroadcastEnable(true);
@@ -49,47 +59,47 @@ Broadcast::Broadcast() : UDP_Base(7071)
       _mcInterfaces.push_back(*it);
     }
   }
+
+  // Setup indices for variables which get special treatment.
+  for (size_t i = 0; i < _varList.size(); ++i)
+  {
+    std::string name;
+    if (_varList[i])
+    {
+      name = _varList[i]->name;
+    }
+    if (name == "NOREC")
+    {
+      NOREC_ALT_INDX = i;
+    }
+    else if (name == "NOCAL")
+    {
+      NOCAL_ALT_INDX = i;
+    }
+  }
+  std::cerr << "NOCAL_ALT_INDX=" << NOCAL_ALT_INDX << ", " 
+	    << "NOREC_ALT_INDX=" << NOREC_ALT_INDX << "." << std::endl;
 }
 
 /* -------------------------------------------------------------------- */
-void Broadcast::BroadcastData(const std::string & timeStamp) 
+void Broadcast::BroadcastData(nidas::core::dsm_time_t tt) 
 {
+  std::string timeStamp = formatTimestamp(tt);
+
   if (_varList.size() == 0)
   {
     fprintf(stderr, "Broadcast.cc: No ascii_parms!\n");
     return;
   }
 
+  updateData(tt);
+
   std::stringstream bcast;
   bcast << "IWG1," << timeStamp;
 
-  extern NR_TYPE * AveragedData;
-
-  for (size_t i = 0; i < _varList.size(); ++i)
+  for (int i = 0; i < (int)_varList.size(); ++i)
   {
-//  printf("_varList[%d]->name = %s\n", i, _varList[i]->name);
-    bcast << ",";
-    if (_varList[i])
-    {
-      switch (i)
-      {
-        case RADAR_ALT_INDX: // Our radar alt is in m, convert to ft as required by IWG1
-          if (!isnan(AveragedData[_varList[i]->LRstart]))
-            bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
-          break;
-        case NOCAL_ALT_INDX: // Do Not Calibrate flag
-        case NOREC_ALT_INDX: // Do Not Record flag
-          if (isnan(AveragedData[_varList[i]->LRstart]))
-            bcast << 0;
-          else
-            bcast << AveragedData[_varList[i]->LRstart];
-          break;
-        default:
-          if (!isnan(AveragedData[_varList[i]->LRstart]))
-            bcast << AveragedData[_varList[i]->LRstart];
-          break;
-      }
-    }
+    bcast << "," << formatVariable(i);
   }
 
   bcast << "\r\n";
@@ -118,4 +128,44 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
   }
 
   printf(bcast.str().c_str());
+}
+
+
+std::string
+Broadcast::
+formatVariable(int i)
+{
+  var_base* vp = _varList[i];
+  if (vp && vp->Length > 1)
+  {
+    // Pass 2D vars to the generic formatter.  It is enough of a special
+    // case that it may as well use the same format.
+    return UDP_Base::formatVariable(i);
+  }
+
+  std::ostringstream bcast;
+  if (vp)
+  {
+    NR_TYPE& current = _lastGoodData[i][0];
+    if (i == RADAR_ALT_INDX)
+    {
+      // Our radar alt is in m, convert to ft as required by IWG1
+      if (!isnan(current))
+	bcast << current * 3.2808;
+    }
+    else if (i == NOCAL_ALT_INDX || // Do Not Calibrate flag
+	     i == NOREC_ALT_INDX)   // Do Not Record flag
+    {
+      if (isnan(current))
+	bcast << 0;
+      else
+	bcast << current;
+    }
+    else
+    {
+      if (!isnan(current))
+	bcast << current;
+    }
+  }
+  return bcast.str();
 }

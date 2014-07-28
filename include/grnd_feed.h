@@ -1,4 +1,4 @@
-/*
+/* -*- C++ -*-
 -------------------------------------------------------------------------
 OBJECT NAME:	grnd_feed.h
 
@@ -22,7 +22,7 @@ class GroundFeed : public UDP_Base
 public:
   GroundFeed(int rate);
 
-  void	BroadcastData(const std::string & timeStamp)
+  void	BroadcastData(nidas::core::dsm_time_t tt)
 	throw(nidas::util::IOException);
 
   std::string calculateChecksum();
@@ -37,16 +37,13 @@ protected:
   /// Destination host address.
   static const std::string DEST_HOST_ADDR;
 
+  std::string
+  getDestHostName();
+
   /**
    * Send data to ground this often, in seconds.
    */
   const size_t _dataRate;
-
-  /**
-   * Deal with the occasional existance of NaNs in the data that is about to be sent.
-   */
-  std::vector<NR_TYPE> _lastGoodData;   	// expunge occasional NaNs in data
-  std::vector<int> _lastGoodDataIncrement;	// if NaN for a long time send NaN
 };
 
 #endif
