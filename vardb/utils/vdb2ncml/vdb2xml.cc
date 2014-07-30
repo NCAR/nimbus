@@ -258,7 +258,13 @@ if(vp->MaxLimit-vp->MinLimit!=0)
 }
 fprintf(vdb,"      <category>%s</category>\n",VarDB_GetCategoryName(vp->Name));
 fprintf(vdb,"      <standard_name>%d</standard_name>\n",ntohl(vp->standard_name));
-fprintf(vdb,"      <reference>%d</reference>\n",ntohl(vp->reference));
+if(ntohl(vp->reference)!=0)
+{
+  fprintf(vdb,"      <reference>true</reference>\n");
+}else
+{
+  fprintf(vdb,"      <reference>false</reference>\n");
+}
 fprintf(vdb,"    </variable>\n");
 ////==============================================================================================================================
 ////==============================================================================================================================
@@ -327,8 +333,8 @@ fprintf(vdb,"    <definition name=\"voltage_range\">Minimum and maximum voltage 
 fprintf(vdb,"    <definition name=\"default_sample_rate\">Signal's default sample rate</definition>\n");
 fprintf(vdb,"    <definition name=\"min_limit\">Minimum possible value signal can drop to</definition>\n");
 fprintf(vdb,"    <definition name=\"max_limit\">Maximum possible value signal can drop to</definition>\n");
-fprintf(vdb,"    <definition name=\"modulus_range\">We can put a definition here!</definition>\n");
 fprintf(vdb,"    <definition name=\"category\">Used to group signals</definition>\n");
+fprintf(vdb,"    <definition name=\"modulus_range\">We can put a definition here!</definition>\n");
 fprintf(vdb,"    <definition name=\"derive\">We can put a definition here!</definition>\n");
 fprintf(vdb,"    <definition name=\"dependencies\">We can put a definition here!</definition>\n");
 fprintf(vdb,"    <definition name=\"static_lag\">We can put a definition here!</definition>\n");
