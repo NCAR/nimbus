@@ -32,16 +32,18 @@ std::string VDBVar::get_attribute(int index)const
   DOMNode* holder=x->item(1);
   if (index> x->getLength()/2-1)
   {
-    return NULL;
+    return "";
   }
   for (int i=0;i<index;i++)
   {
     holder=holder->getNextSibling();
     holder=holder->getNextSibling();
   } 
+  holder=holder->getPreviousSibling();
   DOMNodeList* y=holder->getChildNodes();
   DOMNode* z=y->item(0);
   std::string answer=XMLString::transcode(z->getNodeValue());
+  cout<<"SO FAR SO GOOD\n";
   return answer;
 };
 //---------------------------------------------------------------------------------------
