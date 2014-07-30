@@ -5,7 +5,7 @@
 #Erase information from last execution
 rm commands
 sudo rm /var/log/nagios/nagios.log
-sudo rm /etc/nagios/radar/*
+sudo rm /etc/nagios/raf/*
 sudo /sbin/service nagios stop
 sudo /sbin/service nagios start
 
@@ -17,8 +17,8 @@ sh shellcmd.sh
 
 #scan nagios error log for missing configuration files, make them
 sudo perl ../radar.pl
-sleep 3
-cat /etc/nagios/radar/*
+sleep 2
+cat /etc/nagios/raf/*
 
 #restart nagios with new configuration files
 sudo /sbin/service nagios restart

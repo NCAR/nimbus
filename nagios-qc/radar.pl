@@ -128,7 +128,7 @@ my $NAGIOS_LOGFILE="/var/log/nagios/nagios.log";
 
 # the absolute path to the directory where generated cfg-files
 # are to be stored
-my $CFG_DIRECTORY="/etc/nagios/radar";
+my $CFG_DIRECTORY="/etc/nagios/raf";
 
 # the absolute path to the directory where the
 # nagios/icinga cfg files are kept
