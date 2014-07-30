@@ -31,6 +31,7 @@ for line in lines:
         
 doc=etree.parse('VDB.xml')
 VDBDict=getDictionary('VDB.xml')
+print VDBDict
 
 #-----------------------Local Files---------------------------------------
 def makeDi(fileName):
@@ -65,7 +66,7 @@ for elm in doc.getiterator('variable'):
        subtext.text = modi[key]
        for att in elm:
           if VDBDict.index(att.tag)>VDBDict.index(mod):
-             att.addprevious(subtext)
+	     elm[elm.index(att)-1].addprevious(subtext)
 
 #---- derived
   for key in DRdi:
@@ -74,7 +75,7 @@ for elm in doc.getiterator('variable'):
        subtext.text = DRdi[key]
        for att in elm:
           if VDBDict.index(att.tag)>VDBDict.index(derive):
-             att.addprevious(subtext)
+	     elm[elm.index(att)-1].addprevious(subtext)
 
 #---- depndTable
   for key in depdi:
@@ -83,7 +84,7 @@ for elm in doc.getiterator('variable'):
        subtext.text = depdi[key]
        for att in elm:
           if VDBDict.index(att.tag)>VDBDict.index(deps):
-             att.addprevious(subtext)
+	     elm[elm.index(att)-1].addprevious(subtext)
 
 #---- lags
   for key in lagdi:
@@ -92,7 +93,7 @@ for elm in doc.getiterator('variable'):
        subtext.text = lagdi[key]
        for att in elm:
           if VDBDict.index(att.tag)>VDBDict.index(lags):
-             att.addprevious(subtext)
+	     elm[elm.index(att)-1].addprevious(subtext)
 
 #---- despike
   for key in spikedi:
@@ -101,7 +102,7 @@ for elm in doc.getiterator('variable'):
        subtext.text = spikedi[key]
        for att in elm:
           if VDBDict.index(att.tag)>VDBDict.index(spike):
-             att.addprevious(subtext)
+	     elm[elm.index(att)-1].addprevious(subtext)
 
 doc.write('VDB.xml',pretty_print=True)
 
