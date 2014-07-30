@@ -60,7 +60,7 @@ spikedi=makeDi('Despike')
 #----modvars
 for elm in doc.getiterator('variable'):
   for key in modi:
-    if elm.attrib['name']==key:
+    if elm.attrib['name']==key.strip():
        subtext = etree.SubElement(elm, mod)
        subtext.text = modi[key]
        for att in elm:
@@ -69,7 +69,7 @@ for elm in doc.getiterator('variable'):
 
 #---- derived
   for key in DRdi:
-    if elm.attrib['name']==key:
+    if elm.attrib['name']==key.strip():
        subtext = etree.SubElement(elm, derive)
        subtext.text = DRdi[key]
        for att in elm:
@@ -78,7 +78,7 @@ for elm in doc.getiterator('variable'):
 
 #---- depndTable
   for key in depdi:
-    if elm.attrib['name']==key:
+    if elm.attrib['name']==key.strip():
        subtext = etree.SubElement(elm, deps)
        subtext.text = depdi[key]
        for att in elm:
@@ -87,7 +87,7 @@ for elm in doc.getiterator('variable'):
 
 #---- lags
   for key in lagdi:
-    if elm.attrib['name']==key:
+    if elm.attrib['name']==key.strip():
        subtext = etree.SubElement(elm, lags)
        subtext.text = lagdi[key]
        for att in elm:
@@ -96,7 +96,7 @@ for elm in doc.getiterator('variable'):
 
 #---- despike
   for key in spikedi:
-    if elm.attrib['name']==key:
+    if elm.attrib['name']==key.strip():
        subtext = etree.SubElement(elm, spike)
        subtext.text = spikedi[key]
        for att in elm:

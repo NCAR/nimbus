@@ -2800,7 +2800,7 @@
       <is_analog>false</is_analog>
       <category>Radiation</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>IRBV IRBHT</dependencies><reference>0</reference>
     </variable>
     <variable name="IRBHT">
       <units>deg_C</units>
@@ -4162,7 +4162,7 @@
       <is_analog>false</is_analog>
       <category>Uncorr'd Raw</category>
       <standard_name>air_pressure</standard_name>
-      <reference>0</reference>
+      <dependencies>PSFD</dependencies><reference>0</reference>
     </variable>
     <variable name="PSXC">
       <units>hPa</units>
@@ -4360,7 +4360,7 @@
       <is_analog>false</is_analog>
       <category>Uncorr'd Raw</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>QCR</dependencies><reference>0</reference>
     </variable>
     <variable name="QCXC">
       <units>hPa</units>
