@@ -21,10 +21,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2006
 
 #include <raf/vardb.h>
 
-#include <stdio.h>
+#include <cstdio>
 #include <sys/types.h>
 
-#include "vardb.h"
 #include <netcdf.h>
 #include <raf/portable.h>
 
