@@ -32,6 +32,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 #define FALSE	0
 #endif
 
+
 struct vardb_hdr	/* This is the first struct in the file	*/
 	{
 	int32_t	MagicCookie;
@@ -124,7 +125,8 @@ float	VarDB_GetFixedRangeLower(const char vn[]),
 	VarDB_GetMaxLimit(const char vn[]),
 	VarDB_GetCalRangeLower(const char vn[]),
 	VarDB_GetCalRangeUpper(const char vn[]),
-	VarDB_GetSpikeSlope(const char vn[]);
+	VarDB_GetSpikeSlope(const char vn[]),
+        VarDB_GetVoltageRangeUpper(const char vn[]);
 
 bool	VarDB_isAnalog(const char vn[]);
 //	VarDB_isRangeFixed(const char vn[]),

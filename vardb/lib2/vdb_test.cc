@@ -13,6 +13,7 @@ int main()
   }
 
   VDBVar *zero = vdb.get_var("ZERO");
+  cout<<zero->num_vars();
   if(zero->get_attribute("UnIts")=="none")
   {cout<<"Looks good!\n";
   }else{cout<<"Check configuration\n";}

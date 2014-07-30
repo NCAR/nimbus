@@ -39,16 +39,17 @@ def textChange():
    global bools
    bools=True
    if str(rightInfoHub['textBoxes']['is_analog'].currentText())=='false':
-      rightInfoHub['textBoxes']['voltageRange'].setDisabled(True)
-      rightInfoHub['textBoxes']['voltageRange'].setCurrentIndex(0)
-      rightInfoHub['textBoxes']['defaultSampleRate'].setDisabled(True)
-      rightInfoHub['textBoxes']['defaultSampleRate'].setCurrentIndex(0)
+      rightInfoHub['textBoxes']['voltage_range'].setDisabled(True)
+      rightInfoHub['textBoxes']['voltage_range'].setCurrentIndex(0)
+      rightInfoHub['textBoxes']['default_sample_rate'].setDisabled(True)
+      rightInfoHub['textBoxes']['default_sample_rate'].setCurrentIndex(0)
    else:
-      rightInfoHub['textBoxes']['voltageRange'].setDisabled(False)
-      rightInfoHub['textBoxes']['defaultSampleRate'].setDisabled(False)
+      rightInfoHub['textBoxes']['voltage_range'].setDisabled(False)
+      rightInfoHub['textBoxes']['default_sample_rate'].setDisabled(False)
 #-----------------------------------------------------------------------------
 #Creates upright hand side lables and text boxes
 def labler(lablename,signalname,self,num):
+   print lablename,signalname
    #incoming signal names are local, must be global for use in exec
    global selfglobal
    global rightInfoHub
@@ -65,12 +66,13 @@ def labler(lablename,signalname,self,num):
          stdList=getInfo.getStandardNames(fileName())
       else:
          stdList=getInfo.getCategories(fileName())
-
+      print stdList
+      print signalname
       rightInfoHub['textBoxes'][lablename].setCurrentIndex(stdList.index(signalname))
       
    rightInfoHub['headers'][lablename].setText(lablename)
    rightInfoHub['headers'][lablename].setMinimumSize(rightInfoHub['headers'][lablename].sizeHint())
-   if lablename not in self.booleanList and lablename not in (x[0] for x in self.catelogList) and lablename not in ['voltageRange','defaultSampleRate']:
+   if lablename not in self.booleanList and lablename not in (x[0] for x in self.catelogList) and lablename not in ['voltage_range','default_sample_rate']:
      rightInfoHub['textBoxes'][lablename].setText(str(signalname))
 
      #Connvects changes in text box to bools logic
@@ -130,7 +132,7 @@ def makeRightInfoHub(self,headers):
         for item in stdList:
           rightInfoHub['textBoxes'][headers[i]].addItem(item)
         rightInfoHub['textBoxes'][headers[i]].currentIndexChanged.connect(lambda:textChange())
-     elif headers[i]=='defaultSampleRate':
+     elif headers[i]=='default_sample_rate':
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
         rightInfoHub['textBoxes'][headers[i]].addItem("")
         rightInfoHub['textBoxes'][headers[i]].addItem("500")
@@ -140,7 +142,7 @@ def makeRightInfoHub(self,headers):
         rightInfoHub['textBoxes'][headers[i]].setCurrentIndex(0)
         rightInfoHub['textBoxes'][headers[i]].activated.connect(partial(onActivated,self,headers[i]))
         rightInfoHub['textBoxes'][headers[i]].activated.connect(lambda:textChange())
-     elif headers[i]=='voltageRange':
+     elif headers[i]=='voltage_range':
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
         rightInfoHub['textBoxes'][headers[i]].addItem("")
         rightInfoHub['textBoxes'][headers[i]].addItem("-10 10")

@@ -30,6 +30,10 @@ std::string VDBVar::get_attribute(int index)const
 {
   DOMNodeList* x=_variable->getChildNodes();
   DOMNode* holder=x->item(1);
+  if (index> x->getLength()/2-1)
+  {
+    return NULL;
+  }
   for (int i=0;i<index;i++)
   {
     holder=holder->getNextSibling();
@@ -68,7 +72,7 @@ std::string VDBVar::get_attribute(const std::string attr_name) const
     holder=holder->getNextSibling();
     holder=holder->getNextSibling();
   }
-  return "None";
+  return "";
 };
 //---------------------------------------------------------------------------------------
 //Sets a variable's information for specified attribute
@@ -193,7 +197,7 @@ VDBVar *VDBFile::get_var(const string var) const
     holder=holder->getNextSibling();
     holder=holder->getNextSibling();
   }
-  cout<<"variable "<<var<<" not found\n";
+  return NULL;
 };
 //---------------------------------------------------------------------------------------
 //Returns variable at input index in vardb starting at zero
@@ -215,7 +219,7 @@ VDBVar *VDBFile::get_var(int index)
   DOMNode* name;
   if (index>elems->getLength()/2-1)
   {
-    cout<<"variable "<<index<<" not found\n";
+    return NULL;
   }
   for(int i=0;i<index;i++)
   {
