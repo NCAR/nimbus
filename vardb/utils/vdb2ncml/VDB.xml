@@ -172,7 +172,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <spike_slope>4.00</spike_slope><reference>0</reference>
     </variable>
     <variable name="ADIF">
       <units>hPa</units>
@@ -222,7 +222,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>ADIF QCB XMACH2</dependencies><reference>0</reference>
     </variable>
     <variable name="AKRD">
       <units>degree</units>
@@ -230,7 +230,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>ADIFR QCXC XMACH2</dependencies><reference>0</reference>
     </variable>
     <variable name="ALT">
       <units>m</units>
@@ -238,7 +238,7 @@
       <is_analog>false</is_analog>
       <category>Position</category>
       <standard_name>altitude</standard_name>
-      <reference>0</reference>
+      <spike_slope>1.20</spike_slope><reference>0</reference>
     </variable>
     <variable name="ALTX">
       <units>m</units>
@@ -292,7 +292,7 @@
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>ADIFR QCF</dependencies><reference>0</reference>
     </variable>
     <variable name="ARDMA">
       <units>count</units>
@@ -380,7 +380,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>air_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>RTFR XMACH2</dependencies><reference>0</reference>
     </variable>
     <variable name="ATHL1">
       <units>deg_C</units>
@@ -388,7 +388,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>air_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>RTHL1 XMACH2</dependencies><reference>0</reference>
     </variable>
     <variable name="ATHL2">
       <units>deg_C</units>
@@ -396,7 +396,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>air_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>RTHL2 XMACH2</dependencies><reference>0</reference>
     </variable>
     <variable name="ATHR1">
       <units>deg_C</units>
@@ -444,7 +444,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>air_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>RTRL XMACH2</dependencies><reference>0</reference>
     </variable>
     <variable name="ATRR">
       <units>deg_C</units>
@@ -460,7 +460,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>AKRD</dependencies><reference>0</reference>
     </variable>
     <variable name="ATW">
       <units>deg_C</units>
@@ -476,7 +476,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>air_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="ATX">
       <units>deg_C</units>
@@ -484,7 +484,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>air_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>ATRL</dependencies><reference>0</reference>
     </variable>
     <variable name="AUHSAS">
       <units>count</units>
@@ -612,7 +612,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="C1DP">
       <units>#/L</units>
@@ -620,7 +620,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="C200X">
       <units>#/L</units>
@@ -652,7 +652,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="C2DCA">
       <units>#/L</units>
@@ -676,7 +676,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="C2DPA">
       <units>#/L</units>
@@ -718,7 +718,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="CCEP">
       <units>nmi</units>
@@ -884,7 +884,7 @@
       <is_analog>false</is_analog>
       <category>Chemistry</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>ZERO</dependencies><reference>0</reference>
     </variable>
     <variable name="COCOR">
       <units>V</units>
@@ -892,7 +892,7 @@
       <is_analog>false</is_analog>
       <category>Chemistry</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>ZERO</dependencies><reference>0</reference>
     </variable>
     <variable name="CON2C1">
       <units>#/L</units>
@@ -916,7 +916,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DC</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC1DC050">
       <units>#/L</units>
@@ -924,7 +924,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DC</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC1DC100">
       <units>#/L</units>
@@ -932,7 +932,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DC</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC1DC150">
       <units>#/L</units>
@@ -940,7 +940,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DC</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC1DP">
       <units>#/L</units>
@@ -948,7 +948,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DP</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC2C">
       <units>#/L</units>
@@ -956,7 +956,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>SHDORC TASX</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC2DC">
       <units>#/L</units>
@@ -964,7 +964,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DC</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC2DC050">
       <units>#/L</units>
@@ -972,7 +972,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DC</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC2DC100">
       <units>#/L</units>
@@ -980,7 +980,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DC</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC2DC150">
       <units>#/L</units>
@@ -988,7 +988,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DC</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC2DCA">
       <units>#/L</units>
@@ -1012,7 +1012,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DP</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC2DPA">
       <units>#/L</units>
@@ -1036,7 +1036,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>SHDORP TASX</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC3">
       <units>#/cm3</units>
@@ -1044,7 +1044,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS300</dependencies><reference>0</reference>
     </variable>
     <variable name="CONC6">
       <units>#/L</units>
@@ -1052,7 +1052,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> C260X</dependencies><reference>0</reference>
     </variable>
     <variable name="CONCA">
       <units>#/cm3</units>
@@ -1068,7 +1068,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CCDP</dependencies><reference>0</reference>
     </variable>
     <variable name="CONCF">
       <units>#/cm3</units>
@@ -1076,7 +1076,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS100</dependencies><reference>0</reference>
     </variable>
     <variable name="CONCH">
       <units>#/cm3</units>
@@ -1084,7 +1084,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>XSIGV</dependencies><reference>0</reference>
     </variable>
     <variable name="CONCM">
       <units>#/cm3</units>
@@ -1100,7 +1100,7 @@
       <is_analog>false</is_analog>
       <category>Chemistry</category>
       <standard_name>atmosphere_number_content_of_aerosol_particles</standard_name>
-      <reference>0</reference>
+      <dependencies>CNTS FCNC PCN CNTEMP PSXC ATX</dependencies><reference>0</reference>
     </variable>
     <variable name="CONCP">
       <units>#/cm3</units>
@@ -1108,7 +1108,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS200</dependencies><reference>0</reference>
     </variable>
     <variable name="CONCR">
       <units>#/cm3</units>
@@ -1124,7 +1124,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CUHSAS</dependencies><reference>0</reference>
     </variable>
     <variable name="CONCU100">
       <units>#/cm3</units>
@@ -1132,7 +1132,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>CUHSAS</dependencies><reference>0</reference>
     </variable>
     <variable name="CONCU500">
       <units>#/cm3</units>
@@ -1140,7 +1140,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>CUHSAS</dependencies><reference>0</reference>
     </variable>
     <variable name="CONCV">
       <units>#/cm3</units>
@@ -1156,7 +1156,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> TASX</dependencies><reference>0</reference>
     </variable>
     <variable name="CONCY">
       <units>#/L</units>
@@ -1164,7 +1164,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> TASX</dependencies><reference>0</reference>
     </variable>
     <variable name="CORAW">
       <units>V</units>
@@ -1182,7 +1182,7 @@
       <is_analog>false</is_analog>
       <category>Chemistry</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>ZERO</dependencies><reference>0</reference>
     </variable>
     <variable name="CPCAS">
       <units>#/cm3</units>
@@ -1234,7 +1234,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> AS100 TASX REJAT OVFLW FRNG</dependencies><reference>0</reference>
     </variable>
     <variable name="CS200">
       <units>#/cm3</units>
@@ -1242,7 +1242,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> AS200 PFLWC</dependencies><reference>0</reference>
     </variable>
     <variable name="CS300">
       <units>#/cm3</units>
@@ -1250,7 +1250,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> AS300 TASX</dependencies><reference>0</reference>
     </variable>
     <variable name="CSTAT">
       <units>none</units>
@@ -1292,7 +1292,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>AUHSAS UFLWC USCAT</dependencies><reference>0</reference>
     </variable>
     <variable name="CVEW">
       <units>m/s</units>
@@ -1332,7 +1332,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DC</dependencies><reference>0</reference>
     </variable>
     <variable name="DBAR1DP">
       <units>um</units>
@@ -1340,7 +1340,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DP</dependencies><reference>0</reference>
     </variable>
     <variable name="DBAR2DC">
       <units>um</units>
@@ -1348,7 +1348,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DC</dependencies><reference>0</reference>
     </variable>
     <variable name="DBAR2DCA">
       <units>um</units>
@@ -1372,7 +1372,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DP</dependencies><reference>0</reference>
     </variable>
     <variable name="DBAR2DPA">
       <units>um</units>
@@ -1396,7 +1396,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS300</dependencies><reference>0</reference>
     </variable>
     <variable name="DBAR6">
       <units>um</units>
@@ -1404,7 +1404,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> C260X</dependencies><reference>0</reference>
     </variable>
     <variable name="DBARA">
       <units>um</units>
@@ -1420,7 +1420,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CCDP</dependencies><reference>0</reference>
     </variable>
     <variable name="DBARF">
       <units>um</units>
@@ -1428,7 +1428,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS100</dependencies><reference>0</reference>
     </variable>
     <variable name="DBARM">
       <units>um</units>
@@ -1444,7 +1444,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS200</dependencies><reference>0</reference>
     </variable>
     <variable name="DBARU">
       <units>um</units>
@@ -1452,7 +1452,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CUHSAS</dependencies><reference>0</reference>
     </variable>
     <variable name="DBARX">
       <units>um</units>
@@ -1460,7 +1460,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> C200X</dependencies><reference>0</reference>
     </variable>
     <variable name="DBARY">
       <units>um</units>
@@ -1468,7 +1468,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> C200Y</dependencies><reference>0</reference>
     </variable>
     <variable name="DBZ1DC">
       <units>dBZ</units>
@@ -1476,7 +1476,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DC</dependencies><reference>0</reference>
     </variable>
     <variable name="DBZ1DP">
       <units>dBZ</units>
@@ -1484,7 +1484,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DP</dependencies><reference>0</reference>
     </variable>
     <variable name="DBZ2DC">
       <units>dBZ</units>
@@ -1492,7 +1492,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DC</dependencies><reference>0</reference>
     </variable>
     <variable name="DBZ2DCA">
       <units>dBZ</units>
@@ -1516,7 +1516,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DP</dependencies><reference>0</reference>
     </variable>
     <variable name="DBZ2DPA">
       <units>dBZ</units>
@@ -1540,7 +1540,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C260X</dependencies><reference>0</reference>
     </variable>
     <variable name="DBZD">
       <units>dBZ</units>
@@ -1548,7 +1548,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>CCDP</dependencies><reference>0</reference>
     </variable>
     <variable name="DBZF">
       <units>dBZ</units>
@@ -1556,7 +1556,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>CS100</dependencies><reference>0</reference>
     </variable>
     <variable name="DIFF1">
       <units>Unk</units>
@@ -1588,7 +1588,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DC</dependencies><reference>0</reference>
     </variable>
     <variable name="DISP1DP">
       <units>none</units>
@@ -1596,7 +1596,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DP</dependencies><reference>0</reference>
     </variable>
     <variable name="DISP2DC">
       <units>none</units>
@@ -1604,7 +1604,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DC</dependencies><reference>0</reference>
     </variable>
     <variable name="DISP2DCA">
       <units>none</units>
@@ -1628,7 +1628,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DP</dependencies><reference>0</reference>
     </variable>
     <variable name="DISP2DPA">
       <units>none</units>
@@ -1652,7 +1652,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> C260X</dependencies><reference>0</reference>
     </variable>
     <variable name="DISPD">
       <units>none</units>
@@ -1660,7 +1660,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CCDP</dependencies><reference>0</reference>
     </variable>
     <variable name="DISPF">
       <units>none</units>
@@ -1668,7 +1668,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS100</dependencies><reference>0</reference>
     </variable>
     <variable name="DISPP">
       <units>none</units>
@@ -1676,7 +1676,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS200</dependencies><reference>0</reference>
     </variable>
     <variable name="DISPU">
       <units>none</units>
@@ -1684,7 +1684,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CUHSAS</dependencies><reference>0</reference>
     </variable>
     <variable name="DISPY">
       <units>none</units>
@@ -1692,7 +1692,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> C200Y</dependencies><reference>0</reference>
     </variable>
     <variable name="DMS">
       <units>pptv</units>
@@ -1708,7 +1708,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>dew_point_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>EW</dependencies><reference>0</reference>
     </variable>
     <variable name="DPB">
       <units>deg_C</units>
@@ -1796,7 +1796,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>dew_point_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>DP_DPB</dependencies><reference>0</reference>
     </variable>
     <variable name="DRFTA">
       <units>degree</units>
@@ -1932,7 +1932,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> A1DC</dependencies><reference>0</reference>
     </variable>
     <variable name="DT1DP">
       <units>ms</units>
@@ -1940,7 +1940,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> A1DP</dependencies><reference>0</reference>
     </variable>
     <variable name="DT2DC">
       <units>ms</units>
@@ -1948,7 +1948,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> A2DC</dependencies><reference>0</reference>
     </variable>
     <variable name="DT2DP">
       <units>ms</units>
@@ -1956,7 +1956,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> A2DP</dependencies><reference>0</reference>
     </variable>
     <variable name="DTB">
       <units>deg_C</units>
@@ -1984,7 +1984,7 @@
       <is_analog>false</is_analog>
       <category>Position</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>HGME PALT</dependencies><reference>0</reference>
     </variable>
     <variable name="DVALUE">
       <units>m</units>
@@ -1992,7 +1992,7 @@
       <is_analog>false</is_analog>
       <category>Position</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>GGALT PALT</dependencies><reference>0</reference>
     </variable>
     <variable name="EDPC">
       <units>hPa</units>
@@ -2008,7 +2008,7 @@
       <is_analog>false</is_analog>
       <category>Thermodynamic</category>
       <standard_name>water_vapor_pressure</standard_name>
-      <reference>0</reference>
+      <dependencies>MIRRTMP PSXC CAVP</dependencies><reference>0</reference>
     </variable>
     <variable name="EWX">
       <units>hPa</units>
@@ -2016,7 +2016,7 @@
       <is_analog>false</is_analog>
       <category>Thermodynamic</category>
       <standard_name>water_vapor_pressure</standard_name>
-      <reference>0</reference>
+      <dependencies>EW_DPB</dependencies><reference>0</reference>
     </variable>
     <variable name="EW_UVH">
       <units>hPa</units>
@@ -2024,7 +2024,7 @@
       <is_analog>false</is_analog>
       <category>Thermodynamic</category>
       <standard_name>water_vapor_pressure</standard_name>
-      <reference>0</reference>
+      <dependencies>CONCH XCELLTEMP PSXC XCELLPRES</dependencies><reference>0</reference>
     </variable>
     <variable name="EW_VXL">
       <units>hPa</units>
@@ -2070,7 +2070,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>FRST FSTB</dependencies><reference>0</reference>
     </variable>
     <variable name="FANV">
       <units>V</units>
@@ -2086,7 +2086,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>AFSSP FSTB</dependencies><reference>0</reference>
     </variable>
     <variable name="FCN">
       <units>vlpm</units>
@@ -2104,7 +2104,7 @@
       <is_analog>false</is_analog>
       <category>Chemistry</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>FCN PCN CNTEMP</dependencies><reference>0</reference>
     </variable>
     <variable name="FMB">
       <units>kV/m</units>
@@ -2274,7 +2274,7 @@
       <max_limit>360.000000</max_limit>
       <category>Position</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>FXDIST</dependencies><reference>0</reference>
     </variable>
     <variable name="FXDIST">
       <units>km</units>
@@ -2284,7 +2284,7 @@
       <max_limit>5000.000000</max_limit>
       <category>Position</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>LAT LON</dependencies><reference>0</reference>
     </variable>
     <variable name="FZV">
       <units>V</units>
@@ -2324,7 +2324,7 @@
       <is_analog>false</is_analog>
       <category>Position</category>
       <standard_name>altitude</standard_name>
-      <reference>0</reference>
+      <dependencies>GGALT PALT GGNSAT GGSTATUS</dependencies><reference>0</reference>
     </variable>
     <variable name="GGLAT">
       <units>degree_N</units>
@@ -2386,7 +2386,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> GGSPD GGTRK</dependencies><reference>0</reference>
     </variable>
     <variable name="GGVNS">
       <units>m/s</units>
@@ -2394,7 +2394,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> GGSPD GGTRK</dependencies><reference>0</reference>
     </variable>
     <variable name="GLAT">
       <units>degree_N</units>
@@ -2586,7 +2586,7 @@
       <is_analog>false</is_analog>
       <category>Position</category>
       <standard_name>altitude</standard_name>
-      <reference>0</reference>
+      <dependencies>WP3</dependencies><reference>0</reference>
     </variable>
     <variable name="HK28AII">
       <units>V</units>
@@ -2754,7 +2754,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>QCX</dependencies><reference>0</reference>
     </variable>
     <variable name="IASX">
       <units>knot</units>
@@ -2828,7 +2828,7 @@
       <is_analog>false</is_analog>
       <category>Radiation</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>IRTV IRTHT</dependencies><reference>0</reference>
     </variable>
     <variable name="IRTHT">
       <units>deg_C</units>
@@ -2864,7 +2864,7 @@
       <is_analog>false</is_analog>
       <category>Chemistry</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="LAT">
       <units>degree_N</units>
@@ -2874,7 +2874,7 @@
       <max_limit>90.000000</max_limit>
       <category>Position</category>
       <standard_name>latitude</standard_name>
-      <reference>0</reference>
+      <spike_slope>0.05</spike_slope><reference>0</reference>
     </variable>
     <variable name="LATC">
       <units>degree_N</units>
@@ -2884,7 +2884,7 @@
       <max_limit>90.000000</max_limit>
       <category>Position</category>
       <standard_name>latitude</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="LCLP">
       <units>hPa</units>
@@ -2892,7 +2892,7 @@
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>PSXC ATX DPXC</dependencies><reference>0</reference>
     </variable>
     <variable name="LCLT">
       <units>deg_C</units>
@@ -2900,7 +2900,7 @@
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>LCLP</dependencies><reference>0</reference>
     </variable>
     <variable name="LON">
       <units>degree_E</units>
@@ -2910,7 +2910,7 @@
       <max_limit>180.000000</max_limit>
       <category>Position</category>
       <standard_name>longitude</standard_name>
-      <modulus_range>-180 180</modulus_range><reference>0</reference>
+      <modulus_range>-180 180</modulus_range><spike_slope>0.05</spike_slope><reference>0</reference>
     </variable>
     <variable name="LONC">
       <units>degree_E</units>
@@ -2920,7 +2920,7 @@
       <max_limit>180.000000</max_limit>
       <category>Position</category>
       <standard_name>longitude</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="LWC">
       <units>gram/m3</units>
@@ -2936,7 +2936,7 @@
       <is_analog>false</is_analog>
       <category>Liquid Water</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>LWC TASX CONCF_WDR</dependencies><reference>0</reference>
     </variable>
     <variable name="MACHF">
       <units>none</units>
@@ -3100,7 +3100,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>humidity_mixing_ratio</standard_name>
-      <reference>0</reference>
+      <dependencies>PSXC EWX</dependencies><reference>0</reference>
     </variable>
     <variable name="MRCR">
       <units>gram/kg</units>
@@ -3116,7 +3116,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>humidity_mixing_ratio</standard_name>
-      <reference>0</reference>
+      <dependencies>RHOLA PSXC ATX</dependencies><reference>0</reference>
     </variable>
     <variable name="MRLA1">
       <units>gram/kg</units>
@@ -3124,7 +3124,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>humidity_mixing_ratio</standard_name>
-      <reference>0</reference>
+      <dependencies>RHOLA1 PSXC ATX</dependencies><reference>0</reference>
     </variable>
     <variable name="MRTDLL">
       <units>gram/kg</units>
@@ -3384,7 +3384,7 @@
       <is_analog>false</is_analog>
       <category>Chemistry</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>O3FS EWX PSFDC ONE</dependencies><reference>0</reference>
     </variable>
     <variable name="O3FF">
       <units>slpm</units>
@@ -3440,7 +3440,7 @@
       <is_analog>false</is_analog>
       <category>Non-Standard</category>
       <standard_name>air_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>OBBCOD ODETDC OTDET OTBBC ODETSG OTSNT OTBNCH</dependencies><reference>0</reference>
     </variable>
     <variable name="OBBCOD">
       <units>count</units>
@@ -3456,7 +3456,7 @@
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>OAT</dependencies><reference>0</reference>
     </variable>
     <variable name="ODETDC">
       <units>count</units>
@@ -3472,7 +3472,7 @@
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>OAT</dependencies><reference>0</reference>
     </variable>
     <variable name="ODETSG">
       <units>count</units>
@@ -3488,7 +3488,7 @@
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>OAT</dependencies><reference>0</reference>
     </variable>
     <variable name="OGAIN">
       <units>count</units>
@@ -3504,7 +3504,7 @@
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>OAT</dependencies><reference>0</reference>
     </variable>
     <variable name="ONE">
       <units>none</units>
@@ -3512,7 +3512,7 @@
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="OSMOTR">
       <units>count</units>
@@ -3568,7 +3568,7 @@
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>OAT</dependencies><reference>0</reference>
     </variable>
     <variable name="OTSNT">
       <units>count</units>
@@ -3632,7 +3632,7 @@
       <is_analog>false</is_analog>
       <category>Position</category>
       <standard_name>altitude</standard_name>
-      <reference>0</reference>
+      <dependencies>PSXC</dependencies><reference>0</reference>
     </variable>
     <variable name="PALTF">
       <units>feet</units>
@@ -3640,7 +3640,7 @@
       <is_analog>false</is_analog>
       <category>Position</category>
       <standard_name>altitude</standard_name>
-      <reference>0</reference>
+      <dependencies>PALT</dependencies><reference>0</reference>
     </variable>
     <variable name="PBRS">
       <units>none</units>
@@ -3760,7 +3760,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>PFLW PSXC ATX</dependencies><reference>0</reference>
     </variable>
     <variable name="PFLWS">
       <units>std cm3/s</units>
@@ -3794,7 +3794,7 @@
       <max_limit>180.000000</max_limit>
       <category>Aircraft State</category>
       <standard_name>platform_pitch_angle</standard_name>
-      <reference>0</reference>
+      <spike_slope>0.50</spike_slope><reference>0</reference>
     </variable>
     <variable name="PLGB">
       <units>V</units>
@@ -3830,7 +3830,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DC</dependencies><reference>0</reference>
     </variable>
     <variable name="PLWC1DP">
       <units>gram/m3</units>
@@ -3838,7 +3838,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DP</dependencies><reference>0</reference>
     </variable>
     <variable name="PLWC2">
       <units>W</units>
@@ -3856,7 +3856,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DC</dependencies><reference>0</reference>
     </variable>
     <variable name="PLWC2DCA">
       <units>gram/m3</units>
@@ -3880,7 +3880,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>C2DP</dependencies><reference>0</reference>
     </variable>
     <variable name="PLWC2DPA">
       <units>gram/m3</units>
@@ -3912,7 +3912,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>C260X</dependencies><reference>0</reference>
     </variable>
     <variable name="PLWCC">
       <units>gram/m3</units>
@@ -3920,7 +3920,7 @@
       <is_analog>false</is_analog>
       <category>Liquid Water</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>PLWC TASX ATX PSXC</dependencies><reference>0</reference>
     </variable>
     <variable name="PLWCC1">
       <units>gram/m3</units>
@@ -3928,7 +3928,7 @@
       <is_analog>false</is_analog>
       <category>Liquid Water</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>PLWC1 TASX ATX PSXC</dependencies><reference>0</reference>
     </variable>
     <variable name="PLWCC2">
       <units>gram/m3</units>
@@ -3944,7 +3944,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>CCDP</dependencies><reference>0</reference>
     </variable>
     <variable name="PLWCF">
       <units>gram/m3</units>
@@ -3952,7 +3952,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>CS100</dependencies><reference>0</reference>
     </variable>
     <variable name="PLWCX">
       <units>gram/m3</units>
@@ -3960,7 +3960,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>C200X</dependencies><reference>0</reference>
     </variable>
     <variable name="PLWCY">
       <units>gram/m3</units>
@@ -3968,7 +3968,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>atmosphere_cloud_liquid_water_content</standard_name>
-      <reference>0</reference>
+      <dependencies>C200Y</dependencies><reference>0</reference>
     </variable>
     <variable name="PMGB">
       <units>V</units>
@@ -4074,7 +4074,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>air_pressure</standard_name>
-      <reference>0</reference>
+      <dependencies>PSFRD QCFR</dependencies><reference>0</reference>
     </variable>
     <variable name="PSFD">
       <units>hPa</units>
@@ -4106,7 +4106,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>air_pressure</standard_name>
-      <reference>0</reference>
+      <dependencies>PSFD AQRATIO XMACH2</dependencies><reference>0</reference>
     </variable>
     <variable name="PSFRD">
       <units>hPa</units>
@@ -4114,7 +4114,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>air_pressure</standard_name>
-      <derive>PSFC</derive><reference>0</reference>
+      <derive>PSFC</derive><spike_slope>20.0</spike_slope><reference>0</reference>
     </variable>
     <variable name="PSLH">
       <units>hPa</units>
@@ -4138,7 +4138,7 @@
       <is_analog>false</is_analog>
       <category>Thermodynamic</category>
       <standard_name>air_pressure_at_sea_level</standard_name>
-      <reference>0</reference>
+      <dependencies>HGM232 ATX MR PSXC</dependencies><reference>0</reference>
     </variable>
     <variable name="PSW">
       <units>hPa</units>
@@ -4154,7 +4154,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>air_pressure</standard_name>
-      <reference>0</reference>
+      <dependencies>PSW QCW</dependencies><reference>0</reference>
     </variable>
     <variable name="PSX">
       <units>hPa</units>
@@ -4170,7 +4170,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>air_pressure</standard_name>
-      <reference>0</reference>
+      <dependencies>PSFDC</dependencies><reference>0</reference>
     </variable>
     <variable name="PTALT1">
       <units>feet</units>
@@ -4242,7 +4242,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS300</dependencies><reference>0</reference>
     </variable>
     <variable name="PVOLP">
       <units>um3/m3</units>
@@ -4250,7 +4250,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS200</dependencies><reference>0</reference>
     </variable>
     <variable name="PVOLU">
       <units>um3/m3</units>
@@ -4258,7 +4258,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CUHSAS</dependencies><reference>0</reference>
     </variable>
     <variable name="QCB">
       <units>hPa</units>
@@ -4300,7 +4300,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="QCFR">
       <units>hPa</units>
@@ -4318,7 +4318,7 @@
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>QCFR PSFRD</dependencies><reference>0</reference>
     </variable>
     <variable name="QCR">
       <units>hPa</units>
@@ -4336,7 +4336,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="QCW">
       <units>hPa</units>
@@ -4352,7 +4352,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>QCW</dependencies><reference>0</reference>
     </variable>
     <variable name="QCX">
       <units>hPa</units>
@@ -4368,7 +4368,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>QCRC</dependencies><reference>0</reference>
     </variable>
     <variable name="RADCF">
       <units>none</units>
@@ -4376,7 +4376,7 @@
       <is_analog>false</is_analog>
       <category>Radiation</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> PITCH ROLL THDG SOLZE SOLAZ</dependencies><reference>0</reference>
     </variable>
     <variable name="RALT">
       <units>m</units>
@@ -4384,7 +4384,7 @@
       <is_analog>false</is_analog>
       <category>Position</category>
       <standard_name>height</standard_name>
-      <derive>RALTM</derive><reference>0</reference>
+      <derive>RALTM</derive><dependencies>HGM232</dependencies><reference>0</reference>
     </variable>
     <variable name="RDMAHVPS">
       <units>V</units>
@@ -4472,7 +4472,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>C1DC</dependencies><reference>0</reference>
     </variable>
     <variable name="REFF2DCA">
       <units>um</units>
@@ -4512,7 +4512,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> C260X</dependencies><reference>0</reference>
     </variable>
     <variable name="REFFD">
       <units>um</units>
@@ -4520,7 +4520,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CCDP</dependencies><reference>0</reference>
     </variable>
     <variable name="REFFD2DC">
       <units>um</units>
@@ -4528,7 +4528,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>CCDP_LPO</dependencies><reference>0</reference>
     </variable>
     <variable name="REFFF">
       <units>um</units>
@@ -4536,7 +4536,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS100</dependencies><reference>0</reference>
     </variable>
     <variable name="REFFF2DC">
       <units>um</units>
@@ -4544,7 +4544,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>CCDP_LWO</dependencies><reference>0</reference>
     </variable>
     <variable name="REJAT">
       <units/>
@@ -4576,7 +4576,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>ATX EWX</dependencies><reference>0</reference>
     </variable>
     <variable name="RHOLA">
       <units>gram/m3</units>
@@ -4584,7 +4584,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>VLA PSXC ATX QCXC RHODT</dependencies><reference>0</reference>
     </variable>
     <variable name="RHOLA1">
       <units>gram/m3</units>
@@ -4592,7 +4592,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>VLA1 PSXC ATX QCXC RHODT</dependencies><reference>0</reference>
     </variable>
     <variable name="RHOUV">
       <units>gram/m3</units>
@@ -4608,7 +4608,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>relative_humidity</standard_name>
-      <reference>0</reference>
+      <dependencies>ATX EWX </dependencies><reference>0</reference>
     </variable>
     <variable name="RHUMI">
       <units>%</units>
@@ -4616,7 +4616,7 @@
       <is_analog>false</is_analog>
       <category>Atmos. State</category>
       <standard_name>relative_humidity</standard_name>
-      <reference>0</reference>
+      <dependencies>ATX EWX </dependencies><reference>0</reference>
     </variable>
     <variable name="RICE">
       <units>V</units>
@@ -4636,7 +4636,7 @@
       <max_limit>180.000000</max_limit>
       <category>Aircraft State</category>
       <standard_name>platform_roll_angle</standard_name>
-      <reference>0</reference>
+      <spike_slope>0.50</spike_slope><reference>0</reference>
     </variable>
     <variable name="RSTB">
       <units>deg_C</units>
@@ -4764,7 +4764,7 @@
       <is_analog>false</is_analog>
       <category>Uncorr'd Raw</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>RTRL</dependencies><reference>0</reference>
     </variable>
     <variable name="SDWC1">
       <units>count</units>
@@ -4892,7 +4892,7 @@
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>solar_azimuth_angle</standard_name>
-      <reference>0</reference>
+      <dependencies> SOLZE</dependencies><reference>0</reference>
     </variable>
     <variable name="SOLDE">
       <units>radian</units>
@@ -4900,7 +4900,7 @@
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> SOLZE</dependencies><reference>0</reference>
     </variable>
     <variable name="SOLEL">
       <units>radian</units>
@@ -4908,7 +4908,7 @@
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>solar_elevation_angle</standard_name>
-      <reference>0</reference>
+      <dependencies> SOLZE</dependencies><reference>0</reference>
     </variable>
     <variable name="SOLZE">
       <units>radian</units>
@@ -4916,7 +4916,7 @@
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>solar_zenith_angle</standard_name>
-      <reference>0</reference>
+      <dependencies> YEAR MONTH DAY HOUR MINUTE SECOND GGLAT GGLON</dependencies><reference>0</reference>
     </variable>
     <variable name="SPBPITCH">
       <units>degree</units>
@@ -4980,7 +4980,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>BDIF QCB XMACH2</dependencies><reference>0</reference>
     </variable>
     <variable name="SSLIP">
       <units>degree</units>
@@ -4988,7 +4988,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>SSRD</dependencies><reference>0</reference>
     </variable>
     <variable name="SSRD">
       <units>degree</units>
@@ -4996,7 +4996,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>BDIFR QCXC XMACH2</dependencies><reference>0</reference>
     </variable>
     <variable name="STB">
       <units>deg_C</units>
@@ -5052,7 +5052,7 @@
       <is_analog>false</is_analog>
       <category>Radiation</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="TA2D">
       <units>deg_C</units>
@@ -5084,7 +5084,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>platform_speed_wrt_air</standard_name>
-      <reference>0</reference>
+      <dependencies>QCFC PSFC RTX</dependencies><reference>0</reference>
     </variable>
     <variable name="TASHC">
       <units>m/s</units>
@@ -5092,7 +5092,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>platform_speed_wrt_air</standard_name>
-      <reference>0</reference>
+      <dependencies>TASX MR</dependencies><reference>0</reference>
     </variable>
     <variable name="TASR">
       <units>m/s</units>
@@ -5100,7 +5100,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>platform_speed_wrt_air</standard_name>
-      <reference>0</reference>
+      <dependencies>QCRC PSFC RTX</dependencies><reference>0</reference>
     </variable>
     <variable name="TASW">
       <units>m/s</units>
@@ -5108,7 +5108,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>platform_speed_wrt_air</standard_name>
-      <reference>0</reference>
+      <dependencies>QCWC PSWC RTB</dependencies><reference>0</reference>
     </variable>
     <variable name="TASX">
       <units>m/s</units>
@@ -5116,7 +5116,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>platform_speed_wrt_air</standard_name>
-      <reference>0</reference>
+      <dependencies>TASR</dependencies><reference>0</reference>
     </variable>
     <variable name="TCAB">
       <units>deg_C</units>
@@ -5170,7 +5170,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS300</dependencies><reference>0</reference>
     </variable>
     <variable name="TCNT6">
       <units>count</units>
@@ -5178,7 +5178,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> C260X</dependencies><reference>0</reference>
     </variable>
     <variable name="TCNTD">
       <units>count</units>
@@ -5186,7 +5186,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CCDP</dependencies><reference>0</reference>
     </variable>
     <variable name="TCNTF">
       <units>count</units>
@@ -5194,7 +5194,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS100</dependencies><reference>0</reference>
     </variable>
     <variable name="TCNTP">
       <units>count</units>
@@ -5202,7 +5202,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CS200</dependencies><reference>0</reference>
     </variable>
     <variable name="TCNTU">
       <units>count</units>
@@ -5210,7 +5210,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies> CUHSAS</dependencies><reference>0</reference>
     </variable>
     <variable name="TDCH1">
       <units>none</units>
@@ -5234,7 +5234,7 @@
       <is_analog>false</is_analog>
       <category>Chemistry</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>TEO3 TEO3P ZERO</dependencies><reference>0</reference>
     </variable>
     <variable name="TEO3P">
       <units>hPa</units>
@@ -5292,7 +5292,7 @@
       <max_limit>360.000000</max_limit>
       <category>Aircraft State</category>
       <standard_name>platform_orientation</standard_name>
-      <modulus_range>0 360</modulus_range><reference>0</reference>
+      <modulus_range>0 360</modulus_range><static_lag>-80</static_lag><spike_slope>0.50</spike_slope><reference>0</reference>
     </variable>
     <variable name="THETA">
       <units>K</units>
@@ -5300,7 +5300,7 @@
       <is_analog>false</is_analog>
       <category>Thermodynamic</category>
       <standard_name>air_potential_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>ATX PSXC</dependencies><reference>0</reference>
     </variable>
     <variable name="THETAE">
       <units>K</units>
@@ -5308,7 +5308,7 @@
       <is_analog>false</is_analog>
       <category>Thermodynamic</category>
       <standard_name>equivelent_potential_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>ATX PSXC EWX MR</dependencies><reference>0</reference>
     </variable>
     <variable name="THETAP">
       <units>K</units>
@@ -5316,7 +5316,7 @@
       <is_analog>false</is_analog>
       <category>Thermodynamic</category>
       <standard_name>equivelent_potential_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>ATX PSXC EWX MR</dependencies><reference>0</reference>
     </variable>
     <variable name="THETAQ">
       <units>K</units>
@@ -5324,7 +5324,7 @@
       <is_analog>false</is_analog>
       <category>Thermodynamic</category>
       <standard_name>equivelent_potential_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>ATX PSXC EWX MR PLWCC</dependencies><reference>0</reference>
     </variable>
     <variable name="THETAV">
       <units>K</units>
@@ -5332,7 +5332,7 @@
       <is_analog>false</is_analog>
       <category>Thermodynamic</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>TVIR PSXC</dependencies><reference>0</reference>
     </variable>
     <variable name="THIML1">
       <units>deg_C</units>
@@ -5512,7 +5512,7 @@
       <default_sample_rate>100</default_sample_rate>
       <category>Uncorr'd Raw</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <static_lag>-1000</static_lag><reference>0</reference>
     </variable>
     <variable name="TTHL2">
       <units>deg_C</units>
@@ -5522,7 +5522,7 @@
       <default_sample_rate>100</default_sample_rate>
       <category>Uncorr'd Raw</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <static_lag>-1000</static_lag><reference>0</reference>
     </variable>
     <variable name="TTHR1">
       <units>deg_C</units>
@@ -5586,7 +5586,7 @@
       <is_analog>false</is_analog>
       <category>Uncorr'd Raw</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <static_lag>-1000</static_lag><reference>0</reference>
     </variable>
     <variable name="TTWHC">
       <units>deg_C</units>
@@ -5618,7 +5618,7 @@
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>virtual_temperature</standard_name>
-      <reference>0</reference>
+      <dependencies>ATX MR</dependencies><reference>0</reference>
     </variable>
     <variable name="UFLWC">
       <units>vol cm3/s</units>
@@ -5626,7 +5626,7 @@
       <is_analog>false</is_analog>
       <category>PMS Probe</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>USMPFLW PSXC ATX</dependencies><reference>0</reference>
     </variable>
     <variable name="UI">
       <units>m/s</units>
@@ -5634,7 +5634,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>eastward_wind</standard_name>
-      <reference>0</reference>
+      <dependencies>WI</dependencies><reference>0</reference>
     </variable>
     <variable name="UIC">
       <units>m/s</units>
@@ -5642,7 +5642,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>eastward_wind</standard_name>
-      <reference>0</reference>
+      <dependencies>WIC</dependencies><reference>0</reference>
     </variable>
     <variable name="UVB">
       <units>W/m2</units>
@@ -5730,7 +5730,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>WI</dependencies><reference>0</reference>
     </variable>
     <variable name="UXC">
       <units>m/s</units>
@@ -5738,7 +5738,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>WIC</dependencies><reference>0</reference>
     </variable>
     <variable name="V10">
       <units>V</units>
@@ -5786,7 +5786,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <spike_slope>20.0</spike_slope><reference>0</reference>
     </variable>
     <variable name="VEWC">
       <units>m/s</units>
@@ -5794,7 +5794,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="VI">
       <units>m/s</units>
@@ -5802,7 +5802,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>northward_wind</standard_name>
-      <reference>0</reference>
+      <dependencies>WI</dependencies><reference>0</reference>
     </variable>
     <variable name="VIC">
       <units>m/s</units>
@@ -5810,7 +5810,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>northward_wind</standard_name>
-      <reference>0</reference>
+      <dependencies>WIC</dependencies><reference>0</reference>
     </variable>
     <variable name="VISBC">
       <units>W/m2</units>
@@ -5890,7 +5890,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <spike_slope>20.0</spike_slope><reference>0</reference>
     </variable>
     <variable name="VNSC">
       <units>m/s</units>
@@ -5898,7 +5898,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
     <variable name="VP15A">
       <units>V</units>
@@ -5922,7 +5922,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <spike_slope>0.60</spike_slope><reference>0</reference>
     </variable>
     <variable name="VY">
       <units>m/s</units>
@@ -5930,7 +5930,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>WI</dependencies><reference>0</reference>
     </variable>
     <variable name="VYC">
       <units>m/s</units>
@@ -5938,7 +5938,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>WIC</dependencies><reference>0</reference>
     </variable>
     <variable name="VZI">
       <units>m/s</units>
@@ -5956,7 +5956,7 @@
       <max_limit>360.000000</max_limit>
       <category>Wind</category>
       <standard_name>wind_from_direction</standard_name>
-      <modulus_range>0 360</modulus_range><reference>0</reference>
+      <modulus_range>0 360</modulus_range><dependencies>UI VI</dependencies><reference>0</reference>
     </variable>
     <variable name="WDC">
       <units>degree_T</units>
@@ -5966,7 +5966,7 @@
       <max_limit>360.000000</max_limit>
       <category>Wind</category>
       <standard_name>wind_from_direction</standard_name>
-      <modulus_range>0 360</modulus_range><reference>0</reference>
+      <modulus_range>0 360</modulus_range><dependencies>UIC VIC</dependencies><reference>0</reference>
     </variable>
     <variable name="WI">
       <units>m/s</units>
@@ -5974,7 +5974,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>upward_air_velocity</standard_name>
-      <reference>0</reference>
+      <dependencies>TASX VEW VNS PITCH ROLL THDG ATTACK SSLIP VSPD_G</dependencies><reference>0</reference>
     </variable>
     <variable name="WIC">
       <units>m/s</units>
@@ -5982,7 +5982,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>upward_air_velocity</standard_name>
-      <reference>0</reference>
+      <dependencies>TASX VEWC VNSC PITCH ROLL THDG ATTACK SSLIP VSPD</dependencies><reference>0</reference>
     </variable>
     <variable name="WI_GP">
       <units>m/s</units>
@@ -5998,7 +5998,7 @@
       <is_analog>false</is_analog>
       <category>Aircraft State</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>LAT VEW VNS PALT ACINS</dependencies><reference>0</reference>
     </variable>
     <variable name="WS">
       <units>m/s</units>
@@ -6006,7 +6006,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>wind_speed</standard_name>
-      <reference>0</reference>
+      <dependencies>UI VI</dependencies><reference>0</reference>
     </variable>
     <variable name="WSC">
       <units>m/s</units>
@@ -6014,7 +6014,7 @@
       <is_analog>false</is_analog>
       <category>Wind</category>
       <standard_name>wind_speed</standard_name>
-      <reference>0</reference>
+      <dependencies>UIC VIC</dependencies><reference>0</reference>
     </variable>
     <variable name="XACCUX">
       <units>g</units>
@@ -6190,7 +6190,7 @@
       <is_analog>false</is_analog>
       <category>None</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>XGLWC XGSFC</dependencies><reference>0</reference>
     </variable>
     <variable name="XGSFC">
       <units>cm2/m3</units>
@@ -6218,7 +6218,7 @@
       <is_analog>false</is_analog>
       <category>Chemistry</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>XICN PCN CNTEMP</dependencies><reference>0</reference>
     </variable>
     <variable name="XINHUM">
       <units>V</units>
@@ -6300,7 +6300,7 @@
       <is_analog>false</is_analog>
       <category>Thermodynamic</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies>QCFRC PSFC</dependencies><reference>0</reference>
     </variable>
     <variable name="XN9ATX">
       <units>K</units>
@@ -6612,7 +6612,7 @@
       <is_analog>false</is_analog>
       <category>Housekeeping</category>
       <standard_name>None</standard_name>
-      <reference>0</reference>
+      <dependencies></dependencies><reference>0</reference>
     </variable>
   </variableCatalog>
   <Dictionary>
@@ -6627,6 +6627,9 @@
     <definition name="modulus_range">We can put a definition here!</definition>
     <definition name="category">Used to group signals</definition>
     <definition name="derive">We can put a definition here!</definition>
+    <definition name="dependencies">We can put a definition here!</definition>
+    <definition name="static_lag">We can put a definition here!</definition>
+    <definition name="spike_slope">We can put a definition here!</definition>
     <definition name="standard_name">We can put a definition here!</definition>
     <definition name="reference">We can put a definition here!</definition>
   </Dictionary>

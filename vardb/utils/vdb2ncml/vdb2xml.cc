@@ -47,7 +47,6 @@ void checkModVars(int ncid, int varID, const char *varName)
   FILE *fp;
   if ((fp = fopen(fileName, "r")) == NULL)
   {
-    fprintf(stderr, "vdb2ncml:checkModVars: Failed to open '%s'.\n", fileName);
     return;
   }
 
@@ -76,7 +75,6 @@ void checkDerivedNames(int ncid, int varID, const char *varName)
   FILE *fp;
   if ((fp = fopen(fileName, "r")) == NULL)
   {
-    fprintf(stderr, "vdb2ncml:checkDerivedNames: Failed to open '%s'.\n", fileName);
     return;
   }
 
@@ -108,7 +106,6 @@ void checkDependencies(int ncid, int varID, const char *varName)
   FILE *fp;
   if ((fp = fopen(fileName, "r")) == NULL)
   {
-    fprintf(stderr, "vdb2ncml:checkDependencies: Failed to open '%s'.\n", fileName);
     return;
   }
 
@@ -231,7 +228,6 @@ fprintf(vdb,"  <variableCatalog>\n");
 
     if (isdigit(vp->Name[0]))
     {
-      printf("Variables in netCDF can not start with a digit, skipping [%s]\n", vp->Name);
       continue;
     }
 
@@ -335,6 +331,9 @@ fprintf(vdb,"    <definition name=\"max_limit\">Maximum possible value signal ca
 fprintf(vdb,"    <definition name=\"modulus_range\">We can put a definition here!</definition>\n");
 fprintf(vdb,"    <definition name=\"category\">Used to group signals</definition>\n");
 fprintf(vdb,"    <definition name=\"derive\">We can put a definition here!</definition>\n");
+fprintf(vdb,"    <definition name=\"dependencies\">We can put a definition here!</definition>\n");
+fprintf(vdb,"    <definition name=\"static_lag\">We can put a definition here!</definition>\n");
+fprintf(vdb,"    <definition name=\"spike_slope\">We can put a definition here!</definition>\n");
 fprintf(vdb,"    <definition name=\"standard_name\">We can put a definition here!</definition>\n");
 fprintf(vdb,"    <definition name=\"reference\">We can put a definition here!</definition>\n");
 fprintf(vdb,"  </Dictionary>\n");

@@ -3,7 +3,7 @@ rm VDB.xml
 python VDBHeader.py
 rm $PROJ_DIR/$PROJECT/$AIRCRAFT/VarDB.nc
 make  
-./vdb2ncml $PROJ_DIR/$PROJECT/$AIRCRAFT/VarDB 
+./vdb2xml $PROJ_DIR/$PROJECT/$AIRCRAFT/VarDB 
 python standardNameCorrection.py
 python appendInfo.py
 #sudo mv VDB.xml $PROJ_DIR/Configuration/raf/
