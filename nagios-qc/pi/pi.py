@@ -20,10 +20,10 @@ nodat=-32767.0
 cmds=open('commands','w+')
 
 #VardDB Location
+vardb='$PROJ_DIR/$PROJECT/$AIRCRAFT/vardb.xml'
 vardb='VDB.xml'
 #================================================
-foo = psycopg2.connect(database="real-time-GV", user="ads", host="eol-rt-data.fl-ext.ucar.edu")
-#foo = psycopg2.connect(database="real-time", user="ads", host="hercules.raf-ext.ucar.edu")
+foo = psycopg2.connect(database="real-time", user="ads", host="acserver")
 cur=foo.cursor()
 
 #Get live data names
