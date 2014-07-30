@@ -1,6 +1,7 @@
 import getInfo
 import numpy
 import psycopg2
+import os
 #Julian Quick
 #SUPER intern 2014
 #================================================
@@ -20,7 +21,7 @@ nodat=-32767.0
 cmds=open('commands','w+')
 
 #VardDB Location
-vardb='$PROJ_DIR/$PROJECT/$AIRCRAFT/vardb.xml'
+vardb=os.path.expandvars('$PROJ_DIR/$PROJECT/$AIRCRAFT/vardb.xml')
 vardb='VDB.xml'
 #================================================
 foo = psycopg2.connect(database="real-time", user="ads", host="acserver")

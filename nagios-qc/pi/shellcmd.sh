@@ -15,5 +15,5 @@ do
 
   # append the command to the end of the command file
   `$echocmd $cmdline >> $CommandFile`
-  echo $cmdline
+#  echo $cmdline
 done <commands
