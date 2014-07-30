@@ -27,7 +27,6 @@ def signalSet(self,name):
    global rightInfoHub
    try:
       s=rightInfoHub['textBoxes'][name].text()
-      s=rightInfoHub['textBoxes'][name].text()
    except AttributeError:
       s=rightInfoHub['textBoxes'][name].currentText()
    return str(s)
@@ -49,7 +48,6 @@ def textChange():
 #-----------------------------------------------------------------------------
 #Creates upright hand side lables and text boxes
 def labler(lablename,signalname,self,num):
-   print lablename,signalname
    #incoming signal names are local, must be global for use in exec
    global selfglobal
    global rightInfoHub
@@ -66,8 +64,6 @@ def labler(lablename,signalname,self,num):
          stdList=getInfo.getStandardNames(fileName())
       else:
          stdList=getInfo.getCategories(fileName())
-      print stdList
-      print signalname
       rightInfoHub['textBoxes'][lablename].setCurrentIndex(stdList.index(signalname))
       
    rightInfoHub['headers'][lablename].setText(lablename)
@@ -178,9 +174,10 @@ def saveChanges(self,headers,num):
         signalist=[[]]
         signalist[0]=['name',signalSet(self,'name')]
         while i<len(headers):
+           if signalSet(self,headers[i])!='':
 
-             #signalist is of the form [ [attribute name, attribute text] * N]
-           signalist.append([headers[i],signalSet(self,headers[i])])
+              #signalist is of the form [ [attribute name, attribute text] * N]
+              signalist.append([headers[i],signalSet(self,headers[i])])
            i+=1
                 
              #Uses new information to replace previous information.

@@ -13,7 +13,7 @@ def getRef(name,file):
 def getCategories(file):
    doc=etree.parse(file)
    stdnames=[]
-   for elm in doc.getiterator('Categories'):
+   for elm in doc.getiterator('categories'):
       i=0
       while i<len(elm):
          stdnames.append(elm[i].attrib['name'])
@@ -22,7 +22,7 @@ def getCategories(file):
 def getStandardNames(file):
    doc=etree.parse(file)
    stdnames=[]
-   for elm in doc.getiterator('standardNames'):
+   for elm in doc.getiterator('standard_names'):
       i=0
       while i<len(elm):
          stdnames.append(elm[i].attrib['name'])
