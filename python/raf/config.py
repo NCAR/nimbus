@@ -9,7 +9,7 @@ import raf.rsync as rsync
 import raf.ldm as ldm
 import iss.eol_ftp as eol_ftp
 
-class Config(object):
+class Config(dict):
 
     def __init__(self):
         self.loglevel = logging.INFO
@@ -33,6 +33,9 @@ class Config(object):
             elif arg == "--dryrun":
                 self.dryrun = True
                 del argv[i]
+            elif arg == "--localdir":
+                self['local_dir'] = argv[i+1]
+                del argv[i:i+2]
             else:
                 i += 1
         return argv

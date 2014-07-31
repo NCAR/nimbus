@@ -1,15 +1,15 @@
 "Utility class to download images and kml files."
 
+import sys
+import time
 import os
 import iss.time_tools as tt
-import raf.config as config
 from raf.datepattern import DatePattern
-
+import raf.singleton as singleton
+import raf.config
 import logging
 
 logger = logging.getLogger(__name__)
-
-pytest_plugins = "iss.tests.conftest"
 
 class Downloader(object):
 
@@ -17,14 +17,25 @@ class Downloader(object):
         self.local_dir = '/var/www/html/flight_data/GE/'
         self.file_pattern = None
         self.file_type = None
-        self.osm_file_name = None
-        self.num_images_to_get = 1
+        self.latest_file_name = None
+        self.num_files_to_get = 1
         self.label = None
         self.ftp_dir = None
         self.begin = None
         self.end = None
-        self.config = config.Config()
-        self.ftp = config.Config().FTP()
+        self.ftp = None
+
+    def setFtp(self, ftp):
+        self.ftp = ftp
+
+    def setLocalDirectory(self, local_dir):
+        self.local_dir = local_dir
+
+    def setNumFiles(self, num):
+        self.num_files_to_get = num
+
+    def setLatestFileName(self, name):
+        self.latest_file_name = name
 
     def localListing(self):
         return os.listdir(self.local_dir)
@@ -40,6 +51,13 @@ class Downloader(object):
         self.begin = begin
         self.end = end
 
+    def setTimespan(self, timespan):
+        "Set time range using a special string syntax."
+        trange = tt.parseTimespan(timespan)
+        if not trange[1]:
+            trange[1] = time.time()
+        self.setTimeRange(trange[0], trange[1])
+
     def remoteListing(self):
         self.ftp.open()
         # Generate the patterns we want to select, then accumulate them all
@@ -51,5 +69,67 @@ class Downloader(object):
         logger.info("%d %s files found for time range %s to %s" %
                     (len(listing), self.file_type, 
                      tt.formatTime(self.begin), tt.formatTime(self.end)))
+        listing.sort(key = lambda de: de.filename())
         return listing
+
+    def downloadEntry(self, entry):
+        return self.download(entry.path)
+
+    def download(self, path):
+        self.ftp.open()
+        localpath = os.path.join(self.local_dir, os.path.basename(path))
+        self.ftp.download(path, localpath)
+        return localpath
+
+    def installLatest(self, localpath, destpath, transform=None):
+        """
+        Install local file as the new latest file for some file type.
+
+        If transform is given, then pass each line into the function
+        and write the result to the destination file.
+        """
+        with open(localpath, "r") as src:
+            with open(destpath, "w") as dest:
+                lines = src.readlines()
+                if transform:
+                    lines = [ transform(line) for line in lines ]
+                dest.writelines(lines)
+        logger.info("%s copied to %s.", localpath, destpath)
+
+    def run(self, args):
+        config = raf.config.Config()
+        config.parseArgs(args)
+        config.setupLogging()
+        if config.has_key('local_dir'):
+            self.setLocalDirectory(config['local_dir'])
+        if config.has_key('ftp_dir'):
+            self.setFtpDirectory(config['ftp_dir'])
+        self.setFtp(config.FTP())
+
+        # Limit to running a single instance of this script.
+        sp = singleton.SingleProcess(self.file_type).try_lock()
+        sp.lock_or_fail()
+        logger.info("Starting downloader for %s files.", self.file_type)
+
+        # List the files already in the local directory
+        listing = self.localListing()
+        ftplist = self.remoteListing()
+        if not ftplist:
+            print("No files found on ftp server.")
+            sys.exit(1)
+
+        latest = ftplist[-1]
+        print("Latest file on ftp site: %s" % (latest.filename()))
+
+        # Check to see if we've got the most recent file
+        if latest.filename() in listing:
+            print("Already have file %s" % (latest.filename()))
+            sys.exit(0)
+
+        localpath = self.download(latest.path)
+        if self.latest_file_name:
+            self.installLatest(localpath, 
+                               os.path.join(self.local_dir, 
+                                            self.latest_file_name))
+        print("Done.")
 
