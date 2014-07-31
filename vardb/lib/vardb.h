@@ -125,8 +125,7 @@ float	VarDB_GetFixedRangeLower(const char vn[]),
 	VarDB_GetMaxLimit(const char vn[]),
 	VarDB_GetCalRangeLower(const char vn[]),
 	VarDB_GetCalRangeUpper(const char vn[]),
-	VarDB_GetSpikeSlope(const char vn[]),
-        VarDB_GetVoltageRangeUpper(const char vn[]);
+	VarDB_GetSpikeSlope(const char vn[]);
 
 bool	VarDB_isAnalog(const char vn[]);
 //	VarDB_isRangeFixed(const char vn[]),
@@ -146,7 +145,9 @@ int	VarDB_SetUnits(const char vn[], char units[]),
 	VarDB_SetCategory(const char vn[], uint32_t value),
 	VarDB_SetStandardName(const char vn[], uint32_t value),
 	VarDB_SetReference(const char vn[], uint32_t value),
-	VarDB_SetSpikeSlope(const char vn[], float value);
+	VarDB_SetSpikeSlope(const char vn[], float value),
+        VarDB_GetVoltageRangeLower(const char vn[]),
+        VarDB_GetVoltageRangeUpper(const char vn[]);
 }
 
 #endif
