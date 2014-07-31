@@ -230,47 +230,43 @@ fprintf(vdb,"  <variableCatalog>\n");
       continue;
     }
 
-
-
-//==============================================================================================================================
-////==============================================================================================================================
-////==============================================================================================================================
 ////==================================Julian Quick ===============================================================================
 ////===============================VDB 2 XML Additions============================================================================
-////==============================================================================================================================
 
-fprintf(vdb,"    <variable name=\"%s\">\n",vp->Name);
-fprintf(vdb,"      <units>%s</units>\n",vp->Units);
-fprintf(vdb,"      <long_name>%s</long_name>\n",vp->Title);
-if (ntohl(vp->is_analog)!=0)
-{
-  fprintf(vdb,"      <is_analog>true</is_analog>\n");
-  fprintf(vdb,"      <voltage_range>%d %d</voltage_range>\n",ntohl(vp->voltageRange[0]),ntohl(vp->voltageRange[1]));
-  fprintf(vdb,"      <default_sample_rate>%d</default_sample_rate>\n",ntohl(vp->defaultSampleRate));
-}else
-{
-  fprintf(vdb,"      <is_analog>false</is_analog>\n");
-}
-if(vp->MaxLimit-vp->MinLimit!=0)
-{
-  fprintf(vdb,"      <min_limit>%f</min_limit>\n",ntohf(vp->MinLimit));
-  fprintf(vdb,"      <max_limit>%f</max_limit>\n",ntohf(vp->MaxLimit));
-}
-fprintf(vdb,"      <category>%s</category>\n",VarDB_GetCategoryName(vp->Name));
-fprintf(vdb,"      <standard_name>%d</standard_name>\n",ntohl(vp->standard_name));
-if(ntohl(vp->reference)!=0)
-{
-  fprintf(vdb,"      <reference>true</reference>\n");
-}else
-{
-  fprintf(vdb,"      <reference>false</reference>\n");
-}
-fprintf(vdb,"    </variable>\n");
-////==============================================================================================================================
-////==============================================================================================================================
-////==============================================================================================================================
-////==============================================================================================================================
-////==============================================================================================================================
+    fprintf(vdb,"    <variable name=\"%s\">\n",vp->Name);
+    fprintf(vdb,"      <units>%s</units>\n",vp->Units);
+    fprintf(vdb,"      <long_name>%s</long_name>\n",vp->Title);
+    if (ntohl(vp->is_analog)!=0)
+    {
+      fprintf(vdb,"      <is_analog>true</is_analog>\n");
+      fprintf(vdb,"      <voltage_range>%d %d</voltage_range>\n",ntohl(vp->voltageRange[0]),ntohl(vp->voltageRange[1]));
+      fprintf(vdb,"      <default_sample_rate>%d</default_sample_rate>\n",ntohl(vp->defaultSampleRate));
+    }else
+    {
+      fprintf(vdb,"      <is_analog>false</is_analog>\n");
+    }
+    if(vp->MaxLimit-vp->MinLimit!=0)
+    {
+      fprintf(vdb,"      <min_limit>%f</min_limit>\n",ntohf(vp->MinLimit));
+      fprintf(vdb,"      <max_limit>%f</max_limit>\n",ntohf(vp->MaxLimit));
+    }
+  
+    p = VarDB_GetCategoryName(vp->Name);
+    if (strcmp(p, "None"))
+      fprintf(vdb,"      <category>%s</category>\n",VarDB_GetCategoryName(vp->Name));
+    p = VarDB_GetStandardNameName(vp->Name);
+    if (strcmp(p, "None"))
+      fprintf(vdb,"      <standard_name>%d</standard_name>\n",ntohl(vp->standard_name));
+
+    if(ntohl(vp->reference)!=0)
+    {
+      fprintf(vdb,"      <reference>true</reference>\n");
+    }else
+    {
+      fprintf(vdb,"      <reference>false</reference>\n");
+    }
+    fprintf(vdb,"    </variable>\n");
+
 ////==============================================================================================================================
 
 
