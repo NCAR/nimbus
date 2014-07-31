@@ -104,7 +104,6 @@ void VDBVar::set_attribute(const std::string attr_name, const std::string value)
 //Saves VDB changes, releases xerces memory
 void VDBFile::close()
 {
-  save();
   _doc->release();
 };
 
