@@ -174,15 +174,14 @@ def saveChanges(self,headers,num):
         signalist=[[]]
         signalist[0]=['name',signalSet(self,'name')]
         while i<len(headers):
-           if signalSet(self,headers[i])!='':
 
-              #signalist is of the form [ [attribute name, attribute text] * N]
-              signalist.append([headers[i],signalSet(self,headers[i])])
+           #signalist is of the form [ [attribute name, attribute text] * N]
+           signalist.append([headers[i],signalSet(self,headers[i])])
            i+=1
                 
              #Uses new information to replace previous information.
              #If entry with desired name exists, new entry is created
-        addsignal(signalist,self,-1,{'action':'edit'})
+        addsignal(signalist,self,num,{'action':'edit'})
 #==============================================================================
 #==============================================================================
 #This function displays editable information regarding the current selection

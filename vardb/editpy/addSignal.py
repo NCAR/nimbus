@@ -60,11 +60,11 @@ def addsignal(signals,self,num,instructions):
                      j+=1
                      print 'Added ',sig[0],' to ',elm.attrib['name'],' set as ',sig[1]
 
-                #check for blank entries, remove them
+               #check for blank entries, remove them
                for att in elm:
                    if str(att.text)=='' and str(att.tag) not in [s[0] for s in self.catelogList]:
                       print 'removed ',att.tag,' from ',elm.attrib['name']
-                      elm=elm.remove(att)
+                      elm.remove(att)
         if added==False:
             instructions['action']='new signal'
             print str(signals[0][1]).upper(),' not found in VDB. Creating new entry.'
@@ -99,8 +99,9 @@ def addsignal(signals,self,num,instructions):
              new = etree.Element('variable',name=signals[0][1].upper())
              l=1
              while l<len(signals):
-                subtext = etree.SubElement(new, signals[l][0])
-                subtext.text = signals[l][1]
+                if signals[l][1]!='':
+                   subtext = etree.SubElement(new, signals[l][0])
+                   subtext.text = signals[l][1]
                 l+=1
              elm.addprevious(new)
              added=True
