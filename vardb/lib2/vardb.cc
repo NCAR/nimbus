@@ -13,7 +13,44 @@
  *  COPYRIGHT:      University Corporation for Atmospheric Research, 2014
  *  -------------------------------------------------------------------------
  *  */
-
+//---------------------------------------------------------------------------------------
+//Returns number of entries in dictionary
+int VDBDictionary::num_entries()
+{
+  DOMNodeList* elms=_docRoot->getChildNodes();
+  return elms->getLength()/2;
+};
+//---------------------------------------------------------------------------------------
+//Returns Dictionary index starting at 0
+std::string VDBDictionary::get_entry(int index)
+{
+  DOMNodeList* elms=_docRoot->getChildNodes();
+  DOMNode* holder=_docRoot->getFirstChild();
+  holder=holder->getNextSibling();
+  if (index >elms->getLength()/2-1)
+  {
+    return "";
+  }
+  for (int i=0;i<index;i++)
+  {
+  holder=holder->getNextSibling();
+  holder=holder->getNextSibling();
+  }
+  DOMNamedNodeMap* atts=holder->getAttributes();
+  DOMNode* att= atts->getNamedItem(XMLString::transcode("name"));
+  return XMLString::transcode(att->getNodeValue());
+};
+//---------------------------------------------------------------------------------------
+//This function initiates a dictionary.
+VDBDictionary* VDBFile::get_dictionary(const string dictionary_name) const
+{
+  XMLCh *tag = XMLString::transcode(dictionary_name.c_str());
+  DOMNodeList* x=_docRootNode->getElementsByTagName(tag);
+  DOMNode* Dictionary=x->item(0);
+  VDBDictionary *vd = new VDBDictionary(Dictionary,dictionary_name);
+  return vd;
+};
+//======================================================================================
 //---------------------------------------------------------------------------------------
 //returns variable name
 std::string VDBVar::name()
@@ -43,7 +80,6 @@ std::string VDBVar::get_attribute(int index)const
   DOMNodeList* y=holder->getChildNodes();
   DOMNode* z=y->item(0);
   std::string answer=XMLString::transcode(z->getNodeValue());
-  cout<<"SO FAR SO GOOD\n";
   return answer;
 };
 //---------------------------------------------------------------------------------------
@@ -240,3 +276,4 @@ int VDBFile::num_vars()
   DOMNodeList* elems=varCat->getChildNodes();
   return elems->getLength()/2;
 };
+

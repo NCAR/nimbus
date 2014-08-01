@@ -27,6 +27,21 @@ using namespace xercesc;
 #include <fstream>
 #include <boost/algorithm/string.hpp>
 
+//========================VDBDictionary=========================================
+/**
+ * Accesses catalog information in vdb
+ */
+class VDBDictionary
+{
+   public:
+      VDBDictionary(DOMNode* Root, string dictionary_name): _docRoot(Root), _dictionary_name(dictionary_name) {};
+      int num_entries();
+      std::string get_entry(int index);
+   private:
+      std::string _dictionary_name;
+      DOMNode* _docRoot;
+
+};
 //===============================================================================
 //=============================VDBVAR============================================
 
@@ -53,8 +68,7 @@ public:
    */
   std::string name();
 
-  /**
-   * @param attr_name: name of attribute requested
+  /*** @param attr_name: name of attribute requested
    * @returns the requested attribute value
    */
   std::string get_attribute(int index) const;
@@ -75,6 +89,7 @@ private:
   DOMNode* _variable;
 };
 
+//==============================================================================
 //==============================================================================
 //========================VDBFile===============================================
 /**
@@ -127,10 +142,13 @@ public:
  */
   int num_vars();
 
+  VDBDictionary * get_dictionary(const std::string dictionary_name) const;
+
 private:
   bool _valid;
   DOMElement* _docRootNode;
   DOMDocument* _doc;
   std::string _file;
 };
+
 #endif
