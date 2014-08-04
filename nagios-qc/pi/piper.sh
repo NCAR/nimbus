@@ -1,6 +1,6 @@
 #!/bin/sh
 # This script writes passive checks to the Nagios command file to cause
-# it to process service check results
+# it to process service check results.  Called by qc_check.
 
 echocmd="/bin/echo"
 CommandFile="/var/spool/nagios/cmd/nagios.cmd"
