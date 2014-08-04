@@ -8,20 +8,10 @@ from comboBoxPopUp import ComboBox
 from setup import fileName
 
 #Labes is used to store info for exec commands in textChange function
-#bools determines if text has been changed
 #headers contains a list of attribute names
 headers=[]
-#global bools
-#global previousnum
-bools=False
 rightInfoHub={'headers':{},'textBoxes':{}}
 #------------------------------------------------------------------------------
-#This function is used by newSignal.py to set the global variable bools true, indicating 
-#to save edits if the user switches from the addsignal screen
-def boolsTrue():
-   global bools
-   bools=True
-#-----------------------------------------------------------------------------
 #removes leading descriptior from static lable, appends to signal list
 def signalSet(self,name):
    global rightInfoHub
@@ -34,9 +24,8 @@ def signalSet(self,name):
 #-----------------------------------------------------------------------------
 #When any right info hub text box is edited, this function is called
 #Sets textbox label as text, used to access text later.
-def textChange():
-   global bools
-   bools=True
+def textChange(self):
+   self.saveChanges=True
    if str(rightInfoHub['textBoxes']['is_analog'].currentText())=='false':
       rightInfoHub['textBoxes']['voltage_range'].setDisabled(True)
       rightInfoHub['textBoxes']['voltage_range'].setCurrentIndex(0)
@@ -75,10 +64,10 @@ def labler(lablename,signalname,self,num):
      rightInfoHub['textBoxes'][lablename].setText(str(signalname))
 
      #Connvects changes in text box to bools logic
-     rightInfoHub['textBoxes'][lablename].textEdited.connect(lambda: textChange())
-     textChange()
+     rightInfoHub['textBoxes'][lablename].textEdited.connect(lambda: textChange(self))
+     textChange(self)
    #global variable bools set False to indicate no changes have been made yet
-   bools=False
+   self.saveChanges=False
 
 #------------------------------------------------
 def clearRightInfoHub():
@@ -97,12 +86,10 @@ def clearRightInfoHub():
 #Populates upper right box with information
 def makeRightInfoHub(self,headers):
    global rightInfoHub
-   global bools
    clearRightInfoHub()
    def onActivated(self,sig):
     global rightInfoHub
-    global bools
-    bools=True
+    self.saveChanges=True
 
    i=0
    while i<len(headers):
@@ -118,7 +105,7 @@ def makeRightInfoHub(self,headers):
         rightInfoHub['textBoxes'][headers[i]].addItem("false")
         rightInfoHub['textBoxes'][headers[i]].setCurrentIndex(1)
         rightInfoHub['textBoxes'][headers[i]].activated.connect(partial(onActivated,self,headers[i]))
-        rightInfoHub['textBoxes'][headers[i]].activated.connect(lambda:textChange())
+        rightInfoHub['textBoxes'][headers[i]].activated.connect(lambda:textChange(self))
      #Check if variable is in catalog list
      elif headers[i] in (entry[0] for entry in self.catelogList):
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
@@ -131,7 +118,7 @@ def makeRightInfoHub(self,headers):
 
         for item in stdList:
           rightInfoHub['textBoxes'][headers[i]].addItem(item)
-        rightInfoHub['textBoxes'][headers[i]].currentIndexChanged.connect(lambda:textChange())
+        rightInfoHub['textBoxes'][headers[i]].currentIndexChanged.connect(lambda:textChange(self))
      elif headers[i]=='default_sample_rate':
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
         rightInfoHub['textBoxes'][headers[i]].addItem("")
@@ -141,7 +128,7 @@ def makeRightInfoHub(self,headers):
         rightInfoHub['textBoxes'][headers[i]].addItem("10")
         rightInfoHub['textBoxes'][headers[i]].setCurrentIndex(0)
         rightInfoHub['textBoxes'][headers[i]].activated.connect(partial(onActivated,self,headers[i]))
-        rightInfoHub['textBoxes'][headers[i]].activated.connect(lambda:textChange())
+        rightInfoHub['textBoxes'][headers[i]].activated.connect(lambda:textChange(self))
      elif headers[i]=='voltage_range':
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QComboBox(self.upright)
         rightInfoHub['textBoxes'][headers[i]].addItem("")
@@ -152,10 +139,10 @@ def makeRightInfoHub(self,headers):
         rightInfoHub['textBoxes'][headers[i]].addItem("0 10")
         rightInfoHub['textBoxes'][headers[i]].setCurrentIndex(0)
         rightInfoHub['textBoxes'][headers[i]].activated.connect(partial(onActivated,self,headers[i]))
-        rightInfoHub['textBoxes'][headers[i]].activated.connect(lambda:textChange())
+        rightInfoHub['textBoxes'][headers[i]].activated.connect(lambda:textChange(self))
      else:
         rightInfoHub['textBoxes'][headers[i]]=QtGui.QLineEdit(self.upright)
-        rightInfoHub['textBoxes'][headers[i]].textChanged.connect(lambda:textChange())
+        rightInfoHub['textBoxes'][headers[i]].textChanged.connect(lambda:textChange(self))
      self.upright.verticalLayoutScroll.addWidget(rightInfoHub['textBoxes'][headers[i]],i,2)
      rightInfoHub['textBoxes'][headers[i]].setFixedWidth(500)
      i+=1
@@ -167,9 +154,9 @@ def makeRightInfoHub(self,headers):
 def saveChanges(self,headers,num):
    global bools
    global rightInfoHub
-   if bools==True:
+   if self.saveChanges==True:
       from addSignal import addsignal
-      bools=False
+      self.saveChanges=False
       reply=QtGui.QMessageBox.question(self, 'Save Changes?', 'Save these changes to '+rightInfoHub['textBoxes']['name'].text()+'?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
       if reply==QtGui.QMessageBox.Yes:
         i=1
@@ -194,7 +181,6 @@ def saveChanges(self,headers,num):
 #Bool becomes true when text box(es) are edited
 def lookingAt(self):
    global previousnum
-   global bools
    global reftex
    global headers
 
@@ -214,15 +200,15 @@ def lookingAt(self):
 
    #Checks for changes to text boxes with bool
    #num =-1 is a flag that a variable is being deleted, and not to save changes made
-   if bools==True and num!=-1:
-      bools=False
+   if self.saveChanges==True and num!=-1:
       saveChanges(self,headers,num)
+      self.saveChanges=False
       return
 
    #If num is set as flag -1, reset it to 0
    #This indicates not to save changes, so bool is set to False
    if num==-1:
-      bools=False
+      self.saveChanges=False
       num=0
 
    #Get attributes
@@ -252,7 +238,7 @@ def lookingAt(self):
       i+=1
 
    #textChange to desigable is_analog if neccessary
-   textChange()
+   textChange(self)
 
    #Disconnect buttons
    try: 
@@ -269,4 +255,4 @@ def lookingAt(self):
 
    clearRightInfoHub()
    previousnum=num
-   bools=False
+   self.saveChanges=False

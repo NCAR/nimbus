@@ -15,6 +15,8 @@ def setup(hbox,self,file):
         quit()
       fileLocation=str(sys.argv[1])
 
+      self.saveChanges=False
+
       #some definitions
       from radioClickEvent import lookingAt
       from PyQt4 import QtGui, QtCore

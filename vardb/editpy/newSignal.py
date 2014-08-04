@@ -4,8 +4,6 @@ from setup import fileName
 from radioClickEvent import *
 def newSig(self):
 
-    boolsTrue()
-
     #Deselect qlistwidget
     for entry in range(self.left.scrollAreaWidgetContents.count()):
         item=self.left.scrollAreaWidgetContents.item(entry)
