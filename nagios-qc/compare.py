@@ -83,7 +83,7 @@ rows=cur.fetchall()
 
 status={}
 #Get monitoring instructions from monitoring.xml
-monidoc=etree.parse('checks.xml')
+monidoc=etree.parse(os.path.expandvars('${PROJ_DIR}/${PROJECT}/${AIRCRAFT}/checks.xml'))
 monitor=[[]]
 i=0
 while i<len(names):

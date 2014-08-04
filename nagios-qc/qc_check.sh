@@ -1,4 +1,4 @@
-##!/bin/sh
+#!/bin/sh
 #
 # Daemon script to run passive nagios check for data quality.  Launched from
 # ensure_running.
@@ -8,7 +8,7 @@
 # checks to nagios every 30 seconds
 while :
 do
-    compare.py
-    piper.sh
+    /home/local/raf/nagios-qc/compare.py
+    /home/local/raf/nagios-qc/piper.sh
     sleep 30
 done
