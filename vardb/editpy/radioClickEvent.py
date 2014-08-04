@@ -62,9 +62,12 @@ def labler(lablename,signalname,self,num):
    if lablename in (x[0] for x in self.catelogList) and signalname!='':
       if lablename==self.catelogList[0][0]:
          stdList=getInfo.getStandardNames(fileName())
+         stdList.insert(0,'')
       else:
          stdList=getInfo.getCategories(fileName())
       rightInfoHub['textBoxes'][lablename].setCurrentIndex(stdList.index(signalname))
+   if lablename=='voltage_range' or lablename=='default_sample_rate':
+      rightInfoHub['textBoxes'][lablename].setCurrentIndex(rightInfoHub['textBoxes'][lablename].findText(signalname))
       
    rightInfoHub['headers'][lablename].setText(lablename)
    rightInfoHub['headers'][lablename].setMinimumSize(rightInfoHub['headers'][lablename].sizeHint())
@@ -122,6 +125,7 @@ def makeRightInfoHub(self,headers):
 
         if headers[i]==self.catelogList[0][0]:
            stdList=getInfo.getStandardNames(fileName())
+           stdList.insert(0,'')
         else:
            stdList=getInfo.getCategories(fileName())
 
@@ -144,6 +148,7 @@ def makeRightInfoHub(self,headers):
         rightInfoHub['textBoxes'][headers[i]].addItem("-10 10")
         rightInfoHub['textBoxes'][headers[i]].addItem("-5 5")
         rightInfoHub['textBoxes'][headers[i]].addItem("-2.5 2.5")
+        rightInfoHub['textBoxes'][headers[i]].addItem("0 5")
         rightInfoHub['textBoxes'][headers[i]].addItem("0 10")
         rightInfoHub['textBoxes'][headers[i]].setCurrentIndex(0)
         rightInfoHub['textBoxes'][headers[i]].activated.connect(partial(onActivated,self,headers[i]))
@@ -234,11 +239,9 @@ def lookingAt(self):
    i=1
    signals=[]
    while i<len(entries[num][0])+1:
-     
      signals.append(entries[num][i])
      i+=1
    i=0
-
    #write attribute info to screen
    while i<len(entries[num][0]):
       if entries[num][0][i] in headers:
@@ -247,6 +250,9 @@ def lookingAt(self):
       else:
         labler(dictionary[0],'',self,i)
       i+=1
+
+   #textChange to desigable is_analog if neccessary
+   textChange()
 
    #Disconnect buttons
    try: 

@@ -38,7 +38,7 @@ def addsignal(signals,self,num,instructions):
                   for sig in signals:
                      if elm[i].tag == sig[0] and elm[i].text != sig[1]:
                         elm[i].text=sig[1]
-                        print 'changed ', elm.attrib['name'],": ",elm[i].tag,' to ',elm[i].text
+                        print 'changed ', elm.attrib['name'],": ",elm[i].tag,' to '+elm[i].text+'.'
                   i+=1
 
                #Check for new entries
@@ -62,7 +62,7 @@ def addsignal(signals,self,num,instructions):
 
                #check for blank entries, remove them
                for att in elm:
-                   if str(att.text)=='' and str(att.tag) not in [s[0] for s in self.catelogList]:
+                   if str(att.text)=='':#and str(att.tag) not in [s[0] for s in self.catelogList]:
                       print 'removed ',att.tag,' from ',elm.attrib['name']
                       elm.remove(att)
         if added==False:
