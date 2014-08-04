@@ -1,7 +1,10 @@
-import getInfo
 import numpy
 import psycopg2
 import os
+import sys
+lib_path=os.path.abspath('../vardb/editor/.')
+sys.path.append(lib_path)
+import getInfo
 #Julian Quick
 #SUPER intern 2014
 #================================================
