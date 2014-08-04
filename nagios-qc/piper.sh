@@ -16,4 +16,4 @@ do
   # append the command to the end of the command file
   `$echocmd $cmdline >> $CommandFile`
 #  echo $cmdline
-done <commands
+done </tmp/commands

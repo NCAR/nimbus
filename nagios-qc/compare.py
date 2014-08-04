@@ -29,7 +29,7 @@ vardb=os.path.expandvars("$PROJ_DIR/$PROJECT/$AIRCRAFT/vardb.xml")
 missingdata=-32767.0
 
 #cmds is passive check output file, which is piped to nagios by shell
-cmds=open('commands','w+')
+cmds=open('/tmp/commands','w+')
 
 #VardDB Location
 vardb=os.path.expandvars('$PROJ_DIR/$PROJECT/$AIRCRAFT/vardb.xml')
