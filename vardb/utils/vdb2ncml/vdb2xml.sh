@@ -6,5 +6,6 @@ make
 ./vdb2xml $PROJ_DIR/$PROJECT/$AIRCRAFT/VarDB 
 python standardNameCorrection.py
 python appendInfo.py
+python schemaMaker.py
 #sudo mv VDB.xml $PROJ_DIR/Configuration/raf/
 

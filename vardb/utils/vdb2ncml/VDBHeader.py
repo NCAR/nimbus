@@ -7,7 +7,8 @@ def add(name,iter,file):
   catD={}
   for line in lines:
     line=line.strip('\n')
-    vdb.write('    <'+iter+' name="'+line.split(', ')[1]+'"/>\n')
+    if 'None' not in line:
+      vdb.write('    <'+iter+' name="'+line.split(', ')[1]+'"/>\n')
   vdb.write('  </'+name+'>\n')
 
 add('categories','category','Categories')
