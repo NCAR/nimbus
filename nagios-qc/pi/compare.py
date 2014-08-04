@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import numpy
 import psycopg2
 import os
