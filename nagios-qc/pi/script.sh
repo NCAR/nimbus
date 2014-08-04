@@ -12,17 +12,20 @@ sudo /sbin/service nagios start
 #Check data
 python pi.py
 
+#Create configuration files
+sudo python configMaker.py
+
 #Pipe data to nagios
 sh shellcmd.sh
 
 #scan nagios error log for missing configuration files, make them
-sudo perl ../radar.pl
-sleep 2
+#sudo perl ../radar.pl
+#sleep 2
 cat /etc/nagios/raf/*
 
 #restart nagios with new configuration files
-sudo /sbin/service nagios restart
-sudo pkill -f radar
+#sudo /sbin/service nagios restart
+#sudo pkill -f radar
 
 #Pipe information to nagios again
 sh shellcmd.sh

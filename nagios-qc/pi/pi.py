@@ -27,7 +27,8 @@ cmds=open('commands','w+')
 vardb=os.path.expandvars('$PROJ_DIR/$PROJECT/$AIRCRAFT/vardb.xml')
 vardb='VDB.xml'
 #================================================
-foo = psycopg2.connect(database="real-time", user="ads", host="acserver")
+#foo = psycopg2.connect(database="real-time", user="ads", host="acserver")
+foo = psycopg2.connect(database="real-time", user="ads", host="hercules.raf-ext.ucar.edu")
 cur=foo.cursor()
 
 #Get live data names
