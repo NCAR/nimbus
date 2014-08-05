@@ -39,8 +39,8 @@ class VDBDictionary
       std::string get_entry(int index);
 
    private:
-      std::string _dictionary_name;
       DOMNode* _docRoot;
+      std::string _dictionary_name;
 
 };
 //===============================================================================
