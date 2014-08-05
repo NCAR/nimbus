@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 #Julian Quick
 #GUI TO view and edit varDB
 #Several external functions are refferenced. See GUI.pdf for flowchart.
@@ -12,7 +14,7 @@ class GUI(QtGui.QWidget):
         super(GUI, self).__init__()
         self.initUI()
     def initUI(self):      
-        self.setGeometry(500, 300, 800, 600)
+        self.setGeometry(200, 200, 950, 700)
         self.setWindowTitle('varDB GUI')
 
         #Create option buttons

@@ -4,7 +4,6 @@ import getInfo
 from delete import delete
 from PyQt4 import QtGui, QtCore
 from functools import partial 
-from comboBoxPopUp import ComboBox
 from setup import fileName
 
 #Labes is used to store info for exec commands in textChange function
