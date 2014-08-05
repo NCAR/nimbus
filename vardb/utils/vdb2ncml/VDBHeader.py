@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 vdb=open('VDB.xml','w')
 vdb.write('<?xml version="1.0" encoding="UTF-8" standalone="no" ?><VarDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VDBSchema.xsd">\n')
 def add(name,iter,file):
