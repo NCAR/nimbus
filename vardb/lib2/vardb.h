@@ -12,6 +12,9 @@
  *  -------------------------------------------------------------------------
  */
 
+#ifndef __vardb_h__
+#define __vardb_h__
+
 #include <string>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/dom/DOM.hpp>
@@ -19,9 +22,6 @@
 
 using namespace std;
 using namespace xercesc;
-
-#ifndef __vardb_h__
-#define __vardb_h__
 
 #include <iostream>
 #include <fstream>
@@ -35,8 +35,9 @@ class VDBDictionary
 {
    public:
       VDBDictionary(DOMNode* Root, string dictionary_name): _docRoot(Root), _dictionary_name(dictionary_name) {};
-      int num_entries();
+      int num_entries() const;
       std::string get_entry(int index);
+
    private:
       std::string _dictionary_name;
       DOMNode* _docRoot;
@@ -58,6 +59,7 @@ public:
   VDBVar(DOMNode* nod) : _variable(nod) { }
 
   /**
+   * Return variable element by variable name.
    * @param attr_name: name of attribute requested
    * @returns the requested attribute value
    */
@@ -68,7 +70,9 @@ public:
    */
   std::string name();
 
-  /*** @param attr_name: name of attribute requested
+  /**
+   * Return variable element by variable index number.  Used for looping ove list.
+   * @param attr_name: name of attribute requested
    * @returns the requested attribute value
    */
   std::string get_attribute(int index) const;
@@ -81,9 +85,9 @@ public:
   void set_attribute(const std::string attr_name, const std::string value);
 
   /**
- *@returns # of attributes
- */
-  int num_atts();
+   *@returns # of attributes
+   */
+  int num_atts() const;
 
 private:
   DOMNode* _variable;
@@ -140,7 +144,7 @@ public:
   /**
  *@returns # of attributes
  */
-  int num_vars();
+  int num_vars() const;
 
   VDBDictionary * get_dictionary(const std::string dictionary_name) const;
 

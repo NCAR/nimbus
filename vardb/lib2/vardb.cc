@@ -15,7 +15,7 @@
  *  */
 //---------------------------------------------------------------------------------------
 //Returns number of entries in dictionary
-int VDBDictionary::num_entries()
+int VDBDictionary::num_entries() const
 {
   DOMNodeList* elms=_docRoot->getChildNodes();
   return elms->getLength()/2;
@@ -84,7 +84,7 @@ std::string VDBVar::get_attribute(int index)const
 };
 //---------------------------------------------------------------------------------------
 //Returns number of attributes associated sellected variable
-int VDBVar::num_atts()
+int VDBVar::num_atts() const
 {
   DOMNodeList* x=_variable->getChildNodes();
   return x->getLength()/2;
@@ -268,7 +268,7 @@ VDBVar *VDBFile::get_var(int index)
 };
 //---------------------------------------------------------------------------------------
 //Returns number of variables in vardb
-int VDBFile::num_vars()
+int VDBFile::num_vars() const
 {
   XMLCh *tag = XMLString::transcode("variableCatalog");
   DOMNodeList* x=_docRootNode->getElementsByTagName(tag);
