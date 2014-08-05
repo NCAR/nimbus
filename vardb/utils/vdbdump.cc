@@ -1,37 +1,32 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	vdbdump.c
+OBJECT NAME:	vdbdump.cc
 
 FULL NAME:	VarDB dump
 
 DESCRIPTION:	This program does a basic text dump of a Variable DataBase
 		file.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2014
 -------------------------------------------------------------------------
 */
 
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <netinet/in.h> // htonl macros.
+#include <iostream>
+#include <cstdio>
+#include <cstring>
 
-#include <raf/vardb.h>
-
-extern "C" {
-  extern long	VarDB_nRecords;
-}
+#include <raf/vardb.hh>
 
 bool tracker = false;
 
 /* -------------------------------------------------------------------- */
 main(int argc, char *argv[])
 {
-  int		i = 1;
+  int i = 1;
 
   if (argc < 2)
   {
-    fprintf(stderr, "Usage: vdbdump [-a] [proj_num | VarDB_filename]\n");
+    std::cerr << "Usage: vdbdump [-a] [proj_num | VarDB_filename]\n";
     return(1);
   }
 
@@ -41,26 +36,32 @@ main(int argc, char *argv[])
      i++;
   }
 
-  if (InitializeVarDB(argv[i]) == ERR)
+  VDBFile file(argv[i]);
+  if (file.is_valid() == false)
   {
-    fprintf(stderr, "vdbdump: Initialize failure.\n");
+    std::cerr << "vdbdump: Initialize failure.\n";
     return(1);
   }
 
 
-  printf("Version %d, with %d records.\n", ntohl(varDB_Hdr.Version),
-						VarDB_nRecords);
+  //printf("num vars=%d\n", file.num_vars());
 
-  for (i = 0; i < VarDB_nRecords; ++i)
+  for (i = 0; i < file.num_vars(); ++i)
   {
+    VDBVar *var = file.get_var(i);
+
     if (tracker)
-      printf("%-12.12s%-8.8s%-60.60s\n", ((struct var_v2 *)VarDB)[i].Name,
-               ((struct var_v2 *)VarDB)[i].Units, ((struct var_v2 *)VarDB)[i].Title);
+      printf("%-12.12s%-8.8s %-60.60s",
+                    var->name().c_str(),
+                    var->get_attribute("units").c_str(),
+                    var->get_attribute("long_name").c_str());
     else
     {
-      printf("%-12.12s %-12.12s %-50.50s", ((struct var_v2 *)VarDB)[i].Name,
-               ((struct var_v2 *)VarDB)[i].Units, ((struct var_v2 *)VarDB)[i].Title);
-
+      printf("%-12.12s %-12.12s %-50.50s",
+                    var->name().c_str(),
+                    var->get_attribute("units").c_str(),
+                    var->get_attribute("long_name").c_str());
+/*
       if (ntohl(((struct var_v2 *)VarDB)[i].is_analog) == true)
       {
         ulong	p;
@@ -70,14 +71,12 @@ main(int argc, char *argv[])
 		ntohl(((struct var_v2 *)VarDB)[i].voltageRange[0]),
 		ntohl(((struct var_v2 *)VarDB)[i].voltageRange[1]));
       }
+*/
       printf("\n");
     }
+
+    delete var;
   }
 
-  ReleaseVarDB();
-
   return(0);
-
-}	/* END MAIN */
-
-/* END VDBDUMP.C */
+}
