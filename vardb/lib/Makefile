@@ -7,17 +7,20 @@ INCLUDEDIR=	${JLOCAL}/include
 CC=		g++
 
 LIBNAME=	VarDB
-HEADER=		vardb.h
+HEADER=		vardb.h vardb.hh
 
 INCLUDES=	-I${INCLUDEDIR}
 DEFINES=
 CFLAGS=		-g -O2 ${INCLUDES} ${DEFINES}
 
-OBJS=	init.o get.o set.o save.o merge.o sort.o category.o std_name.o
+COBJS=		init.o get.o set.o save.o merge.o sort.o category.o std_name.o
+CPPOBJS=	vardb.o
 
-SRCS=	init.c get.c set.c save.c merge.c sort.c category.c std_name.c
+SRCS=		init.c get.c set.c save.c merge.c sort.c category.c std_name.c
+CPPSRCS=	vardb.cc
 
-HDRS=	vardb.h
+CHDR=	vardb.h
+CPPHDR=	vardb.hh
 
 .SUFFIXES: .o .h .c
 
@@ -26,15 +29,16 @@ HDRS=	vardb.h
 
 all: lib${LIBNAME}.a
 
-${OBJS}: ${HDRS}
+${COBJS}: ${CHDR}
+${CPPOBJS}: ${CPPHDR}
 
-lib${LIBNAME}.a: ${OBJS}
+lib${LIBNAME}.a: ${COBJS} ${CPPOBJS}
 	rm -f lib${LIBNAME}.a
-	ar cr lib${LIBNAME}.a ${OBJS}
+	ar cr lib${LIBNAME}.a ${XOBJS} ${CPPOBJS}
 
-lib${LIBNAME}_p.a: ${OBJS}
+lib${LIBNAME}_p.a: ${COBJS} ${CPPOBJS}
 	rm -f lib${LIBNAME}_p.a
-	cd profiled; ar cr ../lib${LIBNAME}_p.a ${OBJS}
+	cd profiled; ar cr ../lib${LIBNAME}_p.a ${COBJS} ${CPPOBJS}
 
 install: all
 	install -p --mode=664 lib${LIBNAME}.a ${LIBDIR}
