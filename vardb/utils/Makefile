@@ -6,9 +6,9 @@ BINDIR=		${JLOCAL}/bin
 MANDIR=		${JLOCAL}/man/manl
 LINTLIBS=	${LIBS}
 INCLUDES=	-I${JLOCAL}/include
-CFLAGS=		${INCLUDES}
+CFLAGS=		-g ${INCLUDES}
 
-LIBS=	-L${JLOCAL}/lib -lVarDB -lraf -lnetcdf
+LIBS=	-L${JLOCAL}/lib -lVarDB -lxerces-c
 
 SRCS=	vdbdump.cc
 OBJS=	vdbdump.o
