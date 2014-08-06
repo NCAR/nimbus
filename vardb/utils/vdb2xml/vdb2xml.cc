@@ -332,13 +332,16 @@ dictionaryNames.open("Dictionary");
 std::string raw_line,named,definition;
 while(std::getline(dictionaryNames,raw_line))
 {
-  named="";
-  definition="";
-  std::stringstream iss(raw_line);
-  std::getline(iss,named,',');
-  std::getline(iss,definition,',');
-  //std::cout<<named<<":: "<<definition<<"\n";
-  fprintf(vdb,"    <definition name=\"%s\">%s</definition>\n",named.c_str(),definition.c_str());
+  if (raw_line[0]!='#' and !raw_line.empty())
+  {
+    named="";
+    definition="";
+    std::stringstream iss(raw_line);
+    std::getline(iss,named,',');
+    std::getline(iss,definition,',');
+    //std::cout<<named<<":: "<<definition<<"\n";
+    fprintf(vdb,"    <definition name=\"%s\">%s</definition>\n",named.c_str(),definition.c_str());
+  }
 }
 fprintf(vdb,"  </Dictionary>\n");
 fprintf(vdb,"</VarDB>");

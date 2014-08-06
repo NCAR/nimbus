@@ -1,3 +1,5 @@
+# This file configures vardb's dictionary
+
 units,Units which signal is reported in
 alternativeUnits,We can put a definition here when we're ready!
 long_name,Description of signal
