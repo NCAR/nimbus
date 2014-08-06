@@ -5,11 +5,12 @@ import psycopg2
 import os
 import imp
 from lxml import etree
-getInfo=imp.load_source('getInfo','/home/local/raf/vardb/editpy/getInfo.py')
+getInfo=imp.load_source('getInfo','../vardb/editpy/getInfo.py')
 #Julian Quick
 #SUPER intern 2014
 #================================================
-#returns status of special case variables
+#Check definitions
+
 def specialCase(variable,data):
    if variable=='GGQUAL':
       if int(data)==5:
@@ -18,6 +19,37 @@ def specialCase(variable,data):
          return warning+'::1-4'
       elif int(data)==0:
          return critical+'::0'
+
+def flatLining(varnum,rows,tolerance):
+   calcList=[]
+   for j in range(0,flatLineHistory):
+     calcList.append(rows[j][varnum])
+   if numpy.std(calcList)<tolerance:
+      return flats
+   else:
+      return ok+'::not flatlining'
+
+def boundsCheck(elm,data):
+   for j in range(1,len(elm)-1):
+      if elm[0][j]=='maxLimit':
+         if float(elm[j+1])>data:
+            return '**Above maximum limit**'
+            break
+      if elm[0][j]=='minLimit':
+         if float(elm[j+1])<data:
+            return '**Below minimum limit**'
+            break
+   else:
+      return ok+'::bounds'
+
+def constant(dataRows,varnum,tolerance):
+   calcList=[]
+   for j in range(0,flatLineHistory):
+     calcList.append(dataRows[j][varnum])
+   if numpy.std(calcList)>elm.attrib['tolerance']:
+      return flaps
+   else:
+      return ok+'::constant'
 #================================================
 #status: 0-Good 1-No Data 2-Bounds or flatlining
 #-----------------------------------------------
@@ -52,6 +84,9 @@ nagiosSignals[flats]='2'
 nagiosSignals[flaps]='2'
 nagiosSignals[bounds]='2'
 #================================================
+#used for deubugging
+#foo = psycopg2.connect(database="real-time-C130", user="ads", host="eol-rt-data.fl-ext.ucar.edu")
+
 foo = psycopg2.connect(database="real-time", user="ads", host="acserver")
 cur=foo.cursor()
 
@@ -81,55 +116,34 @@ row=cur.fetchone()
 cur.execute("select * from raf_lrt order by datetime desc limit "+str(flatLineHistory)+";")
 rows=cur.fetchall()
 
-status={}
+#---------------------------------------
 #Get monitoring instructions from monitoring.xml
 monidoc=etree.parse(os.path.expandvars('${PROJ_DIR}/${PROJECT}/${AIRCRAFT}/checks.xml'))
-monitor=[[]]
+#---------------------------------------
+#set up status dictionary
+status={}
+for elm in monidoc.getiterator('check'):
+   status[elm.attrib['variable']]=[]
 i=0
 while i<len(names):
    for elm in monidoc.getiterator('check'):
       if elm.attrib['variable'].upper()==names[i].upper() or elm.attrib['variable'].split('_')[0].upper()==names[i].upper():
          if elm.attrib['type']=='flatline':
-            print ok
-            j=0
-            calcList=[]
-            while j<flatLineHistory:
-              calcList.append(rows[j][i])
-              j+=1
-            if numpy.std(calcList)<elm.attrib['tolerance']:
-               status[elm.attrib['variable']]=flats
-            else:
-               status[elm.attrib['variable']]=ok+'::not flatlining'
+            status[elm.attrib['variable']].append(flatLine(i,row,elm.attrib['tolerance']))
          elif elm.attrib['type']=='bounds':
-            j=1
-            while j<len(elm)-1:
-               if elm[0][j]=='maxLimit':
-                  if float(elm[j+1])>row[i]:
-                     status[elm.attrib['variable']]+='**Above maximum limit**'
-                     break
-               if elm[0][j]=='minLimit':
-                  if float(elm[j+1])<row[i]:
-                     status[elm.attrib['variable']]+='**Below minimum limit**'
-                     break
-               j+=1
-            else:
-               status[elm.attrib['variable']]=ok+'::bounds'
+            status[elm.attrib['variable']].append(boundsCheck(elm,row[i]))
          elif elm.attrib['type']=='constant':
-            j=0
-            calcList=[]
-            while j<flatLineHistory:
-              calcList.append(rows[j][i])
-              j+=1
-            if numpy.std(calcList)>elm.attrib['tolerance']:
-               status[elm.attrib['variable']]=flaps
-            else:
-               status[elm.attrib['variable']]=ok+'::constant'
+            status[elm.attrib['variable']].append(constant(rows,i,elm.attrib['tolerance']))
+         elif elm.attrib['type']=='custom':
+            status[elm.attrib['variable']].append(specialCase(elm.attrib['variable'],row[i]))
 
          #Check for no data
          if row[i]==missingdata:
-            status[elm.attrib['variable']]=nodat
+            status[elm.attrib['variable']].append(nodat)
    i+=1
 for key in status:
-    cmds.write('RAF'+';'+key+';'+nagiosSignals[status[key].split('::')[0]]+';'+status[key]+'\n')
+   if len(key)!=0:
+      for entry in status[key]:
+         cmds.write('RAF'+';'+key+';'+nagiosSignals[entry.split('::')[0]]+';'+entry+'\n')
 cmds.close()
 
