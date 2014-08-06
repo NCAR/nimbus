@@ -1,0 +1,13 @@
+0, None
+1, Position
+2, Thermodynamic
+3, Aircraft State
+4, Atmos. State
+5, Liquid Water
+6, Uncorr'd Raw
+7, Wind
+8, PMS Probe
+9, Housekeeping
+10, Chemistry
+11, Radiation
+12, Non-Standard
