@@ -34,7 +34,7 @@ ${CPPOBJS}: ${CPPHDR}
 
 lib${LIBNAME}.a: ${COBJS} ${CPPOBJS}
 	rm -f lib${LIBNAME}.a
-	ar cr lib${LIBNAME}.a ${XOBJS} ${CPPOBJS}
+	ar cr lib${LIBNAME}.a ${COBJS} ${CPPOBJS}
 
 lib${LIBNAME}_p.a: ${COBJS} ${CPPOBJS}
 	rm -f lib${LIBNAME}_p.a
