@@ -14,10 +14,14 @@ from generateButtons import generateButtons
 from radioClickEvent import lookingAt
 from setup import fileName
 from lxml import etree
+
+logFile='/tmp/vardbEditor.log'
+
 def addsignal(signals,self,num,instructions):
    parser = etree.XMLParser(remove_blank_text=True)
    doc=etree.parse(fileName(),parser)
    root=doc.getroot()
+   log=open(logFile,'a')
 #+++++++++++
    if instructions['action']=='edit':
    #Expecting signals to be of form [ [attribute,new valie] * n ]
@@ -39,6 +43,7 @@ def addsignal(signals,self,num,instructions):
                      if elm[i].tag == sig[0] and elm[i].text != sig[1]:
                         elm[i].text=sig[1]
                         print 'changed ', elm.attrib['name'],": ",elm[i].tag,' to '+elm[i].text+'.'
+                        print>>log, 'changed ', elm.attrib['name'],": ",elm[i].tag,' to '+elm[i].text+'.'
                   i+=1
 
                #Check for new entries
@@ -59,21 +64,25 @@ def addsignal(signals,self,num,instructions):
                            break
                      j+=1
                      print 'Added ',sig[0],' to ',elm.attrib['name'],' set as ',sig[1]
+                     print>>log, 'Added ',sig[0],' to ',elm.attrib['name'],' set as ',sig[1]
 
                #check for blank entries, remove them
                for att in elm:
                    if str(att.text)=='':#and str(att.tag) not in [s[0] for s in self.catelogList]:
                       print 'removed ',att.tag,' from ',elm.attrib['name']
+                      print>>log, 'removed ',att.tag,' from ',elm.attrib['name']
                       elm.remove(att)
         if added==False:
             instructions['action']='new signal'
             print str(signals[0][1]).upper(),' not found in VDB. Creating new entry.'
+            print>>log, str(signals[0][1]).upper(),' not found in VDB. Creating new entry.'
 #++++++++++++
    if instructions['action']=='delete':
       for elm in root.iter('variable'):
           if elm.attrib['name']==signals:
              elm.getparent().remove(elm)
              print 'removed ',signals
+             print>>log, 'removed ',signals
             
 #+++++++++++
    if instructions['action']=='new signal':
@@ -83,6 +92,7 @@ def addsignal(signals,self,num,instructions):
        #Check for name input
        if signals[0][0]!='name' : 
            print 'exit code 1 in addsignal.py: no name was input'
+           print>>log, 'exit code 1 in addsignal.py: no name was input'
            quit()
 
        #Insert element
@@ -106,6 +116,7 @@ def addsignal(signals,self,num,instructions):
              elm.addprevious(new)
              added=True
              num=i
+             print>>log, 'added ',signals[0][1]
              print 'added ',signals[0][1]
           i+=1
        if added==False:
@@ -119,6 +130,7 @@ def addsignal(signals,self,num,instructions):
           added=True
           num=i
           print 'appended ',signals[0][1]
+          print>>log, 'appended ',signals[0][1]
            
 #=============
    doc.write('VDB.xml',pretty_print=True)
