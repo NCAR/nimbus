@@ -1,0 +1,16 @@
+units,Units which signal is reported in
+alternativeUnits,We can put a definition here when we're ready!
+long_name,Description of signal
+is_analog,Boolean describing if signal is analog. True means the signal is analog
+voltage_range,Minimum and maximum voltage [insert voltage units here]
+default_sample_rate,Signal's default sample rate
+min_limit,Minimum possible value signal can drop to
+max_limit,Maximum possible value signal can drop to
+category,Used to group signals
+modulus_range,We can put a definition here!
+derive,We can put a definition here!
+dependencies,We can put a definition here!
+static_lag,We can put a definition here!
+spike_slope,We can put a definition here!
+standard_name,We can put a definition here!
+reference,We can put a definition here!

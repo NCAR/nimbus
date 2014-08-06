@@ -26,7 +26,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2006
 
 #include <netcdf.h>
 #include <raf/portable.h>
-
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <istream>
 
 static char defaultProjDir[1000];
 static char projDir[1000];
@@ -149,6 +152,7 @@ int main(int argc, char *argv[])
 FILE* vdb;
 vdb=fopen("VDB.xml","a");
 fprintf(vdb,"  <variableCatalog>\n");
+
 //================================
 //====================
 //=============================
@@ -319,24 +323,23 @@ fprintf(vdb,"  <variableCatalog>\n");
   nc_close(ncid);
 //=============
 //=========================
+//
+
 fprintf(vdb,"  </variableCatalog>\n");
 fprintf(vdb,"  <Dictionary>\n");
-fprintf(vdb,"    <definition name=\"units\">Units which signal is reported in</definition>\n");
-fprintf(vdb,"    <definition name=\"alternativeUnits\">We can put a definition here when we're ready!</definition>\n");
-fprintf(vdb,"    <definition name=\"long_name\">Description of signal</definition>\n");
-fprintf(vdb,"    <definition name=\"is_analog\">Boolean describing if signal is analog. True means the signal is analog.</definition>\n");
-fprintf(vdb,"    <definition name=\"voltage_range\">Minimum and maximum voltage [insert voltage units here]</definition>\n");
-fprintf(vdb,"    <definition name=\"default_sample_rate\">Signal's default sample rate</definition>\n");
-fprintf(vdb,"    <definition name=\"min_limit\">Minimum possible value signal can drop to</definition>\n");
-fprintf(vdb,"    <definition name=\"max_limit\">Maximum possible value signal can drop to</definition>\n");
-fprintf(vdb,"    <definition name=\"category\">Used to group signals</definition>\n");
-fprintf(vdb,"    <definition name=\"modulus_range\">We can put a definition here!</definition>\n");
-fprintf(vdb,"    <definition name=\"derive\">We can put a definition here!</definition>\n");
-fprintf(vdb,"    <definition name=\"dependencies\">We can put a definition here!</definition>\n");
-fprintf(vdb,"    <definition name=\"static_lag\">We can put a definition here!</definition>\n");
-fprintf(vdb,"    <definition name=\"spike_slope\">We can put a definition here!</definition>\n");
-fprintf(vdb,"    <definition name=\"standard_name\">We can put a definition here!</definition>\n");
-fprintf(vdb,"    <definition name=\"reference\">We can put a definition here!</definition>\n");
+std::fstream dictionaryNames;
+dictionaryNames.open("Dictionary");
+std::string raw_line,named,definition;
+while(std::getline(dictionaryNames,raw_line))
+{
+  named="";
+  definition="";
+  std::stringstream iss(raw_line);
+  std::getline(iss,named,',');
+  std::getline(iss,definition,',');
+  //std::cout<<named<<":: "<<definition<<"\n";
+  fprintf(vdb,"    <definition name=\"%s\">%s</definition>\n",named.c_str(),definition.c_str());
+}
 fprintf(vdb,"  </Dictionary>\n");
 fprintf(vdb,"</VarDB>");
 fclose(vdb);
