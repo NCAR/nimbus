@@ -8,8 +8,8 @@
 sudo rm /etc/nagios/raf/*
 sudo /sbin/service nagios stop
 
-# Create configuration files
-sudo configMaker.py
+# Create configuration files (make sure to pass ads environment to sudo).
+sudo -E configMaker.py
 
 cat /etc/nagios/raf/*
 
