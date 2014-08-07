@@ -22,8 +22,10 @@ CPPSRCS=	vardb.cc
 CHDR=	vardb.h
 CPPHDR=	vardb.hh
 
-.SUFFIXES: .o .h .c
+.SUFFIXES: .o .h .c .cc
 
+.cc.o:
+	${CC} ${CFLAGS} -c $*.cc
 .c.o:
 	${CC} ${CFLAGS} -c $*.c
 
