@@ -9,7 +9,7 @@ def add(name,iter,file):
   catD={}
   for line in lines:
     line=line.strip('\n')
-    if 'None' not in line:
+    if 'None' not in line and line[0] != '#':
       vdb.write('    <'+iter+' name="'+line.split(', ')[1]+'"/>\n')
   vdb.write('  </'+name+'>\n')
 
