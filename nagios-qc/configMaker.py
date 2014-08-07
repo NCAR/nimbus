@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from lxml import etree
 def ServiceMaker(Host,Service,conf):
    conf.write('define service{\n')

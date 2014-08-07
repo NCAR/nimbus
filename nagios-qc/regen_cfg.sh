@@ -9,7 +9,7 @@ sudo rm /etc/nagios/raf/*
 sudo /sbin/service nagios stop
 
 # Create configuration files
-sudo python configMaker.py
+sudo configMaker.py
 
 cat /etc/nagios/raf/*
 
