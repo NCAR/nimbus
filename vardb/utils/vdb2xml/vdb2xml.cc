@@ -40,7 +40,7 @@ static const float fill_value = -32767.0;
 extern long	VarDB_nRecords;
 
 /* -------------------------------------------------------------------- */
-void checkModVars(int ncid, int varID, const char *varName)
+void checkModVars(FILE* vdb,int varID, const char *varName)
 {
   char fileName[500], buffer[1000], name[100];
   strcpy(fileName, defaultProjDir);
@@ -61,14 +61,15 @@ void checkModVars(int ncid, int varID, const char *varName)
     sscanf(buffer, "%s %f %f", name, &vals[0], &vals[1]);
 
     if (strcmp(name, varName) == 0)
-      nc_put_att_float(ncid, varID, "modulus_range", NC_FLOAT, 2, vals);
+      fprintf(vdb,"      <modulus_range>%f %f</modulus_range>\n",vals[0],vals[1]);
+//      nc_put_att_float(ncid, varID, "modulus_range", NC_FLOAT, 2, vals);
   }
 
   fclose(fp);
 }
 
 /* -------------------------------------------------------------------- */
-void checkDerivedNames(int ncid, int varID, const char *varName)
+void checkDerivedNames(FILE* vdb,int ncid, int varID, const char *varName)
 {
   char fileName[500], buffer[1000], *p;
   strcpy(fileName, defaultProjDir);
@@ -91,7 +92,8 @@ void checkDerivedNames(int ncid, int varID, const char *varName)
     {
       p = strtok(NULL, "\n");
       while (isspace(*p)) ++p;
-      nc_put_att_text(ncid, varID, "derive", strlen(p)+1, p);
+        fprintf(vdb,"      <derived>%s</derived>\n",p);
+//      nc_put_att_text(ncid, varID, "derive", strlen(p)+1, p);
     }
   }
 
@@ -99,7 +101,7 @@ void checkDerivedNames(int ncid, int varID, const char *varName)
 }
 
 /* -------------------------------------------------------------------- */
-void checkDependencies(int ncid, int varID, const char *varName)
+void checkDependencies(FILE* vdb,int ncid, int varID, const char *varName)
 {
   char fileName[500], buffer[1000], *p;
   strcpy(fileName, projDir);
@@ -123,22 +125,134 @@ void checkDependencies(int ncid, int varID, const char *varName)
       if ( (p = strtok(NULL, "\n")) )
       {
         while (isspace(*p)) ++p;
-        nc_put_att_text(ncid, varID, "Dependencies", strlen(p)+1, p);
+          fprintf(vdb,"      <depends>%s</depends>\n",p);
+//        nc_put_att_text(ncid, varID, "Dependencies", strlen(p)+1, p);
       }
-      else
-        nc_put_att_text(ncid, varID, "Dependencies", 1, "");
+    //  else
+//        nc_put_att_text(ncid, varID, "Dependencies", 1, "");
     }
   }
 
   fclose(fp);
 }
+void addHeader(FILE* vdb,std::string name,std::string iter,std::string infoFile)
+{
+  fprintf(vdb,"  <%s>\n",name.c_str());
+  std::fstream cats;
+  cats.open(infoFile.c_str());
+  std::string raw_line,definition,useless_info,noSpace;
+  int i;
+  while(std::getline(cats,raw_line))
+  {
+    noSpace="";
+    if (raw_line[0]!='#' and !raw_line.empty())
+    {
+      useless_info="";
+      definition="";
+      std::stringstream iss(raw_line);
+      std::getline(iss,useless_info,',');
+      std::getline(iss,definition,',');
+      i=0;
+      while(definition[i]!='\0'){
+       if(definition[i]!=' '){
+        noSpace+=definition[i];
+        }
+      i++;
+      }
+      fprintf(vdb,"    <%sname=\"%s\">\n",iter.c_str(),noSpace.c_str());
+    }
+  }
+  fprintf(vdb,"  </%s>\n",name.c_str());
+}
+/* -------------------------------------------------------------------- */
+void schemaMaker(std::string dictionaryLoc)
+{
+ FILE* sch=fopen("VDBSchema.xsd","w");
+ fprintf(sch,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+ fprintf(sch,"   <xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\">\n");
+ fprintf(sch,"         <xs:element name=\"VarDB\">\n");
+ fprintf(sch,"               <xs:complexType>\n");
+ fprintf(sch,"                     <xs:sequence>\n");
+ fprintf(sch,"                           <xs:element name=\"categories\">\n");
+ fprintf(sch,"                                 <xs:complexType>\n");
+ fprintf(sch,"                                       <xs:sequence>\n");
+ fprintf(sch,"                                             <xs:element name=\"category\" maxOccurs=\"unbounded\">\n'");
+ fprintf(sch,"                                                   <xs:complexType>\n");
+ fprintf(sch,"                                                         <xs:attribute name=\"name\" type=\"xs:string\"></xs:attribute>\n");
+ fprintf(sch,"                                                   </xs:complexType>\n");
+ fprintf(sch,"                                             </xs:element>\n");
+ fprintf(sch,"                                       </xs:sequence>");
+ fprintf(sch,"                                 </xs:complexType>\n");
+ fprintf(sch,"                           </xs:element>\n");
+ fprintf(sch,"                           <xs:element name=\"standard_names\">\n");
+ fprintf(sch,"                                 <xs:complexType>\n");
+ fprintf(sch,"                                       <xs:sequence>\n");
+ fprintf(sch,"                                             <xs:element name=\"standard_name\" maxOccurs=\"unbounded\">\n");
+ fprintf(sch,"                                                   <xs:complexType>\n");
+ fprintf(sch,"                                                         <xs:attribute name=\"name\" type=\"xs:string\"></xs:attribute>\n");
+ fprintf(sch,"                                                   </xs:complexType>\n");
+ fprintf(sch,"                                             </xs:element>\n");
+ fprintf(sch,"                                       </xs:sequence>\n");
+ fprintf(sch,"                                 </xs:complexType>\n");
+ fprintf(sch,"                           </xs:element>\n");
+ fprintf(sch,"                           <xs:element name=\"variableCatalog\">\n");
+ fprintf(sch,"                                 <xs:complexType>\n");
+ fprintf(sch,"                                       <xs:sequence>\n");
+ fprintf(sch,"                                             <xs:element name=\"variable\" maxOccurs=\"unbounded\">\n");
+ fprintf(sch,"                                                   <xs:complexType>\n");
+ fprintf(sch,"                                                         <xs:sequence>\n");
 
+
+ std::fstream dictionary;
+ dictionary.open(dictionaryLoc.c_str());
+ std::string raw_line,named,definition;
+ while(std::getline(dictionary,raw_line))
+ {
+   if (raw_line[0]!='#' and !raw_line.empty())
+   {
+     named="";
+     definition="";
+     std::stringstream iss(raw_line);
+     std::getline(iss,named,',');
+     std::getline(iss,definition,',');
+     fprintf(sch,"                                                               <xs:element name=\"%s\" type=\"xs:string\" minOccurs=\"0\" ></xs:element>\n",named.c_str());
+   }
+ }
+
+ fprintf(sch,"                                                         </xs:sequence>\n");
+ fprintf(sch,"                                                         <xs:attribute name=\"name\" type=\"xs:string\"></xs:attribute>\n");
+ fprintf(sch,"                                                   </xs:complexType>\n");
+ fprintf(sch,"                                             </xs:element>\n");
+ fprintf(sch,"                                       </xs:sequence>\n");
+ fprintf(sch,"                                 </xs:complexType>\n");
+ fprintf(sch,"                           </xs:element>\n");
+ fprintf(sch,"                           <xs:element name=\"Dictionary\">\n");
+ fprintf(sch,"                                 <xs:complexType>\n");
+ fprintf(sch,"                                       <xs:sequence>\n");
+ fprintf(sch,"                                             <xs:element name=\"definition\" maxOccurs=\"unbounded\" >\n");
+ fprintf(sch,"                                                 <xs:complexType>\n");
+ fprintf(sch,"                                                     <xs:simpleContent>\n");
+ fprintf(sch,"                                                         <xs:extension base=\"xs:string\">\n");
+ fprintf(sch,"                                                             <xs:attribute name=\"name\" type=\"xs:string\"></xs:attribute>\n");
+ fprintf(sch,"                                                         </xs:extension>\n");
+ fprintf(sch,"                                                     </xs:simpleContent>\n");
+ fprintf(sch,"                                                 </xs:complexType>\n");
+ fprintf(sch,"                                             </xs:element>\n");
+ fprintf(sch,"                                       </xs:sequence>\n");
+ fprintf(sch,"                                 </xs:complexType>\n");
+ fprintf(sch,"                           </xs:element>\n");
+ fprintf(sch,"                     </xs:sequence>\n");
+ fprintf(sch,"               </xs:complexType>\n");
+ fprintf(sch,"         </xs:element>\n");
+ fprintf(sch,"   </xs:schema>\n");
+ fclose(sch);
+}
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
   int	i = 1, ncid, timeDim, varID, noDim;
-  char	outFile[512];
   const char *p;
+  char outFile[512];
 
   if (argc < 2)
   {
@@ -146,21 +260,16 @@ int main(int argc, char *argv[])
     return(1);
   }
 
-//===================================
-//================================
-//====================
-FILE* vdb;
-vdb=fopen("VDB.xml","a");
-fprintf(vdb,"  <variableCatalog>\n");
-
-//================================
-//====================
-//=============================
-
+  FILE* vdb;
+  vdb=fopen("VDB.xml","w");
+  fprintf(vdb,"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><VarDB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"VDBSchema.xsd\">\n");
+  addHeader(vdb,"categories","category","Categories");
+  addHeader(vdb,"standard_names","standard_name","StandardNames");
+  fprintf(vdb,"  <variableCatalog>\n");
 
   if (InitializeVarDB(argv[i]) == ERR)
   {
-    fprintf(stderr, "vdb2ncml: Initialize failure.\n");
+    fprintf(stderr, "vdb2xml: Initialize failure.\n");
     return(1);
   }
 
@@ -185,46 +294,6 @@ fprintf(vdb,"  <variableCatalog>\n");
     return(1);
   }
 
-
-  // Time dimension.  Do we have to have a dimension?
-  nc_def_dim(ncid, "Time", NC_UNLIMITED, &timeDim);
-
-
-  // Time variable.
-  nc_def_var(ncid, "Time", NC_INT, 1, &timeDim, &varID);
-  p = "time of measurement";
-  nc_put_att_text(ncid, varID, "long_name", strlen(p)+1, p);
-  p = "seconds since yyyy-mm-dd hh:mm:ss +0000";
-  nc_put_att_text(ncid, varID, "units", strlen(p)+1, p);
-  p = "seconds since %F %T %z";
-  nc_put_att_text(ncid, varID, "strptime_format", strlen(p)+1, p);
-
-  // AircraftSpecs - boom_len.
-  float boom_len = 5.18; // C-130
-  nc_def_var(ncid, "N130AR", NC_INT, 0, 0, &varID);
-  nc_put_att_float(ncid, varID, "boom_length", NC_FLOAT, 1, &boom_len);
-  p = "TASHC MR THETA THETAE RHUM ATTACK SSLIP ATX DPXC EDPC PALT PSX PSXC QCX QCXC TASX TTX XMACH2 THETAV ZERO ONE PALTF IAS";
-  nc_put_att_text(ncid, varID, "always_derive", strlen(p)+1, p);
-
-  boom_len = 4.42; // GV
-  nc_def_var(ncid, "N677F", NC_INT, 0, 0, &varID);
-  nc_put_att_float(ncid, varID, "boom_length", NC_FLOAT, 1, &boom_len);
-  p = "TASHC MR THETA THETAE RHUM ATTACK SSLIP ATX DPXC EDPC PALT PSX PSXC QCX QCXC TASX TTX XMACH2 THETAV ZERO ONE PALTF IAS";
-  nc_put_att_text(ncid, varID, "always_derive", strlen(p)+1, p);
-
-  boom_len = 4.21; // NRL-P3
-  nc_def_var(ncid, "NRL-P3", NC_INT, 0, 0, &varID);
-  nc_put_att_float(ncid, varID, "boom_length", NC_FLOAT, 1, &boom_len);
-  p = "TASHC MR THETA THETAE RHUM ATTACK SSLIP ATX DPXC EDPC PALT PSX PSXC QCX QCXC TASX TTX XMACH2 THETAV ZERO ONE PALTF";
-  nc_put_att_text(ncid, varID, "always_derive", strlen(p)+1, p);
-
-  boom_len = 4.52; // Electra
-  nc_def_var(ncid, "N308D", NC_INT, 0, 0, &varID);
-  nc_put_att_float(ncid, varID, "boom_length", NC_FLOAT, 1, &boom_len);
-  p = "TASHC MR THETA THETAE RHUM ATTACK SSLIP ATX DPXC EDPC PALT PSX PSXC QCX QCXC TASX TTX XMACH2 THETAV ZERO ONE PALTF";
-  nc_put_att_text(ncid, varID, "always_derive", strlen(p)+1, p);
-
-
   for (i = 0; i < VarDB_nRecords; ++i)
   {
     struct var_v2 * vp = &((struct var_v2 *)VarDB)[i];
@@ -233,9 +302,6 @@ fprintf(vdb,"  <variableCatalog>\n");
     {
       continue;
     }
-
-////==================================Julian Quick ===============================================================================
-////===============================VDB 2 XML Additions============================================================================
 
     fprintf(vdb,"    <variable name=\"%s\">\n",vp->Name);
     fprintf(vdb,"      <units>%s</units>\n",vp->Units);
@@ -257,10 +323,14 @@ fprintf(vdb,"  <variableCatalog>\n");
   
     p = VarDB_GetCategoryName(vp->Name);
     if (strcmp(p, "None"))
-      fprintf(vdb,"      <category>%s</category>\n",VarDB_GetCategoryName(vp->Name));
+      fprintf(vdb,"      <category>%s</category>\n", p);
     p = VarDB_GetStandardNameName(vp->Name);
     if (strcmp(p, "None"))
-      fprintf(vdb,"      <standard_name>%d</standard_name>\n",ntohl(vp->standard_name));
+      fprintf(vdb,"      <standard_name>%s</standard_name>\n", p);
+
+    checkModVars(vdb,varID, vp->Name);
+    checkDerivedNames(vdb,ncid, varID, vp->Name);
+    checkDependencies(vdb,ncid, varID, vp->Name);
 
     if(ntohl(vp->reference)!=0)
     {
@@ -271,83 +341,43 @@ fprintf(vdb,"  <variableCatalog>\n");
     }
     fprintf(vdb,"    </variable>\n");
 
-////==============================================================================================================================
 
-
-    nc_def_var(ncid, vp->Name, NC_FLOAT, 1, &timeDim, &varID);
-
-    nc_put_att_float(ncid, varID, "_FillValue", NC_FLOAT, 1, &fill_value);
-
-    p = vp->Units;
-    if (strcmp(p, "mb") == 0 || strcmp(p, "mbar") == 0)
-      p = "hPa";
-    nc_put_att_text(ncid, varID, "units", strlen(p)+1, p);
-
-    p = vp->Title;
-    nc_put_att_text(ncid, varID, "long_name", strlen(p)+1, p);
-
-    p = VarDB_GetCategoryName(vp->Name);
-    if (strcmp(p, "None"))
-      nc_put_att_text(ncid, varID, "Category", strlen(p)+1, p);
-    p = VarDB_GetStandardNameName(vp->Name);
-    if (strcmp(p, "None"))
-      nc_put_att_text(ncid, varID, "standard_name", strlen(p)+1, p);
-
-    if (fabs(VarDB_GetMinLimit(vp->Name)) + fabs(VarDB_GetMaxLimit(vp->Name)) > 0.0001)
-    {
-      float   range[2];
-
-      range[0] = VarDB_GetMinLimit(vp->Name);
-      range[1] = VarDB_GetMaxLimit(vp->Name);
-      nc_put_att_float(ncid, varID, "valid_range", NC_FLOAT, 2, range);
-    }
-
-
-    checkModVars(ncid, varID, vp->Name);
-    checkDerivedNames(ncid, varID, vp->Name);
-    checkDependencies(ncid, varID, vp->Name);
 
 // What about Spikes & Lags?  Put in aircraft specific?
 // What about default global_attrs; coordinates, etc.
   }
 
 
-
-
-
-
-
-
-
   ReleaseVarDB();
-  nc_close(ncid);
-//=============
-//=========================
-//
 
-fprintf(vdb,"  </variableCatalog>\n");
-fprintf(vdb,"  <Dictionary>\n");
-std::fstream dictionaryNames;
-dictionaryNames.open("Dictionary");
-std::string raw_line,named,definition;
-while(std::getline(dictionaryNames,raw_line))
-{
-  if (raw_line[0]!='#' and !raw_line.empty())
+
+  fprintf(vdb,"  </variableCatalog>\n");
+  fprintf(vdb,"  <Dictionary>\n");
+  std::string dictionaryLocation="Dictionary";
+  std::fstream dictionaryNames;
+  dictionaryNames.open(dictionaryLocation.c_str());
+  
+  //Create xml schema
+  schemaMaker(dictionaryLocation);
+
+  std::string raw_line,named,definition;
+  while(std::getline(dictionaryNames,raw_line))
   {
-    named="";
-    definition="";
-    std::stringstream iss(raw_line);
-    std::getline(iss,named,',');
-    std::getline(iss,definition,',');
-    //std::cout<<named<<":: "<<definition<<"\n";
-    fprintf(vdb,"    <definition name=\"%s\">%s</definition>\n",named.c_str(),definition.c_str());
+    if (raw_line[0]!='#' and !raw_line.empty())
+    {
+      named="";
+      definition="";
+      std::stringstream iss(raw_line);
+      std::getline(iss,named,',');
+      std::getline(iss,definition,',');
+      //std::cout<<named<<":: "<<definition<<"\n";
+      fprintf(vdb,"    <definition name=\"%s\">%s</definition>\n",named.c_str(),definition.c_str());
+    }
   }
-}
-fprintf(vdb,"  </Dictionary>\n");
-fprintf(vdb,"</VarDB>");
-fclose(vdb);
-//==============================
-//==============
+  fprintf(vdb,"  </Dictionary>\n");
+  fprintf(vdb,"</VarDB>");
+  fclose(vdb);
+
   return(0);
 
 }	/* END MAIN */
