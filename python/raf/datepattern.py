@@ -168,8 +168,9 @@ class DatePattern(object):
 
     def generateRsyncRules(self, begin, end):
         patterns = self.generate(begin, end)
-        options = ['--exclude=*']
-        options.extend(['--include=%s' % (p) for p in patterns])
+	options = []
+        options.extend(['--include=%s**' % (p) for p in patterns])
+        options.extend(['--exclude=*'])
         return options
 
 
