@@ -10,6 +10,6 @@ max_limit,Maximum possible value signal can drop to
 category,Used to group signals
 modulus_range,We can put a definition here!
 derive,We can put a definition here!
-dependencies,We can put a definition here!
+depends,We can put a definition here!
 standard_name,We can put a definition here!
 reference,We can put a definition here!

@@ -92,7 +92,8 @@ void checkDerivedNames(FILE* vdb,int ncid, int varID, const char *varName)
     {
       p = strtok(NULL, "\n");
       while (isspace(*p)) ++p;
-        fprintf(vdb,"      <derived>%s</derived>\n",p);
+        fprintf(vdb,"      <derive>%s</derive>\n",p);
+        return void();
 //      nc_put_att_text(ncid, varID, "derive", strlen(p)+1, p);
     }
   }
@@ -159,7 +160,10 @@ void addHeader(FILE* vdb,std::string name,std::string iter,std::string infoFile)
         }
       i++;
       }
-      fprintf(vdb,"    <%sname=\"%s\">\n",iter.c_str(),noSpace.c_str());
+      if (noSpace!="None")
+      {
+        fprintf(vdb,"    <%s name=\"%s\"/>\n",iter.c_str(),noSpace.c_str());
+      }
     }
   }
   fprintf(vdb,"  </%s>\n",name.c_str());
@@ -176,12 +180,12 @@ void schemaMaker(std::string dictionaryLoc)
  fprintf(sch,"                           <xs:element name=\"categories\">\n");
  fprintf(sch,"                                 <xs:complexType>\n");
  fprintf(sch,"                                       <xs:sequence>\n");
- fprintf(sch,"                                             <xs:element name=\"category\" maxOccurs=\"unbounded\">\n'");
+ fprintf(sch,"                                             <xs:element name=\"category\" maxOccurs=\"unbounded\">\n");
  fprintf(sch,"                                                   <xs:complexType>\n");
  fprintf(sch,"                                                         <xs:attribute name=\"name\" type=\"xs:string\"></xs:attribute>\n");
  fprintf(sch,"                                                   </xs:complexType>\n");
  fprintf(sch,"                                             </xs:element>\n");
- fprintf(sch,"                                       </xs:sequence>");
+ fprintf(sch,"                                       </xs:sequence>\n");
  fprintf(sch,"                                 </xs:complexType>\n");
  fprintf(sch,"                           </xs:element>\n");
  fprintf(sch,"                           <xs:element name=\"standard_names\">\n");
@@ -324,13 +328,14 @@ int main(int argc, char *argv[])
     p = VarDB_GetCategoryName(vp->Name);
     if (strcmp(p, "None"))
       fprintf(vdb,"      <category>%s</category>\n", p);
-    p = VarDB_GetStandardNameName(vp->Name);
-    if (strcmp(p, "None"))
-      fprintf(vdb,"      <standard_name>%s</standard_name>\n", p);
 
     checkModVars(vdb,varID, vp->Name);
     checkDerivedNames(vdb,ncid, varID, vp->Name);
     checkDependencies(vdb,ncid, varID, vp->Name);
+
+    p = VarDB_GetStandardNameName(vp->Name);
+    if (strcmp(p, "None"))
+      fprintf(vdb,"      <standard_name>%s</standard_name>\n", p);
 
     if(ntohl(vp->reference)!=0)
     {
