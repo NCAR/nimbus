@@ -143,6 +143,7 @@ void addHeader(FILE* vdb,std::string name,std::string iter,std::string infoFile)
   cats.open(infoFile.c_str());
   std::string raw_line,definition,useless_info,noSpace;
   int i;
+  bool added=false;
   while(std::getline(cats,raw_line))
   {
     noSpace="";
@@ -154,9 +155,11 @@ void addHeader(FILE* vdb,std::string name,std::string iter,std::string infoFile)
       std::getline(iss,useless_info,',');
       std::getline(iss,definition,',');
       i=0;
+      added=false;
       while(definition[i]!='\0'){
-       if(definition[i]!=' '){
-        noSpace+=definition[i];
+       if(definition[i]!=' ' or added==true){
+          noSpace+=definition[i];
+          added=true;
         }
       i++;
       }
