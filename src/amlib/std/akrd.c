@@ -2,11 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	akrd.c
 
-FULL NAME:	Attack Angle of the Radome
-
-ENTRY POINTS:	sakrd()
-
-STATIC FNS:	none
+FULL NAME:	Attack Angle from the Radome
 
 DESCRIPTION:    
 
@@ -23,7 +19,7 @@ static int	gv_radome_ssn = 1;	// default to first radome.
 // Serial number for C130 radome.  #2 was installed in May of 2013.
 static int      c130_radome_ssn = 1;      // default to first radome.
 
-static NR_TYPE coeff[2];
+static NR_TYPE coeff[3];
 
 /* -------------------------------------------------------------------- */
 void initAKRD(var_base *varp)
@@ -37,8 +33,16 @@ void initAKRD(var_base *varp)
       if ( (tmp = GetDefaultsValue("C130_RADOME_SSN", varp->name)) )
         c130_radome_ssn = (int)tmp[0];
 
-      coeff[0] = 0.3843;
-      coeff[1] = 0.06653;
+      if (c130_radome_ssn == 1)
+      {
+        coeff[0] = 5.7763;
+        coeff[1] = 15.0308;
+      }
+      else
+      {
+        coeff[0] = 4.8;		// Coopers latest memo 8/5/2014
+        coeff[1] = 12.715;
+      }
       break;
 
     case Config::ELECTRA:
@@ -62,13 +66,15 @@ void initAKRD(var_base *varp)
 
       if (gv_radome_ssn == 1)
       {
-        coeff[0] = 0.2571;
-        coeff[1] = 0.04727;
+        coeff[0] = 5.529309;
+        coeff[1] = 20.427622;
+        coeff[2] = 0.0;	// not used.
       }
       else
       {	// New radome in 2013 - SANGRIAA-TEST and later.
-        coeff[0] = 0.20725;
-        coeff[1] = 0.04688;
+        coeff[0] = 4.604;
+        coeff[1] = 18.67;
+        coeff[2] = 6.49;
       }
 
       break;
@@ -95,6 +101,9 @@ void sakrd(DERTBL *varp)
     switch (cfg.Aircraft())
     {
       case Config::C130:
+        akrd = coeff[0] + coeff[1] * ratio;
+        break;
+
       case Config::ELECTRA:
       case Config::NRL_P3:
       case Config::KINGAIR:
@@ -102,38 +111,24 @@ void sakrd(DERTBL *varp)
         break;
 
       case Config::HIAPER:
-        {
-        double akcor = 0.0;
-
         if (gv_radome_ssn == 1)
         {
-          double mach = GetSample(varp, 2);
-          akcor = std::max(0.6195 - 1.02758 * mach*mach, 0.42);
-
-          /* Attempt to repair poor AOA during low/slow flying (high pitch) due
-           * to non perfectly hemispherical radome.  Added by AJS 4/3/12.
-           */
-         if (akrd > 4.0)
-           akrd = (1.27 + akrd * (0.56714 + 0.028571 * akrd));
+          akrd = coeff[0] + coeff[1] * ratio;
         }
         else	// Radome #2, Jan 2013 and later.
         {
-          double atx = GetSample(varp, 2);
-          double psxc = GetSample(varp, 3);
-          double density_cor = (psxc / (atx + 273.15));
+          double mach = GetSample(varp, 2);
 
-          if (density_cor >= 0.9074 && density_cor <= 2.0)
-            akcor = (5.34 + density_cor * (-11.192 + density_cor * (7.1669 - 1.4519 * density_cor)));
-        }
-
-        akrd = ((ratio + coeff[0]) / coeff[1]) + akcor;
+          akrd = coeff[0] + ratio * (coeff[1] + coeff[2] * mach);
         }
         break;
 
       case Config::SABRELINER:
       case Config::B57:
         {
-        NR_TYPE mach = GetSample(varp, 2);
+        double    mach;
+
+        mach = GetSample(varp, 2);
         akrd = adifr / (qcxc * (0.0719786 - 0.0331033 *
                       mach + 0.0109213 * mach*mach));
         }

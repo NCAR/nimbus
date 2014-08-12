@@ -1,11 +1,11 @@
 /*******AKDF  ATTACK ANGLE OF THE BOOM (deg)                         AKDF
  
      Input:
-         adif - raw boom differential pressure
-         qcb - raw boom dynamic pressure
-        xmach2 - derived mach number
+	adif	- raw boom differential pressure
+	qcb	- raw boom dynamic pressure
+	mach	- derived mach number
      Output:
-         akdf - attack angle of the boom (deg)
+	akdf	- attack angle of the boom (deg)
 */
 
 #include "nimbus.h"

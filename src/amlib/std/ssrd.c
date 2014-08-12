@@ -35,43 +35,51 @@ void initSSRD(var_base *varp)
 
       if (FlightDate[2] < 1998)
       {
-        coeff[0] = -0.07;
-        coeff[1] = 0.079;
+        coeff[0] = -0.886;
+        coeff[1] = 12.658;
       }
       else
       {
-        /*  New coefficients to handle ssrd offset to BDIFR - SOLAR CORONA on.
-         *  Kept inactive pending final approval per AJS 12/18/98.
-         */	
-        coeff[0] = -0.000983;
-        coeff[1] = 0.08189;
+        if (c130_radome_ssn == 1)
+        {
+          /*  New coefficients to handle ssrd offset to BDIFR - SOLAR CORONA on.
+           *  Kept inactive pending final approval per AJS 12/18/98.
+           */	
+          coeff[0] = -0.012;
+          coeff[1] = 12.21;
+        }
+        else
+        {
+          coeff[0] = 1.25;
+          coeff[1] = 12.31;
+        }
       }
       break;
 
     case Config::ELECTRA:
-      coeff[0] = 0.0375;
-      coeff[1] = 0.06577;
+      coeff[0] = 0.57;
+      coeff[1] = 15.204;
       break;
 
     case Config::NRL_P3:
-      coeff[0] = 0.0025;
-      coeff[1] = 0.06577;
+      coeff[0] = 0.038;
+      coeff[1] = 15.204;
       break;
 
     case Config::KINGAIR:
-      coeff[0] = -0.002825;
-      coeff[1] = 0.07448;
+      coeff[0] = -0.0379;
+      coeff[1] = 13.4264;
       break;
 
     case Config::HIAPER:
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
         gv_radome_ssn = (int)tmp[0];
 
-      coeff[0] = -0.0025;
-      coeff[1] = 0.04727;
+      coeff[0] = -0.05288;
+      coeff[1] = 21.155;
       if (gv_radome_ssn == 1)
       {
-        coeff[0] = 0.004971;
+        coeff[0] = 0.1051;
       }
       break;
 
@@ -106,7 +114,7 @@ void sssrd(DERTBL *varp)
         break;
 
       default:
-        ssrd = (ratio + coeff[0]) / coeff[1];
+        ssrd = coeff[0] + coeff[1] * ratio;
     }
   }
 
