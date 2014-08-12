@@ -10,5 +10,5 @@ while :
 do
     /home/local/raf/nagios-qc/compare.py
     /home/local/raf/nagios-qc/piper.sh
-    sleep 30
+    sleep $1
 done

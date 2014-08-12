@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import numpy
 import psycopg2
 import os
@@ -8,37 +6,38 @@ from lxml import etree
 getInfo=imp.load_source('getInfo','../vardb/editpy/getInfo.py')
 #Julian Quick
 #SUPER intern 2014
+# compares psql data feed to metadata via checks configured iin checks.xml
+# outputs check results to /tmp/nagiosPassiveCommands
 #================================================
-# Definitions of checks
-# These checks expect variable names to be an exact match, or the 
-# live data names to have extra information after a _
-
 def specialCase(elm,data):
    variable=elm.attrib['variable']
    if variable=='GGQUAL':
       if int(data)==5:
-         return ok+'::at 5'
+         return ok+metSep+'at 5'
       elif 1<data and 5>data:
-         return warning+'::value is '+str(data)
+         return warning+metSep+'value is '+str(data)
       elif int(data)==0:
-         return critical+'::0'
-      else: return warning+':: value is '+str(data)
+         return critical+metSep+'0'
+      else: return warning+metSep+' value is '+str(data)
 
 def flatLining(varnum,rows,elm):
    calcList=[]
-   for j in range(0,flatLineHistory):
-     calcList.append(rows[j][varnum])
    if 'tolerance' in elm.attrib:
       tolerance=elm.attrib['tolerance']
    else:
-      tolerance = defaulttolerance
+      tolerance = defaultTolerance
+   if 'lookBack' in elm.attrib:
+      checkRecords=elm.attrib['lookBack']
+   else:
+      checkRecords=defaultCheckRecords
+   for j in range(0,int(checkRecords)):
+     calcList.append(rows[j][varnum])
    if numpy.std(calcList)<tolerance:
       return flats
    else:
-      return ok+'::not flatlining'
+      return ok+metSep+'not flatlining'
 
 def boundsCheck(elm,data):
-
    # Check for bounds in check, find in vardb if not there
    if minlim not in elm.attrib:
       for var in getInfo.getinfo(vardb):
@@ -46,39 +45,49 @@ def boundsCheck(elm,data):
             if minlim in var[0]:
                minBoundary=var[var[0].index(minlim)]
                maxBoundary=var[var[0].index(maxlim)]
-            else: return warning+':: No metdata'
+            else: return warning+metSep+' No metdata'
    else:
       try:
-         minBoundary=elm.attrib['min_limit'] 
-         maxBoundary=elm.attrib['max_limit'] 
+         minBoundary=float(elm.attrib['min_limit'])
+         maxBoundary=float(elm.attrib['max_limit'])
       except KeyError:
-         return warning+':: No metdata'
+         return warning+metSep+' No metdata'
 
    if minBoundary>data:
-      return critical+'::**Below minimum limit** value is '+str(data)
+      return critical+metSep+'**Below minimum limit** value is '+str(data)
    elif maxBoundary<data:
-      return critical+'::**Above maximum limit** value is '+str(data)
+      return critical+metSep+'**Above maximum limit** value is '+str(data)
    else:
-      return ok+'::bounds'
+      return ok+metSep+'bounds'
 
 def constant(dataRows,varnum,elm):
    if 'tolerance' in elm.attrib:
       tolerance=elm.attrib['tolerance']
    else:
-      tolerance = defaulttolerance
+      tolerance = defaultTolerance
+   if 'lookBack' in elm.attrib:
+      checkRecords=elm.attrib['lookBack']
+   else:
+      checkRecords=defaultCheckRecords
    calcList=[]
-   for j in range(0,flatLineHistory):
+   for j in range(0,int(checkRecords)):
      calcList.append(dataRows[j][varnum])
    if numpy.std(calcList)>tolerance:
       return flaps
    else:
-      return ok+'::constant'
+      return ok+metSep+'constant'
 #================================================
 #status: 0-Good 1-No Data 2-Bounds or flatlining
 #-----------------------------------------------
-#flatLineHistory is the number of entries to scan when checking for flatlining
-flatLineHistory=6
+#signalHistory is the max number of entries to scan when checking for flatlining
+signalHistory=200
+
+#defaultCheckRecords is the default number of entries to scan back when doing a flatline or stability test
+defaultCheckRecords=25
+
 vardb=os.path.expandvars("$PROJ_DIR/$PROJECT/$AIRCRAFT/vardb.xml")
+
+metSep=':  '
 
 defaultTolerance=0.01
 
@@ -88,7 +97,7 @@ minlim='min_limit'
 missingdata=-32767.0
 
 #cmds is passive check output file, which is piped to nagios by shell
-cmds=open('/tmp/commands','w+')
+cmds=open('/tmp/nagiosPassiveCommands','w+')
 
 #VardDB Location
 vardb=os.path.expandvars('$PROJ_DIR/$PROJECT/$AIRCRAFT/vardb.xml')
@@ -112,7 +121,7 @@ nagiosSignals[flaps]='2'
 nagiosSignals[bounds]='2'
 #================================================
 #used for deubugging
-#foo = psycopg2.connect(database="real-time-C130", user="ads", host="eol-rt-data.fl-ext.ucar.edu")
+#foo = psycopg2.connect(database="real-time", user="ads", host="steam")
 
 foo = psycopg2.connect(database="real-time", user="ads", host="acserver")
 cur=foo.cursor()
@@ -137,7 +146,7 @@ cur.execute("select * from raf_lrt where datetime=(select max(datetime) from raf
 row=cur.fetchone()
 #---------------------------------------
 #Get recent entries
-cur.execute("select * from raf_lrt order by datetime desc limit "+str(flatLineHistory)+";")
+cur.execute("select * from raf_lrt order by datetime desc limit "+str(signalHistory)+";")
 rows=cur.fetchall()
 #---------------------------------------
 #Get monitoring instructions from monitoring.xml
@@ -145,29 +154,35 @@ monidoc=etree.parse(os.path.expandvars('${PROJ_DIR}/${PROJECT}/${AIRCRAFT}/check
 #---------------------------------------
 #set up status dictionary
 status={}
-for elm in monidoc.getiterator('check'):
-   status[elm.attrib['variable']]=[]
 i=0
 while i<len(names):
+   status[names[i]]=[]
+   splits=names[i].split('_')
+   if len(splits)>1:
+      idMet=splits[0]
+      for k in range(1,len(splits)-1):
+         idMet+='_'+str(splits[k])
+   else:idMet=names[i]
    for elm in monidoc.getiterator('check'):
-      if elm.attrib['variable'].upper()==names[i].upper() or elm.attrib['variable'].split('_')[0].upper()==names[i].upper():
+      var=elm.attrib['variable']
+      if var.upper()==names[i].upper() or var.strip('.*').upper()==str(idMet).upper():
          if elm.attrib['type']=='flatline':
-            status[elm.attrib['variable']].append(flatLining(i,rows,elm))
+            status[names[i]].append(flatLining(i,rows,elm))
          elif elm.attrib['type']=='bounds':
-            status[elm.attrib['variable']].append(boundsCheck(elm,row[i]))
+            status[names[i]].append(boundsCheck(elm,row[i]))
          elif elm.attrib['type']=='stable':
-            status[elm.attrib['variable']].append(constant(rows,i,elm))
+            status[names[i]].append(constant(rows,i,elm))
          elif elm.attrib['type']=='custom':
-            status[elm.attrib['variable']].append(specialCase(elm,row[i]))
+            status[names[i]].append(specialCase(elm,row[i]))
 
-         #Check for no data
+         #Check for no data. Overrides other checks.
          if row[i]==missingdata:
-            status[elm.attrib['variable']].append(nodat)
+            status[names[i]].append(nodat)
    i+=1
 
 for key in status:
 #   print key,status[key]
    if len(key)!=0:
       for entry in status[key]:
-         cmds.write('RAF'+';'+key+';'+nagiosSignals[entry.split('::')[0]]+';'+entry+'\n')
+         cmds.write('RAF'+';'+key+';'+nagiosSignals[entry.split(metSep)[0]]+';'+entry+'\n')
 cmds.close()
