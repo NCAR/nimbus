@@ -200,6 +200,7 @@ void slatc(DERTBL *varp)
 
 
   time_duration[FeedBack] += deltaT[FeedBack];
+  omegat = 2.0 * M_PI * time_duration[FeedBack] / 5067.0;
 
   /* Check GPS status, only do this on the Low-rate pass.
    */
@@ -318,7 +319,6 @@ void slatc(DERTBL *varp)
             }
         }
 
-      omegat = 2.0 * M_PI * time_duration[FeedBack] / 5067.0;
       sinwt = sin(omegat);
       coswt = cos(omegat);
 
@@ -382,7 +382,6 @@ void slatc(DERTBL *varp)
 
     if (FeedBack == LOW_RATE_FEEDBACK) /* Only do this in the Low-rate pass */
       {
-      omegat = 2.0 * M_PI * time_duration[FeedBack] / 5040.0;
       sinwt = sin(omegat);
       coswt = cos(omegat);
 
