@@ -156,8 +156,11 @@ monidoc=etree.parse(os.path.expandvars('${PROJ_DIR}/${PROJECT}/${AIRCRAFT}/check
 #---------------------------------------
 #set up status dictionary
 status={}
+dataCheck={}
 i=0
 while i<len(names):
+
+   #QC process
    splits=names[i].split('_')
    if len(splits)>1:
       idMet=splits[0]
@@ -179,10 +182,17 @@ while i<len(names):
          #Check for no data. Overrides other checks.
          if row[i]==missingdata:
             status[names[i]]=nodat
+
+   #No Data check process
+   if row[i]==missingdata:
+       dataCheck[names[i]]=critical
+   else:
+       dataCheck[names[i]]=ok
    i+=1
 
 for key in status:
-#   print key,status[key]
-   if len(key)!=0:
-      cmds.write('RAF'+';'+key.lower()+';'+nagiosSignals[status[key].split(metSep)[0]]+';'+status[key]+'\n')
+   cmds.write('RAF'+';'+key.lower()+';'+nagiosSignals[status[key].split(metSep)[0]]+';'+status[key]+'\n')
+
+for key in dataCheck:
+   cmds.write('No Data Check'+';'+key.lower()+';'+nagiosSignals[dataCheck[key]]+';'+dataCheck[key]+'\n')
 cmds.close()

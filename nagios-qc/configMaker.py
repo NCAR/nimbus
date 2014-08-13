@@ -28,6 +28,8 @@ configFile=open('/etc/nagios/raf/config.cfg','w')
 HostName='RAF'
 HostMaker(HostName,configFile)
 Checks=etree.parse(os.path.expandvars('${PROJ_DIR}/${PROJECT}/${AIRCRAFT}/checks.xml'))
+
+#Conf file for QC
 for Elm in Checks.getiterator('check'):
   if Elm.attrib['variable'][-2:]==".*":
 
@@ -49,3 +51,11 @@ for Elm in Checks.getiterator('check'):
        if Elm.attrib['variable'].upper()==nam.upper():
           ServiceMaker(HostName,Elm.attrib['variable'],configFile)
           break
+
+#Conf for no data tab
+noDatHost='No Data Check'
+HostMaker(noDatHost,configFile)
+for name in names:
+   ServiceMaker(noDatHost,name,configFile)
+
+configFile.close()

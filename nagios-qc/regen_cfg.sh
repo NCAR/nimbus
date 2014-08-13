@@ -11,7 +11,7 @@ sudo /sbin/service nagios stop
 # Create configuration files (make sure to pass ads environment to sudo).
 sudo -E ./configMaker.py
 
-cat /etc/nagios/raf/*
+#cat /etc/nagios/raf/*
 
 # Restart nagios with new configuration files
 sudo /sbin/service nagios start
