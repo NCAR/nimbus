@@ -8,7 +8,7 @@ from generateTheButtons import generateButtons
 from quitComment import comment
 def setup(self):
       #groundvars location
-      self.gvfilename='/$PROJ_DIR/$PROJECT/$AIRCRAFT/groundvars'
+      self.gvfilename='$PROJ_DIR/$PROJECT/$AIRCRAFT/groundvars'
 
       #Create tabs
       self.tabs=QtGui.QTabWidget()
