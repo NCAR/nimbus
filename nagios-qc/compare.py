@@ -158,7 +158,6 @@ monidoc=etree.parse(os.path.expandvars('${PROJ_DIR}/${PROJECT}/${AIRCRAFT}/check
 status={}
 i=0
 while i<len(names):
-   status[names[i]]=[]
    splits=names[i].split('_')
    if len(splits)>1:
       idMet=splits[0]
@@ -167,24 +166,23 @@ while i<len(names):
    else:idMet=names[i]
    for elm in monidoc.getiterator('check'):
       var=elm.attrib['variable']
-      if var.upper()==names[i].upper() or var.strip('.*').upper()==str(idMet).upper():
+      if var.upper()==names[i].upper() or var.strip('.*').upper()==str(idMet).upper() and var[-2:]=='.*':
          if elm.attrib['type']=='flatline':
-            status[names[i]].append(flatLining(i,rows,elm))
+            status[names[i]]=flatLining(i,rows,elm)
          elif elm.attrib['type']=='bounds':
-            status[names[i]].append(boundsCheck(elm,row[i]))
+            status[names[i]]=boundsCheck(elm,row[i])
          elif elm.attrib['type']=='stable':
-            status[names[i]].append(constant(rows,i,elm))
+            status[names[i]]=constant(rows,i,elm)
          elif elm.attrib['type']=='custom':
-            status[names[i]].append(specialCase(elm,row[i]))
+            status[names[i]]=specialCase(elm,row[i])
 
          #Check for no data. Overrides other checks.
          if row[i]==missingdata:
-            status[names[i]].append(nodat)
+            status[names[i]]=nodat
    i+=1
 
 for key in status:
 #   print key,status[key]
    if len(key)!=0:
-      for entry in status[key]:
-         cmds.write('RAF'+';'+key+';'+nagiosSignals[entry.split(metSep)[0]]+';'+entry+'\n')
+      cmds.write('RAF'+';'+key.lower()+';'+nagiosSignals[status[key].split(metSep)[0]]+';'+status[key]+'\n')
 cmds.close()

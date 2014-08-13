@@ -8,7 +8,7 @@ def ServiceMaker(Host,Service,conf):
    conf.write('define service{\n')
    conf.write('   use                     generic-radar-service\n')
    conf.write('   host_name               '+Host+'\n')
-   conf.write('   service_description     '+Service+'\n')
+   conf.write('   service_description     '+Service.lower()+'\n')
    conf.write('}\n\n')
 
 def HostMaker(Host,conf):
