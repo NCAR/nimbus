@@ -120,7 +120,7 @@ def setup(self):
       self.dataWarning=QtGui.QWidget()
       self.dataWarning.resize(500,200)
       self.move(400,400)
-      self.setWindowTitle('Potential Data Corruption')
+      self.setWindowTitle('Save Changes')
       self.dataComment=QtGui.QPushButton('Comment Signal(s)')
       self.dataIgnore=QtGui.QPushButton('Ignore Warning')
       self.dataHBox=QtGui.QHBoxLayout()

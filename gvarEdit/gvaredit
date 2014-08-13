@@ -26,15 +26,15 @@ class GUI(QtGui.QWidget):
         dsmCheck(self)
         generateButtons(self)
 
-    #Custom filter for window close event
-    def eventFilter(self, qobject, qevent):
-        qtype = qevent.type()
-        if qtype == QtCore.QEvent.Close:
-            self.show()
-            return True
-
-        # parents event handler for all other events
-        return super(GUI,self).eventFilter(qobject, qevent)
+#    Uncomment this section to prompt users to comment on changes after quitting
+#    def eventFilter(self, qobject, qevent):
+#        qtype = qevent.type()
+#        if qtype == QtCore.QEvent.Close:
+#            self.show()
+#            return True
+#
+#       # parents event handler for all other events
+#        return super(GUI,self).eventFilter(qobject, qevent)
 def main():
     app = QtGui.QApplication(sys.argv)
     ex = GUI()
