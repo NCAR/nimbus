@@ -133,7 +133,7 @@ def addsignal(signals,self,num,instructions):
           print>>log, 'appended ',signals[0][1]
            
 #=============
-   doc.write('VDB.xml',pretty_print=True)
+   doc.write(fileName(),pretty_print=True)
    generateButtons(self,str(self.searchText.text()),num)
    return
 
