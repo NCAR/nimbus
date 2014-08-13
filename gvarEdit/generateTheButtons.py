@@ -51,7 +51,7 @@ def generateButtons(self):
     groupbox1=QtGui.QGroupBox('')
     i=0
     while i<len(sqlnames):
-      if str(sqlnames[i]).startswith(filt1):
+      if str(sqlnames[i]).upper().startswith(filt1.upper()):
        if (sqlnames[i] in groundlines and self.cbyes.isChecked()) or (sqlnames[i] not in groundlines and self.cbno.isChecked()):
          HBLays=QtGui.QHBoxLayout()
          no=QtGui.QRadioButton("NO")
@@ -96,13 +96,13 @@ def generateButtons(self):
  
       isComment=False
       #Comments for project managers
-      if str(lines[i][0])=='#' and lines[i][1:] not in sqlnames:
+      if str(lines[i][0])=='#' and lines[i][1:].upper() not in (s.upper() for s in sqlnames):
           commentLabel=QtGui.QLabel(lines[i])
           self.grid2.addWidget(commentLabel,i,1)#,i,3)
           isComment=True
       #Signal detection
       #-search box, signal is listed in air SQL (ignores characters at and after _)
-      if (str(lines[i]).startswith(filt2) or (str(lines[i][1:]).startswith(filt2) and str(lines[i][0])=='#')) and isComment==False:
+      if (str(lines[i]).upper().startswith(filt2.upper()) or (str(lines[i][1:]).upper().startswith(filt2.upper()) and str(lines[i][0])=='#')) and isComment==False:
        
        #Checkbox filtration
        if lines[i]!='#' and (str(lines[i][0])=='#' and self.cbno2.isChecked()) or (self.cbyes2.isChecked() and str(lines[i][0])!='#'):

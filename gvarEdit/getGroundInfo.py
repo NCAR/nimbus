@@ -3,7 +3,7 @@
 import psycopg2
 import os
 def getInfo(self):
-    foo = psycopg2.connect(database="real-time", user="ads", host="acserver")
+    foo = psycopg2.connect(database="real-time", user="ads", host="steam")
     cur=foo.cursor()
     cur.execute("SELECT * FROM variable_list")
     sqlnames=cur.fetchall()
