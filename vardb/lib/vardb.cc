@@ -98,6 +98,7 @@ std::string VDBVar::get_attribute(const std::string attr_name) const
 { 
   DOMNodeList* x=_variable->getChildNodes();
   DOMNode* holder=x->item(1);
+  std::string answer;
 
   for (int i=0; i < int(x->getLength())/2; i++)
   {
@@ -105,13 +106,14 @@ std::string VDBVar::get_attribute(const std::string attr_name) const
     {
       DOMNodeList* y=holder->getChildNodes();
       DOMNode* z=y->item(0);
-      std::string answer=XMLString::transcode(z->getNodeValue());
+      if (z)
+        answer=XMLString::transcode(z->getNodeValue());
       return answer;
     }
     holder=holder->getNextSibling();
     holder=holder->getNextSibling();
   }
-  return "";
+  return answer;
 };
 //---------------------------------------------------------------------------------------
 //Sets a variable's information for specified attribute
@@ -193,7 +195,7 @@ void VDBFile::open(const std::string file)
 
   if (parser-> getErrorCount()>0)
   {
-    std::cerr << "ERROR 1 READING XML\n";
+    std::cerr << "VarDB::VDBFile::open failed to initialize file : " << file << endl;
     return;
   }
   _doc = parser->getDocument();
