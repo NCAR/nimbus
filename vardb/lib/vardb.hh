@@ -149,6 +149,7 @@ public:
   VDBDictionary * get_dictionary(const std::string dictionary_name) const;
 
 private:
+  VDBVar * search_for_var(const std::string var) const;
   bool _valid;
   DOMElement* _docRootNode;
   DOMDocument* _doc;

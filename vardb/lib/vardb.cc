@@ -205,20 +205,16 @@ void VDBFile::open(const std::string file)
 
 //---------------------------------------------------------------------------------------
 //This function searches through the XML document for an element with a given name
-VDBVar *VDBFile::get_var(const string var) const
+VDBVar *VDBFile::search_for_var(const std::string var) const
 {
-  //Get VariableCatalog node as varCat, x is intermediate domNodeList variable
   XMLCh *tag = XMLString::transcode("variableCatalog");
   DOMNodeList* x=_docRootNode->getElementsByTagName(tag);
   DOMNode* varCat=x->item(0);
   
   //search variables for name that matches input var
-
   DOMNodeList* elems=varCat->getChildNodes();
-
   DOMNode* holder=varCat->getFirstChild();
   holder=holder->getNextSibling();
-
   DOMNamedNodeMap* atts;
   DOMNode* name;
   std::string posName=var;
@@ -235,15 +231,18 @@ VDBVar *VDBFile::get_var(const string var) const
       VDBVar *v = new VDBVar(holder);
       return v;
     }
-    posName=var.substr(0, var.find_last_of('_'));
-    if(boost::iequals(XMLString::transcode(name->getNodeValue()),posName))
-    {
-      VDBVar *v = new VDBVar(holder);
-      return v;
-    }
     holder=holder->getNextSibling();
     holder=holder->getNextSibling();
   }
+  return NULL;
+};
+//---------------------------------------------------------------------------------------
+//This function searches through the XML document for an element with a given name, correcting for _'s
+VDBVar *VDBFile::get_var(const string var) const
+{
+  std::string posName=var.substr(0, var.find_last_of('_'));
+  if (search_for_var(var)) return search_for_var(var);
+  if (search_for_var(posName)) return search_for_var(posName);
   return NULL;
 };
 //---------------------------------------------------------------------------------------
