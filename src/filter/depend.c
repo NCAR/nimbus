@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "decode.h"
-#include <raf/vardb.h>
+#include <raf/vardb.hh>
 #include "amlibProto.h"
 
 char	*DependMsg =
@@ -29,6 +29,9 @@ char	*DependMsg =
 static void	doubleCheck(DERTBL *dp), setupDependencies(bool set_depends);
 
 static std::vector<std::string> dcList;
+
+extern VDBFile *vardb;
+
 
 /* -------------------------------------------------------------------- */
 void ReadDependencies()
@@ -50,7 +53,9 @@ void ReadDependencies()
     // Retrieve dependency list.
     if (cfg.isADS3())
     {
-      sprintf(buffer, "%s\t%s", dp->name, VarDB_GetDependencies(dp->name));
+      VDBVar *vdb_var = vardb->get_var(dp->name);
+      if (vdb_var)
+        sprintf(buffer, "%s\t%s", dp->name, vdb_var->get_attribute("dependencies").c_str());
     }
     else
     {

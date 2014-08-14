@@ -43,7 +43,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2012
 #include <raf/ctape.h>
 #include <netcdf.h>
 #include <raf/raf_queue.h>
-#include <raf/vardb.h>
+#include <raf/vardb.hh>
 #include "svnInfo.h"
 
 static const std::string Source = "NCAR Research Aviation Facility";
@@ -82,6 +82,7 @@ static void	WriteMissingRecords();
 
 extern NR_TYPE	*SampledData, *AveragedData, *HighRateData;
 extern FILE	*LogFile;
+extern VDBFile  *vardb;
 
 int	FlightDate[3];		// HACK: for amlib
 char	dateProcessed[64];	// For export to psql.cc
@@ -280,17 +281,16 @@ void CreateNetCDF(const char fileName[])
   /* Write out Categories.
    */
   {
-  char *list[128];
-
-  int catIdx = VarDB_GetCategoryList(list);
+  VDBDictionary *cat_dict;
+  cat_dict = vardb->get_dictionary("categories");
 
   buffer[0] = '\0';
 
-  for (int i = 1; i < catIdx; ++i)	/* Skip category "None"	*/
+  strcat(buffer, cat_dict->get_entry(0).c_str());
+  for (size_t i = 1; i < cat_dict->num_entries(); ++i)
     {
-    strcat(buffer, list[i]);
-    if (i != catIdx - 1)
-      strcat(buffer, ",");
+    strcat(buffer, ",");
+    strcat(buffer, cat_dict->get_entry(i).c_str());
     }
 
   putGlobalAttribute("Categories", buffer);
@@ -1101,7 +1101,7 @@ printDependedByList()
 /* -------------------------------------------------------------------- */
 static void addCommonVariableAttributes(const var_base *var)
 {
-  const char *p;
+  VDBVar *vdb_var = vardb->get_var(var->name);
 
   float miss_val = (float)MISSING_VALUE;
   nc_put_att_float(fd, var->varid, "_FillValue", NC_FLOAT, 1, &miss_val);
@@ -1117,17 +1117,24 @@ static void addCommonVariableAttributes(const var_base *var)
   strcpy(buffer, var->LongName.c_str());
   nc_put_att_text(fd, var->varid, "long_name", strlen(buffer)+1, buffer);
 
-  p = VarDB_GetStandardNameName(var->name);
-  if (p && strcmp(p, "None") != 0)
-    nc_put_att_text(fd, var->varid, "standard_name", strlen(p)+1, p);
-
-  if (fabs(VarDB_GetMinLimit(var->name)) + fabs(VarDB_GetMaxLimit(var->name)) > 0.0001)
+  if (vdb_var)
   {
-    float   range[2];
+    std::string std_name = vdb_var->get_attribute("standard_name");
+    if (std_name.size() > 0)
+      nc_put_att_text(fd, var->varid, "standard_name", std_name.size()+1, std_name.c_str());
 
-    range[0] = VarDB_GetMinLimit(var->name);
-    range[1] = VarDB_GetMaxLimit(var->name);
-    nc_put_att_float(fd, var->varid, "valid_range", NC_FLOAT, 2, range);
+    std::string min = vdb_var->get_attribute("min_limit");
+    std::string max = vdb_var->get_attribute("max_limit");
+    if (min.size() > 0 && max.size() > 0)
+    {
+      float   range[2];
+
+      range[0] = atof(min.c_str());
+      range[1] = atof(max.c_str());
+      nc_put_att_float(fd, var->varid, "valid_range", NC_FLOAT, 2, range);
+    }
+
+    delete vdb_var;
   }
 
   float zero[2] = { 0.0, 0.0 };
