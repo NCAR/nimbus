@@ -9,7 +9,6 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-06
 */
 
 #include "psql.h"
-#include <raf/vardb.h>
 
 #include <cctype>
 #include <ctime>
