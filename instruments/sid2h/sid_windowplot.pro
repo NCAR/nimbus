@@ -101,7 +101,8 @@ PRO sid_windowplot,topid,p1,pinfo,pop,noset=noset
                  a=sid_size(b.scatter[k,*],scatter_adjusted,(*p1).pmtgain[i],b.tof[k],(*p1).tas[i],(*pop).sizegain,peak=(*pop).peak)
                  IF (*pop).peak eq 1 THEN sizecol=max(where(a.size ge labelvalues)) < 9       
               IF nplotted[sizecol] lt 10 THEN BEGIN                              
-               reject=sid_reject(a,b.tof[k],(*p1).endbins,(*p1).intendbins[1],(*p1).intendbins,a.nsat,(*pop).maxsaturated,(*p1).tas[i],210,speedreject=(*pop).speedreject)
+               reject=sid_reject(a,b.tof[k],(*p1).endbins,(*p1).intendbins[1],(*p1).intendbins,a.nsat,(*pop).maxsaturated,(*p1).tas[i],210,$
+                                 (*pop).min_meanscatter,speedreject=(*pop).speedreject)
                
                ;Plot the particle
                temp=[transpose(scatter_adjusted), scatter_adjusted[0]] 
@@ -255,9 +256,10 @@ PRO sid_windowplot,topid,p1,pinfo,pop,noset=noset
                'Rejection Codes':BEGIN
                   total_count=float((*p1).reject_count[a:b]+(*p1).accept_count[a:b])>1
                   plot,x,(*p1).reject_reason[a:b,1]/total_count*100,ytitle='Percent Rejected',yr=[0,105],/ys,psym=1,symsize=0.3
-                  FOR i=1,7 DO oplot,x,(*p1).reject_reason[a:b,i]/total_count*100,color=70+(i-1)*30,psym=1,symsize=0.3
-                  sid_legend,['Negative Det.','Time Range','Size Range','Interarrival','Saturation','Transit Time','TAS'],$
-                      line=0,color=70+findgen(7)*30,charsize=1.0
+                  numreasons=n_elements((*p1).reject_reason[a,*])
+                  FOR i=1,numreasons-1 DO oplot,x,(*p1).reject_reason[a:b,i]/total_count*100,color=70+(i-1)*30,psym=1,symsize=0.3
+                  sid_legend,['Negative Det.','Time Range','Size Range','Interarrival','Saturation','Transit Time','TAS','Min Scatter'],$
+                      line=0,color=70+findgen(numreasons-1)*30,charsize=1.0
                END
                'Particle Counts':BEGIN
                   maxy=max([(*p1).missed[a:b],(*p1).accept_count[a:b],(*p1).reject_count[a:b]])

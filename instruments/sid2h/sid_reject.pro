@@ -1,4 +1,5 @@
-FUNCTION sid_reject, a, tof, endbins, inttime, intbins, nsat, maxsaturated, tas, laser_depth, speedreject=speedreject
+FUNCTION sid_reject, a, tof, endbins, inttime, intbins, nsat, maxsaturated, tas, $
+            laser_depth, min_meanscatter, speedreject=speedreject
    ;FUNCTION to decide whether a SID particle is accepted or rejected.
    ;a is the structure that comes from sid_size.pro
    ;Aaron Bansemer 12/2007
@@ -12,9 +13,10 @@ FUNCTION sid_reject, a, tof, endbins, inttime, intbins, nsat, maxsaturated, tas,
    IF nsat gt maxsaturated THEN reject=5                ;Too many saturated detectors
    IF tof le 550 THEN reject=6                          ;Get rid of extremely short TOF (minimum possible is 550)
    IF speedreject THEN BEGIN
-      ispeed=(laser_depth/1.0e6) / (tof/1.0e9)             ;Use width of laser to compute speed
+      ispeed=(laser_depth/1.0e6) / (tof/1.0e9)          ;Use width of laser to compute speed
       IF (ispeed gt tas*3.0) or (ispeed lt tas/3.0) THEN reject=6  ;Transit time too fast/slow
    ENDIF
-   IF (finite(tas) eq 0) or (tas lt 10) THEN reject=7           ;Unknown/slow air speed
+   IF (finite(tas) eq 0) or (tas lt 10) THEN reject=7   ;Unknown/slow air speed
+   IF a.meanscatter lt min_meanscatter THEN reject=8    ;Require a minimum raw scattering value
    return,reject
 END

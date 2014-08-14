@@ -19,5 +19,6 @@ PRO sid_update_op, op
    IF total(where(tag_names(op) eq 'CLOCKOFFSET')) eq -1 THEN op=create_struct(op,'clockoffset',0)
    IF total(where(tag_names(op) eq 'STARTTIME')) eq -1 THEN op=create_struct(op,'starttime',-1)
    IF total(where(tag_names(op) eq 'STOPTIME')) eq -1 THEN op=create_struct(op,'stoptime',-1)
+   IF total(where(tag_names(op) eq 'MIN_MEANSCATTER')) eq -1 THEN op=create_struct(op,'min_meanscatter',0)
 END
   

@@ -55,7 +55,7 @@ FUNCTION sid_size, scatter_raw, scatter_adj, gain, transittime, tas, a30, peak=p
    speed=(210.0/1.0e6)/(transittime/1.0e9)
    tbsize=8.9e6*(speed-tas/2+100.0)^(-2.67)  ;This is from an empirical formula comparing mnd to speed
 
-   return,{size:size, af:af, ci:ci, n:n, nsat:nsat, nneg:(28-n), branches:branches, fftmax:fftmax, tbsize:tbsize}
+   return,{size:size, af:af, ci:ci, n:n, nsat:nsat, nneg:(28-n), branches:branches, fftmax:fftmax, tbsize:tbsize, meanscatter:meanscatter}
 END
 
 

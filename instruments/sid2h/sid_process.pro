@@ -208,7 +208,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    totalscatter=lonarr(20,numdetectors)      ;keeps a running tally of scatter
    accept_count=lonarr(num)       ;counts the number of accepted particles
    reject_count=lonarr(num)       ;counts the number of rejected particles
-   reject_reason=lonarr(num,8)    ;keeps track of reason for rejection
+   reject_reason=lonarr(num,9)    ;keeps track of reason for rejection
    dethist=lonarr(numdetectors,2500) ;creates a histogram of levels for each detector
    tofspec=fltarr(num,numtofbins)
    eventindex=0                   ;These keep track of various events and errors.  Will be resized as needed.
@@ -362,7 +362,8 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
                IF inttime gt 0 THEN iint=fix((alog10(inttime)-iminpower)*numintbins/(imaxpower-iminpower)) ELSE iint=-1
                
                ;Particle rejection           
-               reject=sid_reject(a,b.tof[i],endbins,inttime,intendbins,a.nsat,op.maxsaturated,tas[index],laser_depth,speedreject=op.speedreject)
+               reject=sid_reject(a,b.tof[i],endbins,inttime,intendbins,a.nsat,op.maxsaturated,tas[index],laser_depth,$
+                                 op.min_meanscatter, speedreject=op.speedreject)
                IF reject ne 0 THEN reject_reason[index,reject]=reject_reason[index,reject]+1
                
                ;Update time-based size spectra, use only saturated particles
