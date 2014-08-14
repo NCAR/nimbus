@@ -2,7 +2,7 @@
 
 # This could all be one big for loop, but I broke it down for readability.
 
-foreach file ( a2d_cals lib* vardb/lib ncplot ncpp/src vardb/editor xpms2d/src nimbus/src/qc ads_utils/edADShdr )
+foreach file ( a2d_cals lib* vardb/lib ncplot ncpp/src vardb/editor xpms2d/src nimbus/src/qc ads_utils/edADShdr vardb/vdb2xml )
   (cd $file; echo $file; make clean)
 end
 
