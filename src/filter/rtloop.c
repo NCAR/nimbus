@@ -19,7 +19,6 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2005
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
-#include <raf/vardb.h>
 #include "psql.h"
 #include "brdcast.h"
 #include "grnd_feed.h"
