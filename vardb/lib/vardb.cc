@@ -221,6 +221,7 @@ VDBVar *VDBFile::get_var(const string var) const
 
   DOMNamedNodeMap* atts;
   DOMNode* name;
+  std::string posName=var;
   for (int i=1;i<=elems->getLength()/2;i++)
   {
     atts=holder->getAttributes();
@@ -231,6 +232,12 @@ VDBVar *VDBFile::get_var(const string var) const
     {
       //Node has been found. A pointer is now created pointing to a VDBVar class 
       //with _variable initialized as a pointer to the node
+      VDBVar *v = new VDBVar(holder);
+      return v;
+    }
+    posName=var.substr(0,var.find("_"));
+    if(boost::iequals(XMLString::transcode(name->getNodeValue()),var))
+    {
       VDBVar *v = new VDBVar(holder);
       return v;
     }

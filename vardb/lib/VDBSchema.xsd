@@ -32,20 +32,19 @@
                                                    <xs:complexType>
                                                          <xs:sequence>
                                                                <xs:element name="units" type="xs:string" minOccurs="0" ></xs:element>
-                                                               <xs:element name="long_name" type="xs:string"></xs:element>
-                                                               <xs:element name="is_analog" type="xs:string"></xs:element>
+                                                               <xs:element name="long_name" type="xs:string" minOccurs="0" ></xs:element>
+                                                               <xs:element name="is_analog" type="xs:string" minOccurs="0" ></xs:element>
                                                                <xs:element name="voltage_range" type="xs:string" minOccurs="0" ></xs:element>
                                                                <xs:element name="default_sample_rate" type="xs:string" minOccurs="0" ></xs:element>
                                                                <xs:element name="min_limit" type="xs:string" minOccurs="0" ></xs:element>
                                                                <xs:element name="max_limit" type="xs:string" minOccurs="0" ></xs:element>
-                                                               <xs:element name="category" type="xs:string"></xs:element>
+                                                               <xs:element name="category" type="xs:string" minOccurs="0" ></xs:element>
                                                                <xs:element name="modulus_range" type="xs:string" minOccurs="0" ></xs:element>
                                                                <xs:element name="derive" type="xs:string" minOccurs="0" ></xs:element>
-                                                               <xs:element name="dependencies" type="xs:string" minOccurs="0" ></xs:element>
-                                                               <xs:element name="static_lag" type="xs:string" minOccurs="0" ></xs:element>
-                                                               <xs:element name="spike_slope" type="xs:string" minOccurs="0" ></xs:element>
-                                                               <xs:element name="standard_name" type="xs:string"></xs:element>
-                                                               <xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+                                                               <xs:element name="depends" type="xs:string" minOccurs="0" ></xs:element>
+                                                               <xs:element name="standard_name" type="xs:string" minOccurs="0" ></xs:element>
+                                                               <xs:element name="reference" type="xs:string" minOccurs="0" ></xs:element>
+                                                               <xs:element name="test" type="xs:string" minOccurs="0" ></xs:element>
                                                          </xs:sequence>
                                                          <xs:attribute name="name" type="xs:string"></xs:attribute>
                                                    </xs:complexType>
