@@ -235,8 +235,8 @@ VDBVar *VDBFile::get_var(const string var) const
       VDBVar *v = new VDBVar(holder);
       return v;
     }
-    posName=var.substr(0,var.find("_"));
-    if(boost::iequals(XMLString::transcode(name->getNodeValue()),var))
+    posName=var.substr(0, var.find_last_of('_'));
+    if(boost::iequals(XMLString::transcode(name->getNodeValue()),posName))
     {
       VDBVar *v = new VDBVar(holder);
       return v;
