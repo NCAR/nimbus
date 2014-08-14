@@ -20,7 +20,7 @@ int VDBDictionary::num_entries() const
 {
   DOMNodeList* elms=_docRoot->getChildNodes();
   return elms->getLength()/2;
-};
+}
 //---------------------------------------------------------------------------------------
 //Returns Dictionary index starting at 0
 std::string VDBDictionary::get_entry(int index)
@@ -40,7 +40,7 @@ std::string VDBDictionary::get_entry(int index)
   DOMNamedNodeMap* atts=holder->getAttributes();
   DOMNode* att= atts->getNamedItem(XMLString::transcode("name"));
   return XMLString::transcode(att->getNodeValue());
-};
+}
 //---------------------------------------------------------------------------------------
 //This function initiates a dictionary.
 VDBDictionary* VDBFile::get_dictionary(const string dictionary_name) const
@@ -50,7 +50,7 @@ VDBDictionary* VDBFile::get_dictionary(const string dictionary_name) const
   DOMNode* Dictionary=x->item(0);
   VDBDictionary *vd = new VDBDictionary(Dictionary,dictionary_name);
   return vd;
-};
+}
 //======================================================================================
 //---------------------------------------------------------------------------------------
 //returns variable name
@@ -59,7 +59,7 @@ std::string VDBVar::name()
   DOMNamedNodeMap* atts=_variable->getAttributes();
   DOMNode*  name= atts->getNamedItem(XMLString::transcode("name"));
   return XMLString::transcode(name->getNodeValue());
-};
+}
 //---------------------------------------------------------------------------------------
 //Returns text associated with attribute, given by index
 //input: index- attribute's position in vdb variable
@@ -82,14 +82,14 @@ std::string VDBVar::get_attribute(int index)const
   DOMNode* z=y->item(0);
   std::string answer=XMLString::transcode(z->getNodeValue());
   return answer;
-};
+}
 //---------------------------------------------------------------------------------------
 //Returns number of attributes associated sellected variable
 int VDBVar::num_atts() const
 {
   DOMNodeList* x=_variable->getChildNodes();
   return x->getLength()/2;
-};
+}
 //---------------------------------------------------------------------------------------
 //Returns text associated with a variable's attribute
 //input: attr_name: attribute name, such as units, name, or longname
@@ -114,7 +114,7 @@ std::string VDBVar::get_attribute(const std::string attr_name) const
     holder=holder->getNextSibling();
   }
   return answer;
-};
+}
 //---------------------------------------------------------------------------------------
 //Sets a variable's information for specified attribute
 //input: attr_name: attribute name, such as units, name, or longname
@@ -137,14 +137,14 @@ void VDBVar::set_attribute(const std::string attr_name, const std::string value)
     holder=holder->getNextSibling();
     holder=holder->getNextSibling();
   }
-};
+}
 //=======================================================================================
 //---------------------------------------------------------------------------------------
 //Saves VDB changes, releases xerces memory
 void VDBFile::close()
 {
   _doc->release();
-};
+}
 
 //---------------------------------------------------------------------------------------
 //This function writes the current xerces tree to a new XML file
@@ -163,7 +163,7 @@ void VDBFile::save()
   outpt.open(_file.c_str());
   outpt<<transcodedStr<<"\n";
   outpt.close();
-};
+}
 
 //---------------------------------------------------------------------------------------
 //This function opens a given filename and initializes xerces
@@ -201,7 +201,7 @@ void VDBFile::open(const std::string file)
   _doc = parser->getDocument();
   _docRootNode = _doc->getDocumentElement();
   _valid = true;
-};
+}
 
 //---------------------------------------------------------------------------------------
 //This function searches through the XML document for an element with a given name
@@ -235,16 +235,25 @@ VDBVar *VDBFile::search_for_var(const std::string var) const
     holder=holder->getNextSibling();
   }
   return NULL;
-};
+}
+
 //---------------------------------------------------------------------------------------
 //This function searches through the XML document for an element with a given name, correcting for _'s
 VDBVar *VDBFile::get_var(const string var) const
 {
-  std::string posName=var.substr(0, var.find_last_of('_'));
-  if (search_for_var(var)) return search_for_var(var);
-  if (search_for_var(posName)) return search_for_var(posName);
-  return NULL;
-};
+  VDBVar *rc = NULL;
+
+  // Search first for variable as given.
+  if ((rc = search_for_var(var)) == NULL)
+  {
+    // If not found, try without a suffix (if one exists.
+    std::string posName=var.substr(0, var.find_last_of('_'));
+    rc = search_for_var(posName);
+  }
+
+  return rc;
+}
+
 //---------------------------------------------------------------------------------------
 //Returns variable at input index in vardb starting at zero
 VDBVar *VDBFile::get_var(int index)
