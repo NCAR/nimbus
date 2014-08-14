@@ -126,7 +126,7 @@ void checkDependencies(FILE* vdb,int ncid, int varID, const char *varName)
       if ( (p = strtok(NULL, "\n")) )
       {
         while (isspace(*p)) ++p;
-          fprintf(vdb,"      <depends>%s</depends>\n",p);
+          fprintf(vdb,"      <dependencies>%s</dependencies>\n",p);
 //        nc_put_att_text(ncid, varID, "Dependencies", strlen(p)+1, p);
       }
     //  else
@@ -174,7 +174,7 @@ void addHeader(FILE* vdb,std::string name,std::string iter,std::string infoFile)
 /* -------------------------------------------------------------------- */
 void schemaMaker(std::string dictionaryLoc)
 {
- FILE* sch=fopen("VDBSchema.xsd","w");
+ FILE* sch=fopen("vardb.xsd","w");
  fprintf(sch,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
  fprintf(sch,"   <xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\">\n");
  fprintf(sch,"         <xs:element name=\"VarDB\">\n");
@@ -268,8 +268,8 @@ int main(int argc, char *argv[])
   }
 
   FILE* vdb;
-  vdb=fopen("VDB.xml","w");
-  fprintf(vdb,"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><VarDB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"VDBSchema.xsd\">\n");
+  vdb=fopen("vardb.xml","w");
+  fprintf(vdb,"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><VarDB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"vardb.xsd\">\n");
   addHeader(vdb,"categories","category","Categories");
   addHeader(vdb,"standard_names","standard_name","StandardNames");
   fprintf(vdb,"  <variableCatalog>\n");
@@ -361,7 +361,7 @@ int main(int argc, char *argv[])
 
   fprintf(vdb,"  </variableCatalog>\n");
   fprintf(vdb,"  <Dictionary>\n");
-  std::string dictionaryLocation="Dictionary";
+  std::string dictionaryLocation="/home/local/raf/vardb/utils/vdb2xml/Dictionary";
   std::fstream dictionaryNames;
   dictionaryNames.open(dictionaryLocation.c_str());
   
