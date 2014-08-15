@@ -745,7 +745,11 @@ setTrack(AircraftTrack* track_in)
     cfg.TimeStep = track.projInfo.groundFeedDataRate;
   }
   if (cfg.verbose > 1)
+  {
     cerr << "KML.TimeStep = " << cfg.TimeStep << endl;
+    cerr << "KML: Normalizing longitude to 0-360." << endl;
+  }
+  track.normalizeLongitude(0.0);
 }
 
 

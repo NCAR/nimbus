@@ -493,9 +493,6 @@ fillAircraftTrack(AircraftTrack& track)
   cerr << track.npoints() << " points in track." << endl;
   PQclear(res);
 
-  cerr << "Normlizing longitude to 0-360." << endl;
-  track.normalizeLongitude(0.0);
-
   // This does not fetch anything from the database, it just translates
   // global attributes into the ProjectInfo settings, so it's safe to do
   // whenever.
