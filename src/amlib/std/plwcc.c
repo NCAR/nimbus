@@ -39,6 +39,7 @@ static NR_TYPE	lWire[nLWC] = {2.1e-2, 2.1e-2};	// Wire length (mm)
 static int	tau_Nu[nLWC] = {120, 120};		// Nusselt-number time constant.
 static NR_TYPE	cloud_conc_threshold = 1.0;		// Cloud Concentration Baseline Threshold
 
+static NR_TYPE Pdry[nLWC];
 
 static NR_TYPE CooperLWC_GV(const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE atx,
 	const NR_TYPE psxc, NR_TYPE concf, const int indx);
@@ -125,6 +126,12 @@ void plwccInit(var_base *varp)
 
 }	/* END PLWCCINIT */
 
+/* -------------------------------------------------------------------- */
+void spdry(DERTBL *varp)
+{
+  PutSample(varp, Pdry[varp->ProbeCount]);
+  Pdry[varp->ProbeCount] = floatNAN;
+}
 /* -------------------------------------------------------------------- */
 void splwcc(DERTBL *varp)
 {
@@ -227,13 +234,13 @@ NR_TYPE CooperLWC_GV(const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE atx,
   prevRe = Re;
 
   // Power required in dry air.
-  NR_TYPE Pdry = M_PI * lWire[indx] * cond * (tWire[indx] - atx) * Nu;
+  Pdry[indx] = M_PI * lWire[indx] * cond * (tWire[indx] - atx) * Nu;
   NR_TYPE xp = log10(psxc);
 
   NR_TYPE Tbp = pow(10.0, (bp[0]+xp*(bp[1]+xp*(bp[2]+xp*bp[3]))));
 
   // Liquid water content, convreted from MKS to g/m^3
-  return 1000.0 * (plwc - Pdry) / (lWire[indx] * dWire[indx] * tasx * ((Lv0+Lv*Tbp) + Cw * (Tbp - atx)));
+  return 1000.0 * (plwc - Pdry[indx]) / (lWire[indx] * dWire[indx] * tasx * ((Lv0+Lv*Tbp) + Cw * (Tbp - atx)));
 }
 
 /* -------------------------------------------------------------------- */
@@ -263,11 +270,11 @@ NR_TYPE CooperLWC_C130(	const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE at
   Nu = Nu_a0 * pow(Re, Nu_a1);
 
   // Power required in dry air.
-  NR_TYPE Pdry = M_PI * lWire[indx] * cond * (tWire[indx] - atx) * Nu;
+  Pdry[indx] = M_PI * lWire[indx] * cond * (tWire[indx] - atx) * Nu;
   NR_TYPE xp = log10(psxc);
 
   NR_TYPE Tbp = pow(10.0, (bp[0]+xp*(bp[1]+xp*(bp[2]+xp*bp[3]))));
 
   // Liquid water content, convreted from MKS to g/m^3
-  return 1000.0 * (plwc - Pdry) / (lWire[indx] * dWire[indx] * tasx * ((Lv0+Lv*Tbp) + Cw * (Tbp - atx)));
+  return 1000.0 * (plwc - Pdry[indx]) / (lWire[indx] * dWire[indx] * tasx * ((Lv0+Lv*Tbp) + Cw * (Tbp - atx)));
 }
