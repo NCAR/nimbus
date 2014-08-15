@@ -749,7 +749,7 @@ setTrack(AircraftTrack* track_in)
     cerr << "KML.TimeStep = " << cfg.TimeStep << endl;
     cerr << "KML: Normalizing longitude to 0-360." << endl;
   }
-  track.normalizeLongitude(0.0);
+  track.normalizeLongitude(-180.0);
 }
 
 
