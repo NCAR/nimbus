@@ -36,12 +36,14 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
 #include "decode.h"
 #include "gui.h"
 #include <raf/ctape.h>	// ADS header API
-#include <raf/vardb.h>	// Variable DataBase
+#include <raf/vardb.hh>	// Variable DataBase
 #include "amlib.h"
 
 #include <nidas/core/Socket.h>
 #include <nidas/dynld/raf/SyncRecordReader.h>
 extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
+
+VDBFile *vardb = 0; // Exports to cb_main.c and netcdf.c
 
 typedef struct
   {
@@ -2286,16 +2288,20 @@ static std::vector<NR_TYPE> getCalsForADS2(const char vn[])
 static void
 addUnitsAndLongName(var_base *var)
 {
-  if (VarDB_lookup(var->name) != ERR)
+  VDBVar *vdb_var = vardb->get_var(var->name);
+
+  if (vdb_var)
   {
     if (var->Units.size() == 0)
-      var->Units = VarDB_GetUnits(var->name);
+      var->Units = vdb_var->get_attribute("units");
     if (var->LongName.size() == 0)
-      var->LongName = VarDB_GetTitle(var->name);
+      var->LongName = vdb_var->get_attribute("long_name");
 
-    const char *p = VarDB_GetCategoryName(var->name);
-    if ( strcmp(p, "None") )
-      var->CategoryList.push_back(p);
+    std::string cat = vdb_var->get_attribute("category");
+    if ( cat.size() > 0 )
+      var->CategoryList.push_back(cat);
+
+    delete vdb_var;
   }
 }
 
@@ -2342,22 +2348,16 @@ static void
 openVariableDatabase()
 {
   MakeProjectFileName(buffer, VARDB);
-  if (InitializeVarDB(buffer) == ERR)
+  vardb = new VDBFile(buffer);
+  if (vardb->is_valid() == false)
   {
     LogMessage("InitializeVarDB for project specific failed, trying master file.\n");
 
     sprintf(buffer, VARDB.c_str(), cfg.ProjectDirectory().c_str(), "Configuration/", "raf/");
-    if (InitializeVarDB(buffer) == ERR)
+    vardb = new VDBFile(buffer);
+    if (vardb->is_valid() == false)
       HandleFatalError("InitializeVarDB for master file failed, this is fatal.");
   }
-
-  // ADS3/nidas must use the netCDF/NcML version of VarDB.
-  if (cfg.isADS3() && VarDB_isNcML() == false)
-    {
-      fprintf(stderr, "\nnimbus:hdr_decode: You must be using the netCDF/NcML Version of VarDB.\n");
-      fprintf(stderr, "        use vdb2ncml on the project VarDB.\n\n");
-      exit(1);
-    }
 }
 
 /* -------------------------------------------------------------------- */

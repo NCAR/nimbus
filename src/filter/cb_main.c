@@ -53,7 +53,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 #include "decode.h"
 #include <raf/ctape.h>
 #include "gui.h"
-#include <raf/vardb.h>
+#include <raf/vardb.hh>
 #include "psql.h"
 #include "svnInfo.h"
 
@@ -63,6 +63,7 @@ char		OutputFileName[MAXPATHLEN];  /* Export to xlate/rdma.c */
 static char	list1lineFrmt[] = "%-12s %c%c   %4d  %4d   %4d  %8.3f   %c";
 
 extern FILE	*LogFile;
+extern VDBFile  *vardb;
 
 /* For wall clock timing	*/
 static time_t	startWALL, finishWALL;
@@ -158,7 +159,7 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
   XtSetSensitive(aDSdataText, true);
   XtSetSensitive(outputFileText, true);
 
-  ReleaseVarDB();
+  delete vardb;
   ResetProbeList();
   Initialize();
 
@@ -387,13 +388,13 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     if (raw[i]->SpikeSlope > 0.0)
       AddVariableToRAWdespikeList(raw[i]);
 
-    if (raw[i]->Output && VarDB_lookup(raw[i]->name) == ERR && LogFile)
+    if (raw[i]->Output && vardb->get_var(raw[i]->name) == 0 && LogFile)
       fprintf(LogFile, "%s has no entry in the VarDB.\n", raw[i]->name);
   }
 
   for (size_t i = 0; i < derived.size(); ++i)
   {
-    if (derived[i]->Output && VarDB_lookup(derived[i]->name) == ERR && LogFile)
+    if (derived[i]->Output && vardb->get_var(derived[i]->name) == 0 && LogFile)
       fprintf(LogFile,"%s has no entry in the VarDB.\n", derived[i]->name);
   }
 
