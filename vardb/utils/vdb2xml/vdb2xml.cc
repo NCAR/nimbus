@@ -12,24 +12,16 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2006
 */
 
 #include <cctype>
-#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <netcdf.h>
 #include <libgen.h>
 
 #include <raf/vardb.h>
 
-#include <cstdio>
-#include <sys/types.h>
-
-#include <netcdf.h>
 #include <raf/portable.h>
-#include <iostream>
 #include <fstream>
 #include <sstream>
-#include <istream>
 
 static char defaultProjDir[1000];
 static char projDir[1000];
@@ -40,7 +32,7 @@ static const float fill_value = -32767.0;
 extern long	VarDB_nRecords;
 
 /* -------------------------------------------------------------------- */
-void checkModVars(FILE* vdb,int varID, const char *varName)
+void checkModVars(FILE* vdb, const char *varName)
 {
   char fileName[500], buffer[1000], name[100];
   strcpy(fileName, defaultProjDir);
@@ -62,14 +54,13 @@ void checkModVars(FILE* vdb,int varID, const char *varName)
 
     if (strcmp(name, varName) == 0)
       fprintf(vdb,"      <modulus_range>%f %f</modulus_range>\n",vals[0],vals[1]);
-//      nc_put_att_float(ncid, varID, "modulus_range", NC_FLOAT, 2, vals);
   }
 
   fclose(fp);
 }
 
 /* -------------------------------------------------------------------- */
-void checkDerivedNames(FILE* vdb,int ncid, int varID, const char *varName)
+void checkDerivedNames(FILE* vdb, const char *varName)
 {
   char fileName[500], buffer[1000], *p;
   strcpy(fileName, defaultProjDir);
@@ -94,7 +85,6 @@ void checkDerivedNames(FILE* vdb,int ncid, int varID, const char *varName)
       while (isspace(*p)) ++p;
         fprintf(vdb,"      <derive>%s</derive>\n",p);
         return void();
-//      nc_put_att_text(ncid, varID, "derive", strlen(p)+1, p);
     }
   }
 
@@ -102,7 +92,7 @@ void checkDerivedNames(FILE* vdb,int ncid, int varID, const char *varName)
 }
 
 /* -------------------------------------------------------------------- */
-void checkDependencies(FILE* vdb,int ncid, int varID, const char *varName)
+void checkDependencies(FILE* vdb, const char *varName)
 {
   char fileName[500], buffer[1000], *p;
   strcpy(fileName, projDir);
@@ -127,7 +117,6 @@ void checkDependencies(FILE* vdb,int ncid, int varID, const char *varName)
       {
         while (isspace(*p)) ++p;
           fprintf(vdb,"      <dependencies>%s</dependencies>\n",p);
-//        nc_put_att_text(ncid, varID, "Dependencies", strlen(p)+1, p);
       }
     //  else
 //        nc_put_att_text(ncid, varID, "Dependencies", 1, "");
@@ -257,7 +246,7 @@ void schemaMaker(std::string dictionaryLoc)
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-  int	i = 1, ncid, timeDim, varID, noDim;
+  int	i = 1;
   const char *p;
   char outFile[512];
 
@@ -295,12 +284,6 @@ int main(int argc, char *argv[])
   strcpy(outFile, argv[i]);
   strcat(outFile, ".nc");
 
-  if (nc_create(outFile, 0, &ncid) != NC_NOERR)
-  {
-    fprintf(stderr, "vdb2ncml: Can't create output file %s.\n", outFile);
-    return(1);
-  }
-
   for (i = 0; i < VarDB_nRecords; ++i)
   {
     struct var_v2 * vp = &((struct var_v2 *)VarDB)[i];
@@ -332,9 +315,9 @@ int main(int argc, char *argv[])
     if (strcmp(p, "None"))
       fprintf(vdb,"      <category>%s</category>\n", p);
 
-    checkModVars(vdb,varID, vp->Name);
-    checkDerivedNames(vdb,ncid, varID, vp->Name);
-    checkDependencies(vdb,ncid, varID, vp->Name);
+    checkModVars(vdb, vp->Name);
+    checkDerivedNames(vdb, vp->Name);
+    checkDependencies(vdb, vp->Name);
 
     p = VarDB_GetStandardNameName(vp->Name);
     if (strcmp(p, "None"))
