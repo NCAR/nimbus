@@ -65,3 +65,10 @@ formatTimestamp(ptime pt, const std::string& format)
 }
 
 
+void
+AircraftTrack::
+normalizeLongitude(float lon0)
+{
+  normalizeAngles(lon.begin(), lon.end(), lon0);
+}
+

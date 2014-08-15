@@ -68,6 +68,13 @@ public:
   bool
   isMissingValue(float target);
 
+  /**
+   * Fix all the longitude values to fit within the range [lon0, lon0+360),
+   * where lon0 defaults to 0.
+   **/
+  void
+  normalizeLongitude(float lon0 = 0);
+
   vector_ptime date;
   std::vector<float> lat;
   std::vector<float> lon;
@@ -82,6 +89,22 @@ public:
   ProjectInfo projInfo;
 };
 
+
+/**
+ * Normalize an angular variable to within the range [origin, origin+360).
+ **/
+template <typename IT, typename T>
+void
+normalizeAngles(IT begin, IT end, T origin = 0)
+{
+  for (IT it = begin; it != end; ++it)
+  {
+    while (*it < origin)
+      *it += 360.0;
+    while (*it >= origin+360.0)
+      *it -= 360.0;
+  }
+}
 
 /**
  * A convenient template for getting a reference to the last element of a

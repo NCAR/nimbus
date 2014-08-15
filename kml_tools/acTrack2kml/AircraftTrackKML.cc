@@ -208,7 +208,9 @@ WriteWindBarbsKML_Folder(ofstream& googleEarth)
 
       if (iws < 0) iws = 0;
       if (iws > 200) iws = 200;	// we only have barbs to 200 Knots.
-      if (iwd < 0 || iwd > 360) iwd = 0;
+
+      // Force wind direction into 0-360.
+      normalizeAngles(&iwd, &iwd+1, 0);
 
       sprintf(url, "<href>http://%s/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n",
 		cfg.webHost.c_str(), iws, iws, iwd);
@@ -397,9 +399,9 @@ WriteGoogleEarthKML(const std::string& finalfile)
       if (track.date[i] < next_ts)
 	continue;
       next_ts = nextTimestamp(track.date[i], cfg.TimeStep);
-      float lon = track.lon[i];
-      if (lon < 0.0) lon += 360.0;
-      googleEarth << lon << "," << track.lat[i] << "," << (int)track.alt[i] << "\n";
+      googleEarth << track.lon[i] << "," 
+		  << track.lat[i] << "," 
+		  << (int)track.alt[i] << "\n";
     }
 
     googleEarth
@@ -427,13 +429,11 @@ WriteGoogleEarthKML(const std::string& finalfile)
     if (track.date[i] < next_ts)
       continue;
     next_ts = nextTimestamp(track.date[i], cfg.TimeStep);
-    float lon = track.lon[i];
-    if (lon < 0.0) lon += 360.0;
-    googleEarth << lon << "," << track.lat[i] << "," << (int)track.alt[i] << "\n";
+    googleEarth << track.lon[i] << "," 
+		<< track.lat[i] << "," 
+		<< (int)track.alt[i] << "\n";
   }
-  float lon = last(track.lon);
-  if (lon < 0.0) lon += 360.0;
-  googleEarth	<< lon << "," << last(track.lat) << ","
+  googleEarth	<< last(track.lon) << "," << last(track.lat) << ","
 		<< (int)last(track.alt) << "\n";
 
   googleEarth
