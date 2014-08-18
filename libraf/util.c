@@ -15,6 +15,7 @@ util.c -- utility operations - operations on strings, files, etc.
 #include <sys/stat.h>
 #include <sys/utsname.h>
 #include <time.h>
+#include <unistd.h>
 #include <utime.h>
 
 #include "constants.h"
@@ -66,7 +67,7 @@ char *substring(char *s, char c)
 char *ReplaceStringWithChar(string,target,substitute)
 char *string,*target,substitute;
 {
- int posn,len,posn2,targetlen;
+ int posn,posn2,targetlen;
 
  targetlen=strlen(target);
  for (posn=0; posn<strlen(string); posn++) {
@@ -192,7 +193,7 @@ int trim_trailing_digits(char *s, int precision, int retain_decimal)
  
 */
 {
-int j,i,end;
+int j,i,end = strlen(s);
  
 /* find rightmost non-null character */
  for (i=strlen(s)-1; i>=0; i--)
