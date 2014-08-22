@@ -1,4 +1,5 @@
 #include <vector>
+#include <cstdlib>
 
 /**
  * Class to contain and manage data blocks for computed variables/data.
