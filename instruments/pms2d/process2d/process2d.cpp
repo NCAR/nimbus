@@ -36,7 +36,7 @@ using namespace std;
 const int binoffset = 1;  // Offset for RAF conventions, number of empty bins before counting begins 
 const string markerline = "</OAP>";  // Marks end of XML header
 
-const char syncString[8] = { 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa };
+const unsigned char syncString[8] = { 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa };
 
 
 struct struct_particle {
@@ -241,7 +241,7 @@ double dpoisson_fit(float x[], float y[], double a[3], int n){
          J[2][i]=(1.0-a[0])*x[i]*exp(-a[2]*x[i])*kc-(1.0-a[0])*a[2]*x[i]*x[i]*exp(-a[2]*x[i])*kc; 
       }
       //Multiply Jacobian by its transpose and invert
-      double det, JJt[3][3]={{0}}, JJti[3][3]={{0}};
+      double JJt[3][3]={{0}}, JJti[3][3]={{0}};
       for (int i=0; i<3; i++){
          for (int j=0; j<3; j++){
             for (int k=0; k<n; k++){
@@ -250,7 +250,7 @@ double dpoisson_fit(float x[], float y[], double a[3], int n){
          }
       }
    
-      det=invert3(JJt, JJti);
+      (void)invert3(JJt, JJti);
    
       //Multiply transposed Jacobian by Diff
       double JtDiff[3]={0};
@@ -622,7 +622,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   type_buffer buffer;  
   ifstream input_file;
   string line;
-  int slice_count=0, firstday;
+  int slice_count=0;
   unsigned long long slice, firsttimeline=0, lasttimeline=0, timeline, difftimeline;
   double lastbuffertime, buffertime = 0, nextit = 0;
   bool firsttimeflag = true;
@@ -739,7 +739,6 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
      // Record first buffer day for midnight crossings, do not process first record.
      if (buffcount == 0)
      {
-       firstday = ntohs(buffer.day);
        last_time1hz = (long)buffertime;
        continue;
      }
