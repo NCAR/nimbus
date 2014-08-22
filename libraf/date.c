@@ -11,8 +11,6 @@ date.c -- date utility operations
 
 #include "constants.h"
 
-static int StringPosn;
-
 char *get_month();
 char *get_day();
 char *get_year();
@@ -29,7 +27,7 @@ static int date_init=0;
 
 /****************************  INIT_DATE()  **********************************/
 
-init_date()
+void init_date()
 { 
 long clock;
 struct timeval *tp;
@@ -65,7 +63,7 @@ get_month()
 
 /*****************************************************************************/
 
-GetMonthNum(month)
+int GetMonthNum(month)
 char *month;
 {
 int m;
@@ -77,7 +75,7 @@ int m;
 
 /****************************  GET_MONTH_NUM()  ******************************/
 
-get_month_num()
+int get_month_num()
 {
 int m;
 char *month;
@@ -175,8 +173,7 @@ struct tm *time_info;
 /************************  GET_TIME_FROM_BASE()  ******************************/
 
 char *
-get_time_from_base(base)
-long base;
+get_time_from_base(long base)
 /*
 given a base time since the epoch, initialize a tm struct with
 integers representing date and time and return a string with formatted time
@@ -195,16 +192,14 @@ struct tm *time_info;
 
 /*******************************************************************/
 
-GetTimeIntFromHMS(hr,min,sec)
-int hr,min,sec;
+int GetTimeIntFromHMS(int hr,int min,int sec)
 {
  return hr*10000+min*100+sec;
 }
 
 /*******************************************************************/
 
-GetTimeIntFromBase(base)
-long base;
+int GetTimeIntFromBase(long base)
 {
 long basetime;
 struct tm *time_info;
@@ -218,7 +213,7 @@ static char TZstring[16];
  
 /*******************************************************************/
 
-GetBaseFromMDYHMS(month,day,year,hr,min,sec)
+int GetBaseFromMDYHMS(month,day,year,hr,min,sec)
 int month,day,year,hr,min,sec;
 {
  struct tm time_info;
@@ -252,7 +247,7 @@ int hr,minut,sec;
  return hr*3600 + minut*60 + sec;
 }
 
-int
+void
 sec2hms(total,hr,minut,sec)
 int total;
 int *hr,*minut,*sec;

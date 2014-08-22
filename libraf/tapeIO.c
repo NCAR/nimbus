@@ -64,71 +64,33 @@ static int	CurrentPR;	/* Current Physical Record Number	*/
 
 
 /* -------------------------------------------------------------------- */
-TapeAssign(int fd)
+int TapeStat(struct mtget *their_stat)
 {
+	int		rc;
 	struct mtget	stat;
 
-	tape_fd = fd;
-	TapeStat(&stat);
-	CurrentPR = stat.mt_blkno;
-
-	return(OK);
-
-}	/* END TAPEASSIGN */
-
-/* -------------------------------------------------------------------- */
-TapeOpen(char name[])
-{
-	if ((tape_fd = open(name, O_RDONLY)) == ERR)
+	if ((rc = ioctl(tape_fd, MTIOCGET, &stat)) == ERR)
 		{
-		fprintf(stderr, "TapeOpen: can't open %s\n", name);
-		TapeStat(NULL);
+		fprintf(stderr, "TapeStat: ioctl failed\n");
 		return(ERR);
 		}
 
-	TapeSeek(0L);
 
-	return(OK);
-
-}	/* END TAPEOPEN */
-
-/* -------------------------------------------------------------------- */
-TapeRead(char *record)
-{
-	int	rc;
-	struct mtget	stat1, stat2;
-
-	TapeStat(&stat1);
-
-	if ((rc = read(tape_fd, record, RECORDSIZE)) == ERR)
-		{
-		fprintf(stderr, "TapeRead: read error, errno=%d\n", errno);
-		TapeStat(NULL);
-		return(ERR);
-		}
-
-	if (rc == 0)
-		{
-		TapeStat(&stat2);
-
-		if (stat2.mt_fileno == stat1.mt_fileno)
-			{
-			struct mtop	op;
-
-			op.mt_op = MTBSF;	/* Skip back to prev file */
-			op.mt_count = 1;
-			ioctl(tape_fd, MTIOCTOP, &op);
-			}
-		}
+	if (their_stat)
+		memcpy(their_stat, &stat, sizeof(struct mtget));
 	else
-		++CurrentPR;
+		{
+		printf("TapeStat: CurrentPR=%d, ", CurrentPR);
+		printf("ioctl=%d, dsreg=%d, erreg=%d, fileno=%d, blkno=%d\n",
+		rc, stat.mt_dsreg,stat.mt_erreg, stat.mt_fileno,stat.mt_blkno);
+		}
 
-	return(rc);
+	return(OK);
 
-}	/* END TAPEREAD */
+}	/* END TAPESTAT */
 
 /* -------------------------------------------------------------------- */
-TapeSeek(long start_rec)
+int TapeSeek(long start_rec)
 {
 	struct mtop	tape_op;
 
@@ -175,7 +137,71 @@ TapeStat(NULL);
 }	/* END TAPESEEK */
 
 /* -------------------------------------------------------------------- */
-TapeClose()
+int TapeAssign(int fd)
+{
+	struct mtget	stat;
+
+	tape_fd = fd;
+	TapeStat(&stat);
+	CurrentPR = stat.mt_blkno;
+
+	return(OK);
+
+}	/* END TAPEASSIGN */
+
+/* -------------------------------------------------------------------- */
+int TapeOpen(char name[])
+{
+	if ((tape_fd = open(name, O_RDONLY)) == ERR)
+		{
+		fprintf(stderr, "TapeOpen: can't open %s\n", name);
+		TapeStat(NULL);
+		return(ERR);
+		}
+
+	TapeSeek(0L);
+
+	return(OK);
+
+}	/* END TAPEOPEN */
+
+/* -------------------------------------------------------------------- */
+int TapeRead(char *record)
+{
+	int	rc;
+	struct mtget	stat1, stat2;
+
+	TapeStat(&stat1);
+
+	if ((rc = read(tape_fd, record, RECORDSIZE)) == ERR)
+		{
+		fprintf(stderr, "TapeRead: read error, errno=%d\n", errno);
+		TapeStat(NULL);
+		return(ERR);
+		}
+
+	if (rc == 0)
+		{
+		TapeStat(&stat2);
+
+		if (stat2.mt_fileno == stat1.mt_fileno)
+			{
+			struct mtop	op;
+
+			op.mt_op = MTBSF;	/* Skip back to prev file */
+			op.mt_count = 1;
+			ioctl(tape_fd, MTIOCTOP, &op);
+			}
+		}
+	else
+		++CurrentPR;
+
+	return(rc);
+
+}	/* END TAPEREAD */
+
+/* -------------------------------------------------------------------- */
+int TapeClose()
 {
 	close(tape_fd);
 	return(OK);
@@ -183,36 +209,10 @@ TapeClose()
 }	/* END TAPECLOSE */
 
 /* -------------------------------------------------------------------- */
-TapeTell()
+int TapeTell()
 {
 	return(CurrentPR);
 
 }	/* END TAPETELL */
-
-/* -------------------------------------------------------------------- */
-TapeStat(struct mtget *their_stat)
-{
-	int		rc;
-	struct mtget	stat;
-
-	if ((rc = ioctl(tape_fd, MTIOCGET, &stat)) == ERR)
-		{
-		fprintf(stderr, "TapeStat: ioctl failed\n");
-		return(ERR);
-		}
-
-
-	if (their_stat)
-		memcpy(their_stat, &stat, sizeof(struct mtget));
-	else
-		{
-		printf("TapeStat: CurrentPR=%d, ", CurrentPR);
-		printf("ioctl=%d, dsreg=%d, erreg=%d, fileno=%d, blkno=%d\n",
-		rc, stat.mt_dsreg,stat.mt_erreg, stat.mt_fileno,stat.mt_blkno);
-		}
-
-	return(OK);
-
-}	/* END TAPESTAT */
 
 /* END TAPEIO.C */

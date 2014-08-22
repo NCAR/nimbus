@@ -15,6 +15,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 -------------------------------------------------------------------------
 */
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -29,7 +30,7 @@ char	*GetMemory();
 /* -------------------------------------------------------------------- */
 void InitAircraftSpecs(const char fileName[])
 {
-  int	i, cnt, len;
+  int	i, cnt;
   char	*file[512], ACbuffer[512], *p;
   FILE	*fp;
 
@@ -110,7 +111,7 @@ void InitAircraftSpecs(const char fileName[])
 /* -------------------------------------------------------------------- */
 char *GetAircraftParameter(const char tailNumber[], const char parameter[])
 {
-  int	i, j, k;
+  int	i;
   char	*p;
 
   if (ACfile == 0)
