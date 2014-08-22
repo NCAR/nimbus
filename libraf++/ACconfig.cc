@@ -27,7 +27,6 @@ const std::string ACconfig::NO_SERVER = "** No matching server **";
 /* -------------------------------------------------------------------- */
 ACconfig::ACconfig(const std::string& fileName)
 {
-  int	cnt;
   char	buffer[512], *p;
   FILE	*fp;
 
@@ -42,7 +41,7 @@ ACconfig::ACconfig(const std::string& fileName)
 
   /* Read file and strip out comments.
    */
-  for (cnt = 0; fgets(buffer, 512, fp); )
+  while ( fgets(buffer, 512, fp) )
   {
     if (buffer[0] == COMMENT)
       continue;

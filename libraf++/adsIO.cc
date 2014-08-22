@@ -22,10 +22,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 /* -------------------------------------------------------------------- */
 ADS_DataFile::ADS_DataFile(const char fName[])
 {
-  int	Ccnt, Pcnt;
-
-  Ccnt = Pcnt = 0;
-
   if ((fp = fopen(fName, "rb")) == NULL)
     std::cerr << "adsIO: Can't open input file " << fName << ".\n";
   else
@@ -54,7 +50,7 @@ bool ADS_DataFile::NextSyncRecord(char buff[])
   if (syncPhysRecord == NULL)
     syncPhysRecord = new char [hdr->lrLength() * hdr->lrPpr()];
 
-  if (++currSyncLR >= hdr->lrPpr())
+  if (++currSyncLR >= (size_t)hdr->lrPpr())
     {
     do
       {

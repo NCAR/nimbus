@@ -103,7 +103,7 @@ private:
   FILE	*fp;
 
   void	resetFile();
-  int	curr2dLR, currSyncLR;
+  size_t	curr2dLR, currSyncLR;
 
   char	physRecord[MX_PHYS];
   char	*syncPhysRecord, *twoDPhysRecord;
