@@ -353,6 +353,34 @@ NR_TYPE pcorf5_2(NR_TYPE q, NR_TYPE q1)
   return(pfix);
 }
 
+
+// --- Cooper August 2014
+NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Adif, NR_TYPE Qr)
+{
+  extern std::vector<float> akrd_coeff;
+  static double a[] = { -0.00076, 0.073, -0.0864, 0.0465 };
+  static double b_prime[] = { 4.604, 18.67, 6.49 };
+
+  NR_TYPE M, N, D, attack, Qc, deltaP;
+  if (Qm < 0.01) Qm = 0.01;
+
+  M = sqrt( (2.0 * Cv / Rd) * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  attack = akrd_coeff[0] + (Adif / Qr) * (akrd_coeff[1] + akrd_coeff[2] * M);
+
+  N = (Qm - Pm * (a[0] + a[1] * Qm / Pm + a[2]*M*M*M));
+  D = (1 + Pm * a[3] * ((attack - b_prime[0]) / (b_prime[1] + b_prime[2] * M)) * (1.0 / Qr));
+  D = std::min(0.85, D);	// Set floor of 0.85.
+
+  Qc = N / D;
+  deltaP = Qm - Qc;
+
+  // Taper if Qm is too small (take-off / landing).
+  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+
+  return deltaP;
+}
+
+
 /* C130 --------------------------------------------------------------- */
 NR_TYPE pcorf1(NR_TYPE q, NR_TYPE q1)	// For PSFD
 {
