@@ -373,12 +373,8 @@ void slatc(DERTBL *varp)
     /*dvx[FeedBack]	= gvewf - vewf;*/
     dvx[FeedBack]	+= (1.-fctrf[FeedBack])\
 	   *(filter((double)(gvew-vew),zf[FeedBack][1])-dvx[FeedBack]);
-    /*dlat[FeedBack]	= glat - alat;*/
-    dlat[FeedBack]	+= (1.-fctrf[FeedBack])\
-	   *(filter((double)(glat-alat),zf[FeedBack][2])-dlat[FeedBack]);
-    /*dlon[FeedBack]	= glon - alon;*/
-    dlon[FeedBack]	+= (1.-fctrf[FeedBack])\
-	   *(filter((double)(glon-alon),zf[FeedBack][3])-dlon[FeedBack]);
+    dlat[FeedBack]	= glat - alat;
+    dlon[FeedBack]	= glon - alon;
 
     if (FeedBack == LOW_RATE_FEEDBACK) /* Only do this in the Low-rate pass */
       {
