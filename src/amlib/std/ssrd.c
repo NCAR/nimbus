@@ -17,7 +17,7 @@ static int      gv_radome_ssn = 1;      // default to first radome.
 // Serial number for C130 radome.  #2 was installed in May of 2013.
 static int      c130_radome_ssn = 1;      // default to first radome.
 
-static NR_TYPE coeff[2];
+static std::vector<float> coeff;
 
 extern int	FlightDate[];
 
@@ -35,8 +35,8 @@ void initSSRD(var_base *varp)
 
       if (FlightDate[2] < 1998)
       {
-        coeff[0] = -0.886;
-        coeff[1] = 12.658;
+        coeff.push_back(-0.886);
+        coeff.push_back(12.658);
       }
       else
       {
@@ -45,42 +45,41 @@ void initSSRD(var_base *varp)
           /*  New coefficients to handle ssrd offset to BDIFR - SOLAR CORONA on.
            *  Kept inactive pending final approval per AJS 12/18/98.
            */	
-          coeff[0] = -0.012;
-          coeff[1] = 12.21;
+          coeff.push_back(-0.012);
+          coeff.push_back(12.21);
         }
         else
         {
-          coeff[0] = 1.25;
-          coeff[1] = 12.31;
+          coeff.push_back(1.25);
+          coeff.push_back(12.31);
         }
       }
       break;
 
     case Config::ELECTRA:
-      coeff[0] = 0.57;
-      coeff[1] = 15.204;
+      coeff.push_back(0.57);
+      coeff.push_back(15.204);
       break;
 
     case Config::NRL_P3:
-      coeff[0] = 0.038;
-      coeff[1] = 15.204;
+      coeff.push_back(0.038);
+      coeff.push_back(15.204);
       break;
 
     case Config::KINGAIR:
-      coeff[0] = -0.0379;
-      coeff[1] = 13.4264;
+      coeff.push_back(-0.0379);
+      coeff.push_back(13.4264);
       break;
 
     case Config::HIAPER:
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
         gv_radome_ssn = (int)tmp[0];
 
-      coeff[0] = -0.05288;
-      coeff[1] = 21.155;
       if (gv_radome_ssn == 1)
-      {
-        coeff[0] = 0.1051;
-      }
+        coeff.push_back(0.1051);
+      else
+        coeff.push_back(-0.05288);
+      coeff.push_back(21.155);
       break;
 
     default:
