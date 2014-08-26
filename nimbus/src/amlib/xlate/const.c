@@ -36,6 +36,8 @@ const double Rd = 8314.472 / 28.96194;
  */
 const double Cp = 7.0 / 2.0 * Rd;
 
+const double Cv = 5.0 / 2.0 * Rd;
+
 /* Specific heat of water vapor (J/(kg*K))
  */
 const double Cpv = 1875.0;

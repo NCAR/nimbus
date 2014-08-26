@@ -92,7 +92,6 @@ tvir.c
 vcsel.c
 wd.c
 ws.c
-xmach2.c
 """)
 
 std = env.StaticLibrary('std' , sources)

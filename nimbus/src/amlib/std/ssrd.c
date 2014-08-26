@@ -3,7 +3,7 @@
         Input:
                 bdifr - raw radome differential pressure
                 qcxc - corrected dynamic pressure for radome calcs
-                xmach2 - derived mach number (Sabreliner and B-57 only)
+                mach - derived mach number (Sabreliner and B-57 only)
         Output:
                 ssrd - attack angle of the radome (deg)
 */
@@ -17,7 +17,7 @@ static int      gv_radome_ssn = 1;      // default to first radome.
 // Serial number for C130 radome.  #2 was installed in May of 2013.
 static int      c130_radome_ssn = 1;      // default to first radome.
 
-static NR_TYPE coeff[2];
+static std::vector<float> coeff;
 
 extern int	FlightDate[];
 
@@ -35,49 +35,58 @@ void initSSRD(var_base *varp)
 
       if (FlightDate[2] < 1998)
       {
-        coeff[0] = -0.07;
-        coeff[1] = 0.079;
+        coeff.push_back(-0.886);
+        coeff.push_back(12.658);
       }
       else
       {
-        /*  New coefficients to handle ssrd offset to BDIFR - SOLAR CORONA on.
-         *  Kept inactive pending final approval per AJS 12/18/98.
-         */	
-        coeff[0] = -0.000983;
-        coeff[1] = 0.08189;
+        if (c130_radome_ssn == 1)
+        {
+          /*  New coefficients to handle ssrd offset to BDIFR - SOLAR CORONA on.
+           *  Kept inactive pending final approval per AJS 12/18/98.
+           */	
+          coeff.push_back(-0.012);
+          coeff.push_back(12.21);
+        }
+        else
+        {
+          coeff.push_back(1.25);
+          coeff.push_back(12.31);
+        }
       }
       break;
 
     case Config::ELECTRA:
-      coeff[0] = 0.0375;
-      coeff[1] = 0.06577;
+      coeff.push_back(0.57);
+      coeff.push_back(15.204);
       break;
 
     case Config::NRL_P3:
-      coeff[0] = 0.0025;
-      coeff[1] = 0.06577;
+      coeff.push_back(0.038);
+      coeff.push_back(15.204);
       break;
 
     case Config::KINGAIR:
-      coeff[0] = -0.002825;
-      coeff[1] = 0.07448;
+      coeff.push_back(-0.0379);
+      coeff.push_back(13.4264);
       break;
 
     case Config::HIAPER:
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
         gv_radome_ssn = (int)tmp[0];
 
-      coeff[0] = -0.0025;
-      coeff[1] = 0.04727;
       if (gv_radome_ssn == 1)
-      {
-        coeff[0] = 0.004971;
-      }
+        coeff.push_back(0.1051);
+      else
+        coeff.push_back(-0.05288);
+      coeff.push_back(21.155);
       break;
 
     default:
       HandleFatalError("ssrd.c: No valid aircraft, no coefficients, exiting.");
   }
+
+  AddToDefaults(varp->name, "CalibrationCoefficients", coeff);
 }
 
 /* -------------------------------------------------------------------- */
@@ -99,15 +108,14 @@ void sssrd(DERTBL *varp)
       case Config::SABRELINER:
       case Config::B57:
       {
-        NR_TYPE xmach2 = GetSample(varp, 2);
-        double xmach = sqrt(xmach2);
-        ssrd = (ratio + 0.0241628 * xmach - 0.0754196)
-		/ (0.030640 + 0.0664595 * xmach - 0.0881156 * xmach2);
+        NR_TYPE mach = GetSample(varp, 2);
+        ssrd = (ratio + 0.0241628 * mach - 0.0754196)
+		/ (0.030640 + 0.0664595 * mach - 0.0881156 * mach*mach);
       }
         break;
 
       default:
-        ssrd = (ratio + coeff[0]) / coeff[1];
+        ssrd = coeff[0] + coeff[1] * ratio;
     }
   }
 

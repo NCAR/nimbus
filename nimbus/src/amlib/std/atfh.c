@@ -46,14 +46,14 @@ void tthcInit(var_base *varp)
 /* -------------------------------------------------------------------- */
 void sttwhc(DERTBL *varp)
 {
-  NR_TYPE zee, tth, xmach2, psxc;
+  NR_TYPE zee, tth, mach, psxc;
   static bool firstTime[nFeedBackTypes] = { true, true };
 
-  tth = GetSample(varp, 0);
-  xmach2 = GetSample(varp, 1);
-  psxc = GetSample(varp, 2);
+  tth	= GetSample(varp, 0);
+  mach	= GetSample(varp, 1);
+  psxc	= GetSample(varp, 2);
 
-  if (isnan(tth) || isnan(xmach2))
+  if (isnan(tth) || isnan(mach))
   {
     PutSample(varp, floatNAN);
     return;
@@ -68,10 +68,10 @@ void sttwhc(DERTBL *varp)
   if (tth < -Kelvin)
     tth = -Kelvin;
 
-  if (xmach2 <= 0.0 || isnan(xmach2))
-    xmach2 = 0.0001;
+  if (mach <= 0.0 || isnan(mach))
+    mach = 0.0001;
 
-  zee = 0.269589 * psxc * sqrt((double)xmach2) / (atfh[FeedBack] + Kelvin);
+  zee = 0.269589 * psxc * mach / (atfh[FeedBack] + Kelvin);
 
   if (zee < 0.18 || isnan(zee))
     zee = 0.18;
@@ -88,12 +88,12 @@ void sttwhc(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void satfh(DERTBL *varp)
 {
-  NR_TYPE ttfh, xmach2;
+  NR_TYPE ttfh, mach;
 
   ttfh = GetSample(varp, 0);
-  xmach2 = GetSample(varp, 1);
+  mach = GetSample(varp, 1);
 
-  atfh[FeedBack] = AMBIENT(ttfh, (NR_TYPE)recfrh, xmach2);
+  atfh[FeedBack] = AMBIENT(ttfh, (NR_TYPE)recfrh, mach*mach);
 
   PutSample(varp, atfh[FeedBack]);
 
