@@ -38,6 +38,8 @@ void sqcrc(DERTBL *varp)
       qcf = GetSample(varp, 1);
       adifr = GetSample(varp, 2);
       qcr = GetSample(varp, 3);
+      if (qcr < 0.01)
+        qcr = 0.01;
 
       qcrc = qcr - pcorf5_3(qcf, psf, adifr, qcr);
       break;
