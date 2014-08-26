@@ -17,7 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE tas(NR_TYPE, NR_TYPE, NR_TYPE);
+extern NR_TYPE compute_tas(NR_TYPE, NR_TYPE, NR_TYPE);
 extern NR_TYPE recfra;
 
 /* -------------------------------------------------------------------- */
@@ -34,7 +34,7 @@ void sCItas(DERTBL *varp)
 
   if (qc < 5.5) qc = 5.5;
 
-  PutSample(varp, tas(tt, recfra, XMAC2(qc / ps)));
+  PutSample(varp, compute_tas(tt, recfra, XMAC2(qc / ps)));
 
 }	/* END SCITAS */
 

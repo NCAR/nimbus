@@ -6,14 +6,12 @@ FULL NAME:      Ambient Temperature Wrapper
 
 ENTRY POINTS:   satb()
 
-STATIC FNS:     none
-
 DESCRIPTION:    Ambient Temperature for Rosemount 102 Unheated:
 			Saberliner Boom
 			Electra Boom
 			GV Radome
 
-COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2008
+COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2013
 -------------------------------------------------------------------------
 */
 
@@ -33,13 +31,11 @@ void atbInit(var_base *varp)
 /* -------------------------------------------------------------------- */
 void satb(DERTBL * varp)
 {
-  NR_TYPE ttb, xmach2;
-
-  ttb = GetSample(varp, 0);
-  xmach2 = GetSample(varp, 1);
+  NR_TYPE ttb = GetSample(varp, 0);
+  NR_TYPE mach = GetSample(varp, 1);
 	
   if (ttb < -Kelvin)
     ttb  = -Kelvin;
 
-  PutSample(varp, AMBIENT(ttb, recfb, xmach2));
+  PutSample(varp, AMBIENT(ttb, recfb, mach*mach));
 }

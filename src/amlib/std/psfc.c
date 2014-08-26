@@ -13,23 +13,26 @@
 #include "amlib.h"
 
 extern NR_TYPE (*pcorPSF)(NR_TYPE, NR_TYPE);
+NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Adif, NR_TYPE Qr);
 
 /* -------------------------------------------------------------------- */
 void spsfc(DERTBL *varp)
 {
-  NR_TYPE psf, qcx, mach, psfc;
+  NR_TYPE psf, qcf, psfc;
 
   psf = GetSample(varp, 0);
-  qcx = GetSample(varp, 1);
+  qcf = GetSample(varp, 1);
 
   if (cfg.Aircraft() == Config::HIAPER)
   {
-    mach = GetSample(varp, 2);
-    psfc = psf * (1.0 + (*pcorPSF)(qcx, mach));
+    NR_TYPE adifr = GetSample(varp, 2);
+    NR_TYPE qcr = GetSample(varp, 3);
+
+    psfc = psf + pcorf5_3(qcf, psf, adifr, qcr);
   }
   else
   {
-    psfc = psf + (*pcorPSF)(qcx, psf);
+    psfc = psf + (*pcorPSF)(qcf, psf);
   }
 
   if (psfc < 50.0)

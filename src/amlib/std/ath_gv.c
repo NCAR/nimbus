@@ -92,30 +92,28 @@ double heatedRecoveryFactor(double mach)
 void satfhGVharco(DERTBL *varp)
 {
   NR_TYPE ttfh = GetSample(varp, 0);
-  NR_TYPE xmach2 = GetSample(varp, 1);
-  NR_TYPE recovery = heatedRecoveryFactor(sqrt(xmach2));
+  NR_TYPE mach = GetSample(varp, 1);
+  NR_TYPE recovery = heatedRecoveryFactor(mach);
 /*
   if (strchr(varp->name, '1'))
     recovery = recfrhGV[0];	// TTH?1
   else
     recovery = recfrhGV[1];	// TTH?2
 */
-  NR_TYPE atfh = AMBIENT(ttfh, recovery, xmach2);
+  NR_TYPE atfh = AMBIENT(ttfh, recovery, mach*mach);
 
   PutSample(varp, atfh);
-
 }
 
 /* -------------------------------------------------------------------- */
 void satfhGVrose(DERTBL *varp)
 {
   NR_TYPE ttfh = GetSample(varp, 0);
-  NR_TYPE xmach2 = GetSample(varp, 1);
-  NR_TYPE recovery = heatedRecoveryFactor(sqrt(xmach2));
-  NR_TYPE atfh = AMBIENT(ttfh, recovery, xmach2);
+  NR_TYPE mach = GetSample(varp, 1);
+  NR_TYPE recovery = heatedRecoveryFactor(mach);
+  NR_TYPE atfh = AMBIENT(ttfh, recovery, mach*mach);
 
   PutSample(varp, atfh);
-
 }
 
-/* END ATFH.C */
+/* END ATH_GV.C */
