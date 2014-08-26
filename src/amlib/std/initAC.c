@@ -369,7 +369,7 @@ NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Adif, NR_TYPE Qr)
 
   N = (Qm - Pm * (a[0] + a[1] * Qm / Pm + a[2]*M*M*M));
   D = (1 + Pm * a[3] * ((attack - b_prime[0]) / (b_prime[1] + b_prime[2] * M)) * (1.0 / Qr));
-  D = std::min(0.85, D);	// Set floor of 0.85.
+  D = std::max(0.85, D);	// Set floor of 0.85.
 
   Qc = N / D;
   deltaP = Qm - Qc;
