@@ -128,7 +128,7 @@ void checkDependencies(FILE* vdb, const char *varName)
 void addHeader(FILE* vdb,std::string name,std::string iter,std::string infoFile)
 {
   fprintf(vdb,"  <%s>\n",name.c_str());
-  std::fstream cats;
+  std::ifstream cats;
   cats.open(infoFile.c_str());
   std::string raw_line,definition,useless_info,noSpace;
   int i;
@@ -199,7 +199,7 @@ void schemaMaker(std::string dictionaryLoc)
  fprintf(sch,"                                                         <xs:sequence>\n");
 
 
- std::fstream dictionary;
+ std::ifstream dictionary;
  dictionary.open(dictionaryLoc.c_str());
  std::string raw_line,named,definition;
  while(std::getline(dictionary,raw_line))
@@ -345,7 +345,7 @@ int main(int argc, char *argv[])
   fprintf(vdb,"  </variableCatalog>\n");
   fprintf(vdb,"  <Dictionary>\n");
   std::string dictionaryLocation="/home/local/raf/vardb/utils/vdb2xml/Dictionary";
-  std::fstream dictionaryNames;
+  std::ifstream dictionaryNames;
   dictionaryNames.open(dictionaryLocation.c_str());
   
   //Create xml schema
