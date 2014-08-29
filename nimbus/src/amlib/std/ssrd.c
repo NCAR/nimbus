@@ -86,7 +86,18 @@ void initSSRD(var_base *varp)
       HandleFatalError("ssrd.c: No valid aircraft, no coefficients, exiting.");
   }
 
-  AddToDefaults(varp->name, "CalibrationCoefficients", coeff);
+  if ((tmp = GetDefaultsValue("SSRD_COEFF", varp->name)) != NULL)
+  {
+    coeff.clear();
+    coeff.push_back(tmp[0]);
+    coeff.push_back(tmp[1]);
+    sprintf(buffer,
+	"ssrd: SSRD_COEFF set to %f, %f from Defaults file.\n",
+	  coeff[0], coeff[1]);
+    LogMessage(buffer);
+  }
+  else
+    AddToDefaults(varp->name, "CalibrationCoefficients", coeff);
 }
 
 /* -------------------------------------------------------------------- */
