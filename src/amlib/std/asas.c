@@ -29,6 +29,8 @@ static NR_TYPE	cell_size[MAX_ASAS][MAX_BINS];
 static NR_TYPE	cell_size2[MAX_ASAS][MAX_BINS];
 static NR_TYPE	cell_size3[MAX_ASAS][MAX_BINS];
 
+static size_t concu100_start_bin = 1, concu500_start_bin = 1;
+
 // Probe Count.
 static size_t nProbes = 0;
 extern void setProbeCount(const char * location, int count);
@@ -105,6 +107,13 @@ void casasInit(var_base *varp)
     // Squared and cube'd.
     cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
     cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
+
+    // Locate start bin numbers for .1 and .5 nanometer variables (CONCU100 & CONCU500).
+    if (cell_size[probeNum][i] >= 0.1)
+      concu100_start_bin = i;
+
+    if (cell_size[probeNum][i] >= 0.5)
+      concu500_start_bin = i;
     }
 
   ReleasePMSspecs();
@@ -296,7 +305,7 @@ void sconcu100(DERTBL *varp)
   if (SampleOffset >= SampleRate[0])
     return;
 
-  for (size_t i = 11; i < 100; ++i)
+  for (size_t i = concu100_start_bin; i < 100; ++i)
     concu100 += concentration[i];
 
   PutSample(varp, concu100);
@@ -311,7 +320,7 @@ void sconcu500(DERTBL *varp)
   if (SampleOffset >= SampleRate[0])
     return;
 
-  for (size_t i = 73; i < 100; ++i)
+  for (size_t i = concu500_start_bin; i < 100; ++i)
     concu500 += concentration[i];
 
   PutSample(varp, concu500);
