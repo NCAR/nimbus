@@ -67,28 +67,43 @@ void initAKRD(var_base *varp)
 
       if (gv_radome_ssn == 1)
       {
-        akrd_coeff.push_back(5.529309);
-        akrd_coeff.push_back(20.427622);
-        akrd_coeff.push_back(0.0);	// not used.
+        akrd_coeff.push_back(5.5156);	// Use with QCF, not QCXC
+        akrd_coeff.push_back(19.0686);
+        akrd_coeff.push_back(2.084);
       }
       else
       {	// New radome in 2013 - SANGRIAA-TEST and later.
-//        akrd_coeff.push_back(4.604);
+//        akrd_coeff.push_back(4.604);	// Obsolete.
 //        akrd_coeff.push_back(18.67);
 //        akrd_coeff.push_back(6.49);
 
-        akrd_coeff.push_back(4.34685);	// Cooper memo 8/15/2014;
-        akrd_coeff.push_back(20.10448);
-        akrd_coeff.push_back(1.36492);
-      }
+        akrd_coeff.push_back(4.6049);	// Cooper memo 8/15/2014; with QCF
+        akrd_coeff.push_back(18.4376);
+        akrd_coeff.push_back(6.7646);
 
+//        akrd_coeff.push_back(4.422);	// CONTRAST specific, get into Defaults file.
+//        akrd_coeff.push_back(20.58);
+//        akrd_coeff.push_back(1.717);
+      }
       break;
 
     default:
       HandleFatalError("akrd.c: No valid aircraft, no coefficients, exiting.");
   }
 
-  AddToDefaults(varp->name, "CalibrationCoefficients", akrd_coeff);
+  if ((tmp = GetDefaultsValue("AKRD_COEFF", varp->name)) != NULL)
+  {
+    akrd_coeff.clear();
+    akrd_coeff.push_back(tmp[0]);
+    akrd_coeff.push_back(tmp[1]);
+    akrd_coeff.push_back(tmp[2]);
+    sprintf(buffer,
+	"akrd: AKRD_COEFF set to %f, %f, %f from Defaults file.\n",
+	  akrd_coeff[0], akrd_coeff[1], akrd_coeff[2]);
+    LogMessage(buffer);
+  }
+  else
+    AddToDefaults(varp->name, "CalibrationCoefficients", akrd_coeff);
 }
 
 /* -------------------------------------------------------------------- */
