@@ -72,8 +72,9 @@ float *GetDefaultsValue(const char target[], const char var[])
     }
   }
  
-  sprintf(buffer, "Request for non-existent default, %s.\n", target);
-  LogMessage(buffer);
+// Suppress message.  Too many defaults are commented out unless we want a change.
+//  sprintf(buffer, "Request for non-existent default, %s.\n", target);
+//  LogMessage(buffer);
  
   return(NULL);
  
