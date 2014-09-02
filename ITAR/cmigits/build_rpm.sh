@@ -1,7 +1,6 @@
 #!/bin/sh
 
 script=`basename $0`
-dir=`dirname $0`
 
 pkg=cmigits-nidas-plugin
 
@@ -16,7 +15,6 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-cd $dir || exit 1
 source repo_scripts/repo_funcs.sh || exit 1
 
 topdir=${TOPDIR:-`get_rpm_topdir`}
@@ -40,7 +38,8 @@ set -o pipefail
 # /opt/nidas/include/nidas/SvnInfo.h
 get_nidas_revision() 
 {
-    awk '/SVNREVISION/{print $3}' /opt/nidas/include/nidas/SvnInfo.h | sed 's/"//g'
+    # If nidas has a mixed revsion x:y, just output y. Nuke "M"
+    awk '/SVNREVISION/{print $3}' /opt/nidas/include/nidas/SvnInfo.h | sed 's/"//g' | cut -d : -f 2 | sed 's/[A-Z]*//g'
 }
 
 get_svnversion() 
@@ -67,17 +66,17 @@ release=$(get_nidas_revision)
 fullversion=$(get_rpmversion ${pkg}.spec | sed "s/%{version}/$version/")
 
 
-cd ..
 tar czf $topdir/SOURCES/${pkg}-${fullversion}.tar.gz --exclude .svn \
-        cmigits/*.h cmigits/*.cc cmigits/SC* cmigits/site_scons || exit $?
+        *.h *.cc SC* site_scons || exit $?
 cd -
 
 # set debug_package to %{nil} to suppress the build of the debug package,
 # which avoids this failure:
 
+#    --define "_unpackaged_files_terminate_build 0" \
+
 rpmbuild -ba \
     --define "_topdir $topdir" \
-    --define "_unpackaged_files_terminate_build 0" \
     --define "debug_package %{nil}" \
     --define "release $release" \
     --define "version $version" \

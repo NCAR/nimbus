@@ -19,7 +19,7 @@ Prefix: %{nidas_prefix}
 CMIGITS binary plugin for NIDAS.
 
 %prep
-%setup -q -n cmigits
+%setup -q -n cmigits -c
 
 %build
 scons -j 4 BUILDS="host arm armbe"
