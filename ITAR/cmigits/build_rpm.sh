@@ -68,10 +68,8 @@ fullversion=$(get_rpmversion ${pkg}.spec | sed "s/%{version}/$version/")
 
 tar czf $topdir/SOURCES/${pkg}-${fullversion}.tar.gz --exclude .svn \
         *.h *.cc SC* site_scons || exit $?
-cd -
 
-# set debug_package to %{nil} to suppress the build of the debug package,
-# which avoids this failure:
+# set debug_package to %{nil} to suppress the build of the debug package
 
 #    --define "_unpackaged_files_terminate_build 0" \
 

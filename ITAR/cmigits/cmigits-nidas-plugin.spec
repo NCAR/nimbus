@@ -26,15 +26,7 @@ scons -j 4 BUILDS="host arm armbe"
  
 %install
 rm -rf $RPM_BUILD_ROOT
-# scons -j 4 BUILDS="host arm armbe" PREFIX=${RPM_BUILD_ROOT}%{nidas_prefix} install
-
-# install -d ${RPM_BUILD_ROOT}%{nidas_prefix}/%{_lib}
-install -d ${RPM_BUILD_ROOT}%{nidas_prefix}/%{_lib}
-install -t ${RPM_BUILD_ROOT}%{nidas_prefix}/%{_lib} build/libnidas* 
-install -d ${RPM_BUILD_ROOT}%{nidas_prefix}/arm/lib
-install -t ${RPM_BUILD_ROOT}%{nidas_prefix}/arm/lib build_arm/libnidas* 
-install -d ${RPM_BUILD_ROOT}%{nidas_prefix}/armbe/lib
-install -t ${RPM_BUILD_ROOT}%{nidas_prefix}/armbe/lib build_armbe/libnidas* 
+scons -j 4 BUILDS="host arm armbe" INSTALLROOT=${RPM_BUILD_ROOT}%{nidas_prefix} install
 
 %clean
 rm -rf $RPM_BUILD_ROOT

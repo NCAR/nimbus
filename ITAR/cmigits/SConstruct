@@ -5,7 +5,11 @@ import os, re
 
 opts = Variables('nidas.conf')
 opts.AddVariables(('PREFIX',
-                   'installation path',
+                   'path to nidas include directory',
+                   '/opt/nidas', None))
+
+opts.AddVariables(('INSTALLROOT',
+                   'where to install',
                    '/opt/nidas', None))
 
 #  Create construction environment with user's PATH.
@@ -41,7 +45,7 @@ if 'host' in BUILDS or 'x86' in BUILDS:
         ARCH = ''
     )
 
-    host_env['ARCHPREFIX'] = env['PREFIX']
+    host_env['ARCHINSTALLROOT'] = env['INSTALLROOT']
 
     host_env.AppendUnique(CCFLAGS = ["-g"])
     host_env.AppendUnique(CXXFLAGS = ['-Wextra','-Weffc++'])
@@ -67,7 +71,7 @@ if 'arm' in BUILDS:
         ARCH = 'arm',
     )
 
-    arm_env['ARCHPREFIX'] = env['PREFIX'] + '/arm'
+    arm_env['ARCHINSTALLROOT'] = env['INSTALLROOT'] + '/arm'
 
     # g++ version 3.4.4 often gives false positives when
     # trying to detect uninitialized variables.
@@ -94,7 +98,7 @@ if 'armbe' in BUILDS:
     armbe_env = env.Clone(tools = ['armbecross','symlink','sharedlibrary'],
         ARCH = 'armbe'
     )
-    armbe_env['ARCHPREFIX'] = env['PREFIX'] + '/armbe',
+    armbe_env['ARCHINSTALLROOT'] = env['INSTALLROOT'] + '/armbe',
 
     armbe_env.AppendUnique(CPPDEFINES = 'NIDAS_EMBEDDED')
 

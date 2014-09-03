@@ -7,12 +7,13 @@ sources = Split("""
     CMIGITS3_Serial.cc
 """)
 
+print 'PREFIX=',env['PREFIX']
 env.Append(CPPPATH = '$PREFIX/include')
 
 lib = env.SharedLibrary3('nidas_dynld_raf_CMIGITS3_Serial' , sources)
 
 nodes = []
-nodes += env.SharedLibrary3Install('$ARCHPREFIX',lib)
+nodes += env.SharedLibrary3Install('$ARCHINSTALLROOT',lib)
 
 Alias('install',nodes)
 Clean('install',nodes)
