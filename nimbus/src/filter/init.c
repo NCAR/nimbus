@@ -161,20 +161,44 @@ void ProcessArgv(int argc, char **argv)
 }	/* END PROCESSARGV */
 
 /* -------------------------------------------------------------------- */
+static char *processFileName(const char *in, char *out, size_t out_len)
+{
+  char *dollar, *p, *e, work[256];
+
+  memset(out, 0, out_len);
+  strcpy(work, in);
+  dollar = strchr(work, '$');
+
+  if (dollar)
+  {
+    if (dollar > work) strncpy(out, work, dollar-work);
+    p = strtok(dollar, "${}");
+    e = getenv(p);
+    if (e) strcat(out, e);
+    p = strtok(0, "${}");
+    if (p) strcat(out, p);
+  }
+  else
+    strcpy(out, in);
+
+  return out;
+}
+
+/* -------------------------------------------------------------------- */
 static void ReadBatchFile(char *fileName)
 {
   FILE	*fp;
   char	*p;
 
   if ((fp = fopen(fileName, "r")) == NULL)
-    {
+  {
     fprintf(stderr, "Can't open %s.\n", fileName);
     exit(1);
-    }
+  }
 
 
   while (fgets(buffer, 512, fp))
-    {
+  {
     if (buffer[0] == COMMENT)
       continue;
 
@@ -182,19 +206,31 @@ static void ReadBatchFile(char *fileName)
       continue;
 
     if (strcmp(p, "if") == 0)
-      XmTextFieldSetString(aDSdataText, strtok(NULL, " \t\n"));
+    {
+      char fname[256];
+      processFileName(strtok(NULL, " \t\n"), fname, 256);
+      XmTextFieldSetString(aDSdataText, fname);
+    }
     else
     if (strcmp(p, "of") == 0)
-      XmTextFieldSetString(outputFileText, strtok(NULL, " \t\n"));
+    {
+      char fname[256];
+      processFileName(strtok(NULL, " \t\n"), fname, 256);
+      XmTextFieldSetString(outputFileText, fname);
+    }
     else
     if (strcmp(p, "sf") == 0)
-      Set_SetupFileName(strtok(NULL, " \t\n"));
+    {
+      char fname[256];
+      processFileName(strtok(NULL, " \t\n"), fname, 256);
+      Set_SetupFileName(fname);
+    }
     else
     if (strcmp(p, "pr") == 0)
-      {
+    {
       int value = atoi(strtok(NULL, " \t\n"));
       switch (value)
-        {
+      {
         case Config::SampleRate:
           cfg.SetProcessingRate(Config::SampleRate);
           break;
@@ -209,8 +245,8 @@ static void ReadBatchFile(char *fileName)
         default:
           fprintf(stderr, "ReadBatchFile: Unsupported processing rate specified, fatal.\n");
           exit(1);
-        }
       }
+    }
     else
     if (strcmp(p, "ti") == 0)
       {
@@ -222,8 +258,8 @@ static void ReadBatchFile(char *fileName)
       XmTextFieldSetString(ts_text[MAX_TIME_SLICES], p);
       ValidateTime(ts_text[0], NULL, NULL);
       ValidateTime(ts_text[MAX_TIME_SLICES], NULL, NULL);
-      }
     }
+  }
 
   fclose(fp);
 
