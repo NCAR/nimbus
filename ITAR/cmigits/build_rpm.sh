@@ -2,7 +2,7 @@
 
 script=`basename $0`
 
-pkg=cmigits-nidas-plugin
+pkg=cmigits-nidas
 
 install=false
 

@@ -1,7 +1,7 @@
 %define nidas_prefix /opt/nidas
 
 Summary: CMIGITS binary plugin for NIDAS
-Name: cmigits-nidas-plugin
+Name: cmigits-nidas
 Version: 1.%{version}
 Release: %{release}%{?dist}
 License: GPL
