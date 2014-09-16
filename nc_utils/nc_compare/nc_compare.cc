@@ -239,7 +239,7 @@ void CompareVariables()
     // Compute means.
     var.mean1 = gsl_stats_float_mean(&cleaned_data1[0], 1, cleaned_data1.size());
     var.mean2 = gsl_stats_float_mean(&cleaned_data2[0], 1, cleaned_data2.size());
-    var.diff = fabs(var.mean1 - var.mean2);
+    var.diff = var.mean2 - var.mean1;
     if (fabs(var.mean2) > fabs(var.mean1))
       var.rel = fabs(var.diff / var.mean2);
     else
@@ -261,7 +261,7 @@ void Output()
   printf("Variable                File1          File2      Diff      Rel (%%)\n");
   for (size_t i = 0; i < file_vars.size(); ++i)
   {
-    if (file_vars[i].diff >= 1.0)
+    if (fabs(file_vars[i].diff) >= 1.0)
       printf("%-16s %14.6f %14.6f %10.6f %8.2f\n",
 	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff, file_vars[i].rel);
   }
@@ -269,7 +269,7 @@ void Output()
   printf("\nMedium differences; >= 0.1 && < 1.0\n");
   for (size_t i = 0; i < file_vars.size(); ++i)
   {
-    if (file_vars[i].diff >= 0.1 && file_vars[i].diff < 1.0)
+    if (fabs(file_vars[i].diff) >= 0.1 && fabs(file_vars[i].diff) < 1.0)
       printf("%-16s %14.6f %14.6f %10.6f %8.2f\n",
 	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff, file_vars[i].rel);
   }
@@ -277,7 +277,7 @@ void Output()
   printf("\nFine differences; > 0.00001 && < 0.1\n");
   for (size_t i = 0; i < file_vars.size(); ++i)
   {
-    if (file_vars[i].diff > 0.00001 && file_vars[i].diff < 0.1)
+    if (fabs(file_vars[i].diff) > 0.00001 && fabs(file_vars[i].diff) < 0.1)
       printf("%-16s %14.6f %14.6f %10.6f %8.2f\n",
 	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff, file_vars[i].rel);
   }
