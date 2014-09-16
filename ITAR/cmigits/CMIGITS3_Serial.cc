@@ -102,7 +102,7 @@ void CMIGITS3_Serial::open(int flags) throw(n_u::IOException)
     }
 
     // testing only.  needs to be done in derivedDataNotifier() for production.
-    sendControlInit3510(0.0, 309.0, 39.91, -105.119, 1738.25);
+    // sendControlInit3510(0.0, 309.0, 39.91, -105.119, 1738.25);
 
     if (DerivedDataReader::getInstance())
         DerivedDataReader::getInstance()->addClient(this);
