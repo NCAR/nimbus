@@ -1,13 +1,19 @@
 #!/usr/bin/python
 
-#Julian Quick
-#GUI TO view and edit varDB
-#Several external functions are refferenced. See GUI.pdf for flowchart.
+# Julian Quick; July 2014
+# GUI TO view and edit varDB
+# Several external functions are referenced. See GUI.pdf for flowchart.
+
+import os
 import sys
 from PyQt4 import QtGui, QtCore
-from newSignal import newSig
-from generateButtons import generateButtons
-from setup import setup
+
+sys.path.append(os.getenv('JLOCAL') + '/lib/python/site-packages')
+
+import vardb
+from vardb.newSignal import newSig
+from vardb.generateButtons import generateButtons
+from vardb.setup import setup
 
 class GUI(QtGui.QWidget):
     def __init__(self):
@@ -15,7 +21,7 @@ class GUI(QtGui.QWidget):
         self.initUI()
     def initUI(self):      
         self.setGeometry(200, 200, 950, 700)
-        self.setWindowTitle('varDB GUI')
+        self.setWindowTitle('Variable DB GUI')
 
         #Create option buttons
         addButton=QtGui.QPushButton("Add Variable")
@@ -30,7 +36,7 @@ class GUI(QtGui.QWidget):
         self.left = QtGui.QFrame(self)
         self.upright = QtGui.QFrame(self)
         self.downright = QtGui.QFrame(self)
-        self=setup(hbox,self,"VDB.xml")
+        self=setup(hbox,self, "vardb.xml")
         self.searchText.textEdited.connect(lambda: generateButtons(self,str(self.searchText.text()),0))
         self.setLayout(hbox)
 
