@@ -564,11 +564,12 @@ void CMIGITS3_Serial::sendControlInit3510(double gspd, double thdg, double lat, 
     }
 
     // Velocity Data
-    if (gspd > 5)
+    if (gspd > 2)
     {
         WLOG(("%s: CMIGITS performing course air alignment.",getName().c_str()));
 
-        dvalidity |= 0x0024;     // Toggle Auto Align word and velocity data.
+        dvalidity |= 0x0024;     // specify align/nav sequence and velocity data.
+
         ivalue = (int16_t)gspd;
         msg.setWord(ivalue,15);
 
@@ -579,6 +580,9 @@ void CMIGITS3_Serial::sendControlInit3510(double gspd, double thdg, double lat, 
     else
     {
         WLOG(("%s: CMIGITS performing fine alignment.",getName().c_str()));
+
+        dvalidity |= 0x0020;     // specify align/nav sequence
+
         ivalue = (int16_t)0x0174;   // fine ground alignment
         msg.setWord(ivalue,23);
     }

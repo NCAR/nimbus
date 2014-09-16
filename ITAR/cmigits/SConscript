@@ -7,7 +7,6 @@ sources = Split("""
     CMIGITS3_Serial.cc
 """)
 
-print 'PREFIX=',env['PREFIX']
 env.Append(CPPPATH = '$PREFIX/include')
 
 lib = env.SharedLibrary3('nidas_dynld_raf_CMIGITS3_Serial' , sources)
