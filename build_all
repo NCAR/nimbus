@@ -65,7 +65,7 @@ end
 
 # Programs using 'make install'.
 
-foreach file ( ads2/hdrbld ncplot ncpp/src vardb/editor ads2/xhd xpms2d/src instruments/rdma ads_utils/edADShdr vardb/utils vardb/utils/vdb2xml )
+foreach file ( ads2/hdrbld ncplot ncpp/src ads2/xhd xpms2d/src instruments/rdma ads_utils/edADShdr vardb/utils vardb/utils/vdb2xml )
   (cd $file; echo ""; make install)
   if ($num > 0) then
     echo "$file BUILT"
@@ -76,7 +76,7 @@ end
 
 # Programs using 'scons' and 'scons install'.
 
-foreach file ( nimbus caledit kml_tools/acTrack2kml instruments/pms2d/process2d instruments/pms2d/oapinfo instruments/cip/padsinfo instruments/sid2h instruments/cpi/cpidisplay nc_utils/ncReorder nc_utils/ncvarlist nc_utils/nc_gap )
+foreach file ( nimbus caledit kml_tools/acTrack2kml instruments/pms2d/process2d instruments/pms2d/oapinfo instruments/cip/padsinfo instruments/sid2h instruments/cpi/cpidisplay nc_utils/ncReorder nc_utils/ncvarlist nc_utils/nc_gap vardb/editpy )
   (cd $file; echo $file; scons install)
   if ($num > 0) then
     echo "$file BUILT"
