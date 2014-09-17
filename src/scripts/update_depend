@@ -16,7 +16,7 @@ echo ">>>>  Removing VarDB.nc and generating a new one.  <<<<"
 cd ${PROJ_DIR}/$argv[1]
 foreach file (*)
   cd $file
-  /bin/rm -f VarDB.nc vardb.xml vardb.vsd
+  /bin/rm -f VarDB.nc vardb.xml vardb.xsd
   vdb2xml ./VarDB
   cd ..
 end
