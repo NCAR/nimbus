@@ -875,6 +875,8 @@ throw()
     data_size = cm_hdr[2];
     flag_word = cm_hdr[3];
 
+/** Comment out by default.  3623 will spew this non-stop.  And interpretation of the manual
+ * says it will always be true anyways.
     if (flag_word != ReadyFlag)
     {
         WLOG(("%s: CMIGITS Flag word at %s: %X for message id: %d - indicates other than only Ready State", 
@@ -882,7 +884,7 @@ throw()
                     n_u::UTime(samp->getTimeTag()).format(true,"%Y %m %d %H:%M:%S.%3f").c_str(),
                     flag_word, message_id));
     }
-
+*/
 
     //WLOG(("%s: CMIGITS message id: %d", getName().c_str(), message_id));
     if (message_id == 3502)    // Delta Velocity and Delta Theta packet
