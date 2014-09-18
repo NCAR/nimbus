@@ -109,7 +109,7 @@ void initAKRD(var_base *varp)
 /* -------------------------------------------------------------------- */
 void sakrd(DERTBL *varp)
 {
-  NR_TYPE qcxc, adifr, akrd = 0.0;
+  NR_TYPE qcxc, adifr, akrd = 0.0, mach;
 
   adifr	= GetSample(varp, 0);
   qcxc	= GetSample(varp, 1);
@@ -133,19 +133,15 @@ void sakrd(DERTBL *varp)
         break;
 
       case Config::HIAPER:
-        double mach = GetSample(varp, 2);
+        mach = GetSample(varp, 2);
         akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach);
         break;
 
       case Config::SABRELINER:
       case Config::B57:
-        {
-        double    mach;
-
         mach = GetSample(varp, 2);
         akrd = adifr / (qcxc * (0.0719786 - 0.0331033 *
                       mach + 0.0109213 * mach*mach));
-        }
         break;
 
       default:
