@@ -193,9 +193,10 @@ void VDBFile::open(const std::string file)
   //open file
   parser->parse(XMLString::transcode(file.c_str()));
 
-  if (parser-> getErrorCount()>0)
+  if (parser->getErrorCount() > 0)
   {
-    std::cerr << "VarDB::VDBFile::open failed to initialize file : " << file << endl;
+    cerr << "VarDB::VDBFile::open failed to initialize file : " << file << endl;
+    cerr << "Error count = " << parser-> getErrorCount() << endl;
     return;
   }
   _doc = parser->getDocument();
