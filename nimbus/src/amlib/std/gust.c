@@ -55,6 +55,10 @@ void initGust(var_base *varp)
    */
   if (strstr(varp->name, "_GP"))
     boomln[varp->ProbeCount] = 0.67;
+
+  std::vector<float> bl;
+  bl.push_back(boomln[varp->ProbeCount]);
+  AddToDefaults(varp->name, "BoomLength", bl);
 }
 
 /* -------------------------------------------------------------------- */
