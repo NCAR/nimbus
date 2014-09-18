@@ -133,16 +133,8 @@ void sakrd(DERTBL *varp)
         break;
 
       case Config::HIAPER:
-        if (gv_radome_ssn == 1)
-        {
-          akrd = akrd_coeff[0] + akrd_coeff[1] * ratio;
-        }
-        else	// Radome #2, Jan 2013 and later.
-        {
-          double mach = GetSample(varp, 2);
-
-          akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach);
-        }
+        double mach = GetSample(varp, 2);
+        akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach);
         break;
 
       case Config::SABRELINER:
