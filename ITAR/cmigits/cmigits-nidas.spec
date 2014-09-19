@@ -31,6 +31,9 @@ scons -j 4 BUILDS="host arm armbe" INSTALLROOT=${RPM_BUILD_ROOT}%{nidas_prefix} 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post 
+/sbin/ldconfig
+
 %files
 %defattr(0775,root,root,2775)
 %{nidas_prefix}/%{_lib}/libnidas_dynld_raf_CMIGITS3_Serial.so*

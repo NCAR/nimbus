@@ -197,12 +197,6 @@ private:
                     throw(nidas::util::IOException);
 
     /**
-     * Read CMIGITS messages until a match with @param msgId.  Also parse the
-     * Ack and Handshake return packets.  @see parseResponse
-     */
-    void readResponse(uint16_t msgId) throw(nidas::util::IOException);
-
-    /**
      * Read samples until either a good or rejected handshake sample has arrived,
      * or a timeout, or many samples were received, but no handshake.
      */
