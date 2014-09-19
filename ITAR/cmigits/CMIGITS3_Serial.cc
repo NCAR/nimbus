@@ -330,7 +330,7 @@ void CMIGITS3_Serial::Message::setWord(uint16_t val,unsigned int index)
 #define NDEBUG_TRUE
 #undef NDEBUG
 #endif
-    assert(index < CMIGITS3_Serial::CM_HDR_SIZE + _dwc + 1);
+    assert(index < _msg.size());
     _dsm2cmcvtr->uint16Copy(val,(char*)( &_msg.front() + index));
     _cksummed = false;
 #ifdef NDEBUG_TRUE
@@ -345,7 +345,7 @@ void CMIGITS3_Serial::Message::setWord32(int32_t val,unsigned int index)
 #define NDEBUG_TRUE
 #undef NDEBUG
 #endif
-    assert(index < CMIGITS3_Serial::CM_HDR_SIZE + _dwc);
+    assert(index < _msg.size() - 1);
     _dsm2cmcvtr->int32Copy(val, (char*)( &_msg.front() + index));
     _cksummed = false;
 #ifdef NDEBUG_TRUE
