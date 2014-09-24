@@ -25,20 +25,20 @@ int VDBDictionary::num_entries() const
 //Returns Dictionary index starting at 0
 std::string VDBDictionary::get_entry(int index)
 {
-  DOMNodeList* elms=_docRoot->getChildNodes();
-  DOMNode* holder=_docRoot->getFirstChild();
-  holder=holder->getNextSibling();
-  if (index >elms->getLength()/2-1)
+  DOMNodeList *elms = _docRoot->getChildNodes();
+  DOMNode *holder = _docRoot->getFirstChild();
+  holder = holder->getNextSibling();
+  if (index > elms->getLength()/2-1)
   {
     return "";
   }
-  for (int i=0;i<index;i++)
+  for (int i = 0; i < index; i++)
   {
-  holder=holder->getNextSibling();
-  holder=holder->getNextSibling();
+    holder=holder->getNextSibling();
+    holder=holder->getNextSibling();
   }
-  DOMNamedNodeMap* atts=holder->getAttributes();
-  DOMNode* att= atts->getNamedItem(XMLString::transcode("name"));
+  DOMNamedNodeMap *atts = holder->getAttributes();
+  DOMNode *att = atts->getNamedItem(XMLString::transcode("name"));
   return XMLString::transcode(att->getNodeValue());
 }
 //---------------------------------------------------------------------------------------
@@ -46,8 +46,8 @@ std::string VDBDictionary::get_entry(int index)
 VDBDictionary* VDBFile::get_dictionary(const string dictionary_name) const
 {
   XMLCh *tag = XMLString::transcode(dictionary_name.c_str());
-  DOMNodeList* x=_docRootNode->getElementsByTagName(tag);
-  DOMNode* Dictionary=x->item(0);
+  DOMNodeList* x = _docRootNode->getElementsByTagName(tag);
+  DOMNode* Dictionary = x->item(0);
   VDBDictionary *vd = new VDBDictionary(Dictionary,dictionary_name);
   return vd;
 }
@@ -56,8 +56,8 @@ VDBDictionary* VDBFile::get_dictionary(const string dictionary_name) const
 //returns variable name
 std::string VDBVar::name()
 {
-  DOMNamedNodeMap* atts=_variable->getAttributes();
-  DOMNode*  name= atts->getNamedItem(XMLString::transcode("name"));
+  DOMNamedNodeMap* atts = _variable->getAttributes();
+  DOMNode*  name = atts->getNamedItem(XMLString::transcode("name"));
   return XMLString::transcode(name->getNodeValue());
 }
 //---------------------------------------------------------------------------------------
@@ -66,28 +66,28 @@ std::string VDBVar::name()
 //output-attribute value
 std::string VDBVar::get_attribute(int index)const
 {
-  DOMNodeList* x=_variable->getChildNodes();
-  DOMNode* holder=x->item(1);
-  if (index> x->getLength()/2-1)
+  DOMNodeList* x = _variable->getChildNodes();
+  DOMNode* holder = x->item(1);
+  if (index > x->getLength()/2-1)
   {
     return "";
   }
-  for (int i=0;i<index;i++)
+  for (int i = 0;i < index; i++)
   {
-    holder=holder->getNextSibling();
-    holder=holder->getNextSibling();
+    holder = holder->getNextSibling();
+    holder = holder->getNextSibling();
   } 
-  holder=holder->getPreviousSibling();
-  DOMNodeList* y=holder->getChildNodes();
-  DOMNode* z=y->item(0);
-  std::string answer=XMLString::transcode(z->getNodeValue());
+  holder = holder->getPreviousSibling();
+  DOMNodeList *y = holder->getChildNodes();
+  DOMNode *z = y->item(0);
+  std::string answer = XMLString::transcode(z->getNodeValue());
   return answer;
 }
 //---------------------------------------------------------------------------------------
 //Returns number of attributes associated sellected variable
 int VDBVar::num_atts() const
 {
-  DOMNodeList* x=_variable->getChildNodes();
+  DOMNodeList* x = _variable->getChildNodes();
   return x->getLength()/2;
 }
 //---------------------------------------------------------------------------------------
@@ -96,22 +96,22 @@ int VDBVar::num_atts() const
 //output: Text associated with variable's attribute
 std::string VDBVar::get_attribute(const std::string attr_name) const
 { 
-  DOMNodeList* x=_variable->getChildNodes();
-  DOMNode* holder=x->item(1);
+  DOMNodeList* x = _variable->getChildNodes();
+  DOMNode* holder = x->item(1);
   std::string answer;
 
-  for (int i=0; i < int(x->getLength())/2; i++)
+  for (int i = 0; i < int(x->getLength())/2; i++)
   {
     if (boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
     {
-      DOMNodeList* y=holder->getChildNodes();
-      DOMNode* z=y->item(0);
+      DOMNodeList *y = holder->getChildNodes();
+      DOMNode *z = y->item(0);
       if (z)
-        answer=XMLString::transcode(z->getNodeValue());
+        answer = XMLString::transcode(z->getNodeValue());
       return answer;
     }
-    holder=holder->getNextSibling();
-    holder=holder->getNextSibling();
+    holder = holder->getNextSibling();
+    holder = holder->getNextSibling();
   }
   return answer;
 }
@@ -121,21 +121,21 @@ std::string VDBVar::get_attribute(const std::string attr_name) const
 void VDBVar::set_attribute(const std::string attr_name, const std::string value)
 { 
   std::string currentName;
-  DOMNodeList* x=_variable->getChildNodes();
-  DOMNode* holder=x->item(1);
+  DOMNodeList *x = _variable->getChildNodes();
+  DOMNode *holder = x->item(1);
 
-  for (int i=1; i <= x->getLength(); i++)
+  for (int i = 1; i <= x->getLength(); i++)
   {
-    currentName=XMLString::transcode(holder->getNodeName());
+    currentName = XMLString::transcode(holder->getNodeName());
     if (boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
     {
-      DOMNodeList* y=holder->getChildNodes();
-      DOMNode* z=y->item(0);
+      DOMNodeList *y = holder->getChildNodes();
+      DOMNode *z = y->item(0);
       z->setNodeValue(XMLString::transcode(value.c_str()));
       break;
     }
-    holder=holder->getNextSibling();
-    holder=holder->getNextSibling();
+    holder = holder->getNextSibling();
+    holder = holder->getNextSibling();
   }
 }
 //=======================================================================================
@@ -150,8 +150,8 @@ void VDBFile::close()
 //This function writes the current xerces tree to a new XML file
 void VDBFile::save()
 {
-  DOMImplementation* impl = DOMImplementation::getImplementation();
-  DOMLSSerializer   *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+  DOMImplementation *impl = DOMImplementation::getImplementation();
+  DOMLSSerializer *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
   XMLCh* toTranscode = theSerializer->writeToString(_doc);
   char* xmlChar = XMLString::transcode(toTranscode);
   std::string transcodedStr;
@@ -161,7 +161,7 @@ void VDBFile::save()
   theSerializer->release(); 
   ofstream outpt;
   outpt.open(_file.c_str());
-  outpt<<transcodedStr<<"\n";
+  outpt << transcodedStr << "\n";
   outpt.close();
 }
 
@@ -170,7 +170,7 @@ void VDBFile::save()
 void VDBFile::open(const std::string file)
 {
   //save location
-  _file=file;
+  _file = file;
 
   //initialize xerces
   try { XMLPlatformUtils::Initialize(); }
@@ -184,7 +184,7 @@ void VDBFile::open(const std::string file)
   };
 
   //Create parser
-  XercesDOMParser* parser = new XercesDOMParser();
+  XercesDOMParser *parser = new XercesDOMParser();
   parser->setValidationScheme(XercesDOMParser::Val_Always);
   parser->setDoNamespaces(true);
   parser->setDoSchema(true);
@@ -209,20 +209,19 @@ void VDBFile::open(const std::string file)
 VDBVar *VDBFile::search_for_var(const std::string var) const
 {
   XMLCh *tag = XMLString::transcode("variableCatalog");
-  DOMNodeList* x=_docRootNode->getElementsByTagName(tag);
-  DOMNode* varCat=x->item(0);
+  DOMNodeList* x = _docRootNode->getElementsByTagName(tag);
+  DOMNode* varCat = x->item(0);
   
   //search variables for name that matches input var
-  DOMNodeList* elems=varCat->getChildNodes();
-  DOMNode* holder=varCat->getFirstChild();
-  holder=holder->getNextSibling();
-  DOMNamedNodeMap* atts;
-  DOMNode* name;
-  std::string posName=var;
-  for (int i=1;i<=elems->getLength()/2;i++)
+  DOMNodeList *elems = varCat->getChildNodes();
+  DOMNode *holder = varCat->getFirstChild();
+  holder = holder->getNextSibling();
+  std::string posName = var;
+
+  for (int i = 1;i <= elems->getLength()/2; i++)
   {
-    atts=holder->getAttributes();
-    name=atts->getNamedItem(XMLString::transcode("name"));
+    DOMNamedNodeMap *atts = holder->getAttributes();
+    DOMNode *name = atts->getNamedItem(XMLString::transcode("name"));
 
 
     if(boost::iequals(XMLString::transcode(name->getNodeValue()),var))
@@ -232,8 +231,8 @@ VDBVar *VDBFile::search_for_var(const std::string var) const
       VDBVar *v = new VDBVar(holder);
       return v;
     }
-    holder=holder->getNextSibling();
-    holder=holder->getNextSibling();
+    holder = holder->getNextSibling();
+    holder = holder->getNextSibling();
   }
   return NULL;
 }
@@ -248,7 +247,7 @@ VDBVar *VDBFile::get_var(const string var) const
   if ((rc = search_for_var(var)) == NULL)
   {
     // If not found, try without a suffix (if one exists.
-    std::string posName=var.substr(0, var.find_last_of('_'));
+    std::string posName = var.substr(0, var.find_last_of('_'));
     rc = search_for_var(posName);
   }
 
@@ -261,26 +260,24 @@ VDBVar *VDBFile::get_var(int index)
 {
   //Get VariableCatalog node as varCat, x is intermediate domNodeList variable
   XMLCh *tag = XMLString::transcode("variableCatalog");
-  DOMNodeList* x=_docRootNode->getElementsByTagName(tag);
-  DOMNode* varCat=x->item(0);
+  DOMNodeList *x = _docRootNode->getElementsByTagName(tag);
+  DOMNode *varCat = x->item(0);
   
   //search variables for name that matches input var
 
-  DOMNodeList* elems=varCat->getChildNodes();
+  DOMNodeList *elems = varCat->getChildNodes();
 
-  DOMNode* holder=varCat->getFirstChild();
-  holder=holder->getNextSibling();
+  DOMNode *holder = varCat->getFirstChild();
+  holder = holder->getNextSibling();
 
-  DOMNamedNodeMap* atts;
-  DOMNode* name;
   if (index>elems->getLength()/2-1)
   {
     return NULL;
   }
-  for(int i=0;i<index;i++)
+  for(int i = 0; i < index;i++)
   {
-    holder=holder->getNextSibling();
-    holder=holder->getNextSibling();
+    holder = holder->getNextSibling();
+    holder = holder->getNextSibling();
   }
   VDBVar *v = new VDBVar(holder);
   return v;
@@ -290,9 +287,9 @@ VDBVar *VDBFile::get_var(int index)
 int VDBFile::num_vars() const
 {
   XMLCh *tag = XMLString::transcode("variableCatalog");
-  DOMNodeList* x=_docRootNode->getElementsByTagName(tag);
-  DOMNode* varCat=x->item(0);
-  DOMNodeList* elems=varCat->getChildNodes();
+  DOMNodeList *x = _docRootNode->getElementsByTagName(tag);
+  DOMNode* varCat = x->item(0);
+  DOMNodeList* elems = varCat->getChildNodes();
   return elems->getLength()/2;
 };
 
