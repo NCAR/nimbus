@@ -244,6 +244,22 @@ void spflwc(DERTBL *varp)
   psx	= GetSample(varp, 1);
   atx	= GetSample(varp, 2);
 
+  // Changed from 294.15 C to 298.15 C on 9/13/01 per DCRogers.
+  flowc = flow * (StdPress / psx) * (atx + Kelvin) / 298.15;
+
+  PutSample(varp, flowc);
+
+}
+
+/* -------------------------------------------------------------------- */
+void suflwc(DERTBL *varp)
+{
+  NR_TYPE       flow, psx, atx, flowc;
+
+  flow  = GetSample(varp, 0);
+  psx   = GetSample(varp, 1);
+  atx   = GetSample(varp, 2);
+
   /* In HIPPO-3 the UHSAS flow readout would periodically saturate the A/2 to
    * about 1.5 even though the flow was actually correct.  Hold flow to average
    * correct value when this happens.  Dave Rogers says average is 0.72623 with
