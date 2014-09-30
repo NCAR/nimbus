@@ -50,10 +50,11 @@ void sconcn(DERTBL *varp)
   concn  = cnts * DIV / (fcnc * 1000.0 / 60.0);
 
   /* Particle concentration corrected for coincidence
-   * 4.167E-6 is time in view volume (.25 microseconds)
-   * conversion factor for FCNC to cm3/s.
+   * 4.167E-6 is combined product of time in view volume (.25 microseconds for old 3760)
+   * 6.667E-6 is combined product of time in view volume (.4 microseconds for 3760a)
+   * and factor (1000/60) converting FCNC from lpm to cm3/s.
    */
-  concn *= (NR_TYPE)exp((double)(4.167e-6 * concn * fcnc));
+  concn *= (NR_TYPE)exp((double)(6.667e-6 * concn * fcnc));
 
   /* Convert to ambient.  This is new as of 12/2007, older projects would
    * need DependTable upgrade.
