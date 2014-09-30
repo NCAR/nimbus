@@ -218,7 +218,7 @@ void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
 #include "pms1d_cv"
 
 
-  // Check for USCAT in range, if not, nan everything.
+  // Check for valid USCAT (high USCAT indicates laser instability); if not, nan everything.
   if (varp->ndep > 2 && strncmp(varp->depend[2], "USCAT", 5) == 0)
   {
     NR_TYPE uscat = GetSample(varp, 2);
@@ -238,42 +238,69 @@ void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
 /* -------------------------------------------------------------------- */
 void spflwc(DERTBL *varp)
 {
-  NR_TYPE	flow, psx, atx, flowc;
+  NR_TYPE	flow, psxc, atx, flowc;
 
   flow	= GetSample(varp, 0);
-  psx	= GetSample(varp, 1);
+  psxc	= GetSample(varp, 1);
   atx	= GetSample(varp, 2);
 
   // Changed from 294.15 C to 298.15 C on 9/13/01 per DCRogers.
-  flowc = flow * (StdPress / psx) * (atx + Kelvin) / 298.15;
+  flowc = flow * (StdPress / psxc) * (atx + Kelvin) / 298.15;
 
   PutSample(varp, flowc);
-
 }
 
 /* -------------------------------------------------------------------- */
 void suflwc(DERTBL *varp)
 {
-  NR_TYPE       flow, psx, atx, flowc;
+  NR_TYPE flow, ups, psxc, atx, flowc;
 
-  flow  = GetSample(varp, 0);
-  psx   = GetSample(varp, 1);
-  atx   = GetSample(varp, 2);
+  flow	= GetSample(varp, 0);
+  ups	= GetSample(varp, 1);	// kPa; factor of 10 in calculations converts to hPa
+  psxc	= GetSample(varp, 2);
+  atx	= GetSample(varp, 3);
 
   /* In HIPPO-3 the UHSAS flow readout would periodically saturate the A/2 to
    * about 1.5 even though the flow was actually correct.  Hold flow to average
-   * correct value when this happens.  Dave Rogers says average is 0.72623 with
+   * controlled value when this happens.  Dave Rogers says average is 0.72623 with
    * std dev of +-0.00023 sccs.  May 17 2010.
    */
 //  if (cfg.ProjectName().compare("HIPPO-3") == 0) // Do it all the time, MikeReeves 5/1/2014
-    if (flow > 1.0)
-      flow = 0.72623;
+  if (flow > 1.0)
+    flow = 0.72623;
 
-  // Changed from 294.15 C to 298.15 C on 9/13/01 per DCRogers.
-  flowc = flow * (StdPress / psx) * (atx + Kelvin) / 298.15;
+  /* UHSAS flow algorithm changed to correct error.  09/29/2014, M Reeves.
+   * Previously flow was interpreted as a mass flow referenced to standard
+   * conditions.  It has been shown to be volumetric flow.  The old
+   * correction from standard to ambient pressure and temperature is replaced
+   * with a correction from instrument conditions to ambient.  This requires
+   * UHSAS internal pressure UPRESS.
+   */
+
+  /* Check for valid UPRESS.  UPRESS readout at times fails, and the reported
+   * value is too high.  UHSAS operates slightly below ambient pressure, so compare
+   * with PSXC.  If UPRESS exceeds ambient pressure, replace it using a
+   * parameterization in PSXC.  For the C-130, this is a linear relationship derived
+   * from NOMADSS flight data, and for the GV it is a cubic polynomial derived
+   * from CONTRAST flight data.  M Reeves, 09/29/2014.
+   */
+  if (ups*10.0 > psxc)
+  {
+    if (cfg.Aircraft() == Config::C130)
+    {
+      ups = 0.1004 * psxc - 2.678;
+    }
+
+    if (cfg.Aircraft() == Config::HIAPER)
+    {
+      static const double a[] = { 7.52558263, 0.00782470, 0.00016456, -0.00000008 };
+      ups = a[0] + a[1] * psxc + a[2] * psxc*psxc + a[3] * psxc*psxc*psxc;
+    }
+  }
+
+  flowc = flow * (ups*10.0 / psxc) * (atx + Kelvin) / 305.0;
 
   PutSample(varp, flowc);
-
 }
 
 /* -------------------------------------------------------------------- */
