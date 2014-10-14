@@ -61,10 +61,10 @@ int main(int argc, const char* argv[])
 	
 	int fd1;   // serial communication variables
 	int wr,rd;
-	char send_buff[16];
-	unsigned long serial_buff[1];
-	unsigned long bits=0;
-	float volts=0;	
+	char send_buff_a[16],send_buff_b[16];
+	unsigned long serial_buff_a[1], serial_buff_b[1];
+	int bits_a=0,bits_b=0;
+	float volts_a=0, volts_b=0;	
 
 	float val=0;// for Flow control DAC
 	float flow_buffer[32];
@@ -194,37 +194,56 @@ int main(int argc, const char* argv[])
 	// byte 2 = 8 bit command
 	// byte 3-n = write data, null for r,c, or s 
 	
-	sprintf(send_buff,"s%c%c%c%c",0x00, 0x00, 0x64, 0x00);//set configuration register
-	wr=write(fd1,&send_buff,5);
-				
-	sprintf(send_buff,"r%c%c",4,CMD_CFG_RD);		
-	wr=write(fd1, send_buff,3);//dummy
-	rd=read(fd1, serial_buff,4);
-	wr=write(fd1, send_buff,3);	
-	rd=read(fd1, serial_buff,4);	
-	printf("configuration value= 0x%lx\n",serial_buff[0]);
-
-	sprintf(send_buff,"r%c%c",4,CMD_OFFSET_RD);	
-	wr=write(fd1, send_buff,3);
-	rd=read(fd1, serial_buff,4);
-	wr=write(fd1, send_buff,3);
-	rd=read(fd1, serial_buff,4);
-	printf("offset value= 0x%lx\n",serial_buff[0]);
+	//set configuration register: 240Sps, frs=0, bipolar
+	//sprintf(send_buff_a,"s1%c%c%c%c",0x00, 0x00, 0x0C, 0x00);
+	//wr=write(fd1,&send_buff_a,strlen(send_buff_a));
 	
-	sprintf(send_buff,"r%c%c",4,CMD_GAIN_RD);
-	wr=write(fd1, send_buff,3);
-	rd=read(fd1, serial_buff,4);
-	wr=write(fd1, send_buff,3);
-	rd=read(fd1, serial_buff,4);	
-	printf("Gain value= 0x%lx\n",serial_buff[0]);
+	
+	sprintf(send_buff_a,"s%c%c%c%c",0x00, 0x00, 0x0C, 0x00);
+	wr=write(fd1,&send_buff_a,5);
+		
+	usleep (100000); 
+		
+	//sprintf(send_buff_b,"s2%c%c%c%c",0x00, 0x00, 0x0C, 0x00);
+	//wr=write(fd1,&send_buff_b,strlen(send_buff_b));
+	
+						
+	sprintf(send_buff_a,"r%c%c",4,CMD_CFG_RD);		
+	wr=write(fd1, send_buff_a,3);//dummy
+	rd=read(fd1, serial_buff_a,4);	
+	wr=write(fd1, send_buff_a,3);
+	rd=read(fd1, serial_buff_a,4);	
+	printf("configuration value A = 0x%lx\n",serial_buff_a[0]);
+	
+
+	sprintf(send_buff_a,"r%c%c",4,CMD_OFFSET_RD);	
+	wr=write(fd1, send_buff_a,3);
+	rd=read(fd1, serial_buff_a,4);
+	wr=write(fd1, send_buff_a,3);
+	rd=read(fd1, serial_buff_a,4);
+	printf("offset value A = 0x%lx\n",serial_buff_a[0]);
+	
+	
+	sprintf(send_buff_a,"r%c%c",4,CMD_GAIN_RD);
+	wr=write(fd1, send_buff_a,3);
+	rd=read(fd1, serial_buff_a,4);
+	wr=write(fd1, send_buff_a,3);
+	rd=read(fd1, serial_buff_a,4);	
+	printf("Gain value A = 0x%lx\n",serial_buff_a[0]);
 	
 	
 	// set buffer to do a single conversion on each loop
 	// will return a value for ADC_A and ADC_2 for one conversion command
-	sprintf(send_buff,"c%c%c",3,CMD_SGL_CVT);
-	wr=write(fd1, send_buff,3);//first read is a dummy to start conversions
-	usleep ((3 + 3) * 70 + 34890); // ~70uS/Byte, 3 byts out, 3 bytes in + ADC conversion time =~35mS
-	rd=read(fd1, serial_buff,3);
+	//sprintf(send_buff_a,"c1%c%c",8,CMD_SGL_CVT);
+	sprintf(send_buff_a,"c%c%c",3,CMD_SGL_CVT);
+	wr=write(fd1, send_buff_a,3);//first read is a dummy to start conversions
+	usleep ((3 + 3) * 70 + 35500); // ~70uS/Byte, 4 byts out, 4 bytes in + ADC conversion time =~35mS
+	rd=read(fd1, serial_buff_a,3);
+	
+	sprintf(send_buff_b,"C%c%c",3,CMD_SGL_CVT);
+	wr=write(fd1, send_buff_b,3);//first read is a dummy to start conversions
+	usleep ((3 + 3) * 70 + 35500); // ~70uS/Byte, 4 byts out, 4 bytes in + ADC conversion time =~35mS
+	rd=read(fd1, serial_buff_a,3);
 	
 	
 		// =============== Main DAQ loop start. Should be infinite in the actual application. ==================
@@ -250,55 +269,81 @@ int main(int argc, const char* argv[])
 		//printf("engData # 7=%f \n", engData[7]); // engData[7] is most recent MAF value in SLPM
 
 		//Write MAF data do UPB buffer
-		sprintf(udp_buffer , " %f ,", engData[7]);
+	//	sprintf(udp_buffer , " %f ,", engData[7]);
 		
 		//calculate control voltage
 		/* save flow values */
-		flow_buffer[i%32]= engData[7];
+	//	flow_buffer[i%32]= engData[7];
 		
 		/* sort flow values */ 
 		// sort_low_to_high(flow_buffer);
-		median_flow = flow_buffer[16]; // only after sorting
+	//	median_flow = flow_buffer[16]; // only after sorting
 		 
 		/* some_look_up_table_function*/
 		/* write desired voltage out to ctr_volt */
-		ctr_volt = median_flow;// look_up_flow(median_flow)
+	//	ctr_volt = median_flow;// look_up_flow(median_flow)
 		
 		//write control voltage to DAQ
-		PRM_DAC_Write( 0 , val ); /*replace arg2 with ctr_volt */
+	//	PRM_DAC_Write( 0 , val ); /*replace arg2 with ctr_volt */
 
 		/*---------------- End Flow Control ---------*/
 		
 		/* ---- Serial Comm ---- */
-
-		wr=write(fd1, send_buff,3);
-		usleep ((3 + 3) * 70 + 34890); // ~70uS/Byte, 3 byts out, 3 bytes in + ADC conversion time =~35mS
-		rd=read(fd1, serial_buff,3);
-				
-		if(rd < 0)// ADC read fail
-		{	
-			perror("serial ADC read fail :");
-			exit(1);	
-		}
-				
-		if(rd>0)
+		if(i%2)
 		{
-			bits = serial_fix_24(serial_buff[0]);							
-			volts= (float) bits * 5 / 16777215 / 128;
-			//printf("%07.7f\n",volts);
+			wr=write(fd1, send_buff_a,3);
+			usleep ((3 + 3) * 70 + 35000); // ~70uS/Byte, 4 byts out, 4 bytes in + ADC conversion time =~35mS
+			rd=read(fd1, serial_buff_a,3);
+				
+			if(rd <= 0)// ADC read fail
+			{	
+				perror("serial ADC read fail :");
+				exit(1);	
+			}
+					
+			if(rd>0)
+			{
+				bits_a = (int) serial_fix_24(serial_buff_a[0]);								
+				volts_a= (float) bits_a * 5 / 16777215 / 128;
+			}
+		printf("A=%7.7f \t",volts_a);
 		}
-
+		
+		else
+		{
+			wr=write(fd1, send_buff_b,3);
+			usleep ((3 + 3) * 69.44 + 35000); // ~70uS/Byte, 4 byts out, 4 bytes in + ADC conversion time =~35mS
+			rd=read(fd1, serial_buff_b ,3);
+					
+			if(rd <= 0)// ADC read fail
+			{	
+				perror("serial ADC read fail :");
+				exit(1);	
+			}
+					
+			if(rd>0)
+			{
+				bits_b = (int) serial_fix_24(serial_buff_b[0]);								
+				volts_b= (float) bits_b * 5 / 16777215 / 128;
+			}	
+		printf("B=%7.7f\n",volts_b);
+		}
 		/* ---- End Serial Comm ---- */
 		
 
 		// Write data to UDP
-		sprintf( udp_buffer, "%07.7f,", volts);
-		_socket.writeSock(udp_buffer, strlen(udp_buffer)+1);//4bytes for a float and 1 for the comma		
+		sprintf( udp_buffer, "O3,%d,%d,",bits_a,bits_b);
+		_socket.writeSock(udp_buffer, strlen(udp_buffer)+1);		
 				
 		// Write data into file.
 		fprintf( dataFile, "%.3f	", timeStamp );
-		for ( ii=0; ii<2; ii++ ) // Write counter data.
-			fprintf( dataFile, "%d	", data[ii] );
+		
+		
+		//for ( ii=0; ii<2; ii++ ) // Write counter data.
+		//printf("A=%7.7f \t B=%7.7f\n",volts_a,volts_b);
+		fprintf( dataFile, "%d	", bits_a);
+		fprintf( dataFile, "%d	", bits_b );
+		
 		
 		fprintf( dataFile, "%d	", iSleep ); // Record iSleep for now, see how that changes.
 		fprintf( dataFile, "%d	", CurrPos ); // Record valve position. CurrPos at this point in code applies to the data taken above.
