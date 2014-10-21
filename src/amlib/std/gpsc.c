@@ -347,7 +347,7 @@ void slatc(DERTBL *varp)
        * filter toward the IRU solution. There does not seem to be any
        * benefit from doing this, instead of just continuing to apply the
        * offset determined from the complementary filter. Comment out.*/
-/*      dvy[FeedBack]	*= fctrf[FeedBack];
+/*    dvy[FeedBack]	*= fctrf[FeedBack];
       dvx[FeedBack]	*= fctrf[FeedBack];
       dlat[FeedBack]	*= fctrf[FeedBack];
       dlon[FeedBack]	*= fctrf[FeedBack];
@@ -466,40 +466,89 @@ void svnsc(DERTBL *varp)
  * in Bosic, p. 49.
  * The array zf is used to save values for the next call, to make it
  * easy to filter more than one variable.
+ *
+ * Version 3 (A Cooper, 8/18/2014, coded by JAA 9/24/2014)
+ * Replace with a 3rd order Butterworth filter. The ARMA filter coefficients
+ * were derived by running the R function bf <- butter (3,2./tau). The filter is
+ * very sensitive to small errors in the coefficients so full-precision is 
+ * retained.
+ * NOTE: THIS HAS NOT BEEN CODED FOR HRT YET. CONSTANTS ARE ONLY APPLICABLE TO LRT DATA
  */
 static NR_TYPE filter(double x, double zf[])
 {
-  static double	a[nFeedBackTypes], a2[nFeedBackTypes],
-		a3[nFeedBackTypes], a4[nFeedBackTypes];
+  /* static double	a[nFeedBackTypes], a2[nFeedBackTypes],
+		a3[nFeedBackTypes], a4[nFeedBackTypes]; */
+  static double bfb[4];
+  static double bfa[4];
+  static double xf;
   static bool	firstTime[nFeedBackTypes] = { true, true };
 
   if (firstTime[FeedBack])
     {
-    double	b1, b2, c, e, f;
+    /* double	b1, b2, c, e, f; */
+    sprintf(buffer,"Processing rate = %d\n",cfg.ProcessingRate());
+    LogMessage(buffer);
 
     if (FeedBack == HIGH_RATE_FEEDBACK)
-      TAU *= (float)cfg.ProcessingRate();
-
-    a[FeedBack]	= 2.0 * M_PI / TAU;
-    b1		= sqrt(3.0 / 2.0);
-    b2		= sqrt(1.0 / 3.0);
-    c		= exp(-0.5 * a[FeedBack]);
-    e		= a[FeedBack] * b1;
-    f		= c * (cos(e) + b2 * sin(e));
-    a2[FeedBack]= a[FeedBack] * f;
-    a3[FeedBack]= 2.0 * exp(-a[FeedBack] / 2.0) * cos(e);
-    a4[FeedBack]= exp(-a[FeedBack]);
+    {
+      /* TAU *= (float)cfg.ProcessingRate(); */
+      /* These constants were calculated with tau = 25sps*600 */
+      if (cfg.ProcessingRate() == 25) {
+        bfb[0] = 9.18319789058178e-12;
+        bfb[1] = 2.75495936717454e-11;
+        bfb[2] = 2.75495936717454e-11;
+        bfb[3] = 9.18319789058178e-12;
+        bfa[0] = 1.0;
+        bfa[1] = -2.999162241965168;
+        bfa[2] =  2.998324834812849;
+        bfa[3] = -0.999162592774216;
+      } else {
+	  sprintf(buffer,"Butterworth filter not implemented for processing rate %d. Edit gpsc.c and follow instructions for generating coefficients for this rate.\n",cfg.ProcessingRate());
+          LogMessage(buffer);
+      }
+    } else {
+      /* a[FeedBack]	= 2.0 * M_PI / TAU;
+      b1		= sqrt(3.0 / 2.0);
+      b2		= sqrt(1.0 / 3.0);
+      c		= exp(-0.5 * a[FeedBack]);
+      e		= a[FeedBack] * b1;
+      f		= c * (cos(e) + b2 * sin(e));
+      a2[FeedBack]= a[FeedBack] * f;
+      a3[FeedBack]= 2.0 * exp(-a[FeedBack] / 2.0) * cos(e);
+      a4[FeedBack]= exp(-a[FeedBack]); */
+    
+      bfb[0] = 1.42056081706421e-07;
+      bfb[1] = 4.26168245119263e-07; 
+      bfb[2] = 4.26168245119263e-07; 
+      bfb[3] = 1.42056081706421e-07;
+      bfa[0] = 1.0;
+      bfa[1] = -2.97905614466461; 
+      bfa[2] =  2.95833103772367;
+      bfa[3] = -0.97927375661041;
+    }
 
     firstTime[FeedBack] = false;
     }
 
-  zf[2] = -a[FeedBack] * x + a2[FeedBack] * zf[5] + a3[FeedBack] * zf[3] - a4[FeedBack] * zf[4];
+  xf =  (bfb[0] * x + bfb[1] * zf[1] + bfb[2]*zf[2] + bfb[3]*zf[3] 
+        - (bfa[1]*zf[4] + bfa[2]*zf[5] + bfa[3]*zf[6]));
+
+  /* Store terms for the next call. */
+  zf[3] = zf[2];
+  zf[2] = zf[1];
+  zf[1] = x;
+  zf[6] = zf[5];
+  zf[5] = zf[4];
+  zf[4] = xf;
+
+  /* zf[2] = -a[FeedBack] * x + a2[FeedBack] * zf[5] + a3[FeedBack] * zf[3] - a4[FeedBack] * zf[4];
   zf[1] = a[FeedBack] * x + a4[FeedBack] * zf[1];
   zf[4] = zf[3];
   zf[3] = zf[2];
-  zf[5] = x;
+  zf[5] = x; */
 
-  return(zf[1] + zf[2]);
+  /* return(zf[1] + zf[2]);*/
+  return(xf);
 
 }	/* END FILTER */
 
