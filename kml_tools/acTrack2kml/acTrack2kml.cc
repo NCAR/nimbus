@@ -286,6 +286,7 @@ handle_alarm(int sig)
   {
     args.push_back((char*)(startup_args[i].c_str()));
   }
+  args.push_back(0);
   std::cerr << "\n*** Restarting on alarm signal... ***\n" << std::endl;
   execvp(args[0], &(args[0]));
   exit(1);
