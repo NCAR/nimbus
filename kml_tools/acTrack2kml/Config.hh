@@ -52,6 +52,43 @@ public:
 
   int update_interval_secs;
   int position_interval_secs;
+
+  string latVariable;
+  string lonVariable;
+  string altVariable;
+
+  /**
+   * Select the latitude variable name from a default name derived from the
+   * data source and the configured name, if any.  The configured name
+   * always takes precedence, followed by the @p sourcename.
+   **/
+  string
+  getLatitudeVariable(const string& sourcename);
+
+  /**
+   * Select the longitude variable name from a default name derived from
+   * the data source and the configured name, if any.  The configured name
+   * always takes precedence, followed by the @p sourcename.
+   **/
+  string
+  getLongitudeVariable(const string& sourcename);
+
+  /**
+   * Select the altitude variable name from a default name derived from the
+   * data source and the configured name, if any.  The configured name
+   * always takes precedence, followed by the @p sourcename.
+   **/
+  string
+  getAltitudeVariable(const string& sourcename);
+
+  /**
+   * Set the convertToFeet configuration parameter according to the given
+   * @p units for the altitude variable.
+   **/
+  void
+  setAltitudeUnits(const string& units);
+
+
 };
 
 

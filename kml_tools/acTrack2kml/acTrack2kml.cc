@@ -23,6 +23,7 @@
 #include <cstring>
 #include <unistd.h> // alarm()
 #include <signal.h>
+#include <getopt.h>
 
 using namespace std;
 using namespace boost::posix_time;
@@ -59,8 +60,14 @@ int usage(const char *argv0)
 	<< "  -i update_secs    In real-time mode, seconds between track updates, default is 30.\n"
 	<< "  -j update_secs    In real-time mode, seconds between JSON position updates, default is 3.\n"
 	<< "  -f path           Override flight_data output directory, location of position.json,\n"
-	<< "                    and KML goes into <flight_dir>/GE.\n";
-
+	<< "                    and KML goes into <flight_dir>/GE.\n"
+	<< "The position variables can be overridden with these options:\n"
+	<< "  --lat <lat>       Specify the latitude variable.\n"
+	<< "  --lon <lon>       Specify the longitude variable.\n"
+	<< "  --alt <alt>       Specify the altitude variable.\n"
+	<< "This example selects GGLAT and GGLON from a netcdf file instead\n"
+	<< "of LATC and LONC.\n"
+	<< "  acTrack2kml --lat=GGLAT --lon=GGLON infile.nc outfile.kml\n";
   return 1;
 }
 
@@ -68,17 +75,40 @@ int usage(const char *argv0)
 int
 parseRunstring(int argc, char** argv, Config& cfg)
 {
-  extern char *optarg;	/* set by getopt() */
-  extern int optind;	/* "  "     "     */
   int opt_char;		/* option character */
 
   // Default to ground, -p and netCDF mode.
   cfg.webHost = grnd_webHost;
 
-  while ((opt_char = getopt(argc, argv, "p:h:b:s:t:i:j:f:ocv")) != -1)
+  while (1)
   {
+    static struct option long_options[] = {
+      {"lat",     required_argument, 0,  '0' },
+      {"lon",     required_argument, 0,  '1' },
+      {"alt",     required_argument, 0,  '2' },
+      {0,         0, 0,  0 }
+    };
+
+    opt_char = getopt_long(argc, argv, "p:h:b:s:t:i:j:f:ocv",
+			   long_options, 0);
+
+    if (opt_char == -1)
+      break;
+
     switch (opt_char)
     {
+    case '0':
+      cfg.latVariable = optarg;
+      break;
+
+    case '1':
+      cfg.lonVariable = optarg;
+      break;
+
+    case '2':
+      cfg.altVariable = optarg;
+      break;
+
     case 'p':	// platform selection, used to select dbname
       cfg.platform = optarg;
       // TODO query the platforms DB to get a list of these...

@@ -5,6 +5,9 @@
 
 #include <iostream>
 
+using std::cerr;
+using std::endl;
+
 Config::
 Config() : 
   TimeStep(15),
@@ -61,3 +64,52 @@ dump(std::ostream& out)
   out << "         Verbose level: " << verbose << "\n";
 }
 
+
+
+void
+Config::
+setAltitudeUnits(const string& units)
+{
+  convertToFeet = 1.0;
+  if (units == "m")
+  {
+    convertToFeet = 3.2808; // feet per meter
+  }
+  cerr << "cfg.alt: " << altVariable
+       << " units: " << units << endl;
+  cerr << "cfg.convertToFeet: " << convertToFeet << endl;
+}
+
+
+std::string
+Config::
+getLatitudeVariable(const std::string& sourcename)
+{
+  if (latVariable.empty())
+  {
+    latVariable = sourcename;
+  }
+  return latVariable;
+}
+
+std::string
+Config::
+getLongitudeVariable(const std::string& sourcename)
+{
+  if (lonVariable.empty())
+  {
+    lonVariable = sourcename;
+  }
+  return lonVariable;
+}
+
+std::string
+Config::
+getAltitudeVariable(const std::string& sourcename)
+{
+  if (altVariable.empty())
+  {
+    altVariable = sourcename;
+  }
+  return altVariable;
+}

@@ -188,7 +188,6 @@ setupVariables()
   static const char* aoc[] = { "TA","TD","TAS","WS","WD","UWZ" };
   static const char* raf[] = { "ATX","DPXC","TASX","WSC","WDC","WIC" };
   static const char* altnames[] = { "PALTF", "PALT" };
-  //  static const char* locnames[] = { "GGALT", "GGLAT", "GGLON" };
 
   if (cfg.verbose)
     cerr << "Loading variables and global attributes from the database." 
@@ -222,10 +221,10 @@ setupVariables()
   else
     alt = getGlobalAttribute("zaxis_coordinate");
   
-  if (getVariableUnits(alt) == "m")
-    cfg.convertToFeet = 3.2808;	// feet per meter
-  else
-    cfg.convertToFeet = 1.0;	// no-op (feet to feet)
+  lat = cfg.getLatitudeVariable(lat);
+  lon = cfg.getLongitudeVariable(lon);
+  alt = cfg.getAltitudeVariable(alt);
+  cfg.setAltitudeUnits(getVariableUnits(alt));
 
   addColumn(lon);
   addColumn(lat);

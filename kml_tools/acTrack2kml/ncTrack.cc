@@ -7,6 +7,7 @@
 
 using std::cerr;
 using std::endl;
+using std::string;
 
 using namespace boost::posix_time;
 
@@ -94,15 +95,19 @@ fillAircraftTrack(AircraftTrack& track)
   if (attr)
     projInfo.landmarks = attr->as_string(0);
 
-  char *lon = (char *)"LONC", *lat = (char *)"LATC", *tim = (char *)"Time";
+  string lon = "LONC";
+  string lat = "LATC";
+  string tim = "Time";
 
   attr = file.get_att("longitude_coordinate");
   if (attr)
     lon = attr->as_string(0);
+  lon = cfg.getLongitudeVariable(lon);
 
   attr = file.get_att("latitude_coordinate");
   if (attr)
     lat = attr->as_string(0);
+  lat = cfg.getLatitudeVariable(lat);
 
   attr = file.get_att("time_coordinate");
   if (attr)
@@ -120,19 +125,19 @@ fillAircraftTrack(AircraftTrack& track)
 
   // Pressure altitude is preferred.
   NcVar *alt_v;
-  const char *alt = "PALTF";
-  if ((alt_v = file.get_var(alt)) == 0)
+  string alt = "PALTF";
+  if ((alt_v = file.get_var(alt.c_str())) == 0)
   {
-    cfg.convertToFeet = 3.2808;
     alt = "PALT";
-    if ((alt_v = file.get_var(alt)) == 0)
+    if ((alt_v = file.get_var(alt.c_str())) == 0)
     {
       attr = file.get_att("zaxis_coordinate");
       alt = attr->as_string(0);
-
-      alt_v = getNetcdfVariable(alt);
     }
   }
+  alt = cfg.getAltitudeVariable(alt);
+  alt_v = getNetcdfVariable(alt);
+  cfg.setAltitudeUnits(alt_v->get_att("units")->as_string(0));
 
   NcValues *tim_vals = tim_v->values();
   NcValues *tas_vals = tas_v->values();
@@ -144,13 +149,6 @@ fillAircraftTrack(AircraftTrack& track)
   NcValues *ws_vals = ws_v->values();
   NcValues *wi_vals = wi_v->values();
   NcValues *wd_vals = wd_v->values();
-
-  attr = alt_v->get_att("units");
-  if (strcmp(attr->as_string(0), "m") == 0)
-    cfg.convertToFeet = 3.2808; // feet per meter
-
-  cerr << "alt: " << alt << " units: " << attr->as_string(0) << endl;
-  cerr << "cfg.convertToFeet: " << cfg.convertToFeet << endl;
 
   attr = tim_v->get_att("units");
   struct tm tm;

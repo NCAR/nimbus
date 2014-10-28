@@ -56,11 +56,55 @@ conf = Configure(env.Clone())
 
 # print env.Dump()
 
-env.Program(['acTrack2kml.cc', 'Config.cc',
-             'AircraftTrackKML.cc',
-             'AircraftTrack.cc',
-             'acDatabase.cc',
-             'ncTrack.cc',
-             'osm.cc'])
+act = env.Program(['acTrack2kml.cc', 'Config.cc',
+                   'AircraftTrackKML.cc',
+                   'AircraftTrack.cc',
+                   'acDatabase.cc',
+                   'ncTrack.cc',
+                   'osm.cc'])
 
 Alias('install', env.Install('$JLOCAL/bin', 'acTrack2kml'))
+
+
+# Find aircraft production netcdf files to test against.
+
+def FindAircraftData(filename):
+    searchdirs = ['$DATA_DIR/HIPPO', '/scr/raf_data/HIPPO']
+    for d in searchdirs:
+        d = os.path.expandvars(d)
+        path = os.path.join(d, filename)
+        if os.path.exists(path):
+            print("found %s in %s" % (filename, path))
+            return path
+    return None
+
+
+def BatchKML(target, source, env):
+  ifile = env.File(source[0]).get_abspath()
+  ofile = env.File(target[0]).get_abspath()
+  if os.path.exists(ofile):
+    os.unlink(ofile)
+  env.Execute("${ACTRACK2KML} %s %s" % (ifile, ofile))
+
+
+def kml_emitter(source, target, env):
+  if not env.has_key('ACTRACK2KML'):
+      env['ACTRACK2KML'] = act
+  return (target, source + [ env['ACTRACK2KML'] ])
+
+
+env['BUILDERS']['BatchKML'] = Builder(action=BatchKML, emitter=kml_emitter)
+
+ncpath = FindAircraftData('HIPPO-2rf06.nc')
+if ncpath:
+    ekml = 'HIPPO-2rf06.kml'
+    akml = 'HIPPO-2rf06-actual.kml'
+    env.BatchKML(akml, ncpath)
+    env.Alias('xdiff', 
+              env.Command("diff", [ekml, akml],
+                          "diff --side-by-side --width=170 ${SOURCES}"))
+    env.Alias('test', 
+              env.Command("diff", [ekml, akml],
+                          "diff ${SOURCES}"))
+
+
