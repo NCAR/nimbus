@@ -10,6 +10,13 @@
 class db_private_t;
 struct pg_result;
 
+/*
+ * Enumerate the types of variables to be loaded from the database and
+ * translated into a track, independent of their various names in the
+ * database table.
+ */
+enum VariableType { TIME=0, LON, LAT, ALT, AT, DP, TAS, WS, WD, WI, THDG };
+
 struct Variable
 {
   Variable() :
@@ -23,15 +30,17 @@ struct Variable
   {}
 
   Variable&
-  setIndex(int ix)
+  setIndex(int ix, VariableType vtype_in)
   {
     column_index = ix;
+    vtype = vtype_in;
     return *this;
   }
 
   std::string name;
   std::string units;
   int column_index;
+  VariableType vtype;
 };
 
 class acDatabase
@@ -72,6 +81,10 @@ public:
 
 private:
 
+  template <typename T>
+  T
+  getResult(pg_result* res, int indx, VariableType vtype);
+
   std::string
   getVariableUnits(const std::string& name);
 
@@ -82,7 +95,10 @@ private:
   buildDataQueryString(AircraftTrack& track);
 
   void
-  setupVariables();
+  setupColumns();
+
+  void
+  clearColumns();
 
   void
   loadGlobalAttributes();
@@ -94,7 +110,10 @@ private:
   addResult(AircraftTrack& track, pg_result *res, int indx);
 
   void
-  addColumn(const std::string& name);
+  addColumn(const std::string& name, VariableType vtype);
+
+  Variable*
+  variable(VariableType vtype);
 
   Config cfg;
 
@@ -103,7 +122,12 @@ private:
 
   db_private_t* db;
 
-  std::vector<Variable> variables;
+  // Two data structures for the database columns: a vector in order of the
+  // columns in the database query, and a map from variable type to the
+  // column index.
+  typedef std::map<VariableType, unsigned int> variables_t;
+  variables_t variables;
+  std::vector<Variable> columns;
 
   typedef std::map<std::string, Variable> dir_t;
   dir_t _directory;

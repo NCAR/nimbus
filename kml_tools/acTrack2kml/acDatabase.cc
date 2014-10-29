@@ -16,11 +16,6 @@ using std::endl;
 
 using namespace boost::posix_time;
 
-// Our raw data is coming from a PostGreSQL database.....
-// The order of this enum should match the order of the variables
-// being requested in the dataQuery string.
-enum VariablePos { TIME=0, LON, LAT, ALT, AT, DP, TAS, WS, WD, WI };
-
 struct db_private_t
 {
   PGconn* _conn;
@@ -29,8 +24,9 @@ struct db_private_t
 /* -------------------------------------------------------------------- */
 template <typename T>
 T
-extractPQvalue(const char *cpqstring)
+extractPQvalue(PGresult *result, int tuple, int field)
 {
+  const char *cpqstring = PQgetvalue(result, tuple, field);
   if (! cpqstring)
   {
     cerr << "extractPQvalue: string is null!\n";
@@ -49,8 +45,9 @@ extractPQvalue(const char *cpqstring)
 }
 
 /* -------------------------------------------------------------------- */
-string
-extractPQString(PGresult *result, int tuple, int field)
+template <>
+std::string
+extractPQvalue<std::string>(PGresult *result, int tuple, int field)
 {
   const char* pqstring = PQgetvalue(result, tuple, field);
   if (! pqstring)
@@ -89,6 +86,7 @@ loadDirectory(std::vector<std::string>& names)
   std::ostringstream query;
 
   _directory.clear();
+  _directory["DATETIME"] = Variable("DATETIME");
   query << "SELECT name, units from variable_list where name in (";
   for (int i = 0; i < int(names.size()); ++i)
   {
@@ -160,7 +158,7 @@ dump(std::ostream& out)
 
 void
 acDatabase::
-addColumn(const std::string& name)
+addColumn(const std::string& name, VariableType vtype)
 {
   // Add this name as a variable column.  If it's known in the directory,
   // then copy that Variable instance to get the units.  If not, then just
@@ -168,80 +166,97 @@ addColumn(const std::string& name)
   if (cfg.verbose > 1)
     cerr << "adding column " << name << endl;
   dir_t::iterator it = _directory.find(name);
+  unsigned int ix = columns.size();
   if (it != _directory.end())
   {
-    variables.push_back(it->second.setIndex(variables.size()));
+    columns.push_back(it->second.setIndex(ix, vtype));
+    variables[vtype] = ix;
   }
   else
   {
-    variables.push_back(Variable(name).setIndex(variables.size()));
+    // A variable not in the directory is a problem.
+    cerr << "Database column " << name
+	 << " is not in the variable list!" << endl;
   }
 }
 
 
 void
 acDatabase::
-setupVariables()
+clearColumns()
 {
-  // These are added in a standard order, but they don't all have standard
-  // names in the database.
+  variables.clear();
+  columns.clear();
+}
+
+#define ALEN(v) (sizeof(v)/sizeof(v[0]))
+#define AEND(v) (v + ALEN(v))
+
+void
+acDatabase::
+setupColumns()
+{
+  // These are listed in the order of the VariableType enum, so each name
+  // can be mapped to the right enum value when added as a query column.
   static const char* aoc[] = { "TA","TD","TAS","WS","WD","UWZ" };
-  static const char* raf[] = { "ATX","DPXC","TASX","WSC","WDC","WIC" };
+  static const char* raf[] = { "ATX","DPXC","TASX","WSC","WDC","WIC","THDG" };
   static const char* altnames[] = { "PALTF", "PALT" };
 
   if (cfg.verbose)
     cerr << "Loading variables and global attributes from the database." 
 	 << endl;
+  loadGlobalAttributes();
+  if (cfg.verbose > 1)
+    dump(cerr);
 
   // We know the maximum list of variables we're interested in, so load all
   // of them now.
   std::vector<std::string> lookupnames;
   std::back_insert_iterator< std::vector<std::string> > it(lookupnames);
-  std::copy(aoc, aoc+6, it);
-  std::copy(raf, raf+6, it);
-  std::copy(altnames, altnames+2, it);
-
-  loadDirectory(lookupnames);
-  loadGlobalAttributes();
-  if (cfg.verbose > 1)
-    dump(cerr);
-
-  const char** pvars;
-  variables.clear();
-  addColumn("DATETIME");
+  std::copy(aoc, AEND(aoc), it);
+  std::copy(raf, AEND(raf), it);
+  std::copy(altnames, AEND(altnames), it);
   string lat = getGlobalAttribute("latitude_coordinate");
   string lon = getGlobalAttribute("longitude_coordinate");
-  string alt;
+  string alt = getGlobalAttribute("zaxis_coordinate");
+  lookupnames.push_back(lat);
+  lookupnames.push_back(lon);
+  if (!alt.empty())
+    lookupnames.push_back(alt);
+  loadDirectory(lookupnames);
+
+  // Now start naming the columns to query from the database.
+  clearColumns();
+  addColumn("DATETIME", TIME);
 
   // Search for pressure altitude first, zaxis_coord is typically GPS alt.
   if (_directory.find("PALTF") != _directory.end())
     alt = "PALTF";
   else if (_directory.find("PALT") != _directory.end())
     alt = "PALT";
-  else
-    alt = getGlobalAttribute("zaxis_coordinate");
-  
   lat = cfg.getLatitudeVariable(lat);
   lon = cfg.getLongitudeVariable(lon);
   alt = cfg.getAltitudeVariable(alt);
   cfg.setAltitudeUnits(getVariableUnits(alt));
 
-  addColumn(lon);
-  addColumn(lat);
-  addColumn(alt);
+  addColumn(lon, LON);
+  addColumn(lat, LAT);
+  addColumn(alt, ALT);
   if (cfg.platform == "N42RF" || 
       cfg.platform == "N43RF" ||
       cfg.platform == "N49RF")
   {
-    pvars = aoc;
+    for (const char** pvar = aoc; pvar != AEND(aoc); ++pvar)
+    {
+      addColumn(*pvar, static_cast<VariableType>(AT+(pvar-aoc)));
+    }
   }
   else
   {
-    pvars = raf;
-  }
-  for (int j = 0; j < 6; ++j)
-  {
-    addColumn(pvars[j]);
+    for (const char** pvar = raf; pvar != AEND(raf); ++pvar)
+    {
+      addColumn(*pvar, static_cast<VariableType>(AT+(pvar-raf)));
+    }
   }
 }
 
@@ -318,6 +333,21 @@ getVariableUnits(const std::string& name)
 }
 
 
+Variable*
+acDatabase::
+variable(VariableType vtype)
+{
+  Variable* found = 0;
+  variables_t::iterator it;
+  it = variables.find(vtype);
+  if (it != variables.end())
+  {
+    found = &(columns[it->second]);
+  }
+  return found;
+}
+
+
 /* -------------------------------------------------------------------- */
 string
 acDatabase::
@@ -327,30 +357,37 @@ buildDataQueryString(AircraftTrack& track)
   
   query << "SELECT ";
 
-  bool first = true;
-  for (int i = 0; i < int(variables.size()); ++i, first=false)
+  for (int i = 0; i < int(columns.size()); ++i)
   {
-    if (!first)
+    if (i > 0)
       query << ",";
-    query << variables[i].name;
+    query << columns[i].name;
   }
   query << " from raf_lrt where ";
-  query << variables[TAS].name << " > " << cfg.TAS_CutOff;
-  query << " AND " << variables[LAT].name << " <> 0.0 ";
-  query << " AND " << variables[LON].name << " <> 0.0 ";
-  query << " AND " << variables[LAT].name << " <> " << AircraftTrack::missing_value;
-  query << " AND " << variables[LON].name << " <> " << AircraftTrack::missing_value;
+
+  if (variable(TAS))
+  {
+    query << variable(TAS)->name << " > " << cfg.TAS_CutOff << " AND ";
+  }
+  query << variable(LAT)->name << " <> 0.0 ";
+  query << " AND " << variable(LON)->name << " <> 0.0 ";
+  query << " AND " << variable(LAT)->name
+	<< " <> " << AircraftTrack::missing_value;
+  query << " AND " << variable(LON)->name << " <> " 
+	<< AircraftTrack::missing_value;
   if (track.npoints())
   {
     // 2014-01-28 23:54:15
-    query << " AND " << variables[TIME].name << " > " 
-	  << AircraftTrack::formatTimestamp(track.lastTime(), "'%Y-%m-%d %H:%M:%S'");
+    query << " AND " << variable(TIME)->name << " > " 
+	  << AircraftTrack::formatTimestamp(track.lastTime(),
+					    "'%Y-%m-%d %H:%M:%S'");
   }
   if (cfg.altMode == "absolute")
   {
-    query << " AND " << variables[ALT].name << " <> " << AircraftTrack::missing_value;
+    query << " AND " << variable(ALT)->name << " <> " 
+	  << AircraftTrack::missing_value;
   }
-  query << " ORDER BY " << variables[TIME].name;
+  query << " ORDER BY " << variable(TIME)->name;
   return query.str();
 }
 
@@ -378,6 +415,15 @@ fillProjectInfo(ProjectInfo& projInfo)
 }
 
 
+template <typename T>
+T
+acDatabase::
+getResult(PGresult* res, int indx, VariableType vtype)
+{
+  unsigned int icol = variable(vtype)->column_index;
+  return extractPQvalue<T>(res, indx, icol);
+}
+
 
 /* -------------------------------------------------------------------- */
 void
@@ -385,29 +431,36 @@ acDatabase::
 addResult(AircraftTrack& track, PGresult *res, int indx)
 {
   // 2014-01-29 00:02:10
-  track.date.push_back(time_from_string(extractPQString(res, indx, TIME)));
-  track.lon.push_back(extractPQvalue<float>(PQgetvalue(res, indx, LON)));
-  track.lat.push_back(extractPQvalue<float>(PQgetvalue(res, indx, LAT)));
+  track.date.push_back(time_from_string(getResult<string>(res, indx, TIME)));
+  track.lon.push_back(getResult<float>(res, indx, LON));
+  track.lat.push_back(getResult<float>(res, indx, LAT));
 
   float alt = 0.0;
   if (cfg.altMode == "absolute")
   {
-    alt = extractPQvalue<float>(PQgetvalue(res, indx, ALT));
+    alt = getResult<float>(res, indx, ALT);
     if (alt != AircraftTrack::missing_value)
       alt *= cfg.convertToFeet;
   }
-  track.alt.push_back( alt );
+  track.alt.push_back(alt);
 
-  track.at.push_back( extractPQvalue<float>(PQgetvalue(res, indx, AT)) );
-  track.dp.push_back( extractPQvalue<float>(PQgetvalue(res, indx, DP)) );
-  track.tas.push_back( extractPQvalue<float>(PQgetvalue(res, indx, TAS)) );
-  float ws = extractPQvalue<float>(PQgetvalue(res, indx, WS));
+  track.at.push_back(getResult<float>(res, indx, AT));
+  track.dp.push_back(getResult<float>(res, indx, DP));
+  track.tas.push_back(getResult<float>(res, indx, TAS));
+  float ws = getResult<float>(res, indx, WS);
   if (ws != AircraftTrack::missing_value)
     ws *= 1.9438;	// convert to knots.
   track.ws.push_back(ws);
   
-  track.wd.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WD)) );
-  track.wi.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WI)) );
+  track.wd.push_back(getResult<float>(res, indx, WD));
+  track.wi.push_back(getResult<float>(res, indx, WI));
+
+  float thdg = AircraftTrack::missing_value;
+  if (variable(THDG))
+  {
+    thdg = getResult<float>(res, indx, THDG);
+  }
+  track.thdg.push_back(thdg);
 }
 
 
@@ -429,23 +482,24 @@ fillAircraftTrack(AircraftTrack& track)
   else
   {
     cerr << "Fetching track points after "
-	 << AircraftTrack::formatTimestamp(track.lastTime(), "'%Y-%m-%d %H:%M:%S'")
+	 << AircraftTrack::formatTimestamp(track.lastTime(),
+					   "'%Y-%m-%d %H:%M:%S'")
 	 << endl;
   }
   if (track.npoints() > 0 && 
       track.lastTime() < second_clock::universal_time() - hours(12))
   {
     cerr << "Track more than 12 hours old, fetching variables again." << endl;
-    variables.clear();
+    clearColumns();
   }
 
-  if (variables.empty())
+  if (columns.empty())
   {
     // Only static information is used from the ProjectInfo and global
     // attributes, so they do not need to be refreshed every time the
     // database connection is opened, or queried for new points.  Instead
     // they are refreshed if the track is invalidated.
-    setupVariables();
+    setupColumns();
   }
 
   string query = buildDataQueryString(track);
@@ -454,8 +508,8 @@ fillAircraftTrack(AircraftTrack& track)
   if (cfg.verbose > 1)
   {
     cerr << "        dataQuery: " << query << endl;
-    cerr << "              alt: " << variables[ALT].name
-	 << " (" << getVariableUnits(variables[ALT].name) << ")" << endl;
+    cerr << "              alt: " << variable(ALT)->name
+	 << " (" << getVariableUnits(variable(ALT)->name) << ")" << endl;
     cerr << "cfg.convertToFeet: " << cfg.convertToFeet << endl;
   }
   PGresult *res;
@@ -475,7 +529,7 @@ fillAircraftTrack(AircraftTrack& track)
   // track.  It's like the variables and the track are two separate caches.
   if (ntuples > 0 && track.npoints() > 0)
   {
-    ptime next = time_from_string(extractPQString(res, 0, TIME));
+    ptime next = time_from_string(extractPQvalue<string>(res, 0, TIME));
     if (next - track.lastTime() > hours(12))
     {
       cerr << "Replacing cached track more than 12 hours old." << endl;

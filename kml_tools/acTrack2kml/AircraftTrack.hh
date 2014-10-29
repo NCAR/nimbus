@@ -85,8 +85,15 @@ public:
   std::vector<float> ws;
   std::vector<float> wd;
   std::vector<float> wi;
+  std::vector<float> thdg;
 
   ProjectInfo projInfo;
+
+  /**
+   * The track can be simplified to a subset of points.  This vector
+   * identifies the members of the path.
+   **/
+  std::vector<bool> simple_path_point;
 };
 
 
@@ -116,8 +123,6 @@ last(std::vector<T>& v)
 {
   return *v.rbegin();
 }
-
-
 
 
 #endif // _AircraftTrack_hh_
