@@ -766,15 +766,16 @@ bool
 AircraftTrackKML::
 checkFile(const std::string& file)
 {
+  // The file does not need to be rewritten if either the track has no
+  // points or the file exists and mtime is after the last point.  Return
+  // false if the file needs to be updated.
   AircraftTrack& track = *_track;
-  bool checksout = false;
+  bool recent = false;
   struct stat sbuf;
   if (stat(file.c_str(), &sbuf) == 0)
   {
     ptime pt = from_time_t(sbuf.st_mtime);
-    // The file is recent enough if either the track has no points or mtime
-    // is after the last point.
-    checksout = bool(track.npoints() == 0 || pt > *track.date.rbegin());
+    recent = bool(pt > *track.date.rbegin());
   }
-  return checksout;
+  return recent || track.npoints() == 0;
 }
