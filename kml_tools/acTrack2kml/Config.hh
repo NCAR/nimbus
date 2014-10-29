@@ -57,6 +57,8 @@ public:
   string lonVariable;
   string altVariable;
 
+  bool run_once;
+
   /**
    * Select the latitude variable name from a default name derived from the
    * data source and the configured name, if any.  The configured name

@@ -20,7 +20,8 @@ Config() :
   onboard(false),
   verbose(0),
   update_interval_secs(30),
-  position_interval_secs(3)
+  position_interval_secs(3),
+  run_once(false)
 {
 }
 

@@ -59,6 +59,7 @@ int usage(const char *argv0)
 	<< "  -s time_step      Time interval of data points for track in seconds, default is 15.\n"
 	<< "  -i update_secs    In real-time mode, seconds between track updates, default is 30.\n"
 	<< "  -j update_secs    In real-time mode, seconds between JSON position updates, default is 3.\n"
+	<< "  --once            Run once and exit, without looping to get updates.\n"
 	<< "  -f path           Override flight_data output directory, location of position.json,\n"
 	<< "                    and KML goes into <flight_dir>/GE.\n"
 	<< "The position variables can be overridden with these options:\n"
@@ -86,7 +87,8 @@ parseRunstring(int argc, char** argv, Config& cfg)
       {"lat",     required_argument, 0,  '0' },
       {"lon",     required_argument, 0,  '1' },
       {"alt",     required_argument, 0,  '2' },
-      {0,         0, 0,  0 }
+      {"once",    0,                 0,  '3' },
+      {0,         0, 0, 0 }
     };
 
     opt_char = getopt_long(argc, argv, "p:h:b:s:t:i:j:f:ocv",
@@ -186,6 +188,10 @@ parseRunstring(int argc, char** argv, Config& cfg)
 	}
 	cfg.position_interval_secs = period;
       }
+      break;
+
+    case '3':
+      cfg.run_once = true;
       break;
 
     case '?':
@@ -440,6 +446,9 @@ int main(int argc, char *argv[])
       std::string filename = cfg.flightDataDir + "/position.json";
       osm.writePositionJSON(track, filename);
     }
+
+    if (cfg.run_once)
+      break;
 
     // Sleep until the next time for an update.
     ptime next = std::min(last_kml + seconds(cfg.update_interval_secs),
