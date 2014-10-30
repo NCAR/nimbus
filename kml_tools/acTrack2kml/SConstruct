@@ -2,6 +2,7 @@
 
 import os
 import sys
+import difflib
 
 if not os.path.exists("site_scons"):
     print("Creating site_scons link and re-running.")
@@ -99,7 +100,8 @@ def FindAircraftData(filename):
     return None
 
 
-def BatchKML(target, source, env):
+# Generate KML from a netcdf file.
+def NetcdfKML(target, source, env):
   ifile = env.File(source[0]).get_abspath()
   ofile = env.File(target[0]).get_abspath()
   if os.path.exists(ofile):
@@ -113,13 +115,13 @@ def kml_emitter(source, target, env):
   return (target, source + [ env['ACTRACK2KML'] ])
 
 
-env['BUILDERS']['BatchKML'] = Builder(action=BatchKML, emitter=kml_emitter)
+env['BUILDERS']['NetcdfKML'] = Builder(action=NetcdfKML, emitter=kml_emitter)
 
 ncpath = FindAircraftData('HIPPO-2rf06.nc')
 if ncpath:
     ekml = 'HIPPO-2rf06.kml'
     akml = 'HIPPO-2rf06-actual.kml'
-    env.BatchKML(akml, ncpath)
+    env.NetcdfKML(akml, ncpath)
     env.Alias('xdiff', 
               env.Command("diff", [ekml, akml],
                           "diff --side-by-side --width=170 ${SOURCES}"))
@@ -127,19 +129,7 @@ if ncpath:
               env.Command("diff", [ekml, akml],
                           "diff ${SOURCES}"))
 
-# To create SQL dumps of databases:
-#
-# pg_dump -h eol-rt-data.fl-ext.ucar.edu -U ads real-time-GV > real-time-GV.sql
-# pg_dump -h eol-rt-data.fl-ext.ucar.edu -U ads real-time-C130 > real-time-C130.sql
-#
-#
-
-
-test_sources = Split("""
-test_track.cc
-""")
-
-gtests = env.Program('gtests', test_sources + objects,
+gtests = env.Program('gtests', ["test_track.cc"] + objects,
                      LIBS=env['LIBS'] + ['gtest_main', 'gtest'])
 
 env.Alias('test', env.Command('gtest', gtests, gtests[0].abspath))
@@ -157,27 +147,40 @@ def stopdb(target, source, env):
     return 0
 
 
-compare_kml_builder = Builder(action=[
+# Generate KML output from a database SQL file.  The source is the SQL dump
+# and the target is the real-time.kml file.
+database_kml_builder = Builder(action=[
     rundb,
-    Mkdir("${AIRCRAFT}-actual"),
-    Mkdir("${AIRCRAFT}-actual/GE"),
-    "${ACTRACK2KML} --once -p ${AIRCRAFT} -f ${SOURCE.dir}/${AIRCRAFT}-actual",
-    Mkdir("${AIRCRAFT}-expected"),
-    Mkdir("${AIRCRAFT}-expected/GE"),
-    "/opt/local/raf/bin/acTrack2kml --once -p ${AIRCRAFT} -f ${SOURCE.dir}/${AIRCRAFT}-expected",
-    stopdb,
-    "diff ${AIRCRAFT}-expected/GE/real-time.kml ${AIRCRAFT}-actual/GE/real-time.kml"])
+    Mkdir("${TARGET.dir}"),
+    "${ACTRACK2KML} --once -p ${AIRCRAFT} -f ${TARGET.dir}/..",
+    stopdb])
 
-env.Append(BUILDERS = {'CompareKML':compare_kml_builder})
+env.Append(BUILDERS = {'DatabaseKML':database_kml_builder})
+
+def diff_files(target, source, env):
+    diffs = None
+    p1 = source[0].get_abspath()
+    p2 = source[1].get_abspath()
+    with open(p1, "rb") as f1, open(p2, "rb") as f2:
+        diff = difflib.unified_diff(f1.readlines(), f2.readlines())
+        diffs = [line for line in diff]
+    if diffs:
+        print("".join(diffs))
+    return diffs
+
+diff_builder = Builder(action=[diff_files])
+env.Append(BUILDERS = {'Diff':diff_builder})
+
+gvkml = env.DatabaseKML("GV-actual/GE/real-time.kml", "real-time-GV.sql",
+                        AIRCRAFT='GV', ENV=pg.getEnvironment())
 
 # Only the GV SQL data has points, so add it to the test alias.  The C-130
 # comparison fails because no files are generated.
 #
-env.Alias('test',
-          env.CompareKML('testgv', 'real-time-GV.sql', AIRCRAFT='GV',
-                         ENV=pg.getEnvironment()))
-env.CompareKML('testc130', 'real-time-C130.sql', AIRCRAFT='C130',
-               ENV=pg.getEnvironment())
+env.Alias('test', env.Diff('testgv', ["GV-expected/GE/real-time.kml",
+                                      "GV-actual/GE/real-time.kml"]))
+env.DatabaseKML('C130-actual/GE/real-time.kml', 'real-time-C130.sql', 
+                AIRCRAFT='C130', ENV=pg.getEnvironment())
 
 def dumpdb(target, source, env):
     platform = env['AIRCRAFT']
