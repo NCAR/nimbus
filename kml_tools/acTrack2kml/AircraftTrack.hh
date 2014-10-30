@@ -75,6 +75,9 @@ public:
   void
   normalizeLongitude(float lon0 = 0);
 
+  bool
+  getHeading(int i, float& true_heading);
+
   vector_ptime date;
   std::vector<float> lat;
   std::vector<float> lon;

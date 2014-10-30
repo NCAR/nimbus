@@ -13,63 +13,61 @@ OSM()
 {}
 
 
+std::string
+OSM::
+formatPositionJSON(AircraftTrack& track)
+{
+  float thdg;
+  if (!track.getHeading(track.npoints()-1, thdg))
+  {
+    if (_config.verbose)
+    {
+      std::cerr << "Not enough points in track to write JSON." << std::endl;
+    }
+    return "";
+  }
+
+  // Grab copies of lat and lon so we can normalize them as needed for the
+  // position file.
+  float lat = last(track.lat);
+  float lon = last(track.lon);
+
+  normalizeAngles(&lon, &lon+1, -180);
+  normalizeAngles(&lat, &lat+1, -90);
+  normalizeAngles(&thdg, &thdg+1, 0.0);
+
+  char output[1024] = "";
+  sprintf(output,
+	  "{\"timestamp\":\"%s\",\"alt\":\"%.1f\",\"lat\":\"%f\","
+	  "\"head\":\"%.1f\",\"declination\":\"0\",\"lon\":\"%f\"}",
+	  track.formatTimestamp(track.lastTime(), "%Y-%m-%d %H:%M:%S").c_str(),
+	  last(track.alt), lat, thdg, lon);
+  return output;
+}
+
+
 void
 OSM::
 writePositionJSON(AircraftTrack& track, const std::string& filename)
 {
-  char output[1024] = "";
-
-  // We need at least two points in the track.
-  if (track.npoints() < 2)
-  {
-    if (_config.verbose)
-    {
-      std::cerr << "Not enough points in track to write "
-		<< filename << std::endl;
-    }
-    return;
-  }
-
-  // Copy the last two points so we can shift them to the range we want for the
-  // position file.
-  std::vector<float> lat(&last(track.lat) - 1, &last(track.lat) + 1);
-  std::vector<float> lon(&last(track.lon) - 1, &last(track.lon) + 1);
-  float alt = last(track.alt);
-
-  normalizeAngles(lon.begin(), lon.end(), -180);
-  normalizeAngles(lat.begin(), lat.end(), -90);
-
-  double rlon[2], rlat[2];
-  rlat[0] = lat[0] * M_PI / 180.0;
-  rlon[0] = lon[0] * M_PI / 180.0;
-  rlat[1] = lat[1] * M_PI / 180.0;
-  rlon[1] = lon[1] * M_PI / 180.0;
-  double y = sin(rlon[1] - rlon[0]) * cos(rlat[1]);
-  double x = cos(rlat[0]) * sin(rlat[1]) - sin(rlat[0]) * cos(rlat[1]) * cos(rlon[1]-rlon[0]);
-  double thdg = int( (atan2(y, x) * 180.0 / M_PI + 360.0) + 0.5);
-
-  normalizeAngles(&thdg, &thdg+1, 0.0);
-  sprintf(output,
-	  "{\"timestamp\":\"%s\",\"alt\":\"%.1f\",\"lat\":\"%f\",\"head\":\"%.1f\",\"declination\":\"0\",\"lon\":\"%f\"}", 
-	  AircraftTrack::formatTimestamp(track.lastTime(), "%Y-%m-%d %H:%M:%S").c_str(), alt, lat[1], thdg, lon[1]);
+  std::string content = formatPositionJSON(track);
   if (_config.verbose)
   {
-    std::cerr << "JSON: " << output << std::endl;
+    std::cerr << "JSON: " << content << std::endl;
   }
-
-  if ( strlen(output) )
+  if (content.length())
   {
     FILE *fp;
     int errnum = 0;
 
     // Maybe better to write the whole contents once instead of two writes,
     // in case that hangs up NFS.
-    strcat(output, "\n");
+    content.append("\n");
     if (_config.verbose)
       std::cerr << "writing " << filename << "..." << std::endl;
     if ( (fp = fopen(filename.c_str(), "w+")) )
     {
-      if (fprintf(fp, output) < 0)
+      if (fprintf(fp, content.c_str()) < 0)
       {
 	errnum = errno;
       }

@@ -19,6 +19,9 @@ public:
     _config = config;
   }
 
+  std::string
+  formatPositionJSON(AircraftTrack& track);
+
   void
   writePositionJSON(AircraftTrack& track, const std::string& file);
 

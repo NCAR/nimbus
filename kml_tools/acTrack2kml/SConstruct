@@ -72,12 +72,15 @@ env.Append(CXXFLAGS='-g -Werror -Wall')
 
 # print env.Dump()
 
-actrack = env.Program(['acTrack2kml.cc', 'Config.cc',
+objects = env.StaticObject([
+                       'Config.cc',
                        'AircraftTrackKML.cc',
                        'AircraftTrack.cc',
                        'acDatabase.cc',
                        'ncTrack.cc',
                        'osm.cc'])
+
+actrack = env.Program(['acTrack2kml.cc'] + objects)
 env.Default(actrack)
 
 Alias('install', env.Install('$JLOCAL/bin', 'acTrack2kml'))
@@ -136,9 +139,10 @@ test_sources = Split("""
 test_track.cc
 """)
 
-gtests = env.Program('gtests', test_sources, LIBS=['gtest_main', 'gtest'])
+gtests = env.Program('gtests', test_sources + objects,
+                     LIBS=env['LIBS'] + ['gtest_main', 'gtest'])
 
-env.Alias('test', env.Command('xtest', gtests, gtests[0].abspath))
+env.Alias('test', env.Command('gtest', gtests, gtests[0].abspath))
 
 pg = env.PostgresTestDB()
 
