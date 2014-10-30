@@ -122,6 +122,7 @@ fillAircraftTrack(AircraftTrack& track)
   NcVar *ws_v = getNetcdfVariable("WSC");
   NcVar *wi_v = getNetcdfVariable("WIC");
   NcVar *wd_v = getNetcdfVariable("WDC");
+  NcVar *thdg_v = getNetcdfVariable("THDG");
 
   // Pressure altitude is preferred.
   NcVar *alt_v;
@@ -149,6 +150,7 @@ fillAircraftTrack(AircraftTrack& track)
   NcValues *ws_vals = ws_v->values();
   NcValues *wi_vals = wi_v->values();
   NcValues *wd_vals = wd_v->values();
+  NcValues *thdg_vals = thdg_v->values();
 
   attr = tim_v->get_att("units");
   struct tm tm;
@@ -189,6 +191,7 @@ fillAircraftTrack(AircraftTrack& track)
     track.ws.push_back( value );
     track.wi.push_back( wi_vals->as_float(i) );
     track.wd.push_back( wd_vals->as_float(i) );
+    track.thdg.push_back( thdg_vals->as_float(i) );
   }
 }
 
