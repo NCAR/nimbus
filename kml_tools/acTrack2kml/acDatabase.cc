@@ -267,23 +267,26 @@ bool
 acDatabase::
 openDatabase()
 {
-  char	conn_str[8192];
-
-  sprintf(conn_str, "host='%s' dbname='%s' user ='ads'", 
-          cfg.database_host.c_str(), cfg.dbname.c_str());
-  if (cfg.verbose > 1)
+  if (! db->_conn)
   {
-    cerr << "Connect string : [" << conn_str << "]" << endl;
-  }
-  db->_conn = PQconnectdb(conn_str);
+    char conn_str[8192];
 
-  /* check to see that the backend connection was successfully made
-   */
-  if (PQstatus(db->_conn) == CONNECTION_BAD)
-  {
-    PQfinish(db->_conn);
-    db->_conn = 0;
-    cerr << "PQconnectdb: Connection failed." << endl;
+    sprintf(conn_str, "host='%s' dbname='%s' user ='ads'", 
+	    cfg.database_host.c_str(), cfg.dbname.c_str());
+    if (cfg.verbose > 1)
+    {
+      cerr << "Connect string : [" << conn_str << "]" << endl;
+    }
+    db->_conn = PQconnectdb(conn_str);
+
+    /* check to see that the backend connection was successfully made
+     */
+    if (PQstatus(db->_conn) == CONNECTION_BAD)
+    {
+      PQfinish(db->_conn);
+      db->_conn = 0;
+      cerr << "PQconnectdb: Connection failed." << endl;
+    }
   }
   return db->_conn != 0;
 }
