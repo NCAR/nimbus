@@ -396,9 +396,15 @@ int main(int argc, char *argv[])
     {
       cerr << now << ": opening database to check for updates..." << endl;
     }
-    while (! db.openDatabase())
+    if (!db.openDatabase())
     {
-      sleep(3);
+      if (cfg.run_once)
+	break;
+      do
+      {
+	sleep(3);
+      }
+      while (! db.openDatabase());
     }
 
     // It is imperative that this loop not hang up, so use an alarm() to
