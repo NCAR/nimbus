@@ -66,9 +66,9 @@ int main(int argc, const char* argv[])
 	int bits_a=0,bits_b=0;
 	float volts_a=0, volts_b=0;	
 
-	float val=0;// for Flow control DAC
-	float flow_buffer[32];
-	float median_flow, ctr_volt;
+	//float val=0;// for Flow control DAC
+	//float flow_buffer[32];
+	//float median_flow, ctr_volt;
 			
 	char udp_buffer[32]; //UDP broadcast variables
 	
@@ -199,7 +199,7 @@ int main(int argc, const char* argv[])
 	//wr=write(fd1,&send_buff_a,strlen(send_buff_a));
 	
 	
-	sprintf(send_buff_a,"s%c%c%c%c",0x00, 0x00, 0x0C, 0x00);
+	sprintf(send_buff_a,"s%c%c%c%c",0x00, 0x00, 0x14, 0x00);
 	wr=write(fd1,&send_buff_a,5);
 		
 	usleep (100000); 
@@ -305,8 +305,9 @@ int main(int argc, const char* argv[])
 			{
 				bits_a = (int) serial_fix_24(serial_buff_a[0]);								
 				volts_a= (float) bits_a * 5 / 16777215 / 128;
+				printf("A=%7.7f \t",volts_a);
 			}
-		printf("A=%7.7f \t",volts_a);
+
 		}
 		
 		else
@@ -325,9 +326,14 @@ int main(int argc, const char* argv[])
 			{
 				bits_b = (int) serial_fix_24(serial_buff_b[0]);								
 				volts_b= (float) bits_b * 5 / 16777215 / 128;
+				printf("B=%7.7f\n",volts_b);
 			}	
-		printf("B=%7.7f\n",volts_b);
+
 		}
+
+		
+		
+	
 		/* ---- End Serial Comm ---- */
 		
 
@@ -355,7 +361,7 @@ int main(int argc, const char* argv[])
 			fprintf( dataFile, "%.2f	", engData[ii] );
 		fprintf( dataFile, "\n" );		
 		
-		usleep(iSleep); // Sleep for most of the time, rather than loop.
+		//usleep(iSleep); // Sleep for most of the time, rather than loop.
 		
 		// Check valve position after sleeping. This value may be 0 if valve is still moving at this time.
 		CurrPos = Valve_GetPosition( BASE_PROM_DAQ );

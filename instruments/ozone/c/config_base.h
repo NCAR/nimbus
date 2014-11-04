@@ -6,5 +6,5 @@ const unsigned short int BASE_DMM = 0x340; //MM-NA-XT analog card. Used for hous
 const unsigned short int BASE_IRIG = 0x300; //Time sync card. Used only in OP-1 and is probably going to be removed, replaced by NTP sync.
 
 //Define timing parameters.
-const unsigned int DOWN_COUNTS = 40000; //Loop timer start value.
+const unsigned int DOWN_COUNTS = 53333; //Loop timer start value.
 const unsigned int MAIN_FREQ = 400000; //Loop timer clock frequency is F2=1/10 of source clock of 4 MHz.
