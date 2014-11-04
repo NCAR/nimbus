@@ -284,7 +284,14 @@ void PMS1D_SetupForADS3()
   else
   if (cfg.ProjectName().compare("CONTRAST") == 0)
   {
-      setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+  }
+  else
+  if (cfg.ProjectName().compare("HCRTEST") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC_RWIO", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
   }
 }
 
