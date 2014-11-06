@@ -104,7 +104,10 @@ private:
   loadGlobalAttributes();
 
   void
-  loadDirectory(std::vector<std::string>& names);
+  loadDirectory();
+
+  Variable*
+  lookupDirectory(const std::string& name);
 
   void
   addResult(AircraftTrack& track, pg_result *res, int indx);

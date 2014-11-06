@@ -81,20 +81,13 @@ acDatabase::
 
 void
 acDatabase::
-loadDirectory(std::vector<std::string>& names)
+loadDirectory()
 {
   std::ostringstream query;
 
   _directory.clear();
   _directory["DATETIME"] = Variable("DATETIME");
-  query << "SELECT name, units from variable_list where name in (";
-  for (int i = 0; i < int(names.size()); ++i)
-  {
-    if (i > 0)
-      query << ",";
-    query << "'" << names[i] << "'";
-  }
-  query << ");";
+  query << "SELECT name, units from variable_list;";
 
   if (cfg.verbose > 1)
     cerr << query.str() << endl;
@@ -156,6 +149,20 @@ dump(std::ostream& out)
 }
 
 
+Variable*
+acDatabase::
+lookupDirectory(const std::string& name)
+{
+  Variable* found = 0;
+  dir_t::iterator it = _directory.find(name);
+  if (it != _directory.end())
+  {
+    found = &it->second;
+  }
+  return found;
+}
+
+
 void
 acDatabase::
 addColumn(const std::string& name, VariableType vtype)
@@ -165,18 +172,21 @@ addColumn(const std::string& name, VariableType vtype)
   // create a default.
   if (cfg.verbose > 1)
     cerr << "adding column " << name << endl;
-  dir_t::iterator it = _directory.find(name);
+  Variable* ventry = lookupDirectory(name);
   unsigned int ix = columns.size();
-  if (it != _directory.end())
+  if (ventry)
   {
-    columns.push_back(it->second.setIndex(ix, vtype));
+    columns.push_back(ventry->setIndex(ix, vtype));
     variables[vtype] = ix;
   }
   else
   {
-    // A variable not in the directory is a problem.
+    // A variable not in the directory may indicate a problem.
     cerr << "Database column " << name
-	 << " is not in the variable list!" << endl;
+	 << " is not in the variable list!  Adding a plain "
+	 << "variable without units." << endl;
+    columns.push_back(Variable(name).setIndex(ix, vtype));
+    variables[vtype] = ix;
   }
 }
 
@@ -199,8 +209,7 @@ setupColumns()
   // These are listed in the order of the VariableType enum, so each name
   // can be mapped to the right enum value when added as a query column.
   static const char* aoc[] = { "TA","TD","TAS","WS","WD","UWZ" };
-  static const char* raf[] = { "ATX","DPXC","TASX","WSC","WDC","WIC","THDG" };
-  static const char* altnames[] = { "PALTF", "PALT" };
+  static const char* raf[] = { "ATX","DPXC","TASX","WSC","WDC","WIC" };
 
   if (cfg.verbose)
     cerr << "Loading variables and global attributes from the database." 
@@ -208,31 +217,20 @@ setupColumns()
   loadGlobalAttributes();
   if (cfg.verbose > 1)
     dump(cerr);
+  loadDirectory();
 
-  // We know the maximum list of variables we're interested in, so load all
-  // of them now.
-  std::vector<std::string> lookupnames;
-  std::back_insert_iterator< std::vector<std::string> > it(lookupnames);
-  std::copy(aoc, AEND(aoc), it);
-  std::copy(raf, AEND(raf), it);
-  std::copy(altnames, AEND(altnames), it);
   string lat = getGlobalAttribute("latitude_coordinate");
   string lon = getGlobalAttribute("longitude_coordinate");
   string alt = getGlobalAttribute("zaxis_coordinate");
-  lookupnames.push_back(lat);
-  lookupnames.push_back(lon);
-  if (!alt.empty())
-    lookupnames.push_back(alt);
-  loadDirectory(lookupnames);
 
   // Now start naming the columns to query from the database.
   clearColumns();
   addColumn("DATETIME", TIME);
 
   // Search for pressure altitude first, zaxis_coord is typically GPS alt.
-  if (_directory.find("PALTF") != _directory.end())
+  if (lookupDirectory("PALTF"))
     alt = "PALTF";
-  else if (_directory.find("PALT") != _directory.end())
+  else if (lookupDirectory("PALT"))
     alt = "PALT";
   lat = cfg.getLatitudeVariable(lat);
   lon = cfg.getLongitudeVariable(lon);
@@ -242,6 +240,7 @@ setupColumns()
   addColumn(lon, LON);
   addColumn(lat, LAT);
   addColumn(alt, ALT);
+  string thdg = "THDG";
   if (cfg.platform == "N42RF" || 
       cfg.platform == "N43RF" ||
       cfg.platform == "N49RF")
@@ -250,6 +249,7 @@ setupColumns()
     {
       addColumn(*pvar, static_cast<VariableType>(AT+(pvar-aoc)));
     }
+    thdg = "THDGREF";
   }
   else
   {
@@ -257,6 +257,11 @@ setupColumns()
     {
       addColumn(*pvar, static_cast<VariableType>(AT+(pvar-raf)));
     }
+  }
+  // Add a column for THDG only if it is in the directory.
+  if (lookupDirectory(thdg))
+  {
+    addColumn(thdg, THDG);
   }
 }
 
