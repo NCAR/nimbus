@@ -194,4 +194,5 @@ def dumpdb(target, source, env):
 
 env.Command('real-time-GV.sql', None, env.Action(dumpdb), AIRCRAFT='GV')
 env.Command('real-time-C130.sql', None, env.Action(dumpdb), AIRCRAFT='C130')
+env.Command('real-time-N42RF.sql', None, env.Action(dumpdb), AIRCRAFT='N42RF')
 
