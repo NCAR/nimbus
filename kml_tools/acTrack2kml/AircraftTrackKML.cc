@@ -775,7 +775,7 @@ checkFile(const std::string& file)
   if (stat(file.c_str(), &sbuf) == 0)
   {
     ptime pt = from_time_t(sbuf.st_mtime);
-    recent = bool(pt > *track.date.rbegin());
+    recent = (track.npoints() > 0) && (pt > *track.date.rbegin());
   }
-  return recent || track.npoints() == 0;
+  return recent || (track.npoints() == 0);
 }
