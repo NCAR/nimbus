@@ -806,20 +806,79 @@ setConfig(Config& config)
 
 bool
 AircraftTrackKML::
-checkFile(const std::string& file)
+checkFile(const std::string& file, std::string* msg_, int* lag_)
 {
   // The file does not need to be rewritten if either the track has no
   // points or the file exists and mtime is after the last point.  Return
   // false if the file needs to be updated.
   AircraftTrack& track = *_track;
-  bool recent = false;
+  ostringstream status;
+  int lag = 0;
+  if (lag_)
+    lag = *lag_;
+  bool uptodate = false;
+  ptime now = second_clock::universal_time();
+  ptime last = second_clock::universal_time();
+  size_t npoints = track.npoints();
+  while (npoints > 0)
+  {
+    // Back off from the end of the track until the lag is reached.
+    last = track.date[npoints-1];
+    if (last <= now - seconds(lag))
+      break;
+    --npoints;
+  }
   struct stat sbuf;
-  if (stat(file.c_str(), &sbuf) == 0)
+  if (npoints == 0)
+  {
+    // If there are no points then the file does not matter at all.
+    status << "No track points prior to "
+	   << lag << " seconds ago available to update " << file;
+    uptodate = true;
+  }
+  else if (stat(file.c_str(), &sbuf) == 0)
   {
     ptime pt = from_time_t(sbuf.st_mtime);
-    recent = (track.npoints() > 0) && (pt > *track.date.rbegin());
+    if (pt >= last)
+    {
+      uptodate = true;
+      status << file << " exists and is newer than last track point as of " 
+	     << lag << " seconds ago, at " << track.formatTimestamp(last);
+    }
+    else
+    {
+      uptodate = false;
+      status << file << " exists but has not been updated with track points "
+	     << "more than " << lag << " seconds old, "
+	     << "at " << track.formatTimestamp(last);
+    }
   }
-  return recent || (track.npoints() == 0);
+  else
+  {
+    // There are points older than lag but the file does not exist.
+    status << file << " does not exist but there are track points "
+	   << "more than " << lag << " seconds old, "
+	   << "at " << track.formatTimestamp(last);
+    uptodate = false;
+  }
+  if (msg_)
+  {
+    *msg_ = status.str();
+  }
+  return uptodate;
+}
+
+
+bool
+AircraftTrackKML::
+appendStatus(std::ostream& out, const std::string& file, int lag)
+{
+  std::string msg;
+  if (lag < 0)
+    lag = 2 * cfg.update_interval_secs;
+  bool uptodate = checkFile(file, &msg, &lag);
+  out << msg << "; ";
+  return uptodate;
 }
 
 

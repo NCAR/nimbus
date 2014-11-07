@@ -2,7 +2,7 @@
  * Program to read real-time flight database periodically (say 60 seconds)
  * and create a KML for google earth.
  *
- * COPYRIGHT: University Corporation for Atmospheric Research, 2005-2012
+ * COPYRIGHT: University Corporation for Atmospheric Research, 2005-2014
  */
 
 #include "acDatabase.hh"
@@ -36,6 +36,28 @@ static const string grnd_webHost = "www.eol.ucar.edu";
 static const string onboard_flightDataDir = "/var/www/html/flight_data";
 static const string onboard_webHost = "acserver.raf.ucar.edu";
 
+
+int
+StatusCheck(Config& cfg, bool ok, const std::string& msg)
+{
+  std::string name = "acTrack2kml-onboard";
+  if (!cfg.platform.empty())
+  {
+    name = "acTrack2kml-" + cfg.platform;
+  }
+  if (ok)
+  {
+    std::cerr << name << " OK - " << msg << endl;
+  }
+  else
+  {
+    std::cerr << name << " CRITICAL - " << msg << endl;
+  }
+  return (ok ? 0 : 2);
+}
+
+
+
 /* -------------------------------------------------------------------- */
 int usage(const char *argv0)
 {
@@ -62,6 +84,8 @@ int usage(const char *argv0)
 	<< "  --once            Run once and exit, without looping to get updates.\n"
 	<< "  -f path           Override flight_data output directory, location of position.json,\n"
 	<< "                    and KML goes into <flight_dir>/GE.\n"
+	<< "  --check           Do not generate any files, only check that\n"
+	<< "                    the expected output is up to date with track.\n"
 	<< "The position variables can be overridden with these options:\n"
 	<< "  --lat <lat>       Specify the latitude variable.\n"
 	<< "  --lon <lon>       Specify the longitude variable.\n"
@@ -88,6 +112,7 @@ parseRunstring(int argc, char** argv, Config& cfg)
       {"lon",     required_argument, 0,  '1' },
       {"alt",     required_argument, 0,  '2' },
       {"once",    0,                 0,  '3' },
+      {"check",   0,                 0,  '4' },
       {0,         0, 0, 0 }
     };
 
@@ -109,6 +134,14 @@ parseRunstring(int argc, char** argv, Config& cfg)
 
     case '2':
       cfg.altVariable = optarg;
+      break;
+
+    case '3':
+      cfg.run_once = true;
+      break;
+
+    case '4':
+      cfg.check = true;
       break;
 
     case 'p':	// platform selection, used to select dbname
@@ -190,10 +223,6 @@ parseRunstring(int argc, char** argv, Config& cfg)
       }
       break;
 
-    case '3':
-      cfg.run_once = true;
-      break;
-
     case '?':
       return usage(argv[0]);
       break;
@@ -249,7 +278,8 @@ parseRunstring(int argc, char** argv, Config& cfg)
   }
   else if (cfg.platform.empty())
   {
-    cerr << "Platform must be set with -p to derive database name when not onboard." << endl;
+    cerr << "Platform must be set with -p to derive database name "
+	 << "when not onboard." << endl;
     return usage(argv[0]);
   }
   else
@@ -336,6 +366,7 @@ int main(int argc, char *argv[])
   AircraftTrack track;
   AircraftTrackKML kml;
   OSM osm;
+  std::ostringstream status;
 
   store_args(argc, argv);
   if (argc == 1 || strstr(argv[1], "usage") || strstr(argv[1], "help"))
@@ -363,6 +394,12 @@ int main(int argc, char *argv[])
       nct.setConfig(cfg);
       nct.fillAircraftTrack(track);
       kml.setTrack(&track);
+
+      if (cfg.check)
+      {
+	bool ok = kml.appendStatus(status, cfg.outputKML);
+	return StatusCheck(cfg, ok, status.str());
+      }
       kml.WriteGoogleEarthKML(cfg.outputKML);
       return 0;
     }
@@ -372,10 +409,13 @@ int main(int argc, char *argv[])
     }
   }
 
-  cout << endl;
-  cout << "  Using database host : " << cfg.database_host << endl;
-  cout << "  Output directory : " << cfg.flightDataDir << endl;
-  cout << endl;
+  if (cfg.verbose)
+  {
+    cout << endl;
+    cout << "  Using database host : " << cfg.database_host << endl;
+    cout << "  Output directory : " << cfg.flightDataDir << endl;
+    cout << endl;
+  }
 
   // Real-time mode.
   //
@@ -399,7 +439,9 @@ int main(int argc, char *argv[])
     if (!db.openDatabase())
     {
       if (cfg.run_once)
-	break;
+	return 1;
+      if (cfg.check)
+	return StatusCheck(cfg, false, "Database connection failed.");
       do
       {
 	sleep(3);
@@ -423,19 +465,31 @@ int main(int argc, char *argv[])
     db.closeDatabase();
     now = second_clock::universal_time();
 
+    string realtime = cfg.flightDataDir + "/GE/real-time.kml";
+    string animated = cfg.flightDataDir + "/GE/animated-track.kml";
+    string current = cfg.flightDataDir + "/GE/current_pos.kml";
+    string position = cfg.flightDataDir + "/position.json";
+
+    kml.setTrack(&track);
+    if (cfg.check)
+    {
+      bool ok = kml.appendStatus(status, realtime);
+      ok = kml.appendStatus(status, animated) && ok;
+      ok = kml.appendStatus(status, current) && ok;
+      ok = kml.appendStatus(status, position, 
+			    2*cfg.position_interval_secs) && ok;
+      return StatusCheck(cfg, ok, status.str());
+    }
+
     if (now - last_kml >= seconds(cfg.update_interval_secs))
     {
       last_kml = now;
       // Avoid writing a new track file if the track has not changed, and
       // do not erase an old track until there are points in a new one.
-      kml.setTrack(&track);
-      string realtime = cfg.flightDataDir + "/GE/real-time.kml";
       if (rewrite || !kml.checkFile(realtime))
 	kml.WriteGoogleEarthKML(realtime);
-      string animated = cfg.flightDataDir + "/GE/animated-track.kml";
       if (rewrite || !kml.checkFile(animated))
 	kml.WriteGoogleEarthAnimatedKML(animated);
-      string current = cfg.flightDataDir + "/GE/current_pos.kml";
       if (rewrite || !kml.checkFile(current))
 	kml.WriteCurrentPositionKML(current);
 
@@ -449,8 +503,7 @@ int main(int argc, char *argv[])
     if (now - last_json >= seconds(cfg.position_interval_secs))
     {
       last_json = now;
-      std::string filename = cfg.flightDataDir + "/position.json";
-      osm.writePositionJSON(track, filename);
+      osm.writePositionJSON(track, position);
     }
 
     if (cfg.run_once)

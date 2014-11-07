@@ -59,6 +59,7 @@ public:
   string altVariable;
 
   bool run_once;
+  bool check;
 
   /**
    * Select the latitude variable name from a default name derived from the

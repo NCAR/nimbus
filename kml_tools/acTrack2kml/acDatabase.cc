@@ -182,9 +182,12 @@ addColumn(const std::string& name, VariableType vtype)
   else
   {
     // A variable not in the directory may indicate a problem.
-    cerr << "Database column " << name
-	 << " is not in the variable list!  Adding a plain "
-	 << "variable without units." << endl;
+    if (cfg.verbose)
+    {
+      cerr << "Database column " << name
+	   << " is not in the variable list!  Adding a plain "
+	   << "variable without units." << endl;
+    }
     columns.push_back(Variable(name).setIndex(ix, vtype));
     variables[vtype] = ix;
   }
@@ -290,7 +293,8 @@ openDatabase()
     {
       PQfinish(db->_conn);
       db->_conn = 0;
-      cerr << "PQconnectdb: Connection failed." << endl;
+      if (!cfg.check || cfg.verbose)
+	cerr << "PQconnectdb: Connection failed." << endl;
     }
   }
   return db->_conn != 0;
@@ -483,11 +487,11 @@ fillAircraftTrack(AircraftTrack& track)
   // If track has data in it, then we attempt to only append new points to
   // it.  If the track is too old, then assume this is a new flight and
   // everything must be refreshed.
-  if (track.npoints() == 0)
+  if (track.npoints() == 0 && cfg.verbose)
   {
     cerr << "Filling an empty track." << endl;
   }
-  else
+  else if (cfg.verbose)
   {
     cerr << "Fetching track points after "
 	 << AircraftTrack::formatTimestamp(track.lastTime(),
@@ -497,7 +501,10 @@ fillAircraftTrack(AircraftTrack& track)
   if (track.npoints() > 0 && 
       track.lastTime() < second_clock::universal_time() - hours(12))
   {
-    cerr << "Track more than 12 hours old, fetching variables again." << endl;
+    if (cfg.verbose)
+    {
+      cerr << "Track more than 12 hours old, fetching variables again." << endl;
+    }
     clearColumns();
   }
 
@@ -522,7 +529,8 @@ fillAircraftTrack(AircraftTrack& track)
   }
   PGresult *res;
   res = PQexec(db->_conn, query.c_str());
-  cerr << PQerrorMessage(db->_conn);
+  if (!cfg.check || cfg.verbose)
+    cerr << PQerrorMessage(db->_conn);
   ntuples = PQntuples(res);
   if (cfg.verbose)
     cerr << ntuples << " result rows." << endl;
@@ -540,7 +548,8 @@ fillAircraftTrack(AircraftTrack& track)
     ptime next = time_from_string(extractPQvalue<string>(res, 0, TIME));
     if (next - track.lastTime() > hours(12))
     {
-      cerr << "Replacing cached track more than 12 hours old." << endl;
+      if (cfg.verbose)
+	cerr << "Replacing cached track more than 12 hours old." << endl;
       changed = true;
       track.clear();
     }
@@ -551,7 +560,10 @@ fillAircraftTrack(AircraftTrack& track)
   {
     addResult(track, res, i);
   }
-  cerr << track.npoints() << " points in track." << endl;
+  if (cfg.verbose)
+  {
+    cerr << track.npoints() << " points in track." << endl;
+  }
   PQclear(res);
 
   // This does not fetch anything from the database, it just translates

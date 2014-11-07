@@ -49,10 +49,21 @@ public:
   renamefile(string file, string outFile);
 
   /**
-   * Return true if this file exists and is more recent than the track.
+   * Return false if this file needs to be updated because there are track
+   * points and either the file does not exist or it is older than the
+   * track.  If @p msg is not null, then set it to a status message.  If @p
+   * maxage is not null, then it is the number of seconds the file mtime is
+   * allowed to lag behind the data before the check fails.
    */
   bool
-  checkFile(const std::string& file);
+  checkFile(const std::string& file, std::string* msg = 0, int* lag = 0);
+
+  /**
+   * Check the given @p file and append the status message to the stream.
+   * Uses the update interval from the config as the acceptable lag.
+   **/
+  bool
+  appendStatus(std::ostream& out, const std::string& file, int lag = -1);
 
   /**
    * Producing kmz files may not by useful for mission coordinator.  kmz is

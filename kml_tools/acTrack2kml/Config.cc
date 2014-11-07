@@ -21,7 +21,8 @@ Config() :
   verbose(0),
   update_interval_secs(30),
   position_interval_secs(3),
-  run_once(false)
+  run_once(false),
+  check(false)
 {
 }
 
@@ -76,9 +77,12 @@ setAltitudeUnits(const string& units)
   {
     convertToFeet = 3.2808; // feet per meter
   }
-  cerr << "cfg.alt: " << altVariable
-       << " units: " << units << endl;
-  cerr << "cfg.convertToFeet: " << convertToFeet << endl;
+  if (verbose)
+  {
+    cerr << "cfg.alt: " << altVariable
+	 << " units: " << units << endl;
+    cerr << "cfg.convertToFeet: " << convertToFeet << endl;
+  }
 }
 
 
