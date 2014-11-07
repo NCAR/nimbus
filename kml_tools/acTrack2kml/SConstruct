@@ -169,7 +169,9 @@ def diff_files(target, source, env):
     diffs = [line for line in diff]
     if diffs:
         print("".join(diffs))
-    return diffs
+        return str("Differences found between " + 
+                   str(source[0]) + " and " + str(source[1]))
+    return None
 
 diff_builder = Builder(action=[diff_files])
 env.Append(BUILDERS = {'Diff':diff_builder})
@@ -180,10 +182,22 @@ gvkml = env.DatabaseKML("GV-actual/GE/real-time.kml", "real-time-GV.sql",
 # Only the GV SQL data has points, so add it to the test alias.  The C-130
 # comparison fails because no files are generated.
 #
-env.Alias('test', env.Diff('testgv', ["GV-expected/GE/real-time.kml",
-                                      "GV-actual/GE/real-time.kml"]))
+env.Alias('test', env.Diff('testgv-kml',
+                           ["GV-expected/GE/real-time.kml",
+                            "GV-actual/GE/real-time.kml"]))
+env.Alias('test', env.Diff('testgv-animated',
+                           ["GV-expected/GE/animated-track.kml",
+                            "GV-actual/GE/animated-track.kml"]))
+env.Alias('test', env.Diff('testgv-position',
+                           ["GV-expected/position.json",
+                            "GV-actual/position.json"]))
 env.DatabaseKML('C130-actual/GE/real-time.kml', 'real-time-C130.sql', 
                 AIRCRAFT='C130', ENV=pg.getEnvironment())
+
+# The DLR test just makes sure it terminates and exits successfully.
+dlr = env.DatabaseKML('DLR-actual/GE/real-time.kml', 'real-time-DLR.sql', 
+                      AIRCRAFT='DLR', ENV=pg.getEnvironment())
+env.Alias('test', dlr)
 
 def dumpdb(target, source, env):
     platform = env['AIRCRAFT']
@@ -195,4 +209,5 @@ def dumpdb(target, source, env):
 env.Command('real-time-GV.sql', None, env.Action(dumpdb), AIRCRAFT='GV')
 env.Command('real-time-C130.sql', None, env.Action(dumpdb), AIRCRAFT='C130')
 env.Command('real-time-N42RF.sql', None, env.Action(dumpdb), AIRCRAFT='N42RF')
+env.Command('real-time-DLR.sql', None, env.Action(dumpdb), AIRCRAFT='DLR')
 

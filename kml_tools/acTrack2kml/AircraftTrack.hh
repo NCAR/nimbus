@@ -37,10 +37,10 @@ public:
   /**
    * Shortcut for the number of points in the track.
    **/
-  int
+  size_t
   npoints()
   {
-    return int(lat.size());
+    return lat.size();
   }
 
   /**

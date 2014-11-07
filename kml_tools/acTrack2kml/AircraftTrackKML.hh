@@ -17,6 +17,20 @@ class AircraftTrackKML
 public:
   typedef std::string string;
 
+  struct Coordinates
+  {
+    Coordinates(AircraftTrack& rtrack, int i_) :
+      track(rtrack),
+      i(i_)
+    {}
+
+    std::ostream&
+    asKML(std::ostream&) const;
+
+    AircraftTrack& track;
+    int i;
+  };
+
   AircraftTrackKML();
 
   void
@@ -73,6 +87,10 @@ public:
   string
   midBubbleCDATA(int i);
 
+  size_t
+  writeCoordinates(std::ostream& out, size_t& i, 
+		   boost::posix_time::ptime& end_ts);
+
   /// Don't compress files for netCDF post-processing.
   bool postProcessMode;
 
@@ -83,6 +101,12 @@ private:
 
 };
 
+
+inline std::ostream&
+operator<<(std::ostream& out, const AircraftTrackKML::Coordinates& coords)
+{
+  return coords.asKML(out);
+}
 
 
 #endif // _AircraftTrackKML_hh_

@@ -1671,6 +1671,7 @@
 173.992,-49.7867,43059
 173.978,-49.7546,43055
 173.965,-49.7225,43057
+173.951,-49.6903,43061
     </coordinates>
    </LineString>
   </Placemark>
@@ -1683,7 +1684,6 @@
     <extrude>1</extrude>
     <altitudeMode>absolute</altitudeMode>
     <coordinates>
-173.965,-49.7225,43057
 173.951,-49.6903,43061
 173.938,-49.6581,43050
 173.924,-49.6259,43063
@@ -1925,7 +1925,6 @@
 172.517,-43.5013,524
 172.524,-43.4955,313
 172.529,-43.4904,593
-172.529,-43.4904,593
     </coordinates>
    </LineString>
   </Placemark>
@@ -1935,7 +1934,7 @@
    <styleUrl>#PM1</styleUrl>
    <Point>
     <altitudeMode>absolute</altitudeMode>
-    <coordinates>172.529,-43.4904,593.953</coordinates>
+    <coordinates>172.529,-43.4904,593</coordinates>
    </Point>
   </Placemark>
   <Placemark>

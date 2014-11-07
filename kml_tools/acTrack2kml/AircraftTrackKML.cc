@@ -64,7 +64,7 @@ WriteCurrentPositionKML(const std::string& finalfile)
 	<< "   <Point>\n"
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>"
-	<< last(track.lon) << "," << last(track.lat) << "," << (int)last(track.alt)
+	<< Coordinates(track, track.npoints()-1)
 	<< "</coordinates>\n"
 	<< "   </Point>\n"
 	<< "  </Placemark>\n"
@@ -172,7 +172,7 @@ WriteTimeStampsKML_Folder(ofstream& googleEarth)
         << "   <Point>\n"
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
         << "    <coordinates>"
-        << track.lon[i] << "," << track.lat[i] << "," << (int)track.alt[i]
+	<< Coordinates(track, i)
 	<< "</coordinates>\n"
         << "   </Point>\n"
         << "  </Placemark>\n";
@@ -231,8 +231,7 @@ WriteWindBarbsKML_Folder(ofstream& googleEarth)
         << "   </Style>\n"
         << "   <Point>\n"
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
-        << "    <coordinates>"
-        << track.lon[i] << "," << track.lat[i] << "," << (int)track.alt[i] << "</coordinates>\n"
+        << "    <coordinates>" << Coordinates(track, i) << "</coordinates>\n"
         << "   </Point>\n"
         << "  </Placemark>\n";
     }
@@ -273,6 +272,43 @@ compressKML(const std::string& file)
   chmod(tfile.c_str(), 0664);
   rename(tfile.c_str(), kmzfile.c_str());
 }
+
+
+size_t
+AircraftTrackKML::
+writeCoordinates(std::ostream& out, size_t& i, ptime& end_ts)
+{
+  AircraftTrack& track = *_track;
+  size_t ilast = i;
+  ptime next_ts = track.date[i];
+  // minpoints is the minimum number of points to include in this segment.
+  // Anything less than 2 risks an infinite loop, because it's possible a
+  // segment will have only one point before reaching the end time, in
+  // which case ilast will be returned with the same value as was passed in
+  // i.
+  int npoints = 2;
+
+  for ( ; (i < (size_t)track.npoints()) &&
+	  (track.date[i] <= end_ts || npoints > 0);
+	++i)
+  {
+    if (track.date[i] < next_ts)
+      continue;
+    next_ts = nextTimestamp(track.date[i], cfg.TimeStep);
+    out << Coordinates(track, i) << "\n";
+    ilast = i;
+    --npoints;
+  }
+
+  // Always write the last point in the segment, unless already written.
+  if (ilast != i - 1)
+  {
+    out << Coordinates(track, i-1) << "\n";
+    ilast = i - 1;
+  }
+  return ilast;
+}
+
 
 /* -------------------------------------------------------------------- */
 void
@@ -373,13 +409,10 @@ WriteGoogleEarthKML(const std::string& finalfile)
 	<< "  </ScreenOverlay>\n";
 */;
 
-  // Add all the points but the last hour of the track are added in yellow.
+  // All the points but the last hour of the track are added in yellow.
   ptime hourbreak = last(track.date) - hours(1);
-  int i = 0;
-
-  // I don't know what this was supposed to do...
-  int step = cfg.TimeStep / projInfo.groundFeedDataRate;
-  ptime next_ts = track.date[0];
+  size_t i = 0;
+  size_t ilast = 0;
 
   if (track.date[0] < hourbreak)
   {
@@ -394,15 +427,7 @@ WriteGoogleEarthKML(const std::string& finalfile)
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
-    for (i = 0; i < track.npoints() && track.date[i] < hourbreak; ++i)
-    {
-      if (track.date[i] < next_ts)
-	continue;
-      next_ts = nextTimestamp(track.date[i], cfg.TimeStep);
-      googleEarth << track.lon[i] << "," 
-		  << track.lat[i] << "," 
-		  << (int)track.alt[i] << "\n";
-    }
+    ilast = writeCoordinates(googleEarth, i, hourbreak);
 
     googleEarth
 	<< "    </coordinates>\n"
@@ -421,20 +446,10 @@ WriteGoogleEarthKML(const std::string& finalfile)
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
-  // Output last hour of track, in red.
-  if ((i -= step) < 0) i = 0;
-  next_ts = track.date[i];
-  for (; i < track.npoints(); ++i)
-  {
-    if (track.date[i] < next_ts)
-      continue;
-    next_ts = nextTimestamp(track.date[i], cfg.TimeStep);
-    googleEarth << track.lon[i] << "," 
-		<< track.lat[i] << "," 
-		<< (int)track.alt[i] << "\n";
-  }
-  googleEarth	<< last(track.lon) << "," << last(track.lat) << ","
-		<< (int)last(track.alt) << "\n";
+  // Output last hour of track, in red, starting from the last point
+  // output in the yellow segment.
+  i = ilast;
+  ilast = writeCoordinates(googleEarth, i, last(track.date));
 
   googleEarth
 	<< "    </coordinates>\n"
@@ -447,7 +462,7 @@ WriteGoogleEarthKML(const std::string& finalfile)
 	<< "   <Point>\n"
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>" 
-	<< last(track.lon) << "," << last(track.lat) << "," << last(track.alt)
+	<< Coordinates(track, track.npoints()-1)
 	<< "</coordinates>\n"
 	<< "   </Point>\n"
 	<< "  </Placemark>\n"
@@ -457,7 +472,7 @@ WriteGoogleEarthKML(const std::string& finalfile)
 	<< "   <styleUrl>#PM2</styleUrl>\n"
 	<< "   <Point>\n"
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
-	<< "    <coordinates>" << track.lon[0] << "," << track.lat[0] << "," << track.alt[0] << "</coordinates>\n"
+	<< "    <coordinates>" << Coordinates(track, 0) << "</coordinates>\n"
 	<< "   </Point>\n"
 	<< "  </Placemark>\n";
 
@@ -489,6 +504,11 @@ WriteGoogleEarthAnimatedKML(const std::string& finalfile)
   ofstream googleEarth;
 
   string file = finalfile + ".tmp";
+  if (cfg.verbose > 1)
+  {
+    cerr << "WriteGoogleEarthAnimatedKML(" << finalfile << ")...\n";
+  }
+
   googleEarth.open(file.c_str());
   if (googleEarth.is_open() == false)
   {
@@ -547,8 +567,22 @@ WriteGoogleEarthAnimatedKML(const std::string& finalfile)
 	<< "  <name>" << projInfo.flightNumber << "</name>\n"
 	<< "  <open>1</open>\n";
 
-  for (size_t i = 0; i < track.date.size(); )
+  // Break down the track into 2-minute segments.  Each segment starts with
+  // the endpoint of the previous segment, and it goes until the span time
+  // has passed and at least one point has been found.
+  int spanseconds = 120;
+  int ilast = 0;
+  size_t i = 0;
+  while (i < track.date.size())
   {
+    if (cfg.verbose > 1)
+    {
+      cerr << "top of kml loop, "
+	   << "ntimes=" << track.date.size()
+	   << ", timestep=" << cfg.TimeStep
+	   << ", i=" << i << endl;
+    }
+
     googleEarth
 	<< "  <Placemark>\n"
 	<< "   <name>Track</name>\n"
@@ -560,11 +594,11 @@ WriteGoogleEarthAnimatedKML(const std::string& finalfile)
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
+    i = ilast;
     ptime start = track.date[i];
-    for (size_t j = 0; i < track.date.size() && j < 120; j += cfg.TimeStep, i += cfg.TimeStep)
-      googleEarth << track.lon[i] << "," << track.lat[i] << "," << (int)track.alt[i] << "\n";
-
-    ptime end = track.date[i >= track.date.size() ? track.date.size()-1 : i];
+    ptime break_ts = start + boost::posix_time::seconds(spanseconds);
+    ilast = writeCoordinates(googleEarth, i, break_ts);
+    ptime end = track.date[ilast];
 
     googleEarth
 	<< "    </coordinates>\n"
@@ -575,8 +609,12 @@ WriteGoogleEarthAnimatedKML(const std::string& finalfile)
 	<< "   </TimeSpan>\n"
 	<< "  </Placemark>\n";
 
-     if (i < track.date.size())
-       i -= cfg.TimeStep;
+    if (cfg.verbose > 1)
+    {
+      cerr << "track coordinates written from "
+	   << track.formatTimestamp(start) << " to "
+	   << track.formatTimestamp(end)  << ", i=" << i << endl;
+    }
   }
 
   googleEarth
@@ -587,7 +625,7 @@ WriteGoogleEarthAnimatedKML(const std::string& finalfile)
 	<< "   <Point>\n"
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>"
-	<< last(track.lon) << "," << last(track.lat) << "," << last(track.alt)
+	<< Coordinates(track, track.npoints()-1)
 	<< "</coordinates>\n"
 	<< "   </Point>\n"
 	<< "  </Placemark>\n"
@@ -597,8 +635,7 @@ WriteGoogleEarthAnimatedKML(const std::string& finalfile)
 	<< "   <styleUrl>#PM2</styleUrl>\n"
 	<< "   <Point>\n"
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
-	<< "    <coordinates>" << track.lon[0] << "," << track.lat[0] << "," << track.alt[0]
-	<< "</coordinates>\n"
+	<< "    <coordinates>" << Coordinates(track, 0)	<< "</coordinates>\n"
 	<< "   </Point>\n"
 	<< "  </Placemark>\n";
 
@@ -740,10 +777,15 @@ setTrack(AircraftTrack* track_in)
   _track = track_in;
   AircraftTrack& track = *_track;
 
-  if (cfg.TimeStep < track.projInfo.groundFeedDataRate)
-  {
-    cfg.TimeStep = track.projInfo.groundFeedDataRate;
-  }
+  // I think this was useful when the track trimming was done by
+  // index and index corresponded to seconds.  Now the track is
+  // trimmed by timestamp, so it does not matter whether the points
+  // have been picked off at the ground feed rate.
+  //
+  // if (cfg.TimeStep < track.projInfo.groundFeedDataRate)
+  // {
+  //   cfg.TimeStep = track.projInfo.groundFeedDataRate;
+  // }
   if (cfg.verbose > 1)
   {
     cerr << "KML.TimeStep = " << cfg.TimeStep << endl;
@@ -779,3 +821,14 @@ checkFile(const std::string& file)
   }
   return recent || (track.npoints() == 0);
 }
+
+
+
+std::ostream&
+AircraftTrackKML::Coordinates::asKML(std::ostream& out) const
+{
+  out << track.lon[i] << "," << track.lat[i] << "," << (int)track.alt[i];
+  return out;
+}
+
+
