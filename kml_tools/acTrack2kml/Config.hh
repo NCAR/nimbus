@@ -21,8 +21,9 @@ public:
   string flightDataDir;
   string webHost;
 
-  // All datapoints are read from file, but only use one point every 'TimeStep' seconds.
-  // e.g. 15 would mean use 1 data point for every 15 seconds of data.
+  // All datapoints are read into the track, but only use one point every
+  // 'TimeStep' seconds.  e.g. 15 would mean use 1 data point out of every
+  // 15 seconds.
   int TimeStep;
 
   // True Airspeed cut-off (take-off and landing speed).
