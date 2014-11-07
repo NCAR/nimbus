@@ -152,7 +152,7 @@ def stopdb(target, source, env):
 database_kml_builder = Builder(action=[
     rundb,
     Mkdir("${TARGET.dir}"),
-    "${ACTRACK2KML} --once -p ${AIRCRAFT} -f ${TARGET.dir}/..",
+    "${ACTRACK2KML} -v --once -p ${AIRCRAFT} -f ${TARGET.dir}/..",
     stopdb])
 
 env.Append(BUILDERS = {'DatabaseKML':database_kml_builder})
@@ -185,9 +185,9 @@ gvkml = env.DatabaseKML("GV-actual/GE/real-time.kml", "real-time-GV.sql",
 env.Alias('test', env.Diff('testgv-kml',
                            ["GV-expected/GE/real-time.kml",
                             "GV-actual/GE/real-time.kml"]))
-env.Alias('test', env.Diff('testgv-animated',
-                           ["GV-expected/GE/animated-track.kml",
-                            "GV-actual/GE/animated-track.kml"]))
+#env.Alias('test', env.Diff('testgv-animated',
+#                           ["GV-expected/GE/animated-track.kml",
+#                            "GV-actual/GE/animated-track.kml"]))
 env.Alias('test', env.Diff('testgv-position',
                            ["GV-expected/position.json",
                             "GV-actual/position.json"]))
@@ -206,8 +206,16 @@ def dumpdb(target, source, env):
         db = db + "-" + platform
     pg.dump("eol-rt-data.fl-ext.ucar.edu", "ads", db, target[0].get_abspath())
 
-env.Command('real-time-GV.sql', None, env.Action(dumpdb), AIRCRAFT='GV')
-env.Command('real-time-C130.sql', None, env.Action(dumpdb), AIRCRAFT='C130')
-env.Command('real-time-N42RF.sql', None, env.Action(dumpdb), AIRCRAFT='N42RF')
-env.Command('real-time-DLR.sql', None, env.Action(dumpdb), AIRCRAFT='DLR')
+
+def DumpSql(env, sqltarget, aircraft):
+    if [ t for t in BUILD_TARGETS if str(t).endswith(sqltarget) ]:
+        sql = env.Command(sqltarget, None, env.Action(dumpdb), 
+                          AIRCRAFT=aircraft)
+        env.AlwaysBuild(sql)
+
+
+DumpSql(env, 'real-time-GV.sql', 'GV')
+DumpSql(env, 'real-time-C130.sql', 'C130')
+DumpSql(env, 'real-time-N42RF.sql', 'N42RF')
+DumpSql(env, 'real-time-DLR.sql', 'DLR')
 
