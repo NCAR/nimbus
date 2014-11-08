@@ -37,6 +37,18 @@ static const string onboard_flightDataDir = "/var/www/html/flight_data";
 static const string onboard_webHost = "acserver.raf.ucar.edu";
 
 
+/*
+ * The check could use the lag threshold as the end time in the select
+ * query, and it could grab only the last point prior to that by using
+ * descending order and limit 1.  Then the AircraftTrackKML::checkFile()
+ * method does not need to back through times to account for lag, and only
+ * one point needs to be retrieved instead of a whole track.  That approach
+ * is easy enough with SQL but maybe a little harder with netcdf, but the
+ * netcdf check is not really necessary.
+ *
+ * It would be nice to abbreviate the status messages a little more, or
+ * combine them one all the files are up to date.
+ */
 int
 StatusCheck(Config& cfg, bool ok, const std::string& msg)
 {
