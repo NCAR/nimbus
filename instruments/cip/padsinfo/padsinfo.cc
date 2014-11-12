@@ -4,10 +4,10 @@ OBJECT NAME:	padsinfo.cc
 
 FULL NAME:	PADS CIP File Info
 
-DESCRIPTION:	Display information from a NCAR PMS2D/OAP file, including
+DESCRIPTION:	Display information from a DMT PADS CIP/PIP file, including
 		indivdual record headers.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2012-14
+COPYRIGHT:	University Corporation for Atmospheric Research, 2014
 -------------------------------------------------------------------------
 */
 
