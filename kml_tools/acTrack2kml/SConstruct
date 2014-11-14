@@ -102,17 +102,20 @@ def FindAircraftData(filename):
 
 # Generate KML from a netcdf file.
 def NetcdfKML(target, source, env):
-  ifile = env.File(source[0]).get_abspath()
-  ofile = env.File(target[0]).get_abspath()
-  if os.path.exists(ofile):
-    os.unlink(ofile)
-  env.Execute("${ACTRACK2KML} %s %s" % (ifile, ofile))
+  ifile = str(env.File(source[0]))
+  ofile = str(env.File(target[0]))
+  jfile = str(env.File(target[1]))
+  env.Execute("${ACTRACK2KML} %s %s %s" % (ifile, ofile, jfile))
 
 
 def kml_emitter(source, target, env):
+  ofile = str(env.File(target[0]))
+  jfile = ofile + ".json"
+  if ofile.endswith(".kml"):
+      jfile = ofile[:-4] + ".json"
   if not env.has_key('ACTRACK2KML'):
       env['ACTRACK2KML'] = actrack[0].get_abspath()
-  return (target, source + [ env['ACTRACK2KML'] ])
+  return (target + [jfile], source + [ env['ACTRACK2KML'] ])
 
 
 env['BUILDERS']['NetcdfKML'] = Builder(action=NetcdfKML, emitter=kml_emitter)
@@ -120,14 +123,14 @@ env['BUILDERS']['NetcdfKML'] = Builder(action=NetcdfKML, emitter=kml_emitter)
 ncpath = FindAircraftData('HIPPO-2rf06.nc')
 if ncpath:
     ekml = 'HIPPO-2rf06.kml'
+    ejson = 'HIPPO-2rf06.json'
     akml = 'HIPPO-2rf06-actual.kml'
-    env.NetcdfKML(akml, ncpath)
+    (akml, ajson) = env.NetcdfKML(akml, ncpath)
     env.Alias('xdiff', 
               env.Command("diff", [ekml, akml],
                           "diff --side-by-side --width=170 ${SOURCES}"))
-    env.Alias('test', 
-              env.Command("diff", [ekml, akml],
-                          "diff ${SOURCES}"))
+    env.Alias('test', env.Command("diff1", [ekml, akml], "diff ${SOURCES}"))
+    env.Alias('test', env.Command("diff2", [ejson, ajson], "diff ${SOURCES}"))
 
 gtests = env.Program('gtests', ["test_track.cc"] + objects,
                      LIBS=env['LIBS'] + ['gtest_main', 'gtest'])

@@ -18,33 +18,47 @@ public:
   void
   dump(std::ostream& out);
 
+  /**
+   * The path to the output directory which contains the GE subdirectory.
+   **/
   string flightDataDir;
-  string webHost;
 
-  // All datapoints are read into the track, but only use one point every
-  // 'TimeStep' seconds.  e.g. 15 would mean use 1 data point out of every
-  // 15 seconds.
+  /**
+   * URL to the flight_data directory from which the static wind barbs and
+   * icons can be retrieved.  This can be a full URL with a web host like
+   * http://www.eol.ucar.edu/flight_data, or it can be an absolute
+   * reference on the server host like /flight_data, or it could be a
+   * relative path for either server hosting or local filesystem browsing.
+   **/
+  string flightDataURL;
+
+  /**
+   * All datapoints are read into the track, but only use one point every
+   * 'TimeStep' seconds.  e.g. 15 would mean use 1 data point out of every
+   * 15 seconds.
+   **/
   int TimeStep;
 
-  // True Airspeed cut-off (take-off and landing speed).
+  /// True Airspeed cut-off (take-off and landing speed).
   float TAS_CutOff;
 
-  // Frequency of Time Stamps (in minutes).
+  /// Frequency of Time Stamps (in minutes).
   int ts_Freq;
 
-  // Frequency of Wind Barbs (in minutes).
+  /// Frequency of Wind Barbs (in minutes).
   int barb_Freq;
 
-  // Should we use KML clampToGround or ABSOLUTE.
+  /// Should we use KML clampToGround or ABSOLUTE.
   string altMode;
 
   string netCDFinputFile;
   string outputKML;
+  string outputPositionJSON;
   string database_host;
   string platform;
   string dbname;
 
-  // If alt is in meters this gets changed to 3.28.
+  /// If alt is in meters this gets changed to 3.28.
   float convertToFeet;
 
   bool showit;

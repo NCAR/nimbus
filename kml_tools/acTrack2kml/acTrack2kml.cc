@@ -30,11 +30,13 @@ using namespace boost::posix_time;
 
 // Output directories for .xml & .kml files.  Ground.
 static const string grnd_flightDataDir = "/net/www/docs/flight_data";
-static const string grnd_webHost = "www.eol.ucar.edu";
+static const string grnd_flightDataURL =
+  "http://www.eol.ucar.edu/flight_data";
 
 // Output directories for .xml & .kml files.  Onboard.
 static const string onboard_flightDataDir = "/var/www/html/flight_data";
-static const string onboard_webHost = "acserver.raf.ucar.edu";
+static const string onboard_flightDataURL =
+  "http://acserver.raf.ucar.edu/flight_data";
 
 
 /*
@@ -81,11 +83,11 @@ int usage(const char *argv0)
 	<< "Real-time ground form:\n"
 	<< "	acTrack2kml [-h database_host] -p platform\n\n"
 	<< "Post-processing:\n"
-	<< "	acTrack2kml infile.nc outfile.kml\n\n"
+	<< "	acTrack2kml infile.nc outfile.kml [position.json]\n\n"
 	<< "Options:\n"
 	<< "  -p platform       Platform name, valid values (C130, DC8, GV, WKA, A10, N42RF, N43RF, B146).\n"
 	<< "  -h database_host  Database server host with data.\n"
-	<< "  -o                Run onboard, changes webhost to onboard server.\n"
+	<< "  -o                Run onboard, changes URLs to onboard server.\n"
 	<< "  -b barb_freq      Frequency of wind barbs in minutes, default is 5.\n"
 	<< "  -c                Clamp track to ground, ignore altitude.\n"
 	<< "  -v                Each -v increases the verbose level.\n"
@@ -96,6 +98,11 @@ int usage(const char *argv0)
 	<< "  --once            Run once and exit, without looping to get updates.\n"
 	<< "  -f path           Override flight_data output directory, location of position.json,\n"
 	<< "                    and KML goes into <flight_dir>/GE.\n"
+	<< "  -u url            Override URL for the flight_data directory.\n"
+	<< "                     Plane default: "
+	<< onboard_flightDataURL << "\n"
+	<< "                    Ground default: "
+	<< grnd_flightDataURL << "\n"
 	<< "  --check           Do not generate any files, only check that\n"
 	<< "                    the expected output is up to date with track.\n"
 	<< "The position variables can be overridden with these options:\n"
@@ -115,7 +122,7 @@ parseRunstring(int argc, char** argv, Config& cfg)
   int opt_char;		/* option character */
 
   // Default to ground, -p and netCDF mode.
-  cfg.webHost = grnd_webHost;
+  cfg.flightDataURL = grnd_flightDataURL;
 
   while (1)
   {
@@ -128,7 +135,7 @@ parseRunstring(int argc, char** argv, Config& cfg)
       {0,         0, 0, 0 }
     };
 
-    opt_char = getopt_long(argc, argv, "p:h:b:s:t:i:j:f:ocv",
+    opt_char = getopt_long(argc, argv, "p:h:b:s:t:i:j:f:u:ocv",
 			   long_options, 0);
 
     if (opt_char == -1)
@@ -211,6 +218,10 @@ parseRunstring(int argc, char** argv, Config& cfg)
       cfg.flightDataDir = optarg;
       break;
 
+    case 'u':
+      cfg.flightDataURL = optarg;
+      break;
+
     case 'i':
       {
 	int period = atoi(optarg);
@@ -247,6 +258,13 @@ parseRunstring(int argc, char** argv, Config& cfg)
     cfg.outputKML = argv[optind+1];
   }
 
+  if ((optind+3) == argc)	// netCDF mode with position output.
+  {
+    cfg.netCDFinputFile = argv[optind];
+    cfg.outputKML = argv[optind+1];
+    cfg.outputPositionJSON = argv[optind+2];
+  }
+
   if ((optind+1) == argc)	// netCDF mode, but they left off output file.
   {
     return usage(argv[0]);
@@ -261,7 +279,7 @@ parseRunstring(int argc, char** argv, Config& cfg)
   else if (cfg.onboard)
   {
     cfg.dbname = "real-time";
-    cfg.webHost = onboard_webHost;
+    cfg.flightDataURL = onboard_flightDataURL;
     // It's possible to run onboard but for a platform other than the host
     // platform.  So if platform is set, it implies using the
     // platform-specific forms of database name and GE path.
@@ -397,6 +415,7 @@ int main(int argc, char *argv[])
   }
 
   kml.setConfig(cfg);
+  osm.setConfig(cfg);
   if (cfg.netCDFinputFile.length() > 0)
   {
     kml.postProcessMode = true;
@@ -413,6 +432,10 @@ int main(int argc, char *argv[])
 	return StatusCheck(cfg, ok, status.str());
       }
       kml.WriteGoogleEarthKML(cfg.outputKML);
+      if (cfg.outputPositionJSON.length())
+      {
+	osm.writePositionJSON(track, cfg.outputPositionJSON);
+      }
       return 0;
     }
     else
@@ -437,7 +460,6 @@ int main(int argc, char *argv[])
 
   acDatabase db;
   db.setConfig(cfg);
-  osm.setConfig(cfg);
   ptime last_kml = from_time_t(0);
   ptime last_json = from_time_t(0);
   install_alarm_handler();

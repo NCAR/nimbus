@@ -51,7 +51,7 @@ WriteCurrentPositionKML(const std::string& finalfile)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << cfg.webHost << "/flight_data/display/red.png</href>\n"
+	<< "    <href>" << cfg.flightDataURL << "/display/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -212,8 +212,8 @@ WriteWindBarbsKML_Folder(ofstream& googleEarth)
       // Force wind direction into 0-360.
       normalizeAngles(&iwd, &iwd+1, 0);
 
-      sprintf(url, "<href>http://%s/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n",
-		cfg.webHost.c_str(), iws, iws, iwd);
+      sprintf(url, "<href>%s/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n",
+	      cfg.flightDataURL.c_str(), iws, iws, iwd);
 
       struct tm tm = to_tm(track.date[i]);
       char label[64];
@@ -345,7 +345,7 @@ WriteGoogleEarthKML(const std::string& finalfile)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << cfg.webHost << "/flight_data/display/red.png</href>\n"
+	<< "    <href>" << cfg.flightDataURL << "/display/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -353,7 +353,7 @@ WriteGoogleEarthKML(const std::string& finalfile)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << cfg.webHost << "/flight_data/display/white.png</href>\n"
+	<< "    <href>" << cfg.flightDataURL << "/display/white.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -526,7 +526,7 @@ WriteGoogleEarthAnimatedKML(const std::string& finalfile)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << cfg.webHost << "/flight_data/display/red.png</href>\n"
+	<< "    <href>" << cfg.flightDataURL << "/display/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -534,7 +534,7 @@ WriteGoogleEarthAnimatedKML(const std::string& finalfile)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << cfg.webHost << "/flight_data/display/white.png</href>\n"
+	<< "    <href>" << cfg.flightDataURL << "/display/white.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"

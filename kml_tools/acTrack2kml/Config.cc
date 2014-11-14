@@ -49,7 +49,7 @@ dump(std::ostream& out)
 {
   out << "       flight_data dir: " << flightDataDir << "\n";
   out << " google earth data dir: " << flightDataDir + "/GE" << "\n";
-  out << "              Web host: " << webHost << "\n";
+  out << "       flight_data URL: " << flightDataURL << "\n";
   out << "    Platform selection: " << platform << "\n";
   out << "          Onboard mode: " << onboard << "\n";
   out << "   KML interval (secs): " << update_interval_secs << "\n";
@@ -60,6 +60,7 @@ dump(std::ostream& out)
   out << "  Wind Barbs (minutes): " << barb_Freq << "\n";
   out << "     KML altitude mode: " << altMode << "\n";
   out << "       KML output file: " << outputKML << "\n";
+  out << "    JSON position file: " << outputPositionJSON << "\n";
   out << "       netCDFinputFile: " << netCDFinputFile << "\n";
   out << "         Database host: " << database_host << "\n";
   out << "         Database name: " << dbname << "\n";
