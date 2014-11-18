@@ -1,0 +1,134 @@
+
+===========================================================================
+How best to check that acTrack2kml is running and updating files correctly?
+The check needs to know whether the plane is flying (and submitting
+position data).  
+
+ - the position.json file could just be touched (if it's already there) to
+   satisfy the current nagios file age check, even when there are no
+   position data
+
+ - the check could check whether the database exists and is updating to 
+   know if the plane is sending data
+
+ - ping the satcom dyndns address?  except position is not updated until
+   airspeed increases
+
+A basic check has already been implemented, where the existing comparison
+between time of latest track point and output file mtime is used to see if
+the output is current.  That check detects problems connecting to the
+database and problems updating the output files when there are track points
+in the database, but it does not detect when the database is not being
+updated but should be.  That will be a separate check.
+
+============================================================================
+position.json file does not need to be limited by airspeed, just always use
+the latest point.  Likewise the track can include the last 15 minutes or so
+of position data which precede the airspeed increase, without becoming too
+large.  Or maybe the Track always has all the points, but then the KML
+rendering uses a "View" on the track which limits it to the window
+15-minutes before takeoff to 15-minutes after landing.
+
+ - since the Track is cached in memory, there is no real harm in
+   accumulating the extra ground points
+
+ - Track can load the whole track, but then apply filters to reduce the
+   data, such as condensing all the ground data or trimming it to
+   15-minutes pre-takeoff and 15-minutes prior to now (whether on ground or
+   not)
+
+Maybe "ground compression" can be used throughout the whole track,
+generating kml points only once the position/direction has changed
+considerably.  Eg, draw fewer points on straight runs and when sitting on
+ramp but more points for tight turns.  Maybe there's an algorithm out there
+for this?
+
+ - http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm
+
+ - http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
+
+ - Paper on simplifying Ramer: http://www.cs.ubc.ca/cgi-bin/tr/1992/TR-92-07
+
+ - hard part is choosing tolerance parameter: could consider binary search
+   to the value which achieves the right ratio of reduced of points; could
+   adjust the tolerance according to speed, perhaps beneath take-off
+   threshold the tolerance is very small while above threshold it is
+   higher, but how much higher?  Should it be proportional?
+
+ - also need a parameter for maximum time or distance interval between
+   points, so they can be labelled.--> That's incorrect.  The landmarks are
+   a separate list, so they can be labelled on their own interval even if
+   their points do not actually appear in the simplified track.
+
+ - maybe thdg is what should select track points?  if thdg does not change
+   between two points, and no thdg is very different from another, then no
+   need to include the intervening points.  isn't that essentially
+   equivalent to deciding based on tolerance and the perpendicular
+   distance?  except the tolerance represents different fractions of a
+   heading change depending upon the distance between the points.  And the
+   distance between the points depends on the ground speed.
+
+   are there platforms without a heading variable?  if so, should it be
+   computed from the position data?
+
+   I don't see a heading variable in the ground database...osm.cc computes
+   the heading from the last two points, which could be problematic, so
+   maybe incorporating a real heading would be more accurate for that and
+   also useful for filtering points.
+
+   --> THDG can be added to the ground variables, so it should be available
+       for simplifying the track.  And if not then we'd just revert to the
+       perpendicular distance or to computing the heading.
+
+ - acTrack2kml should add some indicator about the timeliness of the track
+   and the aircraft position, ie, change the colors, change to an alert
+   icon, or maybe make the track red only for the last hour of clock time
+   instead of last hour of flight time (but only for real-time?)
+
+ - maybe the update rate for the track could increase when the plane is
+   turning more, so it is easier to estimate exact plane location in
+   between updates
+
+
+Algorithm: keep a linked list of points in the simplified path, and use a
+pointer for each point in the full path to point to the linked list node.
+Mark 
+
+To use the Heading, do we just look forward in the path to the next point
+where the heading differs by enough, and then progress through the track
+that way?  Is there any reason to use DP to find a vertex at which to
+divide the track?  Where would that point be?  Where the heading most
+differs from the first point, second point, average, both?  And how to
+handle the modulus problem?  Is the heading between two ends of a segment
+calculated from the coordinates or does it use an average of the headings?
+If the two headings are close, and all the headings on the segment are
+close to the average, then there is no point drawing the points in between.
+(The heading algorithm assumes the affect of side slip is negligible on the
+representation of the track.)
+
+heading_distance(P1, P2, P3):
+
+  hdg2 = hdg(P2)
+  hdg1 = hdg(P1)
+  hdg3 = hdg(P3)
+  hdiff = abs(hdg2 - hdg1)
+  if (hdiff > 180)
+  {
+      hdiff -= 360;
+  }
+  else if (hdiff < -180)
+  {
+      hdiff += 360;
+  }
+  havg = h1 + hdiff/2
+
+We need an operation to find difference between two angles.  eg, 5 - 355
+should be 10, not -350.  And 355 - 5 should be -10 not 350.  So if
+difference is outside -180,180 then add or subtract 360.  The distance
+metric is the absolute value of the difference.  There is no need to
+compute the average angle in complex coordinates.  Doing that would
+automatically take care of returning the angle between the other two
+angles, but if fails if the angles are too close to opposite, because
+finding the argument of the averaged coordinate near zero could be
+unreliable.
+
