@@ -9,20 +9,20 @@
 #define TWOD_BUFF_SIZE	4096
 
 // Values currently in use for the 'id' field...at least by NCAR-RAF.
-#define PMS2D_C1         0x4331		// First PMS-2DC
-#define PMS2D_C2         0x4332		// Second PMS-2DC
-#define PMS2D_C4         0x4334         // First RAF 64 diode 25 um Fast 2DC
-#define PMS2D_C5         0x4335         // Second RAF 64 diode 25 um Fast 2DC
-#define PMS2D_C6         0x4336         // First RAF 64 diode 10 um Fast 2DC
-#define PMS2D_C8         0x4338         // First DMT CIP probe.
-#define PMS2D_G1         0x4731		// First 2D Greyscale; unused to date
-#define PMS2D_H1         0x4831		// SPEC HVPS
-#define PMS2D_P1         0x5031		// First PMS-2DP
-#define PMS2D_P2         0x5032		// Second PMS-2DP
-#define PMS2D_P4         0x5034		// First RAF 64 diode 200 um Fast 2DP
-#define PMS2D_P8         0x5038		// First DMT PIP probe
-#define PMS2D_3V         0x3348		// 3V-CPI 2DS Vertical
-#define PMS2D_3H         0x3356		// 3V-CPI 2DS Horizontal
+#define PMS2D_C1	0x4331		// First PMS-2DC
+#define PMS2D_C2	0x4332		// Second PMS-2DC
+#define PMS2D_C4	0x4334		// First RAF 64 diode 25 um Fast 2DC
+#define PMS2D_C5	0x4335		// Second RAF 64 diode 25 um Fast 2DC
+#define PMS2D_C6	0x4336		// First RAF 64 diode 10 um Fast 2DC
+#define PMS2D_C8	0x4338		// First DMT CIP probe.
+#define PMS2D_G1	0x4731		// First 2D Greyscale; unused to date
+#define PMS2D_H1	0x4831		// SPEC HVPS
+#define PMS2D_P1	0x5031		// First PMS-2DP
+#define PMS2D_P2	0x5032		// Second PMS-2DP
+#define PMS2D_P4	0x5034		// First RAF 64 diode 200 um Fast 2DP
+#define PMS2D_P8	0x5038		// First DMT PIP probe
+#define PMS2D_3V	0x3348		// 3V-CPI 2DS Vertical
+#define PMS2D_3H	0x3356		// 3V-CPI 2DS Horizontal
 
 
 struct _oap_rec {
