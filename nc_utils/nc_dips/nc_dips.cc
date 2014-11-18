@@ -7,8 +7,10 @@ using namespace std;
 
 // Command line options.
 bool verbose = false;
+bool hours = false;		// Output hours instead of #dips.
 float upper_alt = 8800.0;	// Default.
 float lower_alt = 4500.0;	// Default.
+char fileName[1024];
 
 NcValues *
 getData(NcFile * file, const char * name)
@@ -45,12 +47,20 @@ usage()
 void
 processArgs(char **argv)
 {
+  fileName[0] = 0;
+
   while (*++argv)
+  {
     if ((*argv)[0] == '-')
+    {
       switch ((*argv)[1])
-        {
+      {
         case 'v':
           verbose = true;
+          break;
+
+        case 'h':
+          hours = true;
           break;
 
         case 'l':
@@ -60,12 +70,11 @@ processArgs(char **argv)
         case 'u':
           upper_alt = atof(*++argv);
           break;
-
-        case 'h':
-          usage();
-          break;
-
-        }
+      }
+    }
+    else
+      strcpy(fileName, *argv);
+  }
 }
 
 
@@ -80,29 +89,13 @@ main(int argc, char *argv[])
 
   processArgs(argv);
 
-  if (strcmp(argv[indx], "-v") == 0)
-  {
-    verbose = true;
-  }
-
-  if (strcmp(argv[indx], "-l") == 0)
-  {
-    ++indx;
-    lower_alt = atof(argv[indx++]);
-  }
-
-  if (strcmp(argv[indx], "-u") == 0)
-  {
-    ++indx;
-    upper_alt = atof(argv[indx++]);
-  }
 
   // keep program from exiting, if netCDF API doesn't find something.
   NcError * ncErr = new NcError(NcError::silent_nonfatal);
 
 
   // Open NetCDF file
-  NcFile * ncFile = new NcFile(argv[indx], NcFile::ReadOnly);
+  NcFile * ncFile = new NcFile(fileName, NcFile::ReadOnly);
   if (ncFile->is_valid() == false)
   {
     cerr << "Could not open NetCDF file '" << argv[indx] << "' for reading.\n";
@@ -152,9 +145,19 @@ main(int argc, char *argv[])
   }
 
 
-  if (verbose) cout << "Number of dips = ";
-  cout << ndips << endl;
+  if (hours)
+  {
+    if (verbose) cout << "Number of flight hours = ";
+    cout << (float)time_var->num_vals() / 3600 << endl;
+  }
+  else
+  {
+    if (verbose) cout << "Number of dips = ";
+    cout << ndips << endl;
+  }
 
   delete alt_data;
   delete ncFile;
+
+  return 0;
 }
