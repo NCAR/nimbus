@@ -1,0 +1,43 @@
+#!/usr/bin/python
+
+import os
+import glob
+import subprocess as sp
+
+nDips = 0
+nHours = 0
+nflights = 0
+
+
+def count_dips(filename):
+  global nflights
+  global nHours
+  global nDips
+
+  nflights = nflights + 1
+  nDips = nDips + int(sp.Popen('nc_dips ' +  filename, shell=True, stdout=sp.PIPE).communicate()[0])
+  nHours = nHours + float(sp.Popen('nc_dips -h ' + filename, shell=True, stdout=sp.PIPE).communicate()[0])
+
+
+
+for proj in 'ADELE CONTRAST DC3* HEFT* HIPPO* ICEBRIDGE MPEX PACDEX PREDICT ProgSci START08 SPRITE-II TORERO TREX'.split():
+  for file in glob.glob(proj+'/'+proj+'*f??.nc'):
+    count_dips(file)
+
+for file in glob.glob('SAANGRIA-TEST/SAANGRIA*f??.nc'):
+  count_dips(file)
+
+
+
+os.chdir('/scr/raf_data')
+
+for file in glob.glob('DEEPWAVE/DEEPWAVE*f??.nc'):
+  count_dips(file)
+
+for file in glob.glob('IDEAS-4-GV/IDEAS*f??.nc'):
+  count_dips(file)
+
+
+print('nFlights = %s' %(nflights))
+print('nHours = %s' %(nHours))
+print('nDips  = %s' %(nDips))
