@@ -1,0 +1,1 @@
+"./uart_echo.obj" "./startup_ccs.obj" -l"libc.a" -l"C:/ti/TivaWare_C_Series-2.0.1.11577/examples/boards/ek-tm4c123gxl/uart_echo/ccs/../../../../../driverlib/ccs/Debug/driverlib.lib" "../uart_echo_ccs.cmd" 
