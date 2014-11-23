@@ -16,13 +16,13 @@
 #include "amlib.h"
 
 extern NR_TYPE	(*pcorQCR)(NR_TYPE, NR_TYPE);
-NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Adif, NR_TYPE Qr);
+NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack);
 
 
 /* -------------------------------------------------------------------- */
 void sqcrc(DERTBL *varp)
 {
-  NR_TYPE	qcr, qcrc = 0.0, adifr, bdifr, psf, mach, aqratio, qcf;
+  NR_TYPE	qcr, qcrc = 0.0, attack, adifr, bdifr, psf, mach, aqratio, qcf;
   NR_TYPE	bqcrc, satk3, sbeta3;
   double	atk3, beta3;
 
@@ -36,12 +36,11 @@ void sqcrc(DERTBL *varp)
     case Config::HIAPER:
       psf = GetSample(varp, 0);
       qcf = GetSample(varp, 1);
-      adifr = GetSample(varp, 2);
-      qcr = GetSample(varp, 3);
+      attack = GetSample(varp, 2);
       if (qcr < 0.01)
         qcr = 0.01;
 
-      qcrc = qcr - pcorf5_3(qcf, psf, adifr, qcr);
+      qcrc = qcr - pcorf5_3(qcf, psf, attack);
       break;
 
     case Config::C130:

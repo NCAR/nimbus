@@ -6,7 +6,7 @@ FULL NAME:	Attack Angle from the Radome
 
 DESCRIPTION:    
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2013
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2014
 -------------------------------------------------------------------------
 */
 
@@ -19,13 +19,15 @@ static int	gv_radome_ssn = 1;	// default to first radome.
 // Serial number for C130 radome.  #2 was installed in May of 2013.
 static int      c130_radome_ssn = 1;      // default to first radome.
 
-// not static for export to initAC.c::pcor5_3().
-std::vector<float> akrd_coeff;
+static std::vector<float> akrd_coeff;
 
 /* -------------------------------------------------------------------- */
 void initAKRD(var_base *varp)
 {
   float *tmp;
+
+  if (strstr(varp->name, "_GP"))	// Don't do anything yet for GP.
+    return;
 
   /* Set default values per aircraft. */
   switch (cfg.Aircraft())
@@ -109,17 +111,17 @@ void initAKRD(var_base *varp)
 /* -------------------------------------------------------------------- */
 void sakrd(DERTBL *varp)
 {
-  NR_TYPE qcxc, adifr, akrd = 0.0, mach;
+  NR_TYPE qc, psf, adifr, akrd = 0.0, mach;
 
   adifr	= GetSample(varp, 0);
-  qcxc	= GetSample(varp, 1);
+  qc	= GetSample(varp, 1);
 
   /* Blow-up protection:  output zero while on ground (QCX < 5.5 mbar)
    * installed by Ron Ruth  18 October 2001
    */
-  if (qcxc > 5.5)
+  if (qc > 5.5)
   {
-    NR_TYPE ratio = adifr / qcxc;
+    NR_TYPE ratio = adifr / qc;
     switch (cfg.Aircraft())
     {
       case Config::C130:
@@ -133,14 +135,15 @@ void sakrd(DERTBL *varp)
         break;
 
       case Config::HIAPER:
-        mach = GetSample(varp, 2);
+        psf = GetSample(varp, 2);	// PSF
+        mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
         akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach);
         break;
 
       case Config::SABRELINER:
       case Config::B57:
         mach = GetSample(varp, 2);
-        akrd = adifr / (qcxc * (0.0719786 - 0.0331033 *
+        akrd = adifr / (qc * (0.0719786 - 0.0331033 *
                       mach + 0.0109213 * mach*mach));
         break;
 
@@ -149,7 +152,7 @@ void sakrd(DERTBL *varp)
       }
     }
   else
-  if (isnan(adifr) || isnan(qcxc))
+  if (isnan(adifr) || isnan(qc))
     akrd = floatNAN;
 
   PutSample(varp, akrd);
