@@ -12,7 +12,7 @@
 #include "amlib.h"
 
 extern NR_TYPE (*pcorQCF)(NR_TYPE, NR_TYPE);
-NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Adif, NR_TYPE Qr);
+extern NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack);
 
 /* -------------------------------------------------------------------- */
 void sqcfc(DERTBL *varp)
@@ -27,28 +27,20 @@ void sqcfc(DERTBL *varp)
 
   if (cfg.Aircraft() == Config::HIAPER)
   {
-    NR_TYPE adifr = GetSample(varp, 2);
-    NR_TYPE qcr = GetSample(varp, 3);
+    NR_TYPE attack = GetSample(varp, 2);
 
-    qcfc = qcf - pcorf5_3(qcf, psf, adifr, qcr);
+    qcfc = qcf - pcorf5_3(qcf, psf, attack);
   }
   else if (cfg.Aircraft() == Config::C130 && varp->ndep > 2)
   {
     NR_TYPE adifr = GetSample(varp, 2);
-    NR_TYPE qcr = GetSample(varp, 3);
-    NR_TYPE bdifr = GetSample(varp, 4);
     NR_TYPE R1 = (14.28 * (adifr / qcf) + 5.78 - 5.57) / 16.71;
     qcfc = qcf - psf * (0.00186 + 0.0202 * R1 + 0.0135 * mach);
-/*
-    qcfc = qcf -
-	(psf * (-0.0416 + 0.01485 * (adifr/qcr) + 0.37296 * mach - 1.17 * mach*mach + 0.90159 * mach*mach*mach
-	+ 0.23147 * qcf/psf + 0.00239 * bdifr/qcr));
-*/
   }
   else if (cfg.Aircraft() == Config::C130 && varp->ndep > 1)	// Older C130 (ICE-T and older).
   {
-    NR_TYPE akrd  = GetSample(varp, 1);
-    qcfc = qcf - (*pcorQCF)(akrd, 1.0);
+    NR_TYPE attack  = GetSample(varp, 1);
+    qcfc = qcf - (*pcorQCF)(attack, 1.0);
   }
   else
   {
