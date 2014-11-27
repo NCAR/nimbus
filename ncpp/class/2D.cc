@@ -25,6 +25,24 @@ TwoDS::TwoDS(NcFile *file, NcVar *av) : TwoD(file, av)
 }
 
 /* -------------------------------------------------------------------- */
+TwoDCIP::TwoDCIP(NcFile *file, NcVar *av) : TwoD(file, av)
+{
+  if (_resolution == 0)
+    _resolution = 0.025;
+  if (_armDistance == 0)
+    _armDistance = 70;
+}
+
+/* -------------------------------------------------------------------- */
+TwoDPIP::TwoDPIP(NcFile *file, NcVar *av) : TwoD(file, av)
+{
+  if (_resolution == 0)
+    _resolution = 0.1;
+  if (_armDistance == 0)
+    _armDistance = 70;
+}
+
+/* -------------------------------------------------------------------- */
 TwoDC::TwoDC(NcFile *file, NcVar *av) : TwoD(file, av)
 {
   if (_resolution == 0)

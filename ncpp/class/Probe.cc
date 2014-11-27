@@ -133,6 +133,12 @@ Probe::Probe(NcFile *file, NcVar *av) : _avar(av), _firstBin(0), _lastBin(Vector
   else
   if (_name.find("PDI") != _name.npos)
     _type = PDI;
+  else
+  if (_name.find("CIP") != _name.npos)
+    _type = CIP;
+  else
+  if (_name.find("PIP") != _name.npos)
+    _type = PIP;
 
 
   if (Type() == NoProbe)

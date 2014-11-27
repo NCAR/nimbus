@@ -22,7 +22,7 @@ static const char *validProbeNames[] = {
 	"AFSSP","AF300","APCAS","A260X","AASAS","A200X","A200Y","A300X",
 	"AMASP","A1DC","A2DC","A1DP","A2DP","AS100","AS200","AS300",
 	"ACDP", "ARDMA","ACLMT","ACMCA","AHVPS","AUHSAS","ASID","ACAPS",
-	"APDI", "A2D3", NULL };
+	"APDI", "A2D3", "ACIP", "APIP", NULL };
 
 
 /* -------------------------------------------------------------------- */
@@ -135,6 +135,12 @@ DataFile::DataFile(const char fName[]) : fileName(fName)
       else
       if (strncmp("A200Y", avar->name(), 5) == 0)
         probe[nProbes++] = new Y200(file, avar);
+      else
+      if (strncmp("ACIP", avar->name(), 5) == 0)
+        probe[nProbes++] = new TwoDCIP(file, avar);
+      else
+      if (strncmp("APIP", avar->name(), 5) == 0)
+        probe[nProbes++] = new TwoDPIP(file, avar);
       else
       if (strncmp("A2DC", avar->name(), 4) == 0 ||
           strncmp("A1DC", avar->name(), 4) == 0)

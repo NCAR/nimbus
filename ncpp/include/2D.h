@@ -46,4 +46,16 @@ class TwoDP : public TwoD
 public:
 	TwoDP(NcFile *file, NcVar *av);
 };
+
+class TwoDCIP : public TwoD
+{
+public:
+	TwoDCIP(NcFile *file, NcVar *av);
+};
+
+class TwoDPIP : public TwoD
+{
+public:
+	TwoDPIP(NcFile *file, NcVar *av);
+};
 #endif
