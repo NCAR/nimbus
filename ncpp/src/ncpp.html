@@ -31,7 +31,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 <body bgcolor="ffffff">
 
 <h1 align=CENTER>NCPP User's Guide</h1>
-<h1 align=CENTER>Version 2.2.0</h1>
+<h1 align=CENTER>Version 2.2.1</h1>
 <hr>
 <h1 align=CENTER>Table Of Contents</h1>
 <ol type=A>
@@ -131,6 +131,13 @@ Note on data files:
 <ul>
 <li>Both the raw counts histogram and the concentration histogram must be present in the file.
 <li><b>ncpp</b> only recognizes a fixed set of variable names for the histograms.  This is easily modified in DataFile.cc.
+<pre>
+static const char *validProbeNames[] = {
+        "AFSSP","AF300","APCAS","A260X","AASAS","A200X","A200Y","A300X",
+        "AMASP","A1DC","A2DC","A1DP","A2DP","AS100","AS200","AS300",
+        "ACDP", "ARDMA","ACLMT","ACMCA","AHVPS","AUHSAS","ASID","ACAPS",
+        "APDI", "A2D3", "ACIP", "APIP", NULL };
+</pre>
 </ul>
 
 <a name="gs"></a>
