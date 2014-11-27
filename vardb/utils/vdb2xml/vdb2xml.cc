@@ -95,6 +95,7 @@ void checkDerivedNames(FILE* vdb, const char *varName)
 void checkDependencies(FILE* vdb, const char *varName)
 {
   char fileName[500], buffer[1000], *p;
+  bool depend_found = false;
   strcpy(fileName, projDir);
   strcat(fileName, "DependTable");
 
@@ -115,11 +116,16 @@ void checkDependencies(FILE* vdb, const char *varName)
     {
       if ( (p = strtok(NULL, "\n")) )
       {
+        if (depend_found)	// There is more than one entry in the DependTable
+        {
+          fprintf(stderr, "Multiple entries for %s in DependTable found, repair.  Fatal.\n", varName);
+          exit(1);
+        }
+
+        depend_found = true;
         while (isspace(*p)) ++p;
           fprintf(vdb,"      <dependencies>%s</dependencies>\n",p);
       }
-    //  else
-//        nc_put_att_text(ncid, varID, "Dependencies", 1, "");
     }
   }
 
