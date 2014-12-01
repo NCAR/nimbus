@@ -12,7 +12,7 @@
 #include "amlib.h"
 
 extern NR_TYPE (*pcorQCF)(NR_TYPE, NR_TYPE);
-extern NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack);
+NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack);
 
 /* -------------------------------------------------------------------- */
 void sqcfc(DERTBL *varp)
