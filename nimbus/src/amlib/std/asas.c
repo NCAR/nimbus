@@ -284,7 +284,7 @@ void suflwc(DERTBL *varp)
    * from NOMADSS flight data, and for the GV it is a cubic polynomial derived
    * from CONTRAST flight data.  M Reeves, 09/29/2014.
    */
-  if (ups*10.0 > psxc)
+  if (ups*10.0 > 1.04*psxc)
   {
     if (cfg.Aircraft() == Config::C130)
     {
