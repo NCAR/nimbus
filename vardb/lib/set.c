@@ -160,7 +160,6 @@ int VarDB_SetCalRangeLower(const char vn[], float value)
 int VarDB_SetCalRangeUpper(const char vn[], float value)
 {
   int	indx;
-  uint32_t	*p = (uint32_t *)&value;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);

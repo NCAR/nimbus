@@ -42,7 +42,7 @@ int SaveVarDB(const char fileName[])
 
   if ((rc = fwrite((char *)VarDB, VarDB_RecLength, VarDB_nRecords,fp)) != VarDB_nRecords)
     {
-    fprintf(stderr, "VarDB: wrote %d out of %d entries\n", rc, VarDB_nRecords);
+    fprintf(stderr, "VarDB: wrote %d out of %ld entries\n", rc, VarDB_nRecords);
     fclose(fp);
     return(ERR);
     }

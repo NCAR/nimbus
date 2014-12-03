@@ -11,7 +11,7 @@ HEADER=		vardb.h vardb.hh
 
 INCLUDES=	-I${INCLUDEDIR}
 DEFINES=
-CFLAGS=		-g -O2 ${INCLUDES} ${DEFINES}
+CFLAGS=		-Wall -g -O2 ${INCLUDES} ${DEFINES}
 
 COBJS=		init.o get.o set.o save.o merge.o sort.o category.o std_name.o
 CPPOBJS=	vardb.o

@@ -164,7 +164,8 @@ char **VarDB_GetVariablesInStandardName(int catNum)
   p = (char **)malloc(sizeof(char *));
 
   for (i = 0; i < VarDB_nRecords; ++i)
-    if (ntohl(((struct var_v2 *)VarDB)[i].standard_name) == catNum)
+    if (ntohl(((struct var_v2 *)VarDB)[i].standard_name) == 
+	(unsigned int)catNum)
       {
       p = (char **)realloc(p, sizeof(char *) * (cnt+2));
       p[cnt] = ((struct var_v2 *)VarDB)[i].Name;

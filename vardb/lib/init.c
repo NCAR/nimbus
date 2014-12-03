@@ -44,7 +44,6 @@ long	VarDB_RecLength, VarDB_nRecords;
 static void *readFile(const char fileName[], VarDB_Hdr *vdbHdr);
 static bool checkIfOlderVersionAndConvert(void *varDB, VarDB_Hdr *vdbHdr);
 static bool performCorrections(void *varDB);
-static void addVariable(void *vardb, var_v2 *p);
 
 
 /* -------------------------------------------------------------------- */
@@ -135,7 +134,7 @@ static void *readFile(const char fileName[], VarDB_Hdr *vdbHdr)
 
   if ((rc = fread((char *)varDB, VarDB_RecLength, VarDB_nRecords, fp)) != VarDB_nRecords)
   {
-    fprintf(stderr, "VarDB: read %d out of %d entries\n", rc, VarDB_nRecords);
+    fprintf(stderr, "VarDB: read %d out of %ld entries\n", rc, VarDB_nRecords);
     fclose(fp);
     return(0);
   }
@@ -179,6 +178,40 @@ static bool checkIfOlderVersionAndConvert(void *varDB, VarDB_Hdr *vdbHdr)
 
   return(modified);
 }
+
+#ifdef notdef
+static void addVariable(void *varDB, var_v2 *p)
+{
+  void	*tmp;
+  int	pos;
+
+  // Don't add if already exists.
+  for (pos = 0; pos < VarDB_nRecords; ++pos)
+    if (strcmp(p->Name, ((struct var_v2 *)varDB)[pos].Name) == 0)
+      return;
+
+  if ((tmp = (void *)realloc(varDB, (unsigned)(VarDB_nRecords+1) *
+                                (unsigned)VarDB_RecLength)) == NULL)
+    return;
+
+  varDB = tmp;
+
+  // Add in sorted position
+  for (pos = VarDB_nRecords-1; pos >= 0; --pos)
+{
+    if (strcmp(p->Name, ((struct var_v2 *)varDB)[pos].Name) < 0)
+      memcpy( &((struct var_v2 *)varDB)[pos+1],
+                &((struct var_v2 *)varDB)[pos],
+                sizeof(struct var_v2));
+    else
+      break;
+}
+
+  ++pos;
+  ++VarDB_nRecords;
+  memcpy(&((struct var_v2 *)varDB)[pos], p, sizeof(var_v2));
+}
+#endif
 
 static bool performCorrections(void *varDB)
 {
@@ -229,38 +262,6 @@ modified = true;
   return(modified);
 }
 
-static void addVariable(void *varDB, var_v2 *p)
-{
-  void	*tmp;
-  int	pos;
-
-  // Don't add if already exists.
-  for (pos = 0; pos < VarDB_nRecords; ++pos)
-    if (strcmp(p->Name, ((struct var_v2 *)varDB)[pos].Name) == 0)
-      return;
-
-  if ((tmp = (void *)realloc(varDB, (unsigned)(VarDB_nRecords+1) *
-                                (unsigned)VarDB_RecLength)) == NULL)
-    return;
-
-  varDB = tmp;
-
-  // Add in sorted position
-  for (pos = VarDB_nRecords-1; pos >= 0; --pos)
-{
-    if (strcmp(p->Name, ((struct var_v2 *)varDB)[pos].Name) < 0)
-      memcpy( &((struct var_v2 *)varDB)[pos+1],
-                &((struct var_v2 *)varDB)[pos],
-                sizeof(struct var_v2));
-    else
-      break;
-}
-
-  ++pos;
-  ++VarDB_nRecords;
-  memcpy(&((struct var_v2 *)varDB)[pos], p, sizeof(var_v2));
-}
-
 /* -------------------------------------------------------------------- */
 bool VarDB_isNcML()
 {
@@ -285,7 +286,8 @@ void ReleaseVarDB()
 /* -------------------------------------------------------------------- */
 int VarDB_lookup(const char vn[])
 {
-  int	i, masterNrecords;
+  int	i;
+  /*int masterNrecords;*/
   char	tname[64];
 
   // Strip off suffix for lookup.
