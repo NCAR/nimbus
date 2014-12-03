@@ -12,23 +12,35 @@
  *  -------------------------------------------------------------------------
  */
 
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/dom/DOM.hpp>
+#include <xercesc/sax/HandlerBase.hpp>
+
+#define _vardb_cc_
+namespace xercesc_forward = xercesc;
 #include "vardb.hh"
 
-//---------------------------------------------------------------------------------------
-//Returns number of entries in dictionary
+using namespace xercesc;
+using namespace std;
+
+#include <boost/algorithm/string.hpp>
+
+//---------------------------------------------------------------------------
+// Returns number of entries in dictionary
 int VDBDictionary::num_entries() const
 {
   DOMNodeList* elms=_docRoot->getChildNodes();
   return elms->getLength()/2;
 }
-//---------------------------------------------------------------------------------------
-//Returns Dictionary index starting at 0
+
+//---------------------------------------------------------------------------
+// Returns Dictionary index starting at 0
 std::string VDBDictionary::get_entry(int index)
 {
   DOMNodeList *elms = _docRoot->getChildNodes();
   DOMNode *holder = _docRoot->getFirstChild();
   holder = holder->getNextSibling();
-  if (index > elms->getLength()/2-1)
+  if (index > (int)elms->getLength()/2-1)
   {
     return "";
   }
@@ -41,9 +53,10 @@ std::string VDBDictionary::get_entry(int index)
   DOMNode *att = atts->getNamedItem(XMLString::transcode("name"));
   return XMLString::transcode(att->getNodeValue());
 }
-//---------------------------------------------------------------------------------------
-//This function initiates a dictionary.
-VDBDictionary* VDBFile::get_dictionary(const string dictionary_name) const
+
+//---------------------------------------------------------------------------
+// This function initiates a dictionary.
+VDBDictionary* VDBFile::get_dictionary(const std::string dictionary_name) const
 {
   XMLCh *tag = XMLString::transcode(dictionary_name.c_str());
   DOMNodeList* x = _docRootNode->getElementsByTagName(tag);
@@ -51,28 +64,29 @@ VDBDictionary* VDBFile::get_dictionary(const string dictionary_name) const
   VDBDictionary *vd = new VDBDictionary(Dictionary,dictionary_name);
   return vd;
 }
-//======================================================================================
-//---------------------------------------------------------------------------------------
-//returns variable name
+
+//---------------------------------------------------------------------------
+// returns variable name
 std::string VDBVar::name()
 {
   DOMNamedNodeMap* atts = _variable->getAttributes();
   DOMNode*  name = atts->getNamedItem(XMLString::transcode("name"));
   return XMLString::transcode(name->getNodeValue());
 }
-//---------------------------------------------------------------------------------------
-//Returns text associated with attribute, given by index
-//input: index- attribute's position in vdb variable
-//output-attribute value
+
+//---------------------------------------------------------------------------
+// Returns text associated with attribute, given by index
+// input: index- attribute's position in vdb variable
+// output-attribute value
 std::string VDBVar::get_attribute(int index)const
 {
   DOMNodeList* x = _variable->getChildNodes();
   DOMNode* holder = x->item(1);
-  if (index > x->getLength()/2-1)
+  if (index > (int)x->getLength()/2-1)
   {
     return "";
   }
-  for (int i = 0;i < index; i++)
+  for (int i = 0; i < index; i++)
   {
     holder = holder->getNextSibling();
     holder = holder->getNextSibling();
@@ -83,17 +97,19 @@ std::string VDBVar::get_attribute(int index)const
   std::string answer = XMLString::transcode(z->getNodeValue());
   return answer;
 }
-//---------------------------------------------------------------------------------------
-//Returns number of attributes associated sellected variable
+
+//---------------------------------------------------------------------------
+// Returns number of attributes associated sellected variable
 int VDBVar::num_atts() const
 {
   DOMNodeList* x = _variable->getChildNodes();
   return x->getLength()/2;
 }
-//---------------------------------------------------------------------------------------
-//Returns text associated with a variable's attribute
-//input: attr_name: attribute name, such as units, name, or longname
-//output: Text associated with variable's attribute
+
+//---------------------------------------------------------------------------
+// Returns text associated with a variable's attribute
+// input: attr_name: attribute name, such as units, name, or longname
+// output: Text associated with variable's attribute
 std::string VDBVar::get_attribute(const std::string attr_name) const
 { 
   DOMNodeList* x = _variable->getChildNodes();
@@ -115,7 +131,7 @@ std::string VDBVar::get_attribute(const std::string attr_name) const
   }
   return answer;
 }
-//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //Sets a variable's information for specified attribute
 //input: attr_name: attribute name, such as units, name, or longname
 void VDBVar::set_attribute(const std::string attr_name, const std::string value)
@@ -124,7 +140,7 @@ void VDBVar::set_attribute(const std::string attr_name, const std::string value)
   DOMNodeList *x = _variable->getChildNodes();
   DOMNode *holder = x->item(1);
 
-  for (int i = 1; i <= x->getLength(); i++)
+  for (int i = 1; i <= (int)x->getLength(); i++)
   {
     currentName = XMLString::transcode(holder->getNodeName());
     if (boost::iequals(XMLString::transcode(holder->getNodeName()),attr_name))
@@ -138,24 +154,25 @@ void VDBVar::set_attribute(const std::string attr_name, const std::string value)
     holder = holder->getNextSibling();
   }
 }
-//=======================================================================================
-//---------------------------------------------------------------------------------------
-//Saves VDB changes, releases xerces memory
+
+//---------------------------------------------------------------------------
+// Saves VDB changes, releases xerces memory
 void VDBFile::close()
 {
   _doc->release();
 }
 
-//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //This function writes the current xerces tree to a new XML file
 void VDBFile::save()
 {
   DOMImplementation *impl = DOMImplementation::getImplementation();
-  DOMLSSerializer *theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+  DOMLSSerializer *theSerializer = 
+    ((DOMImplementationLS*)impl)->createLSSerializer();
   XMLCh* toTranscode = theSerializer->writeToString(_doc);
   char* xmlChar = XMLString::transcode(toTranscode);
   std::string transcodedStr;
-  transcodedStr = string(xmlChar);
+  transcodedStr = std::string(xmlChar);
   XMLString::release(&xmlChar);
   XMLString::release(&toTranscode);
   theSerializer->release(); 
@@ -165,8 +182,8 @@ void VDBFile::save()
   outpt.close();
 }
 
-//---------------------------------------------------------------------------------------
-//This function opens a given filename and initializes xerces
+//---------------------------------------------------------------------------
+// This function opens a given filename and initializes xerces
 void VDBFile::open(const std::string file)
 {
   //save location
@@ -204,8 +221,9 @@ void VDBFile::open(const std::string file)
   _valid = true;
 }
 
-//---------------------------------------------------------------------------------------
-//This function searches through the XML document for an element with a given name
+//---------------------------------------------------------------------------
+// This function searches through the XML document for an element with a
+// given name
 VDBVar *VDBFile::search_for_var(const std::string var) const
 {
   XMLCh *tag = XMLString::transcode("variableCatalog");
@@ -218,7 +236,7 @@ VDBVar *VDBFile::search_for_var(const std::string var) const
   holder = holder->getNextSibling();
   std::string posName = var;
 
-  for (int i = 1;i <= elems->getLength()/2; i++)
+  for (int i = 1;i <= (int)elems->getLength()/2; i++)
   {
     DOMNamedNodeMap *atts = holder->getAttributes();
     DOMNode *name = atts->getNamedItem(XMLString::transcode("name"));
@@ -226,8 +244,8 @@ VDBVar *VDBFile::search_for_var(const std::string var) const
 
     if(boost::iequals(XMLString::transcode(name->getNodeValue()),var))
     {
-      //Node has been found. A pointer is now created pointing to a VDBVar class 
-      //with _variable initialized as a pointer to the node
+      //Node has been found. A pointer is now created pointing to a VDBVar
+      //class with _variable initialized as a pointer to the node
       VDBVar *v = new VDBVar(holder);
       return v;
     }
@@ -237,8 +255,9 @@ VDBVar *VDBFile::search_for_var(const std::string var) const
   return NULL;
 }
 
-//---------------------------------------------------------------------------------------
-//This function searches through the XML document for an element with a given name, correcting for _'s
+//---------------------------------------------------------------------------
+// This function searches through the XML document for an element with a
+// given name, correcting for _'s
 VDBVar *VDBFile::get_var(const string var) const
 {
   VDBVar *rc = NULL;
@@ -254,8 +273,8 @@ VDBVar *VDBFile::get_var(const string var) const
   return rc;
 }
 
-//---------------------------------------------------------------------------------------
-//Returns variable at input index in vardb starting at zero
+//---------------------------------------------------------------------------
+// Returns variable at input index in vardb starting at zero
 VDBVar *VDBFile::get_var(int index)
 {
   //Get VariableCatalog node as varCat, x is intermediate domNodeList variable
@@ -270,7 +289,7 @@ VDBVar *VDBFile::get_var(int index)
   DOMNode *holder = varCat->getFirstChild();
   holder = holder->getNextSibling();
 
-  if (index>elems->getLength()/2-1)
+  if (index > (int)elems->getLength()/2-1)
   {
     return NULL;
   }
@@ -282,8 +301,9 @@ VDBVar *VDBFile::get_var(int index)
   VDBVar *v = new VDBVar(holder);
   return v;
 };
-//---------------------------------------------------------------------------------------
-//Returns number of variables in vardb
+
+//---------------------------------------------------------------------------
+// Returns number of variables in vardb
 int VDBFile::num_vars() const
 {
   XMLCh *tag = XMLString::transcode("variableCatalog");
