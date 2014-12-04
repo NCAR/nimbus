@@ -4,30 +4,22 @@
 LIBDIR=		${JLOCAL}/lib
 MANDIR=		${JLOCAL}/man/man3
 INCLUDEDIR=	${JLOCAL}/include
-CC=		g++
 
 LIBNAME=	VarDB
 HEADER=		vardb.h vardb.hh
 
 INCLUDES=	-I${INCLUDEDIR}
 DEFINES=
-CFLAGS=		-Wall -g -O2 ${INCLUDES} ${DEFINES}
+CXXFLAGS=	-Wall -g -O2 ${INCLUDES} ${DEFINES}
 
-COBJS=		init.o get.o set.o save.o merge.o sort.o category.o std_name.o
-CPPOBJS=	vardb.o
+COBJS=	init.o get.o set.o save.o merge.o sort.o category.o std_name.o
+CPPOBJS=vardb.o
 
-SRCS=		init.c get.c set.c save.c merge.c sort.c category.c std_name.c
-CPPSRCS=	vardb.cc
+SRCS=	init.cc get.cc set.cc save.cc merge.cc sort.cc category.cc std_name.cc
+CPPSRCS=vardb.cc
 
 CHDR=	vardb.h
 CPPHDR=	vardb.hh
-
-.SUFFIXES: .o .h .c .cc
-
-.cc.o:
-	${CC} ${CFLAGS} -c $*.cc
-.c.o:
-	${CC} ${CFLAGS} -c $*.c
 
 all: lib${LIBNAME}.a
 
