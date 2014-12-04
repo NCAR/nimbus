@@ -54,7 +54,7 @@ test -d ${JLOCAL}/man/man3 || mkdir ${JLOCAL}/man/man3
 
 # Build libraries first.  libraf++ needs to go first to install header.h.
 
-foreach file ( libraf libraf++ ads2/hdr_api libpms vardb/lib )
+foreach file ( libraf libraf++ ads2/hdr_api libpms )
   (cd $file; echo $file; make install)
   if ($num > 0) then
     echo "$file BUILT"
@@ -63,9 +63,11 @@ foreach file ( libraf libraf++ ads2/hdr_api libpms vardb/lib )
   endif
 end
 
+scons -C vardb install
+
 # Programs using 'make install'.
 
-foreach file ( ads2/hdrbld ncplot ncpp/src ads2/xhd xpms2d/src instruments/rdma ads_utils/edADShdr vardb/utils vardb/utils/vdb2xml )
+foreach file ( ads2/hdrbld ncplot ncpp/src ads2/xhd xpms2d/src instruments/rdma ads_utils/edADShdr )
   (cd $file; echo ""; make install)
   if ($num > 0) then
     echo "$file BUILT"
@@ -76,7 +78,7 @@ end
 
 # Programs using 'scons' and 'scons install'.
 
-foreach file ( nimbus caledit kml_tools/acTrack2kml instruments/pms2d/process2d instruments/pms2d/oapinfo instruments/cip/padsinfo instruments/sid2h instruments/cpi/cpidisplay nc_utils/ncReorder nc_utils/ncvarlist nc_utils/nc_gap vardb/editpy nc_utils/flt_time )
+foreach file ( nimbus caledit kml_tools/acTrack2kml instruments/pms2d/process2d instruments/pms2d/oapinfo instruments/cip/padsinfo instruments/sid2h instruments/cpi/cpidisplay nc_utils/ncReorder nc_utils/ncvarlist nc_utils/nc_gap nc_utils/flt_time )
   (cd $file; echo $file; scons install)
   if ($num > 0) then
     echo "$file BUILT"

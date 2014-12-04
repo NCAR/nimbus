@@ -1,0 +1,12 @@
+# -*- python -*-
+
+env = Environment(tools=['default', 'jlocal', 'vardb'])
+
+env.Append(CXXFLAGS=Split("-Wall -g -O2"))
+
+vdbdump = env.Program("vdbdump.cc")
+
+env.Default(vdbdump)
+env.Install("$JLOCAL/bin", vdbdump)
+
+env.SConscript('vdb2xml/SConscript')

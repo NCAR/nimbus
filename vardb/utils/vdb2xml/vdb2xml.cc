@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
 
   if (argc < 2)
   {
-    fprintf(stderr, "Usage: vdbdump [-a] [proj_num | VarDB_filename]\n");
+    fprintf(stderr, "Usage: vdb2xml [-a] [proj_num | VarDB_filename]\n");
     return(1);
   }
 

@@ -1,0 +1,24 @@
+# -*- python -*-
+
+env = Environment(tools=['default', 'jlocal'])
+
+env.Append(CXXFLAGS=Split("-Wall -g -O2"))
+
+headers = Split("vardb.h vardb.hh")
+srcs = Split("""
+init.cc get.cc set.cc save.cc merge.cc sort.cc category.cc std_name.cc vardb.cc
+""")
+
+libvardb = env.Library('VarDB', srcs)
+env.Default(libvardb)
+
+env.Install("$JLOCALLIBDIR", libvardb)
+env.Install("$JLOCALINCDIR/raf", headers)
+env.Install("$JLOCAL/man/man3", "vardb.3")
+
+def vardb(env):
+    env.AppendLibrary('VarDB')
+    env.Require('xercesc')
+
+Export('vardb')
+

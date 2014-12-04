@@ -1,0 +1,20 @@
+# -*- python -*-
+
+env = Environment(tools=['default', 'jlocal'])
+
+modules = Split("""
+addSignal.py
+delete.py
+generateButtons.py
+getInfo.py
+makeSingleRadioButton.py
+newSignal.py
+radioClickEvent.py
+remove.py
+setup.py
+windowSetup.py
+""")
+
+# Targets are only to install files.
+env.Install('$JLOCAL/bin', 'vdbEditor')
+env.Install('$JLOCAL/lib/python/site-packages/vardb', modules)
