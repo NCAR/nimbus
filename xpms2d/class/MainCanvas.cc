@@ -4,7 +4,7 @@ OBJECT NAME:    MainCanvas.cc
  
 FULL NAME:      Main canvas
  
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2014
 -------------------------------------------------------------------------
 */
 
@@ -111,6 +111,9 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
 
   if (ProbeType(record) == FAST2D)
     drawFast2D(record, stats, version, probeNum, ps);
+  else
+  if (ProbeType(record) == CIP)
+    drawCIP(record, stats, version, probeNum, ps);
   else
   if (ProbeType(record) == HVPS)
     drawHVPS(record, stats, version, probeNum, ps);
@@ -709,6 +712,204 @@ pen->SetColor(color->GetColor(0)); }
   memcpy((void *)&prevRec, (void *)record, sizeof(P2d_rec));
 }
 
+/* -------------------------------------------------------------------- */
+// DMT CIP/PIP probes are run length encoded.  Decode here.
+// Duplicated in src/process.cc, not consolidated at this time due to static variables.
+size_t MainCanvas::uncompressCIP(unsigned char *dest, const unsigned char src[], int nbytes)
+{
+  int d_idx = 0, i = 0;
+
+  static size_t nResidualBytes = 0;
+  static unsigned char residualBytes[16];
+
+  if (nResidualBytes)
+  {
+    memcpy(dest, residualBytes, nResidualBytes);
+    d_idx = nResidualBytes;
+    nResidualBytes = 0;
+  }
+
+  for (; i < 4096; ++i)
+  {
+    unsigned char b = src[i];
+
+    int nBytes = (b & 0x1F) + 1;
+
+    if ((b & 0x20))     // This is a dummy byte; for alignment purposes.
+    {
+      continue;
+    }
+
+    if ((b & 0xE0) == 0)
+    {
+      memcpy(&dest[d_idx], &src[i+1], nBytes);
+      d_idx += nBytes;
+      i += nBytes;
+    }
+
+    if ((b & 0x80))
+    {
+      memset(&dest[d_idx], 0, nBytes);
+      d_idx += nBytes;
+    }
+    else
+    if ((b & 0x40))
+    {
+      memset(&dest[d_idx], 0xFF, nBytes);
+      d_idx += nBytes;
+    }
+  }
+
+  // Align data.  Find a sync word and put record on mod 8.
+  for (i = 0; i < d_idx; ++i)
+  {
+     if (memcmp(&dest[i], &CIP_Sync, 8) == 0)
+     {
+       int n = (&dest[i] - dest) % 8;
+       if (n > 0)
+       {
+         memmove(dest, &dest[n], d_idx);
+         d_idx -= n;
+       }
+       break;
+     }
+  }
+
+  if (d_idx % 8)
+  {
+    size_t idx = d_idx / 8 * 8;
+    nResidualBytes = d_idx % 8;
+    memcpy(residualBytes, &dest[idx], nResidualBytes);
+  }
+
+  return d_idx / 8;     // return number of slices.
+}
+
+/* -------------------------------------------------------------------- */
+void MainCanvas::drawCIP(P2d_rec *record, struct recStats &stats, float version, int probeNum, PostScript *ps)
+{
+  Particle	*cp;
+  int		nextColor, cntr = 0;
+  bool		colorIsBlack = false;
+  unsigned long long *p;
+
+  static unsigned long prevTime;
+  static P2d_rec prevRec;
+
+  if (memcmp((void *)record, (void *)&prevRec, sizeof(P2d_rec)) == 0)
+    stats.duplicate = true;
+
+  unsigned char image[16000];
+  size_t nSlices = uncompressCIP(image, record->data, 4096);
+
+  /**
+   * If using the View->Raw Data menu item, or if no particles were detected
+   * in the record, then come in here and do a raw display of the record.
+   * Only color code timing (green) and overload (blue) words.
+   */
+  if (displayMode == RAW_RECORD || (cp = (Particle *)stats.particles.Front()) == NULL)
+  {
+    p = (unsigned long long *)image;
+    for (size_t i = 0; i < nSlices; ++i, ++p)
+    {
+      if (*p  == CIP_Sync)
+      {
+        if (ps) ps->SetColor(color->GetColorPS(GREEN));
+        else pen->SetColor(color->GetColor(GREEN));
+      }
+
+      drawSlice(ps, i, *p);
+      if (ps) ps->SetColor(color->GetColorPS(BLACK));
+      else pen->SetColor(color->GetColor(BLACK));
+    }
+
+    if (displayMode == RAW_RECORD)
+      y += 66;	// Add enough room for a second copy of this record.
+    else
+    {
+      y += 32;	// Bail out (no particles detected from process.cc).
+      return;
+    }
+  }
+
+//  if ((cp = (Particle *)stats.particles.Front()) == NULL)
+//    return;
+
+  p = (unsigned long long *)image;
+  for (size_t i = 0; i < nSlices; )
+  {
+    if (cp == 0 || cp->reject)
+      nextColor = 0;	// black.
+    else
+      nextColor = probeNum;
+
+    if (*p == CIP_Sync)
+    {
+      /**
+       * Color code timing words:
+       * 	Green = accepted.
+       * 	Yellow = zero area image (i.e. timing bar with no visible particle).
+       * 	Red = rejected.
+       * 	Blue = overload word, also rejected.
+       */
+      if (cp && cp->reject) {
+        if (cp->h == 0 || cp->w == 0)
+          if (ps) ps->SetColor(color->GetColorPS(YELLOW));
+          else pen->SetColor(color->GetColor(YELLOW));
+        else
+          if (ps) ps->SetColor(color->GetColorPS(RED));
+          else pen->SetColor(color->GetColor(RED));
+      }
+      else {	// Green for good particle
+        if (ps) ps->SetColor(color->GetColorPS(GREEN));
+        else pen->SetColor(color->GetColor(GREEN));
+      }
+
+      if (timingWord)
+        drawSlice(ps, i, *p);
+      ++i; ++p;
+
+      // Get next particle.
+      cp = (Particle *)stats.particles.DeQueue();
+      delete cp;
+      cp = (Particle *)stats.particles.Front();
+    }
+    else
+    {
+      if (ps) ps->SetColor(color->GetColorPS(nextColor));
+      else pen->SetColor(color->GetColor(nextColor));
+
+      if (nextColor == 0)	// if Black
+        colorIsBlack = true;
+      else
+        colorIsBlack = false;
+
+      for (; i < nSlices && *p != CIP_Sync; ++p)
+        drawSlice(ps, i++, *p);
+
+      if (enchiladaWin)
+        enchiladaWin->AddLineItem(cntr++, cp);
+    }
+  }
+
+/*
+// For diagnostics, display record as is on 2nd half of screen/window.
+  for (size_t i = 0; i < nSlices_64bit; ++i)
+{ if (((unsigned long long *)record->data)[i] == 0xffffffffffffffffLL) { pen->SetColor(color->GetColor(YELLOW)); ((unsigned long long *)record->data)[i] = 0; }
+    drawSlice(ps, nSlices_64bit+i, ((unsigned long long *)record->data)[i]);
+pen->SetColor(color->GetColor(0)); }
+*/
+
+  if (displayMode == DIAGNOSTIC)
+    drawDiodeHistogram(record);
+  else
+    drawAccumHistogram(stats);
+
+  y += 32;
+  stats.prevTime = prevTime;
+  prevTime = stats.thisTime;
+  memcpy((void *)&prevRec, (void *)record, sizeof(P2d_rec));
+}
 /* -------------------------------------------------------------------- */
 void MainCanvas::enchiladaLineItem(PostScript *ps, int i, int cnt, Particle *cp)
 {

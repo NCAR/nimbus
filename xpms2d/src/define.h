@@ -45,6 +45,8 @@ const size_t MAX_PROBES = 4;
 const uint32_t StandardSyncWord = 0x55000000;
 const uint32_t SyncWordMask = 0xff000000;
 
+const unsigned long long CIP_Sync = 0xAAAAAAAAAAAAAAAALL;
+
 const unsigned long long Fast2D_Sync = 0xAAAAAA0000000000LL;
 const unsigned long long Fast2D_Overld = 0x5555AA0000000000LL;
 
@@ -117,7 +119,7 @@ enum { NORMAL, DIAGNOSTIC, ENCHILADA, RAW_RECORD };
 /* Values for "HandleError"		*/
 enum { RETURN, EXIT, IRET };
 
-enum ProbeType { UNKNOWN, PMS2D, HVPS, GREYSCALE, FAST2D };
+enum ProbeType { UNKNOWN, PMS2D, HVPS, GREYSCALE, FAST2D, CIP };
 
 extern char buffer[], *outFile, DataPath[], *timeSeg, pngPath[], psPath[];
 

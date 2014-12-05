@@ -32,7 +32,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 
 
 <h1 align=CENTER>XPMS2D User's Guide</h1>
-<h1 align=CENTER>Version 2.6.1</h1>
+<h1 align=CENTER>Version 2.7.0</h1>
 <hr>
 <h1 align=CENTER>Table Of Contents</h1>
 <ol type=A>
@@ -81,7 +81,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 <a name="oview"></a>
 <hr>
 <h1 align=CENTER>Overview</h1>
-<b>xpms2d</b> is an interactive diagnostic and plotting tool for Unix/Linux workstations.  <b>xpms2d</b> allows the user to view PMS-2D, HVPS, and 64 bit Fast2DC images and computed quantitative information on a per record basis.
+<b>xpms2d</b> is an interactive diagnostic and plotting tool for Unix/Linux workstations.  <b>xpms2d</b> allows the user to view PMS-2D, HVPS, CIP/PIP, and 64 bit Fast2DC images and computed quantitative information on a per record basis.
 <p>
 <p>
 <b>xpms2d</b> was written at the <a href="http://www.eol.ucar.edu/raf">Research
@@ -110,7 +110,9 @@ For single user, place the binary in ~/bin (Make sure ~/bin is in your
 <dt><h3>Environment</h3>
 <dd><b>xpms2d</b> is written in C++, requiring X11/R6 and Motif 2.0 (or later).
 Specifically it was developed on Redhat Linux, under Fedora 5, using
-the GNU compiler (<a href="http://gcc.gnu.org/">gcc</a> 3.4).
+the GNU compiler (<a href="http://gcc.gnu.org/">gcc</a> 3.4).  <b>xpms2d</b> has
+been successfully compiled on Mac OS X, this does require, XCode and XQuartz.  See
+Makefile for more details.
 <p>
 <b>xpms2d</b> uses, though it is not required, a shell environment variable
 called <b>DATA_DIR</b> as the default directory to locate data files.

@@ -44,6 +44,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 // 64 diode Fast 2DP, 200um.
 #define PMS2DP4		0x5034
 
+// 64 diode DMT CIP, 25um.
+#define PMS2DC8		0x4338
+
 // Greyscale which we never flew.
 #define PMS2DG1		0x4731
 #define PMS2DG2		0x4732

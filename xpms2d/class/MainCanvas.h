@@ -4,7 +4,7 @@ OBJECT NAME:	MainCanvas.h
 
 FULL NAME:	Main canvas
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2014
 -------------------------------------------------------------------------
 */
 
@@ -42,6 +42,7 @@ protected:
   void	drawPMS2D(P2d_rec *record, struct recStats &stats, float hdrVer, int probeNum, PostScript *ps);
   void	drawHVPS(P2d_rec *record, struct recStats &stats, float hdrVer, int probeNum, PostScript *ps);
   void	drawFast2D(P2d_rec *record, struct recStats &stats, float hdrVer, int probeNum, PostScript *ps);
+  void	drawCIP(P2d_rec *record, struct recStats &stats, float hdrVer, int probeNum, PostScript *ps);
 
   void	drawSlice(PostScript *ps, int i, uint32_t slice);
   void	drawSlice(PostScript *ps, int i, unsigned long long slice);
@@ -54,6 +55,7 @@ protected:
 
   void drawAccumHistogram(struct recStats &stats);
 
+  size_t uncompressCIP(unsigned char *dest, const unsigned char src[], int nbytes);
 
   int	y, maxRecs;
   int	displayMode;

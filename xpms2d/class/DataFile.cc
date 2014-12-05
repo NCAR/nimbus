@@ -555,11 +555,13 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
       size = sizeof(Mcr_rec) - sizeof(short);
       break;
 
-    case PMS2DC1: case PMS2DC2: // PMS2D
-    case PMS2DP1: case PMS2DP2:
+    case PMS2DC1: case PMS2DC2: // Original 32 diode PMS2D C probes (25um).
+    case PMS2DP1: case PMS2DP2:	// Original 32 diode PMS2D P probes (200um).
     case PMS2DH1: case PMS2DH2: // HVPS
-    case PMS2DC4: case PMS2DC6:	// 64 bit 2DC.
-    case PMS2DC5: case PMS2DP4:	// 64 bit 2DC.
+    case PMS2DC4: case PMS2DC5:	// 64 diode 2DC (25um).
+    case PMS2DC6:		// 64 diode 2DC (10um).
+    case PMS2DP4:		// 64 diode 2DP (150?um).
+    case PMS2DC8:		// CIP
       size = (P2dLRpPR * sizeof(P2d_rec)) - sizeof(short);
       break;
 
