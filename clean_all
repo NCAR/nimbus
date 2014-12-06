@@ -2,7 +2,7 @@
 
 # This could all be one big for loop, but I broke it down for readability.
 
-foreach file ( a2d_cals lib* vardb/lib ncplot ncpp/src vardb/editor xpms2d/src nimbus/src/qc ads_utils/edADShdr vardb/utils/vdb2xml vardb/utils/vdb2ncml )
+foreach file ( a2d_cals lib* ncplot ncpp/src vardb/editor xpms2d/src nimbus/src/qc ads_utils/edADShdr )
   (cd $file; echo $file; make clean)
 end
 
@@ -30,7 +30,7 @@ foreach file ( ncvarlist nc_gap mkcdf ncReorder nc_gap )
 end
 cd ..
 
-foreach file ( nimbus kml_tools/acTrack2kml kml_tools/avaps2kml caledit )
+foreach file ( nimbus kml_tools/acTrack2kml kml_tools/avaps2kml caledit vardb )
   (cd $file; echo $file; scons -c)
 end
 
