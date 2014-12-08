@@ -43,8 +43,8 @@ void initAKRD(var_base *varp)
       }
       else
       {
-        akrd_coeff.push_back(4.7958);	// Coopers latest memo 8/5/2014
-        akrd_coeff.push_back(12.7151);
+        akrd_coeff.push_back(4.852);	// Coopers latest memo 11/26/2014
+        akrd_coeff.push_back(13.23);
       }
       break;
 
@@ -75,10 +75,6 @@ void initAKRD(var_base *varp)
       }
       else
       {	// New radome in 2013 - SANGRIAA-TEST and later.
-//        akrd_coeff.push_back(4.604);	// Obsolete.
-//        akrd_coeff.push_back(18.67);
-//        akrd_coeff.push_back(6.49);
-
         akrd_coeff.push_back(4.6049);	// Cooper memo 8/15/2014; with QCF
         akrd_coeff.push_back(18.4376);
         akrd_coeff.push_back(6.7646);
