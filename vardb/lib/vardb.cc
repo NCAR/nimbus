@@ -13,8 +13,13 @@
  */
 
 #include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/dom/DOMErrorHandler.hpp>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/sax/HandlerBase.hpp>
+#include <xercesc/sax/InputSource.hpp>
+#include <xercesc/framework/MemBufInputSource.hpp>
+#include <xercesc/sax/EntityResolver.hpp>
+#include <xercesc/util/XMLString.hpp>
 
 #define _vardb_cc_
 namespace xercesc_forward = xercesc;
@@ -24,6 +29,125 @@ using namespace xercesc;
 using namespace std;
 
 #include <boost/algorithm/string.hpp>
+
+using xercesc::XMLString;
+
+#include "vdbschema.xsd.cc"
+
+namespace
+{
+  /**
+   * A class for easily interchanging between std::string and XMLCh*.  It
+   * stores the current value as a std::string, then transcodes to XMLCh*
+   * as needed.  Likewise the value of the string can be changed by
+   * assigning XMLCh* to it.
+   **/
+  class xstring : public std::string
+  {
+  public:
+    typedef std::string string;
+
+    const XMLCh *
+    xc() const
+    {
+      xercesc::XMLString::release(&mxc);
+      mxc = XMLString::transcode(this->c_str());
+      return mxc;
+    }
+
+    operator const XMLCh *() const
+    {
+      return xc();
+    }
+
+    xstring (const XMLCh *xc)
+    {
+      mxc = 0;
+      assign (xc);
+    }
+
+    xstring ()
+    {
+      mxc = 0;
+    }
+
+    xstring (const char s[])
+    {
+      mxc = 0;
+      string::operator= (s);
+    }
+
+    xstring (const xstring &xs) : string (xs)
+    {
+      mxc = 0;
+    }
+
+    xstring (const string &xs) : string (xs)
+    {
+      mxc = 0;
+    }
+
+    xstring &operator= (const XMLCh *xc)
+    {
+      return assign (xc);
+    }
+
+    xstring &operator= (const xstring &xs)
+    {
+      string::operator= (xs);
+      return *this;
+    }
+
+    xstring &assign (const XMLCh *xc)
+    {
+      if (xc)
+      {
+	char *p = XMLString::transcode(xc);
+	string::operator= (p);
+        xercesc::XMLString::release(&p);
+      }
+      else
+      {
+	string::operator= ("");
+      }
+      return *this;
+    }
+
+    ~xstring ()
+    {
+      xercesc::XMLString::release(&mxc);
+      mxc = 0;
+    }
+
+  private:
+    mutable XMLCh *mxc;
+  };
+
+  class EmbeddedEntityResolver : public xercesc::EntityResolver
+  {
+  public:
+    xercesc::InputSource*
+    resolveEntity (const XMLCh* const publicId, 
+		   const XMLCh* const systemId)
+    {
+      xstring sysid(systemId);
+      xstring xsd("vardb.xsd");
+      if (sysid == xsd)
+      {
+	return new xercesc::MemBufInputSource
+	  ((const XMLByte*)VDBSCHEMA, strlen(VDBSCHEMA), xsd);
+      }
+      return 0;
+    }
+
+    virtual
+    ~EmbeddedEntityResolver()
+    {}
+
+  };
+
+}
+
 
 //---------------------------------------------------------------------------
 // Returns number of entries in dictionary

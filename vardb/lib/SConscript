@@ -1,6 +1,6 @@
 # -*- python -*-
 
-env = Environment(tools=['default', 'jlocal'])
+env = Environment(tools=['default', 'jlocal', 'text2cc'])
 
 env.Append(CXXFLAGS=Split("-Wall -g -O2"))
 
@@ -8,6 +8,8 @@ headers = Split("vardb.h vardb.hh")
 srcs = Split("""
 init.cc get.cc set.cc save.cc merge.cc sort.cc category.cc std_name.cc vardb.cc
 """)
+
+env.EmbedTextCC("vdbschema.xsd.cc", "VDBSchema.xsd", "VDBSCHEMA")
 
 libvardb = env.Library('VarDB', srcs)
 env.Default(libvardb)

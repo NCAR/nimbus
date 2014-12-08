@@ -9,4 +9,3 @@ vdbdump = env.Program("vdbdump.cc")
 env.Default(vdbdump)
 env.Install("$JLOCAL/bin", vdbdump)
 
-env.SConscript('vdb2xml/SConscript')

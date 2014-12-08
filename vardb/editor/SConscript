@@ -1,0 +1,14 @@
+# -*- python -*-
+
+env = Environment(tools=['default', 'jlocal', 'vardb', 'netcdf'])
+
+env.Append(CXXFLAGS=Split("-Wall -g -O2"))
+env.Append(LIBS=Split("raf Xm Xt X11 Xext"))
+
+srcs = Split("vared.cc initv.cc Xwin.cc ccb.cc")
+
+vared = env.Program("vared", srcs)
+
+env.Default(vared)
+env.Install("$JLOCAL/bin", vared)
+
