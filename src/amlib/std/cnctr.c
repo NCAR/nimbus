@@ -95,6 +95,9 @@ void scFlow(DERTBL *varp)
 
 }  /* END SCFLOW */
 /* -------------------------------------------------------------------- */
+/* This is for the Water CN.  Which also puts out a Flow and Conc.  I think
+ * this was a short term test per Dave Rogers, but looks unused at this time.
+ */
 void scWFlow(DERTBL *varp)
 {
   NR_TYPE  flowc, flow, pressure, wcn_ps, tcn, temperature;
