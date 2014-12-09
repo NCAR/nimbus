@@ -350,7 +350,7 @@ int main(int argc, char *argv[])
 
   fprintf(vdb,"  </variableCatalog>\n");
   fprintf(vdb,"  <Dictionary>\n");
-  std::string dictionaryLocation="/home/local/raf/vardb/utils/vdb2xml/Dictionary";
+  std::string dictionaryLocation="/home/local/raf/vardb/vdb2xml/Dictionary";
   std::ifstream dictionaryNames;
   dictionaryNames.open(dictionaryLocation.c_str());
   
