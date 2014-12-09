@@ -34,9 +34,9 @@ void sqcrc(DERTBL *varp)
   switch (cfg.Aircraft())
   {
     case Config::HIAPER:
-      psf = GetSample(varp, 0);
-      qcf = GetSample(varp, 1);
-      attack = GetSample(varp, 2);
+      psf = GetSample(varp, 1);
+      qcf = GetSample(varp, 2);
+      attack = GetSample(varp, 3);
       if (qcr < 0.01)
         qcr = 0.01;
 
