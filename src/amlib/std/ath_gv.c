@@ -12,11 +12,7 @@ STATIC FNS:     none
 DESCRIPTION:    Ambient Temperature for anti-iced sensors:
 			GV	Harco anti-iced sensor
 
-NOTES:		TTHR1 and TTHL1 have different zee computation and recovery
-		factors than TTHR2 and TTHL2. Warning: Code hack using strchr()
-		to determine which probe.
-
-COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2008
+COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2014
 -------------------------------------------------------------------------
 */
 
@@ -24,8 +20,6 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2008
 #include "amlib.h"
 
 #include <gsl/gsl_poly.h>
-
-//extern NR_TYPE	recfrhGV[];
 
 static const int MAX_TT = 8;
 static int ProbeCount = 0;
@@ -45,18 +39,12 @@ void atfhGV_Init(var_base *varp)
     HandleFatalError("\natfh.c: atfhInit: MAX_TT exceeded, get a programmer to fix.  Fatal.");
   }
 
-/*
+
   if (strncmp(varp->name, "ATH", 3) == 0)	// HARCO only.
   {
-    std::vector<float> values;
-    if (strchr(varp->name, '1'))
-      values.push_back((float)recfrhGV[0]);	// TTH?1
-    else
-      values.push_back((float)recfrhGV[1]);	// TTH?2
-
-    AddToDefaults(varp->name, "RecoveryFactor", values);
+    AddToAttributes(varp->name, "RecoveryFactor","0.988 + 0.053 log10(mach) + 0.090 (log10(mach))^2 + 0.091 (log10(mach))^3");
   }
-*/
+
   /* Frequently ProbeCount gets set in hdr_decode.c, but we are doing it here for
    * this instrument.
    */
@@ -94,12 +82,7 @@ void satfhGVharco(DERTBL *varp)
   NR_TYPE ttfh = GetSample(varp, 0);
   NR_TYPE mach = GetSample(varp, 1);
   NR_TYPE recovery = heatedRecoveryFactor(mach);
-/*
-  if (strchr(varp->name, '1'))
-    recovery = recfrhGV[0];	// TTH?1
-  else
-    recovery = recfrhGV[1];	// TTH?2
-*/
+
   NR_TYPE atfh = AMBIENT(ttfh, recovery, mach*mach);
 
   PutSample(varp, atfh);
@@ -111,6 +94,7 @@ void satfhGVrose(DERTBL *varp)
   NR_TYPE ttfh = GetSample(varp, 0);
   NR_TYPE mach = GetSample(varp, 1);
   NR_TYPE recovery = heatedRecoveryFactor(mach);
+
   NR_TYPE atfh = AMBIENT(ttfh, recovery, mach*mach);
 
   PutSample(varp, atfh);
