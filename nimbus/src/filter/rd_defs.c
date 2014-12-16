@@ -37,15 +37,12 @@ static void  process_line(char *line_p, FILE *fp);
 
 
 /* -------------------------------------------------------------------- */
-void ReadDefaultsFile()
+void readDefaultsFile(const std::string file)
 {
-  FILE  *fp;
+  FILE *fp = OpenProjectFile(file, "r", RETURN);
 
-  nDefaults = 0;
-
-  /* Now process project specific one.
-   */
-  fp = OpenProjectFile(DEFAULTS, "r", EXIT);
+  if (fp == 0)
+    return;
 
   while (fgets(buffer, BUFF_SIZE, fp) != NULL)
   {
@@ -56,6 +53,22 @@ void ReadDefaultsFile()
   }
 
   fclose(fp);
+
+}  /* END READDEFAULTSFILE */
+
+void ReadDefaultsFile()
+{
+  std::string file;
+
+  nDefaults = 0;
+
+  // Read project specific Defaults file.
+  file = DEFAULTS;
+  readDefaultsFile(file);
+  // Read flight specific Defaults file.
+  file += ".";
+  file += cfg.FlightNumber();
+  readDefaultsFile(file);
 
 }  /* END READDEFAULTSFILE */
 
@@ -169,6 +182,7 @@ static void process_line(char *line_p, FILE *fp)
   Defaults[whichOne]->var[0] = '\0';
   Defaults[whichOne]->Dirty = false;
   Defaults[whichOne]->Used  = false;
+  Defaults[whichOne]->Values.clear();
 
   if (is_array)
   {
