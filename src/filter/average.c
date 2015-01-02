@@ -138,8 +138,7 @@ void Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l, MOD *mp)
   double sum = 0.0;
 
   for (size_t i = 0; i < n; ++i)
-    if (!isnan(in_data[i]))
-      sum += in_data[i];
+    sum += in_data[i];
 
   out_data[0] = sum;
 }
@@ -152,8 +151,7 @@ void SumVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l)
     double sum = 0.0;
 
     for (size_t j = 0; j < n; ++j)
-      if (!isnan(in_data[(j*l)+i]))
-        sum += in_data[(j * l) + i];
+      sum += in_data[(j * l) + i];
 
     out_data[i] = sum;
   }
