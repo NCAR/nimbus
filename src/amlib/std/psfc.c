@@ -12,8 +12,8 @@
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE (*pcorPSF)(NR_TYPE, NR_TYPE);
-NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack);
+extern NR_TYPE (*pcorPSF)(NR_TYPE);
+extern NR_TYPE (*pcorPSFv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
 /* -------------------------------------------------------------------- */
 void spsfc(DERTBL *varp)
@@ -23,15 +23,15 @@ void spsfc(DERTBL *varp)
   psf = GetSample(varp, 0);
   qcf = GetSample(varp, 1);
 
-  if (cfg.Aircraft() == Config::HIAPER)
+  if (cfg.Aircraft() == Config::HIAPER || cfg.Aircraft() == Config::C130)
   {
     NR_TYPE attack = GetSample(varp, 2);
 
-    psfc = psf + pcorf5_3(qcf, psf, attack);
+    psfc = psf + (*pcorPSFv2)(qcf, psf, attack);
   }
   else
   {
-    psfc = psf + (*pcorPSF)(qcf, psf);
+    psfc = psf + (*pcorPSF)(qcf);
   }
 
   if (psfc < 50.0)

@@ -11,7 +11,7 @@
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE (*pcorQCW)(NR_TYPE, NR_TYPE);
+extern NR_TYPE (*pcorQCW)(NR_TYPE);
 
 /* -------------------------------------------------------------------- */
 void sqcwc(DERTBL *varp)
@@ -19,7 +19,7 @@ void sqcwc(DERTBL *varp)
   NR_TYPE	qcw,qcwc;
 
   qcw = GetSample(varp, 0);
-  qcwc= qcw - (*pcorQCW)(qcw,1.0);
+  qcwc= qcw - (*pcorQCW)(qcw);
 
   if (qcwc < 10.0)
     qcwc = qcw;

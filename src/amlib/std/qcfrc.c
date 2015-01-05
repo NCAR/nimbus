@@ -11,16 +11,18 @@
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE (*pcorQCFR)(NR_TYPE, NR_TYPE);
+extern NR_TYPE (*pcorQCFRv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
 /* -------------------------------------------------------------------- */
 void sqcfrc(DERTBL *varp)
 {
-  NR_TYPE	qcf, psf, qcfc;
+  NR_TYPE	qcfc;
 
-  qcf	= GetSample(varp, 0);
-  psf   = GetSample(varp, 1);
-  qcfc	= qcf - (*pcorQCFR)(qcf,psf);
+  NR_TYPE qcf	= GetSample(varp, 0);
+  NR_TYPE psf   = GetSample(varp, 1);
+  NR_TYPE attack= GetSample(varp, 2);
+
+  qcfc = qcf - (*pcorQCFRv2)(qcf, psf, attack);
 
   if (qcfc < 10.0)
     qcfc = qcf;

@@ -12,22 +12,33 @@
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE (*pcorPSFD)(NR_TYPE, NR_TYPE);
+extern NR_TYPE (*pcorPSFD)(NR_TYPE);
+extern NR_TYPE (*pcorPSFDv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
 /* -------------------------------------------------------------------- */
 void spsfdc(DERTBL *varp)
 {
-  NR_TYPE	psfd, aqratio, mach = 1.0, psfdc;
+  NR_TYPE psf, qcf, psfc;
 
-  psfd		= GetSample(varp, 0);
-  aqratio	= GetSample(varp, 1);
+  psf = GetSample(varp, 0);
+  qcf = GetSample(varp, 1);
 
-  if (varp->ndep > 2)
-    mach	= GetSample(varp, 2);
+  // Doesn't currently exist on GV, but code for it anyways.
+  if (cfg.Aircraft() == Config::C130 || cfg.Aircraft() == Config::HIAPER)
+  {
+    NR_TYPE attack = GetSample(varp, 2);
 
-  psfdc = psfd * (1.0  + (*pcorPSFD)(aqratio, mach*mach));
+    psfc = psf + (*pcorPSFDv2)(qcf, psf, attack);
+  }
+  else
+  {
+    psfc = psf + (*pcorPSFD)(qcf);
+  }
 
-  PutSample(varp, psfdc);
+  if (psfc < 50.0)
+    psfc = 50.0;
+
+  PutSample(varp, psfc);
 
 }	/* END SPSFDC */
 

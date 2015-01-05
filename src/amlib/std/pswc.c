@@ -12,7 +12,7 @@
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE (*pcorPSW)(NR_TYPE, NR_TYPE);
+extern NR_TYPE (*pcorPSW)(NR_TYPE);
 
 /* -------------------------------------------------------------------- */
 void spswc(DERTBL *varp)
@@ -22,7 +22,7 @@ void spswc(DERTBL *varp)
   psw = GetSample(varp, 0);
   qcx = GetSample(varp, 1);
 
-  pswc= psw + (*pcorPSW)(qcx,1.0);
+  pswc= psw + (*pcorPSW)(qcx);
 
   if (qcx < 10.0)
     pswc = psw;

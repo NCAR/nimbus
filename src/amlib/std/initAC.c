@@ -4,11 +4,10 @@ OBJECT NAME:	initAC.c
 
 FULL NAME:	Initialize Aircraft Dependencies
 
-ENTRY POINTS:	InitAircraftDependencies()
-
-STATIC FNS:	none
-
-DESCRIPTION:	p_corr functions for each aircraft.
+DESCRIPTION:	Pressure Correction (pcors) functions for each aircraft.
+		At startup, assign pcorrs based on aircraft to a set of
+		function pointers.  These fn ptrs are then called by all
+		PS and QC amlib fns (qcbc.c, psbc.c, etc).
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2014
 -------------------------------------------------------------------------
@@ -27,18 +26,34 @@ extern int	FlightDate[];
 
 NR_TYPE	recfb, recff, recfrh, recfw, recfra, recfrhGV[2];
 
-NR_TYPE	(*pcorPSF)(NR_TYPE, NR_TYPE), (*pcorQCF)(NR_TYPE, NR_TYPE),
-	(*pcorPSFD)(NR_TYPE, NR_TYPE), (*pcorQCR)(NR_TYPE, NR_TYPE),
-	(*pcorQCW)(NR_TYPE, NR_TYPE), (*pcorPSW)(NR_TYPE, NR_TYPE),
-	(*pcorPSB)(NR_TYPE, NR_TYPE), (*pcorQCB)(NR_TYPE, NR_TYPE),
-	(*pcorQCFR)(NR_TYPE, NR_TYPE);
+// Function pointers called by QC & PS functions (qcrc.c psfc.c, etc).
+NR_TYPE	(*pcorPSF)(NR_TYPE), (*pcorQCF)(NR_TYPE),
+	(*pcorPSFD)(NR_TYPE), (*pcorQCR)(NR_TYPE),
+	(*pcorQCW)(NR_TYPE), (*pcorPSW)(NR_TYPE),
+	(*pcorPSB)(NR_TYPE), (*pcorQCB)(NR_TYPE);
+//	(*pcorQCFR)(NR_TYPE);
 
-NR_TYPE	pcorw8(NR_TYPE, NR_TYPE),pcorf8(NR_TYPE, NR_TYPE),pcorw2(NR_TYPE, NR_TYPE),
-	pcorr2(NR_TYPE, NR_TYPE),pcorb7(NR_TYPE, NR_TYPE),pcorf7(NR_TYPE, NR_TYPE),
-	pcorr1(NR_TYPE, NR_TYPE),pcorf1(NR_TYPE, NR_TYPE), pcorf3(NR_TYPE, NR_TYPE),
-	pcorr3(NR_TYPE, NR_TYPE),pcorf1_2(NR_TYPE, NR_TYPE), pcorf1_3(NR_TYPE, NR_TYPE),
-	pcorr5_2(NR_TYPE, NR_TYPE),pcorf5_2(NR_TYPE, NR_TYPE),pcorq5_2(NR_TYPE, NR_TYPE),
-	pcorr5(NR_TYPE, NR_TYPE),pcorf5(NR_TYPE, NR_TYPE),pcorq5(NR_TYPE, NR_TYPE);
+// Version 2 of above functions, that use attack.  GV & C130 only.
+NR_TYPE	(*pcorPSFv2)(NR_TYPE, NR_TYPE, NR_TYPE), (*pcorQCFv2)(NR_TYPE, NR_TYPE, NR_TYPE),
+	(*pcorPSFDv2)(NR_TYPE, NR_TYPE, NR_TYPE), (*pcorQCRv2)(NR_TYPE, NR_TYPE, NR_TYPE),
+	(*pcorQCFRv2)(NR_TYPE, NR_TYPE, NR_TYPE);
+
+
+// Aircraft specific pcor (pressure correction).
+//  Letter designation is for location; w=wing, b=boom, r=radome, f=fuselage.
+//  Number designation is for aircraft; 8=Electtra, 2=Kingair, 1=C130, 5=GV, 7=Saberliner.
+NR_TYPE	pcorw8(NR_TYPE), pcorf8(NR_TYPE),
+	pcorw2(NR_TYPE), pcorr2(NR_TYPE),
+	pcorb7(NR_TYPE), pcorf7(NR_TYPE),
+// NRL-P3, T-PARC only?
+	pcorf3(NR_TYPE), pcorr3(NR_TYPE),
+// C130
+	pcorr1(NR_TYPE), pcorf1(NR_TYPE), pcorf1_2(NR_TYPE), pcorf1_3(NR_TYPE),
+	pcorf1v2(NR_TYPE, NR_TYPE, NR_TYPE), pcorr1v2(NR_TYPE, NR_TYPE, NR_TYPE),
+// GV
+	pcorr5(NR_TYPE),pcorf5(NR_TYPE), pcorq5(NR_TYPE), pcorr5_2(NR_TYPE, NR_TYPE, NR_TYPE),
+	pcorf5_2(NR_TYPE, NR_TYPE, NR_TYPE), pcorq5_2(NR_TYPE, NR_TYPE, NR_TYPE),
+	pcorf5v2(NR_TYPE, NR_TYPE, NR_TYPE);
 
 /* reference airspeed on J-W liquid water content converted from MPH
  * to m/s
@@ -149,7 +164,7 @@ void InitAircraftDependencies()
       pcorQCR	= pcorr3;
       break;
 
-
+/*  Should use something closer to GV, than C130.
     case Config::NOAA_G4:
       LogMessage("NOAA G4 pcor's installed.");
       jwref	= 1 * XMPHMS;
@@ -161,7 +176,7 @@ void InitAircraftDependencies()
       pcorQCW	= NULL;
       pcorPSW	= NULL;
       break;
-
+*/
     case Config::B57:
       LogMessage("NCAR WB57 pcor's installed.");
       pcorQCB	= pcorb7;
@@ -178,19 +193,19 @@ void InitAircraftDependencies()
       if (strcmp(buffer, "200309") > 0)
       { // AIRS-II & Later
         LogMessage("PCORS:  AIRS-II and later pcors().");
-        pcorPSF	= pcorf1_3;
-        pcorQCFR = pcorf1_3;	
+        pcorPSFv2	= pcorr1v2;
+        pcorQCFRv2	= pcorr1v2;	
       }
       else
       { // Pre-AIRS-II
         LogMessage("PCORS:  Pre-AIRS-II pcors().");
-        pcorPSF	= pcorf1;
-        pcorQCFR = pcorf1_2;
+        pcorPSFv2	= pcorr1v2;
+        pcorQCFRv2	= pcorr1v2;
       }
 
-      pcorPSFD	= pcorf1;
-      pcorQCF	= pcorf1_2;
-      pcorQCR	= pcorr1;	
+      pcorPSFDv2= pcorf1v2;
+      pcorQCFv2	= pcorf1v2;
+      pcorQCRv2	= pcorf1v2;
       pcorQCW	= NULL;
       pcorPSW	= NULL;
       break;
@@ -200,12 +215,13 @@ void InitAircraftDependencies()
 
       sprintf(buffer, "%04d%02d", FlightDate[2], FlightDate[0]);
 //printf("[%s] == [%s]\n", buffer, "200607");
-      if (strcmp(buffer, "200607") > 0)
-      { // Post-TREX
+//      if (strcmp(buffer, "200607") > 0)
+//      { // Post-TREX
         LogMessage("PCORS:  Post-TREX pcors().");
-        pcorQCF	= pcorf5_2;      
-        pcorQCR = pcorf5_2;
-        pcorPSF	= pcorf5_2;
+        pcorQCFv2 = pcorf5v2;
+        pcorQCRv2 = pcorf5v2;
+        pcorPSFv2 = pcorf5v2;
+/*
       }
       else
       { // TREX and earlier.
@@ -214,7 +230,7 @@ void InitAircraftDependencies()
         pcorQCR	= pcorq5;
         pcorPSF	= pcorr5;
       }
-
+*/
       recfb	= 0.985;
       recfrh	= 0.985;
       tfher1	= -1.7244;
@@ -265,51 +281,51 @@ void InitAircraftDependencies()
 }	/* END INITAIRCRAFTDEPENDANCIES */
 
 /* Electra ------------------------------------------------------------ */
-NR_TYPE pcorw8(NR_TYPE q, NR_TYPE q1)
+NR_TYPE pcorw8(NR_TYPE q)
 {
   return(1.23 - 0.0846 * q);	
 }
 
-NR_TYPE pcorf8(NR_TYPE q, NR_TYPE q1)
+NR_TYPE pcorf8(NR_TYPE q)
 {
   return(0.366 - 0.0182 * q);	
 }
 
 /* NRL P-3 ------------------------------------------------------------ */
-NR_TYPE pcorr3(NR_TYPE q, NR_TYPE q1)
+NR_TYPE pcorr3(NR_TYPE q)
 {
   return(P3_RADOME_PCORS[0] - P3_RADOME_PCORS[1] * q);
 }
 
-NR_TYPE pcorf3(NR_TYPE q, NR_TYPE q1)
+NR_TYPE pcorf3(NR_TYPE q)
 {
   return(P3_FUSELAGE_PCORS[0] + q * (P3_FUSELAGE_PCORS[1] + P3_FUSELAGE_PCORS[2] * q));
 }
 
 /* KingAir ------------------------------------------------------------ */
-NR_TYPE pcorw2(NR_TYPE q, NR_TYPE q1)
+NR_TYPE pcorw2(NR_TYPE q)
 {
   return(-0.3112 - 0.0339 * q);
 }
 
-NR_TYPE pcorr2(NR_TYPE q, NR_TYPE q1)
+NR_TYPE pcorr2(NR_TYPE q)
 {
   return(-1.781 + (0.0655 - 0.00025 * q) * q);
 }
 
 /* SaberLiner --------------------------------------------------------- */
-NR_TYPE pcorb7(NR_TYPE q, NR_TYPE q1)
+NR_TYPE pcorb7(NR_TYPE q)
 {
   return(0.9404 + q * (0.000239 * q - 0.078));
 }
 
-NR_TYPE pcorf7(NR_TYPE q, NR_TYPE q1)
+NR_TYPE pcorf7(NR_TYPE q)
 {
   return(-0.8901 + q * (0.0460 + 0.000075 * q));
 }
 
 /* GV ---------------------------------------------------------------- */
-/* delete pcorr5 and pcorq5  as not used         */
+/* delete pcorr5 and pcorq5  as not used 
 
 NR_TYPE pcorr5(NR_TYPE q, NR_TYPE q1)
 {
@@ -352,10 +368,10 @@ NR_TYPE pcorf5_2(NR_TYPE q, NR_TYPE q1)
 
   return(pfix);
 }
-
+*/
 
 // --- Cooper August 2014
-NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)
+NR_TYPE pcorf5v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)
 {
   static double a[] = { -0.012255, 0.075372, -0.087508, 0.002148 }; // New 10/1/14
 
@@ -376,6 +392,7 @@ NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)
 
 
 /* C130 --------------------------------------------------------------- */
+/*
 NR_TYPE pcorf1(NR_TYPE q, NR_TYPE q1)	// For PSFD
 {
   return (0.00163 + 0.0214 * q + 0.0145 * pow(q1,0.5));
@@ -394,6 +411,45 @@ NR_TYPE pcorf1_3(NR_TYPE q, NR_TYPE q1)	// For new PSF
 NR_TYPE pcorf1_2(NR_TYPE q, NR_TYPE q1)	// For QCF
 {
   return (0.00163 + 0.0214 * q + 0.0145 * pow(q1,0.5));
+}
+*/
+
+NR_TYPE pcorf1v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFD
+{
+  static double a[] = { -0.00637, 0.001366, 0.0149 }; // New 12/9/14
+
+  NR_TYPE M, deltaP;
+  if (Qm < 0.01) Qm = 0.01;
+
+  // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
+  if (isnan(Attack)) Attack = 3.0;
+
+  M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  deltaP = Pm * (a[0] + a[1] * Attack + a[2] * M);
+
+  // Taper if Qm is too small (take-off / landing).
+  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+
+  return deltaP;
+}
+
+NR_TYPE pcorr1v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFRD
+{
+  static double a[] = { -0.00754, 0.000497, 0.0368 }; // New 12/9/14
+
+  NR_TYPE M, deltaP;
+  if (Qm < 0.01) Qm = 0.01;
+
+  // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
+  if (isnan(Attack)) Attack = 3.0;
+
+  M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  deltaP = Pm * (a[0] + a[1] * Attack + a[2] * M);
+
+  // Taper if Qm is too small (take-off / landing).
+  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+
+  return deltaP;
 }
 
 /* END INITAC.C */
