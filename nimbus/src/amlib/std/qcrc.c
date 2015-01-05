@@ -15,8 +15,8 @@
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE	(*pcorQCR)(NR_TYPE, NR_TYPE);
-NR_TYPE pcorf5_3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack);
+extern NR_TYPE	(*pcorQCR)(NR_TYPE);
+extern NR_TYPE	(*pcorQCRv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
 
 /* -------------------------------------------------------------------- */
@@ -34,20 +34,12 @@ void sqcrc(DERTBL *varp)
   switch (cfg.Aircraft())
   {
     case Config::HIAPER:
+    case Config::C130:
       psf = GetSample(varp, 1);
       qcf = GetSample(varp, 2);
       attack = GetSample(varp, 3);
-      if (qcr < 0.01)
-        qcr = 0.01;
 
-      qcrc = qcr - pcorf5_3(qcf, psf, attack);
-      break;
-
-    case Config::C130:
-      aqratio = GetSample(varp, 1);	// aqratio = adfir / qcf
-      psf = GetSample(varp, 2);
-      mach = GetSample(varp, 3);
-      qcrc = qcr - psf * (*pcorQCR)(aqratio, mach*mach);
+      qcrc = qcr - (*pcorQCRv2)(qcf, psf, attack);
       break;
 
     case Config::ELECTRA:
@@ -67,7 +59,7 @@ void sqcrc(DERTBL *varp)
       qcrc	= qcr * (1.02633 - 0.00819 * atk3)  / bqcrc -
 						(*pcorQCR)(qcr,1.0);	*/
 
-      qcrc = qcr - (*pcorQCR)(qcr, 1.0);
+      qcrc = qcr - (*pcorQCR)(qcr);
       break;
 
     case Config::NRL_P3:
@@ -77,7 +69,7 @@ void sqcrc(DERTBL *varp)
       if (bqcrc > 0.8)
         bqcrc = 0.8;
 
-      qcrc = qcr - (*pcorQCR)(qcr,1.0) + bqcrc;
+      qcrc = qcr - (*pcorQCR)(qcr) + bqcrc;
       break;
 
     case Config::KINGAIR:
@@ -94,7 +86,7 @@ void sqcrc(DERTBL *varp)
       if (bqcrc == 0.0)
         bqcrc = 0.0001;
 
-      qcrc	= (qcr / bqcrc) - (*pcorQCR)(qcr,1.0);
+      qcrc	= (qcr / bqcrc) - (*pcorQCR)(qcr);
       break;
 
     case Config::SABRELINER:
@@ -111,7 +103,7 @@ void sqcrc(DERTBL *varp)
       if (bqcrc == 0.0)
         bqcrc = 0.0001;
 
-      qcrc    = (qcr / bqcrc) - (*pcorQCR)(qcr,1.0);
+      qcrc    = (qcr / bqcrc) - (*pcorQCR)(qcr);
       break;
     }
 
