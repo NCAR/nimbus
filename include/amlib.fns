@@ -956,6 +956,7 @@
 	"TASB",		NULL,		NULL,		stasf,
 	"TASF",		NULL,		NULL,		stasf,
 	"TASR",		NULL,		NULL,		stasr,
+	"TASFR",	NULL,		NULL,		stasf,
 	"TASW",		NULL,		NULL,		stasw,
 	"TASX",		NULL,		NULL,		stasx,
 	"TASHC",	NULL,		NULL,		stash,
@@ -965,6 +966,7 @@
 	"MACHF",	NULL,		NULL,		smach,
 	"MACHR",	NULL,		NULL,		smach,
 	"MACHW",	NULL,		NULL,		smach,
+	"MACHFR",	NULL,		NULL,		smach,
 	"MACHX",	NULL,		NULL,		sRefer,
 #
 #	Ozone
