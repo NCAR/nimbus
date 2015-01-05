@@ -59,8 +59,8 @@ void atfhGV_Init(var_base *varp)
   }
   else
   {
-    sprintf(buffer, "\natfh.c: atfhInit: Can't find %s, shouldn't happen.  Fatal.",
-		((DERTBL *)varp)->depend[0]);
+    sprintf(buffer, "\nath_gv.c: atfhInit: %s: Can't find %s, shouldn't happen.  Fatal.",
+		((DERTBL *)varp)->name, ((DERTBL *)varp)->depend[0]);
     HandleFatalError(buffer);
   }
 
