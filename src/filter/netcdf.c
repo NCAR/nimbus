@@ -281,19 +281,17 @@ void CreateNetCDF(const char fileName[])
   /* Write out Categories.
    */
   {
-  VDBDictionary *cat_dict;
-  cat_dict = vardb->get_dictionary("categories");
+    VDBFile::categories_type categories = vardb->get_categories();
 
-  buffer[0] = '\0';
-
-  strcat(buffer, cat_dict->get_entry(0).c_str());
-  for (size_t i = 1; i < cat_dict->num_entries(); ++i)
+    buffer[0] = '\0';
+    if (categories.size() > 0)
+      strcat(buffer, categories[0].c_str());
+    for (size_t i = 1; i < categories.size(); ++i)
     {
-    strcat(buffer, ",");
-    strcat(buffer, cat_dict->get_entry(i).c_str());
+      strcat(buffer, ",");
+      strcat(buffer, categories[i].c_str());
     }
-
-  putGlobalAttribute("Categories", buffer);
+    putGlobalAttribute("Categories", buffer);
   }
 
 
@@ -1119,22 +1117,18 @@ static void addCommonVariableAttributes(const var_base *var)
 
   if (vdb_var)
   {
-    std::string std_name = vdb_var->get_attribute("standard_name");
+    std::string std_name = vdb_var->get_attribute(VDBVar::STANDARD_NAME);
     if (std_name.size() > 0)
       nc_put_att_text(fd, var->varid, "standard_name", std_name.size()+1, std_name.c_str());
 
-    std::string min = vdb_var->get_attribute("min_limit");
-    std::string max = vdb_var->get_attribute("max_limit");
-    if (min.size() > 0 && max.size() > 0)
+    if (vdb_var->has_attribute(VDBVar::MIN_LIMIT) &&
+	vdb_var->has_attribute(VDBVar::MAX_LIMIT))
     {
       float   range[2];
-
-      range[0] = atof(min.c_str());
-      range[1] = atof(max.c_str());
+      range[0] = vdb_var->get_attribute_value<float>(VDBVar::MIN_LIMIT);
+      range[1] = vdb_var->get_attribute_value<float>(VDBVar::MAX_LIMIT);
       nc_put_att_float(fd, var->varid, "valid_range", NC_FLOAT, 2, range);
     }
-
-    delete vdb_var;
   }
 
   float zero[2] = { 0.0, 0.0 };

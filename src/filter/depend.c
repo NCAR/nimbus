@@ -55,7 +55,8 @@ void ReadDependencies()
     {
       VDBVar *vdb_var = vardb->get_var(dp->name);
       if (vdb_var)
-        sprintf(buffer, "%s\t%s", dp->name, vdb_var->get_attribute("dependencies").c_str());
+        sprintf(buffer, "%s\t%s", dp->name, 
+		vdb_var->get_attribute(VDBVar::DEPENDENCIES).c_str());
     }
     else
     {

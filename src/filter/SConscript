@@ -18,7 +18,9 @@ if os.path.exists('/usr/lib/openmotif'):
 #  ADS3 real-time libraries.  Moved lower to 'if env.realtime'
 env['LIBS'] = Split("""
   std user xlate
-  hdr_api pms VarDB raf raf++
+  hdr_api pms 
+  VarDB domx logx log4cpp boost_regex
+  raf raf++
   ncaru netcdf hdf5_hl hdf5 pq
   Xm Xt X11
   gsl gslcblas m
