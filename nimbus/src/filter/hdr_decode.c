@@ -2293,15 +2293,13 @@ addUnitsAndLongName(var_base *var)
   if (vdb_var)
   {
     if (var->Units.size() == 0)
-      var->Units = vdb_var->get_attribute("units");
+      var->Units = vdb_var->get_attribute(VDBVar::UNITS);
     if (var->LongName.size() == 0)
-      var->LongName = vdb_var->get_attribute("long_name");
+      var->LongName = vdb_var->get_attribute(VDBVar::LONG_NAME);
 
-    std::string cat = vdb_var->get_attribute("category");
+    std::string cat = vdb_var->get_attribute(VDBVar::CATEGORY);
     if ( cat.size() > 0 )
       var->CategoryList.push_back(cat);
-
-    delete vdb_var;
   }
 }
 
@@ -2349,13 +2347,13 @@ openVariableDatabase()
 {
   MakeProjectFileName(buffer, VARDB);
   vardb = new VDBFile(buffer);
-  if (vardb->is_valid() == false)
+  if (! vardb->is_valid())
   {
     LogMessage("InitializeVarDB for project specific failed, trying master file.\n");
 
     sprintf(buffer, VARDB.c_str(), cfg.ProjectDirectory().c_str(), "Configuration/", "raf/");
-    vardb = new VDBFile(buffer);
-    if (vardb->is_valid() == false)
+    vardb->open(buffer);
+    if (! vardb->is_valid())
       HandleFatalError("InitializeVarDB for master file failed, this is fatal.");
   }
 }
