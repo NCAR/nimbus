@@ -1,3 +1,9 @@
+#
+#                       VarDB Standard Names file.
+#
+# Caveat: don't change an unwanted catagory to something else, assign a
+# new number, comment out the one you don't want.
+#
 0, None
 1, altitude
 2, air_potential_temperature

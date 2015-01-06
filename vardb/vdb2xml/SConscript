@@ -3,7 +3,7 @@
 env = Environment(tools=['default', 'jlocal', 'vardb', 'netcdf'])
 
 env.Append(CXXFLAGS=Split("-Wall -g -O2"))
-env.Append(LIBS=["pms", "raf"])
+env.Append(LIBS=["raf"])
 
 vdb2xml = env.Program("vdb2xml.cc")
 

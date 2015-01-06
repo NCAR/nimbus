@@ -20,6 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2014
 bool tracker = false;
 
 /* -------------------------------------------------------------------- */
+int
 main(int argc, char *argv[])
 {
   int i = 1;
@@ -36,7 +37,8 @@ main(int argc, char *argv[])
      i++;
   }
 
-  VDBFile file(argv[i]);
+  VDBFile file;
+  file.open(argv[i]);
   if (file.is_valid() == false)
   {
     std::cerr << "vdbdump: Initialize failure.\n";
@@ -74,8 +76,6 @@ main(int argc, char *argv[])
 */
       printf("\n");
     }
-
-    delete var;
   }
 
   return(0);

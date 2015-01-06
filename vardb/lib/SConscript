@@ -1,12 +1,13 @@
 # -*- python -*-
 
-env = Environment(tools=['default', 'jlocal', 'text2cc'])
+env = Environment(tools=['default', 'jlocal', 'text2cc', 'domx', 'boost_regex'])
 
 env.Append(CXXFLAGS=Split("-Wall -g -O2"))
 
 headers = Split("vardb.h vardb.hh")
 srcs = Split("""
-init.cc get.cc set.cc save.cc merge.cc sort.cc category.cc std_name.cc vardb.cc
+init.cc get.cc set.cc save.cc merge.cc sort.cc category.cc std_name.cc 
+VDBFile.cc VDBVar.cc VDBDictionary.cc
 """)
 
 env.EmbedTextCC("vdbschema.xsd.cc", "VDBSchema.xsd", "VDBSCHEMA")
@@ -18,9 +19,19 @@ env.Install("$JLOCALLIBDIR", libvardb)
 env.Install("$JLOCALINCDIR/raf", headers)
 env.Install("$JLOCAL/man/man3", "vardb.3")
 
+libdir = env.Dir('.')
+
+env['DOXYFILE_DICT'].update({'PROJECT_NAME' : 'VarDB Library'})
+doxyfile = env.Doxyfile(target="#/apidocs/vardb/Doxyfile", source=srcs+headers)
+tdoxygen = env.Doxygen(source=doxyfile)
+
+env.Apidocs(srcs+headers)
+
 def vardb(env):
     env.AppendLibrary('VarDB')
-    env.Require('xercesc')
+    env.Append(CPPPATH=libdir)
+    env.Require('domx')
+    env.Require('boost_regex')
 
 Export('vardb')
 

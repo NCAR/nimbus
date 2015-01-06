@@ -18,13 +18,51 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2006
 #include <libgen.h>
 
 #include <raf/vardb.h>
+#include <raf/vardb.hh>
 
 #include <raf/portable.h>
 #include <fstream>
 #include <sstream>
+#include <string>
 
-static char defaultProjDir[1000];
-static char projDir[1000];
+using std::string;
+using std::ostringstream;
+using std::cerr;
+
+string defaultProjDir;
+string projDir;
+
+void
+setupProjDir(const std::string& vardbarg)
+{
+  string dbdir(vardbarg);
+  
+  if (dbdir.find('/') != string::npos)
+  {
+    dbdir.erase(dbdir.rfind('/')+1, dbdir.length());
+    projDir = dbdir;
+  }
+}
+
+
+string
+defaultProjDirPath(const std::string& filename)
+{
+  if (defaultProjDir.empty())
+  {
+    defaultProjDir = string(getenv("PROJ_DIR")) + "/Configuration/raf/";
+  }
+  string path = defaultProjDir + filename;
+  return path;
+}
+
+
+string
+projDirPath(const std::string& filename)
+{
+  return projDir + filename;
+}
+
 
 static const char COMMENT = '#';
 static const float fill_value = -32767.0;
@@ -32,14 +70,15 @@ static const float fill_value = -32767.0;
 extern long	VarDB_nRecords;
 
 /* -------------------------------------------------------------------- */
-void checkModVars(FILE* vdb, const char *varName)
+void
+checkModVars(VDBFile& vdb)
 {
-  char fileName[500], buffer[1000], name[100];
-  strcpy(fileName, defaultProjDir);
-  strcat(fileName, "ModVars");
+  char buffer[BUFSIZ+1];
+  char name[100];
+  string path = defaultProjDirPath("ModVars");
 
   FILE *fp;
-  if ((fp = fopen(fileName, "r")) == NULL)
+  if ((fp = fopen(path.c_str(), "r")) == NULL)
   {
     return;
   }
@@ -52,22 +91,26 @@ void checkModVars(FILE* vdb, const char *varName)
 
     sscanf(buffer, "%s %f %f", name, &vals[0], &vals[1]);
 
-    if (strcmp(name, varName) == 0)
-      fprintf(vdb,"      <modulus_range>%f %f</modulus_range>\n",vals[0],vals[1]);
+    VDBVar* var = vdb.get_var(name);
+    if (var)
+    {
+      ostringstream oss;
+      oss << vals[0] << " " << vals[1];
+      var->set_attribute(VDBVar::MODULUS_RANGE, oss.str());
+    }
   }
-
   fclose(fp);
 }
 
 /* -------------------------------------------------------------------- */
-void checkDerivedNames(FILE* vdb, const char *varName)
+void
+checkDerivedNames(VDBFile& vdb)
 {
-  char fileName[500], buffer[1000], *p;
-  strcpy(fileName, defaultProjDir);
-  strcat(fileName, "DerivedNames");
+  string path = defaultProjDirPath("DerivedNames");
+  char buffer[1000];
 
   FILE *fp;
-  if ((fp = fopen(fileName, "r")) == NULL)
+  if ((fp = fopen(path.c_str(), "r")) == NULL)
   {
     return;
   }
@@ -77,14 +120,17 @@ void checkDerivedNames(FILE* vdb, const char *varName)
     if (buffer[0] == COMMENT)
       continue;
 
-    p = strtok(buffer, " \t");
+    char* p = strtok(buffer, " \t");
 
-    if (strcmp(p, varName) == 0)
+    VDBVar* var = vdb.get_var(p);
+    if (var)
     {
       p = strtok(NULL, "\n");
-      while (isspace(*p)) ++p;
-        fprintf(vdb,"      <derive>%s</derive>\n",p);
-        return void();
+      while (isspace(*p))
+      {
+	++p;
+      }
+      var->set_attribute(VDBVar::DERIVE, p);
     }
   }
 
@@ -92,15 +138,15 @@ void checkDerivedNames(FILE* vdb, const char *varName)
 }
 
 /* -------------------------------------------------------------------- */
-void checkDependencies(FILE* vdb, const char *varName)
+void
+checkDependencies(VDBFile& vdb)
 {
-  char fileName[500], buffer[1000], *p;
-  bool depend_found = false;
-  strcpy(fileName, projDir);
-  strcat(fileName, "DependTable");
+  char buffer[1000], *p;
+
+  string path = projDirPath("DependTable");
 
   FILE *fp;
-  if ((fp = fopen(fileName, "r")) == NULL)
+  if ((fp = fopen(path.c_str(), "r")) == NULL)
   {
     return;
   }
@@ -112,251 +158,47 @@ void checkDependencies(FILE* vdb, const char *varName)
 
     p = strtok(buffer, " \t\n");
 
-    if (p && strcmp(p, varName) == 0)
-    {
-      if ( (p = strtok(NULL, "\n")) )
-      {
-        if (depend_found)	// There is more than one entry in the DependTable
-        {
-          fprintf(stderr, "Multiple entries for %s in DependTable found, repair.  Fatal.\n", varName);
-          exit(1);
-        }
-
-        depend_found = true;
-        while (isspace(*p)) ++p;
-          fprintf(vdb,"      <dependencies>%s</dependencies>\n",p);
-      }
-    }
-  }
-
-  fclose(fp);
-}
-void addHeader(FILE* vdb,std::string name,std::string iter,std::string infoFile)
-{
-  fprintf(vdb,"  <%s>\n",name.c_str());
-  std::ifstream cats;
-  cats.open(infoFile.c_str());
-  std::string raw_line,definition,useless_info,noSpace;
-  int i;
-  bool added=false;
-  while(std::getline(cats,raw_line))
-  {
-    noSpace="";
-    if (raw_line[0]!='#' and !raw_line.empty())
-    {
-      useless_info="";
-      definition="";
-      std::stringstream iss(raw_line);
-      std::getline(iss,useless_info,',');
-      std::getline(iss,definition,',');
-      i=0;
-      added=false;
-      while(definition[i]!='\0'){
-       if(definition[i]!=' ' or added==true){
-          noSpace+=definition[i];
-          added=true;
-        }
-      i++;
-      }
-      if (noSpace!="None")
-      {
-        fprintf(vdb,"    <%s name=\"%s\"/>\n",iter.c_str(),noSpace.c_str());
-      }
-    }
-  }
-  fprintf(vdb,"  </%s>\n",name.c_str());
-}
-/* -------------------------------------------------------------------- */
-void schemaMaker(std::string dictionaryLoc)
-{
- FILE* sch=fopen("vardb.xsd","w");
- fprintf(sch,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
- fprintf(sch,"   <xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\">\n");
- fprintf(sch,"         <xs:element name=\"VarDB\">\n");
- fprintf(sch,"               <xs:complexType>\n");
- fprintf(sch,"                     <xs:sequence>\n");
- fprintf(sch,"                           <xs:element name=\"categories\">\n");
- fprintf(sch,"                                 <xs:complexType>\n");
- fprintf(sch,"                                       <xs:sequence>\n");
- fprintf(sch,"                                             <xs:element name=\"category\" maxOccurs=\"unbounded\">\n");
- fprintf(sch,"                                                   <xs:complexType>\n");
- fprintf(sch,"                                                         <xs:attribute name=\"name\" type=\"xs:string\"></xs:attribute>\n");
- fprintf(sch,"                                                   </xs:complexType>\n");
- fprintf(sch,"                                             </xs:element>\n");
- fprintf(sch,"                                       </xs:sequence>\n");
- fprintf(sch,"                                 </xs:complexType>\n");
- fprintf(sch,"                           </xs:element>\n");
- fprintf(sch,"                           <xs:element name=\"standard_names\">\n");
- fprintf(sch,"                                 <xs:complexType>\n");
- fprintf(sch,"                                       <xs:sequence>\n");
- fprintf(sch,"                                             <xs:element name=\"standard_name\" maxOccurs=\"unbounded\">\n");
- fprintf(sch,"                                                   <xs:complexType>\n");
- fprintf(sch,"                                                         <xs:attribute name=\"name\" type=\"xs:string\"></xs:attribute>\n");
- fprintf(sch,"                                                   </xs:complexType>\n");
- fprintf(sch,"                                             </xs:element>\n");
- fprintf(sch,"                                       </xs:sequence>\n");
- fprintf(sch,"                                 </xs:complexType>\n");
- fprintf(sch,"                           </xs:element>\n");
- fprintf(sch,"                           <xs:element name=\"variableCatalog\">\n");
- fprintf(sch,"                                 <xs:complexType>\n");
- fprintf(sch,"                                       <xs:sequence>\n");
- fprintf(sch,"                                             <xs:element name=\"variable\" maxOccurs=\"unbounded\">\n");
- fprintf(sch,"                                                   <xs:complexType>\n");
- fprintf(sch,"                                                         <xs:sequence>\n");
-
-
- std::ifstream dictionary;
- dictionary.open(dictionaryLoc.c_str());
- std::string raw_line,named,definition;
- while(std::getline(dictionary,raw_line))
- {
-   if (raw_line[0]!='#' and !raw_line.empty())
-   {
-     named="";
-     definition="";
-     std::stringstream iss(raw_line);
-     std::getline(iss,named,',');
-     std::getline(iss,definition,',');
-     fprintf(sch,"                                                               <xs:element name=\"%s\" type=\"xs:string\" minOccurs=\"0\" ></xs:element>\n",named.c_str());
-   }
- }
-
- fprintf(sch,"                                                         </xs:sequence>\n");
- fprintf(sch,"                                                         <xs:attribute name=\"name\" type=\"xs:string\"></xs:attribute>\n");
- fprintf(sch,"                                                   </xs:complexType>\n");
- fprintf(sch,"                                             </xs:element>\n");
- fprintf(sch,"                                       </xs:sequence>\n");
- fprintf(sch,"                                 </xs:complexType>\n");
- fprintf(sch,"                           </xs:element>\n");
- fprintf(sch,"                           <xs:element name=\"Dictionary\">\n");
- fprintf(sch,"                                 <xs:complexType>\n");
- fprintf(sch,"                                       <xs:sequence>\n");
- fprintf(sch,"                                             <xs:element name=\"definition\" maxOccurs=\"unbounded\" >\n");
- fprintf(sch,"                                                 <xs:complexType>\n");
- fprintf(sch,"                                                     <xs:simpleContent>\n");
- fprintf(sch,"                                                         <xs:extension base=\"xs:string\">\n");
- fprintf(sch,"                                                             <xs:attribute name=\"name\" type=\"xs:string\"></xs:attribute>\n");
- fprintf(sch,"                                                         </xs:extension>\n");
- fprintf(sch,"                                                     </xs:simpleContent>\n");
- fprintf(sch,"                                                 </xs:complexType>\n");
- fprintf(sch,"                                             </xs:element>\n");
- fprintf(sch,"                                       </xs:sequence>\n");
- fprintf(sch,"                                 </xs:complexType>\n");
- fprintf(sch,"                           </xs:element>\n");
- fprintf(sch,"                     </xs:sequence>\n");
- fprintf(sch,"               </xs:complexType>\n");
- fprintf(sch,"         </xs:element>\n");
- fprintf(sch,"   </xs:schema>\n");
- fclose(sch);
-}
-/* -------------------------------------------------------------------- */
-int main(int argc, char *argv[])
-{
-  int	i = 1;
-  const char *p;
-  char outFile[512];
-
-  if (argc < 2)
-  {
-    fprintf(stderr, "Usage: vdb2xml [-a] [proj_num | VarDB_filename]\n");
-    return(1);
-  }
-
-  FILE* vdb;
-  vdb=fopen("vardb.xml","w");
-  fprintf(vdb,"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><VarDB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"vardb.xsd\">\n");
-  addHeader(vdb,"categories","category","Categories");
-  addHeader(vdb,"standard_names","standard_name","StandardNames");
-  fprintf(vdb,"  <variableCatalog>\n");
-
-  if (InitializeVarDB(argv[i]) == ERR)
-  {
-    fprintf(stderr, "vdb2xml: Initialize failure.\n");
-    return(1);
-  }
-
-  strcpy(defaultProjDir, getenv("PROJ_DIR"));
-  strcat(defaultProjDir, "/Configuration/raf/");
-
-  if (strchr(argv[i], '/'))
-  {
-    strcpy(projDir, argv[i]);
-    dirname(projDir);
-    strcat(projDir, "/");
-  }
-  else
-    projDir[0] = '\0';
-
-  strcpy(outFile, argv[i]);
-  strcat(outFile, ".nc");
-
-  for (i = 0; i < VarDB_nRecords; ++i)
-  {
-    struct var_v2 * vp = &((struct var_v2 *)VarDB)[i];
-
-    if (isdigit(vp->Name[0]))
+    if (!p)
     {
       continue;
     }
-
-    fprintf(vdb,"    <variable name=\"%s\">\n",vp->Name);
-    fprintf(vdb,"      <units>%s</units>\n",vp->Units);
-    fprintf(vdb,"      <long_name>%s</long_name>\n",vp->Title);
-    if (ntohl(vp->is_analog)!=0)
+    VDBVar* var = vdb.get_var(p);
+    if (var)
     {
-      fprintf(vdb,"      <is_analog>true</is_analog>\n");
-      fprintf(vdb,"      <voltage_range>%d %d</voltage_range>\n",ntohl(vp->voltageRange[0]),ntohl(vp->voltageRange[1]));
-      fprintf(vdb,"      <default_sample_rate>%d</default_sample_rate>\n",ntohl(vp->defaultSampleRate));
-    }else
-    {
-      fprintf(vdb,"      <is_analog>false</is_analog>\n");
+      if ( (p = strtok(NULL, "\n")) )
+      {
+	if (var->get_attribute(VDBVar::DEPENDENCIES).size())
+	{
+	  // There is more than one entry in the DependTable
+          cerr << "Multiple entries for " << var->name()
+	       << " in DependTable found, repair.  Fatal.\n";
+          exit(1);
+        }
+        while (isspace(*p))
+	{ 
+	  ++p;
+	}
+	var->set_attribute(VDBVar::DEPENDENCIES, p);
+      }
     }
-    if(vp->MaxLimit-vp->MinLimit!=0)
-    {
-      fprintf(vdb,"      <min_limit>%f</min_limit>\n",ntohf(vp->MinLimit));
-      fprintf(vdb,"      <max_limit>%f</max_limit>\n",ntohf(vp->MaxLimit));
-    }
-  
-    p = VarDB_GetCategoryName(vp->Name);
-    if (strcmp(p, "None"))
-      fprintf(vdb,"      <category>%s</category>\n", p);
-
-    checkModVars(vdb, vp->Name);
-    checkDerivedNames(vdb, vp->Name);
-    checkDependencies(vdb, vp->Name);
-
-    p = VarDB_GetStandardNameName(vp->Name);
-    if (strcmp(p, "None"))
-      fprintf(vdb,"      <standard_name>%s</standard_name>\n", p);
-
-    if(ntohl(vp->reference)!=0)
-    {
-      fprintf(vdb,"      <reference>true</reference>\n");
-    }else
-    {
-      fprintf(vdb,"      <reference>false</reference>\n");
-    }
-    fprintf(vdb,"    </variable>\n");
-
-
-
-// What about Spikes & Lags?  Put in aircraft specific?
-// What about default global_attrs; coordinates, etc.
   }
+  fclose(fp);
+}
 
-
-  ReleaseVarDB();
-
-
-  fprintf(vdb,"  </variableCatalog>\n");
+#ifdef notdef
+void
+update_dictionary()
+{
+  // We could at this point search for the Dictionary file and insert those
+  // lines into the XML file.  However, since the Dictionary is not used
+  // anymore (not since the schema was fixed rather than generated), it's
+  // not clear how to use it and where it should be maintained.
   fprintf(vdb,"  <Dictionary>\n");
-  std::string dictionaryLocation="/home/local/raf/vardb/vdb2xml/Dictionary";
+  std::string dictionaryLocation =
+    "/home/local/raf/vardb/utils/vdb2xml/Dictionary";
   std::ifstream dictionaryNames;
   dictionaryNames.open(dictionaryLocation.c_str());
   
-  //Create xml schema
-  schemaMaker(dictionaryLocation);
-
   std::string raw_line,named,definition;
   while(std::getline(dictionaryNames,raw_line))
   {
@@ -368,13 +210,121 @@ int main(int argc, char *argv[])
       std::getline(iss,named,',');
       std::getline(iss,definition,',');
       //std::cout<<named<<":: "<<definition<<"\n";
-      fprintf(vdb,"    <definition name=\"%s\">%s</definition>\n",named.c_str(),definition.c_str());
+      fprintf(vdb,"    <definition name=\"%s\">%s</definition>\n",
+	      named.c_str(),definition.c_str());
     }
   }
   fprintf(vdb,"  </Dictionary>\n");
-  fprintf(vdb,"</VarDB>");
-  fclose(vdb);
+}
+#endif
 
+/* -------------------------------------------------------------------- */
+int main(int argc, char *argv[])
+{
+  int	i = 1;
+
+  if (argc < 2)
+  {
+    std::cerr << "Usage: vdb2xml [proj_num | VarDB_filename]\n";
+    return(1);
+  }
+
+  string vdbpath = "vardb.xml";
+  VDBFile vdb;
+  vdb.create();
+
+  // First categories and standard names.
+  VDBFile::categories_type categories;
+  categories = VDBFile::readCategories("Categories");
+  vdb.set_categories(categories);
+
+  VDBFile::standard_names_type standard_names;
+  standard_names = VDBFile::readStandardNames("StandardNames");
+  vdb.set_standard_names(standard_names);
+
+  // Finally variables themselves, retrieved through the original 
+  // VarDB interface.
+
+  if (InitializeVarDB(argv[i]) == ERR)
+  {
+    fprintf(stderr, "vdb2xml: Initialize failure.\n");
+    return(1);
+  }
+
+  setupProjDir(argv[i]);
+
+  for (i = 0; i < VarDB_nRecords; ++i)
+  {
+    struct var_v2 * vp = &((struct var_v2 *)VarDB)[i];
+
+    if (isdigit(vp->Name[0]))
+    {
+      continue;
+    }
+
+    VDBVar* var = vdb.add_var(vp->Name);
+    var->set_attribute(VDBVar::UNITS, vp->Units);
+    var->set_attribute(VDBVar::LONG_NAME, vp->Title);
+    if (ntohl(vp->is_analog) != 0)
+    {
+      // The ntohl() returns unsigned type, but the voltage range values
+      // are actually signed.
+      var->set_attribute(VDBVar::IS_ANALOG, true);
+      ostringstream oss;
+      oss << (int)ntohl(vp->voltageRange[0]) << " " 
+	  << (int)ntohl(vp->voltageRange[1]);
+      var->set_attribute(VDBVar::VOLTAGE_RANGE, oss.str());
+      var->set_attribute(VDBVar::DEFAULT_SAMPLE_RATE, 
+			 ntohl(vp->defaultSampleRate));
+    }
+    else
+    {
+      var->set_attribute(VDBVar::IS_ANALOG, false);
+    }
+    if(vp->MaxLimit - vp->MinLimit != 0)
+    {
+      var->set_attribute(VDBVar::MIN_LIMIT, ntohf(vp->MinLimit));
+      var->set_attribute(VDBVar::MAX_LIMIT, ntohf(vp->MaxLimit));
+    }
+  
+    string category = VarDB_GetCategoryName(vp->Name);
+    if (category != "None")
+    {
+      var->set_attribute(VDBVar::CATEGORY, category);
+    }
+  }
+
+  checkModVars(vdb);
+  checkDerivedNames(vdb);
+  checkDependencies(vdb);
+
+  // Set the reference and standard_name attributes last just to be
+  // consistent with the ordering used before introducing the VDBFile API.
+  for (i = 0; i < VarDB_nRecords; ++i)
+  {
+    struct var_v2 * vp = &((struct var_v2 *)VarDB)[i];
+
+    if (isdigit(vp->Name[0]))
+    {
+      continue;
+    }
+
+    VDBVar* var = vdb.get_var(vp->Name);
+    string standard_name = VarDB_GetStandardNameName(vp->Name);
+    if (standard_name != "None")
+    {
+      var->set_attribute(VDBVar::STANDARD_NAME, standard_name);
+    }
+    var->set_attribute(VDBVar::REFERENCE, bool(ntohl(vp->reference) != 0));
+  }
+
+  // What about Spikes & Lags?  Put in aircraft specific?
+  // What about default global_attrs; coordinates, etc.
+
+  // Done with the binary variable database, the rest comes from text files.
+  ReleaseVarDB();
+
+  vdb.save(vdbpath);
   return(0);
 
 }	/* END MAIN */

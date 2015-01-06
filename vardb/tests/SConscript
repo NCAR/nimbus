@@ -1,0 +1,25 @@
+# -*- python -*-
+
+test_sources = Split("""
+test_vdbfile.cc
+""")
+
+def gtest(env):
+  env.Append(LIBS=['gtest'])
+
+env = Environment(tools=['default', 'vardb', 'boost_regex', 
+                         gtest, 'valgrind'])
+
+tv = env.Program('vardb_tests', test_sources)
+
+env.Alias('vtest',
+          env.Test(tv, "cd ${SOURCE.dir} && ./${SOURCE.file} ${GTESTS}"))
+
+memcheck = env.Command('vg.memcheck.log', [tv],
+                       "cd ${SOURCE.dir} && "
+                       "valgrind --leak-check=full"
+                       " --leak-check=full --show-leak-kinds=all"
+                       " --gen-suppressions=all ./${SOURCE.file} ${GTESTS}"
+                       " >& ${TARGET.abspath}")
+env.ValgrindLog('memcheck', memcheck)
+
