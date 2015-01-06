@@ -388,13 +388,13 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     if (raw[i]->SpikeSlope > 0.0)
       AddVariableToRAWdespikeList(raw[i]);
 
-    if (raw[i]->Output && vardb->get_var(raw[i]->name) == 0 && LogFile)
+    if (raw[i]->Output && vardb->search_var(raw[i]->name) == 0 && LogFile)
       fprintf(LogFile, "%s has no entry in the VarDB.\n", raw[i]->name);
   }
 
   for (size_t i = 0; i < derived.size(); ++i)
   {
-    if (derived[i]->Output && vardb->get_var(derived[i]->name) == 0 && LogFile)
+    if (derived[i]->Output && vardb->search_var(derived[i]->name) == 0 && LogFile)
       fprintf(LogFile,"%s has no entry in the VarDB.\n", derived[i]->name);
   }
 

@@ -2288,7 +2288,7 @@ static std::vector<NR_TYPE> getCalsForADS2(const char vn[])
 static void
 addUnitsAndLongName(var_base *var)
 {
-  VDBVar *vdb_var = vardb->get_var(var->name);
+  VDBVar *vdb_var = vardb->search_var(var->name);
 
   if (vdb_var)
   {

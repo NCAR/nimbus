@@ -53,7 +53,7 @@ void ReadDependencies()
     // Retrieve dependency list.
     if (cfg.isADS3())
     {
-      VDBVar *vdb_var = vardb->get_var(dp->name);
+      VDBVar *vdb_var = vardb->search_var(dp->name);
       if (vdb_var)
         sprintf(buffer, "%s\t%s", dp->name, 
 		vdb_var->get_attribute(VDBVar::DEPENDENCIES).c_str());
