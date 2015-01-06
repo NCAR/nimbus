@@ -1099,7 +1099,7 @@ printDependedByList()
 /* -------------------------------------------------------------------- */
 static void addCommonVariableAttributes(const var_base *var)
 {
-  VDBVar *vdb_var = vardb->get_var(var->name);
+  VDBVar *vdb_var = vardb->search_var(var->name);
 
   float miss_val = (float)MISSING_VALUE;
   nc_put_att_float(fd, var->varid, "_FillValue", NC_FLOAT, 1, &miss_val);
