@@ -1,0 +1,14 @@
+# -*- python -*-
+
+env = Environment(tools=['default', 'jlocal', 'vardb', 'testing'])
+env.Append(CPPPATH='/usr/include/python2.7')
+env.Append(LIBS='boost_python')
+
+module = env.SharedLibrary(env.File('vardb/_vardb.so'), ['src/vardb.cc'])
+pysrcs = Split("vardb/__init__.py")
+tests = Split("vardb/test_vardb.py")
+runtest = env.TestRun('pytests', tests+module+pysrcs, "py.test ${SOURCE}")
+
+# Do not run these tests by default until the module is built by default.
+#
+# env.DefaultTest(runtest)

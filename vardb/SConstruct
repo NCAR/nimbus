@@ -10,6 +10,10 @@ def vardb_global(env):
     "Copy the jlocal settings into the prefixoptions."
     env.Require('jlocal')
     env['DEFAULT_INSTALL_PREFIX'] = "$JLOCAL"
+    # The python wrapper must be built as a shared library, and so all the
+    # libraries it links against must be relocatable, eg liblogx, libdomx,
+    # and libVarDB.
+    env.AppendUnique(CXXFLAGS=['-fPIC'])
     env.Require('prefixoptions')
     
 env = Environment(tools=['default'], GLOBAL_TOOLS=[vardb_global])
@@ -20,6 +24,7 @@ SConscript('vdb2xml/SConscript')
 SConscript('vdb2ncml/SConscript')
 SConscript('editpy/SConscript')
 SConscript('editor/SConscript')
+SConscript('python/SConscript')
 SConscript('tests/SConscript')
 
 env.Alias('apidocs', env.Dir("apidocs"))
