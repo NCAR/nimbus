@@ -120,6 +120,14 @@ TEST (VDBFileTest, ValidateFile)
 
   EXPECT_EQ(vdb.num_vars(), 772);
 
+  for (int i = 0; i < vdb.num_vars(); ++i)
+  {
+    VDBVar* var = vdb.get_var(i);
+    ASSERT_TRUE(var);
+    VDBVar* var2 = vdb.get_var(var->name());
+    EXPECT_EQ(var, var2);
+  }
+
   std::vector<std::string> names;
   names = vdb.get_standard_names();
 
@@ -240,6 +248,8 @@ TEST (VDBFileTest, ReadVariable)
   EXPECT_EQ(akrd->get_attribute("long_name"),
 	    "Attack Angle, Radome Diff. Pressure");
   EXPECT_EQ(akrd->get_attribute("dependencies"), "ADIFR QCF PSF");
+  EXPECT_EQ(akrd, vdb.get_var(0));
+  EXPECT_EQ(0, vdb.get_var(1));
 
   // A missing attribute should return an empty value.
   EXPECT_EQ(akrd->get_attribute(VDBVar::VOLTAGE_RANGE), "");
@@ -379,6 +389,9 @@ TEST (VDBFileTest, AddVar)
   VDBVar* qcf = vdb.add_var("QCF");
   ASSERT_TRUE(qcf);
   EXPECT_EQ(vdb.num_vars(), 1);
+  EXPECT_EQ(vdb.get_var(0), qcf);
+  EXPECT_FALSE(vdb.get_var(1));
+  EXPECT_FALSE(vdb.get_var(-1));
   qcf->set_attribute(VDBVar::LONG_NAME, "Raw Dynamic Pressure, Fuselage");
   qcf->set_attribute(VDBVar::UNITS, "hPa");
   qcf->set_attribute(VDBVar::STANDARD_NAME, "air_pressure");
@@ -409,6 +422,9 @@ TEST (VDBFileTest, AddVar)
   vdb.load(out.str());
   qcf = vdb.get_var("QCF");
   ASSERT_TRUE(qcf);
+  EXPECT_EQ(vdb.get_var(0), qcf);
+  EXPECT_FALSE(vdb.get_var(1)) << "index out of bounds returns null";
+  EXPECT_FALSE(vdb.get_var(-1));
 
   EXPECT_EQ(qcf->get_attribute(VDBVar::LONG_NAME),
 	    "Raw Dynamic Pressure, Fuselage");

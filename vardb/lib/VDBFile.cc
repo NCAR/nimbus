@@ -395,31 +395,21 @@ search_var(const std::string& var)
 
 VDBVar*
 VDBFile::
-get_var(int index)
+get_var(int ix)
 {
-  return _variables[index];
-};
+  if (ix >= 0 && (unsigned int)ix < _variables.size())
+  {
+    return _variables[ix];
+  }
+  return 0;
+}
 
 
 int
 VDBFile::
 num_vars() const
 {
-  DOMElement* root = _doc->getDocumentElement();
-  DOMElement* catalog = domx::findElement(root, "variableCatalog");
-  DOMNodeList *children = catalog->getChildNodes();
-
-  // Count up the variables.
-  int nvar = 0;
-  for (unsigned int i = 0; i < children->getLength(); ++i)
-  {
-    DOMElement* elem = domx::asElement(children->item(i));
-    if (elem && xstring(elem->getTagName()) == "variable")
-    {
-      ++nvar;
-    }
-  }
-  return nvar;
+  return _variables.size();
 };
 
 
