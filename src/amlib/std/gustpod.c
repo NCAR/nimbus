@@ -121,7 +121,7 @@ void stas_gp(DERTBL *varp)	// True airspeed
   ps	= GetSample(varp, 1);
   tt	= GetSample(varp, 2);
 
-  fmach2 = XMAC2(qc / ps);
+  fmach2 = sqrt(XMAC2(qc / ps));
   tasg	= compute_tas(tt, recfx, fmach2);
 
   PutSample(varp, tasg);

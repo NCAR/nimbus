@@ -28,16 +28,8 @@ void stash(DERTBL *varp)
   tas	= GetSample(varp, 0);
   mr	= GetSample(varp, 1);
 
+  if (isnan(mr))
+    mr = 0.0;
+
   PutSample(varp, tas / (1.0 - 0.3039e-03 * mr));
-}
-
-/* -------------------------------------------------------------------- */
-void sxtashc(DERTBL *varp)
-{
-  NR_TYPE	tas, sphum;
-
-  tas	= GetSample(varp, 0);
-  sphum	= GetSample(varp, 1);
-
-  PutSample(varp, tas * (1.0 + 0.000304 * sphum));
 }
