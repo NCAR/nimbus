@@ -21,12 +21,10 @@ extern NR_TYPE recfw;
 /* -------------------------------------------------------------------- */
 void stasw(DERTBL *varp)
 {
-  NR_TYPE q	= GetSample(varp, 0);
-  NR_TYPE p	= GetSample(varp, 1);
-  NR_TYPE tt	= GetSample(varp, 2);
+  NR_TYPE mach	= GetSample(varp, 0);
+  NR_TYPE at	= GetSample(varp, 1);
 
-  NR_TYPE mach2	= XMAC2(q / p);
-  NR_TYPE tas	= compute_tas(tt, recfw, mach2);
+  NR_TYPE tas	= compute_tas(at, recfw, mach);
 
   PutSample(varp, tas);
 }

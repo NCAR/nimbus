@@ -129,7 +129,7 @@
 #		"XISTAS",       NULL,           NULL,           ssteve,
 #		"XISNAS",       NULL,           NULL,           ssteve,
 
-	"XTASHC",	NULL,           NULL,           sxtashc,
+	"XTASHC",	NULL,           NULL,           stash,
 	"SPHUM",	NULL,           NULL,           ssphum,
 #
 #
