@@ -194,7 +194,7 @@ void InitAircraftDependencies()
       { // AIRS-II & Later
         LogMessage("PCORS:  AIRS-II and later pcors().");
         pcorPSFv2	= pcorr1v2;
-        pcorQCFRv2	= pcorr1v2;	
+        pcorQCFRv2	= pcorr1v2;
       }
       else
       { // Pre-AIRS-II
