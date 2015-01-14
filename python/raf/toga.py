@@ -65,14 +65,13 @@ def zip_toga_folder(path):
     p = sp.Popen(args, shell=False, cwd=cwd)
     _pid_, _status_ = os.waitpid(p.pid, 0)
 
-def find_latest_dir(togatop):
-    dpath = None
+def find_latest_dirs(togatop, ndirs=1):
     dirs = glob.glob(togatop+"/*/*.D")
     dirs.sort()
     if len(dirs) > 1:
         dpath = dirs[-2]
         logging.info("latest finished directory: %s" % (dpath))
-    return dpath
+    return dirs[-ndirs-1:-1]
 
 
 def main(argv):
@@ -96,13 +95,15 @@ Defaults to '%s'.""" % (serviceurl), default=serviceurl)
     parser.add_option("--togatop", help="""\
 The top directory to into which TOGA data directories will be downloaded.
 Defaults to '%s'""" % (togatop), default=togatop)
+    parser.add_option("--nzips", help="""\
+Zip the NZIPS most recent TOGA directories for insertion into LDM.  The
+default is 1.""", type="int", default=1)
 
     config = raf.config.Config()
     config.addOptions(parser)
 
     (options, argv) = parser.parse_args(argv)
     times = tt.parseTimespan(options.interval)
-    ldmsend = options.ldmforce
     serviceurl = options.serviceurl
     serviceurl = options.togatop
     if not times[1]:
@@ -115,20 +116,23 @@ Defaults to '%s'""" % (togatop), default=togatop)
     rsyncopts = dp.generateRsyncRules(times[0], times[1])
     rsync = config.Rsync(serviceurl, togatop, rsyncopts)
     rsync.run()
-    dpath = find_latest_dir(togatop)
-    if not dpath:
+    dpaths = find_latest_dirs(togatop, options.nzips)
+    if not dpaths:
         logging.info("No TOGA data directories found in " + togatop)
         return 1
-    zipfile = zipfile_from_folder(dpath)
-    if os.path.exists(zipfile):
-        logging.info("zipfile already exists: %s" % (zipfile))
-    else:
-        logging.info("zipping toga folder: %s" % (dpath))
-        zip_toga_folder(dpath)
-        ldmsend = True
-    if ldmsend:
-        ldm = config.LDM()
-        ldm.insert(zipfile)
+
+    ldm = config.LDM()
+    for dpath in dpaths:
+        zipfile = zipfile_from_folder(dpath)
+        ldmsend = options.ldmforce
+        if os.path.exists(zipfile):
+            logging.info("zipfile already exists: %s" % (zipfile))
+        else:
+            logging.info("zipping toga folder: %s" % (dpath))
+            zip_toga_folder(dpath)
+            ldmsend = True
+        if ldmsend:
+            ldm.insert(zipfile)
     return 0
 
 
