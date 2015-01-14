@@ -1,7 +1,6 @@
 
 from raf.downloader import Downloader
 import iss.time_tools as tt
-import iss.tests.conftest
 import raf.config as config
 import os
 import re

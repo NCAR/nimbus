@@ -6,8 +6,15 @@ import subprocess as sp
 import glob
 import time
 
+if __name__ == "__main__":
+    import sys
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import raf.datepattern as datepattern
 import raf.config
+import iss.time_tools as tt
+
+from optparse import OptionParser
 
 import logging
 
@@ -69,15 +76,44 @@ def find_latest_dir(togatop):
 
 
 def main(argv):
-    config = raf.config.Config()
-    config.parseArgs(argv)
-    config.setupLogging()
+    parser = OptionParser()
+    serviceurl = "rsync://toga-pc/toga/"
     togatop = "/mnt/r1/toga"
+
+    # Add the options specific to send_toga
+    parser.add_option("--interval", type="string", help="""\
+Look for TOGA directories only within the time interval specified as
+<begin>,<end>.  A time can be absolute in the form YYYYMMDD[HH[MM]], or
+'now', or it can be relative to now using a minus sign prefix and units.
+The end time can be omitted and defaults to now.  The default interval is
+the last 8 hours, or '-8h,'.""", default="-8h,")
+    parser.add_option("--ldmforce", help="""\
+Force the latest zip file to be inserted into the LDM queue.""",
+                      action="store_true", default=False)
+    parser.add_option("--serviceurl", help="""\
+The URL to the rsync service on the TOGA PC.
+Defaults to '%s'.""" % (serviceurl), default=serviceurl)
+    parser.add_option("--togatop", help="""\
+The top directory to into which TOGA data directories will be downloaded.
+Defaults to '%s'""" % (togatop), default=togatop)
+
+    config = raf.config.Config()
+    config.addOptions(parser)
+
+    (options, argv) = parser.parse_args(argv)
+    times = tt.parseTimespan(options.interval)
+    ldmsend = options.ldmforce
+    serviceurl = options.serviceurl
+    serviceurl = options.togatop
+    if not times[1]:
+        times[1] = time.time()
+
     togadirpattern = "%Y-%m-%d-%H*.b"
-    now = time.time()
     dp = datepattern.DatePattern(togadirpattern)
-    options = dp.generateRsyncRules(now - 8*3600, now)
-    rsync = config.Rsync("rsync://toga-pc/toga/", togatop, options)
+    logging.debug("generating rsync patterns for interval (%s,%s)" %
+                  (tt.formatTime(times[0]), tt.formatTime(times[1])))
+    rsyncopts = dp.generateRsyncRules(times[0], times[1])
+    rsync = config.Rsync(serviceurl, togatop, rsyncopts)
     rsync.run()
     dpath = find_latest_dir(togatop)
     if not dpath:
@@ -89,6 +125,18 @@ def main(argv):
     else:
         logging.info("zipping toga folder: %s" % (dpath))
         zip_toga_folder(dpath)
+        ldmsend = True
+    if ldmsend:
         ldm = config.LDM()
         ldm.insert(zipfile)
     return 0
+
+
+# Run this script from cron something like this:
+#
+# */2 * * * * python /home/local/projects/FRAPPE/C130_N130AR/scripts/send_toga.py >>& /tmp/send_toga.log
+#
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
+

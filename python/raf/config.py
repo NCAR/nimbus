@@ -22,6 +22,25 @@ class Config(dict):
         self.ftp_login = 'anonymous'
         self.ftp_passwd = ''
 
+    def addOptions(self, parser):
+        parser.add_option("--debug", dest="loglevel", action="store_const",
+                          const=logging.DEBUG, default=logging.ERROR,
+                          help="Show debug log messages.")
+        parser.add_option("--info", dest="loglevel", action="store_const",
+                          const=logging.INFO, default=logging.ERROR,
+                          help="Show info log messages.")
+        parser.add_option("--dryrun", action="store_true", default=False,
+                          help="Do not actually run commands.")
+        parser.add_option("--localdir", type="string")
+        return self
+
+    def setOptions(self, options):
+        self.dryrun = options.dryrun
+        if options.localdir:
+            self['local_dir'] = options.localdir
+        self.loglevel = options.loglevel
+        self.setupLogging()
+
     def parseArgs(self, argv):
         "Consume arguments which modify global configuration."
         i = 0

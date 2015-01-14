@@ -23,6 +23,8 @@ env.PythonLint('rafcheck', raf_python_files)
 
 test = env.Command("test", all_python_files, 'py.test --quick=1 ${SOURCES}')
 env.Alias("test", test)
+raftest = env.Command("raftest", raf_python_files, 'py.test --quick=1 ${SOURCES}')
+env.Alias("raftest", raftest)
 
 # raftest = env.Command("raftest", raf_python_files, 
 #                       'py.test --quick=1 ${SOURCES}')
