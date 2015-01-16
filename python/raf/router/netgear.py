@@ -1,6 +1,7 @@
 
 import re
 import logging
+from Router import RouterStatus
 
 _logger = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ _status_page_patterns = [ r"""
                                 <b>MAC Address </b> 
                         </td>
                         <td width="40%">
-                                (?P<mac>\S+)
+                                (?P<wanmac>\S+)
                         </td>
                 </tr>""", r"""
                 <tr>
@@ -34,7 +35,7 @@ _status_page_patterns = [ r"""
                                 <b>IP Address </b> 
                         </td>
                         <td width="40%">
-                                (?P<ip>\S+)
+                                (?P<wanip>\S+)
                         </td>
                 </tr>""", r"""
                 <tr>
@@ -42,7 +43,7 @@ _status_page_patterns = [ r"""
                                 <b>DHCP </b> 
                         </td>
                         <td width="40%">
-                                (?P<dhcp>\S+)
+                                (?P<wandhcp>\S+)
                         </td>
                 </tr>""", r"""
                 <tr>
@@ -50,7 +51,7 @@ _status_page_patterns = [ r"""
                                 <b>IP Subnet Mask </b>
                         </td>
                         <td width="40%">
-                                (?P<subnet>\S+)
+                                (?P<wansubnet>\S+)
                         </td>
                 </tr>""", r"""
                 <tr>
@@ -60,7 +61,39 @@ _status_page_patterns = [ r"""
                         <td width="40%">
                                 (?P<dns>\S+)
                         </td>
-                </tr>"""
+                </tr>""", r"""
+		<tr>
+			<td width="60%">
+				<b>MAC Address </b> 
+			</td>
+			<td width="40%">
+				(?P<lanmac>\S+)
+			</td>
+		</tr>""", r"""
+		<tr>
+			<td width="60%">
+				<b>IP Address </b> 
+			</td>
+			<td width="40%">
+				(?P<lanip>\S+)
+			</td>
+		</tr>""", r"""
+		<tr>
+			<td width="60%">
+				<b>DHCP </b> 
+			</td>
+			<td width="40%">
+				(?P<landhcp>\S+)  
+			</td>
+		</tr>""", r"""
+		<tr>
+			<td width="60%">
+				<b>IP Subnet Mask </b> 
+			</td>
+			<td width="40%">
+				(?P<lansubnet>\S+)
+			</td>
+		</tr>"""
                       ]
 
 
@@ -110,15 +143,18 @@ def _match_regex_template(patterns, text):
     result = {}
 
     flags = re.MULTILINE | re.DOTALL
+    pos = 0
     for pattern in patterns:
         # first replace whitespaces
         pattern = re.sub(r'\s+', r'\s+', pattern, flags=flags)
-        matches = re.search(pattern, text, flags=flags)
+        rx = re.compile(pattern, flags=flags)
+        matches = rx.search(text, pos)
         if not matches:
             _logger.error("failed to match: %s" % (pattern))
             raise Exception("failed to match: %s" % (pattern))
         else:
             result.update(matches.groupdict())
+            pos = matches.end()
     return result
 
 
@@ -128,3 +164,18 @@ def parseStatusPage(page):
 def parseStatsPage(page):
     return _match_regex_template(_stats_page_patterns, page)
 
+def _update_router_status(router, syspage, statspage):
+    dstatus = parseStatusPage(syspage)
+    dstatus.update(parseStatsPage(statspage))
+    router.setStatus(RouterStatus(dstatus))
+
+def NetgearStatusHelper(router):
+    "Collect status from a netgear router and update the router object."
+    _update_router_status(router, 
+                          router.fetchPage("sysstatus.html"),
+                          router.fetchPage("mtenstatisticTable.html"))
+
+def _NetgearStatusTester(router):
+    with open("sysstatus-example.html", "r") as sysfile:
+        with open("stats-example.html", "r") as statfile:
+            _update_router_status(router, sysfile.read(), statfile.read())
