@@ -1,0 +1,232 @@
+
+<html>
+
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1">
+	<meta name="generator" content="Adobe GoLive 5">
+	<META http-equiv='Pragma' CONTENT='no-cache'>
+	<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">	
+	<title>System Status</title> 
+	<link rel="stylesheet" href="/form1.css" type="text/css">
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+	
+function loadhelp(fname,anchname) {
+	if (anchname!=' ')
+		top.helpframe.location.href="help/help"+fname+".html#"+anchname
+	else
+		top.helpframe.location.href="help/help"+fname+".html"
+}
+
+function newwindow(F)
+{
+	if((F.status.value =="checked")||(F.EncapAolDhcp.value=="checked"))
+		window.open('enatherstatus.html', 'enstatherstatus', 'width=380,height=400,status=yes');
+	else if(F.EncapPTelstra.value=="checked")
+		window.open('telstrastatus.html', 'pptpstatus', 'width=380,height=320,status=yes');	
+	else if((F.EncapPPTP.value =="checked"))
+		window.open('pptpstatus.html', 'pptpstatus', 'width=380,height=320,status=yes');
+	else
+	  window.open('pppoestatus.html', 'pppoestatus', 'width=380,height=380,status=yes');
+	}
+
+function checkWireless(){
+	var showWireless=0;
+	
+	return showWireless;
+}
+//-->
+</script> 
+</head>
+<body bgcolor="#ffffff" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="loadhelp('_SysStatus')">
+<form method="POST">
+<input type=hidden name=status value=>
+<input type="hidden" name=EncapPTelstra  value=>
+<input type="hidden" name=EncapPPTP  value=>
+<input type="hidden" name=EncapAolDhcp  value=>
+	<table border="0" cellpadding="0" cellspacing="3" width="100%">
+		<tr>
+			<td colspan="2">
+				<a><h1>Router Status</h1></a>
+			</td>
+		</tr>
+<!-- RULE //-->
+		<tr>
+			<td colspan="2">
+				<img src="img/liteblue.gif" width="100%" height="2" border="0">
+			</td>
+		</tr>
+<!-- END RULE //-->
+		<tr>
+			<td width="60%">
+				<b>Account Name</b> 
+			</td>
+			<td width="40%">
+				RP614v4
+			</td>
+		</tr>
+		
+<!--		<tr>
+			<td width="60%">
+				<b>Hardware Version </b> 
+				
+			</td>
+			<td width="40%">
+				V4H1
+			</td>
+		</tr>
+-->		
+		<tr>
+			<td width="60%">
+				<b>Firmware Version </b> 
+			</td>
+			<td width="40%">
+				V1.0.1_11.29
+			</td>
+		</tr>
+		
+<!-- RULE //-->
+		<tr>
+			<td colspan="2">
+				<img src="img/liteblue.gif" width="100%" height="2" border="0"> 
+			</td>
+		</tr>
+<!-- END RULE //-->
+		<tr>
+			<td colspan="2">
+			     <a href="javascript:loadhelp('_SysStatus','internet_port')">
+				<span class="subhead">Internet Port </span> 
+			     </a>
+			</td>
+		</tr>
+		<tr>
+			<td width="60%">
+				<b>MAC Address </b> 
+			</td>
+			<td width="40%">
+				00:18:4D:D7:6E:6B
+			</td>
+		</tr>
+		<tr>
+			<td width="60%">
+				<b>IP Address </b> 
+			</td>
+			<td width="40%">
+				0.0.0.0 
+			</td>
+		</tr>
+		<tr>
+			<td width="60%">
+				<b>DHCP </b> 
+			</td>
+			<td width="40%">
+				PPPoE 
+			</td>
+		</tr>
+		<tr>
+			<td width="60%">
+				<b>IP Subnet Mask </b>
+			</td>
+			<td width="40%">
+				0.0.0.0 
+			</td>
+		</tr>
+		<tr>
+			<td width="60%">
+				<b>Domain Name Server</b>
+			</td>
+			<td width="40%">
+				0.0.0.0 
+			</td>
+		</tr>
+		<tr>
+			<td width="60%">
+				<b></b> 
+			</td>
+			<td width="40%">
+				0.0.0.0
+			</td>
+		</tr>
+<!-- RULE //-->
+		<tr>
+			<td colspan="2">
+				<img src="img/liteblue.gif" width="100%" height="2" border="0"> 
+			</td>
+		</tr>
+<!-- END RULE //-->
+		<tr>
+			<td colspan="2">
+			        <a href="javascript:loadhelp('_SysStatus','lan_port')">
+				<span class="subhead">LAN Port </span> 
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<td width="60%">
+				<b>MAC Address </b> 
+			</td>
+			<td width="40%">
+				00:18:4D:D7:6E:6A
+			</td>
+		</tr>
+		<tr>
+			<td width="60%">
+				<b>IP Address </b> 
+			</td>
+			<td width="40%">
+				192.168.99.1 
+			</td>
+		</tr>
+		<tr>
+			<td width="60%">
+				<b>DHCP </b> 
+			</td>
+			<td width="40%">
+				OFF  
+			</td>
+		</tr>
+		<tr>
+			<td width="60%">
+				<b>IP Subnet Mask </b> 
+			</td>
+			<td width="40%">
+				255.255.255.0  
+			</td>
+		</tr>
+<!--begin of wireless part-->
+<script language="javascript">
+	if( checkWireless() )
+	{
+		var str;
+		str='<INPUT name="zComDummy" type="hidden" value="$$Z#zComDummy$$">'
+		str=str+'<tr><td colspan="2"><img src="img/liteblue.gif" width="100%" height="2" border="0"></td></tr>';
+		str=str+'<tr><td colspan="2"><span class="subhead">Wireless Port </span></td></tr>';
+		str=str+'<tr><td width="60%"><b>MAC Address (BSSID)</b></td><td width="40%">$$X#WlMACAddress$$</td></tr>';
+		str=str+'<tr><td width="60%"><b>Name (SSID)</b></td><td width="40%">$$Z#ESSID$$</td></tr>';
+		str=str+'<tr><td width="60%"><b>Region</b></td><td width="40%">$$X#FreqDomain$$</td></tr>';
+		str=str+'<tr><td width="60%"><b>Channel</b></td><td width="40%">$$Z#CType$$</td></tr>';
+		
+		document.write(str);
+	}		
+</script>	
+<!--end of wireless part-->	
+<!-- RULE //-->
+		<tr>
+			<td colspan="2">
+				<img src="img/liteblue.gif" width="100%" height="2" border="0"> 
+			</td>
+		</tr>
+<!-- END RULE //-->
+		<tr>
+			<td align='center' colspan="2">
+				<input type="BUTTON" value="Show Statistics" onclick="window.open('mtenSysStatistics.html','static','width=500,height=240,status=yes, resizable=yes');"> 
+		
+               <INPUT onclick="newwindow(this.form);" type=button value="Connection Status"> 
+            </TD>
+		</tr>
+	</table>
+</form>
+</body>
+
+</html>
+
