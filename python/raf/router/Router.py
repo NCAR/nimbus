@@ -62,7 +62,8 @@ class Router(object):
         response.close()
         return text
 
-    _log_status = "WAN %(wanlink)s; WAN IP: %(wanip)s; WAN uptime: %(wanuptime)s"
+    _log_status = "WAN %(wanlink)s: IP=%(wanip)s; TX bytes: %(wantxbytes)s; "
+    _log_status += "RX bytes: %(wanrxbytes)s; uptime: %(wanuptime)s"
 
     def getStatusMessage(self):
         "Build a status log message from the current status info."
@@ -120,8 +121,8 @@ def test_stats_patterns():
     assert(stats['wantxpkts'] == '0')
     assert(stats['wanrxpkts'] == '0')
     assert(stats['wancollisions'] == '0')
-    assert(stats['wantxbytes'] == '0')
-    assert(stats['wanrxbytes'] == '0')
+    assert(stats['wantxbytes'] == '1')
+    assert(stats['wanrxbytes'] == '2')
     assert(stats['wanuptime'] == '01:27:19')
 
 def test_stats_object():
@@ -142,8 +143,8 @@ def test_stats_object():
     assert(rs.wantxpkts == '0')
     assert(rs.wanrxpkts == '0')
     assert(rs.wancollisions == '0')
-    assert(rs.wantxbytes == '0')
-    assert(rs.wanrxbytes == '0')
+    assert(rs.wantxbytes == '1')
+    assert(rs.wanrxbytes == '2')
     assert(rs.wanuptime == '01:27:19')
 
 
@@ -166,4 +167,4 @@ def test_log_status():
     r.setStatusHelper(netgear._NetgearStatusTester)
     r.updateStatus()
     assert(r.getStatusMessage() == 
-           "WAN Link Up; WAN IP: 0.0.0.0; WAN uptime: 01:27:19")
+           "WAN Link Up: IP=0.0.0.0; TX bytes: 1; RX bytes: 2; uptime: 01:27:19")
