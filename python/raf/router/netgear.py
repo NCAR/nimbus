@@ -146,7 +146,8 @@ def _match_regex_template(patterns, text):
     pos = 0
     for pattern in patterns:
         # first replace whitespaces
-        pattern = re.sub(r'\s+', r'\s+', pattern, flags=flags)
+        rx = re.compile(r'\s+', flags=flags)
+        pattern = rx.sub(r'\s+', pattern)
         rx = re.compile(pattern, flags=flags)
         matches = rx.search(text, pos)
         if not matches:
