@@ -760,19 +760,6 @@
 	"XICNC",	NULL,		NULL,		scFlow,
 	"XICNC1",	NULL,		NULL,		scFlow,
 #
-#	Community Inlet
-#
-	"INTAS1",	NULL,		NULL,		sCItas,
-	"INTAS2",	NULL,		NULL,		sCItas,
-	"INTAS3",	NULL,		NULL,		sCItas,
-	"INFLOWC",	NULL,		NULL,		scFlow,
-	"INPWANT",	NULL,		NULL,		scDiff,
-	"FLOW1C",	NULL,		NULL,		scFlow,
-	"FLOW2C",	NULL,		NULL,		scFlow,
-	"FLOW3C",	NULL,		NULL,		scFlow,
-	"FLOW4C",	NULL,		NULL,		scFlow,
-	"FLOW5C",	NULL,		NULL,		scFlow,
-#
 #	Water Vapor Pressure and Dew Pointers.
 #
 	"EDPC",		(void(*)(void*))edpcInit,	NULL,	sedpc,

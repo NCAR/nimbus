@@ -36,7 +36,6 @@ gust.c
 gustpod.c
 ias.c
 initAC.c
-inlet.c
 ins.c
 irc.c
 irs.c
