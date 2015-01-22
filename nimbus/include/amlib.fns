@@ -61,7 +61,7 @@
 	"INFLOWUWC",	NULL,           NULL,		suwflow,
 	"XCCNC",	NULL,           NULL,		sccnc,
 	"XCCNSS",	NULL,           NULL,		sccns,
-	"XNASC",	NULL,           NULL,		stasr,
+	"XNASC",	NULL,           NULL,		stas,
 #
 # New UV Hygrometer
 # XUVMR was PASE only; MRUV subsequently.
@@ -89,6 +89,7 @@
 #
 	"PSC",		NULL,		NULL,		spsc_gp,
 	"QCC",		NULL,		NULL,		sqcc_gp,
+	"MACH",		NULL,		NULL,		smach,
 	"AK",		NULL,		NULL,		sak_gp,
 	"SS",		(void(*)(void*))GPinit,		NULL,		sss_gp,
 	"TAS",		NULL,		NULL,		stas_gp,
@@ -940,11 +941,11 @@
 #
 #	True Air Speed
 #
-	"TASB",		NULL,		NULL,		stasf,
-	"TASF",		NULL,		NULL,		stasf,
-	"TASR",		NULL,		NULL,		stasr,
-	"TASFR",	NULL,		NULL,		stasf,
-	"TASW",		NULL,		NULL,		stasw,
+	"TASB",		NULL,		NULL,		stas,
+	"TASF",		NULL,		NULL,		stas,
+	"TASR",		NULL,		NULL,		stas,
+	"TASFR",	NULL,		NULL,		stas,
+	"TASW",		NULL,		NULL,		stas,
 	"TASX",		NULL,		NULL,		stasx,
 	"TASHC",	NULL,		NULL,		stash,
 	"IAS",		NULL,		NULL,		sias,
