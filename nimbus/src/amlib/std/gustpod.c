@@ -5,8 +5,10 @@ OBJECT NAME:	gustpod.c
 FULL NAME:	Gust Pod calculations
 
 DESCRIPTION:	Derived GustPod calcs.
+		PSC & QCC, not used at this time.
+		AOA, SSLIP, and TAS.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2010-2012
+COPYRIGHT:	University Corporation for Atmospheric Research, 2010-2015
 -------------------------------------------------------------------------
 */
 
@@ -24,9 +26,9 @@ static NR_TYPE ss_coeff[] = { -0.1564, 0.09218 };
 // DC3 - right wing - Change in the project/Defaults file.
 //static NR_TYPE ss_coeff[] = { 0.1662, 0.09218 };
 
-static NR_TYPE recfx = 0.985;
+static NR_TYPE tas_coeff[] = { -0.4732, -11.8787, 15.6659, -6.7811, 0.0542, 3.4354 };
 
-NR_TYPE compute_tas(NR_TYPE, NR_TYPE, NR_TYPE);
+NR_TYPE compute_tas(NR_TYPE, NR_TYPE);
 
 
 /* -------------------------------------------------------------------- */
@@ -42,14 +44,6 @@ void GPinit(var_base *varp)
   else
     for (int i = 0; i < 2; ++i)
       ss_coeff[i] = tmp[i];
-
-  if ((tmp = GetDefaultsValue("GP_RECOVERY", varp->name)) == NULL)
-  {
-    sprintf(buffer,"Recovery value set to %f in AMLIB function initGust.\n", recfx);
-    LogMessage(buffer);
-  }
-  else
-    recfx = tmp[0];
 
   if ((tmp = GetDefaultsValue("GP_AK_COEFF", varp->name)) == NULL)
   {
@@ -92,39 +86,47 @@ void sqcc_gp(DERTBL *varp)	// Dynamic pressure
 /* -------------------------------------------------------------------- */
 void sak_gp(DERTBL *varp)	// Attack
 {
-  NR_TYPE ratio;
-  NR_TYPE adifr = GetSample(varp, 0);
+  NR_TYPE adif = GetSample(varp, 0);
   NR_TYPE qc = GetSample(varp, 1);
-
-  ratio = adifr / qc;
-  PutSample(varp, (ratio + ak_coeff[0]) / ak_coeff[1]);
+  NR_TYPE ps = GetSample(varp, 2);
+  
+  NR_TYPE ratio = adif / qc;
+  NR_TYPE QoverP = qc / ps;
+  NR_TYPE mach = sqrt(XMAC2(QoverP));
+  PutSample(varp, ak_coeff[0] + ratio * (ak_coeff[1]+ak_coeff[2]*mach) + ak_coeff[3]*QoverP);
 }
 
 /* -------------------------------------------------------------------- */
 void sss_gp(DERTBL *varp)	// Sideslip
 {
   NR_TYPE ratio;
-  NR_TYPE bdifr = GetSample(varp, 0);
+  NR_TYPE bdif = GetSample(varp, 0);
   NR_TYPE qc = GetSample(varp, 1);
 
-  ratio = bdifr / qc;
-  PutSample(varp, (ratio + ss_coeff[0]) / ss_coeff[1]);
+  ratio = bdif / qc;
+  PutSample(varp, ss_coeff[0] + ss_coeff[1] * ratio);
 }
 
 /* -------------------------------------------------------------------- */
 void stas_gp(DERTBL *varp)	// True airspeed
 {
-  NR_TYPE	fmach2;
-  NR_TYPE	tt, qc, ps, tasg;
+  NR_TYPE qc	= GetSample(varp, 0);
+  NR_TYPE ps	= GetSample(varp, 1);
+  NR_TYPE at	= GetSample(varp, 2);
+  NR_TYPE adif	= GetSample(varp, 3);
 
-  qc	= GetSample(varp, 0);
-  ps	= GetSample(varp, 1);
-  tt	= GetSample(varp, 2);
+  NR_TYPE ratio, QR, mach, QoverP, tas;
 
-  fmach2 = sqrt(XMAC2(qc / ps));
-  tasg	= compute_tas(tt, recfx, fmach2);
+  ratio	= adif / qc;
+  QR	= qc / ps;
+  mach	= sqrt(XMAC2(QR));
+  QoverP= tas_coeff[0] + tas_coeff[1]*QR + tas_coeff[2]*mach*QR + tas_coeff[3]*QR*QR
+	+ tas_coeff[4]*ratio + tas_coeff[5]*mach;
 
-  PutSample(varp, tasg);
+  mach	= sqrt(XMAC2(QoverP));
+  tas	= compute_tas(at, mach);
+
+  PutSample(varp, tas);
 }
 
 /* END GUSTPOD.C */
