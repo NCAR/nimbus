@@ -105,7 +105,7 @@ default is 1.""", type="int", default=1)
     (options, argv) = parser.parse_args(argv)
     times = tt.parseTimespan(options.interval)
     serviceurl = options.serviceurl
-    serviceurl = options.togatop
+    togatop = options.togatop
     if not times[1]:
         times[1] = time.time()
 
