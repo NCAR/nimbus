@@ -3,6 +3,8 @@
 
 import urllib2
 import time
+import iss.time_tools as tt
+import re
 
 class RouterStatus(object):
 
@@ -16,6 +18,8 @@ class RouterStatus(object):
         for k, v in sdict.items():
             self.__setattr__(k, v)
 
+    def connected(self):
+        return self.wanip != "0.0.0.0"
 
 
 class Router(object):
@@ -69,7 +73,21 @@ class Router(object):
         "Build a status log message from the current status info."
         return self._log_status % self.status.__dict__
 
+    def parseLogTime(self, message):
+        # We have to kludge the current year.
+        return tt.timeFromPtime(tt.formatTime(time.time(), "%Y ") + message[0:15],
+                                "%Y %b %d %H:%M:%S")
 
+    def parseLogMessage(self, message):
+        "Parse a log message back into values."
+        timestamp = self.parseLogTime(message)
+        rx = re.compile("WAN (?P<wanlink>[^:]+): IP=(?P<wanip>[^;]+);")
+        matches = rx.search(message)
+        if not matches:
+            return None
+        status = RouterStatus(matches.groupdict())
+        status.timestamp = timestamp
+        return status
 
 
 def test_router_init():
@@ -168,3 +186,24 @@ def test_log_status():
     r.updateStatus()
     assert(r.getStatusMessage() == 
            "WAN Link Up: IP=0.0.0.0; TX bytes: 1; RX bytes: 2; uptime: 01:27:19")
+
+_log = "Jan 21 15:18:01 acserver router/logstatus: WAN Link Up: IP=0.0.0.0; TX bytes: 0; RX bytes: 0; uptime: 00:36:30"
+
+_log2 = "Jan 23 20:58:01 acserver router/logstatus: WAN Link Up: IP=193.220.216.26; TX bytes: 176; RX bytes: 128; uptime: 01:57:16"
+
+def test_log_parse():
+    r = Router()
+    t1 = r.parseLogTime("Jan 21 15:18:01")
+    t2 = tt.parseTime("20150121151801")
+    assert(tt.formatTime(t1) == tt.formatTime(t2))
+    status = r.parseLogMessage(_log)
+    assert(status)
+    assert(status.wanlink == "Link Up")
+    assert(status.wanip == "0.0.0.0")
+    assert(not status.connected())
+    status = r.parseLogMessage(_log2)
+    assert(status.wanip == "193.220.216.26")
+    assert(status.connected())
+
+
+
