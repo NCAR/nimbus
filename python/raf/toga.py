@@ -103,6 +103,7 @@ default is 1.""", type="int", default=1)
     config.addOptions(parser)
 
     (options, argv) = parser.parse_args(argv)
+    config.setOptions(options)
     times = tt.parseTimespan(options.interval)
     serviceurl = options.serviceurl
     togatop = options.togatop
