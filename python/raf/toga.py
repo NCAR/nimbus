@@ -132,6 +132,8 @@ default is 1.""", type="int", default=1)
             zip_toga_folder(dpath)
             ldmsend = True
         if ldmsend:
+            # expire all but the last 15 minutes of TOGA products
+            ldm.expire(0.25, r"TOGA_.*\.zip")
             ldm.insert(zipfile)
     return 0
 
