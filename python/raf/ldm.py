@@ -39,5 +39,5 @@ class LDM(object):
         cmd = [self.pqexpire]
         if self.verbose:
             cmd += ["-v"]
-        cmd += ["-i", "0", "-x", "-a", str(hours), "-p", pattern]
+        cmd += ["-i", "0", "-a", str(hours), "-p", pattern]
         self._run(cmd)
