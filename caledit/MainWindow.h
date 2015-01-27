@@ -157,6 +157,9 @@ protected slots:
 
 private:
 
+    /// Allow for viewin DB on aircraft
+    bool onAircraft;
+
     /// Create a unique RID (relative to this system).
     QString createRID();
 

@@ -3,6 +3,7 @@
 
 #define DB_DRIVER  "QPSQL"
 #define DB_HOST    "barolo.eol.ucar.edu"
+#define AC_SERV	   "acserver"
 //#define DB_HOST    "localhost"
 #define DB_USER    "ads"
 #define DB_NAME    "calibrations"

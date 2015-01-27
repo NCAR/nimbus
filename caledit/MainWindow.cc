@@ -114,7 +114,7 @@ private:
 /* -------------------------------------------------------------------- */
 /* -------------------------------------------------------------------- */
 
-MainWindow::MainWindow() : _model(0), changeDetected(false)
+MainWindow::MainWindow() : onAircraft(false),_model(0), changeDetected(false)
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 
@@ -153,17 +153,21 @@ void MainWindow::setupDatabase()
     QStringList params;
     params << DB_HOST << "-i" << "1" << "-w" << "1" <<"-c" << "1";
 
+/*  Comment out check for barolo - would like to at least be able to
+ *  view local databases...
     if (process.execute("ping", params)) {
         QMessageBox::information(0, tr("pinging calibration database"),
           tr("cannot contact:\n") + DB_HOST);
         exit(1);
     }
+*/
     // List of remote sites that fill a calibration database.
     QStringList siteList;
     siteList << "thumper.eol.ucar.edu";
     siteList << "hyper.raf-guest.ucar.edu";
     siteList << "hercules.raf-ext.ucar.edu";
 
+cerr<<"Host is:"<<QHostInfo::localHostName().toStdString()<<"\n";
     tailNumIdx[0] = "Lab_N600";
     tailNumIdx[1] = "GV_N677F";
     tailNumIdx[2] = "C130_N130AR";
@@ -176,6 +180,12 @@ void MainWindow::setupDatabase()
               tr("cannot edit local calibration database on:\n") + site);
             exit(1);
         }
+    }
+
+    // Allow editing on acserver
+    if (QHostInfo::localHostName().contains(QString(AC_SERV))) {
+        cerr<<"We're on an aircraft";
+        onAircraft = true;
     }
     // extract some environment variables
     calfile_dir = QString::fromAscii(getenv("PROJ_DIR")) +
@@ -192,16 +202,20 @@ void MainWindow::setupDatabase()
     qDebug() << "calfile_dir: " << calfile_dir;
     qDebug() << "csvfile_dir: " << csvfile_dir;
 
-    // prompt user if they want to pull data from the sites at start up
-    QMessageBox::StandardButton reply = QMessageBox::question(0, tr("Pull"),
-      tr("Pull calibration databases from the sites?\n"),
-      QMessageBox::Yes | QMessageBox::No);
+    if (!onAircraft) {
+        // prompt user if they want to pull data from the sites at start up
+        QMessageBox::StandardButton reply = QMessageBox::question(0, tr("Pull"),
+          tr("Pull calibration databases from the sites?\n"),
+          QMessageBox::Yes | QMessageBox::No);
 
-    openDatabase(DB_HOST);
+        openDatabase(DB_HOST);
 
-    if (reply == QMessageBox::Yes)
-        foreach(QString site, siteList)
-            importRemoteCalibTable(site);
+        if (reply == QMessageBox::Yes)
+            foreach(QString site, siteList)
+                importRemoteCalibTable(site);
+    } else {
+        openDatabase("localhost");
+    }
 
     // re-sort and save database after importing before use
     saveButtonClicked();
