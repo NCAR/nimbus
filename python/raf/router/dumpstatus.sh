@@ -10,3 +10,4 @@ fi
 wget -O - $creds $rooturl/sysstatus.html > sysstatus.html
 # wget -O - $creds $rooturl/mtenSysStatistics.html
 wget -O - $creds $rooturl/mtenstatisticTable.html > statsTable.html
+wget -O - $creds $rooturl/pppoestatus.html > pppoestatus.html
