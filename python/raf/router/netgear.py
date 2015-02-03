@@ -5,6 +5,21 @@ from Router import RouterStatus
 
 _logger = logging.getLogger(__name__)
 
+
+_pppoe_status_patterns = [ r"""
+	<tr>
+		<td><FONT face="Arial, Helvetica, sans-serif"><B>Connection Time</B></FONT></td>
+		<td><FONT face="Arial, Helvetica, sans-serif">(?P<connectiontime>\S+)</FONT></td>
+	</tr>
+""", r"""
+	<tr>
+		<td><FONT face="Arial, Helvetica, sans-serif"><B>Getting IP address</B></FONT></td>
+		<td><FONT face="Arial, Helvetica, sans-serif">(?P<pppoeip>\S+)</FONT></td>
+	</tr>
+""" ]
+
+
+
 _status_page_patterns = [ r"""
                 <tr>
                         <td width="60%">
@@ -165,18 +180,25 @@ def parseStatusPage(page):
 def parseStatsPage(page):
     return _match_regex_template(_stats_page_patterns, page)
 
-def _update_router_status(router, syspage, statspage):
+def parsePPPOE(page):
+    return _match_regex_template(_pppoe_status_patterns, page)
+
+def _update_router_status(router, syspage, statspage, pppoepage):
     dstatus = parseStatusPage(syspage)
     dstatus.update(parseStatsPage(statspage))
+    dstatus.update(parsePPPOE(pppoepage))
     router.setStatus(RouterStatus(dstatus))
 
 def NetgearStatusHelper(router):
     "Collect status from a netgear router and update the router object."
     _update_router_status(router, 
                           router.fetchPage("sysstatus.html"),
-                          router.fetchPage("mtenstatisticTable.html"))
+                          router.fetchPage("mtenstatisticTable.html"),
+                          router.fetchPage("pppoestatus.html"))
 
 def _NetgearStatusTester(router):
     with open("sysstatus-example.html", "r") as sysfile:
         with open("stats-example.html", "r") as statfile:
-            _update_router_status(router, sysfile.read(), statfile.read())
+            with open("pppoestatus-example.html", "r") as pppoefile:
+                _update_router_status(router, sysfile.read(), statfile.read(),
+                                      pppoefile.read())

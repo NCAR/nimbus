@@ -67,7 +67,8 @@ class Router(object):
         return text
 
     _log_status = "WAN %(wanlink)s: IP=%(wanip)s; TX bytes: %(wantxbytes)s; "
-    _log_status += "RX bytes: %(wanrxbytes)s; uptime: %(wanuptime)s"
+    _log_status += "RX bytes: %(wanrxbytes)s; uptime: %(wanuptime)s; "
+    _log_status += "connected: %(connectiontime)s"
 
     def getStatusMessage(self):
         "Build a status log message from the current status info."
@@ -143,6 +144,16 @@ def test_stats_patterns():
     assert(stats['wanrxbytes'] == '2')
     assert(stats['wanuptime'] == '01:27:19')
 
+
+def test_pppoe_patterns():
+    with open("pppoestatus-example.html", "r") as pfile:
+        page = pfile.read()
+    import netgear
+    stats = netgear.parsePPPOE(page)
+    assert(stats['connectiontime'] == '00:12:40')
+    assert(stats['pppoeip'] == '193.220.216.10')
+
+
 def test_stats_object():
     with open("stats-example.html", "r") as pfile:
         page = pfile.read()
@@ -185,11 +196,12 @@ def test_log_status():
     r.setStatusHelper(netgear._NetgearStatusTester)
     r.updateStatus()
     assert(r.getStatusMessage() == 
-           "WAN Link Up: IP=0.0.0.0; TX bytes: 1; RX bytes: 2; uptime: 01:27:19")
+           "WAN Link Up: IP=0.0.0.0; TX bytes: 1; RX bytes: 2; uptime: 01:27:19; "
+           "connected: 00:12:40")
 
-_log = "Jan 21 15:18:01 acserver router/logstatus: WAN Link Up: IP=0.0.0.0; TX bytes: 0; RX bytes: 0; uptime: 00:36:30"
+_log = "Jan 21 15:18:01 acserver router/logstatus: WAN Link Up: IP=0.0.0.0; TX bytes: 0; RX bytes: 0; uptime: 00:36:30; connected: 00:12:40"
 
-_log2 = "Jan 23 20:58:01 acserver router/logstatus: WAN Link Up: IP=193.220.216.26; TX bytes: 176; RX bytes: 128; uptime: 01:57:16"
+_log2 = "Jan 23 20:58:01 acserver router/logstatus: WAN Link Up: IP=193.220.216.26; TX bytes: 176; RX bytes: 128; uptime: 01:57:16; connected: 00:12:40"
 
 def test_log_parse():
     r = Router()
