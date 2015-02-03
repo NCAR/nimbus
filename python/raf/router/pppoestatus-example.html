@@ -1,0 +1,111 @@
+<html>
+<head>
+<title>PPPoE Status</title>
+<meta http-equiv=refresh>
+<META content=text/html;charset=iso-8859-1 http-equiv=content-type>
+<META http-equiv='Pragma' CONTENT='no-cache'>
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">	
+<link rel="stylesheet" href="/form1.css" type="text/css">
+<script language="javascript" src="browser.js"></script>	
+<script language="javascript" type="text/javascript" src="/utility.js"></script>
+<script language=JavaScript>
+function countTime(){
+	window.focus();
+	//var t=document.forms[0].connTime.value;
+	var s=document.forms[0].connStatus.value;
+	var g=document.forms[0].getIP.value;
+	timeString='';
+
+	if((s != 'OK') && (g == '0.0.0.0')){
+		window.setTimeout('Fresh()',5000);
+	}
+	if(s == 'OK')
+		window.setTimeout('Fresh()',60000);
+}
+
+function pppoeAction(F,I) 
+{
+	d =parseInt(I.value, 10);
+	F.pppoeAct.value = I;
+	F.submit();
+}
+
+function Fresh() {
+	parent.location = "/pppoestatus.html";
+}
+</script>
+</head>
+
+<body  bgcolor="#ffffff" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" text=black onLoad=countTime()>
+<center><br>
+<form method="post" action="/cgi-bin/apply.cgi">
+<input type="hidden" name="page" value="pppoestatus.html">
+<input type=hidden name="action" value="connection">
+<!--<FONT face="Arial, Helvetica, sans-serif" size=3><B></B></FONT>-->
+<TABLE border=0 width="100%"> 
+ <TR>
+ <TD nowrap colspan="2" align="left"><h1>Connection Status </h1></TD>
+ </TR> 
+</TABLE>
+<table border="0" cellpadding="0" cellspacing="3" width="100%">
+<tr>
+ <img src="/img/liteblue.gif" width="100%" height="2" border="0">
+</tr>
+</table>
+<table width=100% border=1 cellspacing=1 cellpadding=5>
+	<tr>
+		<td><FONT face="Arial, Helvetica, sans-serif"><B>Connection Time</B></FONT></td>
+		<td><FONT face="Arial, Helvetica, sans-serif">00:12:40</FONT></td>
+	</tr>
+	
+	<tr>
+		<td><FONT face="Arial, Helvetica, sans-serif"><B>Connecting to server</B></FONT></td>
+		<td><FONT face="Arial, Helvetica, sans-serif">OK</FONT></td>
+	</tr>
+	<tr>
+		<td><FONT face="Arial, Helvetica, sans-serif"><B>Negotiation</B></FONT></td>
+		<td><FONT face="Arial, Helvetica, sans-serif">OK</FONT></td>
+	</tr>
+	<tr>
+		<td><FONT face="Arial, Helvetica, sans-serif"><B>Authentication</B></FONT></td>
+		<td><FONT face="Arial, Helvetica, sans-serif">OK</FONT></td>
+	</tr>
+	<tr>
+		<td><FONT face="Arial, Helvetica, sans-serif"><B>Getting IP address</B></FONT></td>
+		<td><FONT face="Arial, Helvetica, sans-serif">193.220.216.10</FONT></td>
+	</tr>
+	<tr>
+		<td><FONT face="Arial, Helvetica, sans-serif"><B>Getting Network Mask</B></FONT></td>
+		<td><FONT face="Arial, Helvetica, sans-serif">255.255.255.255</FONT></td>
+	</tr>
+	<!--<input type=hidden name=connTime value=$$A#CONNTIME$$>	-->
+	<input type=hidden name=connStatus value=OK>
+	<input type=hidden name=getIP value=193.220.216.10>
+</table>
+<p>
+<TABLE border=0 cellPadding=0 cellSpacing=0 width=250>
+	<TBODY>
+		<TR>
+			<input type=hidden name=pppoeAct value=0>
+			<TD align="center">
+				<input type=button value=' Connect ' onClick='pppoeAction(this.form,1)'>
+				<input type=button value=' Disconnect ' onClick='pppoeAction(this.form,2)'>
+			</TD>
+		</TR>
+	</TBODY>
+</TABLE>
+<table width=100% border=0 cellspacing=0 cellpadding=0> 
+	<tr width="100%">
+		<td>
+			<img src="/img/liteblue.gif" width="100%" height="2" border="0"> &nbsp;
+				<center>
+					<input type=button name="close" value="Close Window" onclick="window.close();">
+				</center>  
+		</td>
+	</tr> 
+	<input type=hidden name="Button" value="Apply">
+</table>
+</form>
+</center>
+</body>
+</html>
