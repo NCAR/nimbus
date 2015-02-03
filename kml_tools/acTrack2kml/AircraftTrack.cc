@@ -34,6 +34,7 @@ clear()
   ws.clear();
   wd.clear();
   wi.clear();
+  thdg.clear();
 }
 
 void
@@ -50,6 +51,7 @@ reserve(size_t n)
   ws.reserve(n);
   wd.reserve(n);
   wi.reserve(n);
+  thdg.reserve(n);
 }
 
 
