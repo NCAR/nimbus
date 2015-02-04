@@ -65,7 +65,7 @@ void initGust(var_base *varp)
 void swi(DERTBL *varp)
 {
   int		probeCnt = varp->ProbeCount;
-  NR_TYPE	wi, attack, sslip, tas, thdg, vew, vns, pitch, roll, wp3;
+  NR_TYPE	wi, attack, sslip, tas, thdg, vew, vns, pitch, roll, vspd;
   NR_TYPE	tas_dab, delph, thedot, delth,
 		e, f, h, ab, p, r, s, t, psidot, bvns, bvew,
 		cs, ss, ch, sh, cr, sr, ta, tb;
@@ -78,9 +78,9 @@ void swi(DERTBL *varp)
   thdg	= GetSample(varp, 5) * DEG_RAD;
   attack= GetSample(varp, 6) * DEG_RAD;
   sslip	= GetSample(varp, 7) * DEG_RAD;
-  wp3	= GetSample(varp, 8);
+  vspd	= GetSample(varp, 8);
 
-  if (isnan(pitch) || isnan(thdg) || isnan(tas) || isnan(wp3))
+  if (isnan(pitch) || isnan(thdg) || isnan(tas) || isnan(vspd))
     {
     ui[probeCnt] = floatNAN;
     vi[probeCnt] = floatNAN;
@@ -162,7 +162,7 @@ void swi(DERTBL *varp)
    */
   r  = ss * ch + h + ta * p;
   s  = cs * ch + e + ta * f;
-  t  = wp3 + boomln[probeCnt] * thedot * ch;
+  t  = vspd + boomln[probeCnt] * thedot * ch;
 
   ui[probeCnt] = tas_dab * r + (vew - bvew);
   vi[probeCnt] = tas_dab * s + (vns - bvns);
