@@ -18,15 +18,15 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2010-2015
 static size_t timeCount = 0;
 static NR_TYPE PSTcor, PSQcor;
 
-static NR_TYPE ak_coeff[] = { -0.0478, 0.1299 };
+static NR_TYPE ak_coeff[] = { -0.0478, 0.1299, 0.0, 0.0 };
 
 // ADELE, PREDICT, & DEEPWAVE #'s - left wing.
-static NR_TYPE ss_coeff[] = { -0.1564, 0.09218 };
+static NR_TYPE ss_coeff[] = { -0.1564, 0.09218, 0.0, 0.0 };
 
 // DC3 - right wing - Change in the project/Defaults file.
 //static NR_TYPE ss_coeff[] = { 0.1662, 0.09218 };
 
-static NR_TYPE tas_coeff[] = { -0.4732, -11.8787, 15.6659, -6.7811, 0.0542, 3.4354 };
+static NR_TYPE tas_coeff[] = { -0.2674, -6.1254, 8.8972, -3.7472, 0.0515, 1.9255 };
 
 NR_TYPE compute_tas(NR_TYPE, NR_TYPE);
 
@@ -51,7 +51,7 @@ void GPinit(var_base *varp)
     LogMessage(buffer);
   }
   else
-    for (int i = 0; i < 2; ++i)
+    for (int i = 0; i < 4; ++i)
       ak_coeff[i] = tmp[i];
 }
 
