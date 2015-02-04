@@ -18,41 +18,64 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2010-2015
 static size_t timeCount = 0;
 static NR_TYPE PSTcor, PSQcor;
 
-static NR_TYPE ak_coeff[] = { -0.0478, 0.1299, 0.0, 0.0 };
-
-// ADELE, PREDICT, & DEEPWAVE #'s - left wing.
-static NR_TYPE ss_coeff[] = { -0.1564, 0.09218, 0.0, 0.0 };
-
-// DC3 - right wing - Change in the project/Defaults file.
-//static NR_TYPE ss_coeff[] = { 0.1662, 0.09218 };
-
-static NR_TYPE tas_coeff[] = { -0.2674, -6.1254, 8.8972, -3.7472, 0.0515, 1.9255 };
+static std::vector<float> ak_coeff, ss_coeff, tas_coeff;
 
 NR_TYPE compute_tas(NR_TYPE, NR_TYPE);
 
 
 /* -------------------------------------------------------------------- */
-void GPinit(var_base *varp)
+void GP_AKinit(var_base *varp)
 {
   float *tmp;
 
-  if ((tmp = GetDefaultsValue("GP_SS_COEFF", varp->name)) == NULL)
+  ak_coeff.clear();
+  ak_coeff.push_back(-0.0478);
+  ak_coeff.push_back(0.1299);
+  ak_coeff.push_back(0.0);
+  ak_coeff.push_back(0.0);
+
+  tas_coeff.clear();
+  tas_coeff.push_back(-0.2674);
+  tas_coeff.push_back(-6.1254);
+  tas_coeff.push_back(8.8972);
+  tas_coeff.push_back(-3.7472);
+  tas_coeff.push_back(0.0515);
+  tas_coeff.push_back(1.9255);
+
+  if ((tmp = GetDefaultsValue("GP_AK_COEFF", varp->name)) != NULL)
   {
+    ak_coeff.clear();
+    ak_coeff.push_back(tmp[0]);
+    ak_coeff.push_back(tmp[1]);
+    ak_coeff.push_back(tmp[2]);
+    ak_coeff.push_back(tmp[3]);
+    sprintf(buffer,"AK cals set to %f, %f, %f,%f in AMLIB function initGust.\n", ak_coeff[0], ak_coeff[1], ak_coeff[2], ak_coeff[3]);
+    LogMessage(buffer);
+  }
+  else
+    AddToDefaults(varp->name, "CalibrationCoefficients", ak_coeff);
+}
+
+void GP_SSinit(var_base *varp)
+{
+  float *tmp;
+
+  ss_coeff.clear();
+  ss_coeff.push_back(-0.1564);
+  ss_coeff.push_back(0.09218);
+  ss_coeff.push_back(0.0);
+  ss_coeff.push_back(0.0);
+
+  if ((tmp = GetDefaultsValue("GP_SS_COEFF", varp->name)) != NULL)
+  {
+    ss_coeff.clear();
+    ss_coeff.push_back(tmp[0]);
+    ss_coeff.push_back(tmp[1]);
     sprintf(buffer,"SS cals set to %f,%f in AMLIB function initGust.\n", ss_coeff[0], ss_coeff[1]);
     LogMessage(buffer);
   }
   else
-    for (int i = 0; i < 2; ++i)
-      ss_coeff[i] = tmp[i];
-
-  if ((tmp = GetDefaultsValue("GP_AK_COEFF", varp->name)) == NULL)
-  {
-    sprintf(buffer,"AK cals set to %f,%f in AMLIB function initGust.\n", ak_coeff[0], ak_coeff[1]);
-    LogMessage(buffer);
-  }
-  else
-    for (int i = 0; i < 4; ++i)
-      ak_coeff[i] = tmp[i];
+    AddToDefaults(varp->name, "CalibrationCoefficients", ss_coeff);
 }
 
 /* -------------------------------------------------------------------- */
