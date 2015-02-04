@@ -90,8 +90,8 @@
 	"PSC",		NULL,		NULL,		spsc_gp,
 	"QCC",		NULL,		NULL,		sqcc_gp,
 	"MACH",		NULL,		NULL,		smach,
-	"AK",		NULL,		NULL,		sak_gp,
-	"SS",		(void(*)(void*))GPinit,		NULL,		sss_gp,
+	"AK",		(void(*)(void*))GP_AKinit,	NULL,		sak_gp,
+	"SS",		(void(*)(void*))GP_SSinit,	NULL,		sss_gp,
 	"TAS",		NULL,		NULL,		stas_gp,
 #
 # Climet
