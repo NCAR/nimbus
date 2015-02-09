@@ -2,6 +2,8 @@
 
 from vardb import VDBFile, VDBVar
 
+from Variable import Variable, VariableList
+
 import os.path
 
 _testdir = os.path.join(os.path.dirname(__file__), "../../tests")
@@ -70,4 +72,38 @@ def test_standard_names():
             "mole_fraction_of_ozone_in_air"])
     vdb.close()
 
+
+def test_variable():
+    vdb = VDBFile("")
+    vdb.open(_deepwave_xml)
+    assert(vdb.is_valid())
+    vdbqcf = vdb.get_var("QCF")
+    qcf = Variable(vdbqcf.name())
+    qcf.fromVDBVar(vdbqcf)
+    assert(qcf.name == "QCF")
+    assert(qcf.units == "hPa")
+    assert(qcf.long_name == "Raw Dynamic Pressure, Fuselage")
+    assert(qcf.units == "hPa")
+    assert(qcf.standard_name == None)
+    assert(qcf.reference == False)
+    assert(qcf.is_analog == True)
+    assert(qcf.voltage_range == "0 10")
+    assert(qcf.default_sample_rate == 100)
+    assert(qcf.category == "Uncorr'd Raw")
+    assert(qcf.modulus_range == None)
+    assert(qcf.min_limit == None)
+    assert(qcf.max_limit == None)
+    vdb.close()
+
+
+def test_variables_from_database():
+    vlist = VariableList()
+    vlist.hostname = "eol-rt-data.fl-ext.ucar.edu"
+    vlist.dbname = "real-time-C130"
+    vars = vlist.loadVariables()
+    thdg = vars['THDG']
+    assert(thdg.long_name == "IRS Aircraft True Heading Angle")
+    assert(thdg.units == "degree_T")
+    assert(thdg.uncalibrated_units == "degree_T")
+    assert(thdg.missing_value == -32767)
 
