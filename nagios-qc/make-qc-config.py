@@ -1,49 +1,44 @@
 #!/usr/bin/python
 
-# creates nagios configuration files based on checks.xml. Supports ".*"
-# wildcard in xml.
+# Creates nagios configuration files based on checks.xml.  checks.xml
+# specifies the check templates, and those templates must be realized
+# against a list variables and their metadata loaded from the real-time
+# database and possibly also a vardb.xml file.
 
 from vardb import VariableList
+from Checks import ChecksXML
 
-vars = VariableList().loadVariables()
+vlist = VariableList()
 
-# names=[s[0] for s in names]
+vlist.loadVariables()
+vlist.loadVdbFile()
 
 configfile = NagiosConfig.NagiosConfig()
 
 HostName='RAF'
 
+checksxml = ChecksXML()
+checksxml.path = os.path.join(vlist.configPath(), 'checks.xml')
+checksxml.parse()
+
+checks = []
+for checkp in checksxml.getChecks():
+   checks.extend(checkp.generate(vlist.getVariables()))
+
+# Now we have check instances generated.  The goal is to store those
+# instances, with all their associated parameters, so they can be loaded and
+# executed over and over without repeating all the metadata lookup.  It just
+# sounds more robust to me to run the checks from one config file, without
+# depending upon all the metadata sources on each run.  It will also make it
+# easier to tell when the config has changed and should be regenerated.
+
+# So the way we're going to try it is to store the checks as xml inside
+# comments in the nagios config file.
+
+
+
+
 configfile.write(configfile.makeHost(HostName))
 
-Checks=etree.parse(os.path.expandvars('${PROJ_DIR}/${PROJECT}/${AIRCRAFT}/checks.xml'))
-
-#Conf file for QC
-for Elm in Checks.getiterator('check'):
-  if Elm.attrib['variable'][-2:]==".*":
-
-    #keep variable name without trailing .*
-    orig=Elm.attrib['variable'][:-2]
-    for nam in names:
-       splits=nam.split('_')
-       var=splits[0]
-
-       #remove last _xxxx entry
-       if len(splits)>1:
-          for i in range(1,len(splits)-1):  
-             var+="_"+splits[i]
-
-       if var.upper()==orig.upper() or nam.upper()==orig.upper():
-          ServiceMaker(HostName,nam,configFile)
-  else:
-    for nam in names:
-       if Elm.attrib['variable'].upper()==nam.upper():
-          ServiceMaker(HostName,Elm.attrib['variable'],configFile)
-          break
-
-#Conf for no data tab
-noDatHost='No Data Check'
-HostMaker(noDatHost,configFile)
-for name in names:
-   ServiceMaker(noDatHost,name,configFile)
 
 configFile.close()

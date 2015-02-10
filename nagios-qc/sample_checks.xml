@@ -1,6 +1,7 @@
 <checks>
-<check type="flatline" variable="PRES" tolerance="0.01"></check>
+<check type="flatline" variable="PRES" tolerance="0.01"/>
 <check type="bounds" variable="PSXC"><min_limit>0</min_limit><max_limit>1200</max_limit></check>
 <check type="bounds" variable="ATX"><min_limit>-80.0</min_limit><max_limit>50.0</max_limit></check>
-<check type="constant" variable="GGQUAL" value="5" tolerance="0.01"></check>
+<check type="constant" variable="GGQUAL" value="5" tolerance="0.01"/>
+<check type="nodata" variable=".*"/>
 </checks>
