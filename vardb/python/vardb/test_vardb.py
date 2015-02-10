@@ -33,6 +33,10 @@ def test_open_and_save():
     assert(qcf.get_attribute(VDBVar.STANDARD_NAME, "air_pressure") ==
            "air_pressure")
 
+    # Test access by index
+    acetone = vdb.get_var_at(12)
+    assert(acetone.name() == "ACETONE")
+
     # vdb.save("saved.xml")
     vdb.close()
 
@@ -106,4 +110,12 @@ def test_variables_from_database():
     assert(thdg.units == "degree_T")
     assert(thdg.uncalibrated_units == "degree_T")
     assert(thdg.missing_value == -32767)
+
+    # Test global metadata, though this will break eventually...
+    assert(vlist.project == "WINTER")
+    assert(vlist.aircraft == "C130_N130AR")
+    assert(vlist.platform == "N130AR")
+    assert(vlist.aircraftFromPlatform("N677F") == "GV_N677F")
+
+    assert(vlist.defaultVDBPath("/tmp") == "/tmp/WINTER/C130_N130AR/vardb.xml")
 

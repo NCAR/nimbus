@@ -9,6 +9,7 @@ namespace
 {
   void (VDBFile::*save_filename)(const std::string&) = &VDBFile::save;
   VDBVar* (VDBFile::*get_var_string)(const std::string&) = &VDBFile::get_var;
+  VDBVar* (VDBFile::*get_var_int)(int) = &VDBFile::get_var;
 
   std::string (VDBVar::*get_attribute)
   (const std::string&, const std::string&) const = &VDBVar::get_attribute;
@@ -69,6 +70,8 @@ BOOST_PYTHON_MODULE(_vardb)
     .def("save", save_filename)
     .def("is_valid", &VDBFile::is_valid)
     .def("get_var", get_var_string,
+	 return_internal_reference<>())
+    .def("get_var_at", get_var_int,
 	 return_internal_reference<>())
     .def("num_vars", &VDBFile::num_vars)
     .def("get_standard_names", convert_standard_names)

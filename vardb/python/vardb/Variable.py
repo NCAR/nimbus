@@ -2,30 +2,87 @@
 
 from vardb import VDBVar
 import psycopg2 as pg
+import os
 
 import logging
 
 logger = logging.getLogger(__name__)
 
+# The database variable_list table contains the currently active
+# real-time variables and some of their metadata, so in real-time it
+# should serve as the most consistent source for variables and
+# metadata.  Normally it will be consistent with what is in the nidas
+# XML file and the XML variable database (VDBFile), although it will
+# not contain all the metadata from those files.  (For example, the
+# variable_list table does not contain the min/max limits which might
+# be needed for real-time qc checks.)  Therefore this class provides a
+# consolidated view of the real-time variable metadata by augmenting
+# the database variable_list with the metadata from the VDB file.  In
+# the future, such consolidation should also include the nidas XML
+# file.  Either all of the requisite metadata can be put in the
+# variable_list table where other applications can get it, or there
+# should be an API in both C++ and Python which provides a single,
+# consistent, consolidated view of variables and metadata.
+
 class VariableList(object):
-    "Interface to the variable list in the SQL database."
+    """
+    Provide a consolidated, consistent list of real-time
+    variables and metadata from the SQL database and VDB file.
+    """
 
     def __init__(self):
         self.dbname = "real-time"
         self.user = "ads"
         self.hostname = "acserver"
         self.db = None
+        self.vdbpath = None
+        self.project = None
+        self.aircraft = None
+        self.platform = None
+        self.vars = {}
+
+    def defaultVDBPath(self, projdir=None):
+        select = (lambda a, b: [a,b][int(not a)])
+        parms = {}
+        parms['project'] = select(self.project, '${PROJECT')
+        parms['aircraft'] = select(self.aircraft, '${AIRCRAFT')
+        parms['projdir'] = select(projdir, '${PROJ_DIR')
+        path = '%(projdir)s/%(project)s/%(aircraft)s/vardb.xml' % parms
+        return os.path.expandvars(path)
+
+    def aircraftFromPlatform(self, platform):
+        if platform == "N130AR":
+            return "C130_N130AR"
+        elif platform == "N677F":
+            return "GV_N677F"
+        return platform
 
     def loadVariables(self):
         self.db = pg.connect(database=self.dbname, user=self.user,
                              host=self.hostname)
         cursor = self.db.cursor()
+        # We want to initialize global metadata also in case it's needed
+        # to locate the vdb file or other files.
+        cursor.execute("""
+SELECT key, value
+FROM global_attributes;
+""")
+        rows = cursor.fetchall()
+        gatts = {}
+        for r in rows:
+            (key, value) = r
+            gatts[key] = value
+        if not self.project:
+            self.project = gatts['ProjectName']
+        if not self.platform:
+            self.platform = gatts['Platform']
+        if not self.aircraft:
+            self.aircraft = self.aircraftFromPlatform(self.platform)
         cursor.execute("""
 SELECT name, units, uncalibrated_units, long_name, missing_value 
 FROM variable_list;
 """)
         rows = cursor.fetchall()
-        vars = {}
         for r in rows:
             var = Variable(r[0])
             var.units = r[1]
@@ -33,11 +90,30 @@ FROM variable_list;
                 var.uncalibrated_units = r[2]
             var.long_name = r[3]
             var.missing_value = float(r[4])
-            vars[var.name] = var
-        logger.info("Loaded %d variables from database." % (len(vars)))
+            self.vars[var.name] = var
+        logger.info("Loaded %d variables from database." % (len(self.vars)))
         self.db.close()
-        return vars
+        return self.vars
 
+    def loadVdbFile(self):
+        "Merge metadata from a vdb file into the current variable list."
+        # Any existing variable metadata from the database takes
+        # precedence.
+        if not self.vdbpath:
+            self.vdbpath = self.defaultVDBPath()
+        vdb = VDBFile(self.vdbpath)
+        if not vdb.is_valid():
+            raise Exception("failed to open %s" % (self.vdbpath))
+        for i in xrange(vdb.num_vars()):
+            var = Variable().fromVDBVar(vdb.get_var_at(i))
+            dbvar = self.vars.get(var.name, None)
+            if dbvar:
+                var.units = dbvar.units
+                var.uncalibrated_units = dbvar.uncalibrated_units
+                var.long_name = dbvar.long_name
+                var.missing_value = dbvar.missing_value
+                self.vars[var.name] = var
+        return self.vars
 
 
 class Variable(object):
