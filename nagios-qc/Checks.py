@@ -68,6 +68,11 @@ class CheckPattern(object):
         return check
 
 
+def _getatt(elm, name, dfault, cvt=str):
+    if elm.attrib.has_key(name):
+        return cvt(elm.attrib[name])
+    return dfault
+
 
 class Check(object):
     "An actual Check instance which corresponds with a single nagios check."
@@ -83,6 +88,7 @@ class Check(object):
         self.tolerance = None
         self.lookback = None
         self.missing_value = None
+        self.value = None
 
     def toElement(self):
         elm = ET.Element('check')
@@ -97,14 +103,13 @@ class Check(object):
         if self.lookback:
             elm.set('lookback', str(self.lookback))
         if self.min_limit:
-            emin = ET.SubElement(elm, 'min_limit')
-            emin.text = str(self.min_limit)
+            elm.set('min_limit', str(self.min_limit))
         if self.max_limit:
-            emax = ET.SubElement(elm, 'max_limit')
-            emax.text = str(self.max_limit)
+            elm.set('max_limit', str(self.max_limit))
         if self.missing_value:
-            emv = ET.SubElement(elm, 'missing_value')
-            emv.text = str(self.missing_value)
+            elm.set('missing_value', str(self.missing_value))
+        if self.value:
+            elm.set('value', str(self.value))
         return elm
 
     def toString(self):
@@ -120,15 +125,14 @@ class Check(object):
     fromString = staticmethod(fromString)
 
     def fromElement(self, elm):
-        self.vname = elm.attrib.get('variable', None)
-        self.tolerance = float(elm.attrib.get('tolerance', Check.defaultTolerance))
-        self.lookback = int(elm.attrib.get('lookback', Check.defaultLookback))
-        for emv in elm.iter('missing_value'):
-            self.missing_value = float(emv.text)
-        for emax in elm.iter('max_limit'):
-            self.max_limit = float(emax.text)
-        for emin in elm.iter('min_limit'):
-            self.min_limit = float(emin.text)
+        self.vname = _getatt(elm, 'variable', None)
+        self.tolerance = _getatt(elm, 'tolerance', Check.defaultTolerance, float)
+        self.lookback = _getatt(elm, 'lookback', Check.defaultLookback, int)
+        self.missing_value = _getatt(elm, 'missing_value', self.missing_value,
+                                     float)
+        self.min_limit = _getatt(elm, 'min_limit', self.min_limit, float)
+        self.max_limit = _getatt(elm, 'max_limit', self.max_limit, float)
+        self.value = _getatt(elm, 'value', self.value, float)
 
     def name(self):
         "Derive this check name from our Status prototype."
@@ -146,7 +150,7 @@ class Check(object):
 
     def Status(self):
         "Construct a nagios status result for this check."
-        status = nagios.Status(self.name(), catname=None, vname=self.vname)
+        status = nagios.Status(self.ctype, catname=None, vname=self.vname)
         return status
 
 
@@ -174,7 +178,7 @@ class Bounds(Check):
     def instantiate(self, checkp, var):
         Check.instantiate(self, checkp, var)
         if self.min_limit is None or self.max_limit is None:
-            raise Exception("No limits for bounds check of '%s'." % (self.vname))
+            raise Exception("No limits for bounds check of '%s'." % (self.name()))
 
     def check(self, datastore):
         values = datastore.getValues(self.vname, 1)
@@ -192,6 +196,7 @@ class Bounds(Check):
 
 
 class Stable(Check):
+    "The values should be close to a target value within some tolerance limit."
 
     def __init__(self):
         Check.__init__(self, "stable")
@@ -200,14 +205,26 @@ class Stable(Check):
 
     def instantiate(self, checkp, var):
         Check.instantiate(self, checkp, var)
+        if not self.value:
+            raise Exception("No target value for stable check '%s'." % 
+                            (self.name()))
 
     def check(self, datastore):
         # Grab last 'lookback' values of our variable and analyze.
         values = datastore.getValues(self.vname, self.lookback)
+        current = values[-1]
         if numpy.std(values) > self.tolerance:
-            return self.Status().critical("Values out of tolerance: %f" %
-                                          (values[-1]))
-        return self.Status().ok("Values within tolerance: %f" % (values[-1]))
+            return self.Status().critical(
+                "Standard deviation of %d values exceeds tolerance of %f.  "
+                "Current value: %f." %
+                (self.lookback, self.tolerance, values[-1]))
+        if self.value - self.tolerance < current < self.value + self.tolerance:
+            return self.Status().ok(
+                "Current value %f within %f of %f" % 
+                (current, self.tolerance, self.value))
+        return self.Status().critical(
+            "Current value %f is not within %f of %f." %
+            (current, self.tolerance, self.value))
 
 
 class NoData(Check):
@@ -226,10 +243,31 @@ class NoData(Check):
                                  "%s is missing value." % (self.vname))
         return Status(Status.OK, "%s has data." % (self.vname))
 
+class GGQUAL(Check):
+
+    def __init__(self):
+        Check.__init__(self, "ggqual")
+
+    def instantiate(self, checkp, var):
+        Check.instantiate(self, checkp, var)
+
+    def check(self, datastore):
+        values = datastore.getValues(self.vname, 1)
+        if values[-1] == self.missing_value:
+            return self.Status().critical("No data for GPS quality flag.")
+        value = int(values[-1])
+        if value == 5:
+            return self.Status().ok("GPS quality flag is 5.")
+        if 1 < value < 5:
+            return self.Status().warning("GPS quality flag is %d" % (value))
+        return self.Status().critical("Bad value for GPS quality flag: %d" %
+                                      (value))
+
 
 CheckPattern.addCheckType(Flatline)
 CheckPattern.addCheckType(Bounds)
 CheckPattern.addCheckType(Stable)
+CheckPattern.addCheckType(GGQUAL)
 CheckPattern.addCheckType(NoData)
 
 

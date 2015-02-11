@@ -30,17 +30,23 @@ define host {
         self.path = '/etc/nagios/conf.d/raf-qc.cfg'
         self.fp = None
 
-    def makeService(host, service):
-        entry = _service_template % { 'host':host, 'service':service.lower() }
+    def makeService(self, host, service):
+        entry = NagiosConfig._service_template % {
+            'host':host, 'service':service.lower()
+        }
         return entry
 
-    def makeHost(host):
-        return _host_template % { 'host':host }
+    def makeHost(self, host):
+        return NagiosConfig._host_template % { 'host':host }
 
-    def open(self):
+    def open(self, path=None):
+        if path:
+            self.path = path
         self.fp = open(self.path, 'w')
 
     def write(self, text):
         self.fp.write(text)
 
-
+    def close(self):
+        self.fp.close()
+        self.fp = None
