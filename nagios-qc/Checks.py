@@ -6,10 +6,14 @@ import xml.etree.ElementTree as ET
 
 import iss.nagios as nagios
 
+import logging
 
-class CheckPattern(object):
+logger = logging.getLogger(__name__)
+
+
+class CheckTemplate(object):
     """
-    A CheckPattern names a check type and the basic parameters needed
+    A CheckTemplate names a check type and the basic parameters needed
     to realize one or more Check instances.
     """
 
@@ -19,12 +23,12 @@ class CheckPattern(object):
         "Register a factory function for a check type."
         # Create a prototype just to get the name, we don't need to keep it.
         check = maker()
-        CheckPattern._check_factory[check.ctype] = maker
+        CheckTemplate._check_factory[check.ctype] = maker
         
     addCheckType = staticmethod(addCheckType)
 
     def createCheckType(ctype):
-        maker = CheckPattern._check_factory.get(ctype, None)
+        maker = CheckTemplate._check_factory.get(ctype, None)
         if not maker:
             raise Exception("Unknown check type '%s'." % (ctype))
         return maker()
@@ -32,7 +36,7 @@ class CheckPattern(object):
     createCheckType = staticmethod(createCheckType)
 
 
-    # All the CheckPattern requires is the check type and the variable
+    # All the CheckTemplate requires is the check type and the variable
     # name pattern.  From that it can instantiate the right Check instance
     # for a given variable and let that instance pull the rest of its 
     # parameters from the XML element.
@@ -51,7 +55,10 @@ class CheckPattern(object):
         self.ctype = elm.attrib.get('type', None)
         
     def generate(self, variables):
-        "Apply this CheckPattern to a dictionary of variables to generate Checks."
+        """Apply this CheckTemplate to a dictionary of variables to generate
+        Checks.
+
+        """
         checks = []
         rx = re.compile(self.vname)
         for vname, var in variables.items():
@@ -59,11 +66,14 @@ class CheckPattern(object):
                 check = self.createCheck(var)
                 if check:
                     checks.append(check)
+        if not checks:
+            logger.warning("No matching variables for template "
+                           "ctype='%s' variable='%s'" % (self.ctype, self.vname))
         return checks
 
     def createCheck(self, var):
         "Create a prototype for this check type and instantiate it."
-        check = CheckPattern.createCheckType(self.ctype)
+        check = CheckTemplate.createCheckType(self.ctype)
         check.instantiate(self, var)
         return check
 
@@ -118,7 +128,7 @@ class Check(object):
 
     def fromString(text):
         elm = ET.fromstring(text)
-        check = CheckPattern.createCheckType(elm.attrib.get('type'))
+        check = CheckTemplate.createCheckType(elm.attrib.get('type'))
         check.fromElement(elm)
         return check
 
@@ -138,15 +148,18 @@ class Check(object):
         "Derive this check name from our Status prototype."
         return self.Status().getName()
 
-    def instantiate(self, checkp, var):
-        "Instantiate a Check from a CheckPattern prototype."
+    def instantiate(self, checkt, var):
+        "Instantiate a Check from a CheckTemplate prototype."
         # First fill from the variable metadata, but then override with
-        # explicit settings set in the CheckPattern.
+        # explicit settings set in the CheckTemplate.
         self.missing_value = var.missing_value
         self.min_limit = var.min_limit
         self.max_limit = var.max_limit
-        self.fromElement(checkp.elm)
+        self.fromElement(checkt.elm)
         self.vname = var.name
+        logger.debug("instantiated check %s from "
+                     "template(ctype=%s,variable=%s)" %
+                     (self.name(), checkt.name(), checkt.vname))
 
     def Status(self):
         "Construct a nagios status result for this check."
@@ -159,8 +172,8 @@ class Flatline(Check):
     def __init__(self):
         Check.__init__(self, "flatline")
 
-    def instantiate(self, checkp, var):
-        Check.instantiate(self, checkp, var)
+    def instantiate(self, checkt, var):
+        Check.instantiate(self, checkt, var)
 
     def check(self, datastore):
         values = datastore.getValues(self.vname, self.lookback)
@@ -175,8 +188,8 @@ class Bounds(Check):
     def __init__(self):
         Check.__init__(self, "bounds")
 
-    def instantiate(self, checkp, var):
-        Check.instantiate(self, checkp, var)
+    def instantiate(self, checkt, var):
+        Check.instantiate(self, checkt, var)
         if self.min_limit is None or self.max_limit is None:
             raise Exception("No limits for bounds check of '%s'." % (self.name()))
 
@@ -203,8 +216,8 @@ class Stable(Check):
         self.tolerance = None
         self.lookback = None
 
-    def instantiate(self, checkp, var):
-        Check.instantiate(self, checkp, var)
+    def instantiate(self, checkt, var):
+        Check.instantiate(self, checkt, var)
         if not self.value:
             raise Exception("No target value for stable check '%s'." % 
                             (self.name()))
@@ -232,8 +245,8 @@ class NoData(Check):
     def __init__(self):
         Check.__init__(self, "nodata")
 
-    def instantiate(self, checkp, var):
-        Check.instantiate(self, checkp, var)
+    def instantiate(self, checkt, var):
+        Check.instantiate(self, checkt, var)
 
     def check(self, datastore):
         # Grab last 'lookback' values of our variable and analyze.
@@ -248,8 +261,8 @@ class GGQUAL(Check):
     def __init__(self):
         Check.__init__(self, "ggqual")
 
-    def instantiate(self, checkp, var):
-        Check.instantiate(self, checkp, var)
+    def instantiate(self, checkt, var):
+        Check.instantiate(self, checkt, var)
 
     def check(self, datastore):
         values = datastore.getValues(self.vname, 1)
@@ -264,34 +277,67 @@ class GGQUAL(Check):
                                       (value))
 
 
-CheckPattern.addCheckType(Flatline)
-CheckPattern.addCheckType(Bounds)
-CheckPattern.addCheckType(Stable)
-CheckPattern.addCheckType(GGQUAL)
-CheckPattern.addCheckType(NoData)
+CheckTemplate.addCheckType(Flatline)
+CheckTemplate.addCheckType(Bounds)
+CheckTemplate.addCheckType(Stable)
+CheckTemplate.addCheckType(GGQUAL)
+CheckTemplate.addCheckType(NoData)
 
 
 class ChecksXML(object):
-    "Read CheckPatterns from a checks.xml file which can then be instantiated."
+    "Read CheckTemplates from a checks.xml file which can then be instantiated."
 
     def __init__(self):
+        """Create an empty ChecksXML with no file path and no check templates."""
         self.path = None
         self.xtree = None
-        self.checks = []
+        self.templates = []
 
-    def defaultPath(self):
-        return os.path.expandvars('${PROJ_DIR}/${PROJECT}/${AIRCRAFT}/checks.xml')
+    def setupPath(self, path=None, vlist=None):
+        """Set the path to a XML file with check templates.  Use @p path if not
+        None, else generate a path from @p vlist if not None, and otherwise
+        generate a path using the RAF environment variables.
 
-    def parse(self):
-        "Parse the checks file and load all the check entries."
-        if not self.path:
-            self.path = self.defaultPath()
-        self.xtree = ET.parse(self.path)
+        """
+        if path:
+            self.path = path
+        if self.path:
+            pass
+        elif vlist:
+            self.path = os.path.join(vlist.configPath(), 'checks.xml')
+        else:
+            self.path = os.path.expandvars(
+                '${PROJ_DIR}/${PROJECT}/${AIRCRAFT}/checks.xml')
+        return self.path
+
+    def load(self, xmlpath=None):
+        """Parse the checks file and load all the check templates.  The @p xmlpath
+        parameter is a convenient shortcut for specifying the path to open.
+        The templates are appended to any existing templates, so it is
+        possible to read multiple files into one combined list of
+        templates.
+
+        """
+        self.xtree = ET.parse(self.setupPath(xmlpath))
+        ntemplates = len(self.templates)
         for elm in self.xtree.getiterator('check'):
-            checkp = CheckPattern()
-            checkp.fromXML(elm)
-            self.checks.append(checkp)
+            checkt = CheckTemplate()
+            checkt.fromXML(elm)
+            self.templates.append(checkt)
+        logger.info("loaded %d check templates from file %s" %
+                     (len(self.templates) - ntemplates, self.path))
 
-    def getChecks(self):
-        return self.checks
+    def getCheckTemplates(self):
+        "Return the templates loaded into this ChecksXML so far."
+        return self.templates
+
+    def generateChecks(self, vdict):
+        "Instantiate all the templates against the variables in @p vdict."
+        checks = []
+        for checkt in self.getCheckTemplates():
+            checks.extend(checkt.generate(vdict))
+        logger.info("generated %d checks from %d templates" % 
+                    (len(checks), len(self.getCheckTemplates())))
+        return checks
+
 
