@@ -20,7 +20,7 @@ sources = Split("Checks.py NagiosConfig.py make-qc-config.py")
 pg = env.PostgresTestDB()
 
 wqc = env.Command('winter-nagios-qc.cfg', ['make-qc-config.py',
-                                           'winter-real-time.sql', 
+                                           'winter-real-time-acserver.sql', 
                                            'winter_vardb.xml',
                                            'winter_checks.xml'] + sources,
                   [ pg.action_run_aircraftdb,

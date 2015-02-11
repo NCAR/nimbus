@@ -218,7 +218,7 @@ class Stable(Check):
 
     def instantiate(self, checkt, var):
         Check.instantiate(self, checkt, var)
-        if not self.value:
+        if self.value is None:
             raise Exception("No target value for stable check '%s'." % 
                             (self.name()))
 
@@ -247,6 +247,9 @@ class NoData(Check):
 
     def instantiate(self, checkt, var):
         Check.instantiate(self, checkt, var)
+        if self.missing_value is None:
+            raise Exception("Need missing_value set for nodata check '%s'." % 
+                            (self.name()))
 
     def check(self, datastore):
         # Grab last 'lookback' values of our variable and analyze.
