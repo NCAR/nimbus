@@ -61,6 +61,9 @@ class VariableList(object):
         elif hostspec == 'gv':
             self.dbname = "real-time-GV"
             self.hostname = "eol-rt-data.fl-ext.ucar.edu"
+        elif hostspec == 'env':
+            self.dbname = None
+            self.hostname = None
         else:
             self.hostname = hostspec
 
