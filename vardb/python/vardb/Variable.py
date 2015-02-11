@@ -1,6 +1,7 @@
 "The Variable class for representing a RAF variable and its metadata."
 
 from vardb import VDBVar
+from vardb import VDBFile
 import psycopg2 as pg
 import os
 
@@ -39,16 +40,43 @@ class VariableList(object):
         self.project = None
         self.aircraft = None
         self.platform = None
-        self.vars = {}
+        self.projdir = None
+        self.configpath = None
+        self.variables = {}
 
-    def defaultVDBPath(self, projdir=None):
-        select = (lambda a, b: [a,b][int(not a)])
-        parms = {}
-        parms['project'] = select(self.project, '${PROJECT')
-        parms['aircraft'] = select(self.aircraft, '${AIRCRAFT')
-        parms['projdir'] = select(projdir, '${PROJ_DIR')
-        path = '%(projdir)s/%(project)s/%(aircraft)s/vardb.xml' % parms
-        return os.path.expandvars(path)
+    def getVariables(self):
+        return self.variables
+
+    def setVariables(self, variables):
+        "Explicitly replace the current variable dictionary."
+        self.variables = variables
+
+    def setDatabaseSpecifier(self, hostspec):
+        if hostspec == 'acserver':
+            self.dbname = "real-time"
+            self.hostname = "acserver"
+        elif hostspec == 'c130':
+            self.dbname = "real-time-C130"
+            self.hostname = "eol-rt-data.fl-ext.ucar.edu"
+        elif hostspec == 'gv':
+            self.dbname = "real-time-GV"
+            self.hostname = "eol-rt-data.fl-ext.ucar.edu"
+        else:
+            self.hostname = hostspec
+
+    def configPath(self):
+        if not self.configpath:
+            select = (lambda a, b: [a,b][int(not a)])
+            parms = {}
+            parms['project'] = select(self.project, '${PROJECT}')
+            parms['aircraft'] = select(self.aircraft, '${AIRCRAFT}')
+            parms['projdir'] = select(self.projdir, '${PROJ_DIR}')
+            path = '%(projdir)s/%(project)s/%(aircraft)s' % parms
+            self.configpath = os.path.expandvars(path)
+        return self.configpath
+
+    def vdbPath(self):
+        return os.path.join(self.configPath(), 'vardb.xml')
 
     def aircraftFromPlatform(self, platform):
         if platform == "N130AR":
@@ -90,30 +118,41 @@ FROM variable_list;
                 var.uncalibrated_units = r[2]
             var.long_name = r[3]
             var.missing_value = float(r[4])
-            self.vars[var.name] = var
-        logger.info("Loaded %d variables from database." % (len(self.vars)))
+            self.variables[var.name] = var
+        logger.info("Loaded %d variables from database." % (len(self.variables)))
         self.db.close()
-        return self.vars
+        return self.variables
 
     def loadVdbFile(self):
-        "Merge metadata from a vdb file into the current variable list."
+        """
+        Load variable metadata from a vdb file and return it.  It can be merged
+        separately with mergeVdbVariables().
+        """
         # Any existing variable metadata from the database takes
         # precedence.
         if not self.vdbpath:
-            self.vdbpath = self.defaultVDBPath()
+            self.vdbpath = self.vdbPath()
         vdb = VDBFile(self.vdbpath)
         if not vdb.is_valid():
             raise Exception("failed to open %s" % (self.vdbpath))
+        variables = {}
         for i in xrange(vdb.num_vars()):
-            var = Variable().fromVDBVar(vdb.get_var_at(i))
-            dbvar = self.vars.get(var.name, None)
+            vdbvar = vdb.get_var_at(i)
+            var = Variable(vdbvar.name)
+            var.fromVDBVar(vdbvar)
+            variables[var.name] = var
+        return variables
+
+    def mergeVdbVariables(self, variables):
+        for var in variables.itervalues():
+            dbvar = self.variables.get(var.name, None)
             if dbvar:
                 var.units = dbvar.units
                 var.uncalibrated_units = dbvar.uncalibrated_units
                 var.long_name = dbvar.long_name
                 var.missing_value = dbvar.missing_value
-                self.vars[var.name] = var
-        return self.vars
+                self.variables[var.name] = var
+        return self.variables
 
 
 class Variable(object):

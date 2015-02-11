@@ -117,5 +117,6 @@ def test_variables_from_database():
     assert(vlist.platform == "N130AR")
     assert(vlist.aircraftFromPlatform("N677F") == "GV_N677F")
 
-    assert(vlist.defaultVDBPath("/tmp") == "/tmp/WINTER/C130_N130AR/vardb.xml")
+    vlist.projdir = "/tmp"
+    assert(vlist.vdbPath() == "/tmp/WINTER/C130_N130AR/vardb.xml")
 
