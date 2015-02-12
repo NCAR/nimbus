@@ -2,9 +2,10 @@
 
 from vardb import VDBFile, VDBVar
 
-from Variable import Variable, VariableList
+from Variable import Variable, VariableList, DataStore
 
 import os.path
+import datetime
 
 _testdir = os.path.join(os.path.dirname(__file__), "../../tests")
 _deepwave_xml = os.path.join(_testdir, "deepwave_vardb.xml")
@@ -102,8 +103,9 @@ def test_variable():
 
 def test_variables_from_database():
     vlist = VariableList()
-    vlist.hostname = "eol-rt-data.fl-ext.ucar.edu"
-    vlist.dbname = "real-time-C130"
+    vlist.setDatabaseSpecifier('env')
+    # vlist.hostname = "eol-rt-data.fl-ext.ucar.edu"
+    # vlist.dbname = "real-time-C130"
     vars = vlist.loadVariables()
     thdg = vars['THDG']
     assert(thdg.long_name == "IRS Aircraft True Heading Angle")
@@ -119,4 +121,26 @@ def test_variables_from_database():
 
     vlist.projdir = "/tmp"
     assert(vlist.vdbPath() == "/tmp/WINTER/C130_N130AR/vardb.xml")
+    vlist.close()
+
+
+def test_datastore():
+    vlist = VariableList()
+    vlist.setDatabaseSpecifier('env')
+    vlist.loadVariables()
+
+    # So THDG should be added to columns, but THDGX should not.
+    vlist.selectVariable('THDG')
+    assert(len(vlist.columns) == 1)
+    vlist.selectVariable('THDGX')
+    assert(len(vlist.columns) == 1)
+
+    # Now grab the last 10 values.
+    datastore = vlist.getLatestValues(DataStore(), 10)
+    thdg = datastore.getValues('THDG')
+    assert(len(thdg) == 10)
+    assert(thdg[0] == 278.41399999999999)
+    assert(datastore.getTimes()[0] == datetime.datetime(2015, 2, 9, 19, 8, 55))
+    vlist.close()
+
 

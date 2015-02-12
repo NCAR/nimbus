@@ -4,6 +4,7 @@ from vardb import VDBVar
 from vardb import VDBFile
 import psycopg2 as pg
 import os
+import iss.time_tools as tt
 
 import logging
 
@@ -43,6 +44,8 @@ class VariableList(object):
         self.projdir = None
         self.configpath = None
         self.variables = {}
+        self.columns = []
+        self.cmap = {}
 
     def getVariables(self):
         return self.variables
@@ -67,6 +70,16 @@ class VariableList(object):
         else:
             self.hostname = hostspec
 
+    def connect(self):
+        if not self.db:
+            self.db = pg.connect(database=self.dbname, user=self.user,
+                                 host=self.hostname)
+
+    def close(self):
+        if self.db:
+            self.db.close()
+        self.db = None
+
     def configPath(self):
         if not self.configpath:
             select = (lambda a, b: [a,b][int(not a)])
@@ -89,8 +102,7 @@ class VariableList(object):
         return platform
 
     def loadVariables(self):
-        self.db = pg.connect(database=self.dbname, user=self.user,
-                             host=self.hostname)
+        self.connect()
         cursor = self.db.cursor()
         # We want to initialize global metadata also in case it's needed
         # to locate the vdb file or other files.
@@ -123,7 +135,6 @@ FROM variable_list;
             var.missing_value = float(r[4])
             self.variables[var.name] = var
         logger.info("Loaded %d variables from database." % (len(self.variables)))
-        self.db.close()
         return self.variables
 
     def loadVdbFile(self):
@@ -156,6 +167,85 @@ FROM variable_list;
                 var.missing_value = dbvar.missing_value
                 self.variables[var.name] = var
         return self.variables
+
+    def selectVariable(self, vname):
+        "Add the variable named @p vname to the select list, if it exists."
+        if self.variables.has_key(vname):
+            if not self.cmap.has_key(vname):
+                logger.debug("selecting variable %s" % (vname))
+                self.cmap[vname] = len(self.columns)
+                self.columns.append(vname)
+        else:
+            logger.warning("cannot select %s: not in database" % (vname))
+
+    def getLatestValues(self, datastore, lookback=1):
+        """Fill @p datastore @p lookback most recent values of selected variables.
+
+        """
+        self.connect()
+        proj = ",".join(self.columns)
+        if proj:
+            proj += ","
+        proj += "datetime"
+        sql = """
+SELECT %s FROM raf_lrt ORDER BY datetime DESC LIMIT %d;
+"""
+        sql = sql % (proj, lookback)
+        logger.debug(sql)
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        for r in rows:
+            # The type of the datetime column is datetime.datetime()
+            datastore.appendTime(r[-1])
+            for i, vname in enumerate(self.columns):
+                datastore.appendValue(self.variables[vname], float(r[i]))
+        return datastore
+
+
+class DataStore(object):
+    "Simple container for a subset of data from the database."
+
+    def __init__(self):
+        "Start out empty: no variables, no values."
+        self.variables = {}
+        self.values = {}
+        self.times = []
+
+    def appendTime(self, dt):
+        "Append datetime @p dt."
+        self.times.append(dt)
+
+    def getTimes(self):
+        return self.times
+
+    def appendValue(self, variable, value):
+        vname = variable.name
+        if not self.variables.has_key(vname):
+            self.variables[vname] = variable
+            self.values[vname] = [ value ]
+        else:
+            self.values[vname].append(value)
+
+    def setValues(self, variable, values):
+        vname = variable.name
+        if not self.variables.has_key(vname):
+            self.variables[vname] = variable
+        self.values[vname] = values
+
+    def getVariable(self, vname):
+        return self.variables.get(vname)
+
+    def getValues(self, vname):
+        """Returns the list of values for this variable, or None.
+
+        In theory this should return a copy, perhaps trimmed to contain
+        only the number of values the caller wants.  However, I assume
+        returning the exact list saves on memory thrashing, and the callers
+        can be trusted not to modify the list.
+
+        """
+        return self.values.get(vname)
 
 
 class Variable(object):
