@@ -3,6 +3,7 @@
 import os
 import re
 import xml.etree.ElementTree as ET
+import numpy
 
 import iss.nagios as nagios
 
@@ -108,17 +109,17 @@ class Check(object):
         # persisted, since that will be lots of duplicated information.
         # However, if it is in the persisted xml, then it the setting will
         # be obvious and explicit.
-        if self.tolerance:
+        if self.tolerance is not None:
             elm.set('tolerance', str(self.tolerance))
-        if self.lookback:
+        if self.lookback is not None:
             elm.set('lookback', str(self.lookback))
-        if self.min_limit:
+        if self.min_limit is not None:
             elm.set('min_limit', str(self.min_limit))
-        if self.max_limit:
+        if self.max_limit is not None:
             elm.set('max_limit', str(self.max_limit))
-        if self.missing_value:
+        if self.missing_value is not None:
             elm.set('missing_value', str(self.missing_value))
-        if self.value:
+        if self.value is not None:
             elm.set('value', str(self.value))
         return elm
 
@@ -166,6 +167,11 @@ class Check(object):
         status = nagios.Status(self.ctype, catname=None, vname=self.vname)
         return status
 
+    def check(self, datastore):
+        raise Exception("A Check instance is missing an implementation of the "
+                        "check() method.")
+
+
 
 class Flatline(Check):
 
@@ -176,10 +182,10 @@ class Flatline(Check):
         Check.instantiate(self, checkt, var)
 
     def check(self, datastore):
-        values = datastore.getValues(self.vname, self.lookback)
+        values = datastore.getValues(self.vname)
         if numpy.std(values) < self.tolerance:
-            return self.Status().critical("flatlining near %f" % (values[-1]))
-        return self.Status().ok("Not flatlined, value at %f." % (values[-1]))
+            return self.Status().critical("flatlining near %g" % (values[0]))
+        return self.Status().ok("Not flatlined, value at %g." % (values[0]))
 
 
 
@@ -194,17 +200,17 @@ class Bounds(Check):
             raise Exception("No limits for bounds check of '%s'." % (self.name()))
 
     def check(self, datastore):
-        values = datastore.getValues(self.vname, 1)
-        current = values[-1]
+        values = datastore.getValues(self.vname)
+        current = values[0]
         if self.min_limit > current:
-            return self.Status().critical('value %f '
+            return self.Status().critical('value %g '
                                           'is beneath minimum limit %f' %
                                           (current, self.min_limit))
         elif self.max_limit < current:
-            return self.Status().critical('value %f '
+            return self.Status().critical('value %g '
                                           'is above maximum limit %f' %
                                           (current, self.max_limit))
-        return self.Status().ok("value %f is within limits [%f,%f]" %
+        return self.Status().ok("value %g is within limits [%g,%g]" %
                                 (current, self.min_limit, self.max_limit))
 
 
@@ -224,19 +230,19 @@ class Stable(Check):
 
     def check(self, datastore):
         # Grab last 'lookback' values of our variable and analyze.
-        values = datastore.getValues(self.vname, self.lookback)
-        current = values[-1]
+        values = datastore.getValues(self.vname)
+        current = values[0]
         if numpy.std(values) > self.tolerance:
             return self.Status().critical(
-                "Standard deviation of %d values exceeds tolerance of %f.  "
-                "Current value: %f." %
-                (self.lookback, self.tolerance, values[-1]))
+                "Standard deviation of %d values exceeds tolerance of %g.  "
+                "Current value: %g." %
+                (self.lookback, self.tolerance, values[0]))
         if self.value - self.tolerance < current < self.value + self.tolerance:
             return self.Status().ok(
-                "Current value %f within %f of %f" % 
+                "Current value %g within %g of %g" % 
                 (current, self.tolerance, self.value))
         return self.Status().critical(
-            "Current value %f is not within %f of %f." %
+            "Current value %g is not within %g of %g." %
             (current, self.tolerance, self.value))
 
 
@@ -253,11 +259,11 @@ class NoData(Check):
 
     def check(self, datastore):
         # Grab last 'lookback' values of our variable and analyze.
-        values = datastore.getValues(self.vname, 1)
+        values = datastore.getValues(self.vname)
         if values[0] == self.missing_value:
-            return nagios.Status(Status.CRITICAL,
-                                 "%s is missing value." % (self.vname))
-        return Status(Status.OK, "%s has data." % (self.vname))
+            return self.Status().critical("%s is missing value." % (self.vname))
+        return self.Status().ok("%s has data." % (self.vname))
+
 
 class GGQUAL(Check):
 
@@ -268,10 +274,10 @@ class GGQUAL(Check):
         Check.instantiate(self, checkt, var)
 
     def check(self, datastore):
-        values = datastore.getValues(self.vname, 1)
-        if values[-1] == self.missing_value:
+        values = datastore.getValues(self.vname)
+        if values[0] == self.missing_value:
             return self.Status().critical("No data for GPS quality flag.")
-        value = int(values[-1])
+        value = int(values[0])
         if value == 5:
             return self.Status().ok("GPS quality flag is 5.")
         if 1 < value < 5:

@@ -15,18 +15,18 @@ env.AppendENVPath('PYTHONPATH', "#/../vardb/python")
 
 runtest = env.TestRun('pytests', tests, "py.test ${SOURCES}")
 
-sources = Split("Checks.py NagiosConfig.py make-qc-config.py")
+sources = Split("Checks.py NagiosConfig.py nagios-qc.py")
 
 pg = env.PostgresTestDB()
 
-wqc = env.Command('winter-nagios-qc.cfg', ['make-qc-config.py',
+wqc = env.Command('winter-nagios-qc.cfg', ['nagios-qc.py',
                                            'winter-real-time-acserver.sql', 
                                            'winter_vardb.xml',
                                            'winter_checks.xml'] + sources,
                   [ pg.action_run_aircraftdb,
                     "${SOURCE.abspath} --debug "
                     "--db env --checks winter_checks.xml "
-                    "--vdb winter_vardb.xml --output ${TARGET}",
+                    "--vdb winter_vardb.xml --nagios ${TARGET} config",
                     pg.action_stopdb ], chdir=1)
 
 env.Alias('test', wqc)

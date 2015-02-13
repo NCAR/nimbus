@@ -13,36 +13,21 @@ import sys
 import os
 
 from optparse import OptionParser
-from vardb import VariableList
-from Checks import ChecksXML
-from NagiosConfig import NagiosConfig
+from NagiosChecks import NagiosChecks
 
-# Now we have check instances generated.  The goal is to store those
-# instances, with all their associated parameters, so they can be loaded and
-# executed over and over without repeating all the metadata lookup.  It just
-# sounds more robust to me to run the checks from one config file, without
-# depending upon all the metadata sources on each run.  It will also make it
-# easier to tell when the config has changed and should be regenerated.
+_usage = """
+nagios-qc [options] {config|check}
 
-# So the way we're going to try it is to store the checks as xml inside
-# comments in the nagios config file.
+The 'config' operation generates the nagios config file.
 
-# For each check, write the xml serliazation in a comment, then follow it
-# with the nagios service definition.
+The 'check' operation reads the checks from the nagios config file and
+executes them, submitting the results as passive service checks to nagios.
 
-def writeConfigFile(checks, path=None):
-    HostName='RAF'
-    configfile = NagiosConfig()
-    configfile.open(path)
-    configfile.write(configfile.makeHost(HostName))
-    for check in checks:
-        configfile.write("\n#CHECK: " + check.toString() + "\n")
-        configfile.write(configfile.makeService(HostName, check.name()))
-    configfile.close()
+"""
 
 
 def main(argv):
-    parser = OptionParser()
+    parser = OptionParser(usage=_usage)
 
     parser.add_option("--debug", dest="loglevel", action="store_const",
                       const=logging.DEBUG, default=logging.ERROR,
@@ -51,47 +36,35 @@ def main(argv):
                       const=logging.INFO, default=logging.ERROR,
                       help="Show info log messages.")
 
-    parser.add_option("--db", type="string", help="""\
-Specify the database connection or hostname.  The default is 'acserver'.
-Use 'c130' or 'gv' to use the ground real-time database for that plane.
-Use 'env' to use the settings in the PG environment variables.""")
-
-    parser.add_option("--projdir", type="string", help="""\
-Specify or override the PROJ_DIR environment variable, the directory path
-which contains project configuration directories.""")
-
-    parser.add_option("--output", type="string", help="""\
-The file path to which the nagios configuration will be written.""")
-
-    parser.add_option("--checks", type="string", help="""\
-Path to the XML checks.xml file.  Defaults to the project config directory.""")
-
-    parser.add_option("--vdb", type="string", help="""\
-Override the default path to the vardb.xml file.""")
+    nc = NagiosChecks()
+    nc.addOptions(parser)
 
     (options, argv) = parser.parse_args(argv)
+    # Delete the program name.
+    del argv[0]
 
     logging.basicConfig(level=options.loglevel)
+    logger.debug("operation: %s" % (",".join(argv)))
 
-    vlist = VariableList()
-    if options.db:
-        vlist.setDatabaseSpecifier(options.db)
-    if options.projdir:
-        vlist.projdir = options.projdir
-    if options.vdb:
-        vlist.vdbpath = options.vdb
-    vlist.loadVariables()
-    vlist.loadVdbFile()
+    if not argv:
+        print("Missing operation: 'config' or 'check'.\n" + _usage)
+        sys.exit(1)
 
-    checksxml = ChecksXML()
-    checksxml.load(options.checks)
-    checks = checksxml.generateChecks(vlist.getVariables())
-    writeConfigFile(checks, options.output)
+    operation = argv[0]
+    nc.setOptions(options)
+
+    if operation == "config":
+        nc.writeConfig()
+    elif operation == "check":
+        nc.executeChecks()
+    else:
+        print("Unknown operation: %s" % (operation))
+        sys.exit(1)
+
     return 0
 
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
-
 
 

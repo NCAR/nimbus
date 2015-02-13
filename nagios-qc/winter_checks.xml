@@ -38,6 +38,6 @@
 <check type="bounds" variable="USCAT" min_limit="0" max_limit="3.5"></check>
 <check type="bounds" variable="CONCP" min_limit="0" max_limit="20000"></check>
 
-<check type="nodata" variable=".*"/>
+<check type="nodata" variable=".*" missing_value="-32767"/>
 
 </checks>
