@@ -152,9 +152,9 @@ for debugging it can be a regular file or /dev/null.""" %
         commands = NagiosCommands()
         commands.open(self.options.commands)
         for status in results:
-            statline = "%s;%s;%d;%s\n" % (self.hostname, status.getName(), 
-                                          status.getLevel(), 
-                                          status.consoleMessage())
+            statline = "%s;%s;%d;%s" % (self.hostname, status.getName(), 
+                                        status.getLevel(), 
+                                        status.consoleMessage())
             commands.processServiceCheckResult(statline)
         commands.close()
         vlist.close()
