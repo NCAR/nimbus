@@ -9,7 +9,7 @@ env = Environment(tools=['default', 'jlocal', 'pylint',
                          'testing', 'postgres_testdb'])
 
 sources = Split("""
-nagios-qc.py
+nagiosqc.py
 Checks.py
 NagiosCommands.py
 NagiosChecks.py
@@ -27,11 +27,11 @@ env.PythonLint('lint', sources, PYLINTPYTHONPATH=env['ENV']['PYTHONPATH'])
 
 runtest = env.TestRun('pytests', sources + tests, "py.test ${SOURCES}")
 
-sources = Split("Checks.py NagiosConfig.py nagios-qc.py")
+sources = Split("Checks.py NagiosConfig.py nagiosqc.py")
 
 pg = env.PostgresTestDB()
 
-wqc = env.Command('winter-nagios-qc.cfg', ['nagios-qc.py',
+wqc = env.Command('winter-nagios-qc.cfg', ['nagiosqc.py',
                                            'winter-real-time-acserver.sql', 
                                            'winter_vardb.xml',
                                            'winter_checks.xml'] + sources,
