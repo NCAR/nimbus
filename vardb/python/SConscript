@@ -1,18 +1,21 @@
 # -*- python -*-
 
-env = Environment(tools=['default', 'jlocal', 'vardb', 'testing', 
+env = Environment(tools=['default', 'jlocal', 'vardb', 'testing', 'pylint',
                          'postgres_testdb'])
 env.Append(CPPPATH='/usr/include/python2.7')
 env.Append(LIBS='boost_python')
 
 module = env.SharedLibrary(env.File('vardb/_vardb.so'), ['src/vardb.cc'])
-pysrcs = Split("vardb/__init__.py")
+pysrcs = Split("vardb/__init__.py vardb/Variable.py")
 tests = Split("vardb/test_vardb.py")
 
 pg = env.PostgresTestDB()
 sql = env.File("../../nagios-qc/winter-real-time.sql")
 
-env.AppendENVPath('PYTHONPATH', "#/../python")
+env.AppendENVPath('PYTHONPATH', env.Dir("#/../python").get_abspath())
+env.AppendENVPath('PYTHONPATH', env.Dir('.').get_abspath())
+
+env.PythonLint('lint', pysrcs, PYLINTPYTHONPATH=env['ENV']['PYTHONPATH'])
 
 runtest = env.TestRun('pytests', tests+module+pysrcs+[sql],
                       [ pg.action_run_aircraftdb,

@@ -4,7 +4,6 @@ from vardb import VDBVar
 from vardb import VDBFile
 import psycopg2 as pg
 import os
-import iss.time_tools as tt
 
 import logging
 
@@ -82,7 +81,7 @@ class VariableList(object):
 
     def configPath(self):
         if not self.configpath:
-            select = (lambda a, b: [a,b][int(not a)])
+            select = (lambda a, b: [a, b][int(not a)])
             parms = {}
             parms['project'] = select(self.project, '${PROJECT}')
             parms['aircraft'] = select(self.aircraft, '${AIRCRAFT}')
@@ -134,7 +133,8 @@ FROM variable_list;
             var.long_name = r[3]
             var.missing_value = float(r[4])
             self.variables[var.name] = var
-        logger.info("Loaded %d variables from database." % (len(self.variables)))
+        logger.info("Loaded %d variables from database." % 
+                    (len(self.variables)))
         return self.variables
 
     def loadVdbFile(self):
@@ -179,7 +179,7 @@ FROM variable_list;
             logger.warning("cannot select %s: not in database" % (vname))
 
     def getLatestValues(self, datastore, lookback=1):
-        """Fill @p datastore @p lookback most recent values of selected variables.
+        """Fill @p datastore with recent values of selected variables.
 
         """
         self.connect()
@@ -212,9 +212,9 @@ class DataStore(object):
         self.values = {}
         self.times = []
 
-    def appendTime(self, dt):
-        "Append datetime @p dt."
-        self.times.append(dt)
+    def appendTime(self, dtime):
+        "Append datetime @p dtime."
+        self.times.append(dtime)
 
     def getTimes(self):
         return self.times
@@ -223,7 +223,7 @@ class DataStore(object):
         vname = variable.name
         if not self.variables.has_key(vname):
             self.variables[vname] = variable
-            self.values[vname] = [ value ]
+            self.values[vname] = [value]
         else:
             self.values[vname].append(value)
 
