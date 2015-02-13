@@ -1008,7 +1008,7 @@
 	"PLWCC",	(void(*)(void*))plwccInit,	NULL,		splwcc,
 	"PLWCC1",	(void(*)(void*))plwccInit,	NULL,		splwcc,
 	"PLWCG",	(void(*)(void*))plwcgInit,	NULL,		splwcg,
-	"PDRY",		(void(*)(void*))plwccInit,	NULL,		spdry,
+	"PDRY",		NULL,		NULL,		spdry,
 #
 # Russian liquid water.
 	"XLWCR",	NULL,		NULL,		srlwc,
