@@ -10,7 +10,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 import sys
-import os
 
 from optparse import OptionParser
 from NagiosChecks import NagiosChecks

@@ -5,15 +5,27 @@ import os, sys
 sys.path.insert(0, os.path.abspath("../caledit/site_scons"))
 import site_init
 
-env = Environment(tools=['default', 'jlocal', 'testing', 'postgres_testdb'])
+env = Environment(tools=['default', 'jlocal', 'pylint',
+                         'testing', 'postgres_testdb'])
+
+sources = Split("""
+nagios-qc.py
+Checks.py
+NagiosCommands.py
+NagiosChecks.py
+NagiosConfig.py
+""")
 
 tests = Split("test_nagios_qc.py")
 
 # Test against the python packages in the source tree
 env.AppendENVPath('PYTHONPATH', "#/../python")
 env.AppendENVPath('PYTHONPATH', "#/../vardb/python")
+env.AppendENVPath('PYTHONPATH', env.Dir('.').get_abspath())
 
-runtest = env.TestRun('pytests', tests, "py.test ${SOURCES}")
+env.PythonLint('lint', sources, PYLINTPYTHONPATH=env['ENV']['PYTHONPATH'])
+
+runtest = env.TestRun('pytests', sources + tests, "py.test ${SOURCES}")
 
 sources = Split("Checks.py NagiosConfig.py nagios-qc.py")
 

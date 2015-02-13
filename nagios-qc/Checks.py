@@ -69,7 +69,8 @@ class CheckTemplate(object):
                     checks.append(check)
         if not checks:
             logger.warning("No matching variables for template "
-                           "ctype='%s' variable='%s'" % (self.ctype, self.vname))
+                           "ctype='%s' variable='%s'" % 
+                           (self.ctype, self.vname))
         return checks
 
     def createCheck(self, var):
@@ -137,7 +138,8 @@ class Check(object):
 
     def fromElement(self, elm):
         self.vname = _getatt(elm, 'variable', None)
-        self.tolerance = _getatt(elm, 'tolerance', Check.defaultTolerance, float)
+        self.tolerance = _getatt(elm, 'tolerance', 
+                                 Check.defaultTolerance, float)
         self.lookback = _getatt(elm, 'lookback', Check.defaultLookback, int)
         self.missing_value = _getatt(elm, 'missing_value', self.missing_value,
                                      float)
@@ -147,7 +149,7 @@ class Check(object):
 
     def name(self):
         "Derive this check name from our Status prototype."
-        return self.Status().getName()
+        return self.newStatus().getName()
 
     def instantiate(self, checkt, var):
         "Instantiate a Check from a CheckTemplate prototype."
@@ -162,12 +164,12 @@ class Check(object):
                      "template(ctype=%s,variable=%s)" %
                      (self.name(), checkt.name(), checkt.vname))
 
-    def Status(self):
+    def newStatus(self):
         "Construct a nagios status result for this check."
         status = nagios.Status(self.ctype, catname=None, vname=self.vname)
         return status
 
-    def check(self, datastore):
+    def check(self, _datastore):
         raise Exception("A Check instance is missing an implementation of the "
                         "check() method.")
 
@@ -184,8 +186,8 @@ class Flatline(Check):
     def check(self, datastore):
         values = datastore.getValues(self.vname)
         if numpy.std(values) < self.tolerance:
-            return self.Status().critical("flatlining near %g" % (values[0]))
-        return self.Status().ok("Not flatlined, value at %g." % (values[0]))
+            return self.newStatus().critical("flatlining near %g" % (values[0]))
+        return self.newStatus().ok("Not flatlined, value at %g." % (values[0]))
 
 
 
@@ -197,21 +199,22 @@ class Bounds(Check):
     def instantiate(self, checkt, var):
         Check.instantiate(self, checkt, var)
         if self.min_limit is None or self.max_limit is None:
-            raise Exception("No limits for bounds check of '%s'." % (self.name()))
+            raise Exception("No limits for bounds check of '%s'." % 
+                            (self.name()))
 
     def check(self, datastore):
         values = datastore.getValues(self.vname)
         current = values[0]
         if self.min_limit > current:
-            return self.Status().critical('value %g '
-                                          'is beneath minimum limit %f' %
-                                          (current, self.min_limit))
+            return self.newStatus().critical('value %g '
+                                             'is beneath minimum limit %f' %
+                                             (current, self.min_limit))
         elif self.max_limit < current:
-            return self.Status().critical('value %g '
-                                          'is above maximum limit %f' %
-                                          (current, self.max_limit))
-        return self.Status().ok("value %g is within limits [%g,%g]" %
-                                (current, self.min_limit, self.max_limit))
+            return self.newStatus().critical('value %g '
+                                             'is above maximum limit %f' %
+                                             (current, self.max_limit))
+        return self.newStatus().ok("value %g is within limits [%g,%g]" %
+                                   (current, self.min_limit, self.max_limit))
 
 
 class Stable(Check):
@@ -233,15 +236,15 @@ class Stable(Check):
         values = datastore.getValues(self.vname)
         current = values[0]
         if numpy.std(values) > self.tolerance:
-            return self.Status().critical(
+            return self.newStatus().critical(
                 "Standard deviation of %d values exceeds tolerance of %g.  "
                 "Current value: %g." %
                 (self.lookback, self.tolerance, values[0]))
         if self.value - self.tolerance < current < self.value + self.tolerance:
-            return self.Status().ok(
+            return self.newStatus().ok(
                 "Current value %g within %g of %g" % 
                 (current, self.tolerance, self.value))
-        return self.Status().critical(
+        return self.newStatus().critical(
             "Current value %g is not within %g of %g." %
             (current, self.tolerance, self.value))
 
@@ -261,8 +264,9 @@ class NoData(Check):
         # Grab last 'lookback' values of our variable and analyze.
         values = datastore.getValues(self.vname)
         if values[0] == self.missing_value:
-            return self.Status().critical("%s is missing value." % (self.vname))
-        return self.Status().ok("%s has data." % (self.vname))
+            return self.newStatus().critical("%s is missing value." % 
+                                             (self.vname))
+        return self.newStatus().ok("%s has data." % (self.vname))
 
 
 class GGQUAL(Check):
@@ -276,14 +280,14 @@ class GGQUAL(Check):
     def check(self, datastore):
         values = datastore.getValues(self.vname)
         if values[0] == self.missing_value:
-            return self.Status().critical("No data for GPS quality flag.")
+            return self.newStatus().critical("No data for GPS quality flag.")
         value = int(values[0])
         if value == 5:
-            return self.Status().ok("GPS quality flag is 5.")
+            return self.newStatus().ok("GPS quality flag is 5.")
         if 1 < value < 5:
-            return self.Status().warning("GPS quality flag is %d" % (value))
-        return self.Status().critical("Bad value for GPS quality flag: %d" %
-                                      (value))
+            return self.newStatus().warning("GPS quality flag is %d" % (value))
+        return self.newStatus().critical("Bad value for GPS quality flag: %d" %
+                                         (value))
 
 
 CheckTemplate.addCheckType(Flatline)
@@ -297,15 +301,17 @@ class ChecksXML(object):
     "Read CheckTemplates from a checks.xml file which can then be instantiated."
 
     def __init__(self):
-        """Create an empty ChecksXML with no file path and no check templates."""
+        """Create empty ChecksXML with no file path and no templates."""
         self.path = None
         self.xtree = None
         self.templates = []
 
     def setupPath(self, path=None, vlist=None):
-        """Set the path to a XML file with check templates.  Use @p path if not
-        None, else generate a path from @p vlist if not None, and otherwise
-        generate a path using the RAF environment variables.
+        """Set the path to a XML file with check templates.
+
+        Use @p path if not None, else generate a path from @p vlist if not
+        None, and otherwise generate a path using the RAF environment
+        variables.
 
         """
         if path:
@@ -320,11 +326,12 @@ class ChecksXML(object):
         return self.path
 
     def load(self, xmlpath=None):
-        """Parse the checks file and load all the check templates.  The @p xmlpath
-        parameter is a convenient shortcut for specifying the path to open.
-        The templates are appended to any existing templates, so it is
-        possible to read multiple files into one combined list of
-        templates.
+        """Parse the checks file and load all the check templates.
+
+        The @p xmlpath parameter is a convenient shortcut for specifying
+        the path to open.  The templates are appended to any existing
+        templates, so it is possible to read multiple files into one
+        combined list of templates.
 
         """
         self.xtree = ET.parse(self.setupPath(xmlpath))
@@ -334,7 +341,7 @@ class ChecksXML(object):
             checkt.fromXML(elm)
             self.templates.append(checkt)
         logger.info("loaded %d check templates from file %s" %
-                     (len(self.templates) - ntemplates, self.path))
+                    (len(self.templates) - ntemplates, self.path))
 
     def getCheckTemplates(self):
         "Return the templates loaded into this ChecksXML so far."

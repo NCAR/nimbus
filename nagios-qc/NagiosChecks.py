@@ -72,7 +72,8 @@ for debugging it can be a regular file or /dev/null.""" %
         for check in checks:
             configfile.write("\n" + NagiosChecks._embedded_prefix + 
                              check.toString() + "\n")
-            configfile.write(configfile.makeService(self.hostname, check.name()))
+            svcdef = configfile.makeService(self.hostname, check.name())
+            configfile.write(svcdef)
         configfile.close()
 
     def readChecksFromConfigFile(self, path=None):

@@ -43,7 +43,7 @@ define host {
         return entry
 
     def makeHost(self, host):
-        return NagiosConfig._host_template % { 'host':host }
+        return NagiosConfig._host_template % {'host':host}
 
     def setPath(self, path=None):
         if path:
