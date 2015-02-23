@@ -19,6 +19,7 @@ static size_t timeCount = 0;
 static NR_TYPE PSTcor, PSQcor;
 
 static std::vector<float> ak_coeff, ss_coeff, tas_coeff;
+static std::vector<float> akc_coeff;
 
 NR_TYPE compute_tas(NR_TYPE, NR_TYPE);
 
@@ -33,6 +34,12 @@ void GP_AKinit(var_base *varp)
   ak_coeff.push_back(0.1299);
   ak_coeff.push_back(0.0);
   ak_coeff.push_back(0.0);
+
+  // sakc_gp(); This is used to adjust AK_GP to AKRD.  Used when you want to replace
+  // aircraft attack (AKRD) with this attack.  e.g. Radome freeze-up.
+  akc_coeff.clear();
+  akc_coeff.push_back(3.73);
+  akc_coeff.push_back(1.1);
 
   tas_coeff.clear();
   tas_coeff.push_back(-0.2674);
@@ -150,6 +157,14 @@ void stas_gp(DERTBL *varp)	// True airspeed
   tas	= compute_tas(at, mach);
 
   PutSample(varp, tas);
+}
+
+/* -------------------------------------------------------------------- */
+void sakc_gp(DERTBL *varp)	// Gustpod Attack Corrected to aircraft attack
+{
+  NR_TYPE ak_gp = GetSample(varp, 0);
+
+  PutSample(varp, akc_coeff[0] + akc_coeff[1] * ak_gp);
 }
 
 /* END GUSTPOD.C */
