@@ -106,6 +106,20 @@ void openFiles(int argc, char *argv[], int argp)
 }
 
 /* -------------------------------------------------------------------- */
+long readFirstTimeValue(int fd, int timeVarID)
+{
+  size_t start[2], count[2];
+  double tf[8];
+
+  start[0] = 0; start[1] = 0;
+  count[0] = 1; count[1] = 1;
+
+  nc_get_vara_double(fd, timeVarID, start, count, tf);
+
+  return (long)tf[0];
+}
+
+/* -------------------------------------------------------------------- */
 void checkForOverlappingTimeSegments()
 {
   int varID1, varID2;
@@ -152,8 +166,8 @@ void checkForOverlappingTimeSegments()
   strptime(units1, unitsFormat1, &tm1);
   strptime(units2, unitsFormat2, &tm2);
 
-  bt1 = mktime(&tm1);
-  bt2 = mktime(&tm2);
+  bt1 = mktime(&tm1) + readFirstTimeValue(infd1, varID1);
+  bt2 = mktime(&tm2) + readFirstTimeValue(infd2, varID2);
 
   if (bt1 == 0 || bt2 == 0)
   {
