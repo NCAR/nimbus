@@ -76,6 +76,19 @@ void openFiles(int argc, char *argv[], int argp)
     Exit(1);
   }
 }
+/* -------------------------------------------------------------------- */
+long readFirstTimeValue(int fd, int timeVarID)
+{
+  size_t start[2], count[2];
+  double tf[8];
+
+  start[0] = 0; start[1] = 0;
+  count[0] = 1; count[1] = 1;
+
+  nc_get_vara_double(fd, timeVarID, start, count, tf);
+
+  return (long)tf[0];
+}
 
 /* -------------------------------------------------------------------- */
 void checkForOverlappingTimeSegments()
@@ -118,9 +131,9 @@ void checkForOverlappingTimeSegments()
   strptime(units1, unitsFormat1, &tm1);
   strptime(units2, unitsFormat2, &tm2);
 
-  bt1 = mktime(&tm1);
-  bt2 = mktime(&tm2);
-
+  bt1 = mktime(&tm1) + readFirstTimeValue(infd1, varID1);
+  bt2 = mktime(&tm2) + readFirstTimeValue(infd2, varID2);
+std::cerr<<"bt = " << bt1 << " " << bt2 <<"\n";
   if (bt1 == 0 || bt2 == 0)
   {
     std::cerr << "At least one file has a base_time of 0, this implies asc2cdf was used\nwithout '-b' option.  Merged data may be shifted in time.\n";
@@ -348,11 +361,12 @@ void MoveData()
   if (bt1 > bt2) inRec = bt1 - bt2;
 
   if ((nRecords = std::min(et1, et2) - std::max(bt1, bt2)) == 0)
+;
   {
-    std::cerr << "Computed number of records to merge is zero.  Something is wrong.\n";
+//    std::cerr << "Computed number of records to merge is zero.  Something is wrong.\n";
     std::cerr << "  begTimeMaster = " << bt1 << ", endTimeMaster = " << et1 << ", nRecords=" << et1-bt1 << ".\n";
     std::cerr << "  begTimeSecond = " << bt2 << ", endTimeSecond = " << et2 << ", nRecords=" << et2-bt2 << ".\n";
-    Exit(1);
+//    Exit(1);
   }
 
   nc_inq_dimid(infd2, "Time", &timeDimID);
@@ -365,6 +379,8 @@ void MoveData()
     int nDims, dimids[3];
     nc_inq_varndims(infd2, inVarID[i], &nDims);
     nc_inq_vardimid(infd2, inVarID[i], dimids);
+
+// Size should be smaller of two files?
     nc_inq_dimlen(infd2, dimids[0], &size);
 
     count[0] = nRecords;
