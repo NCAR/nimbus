@@ -115,7 +115,7 @@ void checkNumberRecords(int InputFile, const char * fileName)
     if (length != deltaT)
     {
       printf("%s: record count mismatch:", fileName);
-      printf(" %d records vs. %d computed.\n", length, deltaT);
+      printf(" %zd records vs. %zd computed.\n", length, deltaT);
     }
   }
 }
@@ -180,7 +180,7 @@ void checkStarts(int fd, const char * fileName)
 
     nc_get_att_text(fd, id, "units", oldAtt);
 
-    nc_get_var1_int(fd, id, edge, (int*)&UTseconds);
+    nc_get_var1_long(fd, id, edge, (long*)&UTseconds);
     strptime(oldAtt, format, &units_tm);
     strftime(att, 128, format, &StartFlight);
 
