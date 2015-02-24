@@ -115,7 +115,8 @@ void plwccInit(var_base *varp)
   else
     tau_Nu[probe_index] = (int)tmp[0];
 
-  if ((tmp = GetDefaultsValue("KING_CLOUD_CONC_THRESHOLD", varp->name)) == NULL)
+  sprintf(defaultName, "KING_CLOUD_CONC_THRESHOLD");
+  if ((tmp = GetDefaultsValue(defaultName, varp->name)) == NULL)
   {
     std::vector<float> values;
     values.push_back(cloud_conc_threshold);
