@@ -63,7 +63,9 @@ class CheckTemplate(object):
         checks = []
         rx = re.compile(self.vname)
         for vname, var in variables.items():
-            if rx.match(vname):
+            # If this is an exact match, then select it.  If not, then
+            # only select matches for scalar variables.
+            if vname == self.vname or (var.ndims == 1 and rx.match(vname)):
                 check = self.createCheck(var)
                 if check:
                     checks.append(check)
@@ -266,7 +268,8 @@ class NoData(Check):
         if values[0] == self.missing_value:
             return self.newStatus().critical("%s is missing value." % 
                                              (self.vname))
-        return self.newStatus().ok("%s has data." % (self.vname))
+        return self.newStatus().ok("%s has data: %g" % 
+                                   (self.vname, values[0]))
 
 
 class GGQUAL(Check):
