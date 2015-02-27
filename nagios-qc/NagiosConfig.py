@@ -1,24 +1,103 @@
 "Utilities for creating nagios configuration files and entries."
 
 
-class NagiosConfig(object):
+_preamble = """
+# ****************************************************************
+# This file is generated automatically.  Do not edit.
+# ****************************************************************
 
-    _service_template = """
-define service {
-   use                     generic-radar-service
-   host_name               %(host)s
-   service_description     %(service)s
+define host {
+  name                            nagios_qc_default_host
+  register                        0
+  notifications_enabled           1
+  event_handler_enabled           0
+  flap_detection_enabled          1
+  failure_prediction_enabled      0
+  retain_status_information       1
+  retain_nonstatus_information    1
+  process_perf_data               0
+  check_command                   check-mk-host-ping
+  check_interval                  1
+  check_period                    24X7
+  max_check_attempts              1
+  notification_interval           0
+  notification_period             24X7
+  notification_options            d,u,r,f,s
 }
+
+# Template used by all other service templates
+define service {
+  name                            nagios_qc_default
+  register                        0
+  active_checks_enabled           1
+  passive_checks_enabled          1
+  parallelize_check               1
+  obsess_over_service             1
+  check_freshness                 0
+  notifications_enabled           1
+  event_handler_enabled           0
+  flap_detection_enabled          1
+  failure_prediction_enabled      1
+  process_perf_data               0
+  retain_status_information       1
+  retain_nonstatus_information    1
+  notification_interval           0
+  is_volatile                     0
+  normal_check_interval           10
+  retry_check_interval            10
+  max_check_attempts              1
+  notification_options            u,c,w,r,f,s
+  notification_period             24X7
+  check_period                    24X7
+}
+
+# This template is used by the service that actively
+# calls check_mk. Each host has exactly one service
+# using this template. Here you can configure, how often
+# each host should be checked.
+define service {
+  name                            nagios_qc_active
+  use                             nagios_qc_default
+  register                        0
+  check_command                   nagios_qc_check
+  active_checks_enabled           1
+}
+
+define service {
+  name                            nagios_qc_passive
+  use                             nagios_qc_default
+  register                        0
+  active_checks_enabled           0
+}
+
+# Run the nagiosqc script to generate the passive check results.
+define command {
+  command_name  nagios_qc_check
+  command_line  python /home/local/raf/nagios-qc/nagiosqc check
+}
+
 """
 
-    _host_template = """
+_host_template = """
 define host {
-   use                     generic-radar-host
+   name                    %(host)s
+   use                     nagios_qc_default_host
    host_name               %(host)s
    alias                   %(host)s
    address                 0.0.0.0
 }
 """
+
+_service_template = """
+define service {
+   use                     nagios_qc_passive
+   host_name               %(host)s
+   service_description     %(service)s
+}
+"""
+
+
+class NagiosConfig(object):
 
     # The original default path ('/etc/nagios/raf/config.cfg') was in a
     # RAF-specific subdirectory which had to be created and added to the
@@ -37,13 +116,13 @@ define host {
         self.fp = None
 
     def makeService(self, host, service):
-        entry = NagiosConfig._service_template % {
+        entry = _service_template % {
             'host':host, 'service':service.lower()
         }
         return entry
 
     def makeHost(self, host):
-        return NagiosConfig._host_template % {'host':host}
+        return _host_template % {'host':host}
 
     def setPath(self, path=None):
         if path:
@@ -54,6 +133,7 @@ define host {
     def open(self, path=None):
         self.setPath(path)
         self.fp = open(self.path, 'w')
+        self.fp.write(_preamble)
 
     def openForReading(self, path=None):
         self.setPath(path)
