@@ -41,13 +41,16 @@ void GP_AKinit(var_base *varp)
   akc_coeff.push_back(3.73);
   akc_coeff.push_back(1.1);
 
+  // tas coefficients from the WindUncertainty document, Al Cooper.  Feb/2015
   tas_coeff.clear();
-  tas_coeff.push_back(-0.2674);
-  tas_coeff.push_back(-6.1254);
-  tas_coeff.push_back(8.8972);
-  tas_coeff.push_back(-3.7472);
-  tas_coeff.push_back(0.0515);
-  tas_coeff.push_back(1.9255);
+  tas_coeff.push_back(1.2251);
+  tas_coeff.push_back(28.3047);
+  tas_coeff.push_back(-30.2417);
+  tas_coeff.push_back(14.1312);
+  tas_coeff.push_back(-0.581);
+  tas_coeff.push_back(-7.8344);
+  tas_coeff.push_back(0.1492);
+  tas_coeff.push_back(1.2385);
 
   if ((tmp = GetDefaultsValue("GP_AK_COEFF", varp->name)) != NULL)
   {
@@ -151,7 +154,8 @@ void stas_gp(DERTBL *varp)	// True airspeed
   QR	= qc / ps;
   mach	= sqrt(XMAC2(QR));
   QoverP= tas_coeff[0] + tas_coeff[1]*QR + tas_coeff[2]*mach*QR + tas_coeff[3]*QR*QR
-	+ tas_coeff[4]*ratio + tas_coeff[5]*mach;
+	+ tas_coeff[4]*ratio + tas_coeff[5]*mach
+	+ tas_coeff[6]*ratio*ratio + tas_coeff[7]*ratio*mach;
 
   mach	= sqrt(XMAC2(QoverP));
   tas	= compute_tas(at, mach);
