@@ -121,7 +121,7 @@ FROM global_attributes;
         if not self.aircraft:
             self.aircraft = self.aircraftFromPlatform(self.platform)
         cursor.execute("""
-SELECT name, units, uncalibrated_units, long_name, missing_value 
+SELECT name, units, uncalibrated_units, long_name, missing_value, ndims
 FROM variable_list;
 """)
         rows = cursor.fetchall()
@@ -132,6 +132,7 @@ FROM variable_list;
                 var.uncalibrated_units = r[2]
             var.long_name = r[3]
             var.missing_value = float(r[4])
+            var.ndims = int(r[5])
             self.variables[var.name] = var
         logger.info("Loaded %d variables from database." % 
                     (len(self.variables)))
@@ -199,7 +200,15 @@ SELECT %s FROM raf_lrt ORDER BY datetime DESC LIMIT %d;
             # The type of the datetime column is datetime.datetime()
             datastore.appendTime(r[-1])
             for i, vname in enumerate(self.columns):
-                datastore.appendValue(self.variables[vname], float(r[i]))
+                var = self.variables[vname]
+                try:
+                    datastore.appendValue(var, float(r[i]))
+                except TypeError, err:
+                    logger.error("variable %s, column %i: "
+                                 "cannot convert %s to float." %
+                                 (vname, i, r[i]))
+                    datastore.appendValue(var, var.missing_value)
+
         return datastore
 
 
@@ -283,6 +292,7 @@ class Variable(object):
         self.standard_name = None
         self.reference = None
         self.missing_value = None
+        self.ndims = None
 
     def _get_value(self, vdbvar, att, dfault, cvt):
         attvalue = vdbvar.get_attribute(att)

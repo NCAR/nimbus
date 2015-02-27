@@ -112,6 +112,7 @@ def test_variables_from_database():
     assert(thdg.units == "degree_T")
     assert(thdg.uncalibrated_units == "degree_T")
     assert(thdg.missing_value == -32767)
+    assert(thdg.ndims == 1)
 
     # Test global metadata, though this will break eventually...
     assert(vlist.project == "WINTER")
