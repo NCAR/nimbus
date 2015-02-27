@@ -31,15 +31,25 @@ sources = Split("Checks.py NagiosConfig.py nagiosqc.py")
 
 pg = env.PostgresTestDB()
 
-wqc = env.Command('winter-nagios-qc.cfg', ['nagiosqc.py',
-                                           'winter-real-time-acserver.sql', 
-                                           'winter_vardb.xml',
-                                           'winter_checks.xml'] + sources,
+wqc = env.Command(['winter-nagios-qc.cfg', 'winter-results.txt'],
+                  ['nagiosqc.py', 'WINTER-rf03-real-time-acserver.sql', 
+                   'winter_vardb.xml', 'winter_checks.xml'] + sources,
                   [ pg.action_run_aircraftdb,
                     "${SOURCE.abspath} --debug "
                     "--db env --checks winter_checks.xml "
-                    "--vdb winter_vardb.xml --nagios ${TARGET} config",
+                    "--vdb winter_vardb.xml --nagios ${TARGETS[0]} config",
+                    "${SOURCE.abspath} --debug "
+                    "--db env --nagios ${TARGETS[0]} "
+                    "--commands ${TARGETS[1]} check",
                     pg.action_stopdb ], chdir=1)
 
 env.Alias('test', wqc)
 
+env.Alias('diff', 
+          env.Command("diff", ["expected/winter-nagios-qc.cfg", wqc[0] ],
+                      "diff -c ${SOURCES}"))
+env.Alias('test', 'diff')
+env.Alias('cdiff', 
+          env.Command("cdiff", ["expected/winter-results.txt", wqc[1] ],
+                      "diff -c ${SOURCES}"))
+env.Alias('test', 'cdiff')
