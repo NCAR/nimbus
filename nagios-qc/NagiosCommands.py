@@ -45,10 +45,10 @@ class NagiosCommands(object):
         cmdline = "[%s] %s;%s"
         return cmdline % (self.getTimestamp(when), command, line)
 
-    def processServiceCheckResult(self, line):
+    def processServiceCheckResult(self, line, when=None):
         "Format and submit a PROCESS_SERVICE_CHECK_RESULT command line."
         cmdline = self.createCommand(
-            NagiosCommands.PROCESS_SERVICE_CHECK_RESULT, line)
+            NagiosCommands.PROCESS_SERVICE_CHECK_RESULT, line, when)
         self.submitCommand(cmdline)
 
     def submitCommand(self, cmdline):

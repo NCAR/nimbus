@@ -11,6 +11,8 @@ from Checks import Check
 from NagiosConfig import NagiosConfig
 from NagiosCommands import NagiosCommands
 from vardb import DataStore
+from optparse import OptionValueError
+import iss.time_tools as tt
 
 # The goal is to store Check instances, with all their associated
 # parameters, so they can be loaded and executed over and over without
@@ -60,6 +62,16 @@ Path to which nagios commands will be written.  The default is %s, but
 for debugging it can be a regular file or /dev/null.""" % 
                           (NagiosCommands.DefaultCommandFile), 
                           default=False)
+
+        def callback_timestamp(option, opt_str, value, parser):
+            try:
+                parser.values.ensure_value(option.dest, tt.parseTime(value))
+            except Exception, x:
+                raise OptionValueError(str(x))
+
+        parser.add_option("--timestamp", type="string", action="callback",
+                          callback=callback_timestamp, help="""\
+Assign the given timestamp as the time of the nagios passive check result.""")
 
 
     def setOptions(self, options):
@@ -152,10 +164,14 @@ for debugging it can be a regular file or /dev/null.""" %
         #cmds is passive check output file, which is piped to nagios by shell
         commands = NagiosCommands()
         commands.open(self.options.commands)
+        when = self.options.timestamp
+        if when:
+            logger.debug("Submitting check results at time: %s" %
+                         (tt.formatTime(when)))
         for status in results:
             statline = "%s;%s;%d;%s" % (self.hostname, status.getName(), 
                                         status.getLevel(), 
                                         status.consoleMessage())
-            commands.processServiceCheckResult(statline)
+            commands.processServiceCheckResult(statline, when)
         commands.close()
         vlist.close()

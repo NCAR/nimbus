@@ -38,7 +38,7 @@ wqc = env.Command(['winter-nagios-qc.cfg', 'winter-results.txt'],
                     "${SOURCE.abspath} --debug "
                     "--db env --checks winter_checks.xml "
                     "--vdb winter_vardb.xml --nagios ${TARGETS[0]} config",
-                    "${SOURCE.abspath} --debug "
+                    "${SOURCE.abspath} --debug --timestamp 20150228012345 "
                     "--db env --nagios ${TARGETS[0]} "
                     "--commands ${TARGETS[1]} check",
                     pg.action_stopdb ], chdir=1)
