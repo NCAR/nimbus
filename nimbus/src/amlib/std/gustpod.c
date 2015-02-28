@@ -150,6 +150,9 @@ void stas_gp(DERTBL *varp)	// True airspeed
 
   NR_TYPE ratio, QR, mach, QoverP, tas;
 
+  if (qc < 0.01)
+    qc = 0.01;
+
   ratio	= adif / qc;
   QR	= qc / ps;
   mach	= sqrt(XMAC2(QR));
@@ -159,6 +162,11 @@ void stas_gp(DERTBL *varp)	// True airspeed
 
   mach	= sqrt(XMAC2(QoverP));
   tas	= compute_tas(at, mach);
+
+  // TAS fit used DEEPWAVE data above 120 m/s.  So to keep data from developing
+  // handlebar moustache ends during take-off and landing, return nan.
+  if (tas < 120.0)
+    tas = floatNAN;
 
   PutSample(varp, tas);
 }
