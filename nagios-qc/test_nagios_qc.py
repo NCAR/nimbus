@@ -5,6 +5,7 @@ from Checks import ChecksXML
 from Checks import Check
 from Checks import Bounds
 from vardb import VariableList
+import numpy
 
 _testdir = os.path.join(os.path.dirname(__file__))
 _checks_xml = os.path.join(_testdir, "sample_checks.xml")
@@ -45,6 +46,11 @@ def test_winter_checks_xml():
     vlist = VariableList()
     vlist.vdbpath = _winter_xml
     variables = vlist.loadVdbFile()
+    # Set an explicit missing_value since some checks need it but
+    # it is not provided when reading just from a vdb file.
+    for var in variables.values():
+        if not var.missing_value:
+            var.missing_value = -32767
     vlist.setVariables(variables)
     checks = xml.generateChecks(vlist.getVariables())
 
@@ -72,3 +78,13 @@ def test_check_instances():
     assert(atx2.max_limit == 50.0)
     assert(atx2.vname == "ATX")
     assert(type(atx2) == Bounds)
+
+
+def test_check_math():
+    check = Check("math")
+    check.missing_value = -32767
+    assert(check.stddev([1,2,3]) == numpy.sqrt(2.0/3.0))
+    assert(check.stddev([1,2,-32767]) == 0.5)
+    assert(numpy.isnan(check.stddev([-32767,-32767])))
+    assert(numpy.isnan(check.stddev([])))
+

@@ -3,7 +3,7 @@
 import os
 import re
 import xml.etree.ElementTree as ET
-import numpy
+import numpy as np
 
 import iss.nagios as nagios
 
@@ -94,28 +94,48 @@ class Check(object):
     defaultTolerance = 0.01
     defaultLookback = 25
 
-    def __init__(self, ctype):
+    # Different checks use different subsets of check parameters, so each
+    # Check can specify its particular parameters, and only those
+    # parameteres will be persisted in configurations.
+
+    MISSING_VALUE = "missing_value"
+    TOLERANCE = "tolerance"
+    MIN_LIMIT = "min_limit"
+    MAX_LIMIT = "max_limit"
+    LOOKBACK = "lookback"
+    VALUE = "value"
+
+    def __init__(self, ctype, parameters=None):
         self.ctype = ctype
         self.vname = None
         self.min_limit = None
         self.max_limit = None
-        self.tolerance = None
-        self.lookback = None
         self.missing_value = None
         self.value = None
+        self._tolerance = None
+        self._lookback = None
+        if not parameters:
+            parameters = []
+        self.parameters = parameters
+
+        # These are the "public" attributes which check implementations
+        # should use.  They have defaults so they always have values, but
+        # they do not get persisted unless explicitly assigned in a
+        # configuration.
+        self.tolerance = Check.defaultTolerance
+        self.lookback = Check.defaultLookback
 
     def toElement(self):
         elm = ET.Element('check')
         elm.set('type', self.ctype)
         elm.set('variable', self.vname)
-        # If these are just the defaults, then I'm not sure they should be
-        # persisted, since that will be lots of duplicated information.
-        # However, if it is in the persisted xml, then it the setting will
-        # be obvious and explicit.
-        if self.tolerance is not None:
-            elm.set('tolerance', str(self.tolerance))
-        if self.lookback is not None:
-            elm.set('lookback', str(self.lookback))
+        # We only need to check the parameter list when instantiating a
+        # check config.  If a parameter is not in the list then it will
+        # still be None and thus won't be persisted.
+        if self._tolerance is not None:
+            elm.set('tolerance', str(self._tolerance))
+        if self._lookback is not None:
+            elm.set('lookback', str(self._lookback))
         if self.min_limit is not None:
             elm.set('min_limit', str(self.min_limit))
         if self.max_limit is not None:
@@ -138,16 +158,43 @@ class Check(object):
 
     fromString = staticmethod(fromString)
 
-    def fromElement(self, elm):
+    def fromElement(self, elm, var=None):
         self.vname = _getatt(elm, 'variable', None)
-        self.tolerance = _getatt(elm, 'tolerance', 
-                                 Check.defaultTolerance, float)
-        self.lookback = _getatt(elm, 'lookback', Check.defaultLookback, int)
-        self.missing_value = _getatt(elm, 'missing_value', self.missing_value,
-                                     float)
-        self.min_limit = _getatt(elm, 'min_limit', self.min_limit, float)
-        self.max_limit = _getatt(elm, 'max_limit', self.max_limit, float)
-        self.value = _getatt(elm, 'value', self.value, float)
+        if Check.TOLERANCE in self.parameters:
+            self._tolerance = _getatt(elm, 'tolerance', self._tolerance, float)
+            if self._tolerance is not None:
+                self.tolerance = self._tolerance
+        if Check.LOOKBACK in self.parameters:
+            self._lookback = _getatt(elm, 'lookback', self._lookback, int)
+            if self._lookback is not None:
+                self.lookback = self._lookback
+        if Check.MISSING_VALUE in self.parameters:
+            if var:
+                self.missing_value = var.missing_value
+            self.missing_value = _getatt(elm, 'missing_value', 
+                                         self.missing_value, float)
+            if self.missing_value is None:
+                raise Exception("Need missing_value set for check '%s'." % 
+                                (self.name()))
+        if Check.MIN_LIMIT in self.parameters:
+            if var:
+                self.min_limit = var.min_limit
+            self.min_limit = _getatt(elm, 'min_limit', self.min_limit, float)
+            if self.min_limit is None:
+                raise Exception("No min_limit for bounds check '%s'." % 
+                                (self.name()))
+        if Check.MAX_LIMIT in self.parameters:
+            if var:
+                self.max_limit = var.max_limit
+            self.max_limit = _getatt(elm, 'max_limit', self.max_limit, float)
+            if self.max_limit is None:
+                raise Exception("No max_limit for bounds check '%s'." % 
+                                (self.name()))
+        if Check.VALUE in self.parameters:
+            self.value = _getatt(elm, 'value', self.value, float)
+            if self.value is None:
+                raise Exception("Check '%s' needs value parameter." %
+                                (self.name()))
 
     def name(self):
         "Derive this check name from our Status prototype."
@@ -157,10 +204,7 @@ class Check(object):
         "Instantiate a Check from a CheckTemplate prototype."
         # First fill from the variable metadata, but then override with
         # explicit settings set in the CheckTemplate.
-        self.missing_value = var.missing_value
-        self.min_limit = var.min_limit
-        self.max_limit = var.max_limit
-        self.fromElement(checkt.elm)
+        self.fromElement(checkt.elm, var)
         self.vname = var.name
         logger.debug("instantiated check %s from "
                      "template(ctype=%s,variable=%s)" %
@@ -175,20 +219,36 @@ class Check(object):
         raise Exception("A Check instance is missing an implementation of the "
                         "check() method.")
 
+    def stddev(self, values):
+        """Return a standard deviation for the array of values.
+
+        Accounts for missing values, and returns nan if there are no good
+        values.
+
+        """
+        va = np.array(values)
+        missing = va == self.missing_value
+        if not values or missing.all():
+            return float("nan")
+        return np.std(va[~missing])
 
 
 class Flatline(Check):
 
     def __init__(self):
-        Check.__init__(self, "flatline")
+        Check.__init__(self, "flatline", 
+                       [Check.TOLERANCE, Check.LOOKBACK, Check.MISSING_VALUE])
 
     def instantiate(self, checkt, var):
         Check.instantiate(self, checkt, var)
 
     def check(self, datastore):
-        values = datastore.getValues(self.vname)
-        if numpy.std(values) < self.tolerance:
-            return self.newStatus().critical("flatlining near %g" % (values[0]))
+        values = datastore.getValues(self.vname, self.lookback)
+        sdev = self.stddev(values)
+        if sdev < self.tolerance:
+            return self.newStatus().critical(
+                "flatlining near %g, %i values with stddev=%g < tolerance=%g" %
+                (values[0], len(values), sdev, self.tolerance))
         return self.newStatus().ok("Not flatlined, value at %g." % (values[0]))
 
 
@@ -196,16 +256,13 @@ class Flatline(Check):
 class Bounds(Check):
 
     def __init__(self):
-        Check.__init__(self, "bounds")
+        Check.__init__(self, "bounds", [Check.MIN_LIMIT, Check.MAX_LIMIT])
 
     def instantiate(self, checkt, var):
         Check.instantiate(self, checkt, var)
-        if self.min_limit is None or self.max_limit is None:
-            raise Exception("No limits for bounds check of '%s'." % 
-                            (self.name()))
 
     def check(self, datastore):
-        values = datastore.getValues(self.vname)
+        values = datastore.getValues(self.vname, 1)
         current = values[0]
         if self.min_limit > current:
             return self.newStatus().critical('value %g '
@@ -223,9 +280,9 @@ class Stable(Check):
     "The values should be close to a target value within some tolerance limit."
 
     def __init__(self):
-        Check.__init__(self, "stable")
-        self.tolerance = None
-        self.lookback = None
+        Check.__init__(self, "stable",
+                       [Check.MISSING_VALUE, Check.TOLERANCE, Check.LOOKBACK,
+                        Check.VALUE])
 
     def instantiate(self, checkt, var):
         Check.instantiate(self, checkt, var)
@@ -235,13 +292,14 @@ class Stable(Check):
 
     def check(self, datastore):
         # Grab last 'lookback' values of our variable and analyze.
-        values = datastore.getValues(self.vname)
+        values = datastore.getValues(self.vname, self.lookback)
         current = values[0]
-        if numpy.std(values) > self.tolerance:
+        sdev = self.stddev(values)
+        if sdev > self.tolerance:
             return self.newStatus().critical(
-                "Standard deviation of %d values exceeds tolerance of %g.  "
+                "Standard deviation %g of %d values exceeds tolerance of %g.  "
                 "Current value: %g." %
-                (self.lookback, self.tolerance, values[0]))
+                (sdev, len(values), self.tolerance, values[0]))
         if self.value - self.tolerance < current < self.value + self.tolerance:
             return self.newStatus().ok(
                 "Current value %g within %g of %g" % 
@@ -254,21 +312,18 @@ class Stable(Check):
 class NoData(Check):
 
     def __init__(self):
-        Check.__init__(self, "nodata")
+        Check.__init__(self, "nodata", [Check.MISSING_VALUE])
 
     def instantiate(self, checkt, var):
         Check.instantiate(self, checkt, var)
-        if self.missing_value is None:
-            raise Exception("Need missing_value set for nodata check '%s'." % 
-                            (self.name()))
 
     def check(self, datastore):
         # Grab last 'lookback' values of our variable and analyze.
-        values = datastore.getValues(self.vname)
+        values = datastore.getValues(self.vname, 1)
         if values[0] == self.missing_value:
-            return self.newStatus().critical("%s is missing value." % 
+            return self.newStatus().critical("%s is a missing value." % 
                                              (self.vname))
-        return self.newStatus().ok("%s has data: %g" % 
+        return self.newStatus().ok("%s has value %g" % 
                                    (self.vname, values[0]))
 
 
@@ -281,7 +336,7 @@ class GGQUAL(Check):
         Check.instantiate(self, checkt, var)
 
     def check(self, datastore):
-        values = datastore.getValues(self.vname)
+        values = datastore.getValues(self.vname, 1)
         if values[0] == self.missing_value:
             return self.newStatus().critical("No data for GPS quality flag.")
         value = int(values[0])
