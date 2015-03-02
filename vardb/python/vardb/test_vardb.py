@@ -142,6 +142,10 @@ def test_datastore():
     assert(len(thdg) == 10)
     assert(thdg[0] == 278.41399999999999)
     assert(datastore.getTimes()[0] == datetime.datetime(2015, 2, 9, 19, 8, 55))
+
+    thdg = datastore.getValues('THDG', 1)
+    assert(len(thdg) == 1)
+    assert(thdg[0] == 278.41399999999999)
     vlist.close()
 
 

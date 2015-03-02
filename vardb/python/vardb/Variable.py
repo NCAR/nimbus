@@ -245,16 +245,22 @@ class DataStore(object):
     def getVariable(self, vname):
         return self.variables.get(vname)
 
-    def getValues(self, vname):
+    def getValues(self, vname, lookback=None):
         """Returns the list of values for this variable, or None.
 
         In theory this should return a copy, perhaps trimmed to contain
         only the number of values the caller wants.  However, I assume
         returning the exact list saves on memory thrashing, and the callers
-        can be trusted not to modify the list.
+        can be trusted not to modify the list.  If lookback is not
+        specified, then all the values are returned, otherwise a list of
+        only the @p lookback most recent values are returned.  The values
+        are always returned most recent first.
 
         """
-        return self.values.get(vname)
+        values = self.values.get(vname)
+        if values and lookback is not None:
+            return values[:lookback]
+        return values
 
 
 class Variable(object):
