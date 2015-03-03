@@ -70,9 +70,20 @@ class VariableList(object):
             self.hostname = hostspec
 
     def connect(self):
-        if not self.db:
-            self.db = pg.connect(database=self.dbname, user=self.user,
-                                 host=self.hostname)
+        if self.db:
+            return
+        # Apparently the psychopg2 package version on RHEL 6.x does not allow
+        # keyword parameters to be passed as None, so if we want some 
+        # connection parameters to come from the environment we have to leave
+        # them out of the argument list.
+        args = {}
+        if self.dbname:
+            args['database'] = self.dbname
+        if self.user:
+            args['user'] = self.user
+        if self.hostname:
+            args['host'] = self.hostname
+        self.db = pg.connect(**args)
 
     def close(self):
         if self.db:
