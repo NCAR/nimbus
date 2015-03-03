@@ -2,7 +2,7 @@
 
 env = Environment(tools=['default', 'jlocal', 'vardb', 'testing', 'pylint',
                          'postgres_testdb'])
-env.Append(CPPPATH='/usr/include/python2.7')
+env.MergeFlags('!python-config --includes')
 env.Append(LIBS='boost_python')
 
 module = env.SharedLibrary(env.File('vardb/_vardb.so'), ['src/vardb.cc'])
