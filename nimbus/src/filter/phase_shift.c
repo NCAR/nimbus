@@ -8,8 +8,8 @@ ENTRY POINTS:	PhaseShift()
 		AddVariableToSDIlagList()
 		AddVariableToRAWlagList()
 
-STATIC FNS:	resample()		Does all except 1hz
-		resample1hz()		Optimized for 1hz variables
+STATIC FNS:	resample()
+		shift_histogram()
 
 DESCRIPTION:	Interpolate missing data (spikes) and phase shift data.
 		Also create HRT interpolated data.  At some point this
@@ -37,7 +37,7 @@ void LogThisRecordMsg(NR_TYPE *record, const char msg[]);
 
 static void
   resample(RAWTBL *vp, int lag, NR_TYPE *, NR_TYPE *),
-  shift_vector(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out);
+  shift_histogram(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out);
 
 /* -------------------------------------------------------------------- */
 void AddVariableToRAWlagList(RAWTBL *varp)
@@ -120,7 +120,7 @@ void PhaseShift(
     if (srt_out || houtput)
     {
       if (rp->Length > 1)
-        shift_vector(rp, lag, srt_out, houtput);
+        shift_histogram(rp, lag, srt_out, houtput);
       else
         resample(rp, lag, srt_out, houtput);
     }
@@ -321,11 +321,11 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
  
 /* -------------------------------------------------------------------- */
 /*
- * Only shift vectors, no interpolation.  Lag will be truncated to mod
+ * Only shift histograms, no interpolation.  Lag will be truncated to mod
  * samplerate.
  */
 static void
-shift_vector(RAWTBL *rp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
+shift_histogram(RAWTBL *rp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 {
   if (lag == 0)
     return;
