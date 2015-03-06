@@ -18,9 +18,9 @@ env.AppendENVPath('PYTHONPATH', env.Dir('.').get_abspath())
 env.PythonLint('lint', pysrcs, PYLINTPYTHONPATH=env['ENV']['PYTHONPATH'])
 
 runtest = env.TestRun('pytests', tests+module+pysrcs+[sql],
-                      [ pg.action_run_aircraftdb,
+                      [ pg.action_init,
                         "py.test ${SOURCE}",
-                        pg.action_stopdb ])
+                        pg.action_stop ])
 
 # Do not run these tests by default until the module is built by default.
 #
