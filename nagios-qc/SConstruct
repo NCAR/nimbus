@@ -34,15 +34,18 @@ pg = env.PostgresTestDB()
 wqc = env.Command(['winter-nagios-qc.cfg', 'winter-results.txt'],
                   ['nagiosqc.py', 'WINTER-rf03-real-time-acserver.sql', 
                    'winter_vardb.xml', 'winter_checks.xml'] + sources,
-                  [ pg.action_run_aircraftdb,
+                  [ pg.action_init,
                     "${SOURCE.abspath} --debug "
+                    "--script "
+                    "'python /home/local/raf/nagios-qc/nagiosqc.py check' "
                     "--db env --checks winter_checks.xml "
                     "--vdb winter_vardb.xml --nagios ${TARGETS[0]} config",
                     "${SOURCE.abspath} --debug --timestamp 20150228012345 "
                     "--db env --nagios ${TARGETS[0]} "
                     "--commands ${TARGETS[1]} check",
-                    pg.action_stopdb ], chdir=1)
+                    pg.action_stop ], chdir=1)
 
+env.AlwaysBuild(wqc)
 env.Alias('test', wqc)
 
 env.Alias('diff', 

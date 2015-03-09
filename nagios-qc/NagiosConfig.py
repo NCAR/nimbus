@@ -64,9 +64,10 @@ define service {
   active_checks_enabled           1
 }
 
-# check_mk actually generates a specific command for each passive service check, so it can warn
-# about that one specific service check being used as an active check instead of passive.
-# We'll just use one command for all the passive checks until we think we need otherwise.
+# check_mk actually generates a specific command for each passive service
+# check, so it can warn about that one specific service check being used as
+# an active check instead of passive.  We'll just use one command for all
+# the passive checks until we think we need otherwise.
 
 define service {
   name                            nagios_qc_passive
@@ -105,7 +106,6 @@ define host {
 _service_template = """
 define service {
    use                     nagios_qc_passive
-   name                    %(service)s
    host_name               %(host)s
    service_description     %(service)s
 }
@@ -131,6 +131,9 @@ class NagiosConfig(object):
         self.fp = None
         self.check = "python /home/local/raf/nagios-qc/nagiosqc check"
 
+    def setCommandLine(self, script):
+        self.check = script
+
     def makeService(self, host, service):
         entry = _service_template % {
             'host':host, 'service':service.lower()
@@ -150,6 +153,7 @@ class NagiosConfig(object):
         self.setPath(path)
         self.fp = open(self.path, 'w')
         self.fp.write(_preamble)
+        self.fp.write(_active_check_template % {'nagios_qc_check':self.check})
 
     def openForReading(self, path=None):
         self.setPath(path)

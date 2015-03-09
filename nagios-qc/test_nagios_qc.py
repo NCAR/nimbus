@@ -4,6 +4,9 @@ import os
 from Checks import ChecksXML
 from Checks import Check
 from Checks import Bounds
+from NagiosChecks import NagiosChecks
+from NagiosConfig import NagiosConfig
+import optparse
 from vardb import VariableList
 import numpy
 
@@ -40,7 +43,7 @@ def test_sample_checks_xml():
 def test_winter_checks_xml():
     xml = winterchecks()
     templates = xml.getCheckTemplates()
-    assert(len(templates) == 27)
+    assert(len(templates) == 25)
     assert(templates[-1].ctype == "nodata")
     assert(templates[-1].vname == ".*")
     vlist = VariableList()
@@ -53,6 +56,16 @@ def test_winter_checks_xml():
             var.missing_value = -32767
     vlist.setVariables(variables)
     checks = xml.generateChecks(vlist.getVariables())
+
+
+def test_nagios_config():
+    nc = NagiosChecks()
+    parser = optparse.OptionParser()
+    options = nc.parseOptions(parser, ['nagiosqc.py', '--db', 'c130', 'config'])
+    assert(bool(options))
+    assert(options.db == "c130")
+    assert(nc.getCheckCommand("nagiosqc.py") == 
+           "python nagiosqc.py check --db c130")
 
 
 def test_check_instances():

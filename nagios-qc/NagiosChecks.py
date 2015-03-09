@@ -1,6 +1,8 @@
 """Generate Check instances from ChecksXML, embed in a NagiosConfig file,
 and extract them to execute the checks."""
 
+import sys
+import os
 import logging
 
 logger = logging.getLogger(__name__)
@@ -35,6 +37,8 @@ class NagiosChecks(object):
         self.options = None
         self.hostname = 'RAF'
         self.args = None
+        self.script_path = None
+        self.operation = None
 
     def addOptions(self, parser):
         parser.add_option("--db", type="string", help="""\
@@ -63,6 +67,14 @@ Path to which nagios commands will be written.  The default is %s, but
 for debugging it can be a regular file or /dev/null.""" % 
                           (NagiosCommands.DefaultCommandFile), 
                           default=False)
+        parser.add_option("--script", type="string", help="""\
+Override the full script command line to save in the nagios config file.
+By default the script check command uses the same options as when generating
+the config file, replacing the 'config' operation with 'check', eg
+
+   python <full-path-to>/nagiosqc.py check [original-arguments ...]
+
+""")
 
         def callback_timestamp(option, opt_str, value, parser):
             try:
@@ -76,16 +88,64 @@ Assign the given timestamp as the time of the nagios passive check result.""")
 
 
     def setOptions(self, options, args):
-        """Specify the options and the argument list for this run.
+        """
+        Specify the options and the argument list for this run.
 
-        The argument list includes 
+        The argument list includes the executable path.  The script path
+        and arguments are saved so the script can be called later with the
+        'check' operationo using the same arguments.
         """
         self.options = options
-        self.args = args[:]
+        # Derive the path to this script and the arguments.
+        self.script_path = os.path.abspath(args[0])
+        self.args = args[1:]
+
+    def parseOptions(self, parser, argv):
+        self.addOptions(parser)
+
+        # Copy off the argument list
+        argsave = argv[:]
+        (options, argv) = parser.parse_args(argv)
+
+        # Remove the executable and all that should be left is the operation.
+        del argv[0]
+        if not argv or argv[0] not in ['config', 'check']:
+            print("Operation must be 'config' or 'check'.")
+            sys.exit(1)
+
+        self.operation = argv[0]
+
+        # Remove the operation name from the original arg list and pass
+        # them to the NagiosChecks instance so they can be preserved in the
+        # config file.
+        del argsave[argsave.index(self.operation)]
+        self.setOptions(options, argsave)
+        return options
+
+    def run(self):
+        if self.operation == "config":
+            self.writeConfig()
+        elif self.operation == "check":
+            self.executeChecks()
+        else:
+            print("Unknown operation: %s" % (self.operation))
+            return 1
+        return 0
+
+    def getCheckCommand(self, script_path=None):
+        "Generate the check command, optionally overriding the script path."
+        if self.options.script:
+            return self.options.script
+        arglist = ""
+        if self.args:
+            arglist = " ".join(self.args)
+        if not script_path:
+            script_path = self.script_path
+        return "python %s check %s" % (script_path, arglist)
 
     def writeConfigFile(self, checks, path=None):
         configfile = NagiosConfig()
-        configfile.
+        configfile.setCommandLine(self.getCheckCommand())
         configfile.open(path)
         configfile.write(configfile.makeHost(self.hostname))
         for check in checks:
@@ -132,7 +192,6 @@ Assign the given timestamp as the time of the nagios passive check result.""")
         checks = checksxml.generateChecks(vlist.getVariables())
         self.writeConfigFile(checks, self.options.nagios)
         vlist.close()
-
 
     def executeChecks(self):
         # Extract and parse the checks from the nagios config file and

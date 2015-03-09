@@ -9,6 +9,15 @@
 [1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;bounds_A2DTEMP_FWDFS1;0;bounds_A2DTEMP_FWDFS1 OK - value 34.875 is within limits [0,65]
 [1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;bounds_A2DTEMP_AFTR0;0;bounds_A2DTEMP_AFTR0 OK - value 32.125 is within limits [0,65]
 [1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;bounds_A2DTEMP_AFTR1;0;bounds_A2DTEMP_AFTR1 OK - value 30.25 is within limits [0,65]
+[1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Status_321;0;stable_IRIG_Status_321 OK - Current value 0 within 0.1 of 0
+[1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Status_320;0;stable_IRIG_Status_320 OK - Current value 0 within 0.1 of 0
+[1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Status_323;0;stable_IRIG_Status_323 OK - Current value 0 within 0.1 of 0
+[1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Status_322;0;stable_IRIG_Status_322 OK - Current value 0 within 0.1 of 0
+[1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Status_325;0;stable_IRIG_Status_325 OK - Current value 0 within 0.1 of 0
+[1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Status_324;0;stable_IRIG_Status_324 OK - Current value 0 within 0.1 of 0
+[1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Status_318;0;stable_IRIG_Status_318 OK - Current value 0 within 0.1 of 0
+[1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Status_319;0;stable_IRIG_Status_319 OK - Current value 0 within 0.1 of 0
+[1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Status_311;0;stable_IRIG_Status_311 OK - Current value 0 within 0.1 of 0
 [1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Tdiff_325;0;stable_IRIG_Tdiff_325 OK - Current value -4e-05 within 0.002 of 0
 [1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Tdiff_323;0;stable_IRIG_Tdiff_323 OK - Current value -9.1e-05 within 0.002 of 0
 [1425086625] PROCESS_SERVICE_CHECK_RESULT;RAF;stable_IRIG_Tdiff_321;0;stable_IRIG_Tdiff_321 OK - Current value -7.6e-05 within 0.002 of 0

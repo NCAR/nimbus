@@ -10,6 +10,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 import sys
+import os
+
+# Add some explicit paths to python packages until they get installed in
+# the system path.  This avoids requiring that the PYTHONPATH environment
+# variable be set when calling this script from nagios to run checks.
+# 
+thisdir = os.path.dirname(__file__)
+
+sys.path.insert(0, os.path.abspath(os.path.join(thisdir, "../python")))
+sys.path.insert(0, os.path.abspath(os.path.join(thisdir, "../vardb/python")))
 
 from optparse import OptionParser
 from NagiosChecks import NagiosChecks
@@ -36,39 +46,12 @@ def main(argv):
                       help="Show info log messages.")
 
     nc = NagiosChecks()
-
-
-    nc.addOptions(parser)
-
-    argsave = argv[1:]
-    (options, argv) = parser.parse_args(argv)
-    # Delete the program name.
-    del argv[0]
+    options = nc.parseOptions(parser, argv)
 
     logging.basicConfig(level=options.loglevel)
     logger.debug("operation: %s" % (",".join(argv)))
 
-    if not argv:
-        print("Missing operation: 'config' or 'check'.\n" + _usage)
-        sys.exit(1)
-
-    operation = argv[0]
-    # Remove the operation name from the original arg list and pass them to the NagiosChecks
-    # instance so they can be preserved in the config file.
-    del argsave[argsave.index(operation)]
-    nc.setOptions(options, argsave)
-
-
-
-    if operation == "config":
-        nc.writeConfig()
-    elif operation == "check":
-        nc.executeChecks()
-    else:
-        print("Unknown operation: %s" % (operation))
-        sys.exit(1)
-
-    return 0
+    return nc.run()
 
 
 if __name__ == "__main__":
