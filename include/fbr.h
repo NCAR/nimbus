@@ -121,8 +121,8 @@ static String fallback_resources[] =
   "*lagForm.horizontalSpacing:			15",
   "*lagForm.verticalSpacing:			3",
   "*lagLabel.labelString:			Static Lag (ms)",
-  "*lagText.columns:				5",
-  "*lagText.maxLength:				5",
+  "*lagText.columns:				4",
+  "*lagText.maxLength:				4",
   "*spikeForm.marginWidth:			15",
   "*spikeForm.horizontalSpacing:		15",
   "*spikeForm.verticalSpacing:			3",
@@ -140,6 +140,9 @@ static String fallback_resources[] =
   "*evTextRC1.XmTextField.columns:		13",
   "*evTextRC1.XmTextField.maxLength:		20",
   "*evTextRC1.XmTextField.translations:		#override <Key>Tab: activate()",
+
+  "*synthConstText.columns:			10",
+  "*synthConstText.maxLength:			10",
 
   /* Pause Window
    */
