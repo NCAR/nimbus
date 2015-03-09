@@ -146,7 +146,7 @@ class NagiosConfig(object):
 
     def makeService(self, host, service):
         entry = _service_template % {
-            'host':host, 'service':service.lower()
+            'host':host, 'service':service
         }
         return entry
 
