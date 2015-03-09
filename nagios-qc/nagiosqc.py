@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(thisdir, "../python")))
 sys.path.insert(0, os.path.abspath(os.path.join(thisdir, "../vardb/python")))
 
 from optparse import OptionParser
-from NagiosChecks import NagiosChecks
+from NagiosQC import NagiosQC
 
 _usage = """
 nagios-qc [options] {config|check}
@@ -45,13 +45,13 @@ def main(argv):
                       const=logging.INFO, default=logging.ERROR,
                       help="Show info log messages.")
 
-    nc = NagiosChecks()
-    options = nc.parseOptions(parser, argv)
+    nqc = NagiosQC()
+    options = nqc.parseOptions(parser, argv)
 
     logging.basicConfig(level=options.loglevel)
     logger.debug("operation: %s" % (",".join(argv)))
 
-    return nc.run()
+    return nqc.run()
 
 
 if __name__ == "__main__":

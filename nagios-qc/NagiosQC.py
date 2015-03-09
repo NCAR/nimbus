@@ -29,7 +29,7 @@ import iss.time_tools as tt
 # For each check, write the xml serliazation in a comment, then follow it
 # with the nagios service definition.
 
-class NagiosChecks(object):
+class NagiosQC(object):
 
     _embedded_prefix = "#CHECK: "
 
@@ -116,7 +116,7 @@ Assign the given timestamp as the time of the nagios passive check result.""")
         self.operation = argv[0]
 
         # Remove the operation name from the original arg list and pass
-        # them to the NagiosChecks instance so they can be preserved in the
+        # them to the NagiosQC instance so they can be preserved in the
         # config file.
         del argsave[argsave.index(self.operation)]
         self.setOptions(options, argsave)
@@ -149,7 +149,7 @@ Assign the given timestamp as the time of the nagios passive check result.""")
         configfile.open(path)
         configfile.write(configfile.makeHost(self.hostname))
         for check in checks:
-            configfile.write("\n" + NagiosChecks._embedded_prefix + 
+            configfile.write("\n" + NagiosQC._embedded_prefix + 
                              check.toString() + "\n")
             svcdef = configfile.makeService(self.hostname, check.name())
             configfile.write(svcdef)
@@ -159,8 +159,8 @@ Assign the given timestamp as the time of the nagios passive check result.""")
         configfile = NagiosConfig()
         configfile.openForReading(path)
         checks = []
-        for line in configfile.iterateLines(NagiosChecks._embedded_prefix):
-            line = line.replace(NagiosChecks._embedded_prefix, "", 1)
+        for line in configfile.iterateLines(NagiosQC._embedded_prefix):
+            line = line.replace(NagiosQC._embedded_prefix, "", 1)
             check = Check.fromString(line)
             checks.append(check)
         logger.info("extracted %d checks embedded in '%s'" %

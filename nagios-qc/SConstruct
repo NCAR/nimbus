@@ -12,7 +12,7 @@ sources = Split("""
 nagiosqc.py
 Checks.py
 NagiosCommands.py
-NagiosChecks.py
+NagiosQC.py
 NagiosConfig.py
 """)
 

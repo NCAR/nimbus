@@ -4,7 +4,7 @@ import os
 from Checks import ChecksXML
 from Checks import Check
 from Checks import Bounds
-from NagiosChecks import NagiosChecks
+from NagiosQC import NagiosQC
 from NagiosConfig import NagiosConfig
 import optparse
 from vardb import VariableList
@@ -59,12 +59,12 @@ def test_winter_checks_xml():
 
 
 def test_nagios_config():
-    nc = NagiosChecks()
+    nqc = NagiosQC()
     parser = optparse.OptionParser()
-    options = nc.parseOptions(parser, ['nagiosqc.py', '--db', 'c130', 'config'])
+    options = nqc.parseOptions(parser, ['nagiosqc.py', '--db', 'c130', 'config'])
     assert(bool(options))
     assert(options.db == "c130")
-    assert(nc.getCheckCommand("nagiosqc.py") == 
+    assert(nqc.getCheckCommand("nagiosqc.py") == 
            "python nagiosqc.py check --db c130")
 
 
