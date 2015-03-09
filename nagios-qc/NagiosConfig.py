@@ -16,13 +16,14 @@ define host {
   retain_status_information       1
   retain_nonstatus_information    1
   process_perf_data               0
-  check_command                   check-mk-host-ping
+  check_command                   check-host-alive
   check_interval                  1
-  check_period                    24X7
+  check_period                    24x7
   max_check_attempts              1
   notification_interval           0
-  notification_period             24X7
+  notification_period             24x7
   notification_options            d,u,r,f,s
+  contact_groups                  admins
 }
 
 # Template used by all other service templates
@@ -47,8 +48,9 @@ define service {
   retry_check_interval            10
   max_check_attempts              1
   notification_options            u,c,w,r,f,s
-  notification_period             24X7
-  check_period                    24X7
+  notification_period             24x7
+  check_period                    24x7
+  contact_groups                  admins
 }
 
 # This is the service that actively
