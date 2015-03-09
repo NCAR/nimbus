@@ -61,7 +61,7 @@ define service {
 define service {
   name                            nagios_qc_active
   use                             nagios_qc_default
-  register                        1
+  register                        0
   check_command                   nagios_qc_check
   active_checks_enabled           1
 }
@@ -91,6 +91,14 @@ _active_check_template = """
 define command {
   command_name  nagios_qc_check
   command_line  %(nagios_qc_check)s
+}
+
+# Define the active check which will submit passive checks for this host.
+define service {
+  use                             nagios_qc_active
+  host_name                       %(host)s
+  name                            %(host)s-nagios_qc_active
+  service_description		  nagiosqc.py check
 }
 """
 
@@ -154,8 +162,12 @@ class NagiosConfig(object):
     def open(self, path=None):
         self.setPath(path)
         self.fp = open(self.path, 'w')
+
+    def writeOpening(self, host):
         self.fp.write(_preamble)
-        self.fp.write(_active_check_template % {'nagios_qc_check':self.check})
+        self.fp.write(_active_check_template % 
+                      {'nagios_qc_check':self.check,
+                       'host':host})
 
     def openForReading(self, path=None):
         self.setPath(path)

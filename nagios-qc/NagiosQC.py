@@ -147,6 +147,7 @@ Assign the given timestamp as the time of the nagios passive check result.""")
         configfile = NagiosConfig()
         configfile.setCommandLine(self.getCheckCommand())
         configfile.open(path)
+        configfile.writeOpening(self.hostname)
         configfile.write(configfile.makeHost(self.hostname))
         for check in checks:
             configfile.write("\n" + NagiosQC._embedded_prefix + 
