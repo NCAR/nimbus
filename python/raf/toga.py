@@ -12,6 +12,7 @@ if __name__ == "__main__":
 
 import raf.datepattern as datepattern
 import raf.config
+import raf.ac_config
 import iss.time_tools as tt
 
 from optparse import OptionParser
@@ -77,7 +78,7 @@ def find_latest_dirs(togatop, ndirs=1):
 def main(argv):
     parser = OptionParser()
     serviceurl = "rsync://toga-pc/toga/"
-    togatop = "/mnt/r1/toga"
+    togatop = raf.ac_config.get_config("toga.path")
 
     # Add the options specific to send_toga
     parser.add_option("--interval", type="string", help="""\
