@@ -402,7 +402,7 @@ void CreateEditWindow()
   size_t	i;
   Arg           args[16];
   Cardinal      n;
-  Widget        frame[12];
+  Widget        frame[12], empty;
   Widget        obRC, radioBox;
   Widget        form, label;
   Widget        cbRC, cmdBtn[3];
@@ -466,6 +466,11 @@ void CreateEditWindow()
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNtopWidget, frame[2]); n++;
+  empty = XmCreateFrame(EditWindow, "emptyFrame", args, n);
+  n = 0;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNtopWidget, empty); n++;
   frame[3] = XmCreateFrame(EditWindow, "lagFrame", args, n);
   n = 0;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
@@ -508,12 +513,21 @@ void CreateEditWindow()
   frame[9] = XmCreateFrame(EditWindow, "funcmenuFrame", args, n);
 
   XtManageChildren(frame, 10);
+  XtManageChild(empty);
 
   /* Var Name TF.
    */
   n = 0;
   varNameLabel = XmCreateLabel(frame[0], "varNameLabel", args, n);
   XtManageChild(varNameLabel);
+
+
+  n = 0;
+  obRC = XmCreateRowColumn(empty, "emptyRC", args, n);
+  XtManageChild(obRC);
+  n = 0;
+  label = XmCreateLabel(obRC, "                   ", args, n);
+  XtManageChild(label);
 
 
   /* Output Box.
