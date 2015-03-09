@@ -547,6 +547,18 @@ void WriteNetCDF()
     firstWrite = false;
   }
 
+  if ( (dp = (struct missDat *)FrontQueue(missingRecords)) )
+  {
+    int hour, min, sec;
+
+    hour = (int)SampledData[raw[SearchTable(raw, "HOUR")]->SRstart];
+    min = (int)SampledData[raw[SearchTable(raw, "MINUTE")]->SRstart];
+    sec = (int)SampledData[raw[SearchTable(raw, "SECOND")]->SRstart];
+
+    if (hour == dp->hour && min == dp->minute && sec == dp->second)
+      WriteMissingRecords();
+  }
+
   size_t start[3], count[3];
   start[0] = recordNumber; start[1] = start[2] = 0;
   count[0] = 1;
@@ -654,17 +666,6 @@ void WriteNetCDF()
   ++TimeVar;
   ++recordNumber;
 
-  if ( (dp = (struct missDat *)FrontQueue(missingRecords)) )
-  {
-    int hour, min, sec;
-
-    hour = (int)SampledData[raw[SearchTable(raw, "HOUR")]->SRstart];
-    min = (int)SampledData[raw[SearchTable(raw, "MINUTE")]->SRstart];
-    sec = (int)SampledData[raw[SearchTable(raw, "SECOND")]->SRstart];
-
-    if (hour == dp->hour && min == dp->minute && sec == dp->second)
-      WriteMissingRecords();
-  }
 }	/* END WRITENETCDF */
 
 /* -------------------------------------------------------------------- */
