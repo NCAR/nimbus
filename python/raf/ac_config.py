@@ -59,4 +59,4 @@ def get_config(key):
 
   db.close()
 
-  return ac_config_dict[key]
+  return ac_config_dict.get(key, None)
