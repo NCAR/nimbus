@@ -51,32 +51,46 @@ define service {
   check_period                    24X7
 }
 
-# This template is used by the service that actively
+# This is the service that actively
 # calls check_mk. Each host has exactly one service
-# using this template. Here you can configure, how often
+# like this. Here you can configure, how often
 # each host should be checked.
+# 
 define service {
   name                            nagios_qc_active
   use                             nagios_qc_default
-  register                        0
+  register                        1
   check_command                   nagios_qc_check
   active_checks_enabled           1
 }
 
+# check_mk actually generates a specific command for each passive service check, so it can warn
+# about that one specific service check being used as an active check instead of passive.
+# We'll just use one command for all the passive checks until we think we need otherwise.
+
 define service {
   name                            nagios_qc_passive
   use                             nagios_qc_default
+  check_command                   nagios_qc_check_error
   register                        0
   active_checks_enabled           0
 }
 
-# Run the nagiosqc script to generate the passive check results.
 define command {
-  command_name  nagios_qc_check
-  command_line  python /home/local/raf/nagios-qc/nagiosqc check
+  command_name nagios_qc_check_error
+  command_line echo "ERROR - nagios-qc checks must be passive only, not active" && exit 1
 }
 
 """
+
+_active_check_template = """
+# Run the nagiosqc script to generate the passive check results.
+define command {
+  command_name  nagios_qc_check
+  command_line  %(nagios_qc_check)s
+}
+"""
+
 
 _host_template = """
 define host {
@@ -91,6 +105,7 @@ define host {
 _service_template = """
 define service {
    use                     nagios_qc_passive
+   name                    %(service)s
    host_name               %(host)s
    service_description     %(service)s
 }
@@ -114,6 +129,7 @@ class NagiosConfig(object):
         # is loaded by nagios by default.
         self.path = None
         self.fp = None
+        self.check = "python /home/local/raf/nagios-qc/nagiosqc check"
 
     def makeService(self, host, service):
         entry = _service_template % {

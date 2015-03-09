@@ -36,8 +36,11 @@ def main(argv):
                       help="Show info log messages.")
 
     nc = NagiosChecks()
+
+
     nc.addOptions(parser)
 
+    argsave = argv[1:]
     (options, argv) = parser.parse_args(argv)
     # Delete the program name.
     del argv[0]
@@ -50,7 +53,12 @@ def main(argv):
         sys.exit(1)
 
     operation = argv[0]
-    nc.setOptions(options)
+    # Remove the operation name from the original arg list and pass them to the NagiosChecks
+    # instance so they can be preserved in the config file.
+    del argsave[argsave.index(operation)]
+    nc.setOptions(options, argsave)
+
+
 
     if operation == "config":
         nc.writeConfig()

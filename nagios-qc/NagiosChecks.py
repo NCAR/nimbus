@@ -34,6 +34,7 @@ class NagiosChecks(object):
     def __init__(self):
         self.options = None
         self.hostname = 'RAF'
+        self.args = None
 
     def addOptions(self, parser):
         parser.add_option("--db", type="string", help="""\
@@ -74,11 +75,17 @@ for debugging it can be a regular file or /dev/null.""" %
 Assign the given timestamp as the time of the nagios passive check result.""")
 
 
-    def setOptions(self, options):
+    def setOptions(self, options, args):
+        """Specify the options and the argument list for this run.
+
+        The argument list includes 
+        """
         self.options = options
+        self.args = args[:]
 
     def writeConfigFile(self, checks, path=None):
         configfile = NagiosConfig()
+        configfile.
         configfile.open(path)
         configfile.write(configfile.makeHost(self.hostname))
         for check in checks:
