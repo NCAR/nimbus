@@ -3,6 +3,7 @@ and extract them to execute the checks."""
 
 import sys
 import os
+import time
 import logging
 
 logger = logging.getLogger(__name__)
@@ -15,6 +16,7 @@ from NagiosCommands import NagiosCommands
 from vardb import DataStore
 from optparse import OptionValueError
 import iss.time_tools as tt
+import iss.nagios as nagios
 
 # The goal is to store Check instances, with all their associated
 # parameters, so they can be loaded and executed over and over without
@@ -126,7 +128,8 @@ Assign the given timestamp as the time of the nagios passive check result.""")
         if self.operation == "config":
             self.writeConfig()
         elif self.operation == "check":
-            self.executeChecks()
+            status = self.executeChecks()
+            print(status.consoleMessage())
         else:
             print("Unknown operation: %s" % (self.operation))
             return 1
@@ -195,6 +198,9 @@ Assign the given timestamp as the time of the nagios passive check result.""")
         vlist.close()
 
     def executeChecks(self):
+        qcstatus = nagios.Status("nagiosqc")
+        begin = time.time()
+
         # Extract and parse the checks from the nagios config file and
         # execute them.
         checks = self.readChecksFromConfigFile(self.options.nagios)
@@ -219,12 +225,17 @@ Assign the given timestamp as the time of the nagios passive check result.""")
         # otherwise it would be up to each check to make sure it's
         # variables exist in the datastore.
         results = []
+        nvars = 0
+        nfail = 0
+        nchecks = len(checks)
         for c in checks:
             if not datastore.getValues(c.vname):
-                status = c.Status().critical(
+                status = c.newStatus().critical(
                     "Variable '%s' is not in the database." % (c.vname))
             else:
                 status = c.check(datastore)
+                nvars += 1
+            nfail += int(not status.is_ok())
             results.append(status)
 
         # Now we can pipe the results to the right place.
@@ -242,3 +253,8 @@ Assign the given timestamp as the time of the nagios passive check result.""")
             commands.processServiceCheckResult(statline, when)
         commands.close()
         vlist.close()
+        end = time.time()
+        qcstatus.ok("%d variables for %d checks, %d not ok, "
+                    "elapsed time: %s" %
+                    (nvars, nchecks, nfail, tt.formatInterval(end - begin)))
+        return qcstatus
