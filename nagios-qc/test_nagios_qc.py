@@ -4,6 +4,7 @@ import os
 from Checks import ChecksXML
 from Checks import Check
 from Checks import Bounds
+from Checks import CheckTemplate
 from NagiosQC import NagiosQC
 from NagiosConfig import NagiosConfig
 import optparse
@@ -40,6 +41,16 @@ def test_sample_checks_xml():
     assert(fl.name() == "flatline")
 
 
+def _set_missing_value(variables):
+    """
+    Set an explicit missing_value since some checks need it but it is not
+    provided when reading just from a vdb file.
+    """
+    for var in variables.values():
+        if not var.missing_value:
+            var.missing_value = -32767
+
+
 def test_winter_checks_xml():
     xml = winterchecks()
     templates = xml.getCheckTemplates()
@@ -49,11 +60,7 @@ def test_winter_checks_xml():
     vlist = VariableList()
     vlist.vdbpath = _winter_xml
     variables = vlist.loadVdbFile()
-    # Set an explicit missing_value since some checks need it but
-    # it is not provided when reading just from a vdb file.
-    for var in variables.values():
-        if not var.missing_value:
-            var.missing_value = -32767
+    _set_missing_value(variables)
     vlist.setVariables(variables)
     checks = xml.generateChecks(vlist.getVariables())
 
@@ -68,6 +75,18 @@ def test_nagios_config():
            "python nagiosqc.py check --db c130")
 
 
+def test_template_matching():
+    ct = CheckTemplate()
+    ct.ctype = "test"
+    ct.vname = "LON"
+    assert(ct.matchesName("LON") == True)
+    assert(ct.matchesName("LONC") == False)
+    assert(ct.matchesName("LO") == False)
+    ct.vname = "LON.*"
+    assert(ct.matchesName("LON") == True)
+    assert(ct.matchesName("LONC") == True)
+
+
 def test_check_instances():
     xml = samplechecks()
     templates = xml.getCheckTemplates()
@@ -77,6 +96,7 @@ def test_check_instances():
     vlist = VariableList()
     vlist.vdbpath = _deepwave_xml
     variables = vlist.loadVdbFile()
+    _set_missing_value(variables)
     vlist.setVariables(variables)
 
     ckatx = atx.generate(vlist.getVariables())

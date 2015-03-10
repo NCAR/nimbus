@@ -55,17 +55,28 @@ class CheckTemplate(object):
         self.vname = elm.attrib.get('variable', None)
         self.ctype = elm.attrib.get('type', None)
         
-    def generate(self, variables):
-        """Apply this CheckTemplate to a dictionary of variables to generate
-        Checks.
+    def matchesName(self, vname, ndims=1):
+        """
+        If this is an exact match, then select it.  If not, then only select
+        scalar variables for which the regular expression pattern matches
+        the entire name.  'LON' should not match 'LONC', but 'LON.*' does.
+        """
+        if vname == self.vname:
+            return True
+        if ndims != 1:
+            return False
+        # Force regex to match the whole name, not just the beginning.
+        m = re.match(self.vname, vname)
+        return bool(m and m.end() == len(vname))
 
+    def generate(self, variables):
+        """
+        Apply this CheckTemplate to a dictionary of variables to generate
+        Checks.
         """
         checks = []
-        rx = re.compile(self.vname)
         for vname, var in variables.items():
-            # If this is an exact match, then select it.  If not, then
-            # only select matches for scalar variables.
-            if vname == self.vname or (var.ndims == 1 and rx.match(vname)):
+            if self.matchesName(vname, var.ndims):
                 check = self.createCheck(var)
                 if check:
                     checks.append(check)
@@ -108,6 +119,7 @@ class Check(object):
     def __init__(self, ctype, parameters=None):
         self.ctype = ctype
         self.vname = None
+        self._name = None
         self.min_limit = None
         self.max_limit = None
         self.missing_value = None
@@ -116,7 +128,7 @@ class Check(object):
         self._lookback = None
         if not parameters:
             parameters = []
-        self.parameters = parameters
+        self.parameters = [Check.MISSING_VALUE] + parameters
 
         # These are the "public" attributes which check implementations
         # should use.  They have defaults so they always have values, but
@@ -198,7 +210,9 @@ class Check(object):
 
     def name(self):
         "Derive this check name from our Status prototype."
-        return self.newStatus().getName()
+        if not self._name:
+            self._name = self.newStatus().getName()
+        return self._name
 
     def instantiate(self, checkt, var):
         "Instantiate a Check from a CheckTemplate prototype."
@@ -210,14 +224,41 @@ class Check(object):
                      "template(ctype=%s,variable=%s)" %
                      (self.name(), checkt.name(), checkt.vname))
 
+    def is_superceded(self, _checks):
+        """
+        Checks can indicate they are superceded by another check in the list by
+        returning True.  The base class implementation always returns
+        False.
+        """
+        return False
+
     def newStatus(self):
         "Construct a nagios status result for this check."
         status = nagios.Status(self.ctype, catname=None, vname=self.vname)
         return status
 
-    def check(self, _datastore):
+    def check(self, datastore):
+        """
+        Public entry point to running this check instance against data.  It
+        first checks whether any variables are missing values, then calls
+        the subclass implementation.
+        """
+        status = self.check_missing(datastore)
+        if not status.is_ok():
+            return status
+        return self.check_self(datastore)
+
+    def check_self(self, _datastore):
         raise Exception("A Check instance is missing an implementation of the "
-                        "check() method.")
+                        "check_self() method.")
+
+    def check_missing(self, datastore):
+        "Check for a missing value, useful before any other checks."
+        values = datastore.getValues(self.vname, 1)
+        if values[0] == self.missing_value:
+            return self.newStatus().critical("%s is a missing value." % 
+                                             (self.vname))
+        return self.newStatus().ok("%s has value %g" % (self.vname, values[0]))
 
     def stddev(self, values):
         """Return a standard deviation for the array of values.
@@ -242,7 +283,7 @@ class Flatline(Check):
     def instantiate(self, checkt, var):
         Check.instantiate(self, checkt, var)
 
-    def check(self, datastore):
+    def check_self(self, datastore):
         values = datastore.getValues(self.vname, self.lookback)
         sdev = self.stddev(values)
         if sdev < self.tolerance:
@@ -261,7 +302,7 @@ class Bounds(Check):
     def instantiate(self, checkt, var):
         Check.instantiate(self, checkt, var)
 
-    def check(self, datastore):
+    def check_self(self, datastore):
         values = datastore.getValues(self.vname, 1)
         current = values[0]
         if self.min_limit > current:
@@ -290,7 +331,7 @@ class Stable(Check):
             raise Exception("No target value for stable check '%s'." % 
                             (self.name()))
 
-    def check(self, datastore):
+    def check_self(self, datastore):
         # Grab last 'lookback' values of our variable and analyze.
         values = datastore.getValues(self.vname, self.lookback)
         current = values[0]
@@ -317,14 +358,24 @@ class NoData(Check):
     def instantiate(self, checkt, var):
         Check.instantiate(self, checkt, var)
 
+    def is_superceded(self, checks):
+        """
+        All other checks first check for missing values, so if there any other
+        checks in the list for the same variable, this one is redundant.
+        """
+        for c in checks:
+            if c != self and c.vname == self.vname:
+                logger.debug("%s is superceded by %s" % (self.name(), c.name()))
+                return True
+        return False
+
     def check(self, datastore):
-        # Grab last 'lookback' values of our variable and analyze.
-        values = datastore.getValues(self.vname, 1)
-        if values[0] == self.missing_value:
-            return self.newStatus().critical("%s is a missing value." % 
-                                             (self.vname))
-        return self.newStatus().ok("%s has value %g" % 
-                                   (self.vname, values[0]))
+        # Override the public method since we don't need to check twice for
+        # a missing value.
+        return self.check_self(datastore)
+
+    def check_self(self, datastore):
+        return self.check_missing(datastore)
 
 
 class GGQUAL(Check):
@@ -335,7 +386,7 @@ class GGQUAL(Check):
     def instantiate(self, checkt, var):
         Check.instantiate(self, checkt, var)
 
-    def check(self, datastore):
+    def check_self(self, datastore):
         values = datastore.getValues(self.vname, 1)
         if values[0] == self.missing_value:
             return self.newStatus().critical("No data for GPS quality flag.")
@@ -410,8 +461,21 @@ class ChecksXML(object):
         checks = []
         for checkt in self.getCheckTemplates():
             checks.extend(checkt.generate(vdict))
-        logger.info("generated %d checks from %d templates" % 
-                    (len(checks), len(self.getCheckTemplates())))
+
+        # Now cull the checks, asking each check if it is redundant and
+        # should be removed.  Put the checks to remove in a dictionary
+        # for faster lookup, hopefully.
+        remove = {}
+        for check in checks:
+            if check.is_superceded(checks):
+                remove[check.name()] = check
+        checks = [check for check in checks 
+                  if not remove.has_key(check.name())]
+
+        logger.info("generated %d checks from %d templates, "
+                    "culled %d redundant checks" % 
+                    (len(checks), len(self.getCheckTemplates()),
+                     len(remove)))
         return checks
 
 
