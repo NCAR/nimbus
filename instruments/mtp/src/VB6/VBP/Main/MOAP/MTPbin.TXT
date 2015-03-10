@@ -1,0 +1,3 @@
+The cab file for your application has been built as 'C:\MTP\VB6\VBP\Main\MOAP\Package\MTPbin.CAB'.
+
+There is also a batch file in the support directory (C:\MTP\VB6\VBP\Main\MOAP\Package\Support\MTPbin.BAT) that will allow you to recreate the cab file in case you make changes to some of the files.

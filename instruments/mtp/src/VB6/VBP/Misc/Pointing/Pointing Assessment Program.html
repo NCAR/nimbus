@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Pointing Assessment Program</title>
+</head>
+<body>
+<h1>The MTP Pointing Analysis Program</h1>
+<h2>MJ Mahoney</h2>
+Revision Date: September 06, 2011<br>
+<h1>Setup</h1>
+All the files necessary to run the MTP Pointing Analysis Program are in
+a folder named <span style="font-style: italic;">Pointing</span><span
+ style="font-weight: bold; font-style: italic;">.</span> By default
+this folder is on the path:<br>
+<span style="font-family: courier new,courier,monospace;">C:\MTP\VB6\VBP\MISC\Pointing\<br>
+<br>
+</span>If you want to install the <span style="font-style: italic;">Pointing</span>
+folder somewhere else you need to change one line of code in the <span
+ style="font-style: italic;">frmPointing</span> Form Load event. Here
+are the first few lines of code:<br>
+<br>
+<span style="font-family: courier new,courier,monospace;">Private Sub
+Form_Load()</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">Dim lu%, a$,
+AC$</span><br style="font-family: courier new,courier,monospace;">
+<br>
+<span style="font-family: courier new,courier,monospace;">&nbsp; <span
+ style="font-weight: bold;">PointingPath$</span> =
+"C:\MTP\VB6\VBP\Misc\Pointing\"</span><br
+ style="font-family: courier new,courier,monospace;">
+<br style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">&nbsp; lu =
+FreeFile</span><br style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">&nbsp; Open
+"C:\MTP\VB6\VBP\Misc\Pointing\Pointing.INI" For Input As lu</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">&nbsp; Line
+Input #lu, a$</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">&nbsp;
+txtPath.Text = a$</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">&nbsp; Line
+Input #lu, AC$</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">&nbsp; Close
+lu</span><br style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">&nbsp;
+DoEvents</span><br style="font-family: courier new,courier,monospace;">
+<br>
+Just change the <span style="font-weight: bold;">PointingPath$&nbsp;</span>
+to be wherever you put the <span style="font-style: italic;">Pointing</span>
+folder.<br>
+<br>
+There are two initialization files in the <span
+ style="font-style: italic;">Pointing</span> folder: <span
+ style="font-style: italic;">Pointing.INI</span> and <span
+ style="font-style: italic;">Elevation.INI</span>. <span
+ style="font-style: italic;">Pointing.INI</span> contains two lines:
+the first is the path to where the pointing measurement CSV files are
+stored, and the second line is the name of the platform that the MTP
+will be fying on. Valid platform names are: GH, NGV, DC8, ER2, WB57,
+M55 and HALO. Here is an example of the <span
+ style="font-style: italic;">Pointing.INI</span> file:<br>
+<br>
+<span style="font-family: courier new,courier,monospace;">C:\MTP\Data\GH\ATTREX\Setup\</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">GH</span><br>
+<br>
+The platform name is needed so that the program knows what the valid
+pointing elevation angles should be. These are loaded from the <span
+ style="font-style: italic;">Elevation.INI</span> file in the <span
+ style="font-style: italic;">Pointing</span> folder. Here is the
+complete <span style="font-style: italic;">Elevation.INI</span> file:<br>
+<br style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">[PLATFORM]</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">DC8</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">ER2</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">WB57</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">M55</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">NGV</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">GH</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">HALO</span><br
+ style="font-family: courier new,courier,monospace;">
+<br style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">[ELEV_DC8]</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+80.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+55.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+42.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+25.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+12.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+0.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-12.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-25.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-42.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-80.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<br style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">[ELEV_ER2]</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+60.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+44.4</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+30.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+17.5</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+8.6</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+0.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-8.6</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-20.5</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-36.9</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-58.2</span><br
+ style="font-family: courier new,courier,monospace;">
+<br style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">[ELEV_WB57]</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+70.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+45.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+32.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+20.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+9.5</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+0.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-10.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-22.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-37.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-70.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<br style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">[ELEV_M55]</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+55</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+38</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+24</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+12</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-10</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-21</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-34</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-49</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-70</span><br
+ style="font-family: courier new,courier,monospace;">
+<br style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">[ELEV_NGV]</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+80.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+55.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+42.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+25.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+12.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+0.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-12.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-25.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-42.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-80.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<br style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">[ELEV_GH]</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+70.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+45.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+32.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+20.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+9.5</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">+0.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-10.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-22.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-37.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">-70.0</span><br
+ style="font-family: courier new,courier,monospace;">
+<br style="font-family: courier new,courier,monospace;">
+<span style="font-family: courier new,courier,monospace;">[EOF]</span><br>
+<br>
+These are the default elevation angles used by each platform. If they
+should change, then this file needs to be editted to reflect the
+changes. Note that the first entry in the <span
+ style="font-style: italic;">Elevation.INI</span> file is a list of
+valid platforms. These are provided so that&nbsp; <span
+ style="font-style: italic;">Platform</span> combo box can be filled
+with the list of valid platforms. If you want to change the target
+platform for the pointing measurements, you must change it on the
+second line of the Pointing.INI file.<br>
+<h2>The MTP Pointing Assessment Program</h2>
+<img alt="Pointing0.png" src="Pointing0.png"
+ style="width: 530px; height: 361px;"><br>
+<br>
+The figure above shows the <span style="font-weight: bold;">MTP
+Pointing Assessment Program</span> form when the program is started.
+The program has loaded the <span style="font-style: italic;">Default
+Path</span> text box from the first line of the <span
+ style="font-style: italic;">Pointing.INI</span> file, and the <span
+ style="font-style: italic;">Platform</span> name (in this case the
+Global Hawk, GH) from the second line of the <span
+ style="font-style: italic;">Pointing.INI</span> file. This in turn
+causes the default <span style="font-style: italic;">Elevation Angles</span>
+to be loaded from the <span style="font-style: italic;">Elevation.INI</span>
+file.<br>
+<br>
+To show the data from a CSV measurement file, simply click the <span
+ style="font-style: italic;">Open File</span> button to open the CSV
+file. The following display will be seen.<br>
+<img alt="Pointing1.png" src="Pointing1.png"
+ style="width: 530px; height: 361px;"><br>
+<br>
+As is apparent, the CSV file is read, plotted, and pointing statistics
+are calculated. The pitch measurements are shown in blue, the roll
+measurements are shown in green, and the range over which the
+statistics are calculated is shown in yellow. <br>
+<h2>The Algorithm</h2>
+The algorithm used is very simple. It is based on the fact that if you
+boxcar average consecutive inclinometer pitch and roll measurements,
+they will have a large variance (RMS) when the scan mirror is moving,
+and a small variance when it is at a commanded elevation angle. The <span
+ style="font-style: italic;">Boxcar Samples</span> combo box indicates
+how many inclinometer measurements from the CSV file should be averaged
+for the pointing assessment. The <span style="font-style: italic;">Prms
+Threshold (deg)</span> combo box shows the maximum variance on the
+boxcar average that will be allowed for the assessment. If the RMS is
+larger than the <span style="font-style: italic;">Prms Threshold (deg)</span>
+it will not be used. The second and third columns of the statistics
+simply list the average measured pitch (<span
+ style="font-style: italic;">Pavg</span>) and its RMS (<span
+ style="font-style: italic;">Prms</span>). The fourth column displays
+the results, <span style="font-style: italic;">Pavg - EA</span>, where
+the EA are the elevation angles that are desired and which are listed
+in the list box next to th <span style="font-style: italic;">Elevation
+Angles</span> label. The last column, the fifth, gives the number of
+measurements that met the <span style="font-style: italic;">RMS
+Threshold</span> criterium for each elevation angle.<br>
+<br>
+Note that if the averaged points are not all consecutive, then things
+will get out of synch. This generally means that the Prms Threshold
+(deg) must be increased. Click the <span style="font-style: italic;">Re-calculate
+Statistics</span> button to update the display. Whenever pointing
+statistics are calculated, they are written to the <span
+ style="font-style: italic;">Pointing.txt</span> file in the <span
+ style="font-style: italic;">Default Path</span>.<br>
+<br>
+Finally, if the <span style="font-style: italic;">Amplify Roll 10x</span>
+checkbox is checked, the left hand picture box will multipy the roll
+measurements by a factor of 10 so that they are more visible, as shown
+below.<br>
+<img alt="Pointing2.png" src="Pointing2.png"
+ style="width: 530px; height: 361px;"><br>
+<br>
+The End<br>
+<br>
+</body>
+</html>

@@ -1,0 +1,134 @@
+[Root]
+Most Recent Package=KarenWare.com
+
+
+[Package|KarenWare.com|Root]
+SubWizProgID=PDWizard.SetupPkgSubWiz
+BuildFolder=D:\VB6\Sync\Package
+
+[Package|KarenWare.com|Configure DAO ISAMs]
+Applicable=No
+
+[Package|KarenWare.com|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|KarenWare.com|Files Found]
+
+[Package|KarenWare.com|Files Released]
+Svrapi.dll=
+ptsync.exe.manifest=
+
+[Package|KarenWare.com|Missing Dependency Information]
+C:\WINDOWS\system32\dskquota.dll=
+D:\VB6\IDL\ptapi.tlb=
+C:\WINDOWS\system32\SHLWAPI.DLL=
+C:\WINDOWS\system32\ws2_32.dll=
+
+[Package|KarenWare.com|Out-of-Date Dependency Information]
+C:\WINDOWS\system32\MSCOMCTL.OCX=
+C:\WINDOWS\system32\scrrun.dll=
+
+[Package|KarenWare.com|Files Added]
+d:\vb6\sync\ptsync.txt=
+d:\vb6\sync\ptsync.hlp=
+D:\VB6\Sync\TimeServers.txt=
+
+[Package|KarenWare.com|Files Removed]
+c:\windows\system32\msvbvm60.dll=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\oleaut32.dll=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\olepro32.dll=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\asycfilt.dll=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\stdole2.tlb=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\comcat.dll=
+c:\windows\system32\dskquota.dll=
+d:\vb6\idl\ptapi.tlb=
+c:\windows\system32\scrrun.dll=
+c:\windows\system32\shlwapi.dll=
+c:\windows\system32\ws2_32.dll=
+d:\vb6\sync\ptsync.hlp=
+
+[Package|KarenWare.com|Files In Project]
+D:\VB6\Sync\PTSync.exe=Yes
+C:\WINDOWS\system32\msvbvm60.dll=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=No
+C:\WINDOWS\system32\MSCOMCTL.OCX=Yes
+C:\WINDOWS\system32\MSCOMCT2.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=Yes
+C:\WINDOWS\system32\VB6STKIT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=Yes
+D:\VB6\Sync\PTSync.txt=Yes
+C:\WINDOWS\system32\COMDLG32.OCX=Yes
+C:\WINDOWS\system32\SHLWAPI.DLL=No
+D:\VB6\IDL\ptapi.tlb=No
+C:\WINDOWS\system32\scrrun.dll=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSVCRT.DLL=Yes
+C:\WINDOWS\system32\dskquota.dll=No
+D:\VB6\Sync\PTSync.hlp=No
+C:\WINDOWS\system32\ws2_32.dll=No
+C:\WINDOWS\system32\MSWINSCK.OCX=Yes
+C:\WINDOWS\system32\TABCTL32.OCX=Yes
+D:\VB6\Setup1\setup1.exe=Yes
+D:\VB6\Sync\TimeServers.txt=Yes
+
+[Package|KarenWare.com|Configure Registry Files]
+Applicable=No
+
+[Package|KarenWare.com|Configure Remote Servers]
+Applicable=No
+
+[Package|KarenWare.com|Install Locations]
+D:\VB6\Sync\PTSync.exe=$(AppPath)
+C:\WINDOWS\system32\MSCOMCTL.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MSCOMCT2.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=$(WinPath)
+C:\WINDOWS\system32\VB6STKIT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=$(WinPath)
+D:\VB6\Sync\ptsync.exe.manifest=$(AppPath)
+D:\VB6\Sync\PTSync.txt=$(AppPath)
+C:\WINDOWS\system32\COMDLG32.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\MSVCRT.DLL=$(WinSysPathSysFile)
+D:\VB6\Sync\PTSync.hlp=$(AppPath)
+C:\WINDOWS\system32\MSWINSCK.OCX=$(WinSysPath)
+C:\WINDOWS\system32\TABCTL32.OCX=$(WinSysPath)
+D:\VB6\Setup1\setup1.exe=$(WinPath)
+D:\VB6\Sync\TimeServers.txt=$(AppPath)
+
+[Package|KarenWare.com|Configure Shared Files]
+Applicable=Yes
+D:\VB6\Sync\PTSync.exe=No
+D:\VB6\Sync\ptSync.exe.manifest=No
+D:\VB6\Sync\PTSync.txt=No
+D:\VB6\Sync\PTSync.hlp=No
+D:\VB6\Sync\TimeServers.txt=No
+
+[Package|KarenWare.com|Distribution]
+Type=single
+Size=
+Title=Karen's Time Sync
+
+[Package|KarenWare.com|Package]
+PackageFolder=D:\VB6\Sync\Package
+ProjectFolder=D:\VB6\Sync
+ServerSideCab=
+File1=D:\VB6\Sync\Package\setup.exe
+File2=D:\VB6\Sync\Package\Setup.Lst
+File3=D:\VB6\Sync\Package\PTSync.CAB
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+[Package|KarenWare.com|IconGroups]
+Group0=Karen's Power Tools
+PrivateGroup0=-1
+Parent0=$(Programs)
+
+[Package|KarenWare.com|Karen's Power Tools]
+Icon1=PTSync.exe
+Title1=Time Sync
+StartIn1=$(AppPath)
+Key1=Icon1

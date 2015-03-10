@@ -1,0 +1,17 @@
+frmSpectrum = 2, 18, 650, 502, , 4, 89, 570, 487, C
+Physics = -11, 73, 766, 491, 
+GlobalParms = 3, 24, 761, 396, 
+TBcalc = 3, 78, 622, 450, C
+RetrievalSubs = 0, 0, 592, 365, 
+FLTINFO = -23, 120, 636, 464, C
+MTPio = -9, 30, 645, 395, C
+Math = 66, 66, 631, 444, C
+Formatting = 0, 0, 0, 0, C
+RAOBcommon = 0, 0, 0, 0, C
+frmFLTINFO = 22, 22, 508, 394, C, 88, 88, 574, 460, C
+Calibration = 0, 0, 0, 0, C
+frmFltTrack = 0, 0, 0, 0, C, 154, 154, 640, 526, C
+frmCaptureForm = 0, 0, 0, 0, C, 0, 0, 486, 372, C
+PNG = 110, 110, 596, 482, C
+frmAbout = 0, 0, 0, 0, C, 22, 22, 508, 394, C
+cDIBSection = 0, 0, 0, 0, C

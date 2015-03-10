@@ -1,0 +1,87 @@
+// 
+//
+#include "progname.h"
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+// LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST             "progname.exe.manifest"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+ICO_KARENWARE               ICON                    "KarenWare.ico"
+ICO_STAR_UP                 ICON                    "Gold Star 16 Up.ico"
+ICO_STAR_DOWN               ICON                    "Gold Star 16 Down.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+CUR_SPLITV                  CURSOR                  "SPLITV.CUR"
+CUR_SPLITH                  CURSOR                  "SPLITH.CUR"
+CUR_HAND                    CURSOR                  "Hand.CUR"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+// VS_VERSION_INFO VERSIONINFO
+//  FILEVERSION 1,0,0,0
+//  PRODUCTVERSION 1,0,0,0
+//  FILEFLAGSMASK 0x17L
+// #ifdef _DEBUG
+//  FILEFLAGS 0x1L
+// #else
+//  FILEFLAGS 0x0L
+// #endif
+//  FILEOS 0x4L
+//  FILETYPE 0x0L
+//  FILESUBTYPE 0x0L
+// BEGIN
+//     BLOCK "StringFileInfo"
+//     BEGIN
+//         BLOCK "040904b0"
+//         BEGIN
+//             VALUE "FileDescription", "Karen's Proxy"
+//             VALUE "FileVersion", "1, 0, 0, 0"
+//             VALUE "InternalName", "Karen's Proxy"
+//             VALUE "LegalCopyright", "Copyright (C) 2004"
+//             VALUE "OriginalFilename", "PTProxy.exe"
+//             VALUE "ProductName", "Karen's Power Tools"
+//             VALUE "ProductVersion", "1, 0, 0, 0"
+//         END
+//     END
+//     BLOCK "VarFileInfo"
+//     BEGIN
+//         VALUE "Translation", 0x409, 1200
+//     END
+// END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    IDS_PROGNAME           "Karen's Proxy"
+END
+
+/////////////////////////////////////////////////////////////////////////////
+
