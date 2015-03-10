@@ -1,0 +1,14 @@
+MTPcalc = 43, 66, 641, 412, C, -2, 41, 465, 347, C
+frmAbout = 22, 22, 646, 470, , 88, 88, 712, 536, C
+frmRAOBsites = 135, 51, 759, 499, , 132, 132, 756, 580, C
+FLTINFO = 22, 22, 642, 414, 
+Formatting = 0, 0, 0, 0, C
+Math = 0, 0, 0, 0, C
+MTPio = 8, 57, 780, 505, 
+Physics = 0, 0, 0, 0, C
+RAOBcommon = 132, 132, 795, 505, 
+modGlobalParms = 0, 0, 0, 0, C
+RetrievalSubs = 0, 0, 0, 0, C
+frmCaptureForm = 0, 0, 0, 0, C, 132, 132, 756, 580, C
+cDIBSection = 0, 0, 0, 0, C
+MScapture = 0, 0, 620, 392, 

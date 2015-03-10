@@ -1,0 +1,134 @@
+[Root]
+Most Recent Package=Standard Setup Package 1 UDP GH
+
+
+[Package|Standard Setup Package 1 UDP GH|Root]
+SubWizProgID=PDWizard.SetupPkgSubWiz
+BuildFolder=C:\MTP\VB6\VBP\Misc\GH_UDP\Package
+
+[Package|Standard Setup Package 1 UDP GH|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Standard Setup Package 1 UDP GH|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Standard Setup Package 1 UDP GH|Files Found]
+
+[Package|Standard Setup Package 1 UDP GH|Files Released]
+
+[Package|Standard Setup Package 1 UDP GH|Missing Dependency Information]
+C:\MTP\VB6\VBP\Misc\MTPsetup\MSCOMCT2.OCX=
+
+[Package|Standard Setup Package 1 UDP GH|Out-of-Date Dependency Information]
+C:\WINDOWS\system32\MCI32.OCX=
+
+[Package|Standard Setup Package 1 UDP GH|Files Added]
+
+[Package|Standard Setup Package 1 UDP GH|Files Removed]
+
+[Package|Standard Setup Package 1 UDP GH|Files In Project]
+C:\MTP\VB6\VBP\Misc\GH_UDP\GH_UDP.exe=Yes
+C:\WINDOWS\system32\msvbvm60.dll=Yes
+C:\WINDOWS\system32\oleaut32.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
+C:\WINDOWS\system32\TABCTL32.OCX=Yes
+C:\WINDOWS\system32\MSFLXGRD.OCX=Yes
+C:\WINDOWS\system32\comdlg32.ocx=Yes
+C:\WINDOWS\system32\MSCOMCTL.OCX=Yes
+C:\MTP\VB6\VBP\Misc\MTPsetup\MSCOMCT2.OCX=Yes
+C:\WINDOWS\system32\MSINET.OCX=Yes
+C:\WINDOWS\system32\RICHTX32.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\RICHED32.DLL=Yes
+C:\WINDOWS\system32\MSCHRT20.OCX=Yes
+C:\WINDOWS\system32\MSWINSCK.OCX=Yes
+C:\WINDOWS\system32\MSMAPI32.OCX=Yes
+C:\WINDOWS\system32\MCI32.OCX=Yes
+C:\WINDOWS\system32\PICCLP32.OCX=Yes
+C:\WINDOWS\system32\SYSINFO.OCX=Yes
+C:\WINDOWS\system32\MSCOMM32.OCX=Yes
+C:\WINDOWS\system32\MSMASK32.OCX=Yes
+C:\WINDOWS\system32\MSDATGRD.OCX=Yes
+C:\WINDOWS\system32\MSSTDFMT.DLL=Yes
+C:\WINDOWS\system32\MSDATLST.OCX=Yes
+C:\WINDOWS\system32\COMCT332.OCX=Yes
+C:\WINDOWS\system32\MSADODC.OCX=Yes
+C:\WINDOWS\system32\MSHFLXGD.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=Yes
+C:\WINDOWS\system32\VB6STKIT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=Yes
+
+[Package|Standard Setup Package 1 UDP GH|Configure Registry Files]
+Applicable=No
+
+[Package|Standard Setup Package 1 UDP GH|Configure Remote Servers]
+Applicable=No
+
+[Package|Standard Setup Package 1 UDP GH|Install Locations]
+C:\MTP\VB6\VBP\Misc\GH_UDP\GH_UDP.exe=$(AppPath)
+C:\WINDOWS\system32\msvbvm60.dll=$(WinSysPathSysFile)
+C:\WINDOWS\system32\oleaut32.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\WINDOWS\system32\TABCTL32.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MSFLXGRD.OCX=$(WinSysPath)
+C:\WINDOWS\system32\comdlg32.ocx=$(WinSysPath)
+C:\WINDOWS\system32\MSCOMCTL.OCX=$(WinSysPath)
+C:\MTP\VB6\VBP\Misc\MTPsetup\MSCOMCT2.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MSINET.OCX=$(WinSysPath)
+C:\WINDOWS\system32\RICHTX32.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\RICHED32.DLL=$(WinSysPathSysFile)
+C:\WINDOWS\system32\MSCHRT20.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MSWINSCK.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MSMAPI32.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MCI32.OCX=$(WinSysPath)
+C:\WINDOWS\system32\PICCLP32.OCX=$(WinSysPath)
+C:\WINDOWS\system32\SYSINFO.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MSCOMM32.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MSMASK32.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MSDATGRD.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MSSTDFMT.DLL=$(WinSysPath)
+C:\WINDOWS\system32\MSDATLST.OCX=$(WinSysPath)
+C:\WINDOWS\system32\COMCT332.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MSADODC.OCX=$(WinSysPath)
+C:\WINDOWS\system32\MSHFLXGD.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP.EXE=$(AppPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\SETUP1.EXE=$(WinPath)
+C:\WINDOWS\system32\VB6STKIT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\ST6UNST.EXE=$(WinPath)
+
+[Package|Standard Setup Package 1 UDP GH|Configure Shared Files]
+Applicable=Yes
+C:\MTP\VB6\VBP\Misc\GH_UDP\GH_UDP.exe=Yes
+
+[Package|Standard Setup Package 1 UDP GH|Distribution]
+Type=single
+Size=
+Title=GH_UDP
+
+[Package|Standard Setup Package 1 UDP GH|Package]
+PackageFolder=C:\MTP\VB6\VBP\Misc\GH_UDP\Package
+ProjectFolder=C:\MTP\VB6\VBP\Misc\GH_UDP
+ServerSideCab=
+File1=C:\MTP\VB6\VBP\Misc\GH_UDP\Package\setup.exe
+File2=C:\MTP\VB6\VBP\Misc\GH_UDP\Package\Setup.Lst
+File3=C:\MTP\VB6\VBP\Misc\GH_UDP\Package\GH_UDP.CAB
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+[Package|Standard Setup Package 1 UDP GH|IconGroups]
+Group0=GH_UDP
+PrivateGroup0=-1
+Parent0=$(Programs)
+
+[Package|Standard Setup Package 1 UDP GH|GH_UDP]
+Icon1=GH_UDP.exe
+Title1=GH_UDP
+StartIn1=$(AppPath)
+Key1=Icon1
