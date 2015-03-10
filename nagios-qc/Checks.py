@@ -93,12 +93,6 @@ class CheckTemplate(object):
         return check
 
 
-def _getatt(elm, name, dfault, cvt=str):
-    if elm.attrib.has_key(name):
-        return cvt(elm.attrib[name])
-    return dfault
-
-
 class Check(object):
     "An actual Check instance which corresponds with a single nagios check."
 
@@ -164,49 +158,59 @@ class Check(object):
 
     def fromString(text):
         elm = ET.fromstring(text)
-        check = CheckTemplate.createCheckType(elm.attrib.get('type'))
-        check.fromElement(elm)
+        check = CheckTemplate.createCheckType(elm.attrib['type'])
+        check.vname = elm.attrib['variable']
+        check._fromElement(elm)
         return check
 
     fromString = staticmethod(fromString)
 
-    def fromElement(self, elm, var=None):
-        self.vname = _getatt(elm, 'variable', None)
-        if Check.TOLERANCE in self.parameters:
-            self._tolerance = _getatt(elm, 'tolerance', self._tolerance, float)
-            if self._tolerance is not None:
-                self.tolerance = self._tolerance
-        if Check.LOOKBACK in self.parameters:
-            self._lookback = _getatt(elm, 'lookback', self._lookback, int)
-            if self._lookback is not None:
-                self.lookback = self._lookback
-        if Check.MISSING_VALUE in self.parameters:
-            if var:
-                self.missing_value = var.missing_value
-            self.missing_value = _getatt(elm, 'missing_value', 
-                                         self.missing_value, float)
-            if self.missing_value is None:
-                raise Exception("Need missing_value set for check '%s'." % 
-                                (self.name()))
-        if Check.MIN_LIMIT in self.parameters:
-            if var:
-                self.min_limit = var.min_limit
-            self.min_limit = _getatt(elm, 'min_limit', self.min_limit, float)
-            if self.min_limit is None:
-                raise Exception("No min_limit for bounds check '%s'." % 
-                                (self.name()))
-        if Check.MAX_LIMIT in self.parameters:
-            if var:
-                self.max_limit = var.max_limit
-            self.max_limit = _getatt(elm, 'max_limit', self.max_limit, float)
-            if self.max_limit is None:
-                raise Exception("No max_limit for bounds check '%s'." % 
-                                (self.name()))
-        if Check.VALUE in self.parameters:
-            self.value = _getatt(elm, 'value', self.value, float)
-            if self.value is None:
-                raise Exception("Check '%s' needs value parameter." %
-                                (self.name()))
+
+    def _getatt(self, elm, name, dfault, cvt=str, emessage=None):
+        value = None
+        if name in self.parameters:
+            if elm.attrib.has_key(name):
+                value = cvt(elm.attrib[name])
+            else:
+                value = dfault
+            if emessage and value is None:
+                raise Exception(emessage)
+        return value
+
+    def _fromElement(self, elm, var=None):
+        """
+        This does not restore the variable name from the element tree, since
+        this method may be either instantiating a CheckTemplate (in which
+        case the variable attribute may actually be a pattern) or restoring
+        a Check from a saved string.  Therefore the variable is set first
+        of all in the corresponding caller, either instantiate() or
+        fromString().
+        """
+        # Get defaults from self unless a source variable is provided.
+        if not var:
+            var = self
+        self._tolerance = self._getatt(elm, Check.TOLERANCE, 
+                                       self._tolerance, float)
+        if self._tolerance is not None:
+            self.tolerance = self._tolerance
+        self._lookback = self._getatt(elm, Check.LOOKBACK,
+                                      self._lookback, int)
+        if self._lookback is not None:
+            self.lookback = self._lookback
+        self.missing_value = self._getatt(
+            elm, Check.MISSING_VALUE, 
+            var.missing_value, float,
+            emessage="Need missing_value set for check '%s'." % 
+            (self.name()))
+        self.min_limit = self._getatt(
+            elm, Check.MIN_LIMIT, var.min_limit, float,
+            emessage="No min_limit for bounds check '%s'." % (self.name()))
+        self.max_limit = self._getatt(
+            elm, Check.MAX_LIMIT, var.max_limit, float,
+            emessage="No max_limit for bounds check '%s'." % (self.name()))
+        self.value = self._getatt(
+            elm, Check.VALUE, self.value, float,
+            emessage="Check '%s' needs value parameter." % (self.name()))
 
     def name(self):
         "Derive this check name from our Status prototype."
@@ -218,8 +222,8 @@ class Check(object):
         "Instantiate a Check from a CheckTemplate prototype."
         # First fill from the variable metadata, but then override with
         # explicit settings set in the CheckTemplate.
-        self.fromElement(checkt.elm, var)
         self.vname = var.name
+        self._fromElement(checkt.elm, var)
         logger.debug("instantiated check %s from "
                      "template(ctype=%s,variable=%s)" %
                      (self.name(), checkt.name(), checkt.vname))
@@ -280,9 +284,6 @@ class Flatline(Check):
         Check.__init__(self, "flatline", 
                        [Check.TOLERANCE, Check.LOOKBACK, Check.MISSING_VALUE])
 
-    def instantiate(self, checkt, var):
-        Check.instantiate(self, checkt, var)
-
     def check_self(self, datastore):
         values = datastore.getValues(self.vname, self.lookback)
         sdev = self.stddev(values)
@@ -298,9 +299,6 @@ class Bounds(Check):
 
     def __init__(self):
         Check.__init__(self, "bounds", [Check.MIN_LIMIT, Check.MAX_LIMIT])
-
-    def instantiate(self, checkt, var):
-        Check.instantiate(self, checkt, var)
 
     def check_self(self, datastore):
         values = datastore.getValues(self.vname, 1)
@@ -324,12 +322,6 @@ class Stable(Check):
         Check.__init__(self, "stable",
                        [Check.MISSING_VALUE, Check.TOLERANCE, Check.LOOKBACK,
                         Check.VALUE])
-
-    def instantiate(self, checkt, var):
-        Check.instantiate(self, checkt, var)
-        if self.value is None:
-            raise Exception("No target value for stable check '%s'." % 
-                            (self.name()))
 
     def check_self(self, datastore):
         # Grab last 'lookback' values of our variable and analyze.
@@ -355,9 +347,6 @@ class NoData(Check):
     def __init__(self):
         Check.__init__(self, "nodata", [Check.MISSING_VALUE])
 
-    def instantiate(self, checkt, var):
-        Check.instantiate(self, checkt, var)
-
     def is_superceded(self, checks):
         """
         All other checks first check for missing values, so if there any other
@@ -382,9 +371,6 @@ class GGQUAL(Check):
 
     def __init__(self):
         Check.__init__(self, "ggqual")
-
-    def instantiate(self, checkt, var):
-        Check.instantiate(self, checkt, var)
 
     def check_self(self, datastore):
         values = datastore.getValues(self.vname, 1)
