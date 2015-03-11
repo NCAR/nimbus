@@ -21,7 +21,7 @@
 static int _file_nc_version = 1;
 static time_t _start_t = -1;
 static int * _time_variable = 0;
-static int _timeLength = 0;
+static size_t _timeLength = 0;
 
 time_t InitFlightTime(int ncid)
 {
@@ -112,7 +112,7 @@ int GetFlightRecordNumber(int ncid, const char userTime[])
 {
   struct tm * desiredTime;
   time_t desired_t;
-  int h, m, s;
+  int idx = 0, h, m, s;
   int offset = 0;
 
   if (_start_t == -1)
@@ -150,11 +150,12 @@ int GetFlightRecordNumber(int ncid, const char userTime[])
       if (_start_t + _time_variable[i] == desired_t)
         break;
 
-    if (i == _timeLength)
-      desired_t = _start_t + _time_variable[_timeLength-1];
+    idx = i;
+    if (i >= _timeLength)
+      idx = _timeLength - 1;
   }
 
-  return desired_t - _start_t;
+  return idx;
 }
 
 
