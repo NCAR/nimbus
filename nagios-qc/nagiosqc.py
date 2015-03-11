@@ -46,7 +46,7 @@ def main(argv):
                       help="Show info log messages.")
 
     nqc = NagiosQC()
-    options = nqc.parseOptions(parser, argv)
+    options = nqc.parseOptions(argv, parser)
 
     logging.basicConfig(level=options.loglevel)
     logger.debug("operation: %s" % (",".join(argv)))

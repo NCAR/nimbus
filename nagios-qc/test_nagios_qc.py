@@ -19,14 +19,14 @@ _deepwave_xml = os.path.join(_testdir, "../vardb/tests/deepwave_vardb.xml")
 
 
 def samplechecks():
-    xml = ChecksXML()
-    xml.load(_checks_xml)
+    xml = ChecksXML(_checks_xml)
+    xml.load()
     return xml
 
 
 def winterchecks():
-    xml = ChecksXML()
-    xml.load(_winter_checks_xml)
+    xml = ChecksXML(_winter_checks_xml)
+    xml.load()
     return xml
 
 
@@ -68,7 +68,8 @@ def test_winter_checks_xml():
 def test_nagios_config():
     nqc = NagiosQC()
     parser = optparse.OptionParser()
-    options = nqc.parseOptions(parser, ['nagiosqc.py', '--db', 'c130', 'config'])
+    options = nqc.parseOptions(['nagiosqc.py', '--db', 'c130', 'config'],
+                               parser)
     assert(bool(options))
     assert(options.db == "c130")
     assert(nqc.getCheckCommand("nagiosqc.py") == 

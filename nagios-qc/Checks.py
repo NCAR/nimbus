@@ -1,6 +1,5 @@
 "Interface to the Checks XML file and check entries."
 
-import os
 import re
 import xml.etree.ElementTree as ET
 import numpy as np
@@ -393,34 +392,19 @@ CheckTemplate.addCheckType(NoData)
 
 
 class ChecksXML(object):
-    "Read CheckTemplates from a checks.xml file which can then be instantiated."
+    "Read CheckTemplates from an XML file which can then be instantiated."
 
-    def __init__(self):
-        """Create empty ChecksXML with no file path and no templates."""
-        self.path = None
+    def __init__(self, xmlpath=None):
+        """Create empty ChecksXML with no templates."""
+        self.path = xmlpath
         self.xtree = None
         self.templates = []
 
-    def setupPath(self, path=None, vlist=None):
-        """Set the path to a XML file with check templates.
+    def setPath(self, xmlpath):
+        "Set the path to the XML file."
+        self.path = xmlpath
 
-        Use @p path if not None, else generate a path from @p vlist if not
-        None, and otherwise generate a path using the RAF environment
-        variables.
-
-        """
-        if path:
-            self.path = path
-        if self.path:
-            pass
-        elif vlist:
-            self.path = os.path.join(vlist.configPath(), 'checks.xml')
-        else:
-            self.path = os.path.expandvars(
-                '${PROJ_DIR}/${PROJECT}/${AIRCRAFT}/checks.xml')
-        return self.path
-
-    def load(self, xmlpath=None):
+    def load(self):
         """Parse the checks file and load all the check templates.
 
         The @p xmlpath parameter is a convenient shortcut for specifying
@@ -429,7 +413,7 @@ class ChecksXML(object):
         combined list of templates.
 
         """
-        self.xtree = ET.parse(self.setupPath(xmlpath))
+        self.xtree = ET.parse(self.path)
         ntemplates = len(self.templates)
         for elm in self.xtree.getiterator('check'):
             checkt = CheckTemplate()

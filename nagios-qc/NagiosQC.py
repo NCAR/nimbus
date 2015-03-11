@@ -17,6 +17,7 @@ from vardb import DataStore
 from optparse import OptionValueError
 import iss.time_tools as tt
 import iss.nagios as nagios
+from optparse import OptionParser
 
 # The goal is to store Check instances, with all their associated
 # parameters, so they can be loaded and executed over and over without
@@ -99,10 +100,19 @@ Assign the given timestamp as the time of the nagios passive check result.""")
         """
         self.options = options
         # Derive the path to this script and the arguments.
-        self.script_path = os.path.abspath(args[0])
+        # As a special case, if the executable is empty, then derive
+        # a path using this module's directory.
+        self.script_path = args[0]
+        if not self.script_path:
+            self.script_path = os.path.join(os.path.dirname(__file__),
+                                            "nagiosqc.py")
+        self.script_path = os.path.abspath(self.script_path)
         self.args = args[1:]
 
-    def parseOptions(self, parser, argv):
+
+    def parseOptions(self, argv, parser=None):
+        if not parser:
+            parser = OptionParser()
         self.addOptions(parser)
 
         # Copy off the argument list
@@ -183,16 +193,55 @@ Assign the given timestamp as the time of the nagios passive check result.""")
         vlist.loadVariables()
         return vlist
 
+    def getProjDir(self):
+        projdir = self.options.projdir
+        if not projdir:
+            projdir = os.environ.get("PROJ_DIR")
+        if not projdir:
+            projdir = "/home/local/projects"
+        return projdir
+
+    def _locateChecksXML(self, vlist):
+        """
+        Derive the location of the XML file with the check templates.
+        """
+        # If an explicit checks path is in the options, then it overrides
+        # everything, but it can also be relative to the project directory.
+        path = self.options.checks
+
+        # If the path does not exist, try appending it to the project
+        # directory.
+        projdir = self.getProjDir()
+        if projdir and path and not os.path.exists(path):
+            rpath = os.path.join(projdir, path)
+            if os.path.exists(rpath):
+                path = rpath
+
+        # Otherwise the path comes from the project and aircraft in the
+        # database using the default name.
+        if not path:
+            path = os.path.join(vlist.configPath(), 'checks.xml')
+
+        # We could derive a path by expanding the PROJECT and AIRCRAFT
+        # environment variables here, but what would be the point?  The
+        # checks being generated must be consistent with the database
+        # regardless of the environment settings.
+        # path = os.path.expandvars(
+        #                 '${PROJ_DIR}/${PROJECT}/${AIRCRAFT}/checks.xml')
+
+        return path
+
     def writeConfig(self):
         vlist = self.setupVariableList()
         # Merge in the vardb.xml in case any checks need to inherit limits
         # from the metadata.
         vlist.loadVdbFile()
+        xmlpath = self._locateChecksXML(vlist)
 
         # Load the checks.xml file and instantiate all the checks against
         # the current variables.
-        checksxml = ChecksXML()
-        checksxml.load(self.options.checks)
+        checksxml = ChecksXML(xmlpath)
+        checksxml.load()
         checks = checksxml.generateChecks(vlist.getVariables())
         self.writeConfigFile(checks, self.options.nagios)
         vlist.close()
