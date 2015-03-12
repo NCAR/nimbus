@@ -64,6 +64,7 @@ class NagiosCommands(object):
         self.open()
         logger.debug("nagios command: %s" % (cmdline))
         self.cmds.write(cmdline + "\n")
+        self.cmds.flush()
         if closewhendone:
             self.cmds.close()
 
