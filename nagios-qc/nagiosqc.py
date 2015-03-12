@@ -25,14 +25,12 @@ from optparse import OptionParser
 from NagiosQC import NagiosQC
 
 _usage = """
-nagios-qc [options] {config|check}
+nagiosqc.py {config|check} [options]
 
 The 'config' operation generates the nagios config file.
 
 The 'check' operation reads the checks from the nagios config file and
-executes them, submitting the results as passive service checks to nagios.
-
-"""
+executes them, submitting the results as passive service checks to nagios."""
 
 
 def main(argv):
