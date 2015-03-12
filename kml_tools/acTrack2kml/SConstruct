@@ -139,24 +139,13 @@ env.Alias('test', env.Command('gtest', gtests, gtests[0].abspath))
 
 pg = env.PostgresTestDB()
 
-def rundb(target, source, env):
-    pg.init()
-    pg.start()
-    pg.setupAircraftDatabase(source[0].get_abspath())
-    return 0
-
-def stopdb(target, source, env):
-    pg.stop()
-    return 0
-
-
 # Generate KML output from a database SQL file.  The source is the SQL dump
 # and the target is the real-time.kml file.
 database_kml_builder = Builder(action=[
-    rundb,
+    pg.action_init,
     Mkdir("${TARGET.dir}"),
     "${ACTRACK2KML} -v --once -p ${AIRCRAFT} -f ${TARGET.dir}/..",
-    stopdb])
+    pg.action_stop])
 
 env.Append(BUILDERS = {'DatabaseKML':database_kml_builder})
 
