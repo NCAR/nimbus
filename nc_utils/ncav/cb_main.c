@@ -106,10 +106,9 @@ void ReadHeader(Widget w, XtPointer client, XtPointer call)
 
   if (!Interactive)
   {
-    sprintf(buffer, "%s - %s, Flight #%d\n",
+    sprintf(buffer, "%s, Flight #%s\n",
 			ProjectName,
-			ProjectNumber,
-			atoi(FlightNumber));
+			FlightNumber);
 
     LogMessage(buffer);
   }
@@ -119,10 +118,9 @@ void ReadHeader(Widget w, XtPointer client, XtPointer call)
 
     FillListWidget();
 
-    sprintf(buffer, "%s - %s, Flight #%d",
+    sprintf(buffer, "%s, Flight #%s",
 			ProjectName,
-			ProjectNumber,
-			atoi(FlightNumber));
+			FlightNumber);
 
     XtSetArg(args[0], XmNtitle, buffer);
     XtSetValues(Shell001, args, 1);

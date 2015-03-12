@@ -66,20 +66,15 @@ int ReadInputFile(char fileName[])
   nc_get_att_text(InputFile, NC_GLOBAL, "ProjectName", ProjectName);
   ProjectName[len] = '\0';
 
-  nc_inq_att(InputFile, NC_GLOBAL, "ProjectNumber", (nc_type *)0, &len);
-  ProjectNumber = GetMemory(len+1);
-  nc_get_att_text(InputFile, NC_GLOBAL, "ProjectNumber", ProjectNumber);
-  ProjectName[len] = '\0';
-
   nc_inq_att(InputFile, NC_GLOBAL, "FlightNumber", (nc_type *)0, &len);
   FlightNumber = GetMemory(len+1);
   nc_get_att_text(InputFile, NC_GLOBAL, "FlightNumber", FlightNumber);
-  ProjectName[len] = '\0';
+  FlightNumber[len] = '\0';
 
   nc_inq_att(InputFile, NC_GLOBAL, "TimeInterval", (nc_type *)0, &len);
   TimeInterval = GetMemory(len+1);
   nc_get_att_text(InputFile, NC_GLOBAL, "TimeInterval", TimeInterval);
-  ProjectName[len] = '\0';
+  FlightNumber[len] = '\0';
 
 
   for (i = 0; i < nVars; ++i)
@@ -192,7 +187,6 @@ void CreateNetCDF(const char file_name[])
 
   nc_copy_att(InputFile, NC_GLOBAL, "ProjectName", OutputFile, NC_GLOBAL);
   nc_copy_att(InputFile, NC_GLOBAL, "Aircraft", OutputFile, NC_GLOBAL);
-  nc_copy_att(InputFile, NC_GLOBAL, "ProjectNumber", OutputFile, NC_GLOBAL);
   nc_copy_att(InputFile, NC_GLOBAL, "FlightNumber", OutputFile, NC_GLOBAL);
   nc_copy_att(InputFile, NC_GLOBAL, "FlightDate", OutputFile, NC_GLOBAL);
   nc_copy_att(InputFile, NC_GLOBAL, "Defaults", OutputFile, NC_GLOBAL);

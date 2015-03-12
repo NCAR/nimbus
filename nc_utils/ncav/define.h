@@ -58,7 +58,7 @@ typedef struct
 
 /*		Global Variables
  */
-extern char	*ProjectNumber, *ProjectName, *TimeInterval;
+extern char	*ProjectName, *TimeInterval;
 extern char	*Aircraft, *FlightNumber, *FlightDate;
 extern VARTBL	*Variable[];
 extern bool	PauseFlag, Interactive;

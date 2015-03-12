@@ -13,7 +13,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "define.h"
 
 char	buffer[4096];		/* Generic, volatile string space	*/
-char	*ProjectNumber, *ProjectName, *TimeInterval;
+char	*ProjectName, *TimeInterval;
 char	*Aircraft, *FlightNumber, *FlightDate;
 
 VARTBL  *Variable[MAX_VARIABLES];
