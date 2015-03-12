@@ -131,8 +131,10 @@ void SetBaseTime()
 
     if (nc_inq_varid(InputFile, "base_time", &baseTimeID) == NC_NOERR)
     {
-      nc_get_var1_float(InputFile, baseTimeID, NULL, (void *)&BaseTime);
-      nc_put_var1_float(OutputFile, baseTimeID, NULL, (void *)&BaseTime);
+      nc_get_var1_int(InputFile, baseTimeID, NULL, (void *)&BaseTime);
+      if (nc_inq_varid(OutputFile, "base_time", &baseTimeID) == NC_NOERR) {
+        nc_put_var1_int(OutputFile, baseTimeID, NULL, (void *)&BaseTime);
+      }
     }
   }
 }	/* END SETBASETIME */
@@ -217,7 +219,7 @@ void CreateNetCDF(const char file_name[])
     nc_def_var(OutputFile, "base_time", NC_LONG, 0, 0, &newBTID);
     nc_copy_att(InputFile, baseTimeID, "units", OutputFile, newBTID);
     nc_copy_att(InputFile, baseTimeID, "long_name", OutputFile, newBTID);
-    indx = 1;	/* Index for data_p	*/
+    indx = 0;	/* Index for data_p	*/
   }
   else
     baseTimeID = -1;
@@ -314,7 +316,7 @@ void PassThroughData(long * start, long * end)
   sprintf(buffer, "%02d:%02d:%02d", end[0], end[1], end[2]);
   EndInputRecordNumber = GetFlightRecordNumber(InputFile, buffer);
 
-  nInputRecords = EndInputRecordNumber - StartInputRecordNumber;
+  nInputRecords = EndInputRecordNumber - StartInputRecordNumber+1;
   nOutRecords = nInputRecords / AverageRate;
 
   inStart[0] = StartInputRecordNumber;
@@ -351,7 +353,6 @@ void PassThroughData(long * start, long * end)
     nc_put_vara_int(OutputFile, id, outStart, count, iData);
     free((char *)iData);
   }
-
 
   /* Pass through User requested variables.
    */
