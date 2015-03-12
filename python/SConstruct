@@ -1,10 +1,12 @@
 # -*- python -*-
 
-# Since site_scons is not located in this directory, it must be added to
-# the scons command line like so:
-#
-# scons -u --site-dir=/home/granger/code/raf-trunk/caledit/site_scons check 
-#
+# Use the site_scons in the RAF source tree if it has not been checked
+# out directly into this directory or specified with --site-dir.
+
+import sys
+import os
+sys.path.append(os.path.abspath("../caledit/site_scons"))
+import site_init
 
 env = Environment (tools = ['default', 'doxygen', 'pylint', 'pytest'])
 
