@@ -4,11 +4,11 @@ import os
 import sys
 import difflib
 
-if not os.path.exists("site_scons"):
-    print("Creating site_scons link and re-running.")
-    os.symlink("../../caledit/site_scons", "site_scons")
-    os.chdir(GetLaunchDir())
-    os.execv(sys.argv[0], sys.argv[:])
+# This is for building in the RAF source tree.  When building standalone,
+# site_scons is checked out directly into this directory and that takes
+# precedence.
+sys.path.append(os.path.abspath("../../caledit/site_scons"))
+import site_init
 
 env = Environment(tools=['default', 'netcdf', 'postgres_pq', 
                          'boost_date_time', 'postgres_testdb'])
