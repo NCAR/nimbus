@@ -2,9 +2,15 @@
 
 
 _preamble = """
-# ****************************************************************
-# This file is generated automatically.  Do not edit.
-# ****************************************************************
+# ************************************************************************
+
+# This file is generated automatically.  Do not edit.  If this file needs
+# to be regenerated because of changes to checks.xml or nagios-qc, then
+# re-run the nagiosqc.py script.  If errors need to be fixed in the service
+# and host definitions below, fix them in raf/nagios-qc/NagiosConfig.py and
+# re-run nagiosqc.py.
+
+# ************************************************************************
 
 define host {
   name                            nagios_qc_default_host
