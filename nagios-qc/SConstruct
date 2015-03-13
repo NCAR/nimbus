@@ -43,7 +43,7 @@ wqc = env.Command(['winter-nagios-qc.cfg', 'winter-results.txt'],
                     "${SOURCE.abspath} --debug --timestamp 20150228012345 "
                     "--db env --nagios ${TARGETS[0]} "
                     "--commands ${TARGETS[1]} check",
-                    pg.action_stop ], chdir=1)
+                    pg.action_destroy ], chdir=1)
 
 env.AlwaysBuild(wqc)
 env.Alias('test', wqc)
