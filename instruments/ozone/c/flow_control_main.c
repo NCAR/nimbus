@@ -137,7 +137,8 @@ int main(int argc, const char* argv[])
 	_socket.openSock(UDP_BOUND);
 	int nBytes = 32;
 	
-	float val=0;	
+	float val=0.; // Define the original DAC value for the flow controller.
+	PRM_DAC_Write( 2, 1.0 ); // Set it to slightly open.
 	
 		// =============== Main DAQ loop start. Should be infinite in the actual application. ==================
 	for ( i=0; i < n_iter; i++ )
@@ -162,25 +163,32 @@ int main(int argc, const char* argv[])
 		//printf("engData # 7=%f \n", engData[7]); // engData[7] is most recent MAF value in SLPM
 
 		//Write MAF data do UPB buffer
-		sprintf(udp_buffer , " %f ,", engData[7]);
+		//sprintf(udp_buffer , " %f ,", engData[7]);
 		
 		//calculate control voltage
 		/* save flow values */
-		flow_buffer[i%32]= engData[7];
+		//flow_buffer[i%32]= engData[7];
 		
 		/* sort flow values */ 
 			// sort_low_to_high(flow_buffer);
-		median_flow = flow_buffer[16]; // only after sorting
+		//median_flow = flow_buffer[16]; // only after sorting
 		 
 		/* some_look_up_table_function*/
-		ctr_volt = median_flow;// look_up_flow(median_flow)
+		//ctr_volt = median_flow;// look_up_flow(median_flow)
 		
 		//write control voltage to DAQ
 		
-		printf("enter DAC value: ");
-		scanf("%f",&val);
+		//printf("enter DAC value: ");
+		//scanf("%f",&val);
 		
-		PRM_DAC_Write( 0 , val ); /*replace arg2 with ctr_volt */
+		if (((i % 50) == 0)) { // Change setpoint every 5 s. This way all setpoints will run through twice in 5 min.
+			if (val == 10) {
+				val = 0;
+				}
+			val += 1.;
+			printf("Valve setpoint is: %f\n", val);
+			PRM_DAC_Write( 2 , val ); /*replace arg2 with ctr_volt */
+		}
 
 		
 		/*---------------- End Flow Control ---------*/
