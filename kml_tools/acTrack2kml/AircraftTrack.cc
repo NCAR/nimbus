@@ -1,22 +1,31 @@
 
 
 #include "AircraftTrack.hh"
+#include "TrackPath.hh"
 
 #include <cmath>
 #include <sstream>
 
+using std::vector;
 using std::stringstream;
 
 const float AircraftTrack::missing_value;
 
 bool
 AircraftTrack::
-isMissingValue(float target)
+isMissingValue(double target)
 {
   if (isnan(target) || target == missing_value)
     return true;
   
   return false;
+}
+
+
+AircraftTrack::
+AircraftTrack() :
+  offset_longitude(false)
+{
 }
 
 
@@ -69,17 +78,9 @@ formatTimestamp(ptime pt, const std::string& format)
 }
 
 
-void
-AircraftTrack::
-normalizeLongitude(float lon0)
-{
-  normalizeAngles(lon.begin(), lon.end(), lon0);
-}
-
-
 bool
 AircraftTrack::
-getHeading(int i, float& true_heading)
+getHeading(int i, double& true_heading)
 {
   // Either return the true heading variable, or compute a true heading
   // with the preceding point.
@@ -102,11 +103,10 @@ getHeading(int i, float& true_heading)
 
   // Copy the last two points so we can shift them to the range we want for the
   // position file.
-  std::vector<float> lat2(&(this->lat[i-1]), &(this->lat[i-1]) + 2);
-  std::vector<float> lon2(&(this->lon[i-1]), &(this->lon[i-1]) + 2);
+  vector<longitude_float> lat2(&(this->lat[i-1]), &(this->lat[i-1]) + 2);
+  vector<longitude_float> lon2(&(this->lon[i-1]), &(this->lon[i-1]) + 2);
 
-  normalizeAngles(lon2.begin(), lon2.end(), -180);
-  normalizeAngles(lat2.begin(), lat2.end(), -90);
+  //longitude_degrees<float>::normalize(lon2.begin(), lon2.end());
 
   double rlon[2], rlat[2];
   rlat[0] = lat2[0] * M_PI / 180.0;
@@ -116,9 +116,58 @@ getHeading(int i, float& true_heading)
   double y = sin(rlon[1] - rlon[0]) * cos(rlat[1]);
   double x = cos(rlat[0]) * sin(rlat[1]) - 
     sin(rlat[0]) * cos(rlat[1]) * cos(rlon[1]-rlon[0]);
-  double thdg = int( (atan2(y, x) * 180.0 / M_PI + 360.0) + 0.5);
-
-  normalizeAngles(&thdg, &thdg+1, 0.0);
+  heading_double thdg(atan2(y, x) * 180.0 / M_PI);
   true_heading = thdg;
   return true;
 }
+
+
+void
+AircraftTrack::
+setStatus(StatusFlag flag, const std::string& msg)
+{
+  status = flag;
+  statusMessage = msg;
+}
+
+
+void
+AircraftTrack::
+clearStatus()
+{
+  status = NOSTATUS;
+  statusMessage = "";
+}
+
+
+int
+AircraftTrack::
+findTime(ptime when, bool ending)
+{
+  int where = -1;
+  for (size_t i = 0; (i < npoints()) && (date[i] <= when); ++i)
+  {
+    where = i + ending;
+  }
+  return where;
+}
+
+
+void
+AircraftTrack::
+computeLongitudeOffset()
+{
+  // Use a path to get the bounding box on the whole track.
+  if (npoints())
+  {
+    TrackPath path(this);
+    path.generate();
+    PathStats stats = path.getStats();
+    PathRegion& bbox = stats.bounding_box;
+    if (bbox.sw.lon.value() > bbox.ne.lon.value())
+    {
+      offset_longitude = true;
+    }
+  }
+}
+

@@ -1,4 +1,8 @@
 
+#ifndef _acDatabase_hh_
+#define _acDatabase_hh_
+
+
 #include "Config.hh"
 #include "ProjectInfo.hh"
 #include "AircraftTrack.hh"
@@ -76,6 +80,13 @@ public:
   bool
   fillAircraftTrack(AircraftTrack& track);
 
+  /**
+   * Convenient call which wraps fillAircraftTrack() and sets the status
+   * on the track accordingly.
+   **/
+  void
+  updateTrack(AircraftTrack& track);
+
   void
   dump(std::ostream& out);
 
@@ -135,3 +146,6 @@ private:
   typedef std::map<std::string, Variable> dir_t;
   dir_t _directory;
 };
+
+
+#endif // _acDatabase_hh_

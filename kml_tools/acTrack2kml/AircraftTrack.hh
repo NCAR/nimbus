@@ -4,20 +4,45 @@
 
 #include <string>
 #include <vector>
+#include "angle.hh"
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "ProjectInfo.hh"
 
 /**
+ * The type-specific data members that make up a track are in a base class
+ * by themselves.
+ **/
+template <typename T>
+struct AircraftTrackT
+{
+  typedef boost::posix_time::ptime ptime;
+  typedef std::vector<boost::posix_time::ptime> vector_ptime;
+  typedef T value_type;
+  typedef longitude<T> longitude_type;
+
+  vector_ptime date;
+  std::vector<T> lat;
+  std::vector< longitude<T> > lon;
+  std::vector<T> alt;
+  std::vector<T> at;
+  std::vector<T> dp;
+  std::vector<T> tas;
+  std::vector<T> ws;
+  std::vector<T> wd;
+  std::vector<T> wi;
+  std::vector<T> thdg;
+};
+
+
+/**
  * Encapsulate the data which make up a generic aircraft track, especially
  * position, winds, and a few other state variables.
  **/
-class AircraftTrack
+class AircraftTrack : public AircraftTrackT<double>
 {
 public:
   typedef std::string string;
-  typedef boost::posix_time::ptime ptime;
-  typedef std::vector<boost::posix_time::ptime> vector_ptime;
 
   static const float missing_value = -32767.0;
 
@@ -25,8 +50,41 @@ public:
   std::string
   formatTimestamp(ptime pt, const std::string& format = "%Y-%m-%dT%H:%M:%SZ");
 
-  AircraftTrack()
-  {}
+  typedef enum { NOSTATUS=0, UPDATED, NOCHANGE, ERROR } StatusFlag;
+
+  AircraftTrack();
+
+  /**
+   * A track can have a status to indicate errors and changes made by the
+   * routines which modify the track.  Clear the status with clearStatus()
+   * and set it with setStatus().  The AircraftTrack is the data model, so
+   * the data model incorporates errors and status related to updating the
+   * model.
+   **/
+  void
+  setStatus(StatusFlag flag, const std::string& msg);
+
+  void
+  clearStatus();
+
+  /**
+   * Return true only if no error status has been set on the track.
+   **/
+  bool
+  ok()
+  {
+    return status != ERROR;
+  }
+
+  /**
+   * Return true only if the track has been changed since the status was
+   * last cleared.
+   **/
+  bool
+  updated()
+  {
+    return status == UPDATED;
+  }
 
   /**
    * Clear all the data vectors.
@@ -38,19 +96,30 @@ public:
    * Shortcut for the number of points in the track.
    **/
   size_t
-  npoints()
+  npoints() const
   {
     return lat.size();
   }
 
   /**
-   * Return the last timestamp in this track.  There must be points in the track.
+   * Return the last timestamp in this track.  There must be points in the
+   * track.
    **/
   ptime
-  lastTime()
+  lastTime() const
   {
     return *date.rbegin();
   }
+
+  /**
+   * Return the largest index into the track whose timestamp is less than
+   * or equal to the given time @p when.  If there is no such index,
+   * meaning the time precedes all points in the track, then return -1.  To
+   * use this to find the point just past this time, such as to set the end
+   * index for a clipping window, pass @p ending as true.
+   **/
+  int
+  findTime(ptime when, bool ending=false);
 
   /**
    * Reserve space for the given number of points, typically called just before 
@@ -60,61 +129,57 @@ public:
   reserve(size_t n);
 
   int
-  barbSpeed(float ws)
+  barbSpeed(double ws)
   {
     return (int)((ws + 2.5) / 5) * 5;
   }
 
   bool
-  isMissingValue(float target);
+  isMissingValue(double target);
 
   /**
-   * Fix all the longitude values to fit within the range [lon0, lon0+360),
-   * where lon0 defaults to 0.
+   * Always returning heading as a double means callers do not have to be
+   * templates to account for the possible heading types.
+   **/
+  bool
+  getHeading(int i, double& true_heading);
+
+  /**
+   * The longitudes in an AircraftTrack are always normalized to [-180,
+   * 180), so this method allows renderers to compute a longitude offset so
+   * that longitudes do not change sign across the international date line
+   * (antimeridian).
+   *
+   * The algorithm computes the bounding box for the whole track, then if
+   * the west longitude is greater than the east longitude, the offset is
+   * set to 360.  The "fixed" longitude can be computed by adding the
+   * offset to the values less than zero, or else assigning the longitude
+   * to type longitude_positive_degrees<>.
    **/
   void
-  normalizeLongitude(float lon0 = 0);
+  computeLongitudeOffset();
 
-  bool
-  getHeading(int i, float& true_heading);
+  inline value_type
+  offsetLongitude(int i)
+  {
+    if (offset_longitude)
+    {
+      value_type plon = lon[i].value();
+      longitude_positive_degrees<value_type>::normalize(plon);
+      return plon;
+    }
+    return lon[i];
+  }
 
-  vector_ptime date;
-  std::vector<float> lat;
-  std::vector<float> lon;
-  std::vector<float> alt;
-  std::vector<float> at;
-  std::vector<float> dp;
-  std::vector<float> tas;
-  std::vector<float> ws;
-  std::vector<float> wd;
-  std::vector<float> wi;
-  std::vector<float> thdg;
+  bool offset_longitude;
+
+  StatusFlag status;
+  std::string statusMessage;
+
 
   ProjectInfo projInfo;
-
-  /**
-   * The track can be simplified to a subset of points.  This vector
-   * identifies the members of the path.
-   **/
-  std::vector<bool> simple_path_point;
 };
 
-
-/**
- * Normalize an angular variable to within the range [origin, origin+360).
- **/
-template <typename IT, typename T>
-void
-normalizeAngles(IT begin, IT end, T origin = 0)
-{
-  for (IT it = begin; it != end; ++it)
-  {
-    while (*it < origin)
-      *it += 360.0;
-    while (*it >= origin+360.0)
-      *it -= 360.0;
-  }
-}
 
 /**
  * A convenient template for getting a reference to the last element of a
@@ -126,6 +191,5 @@ last(std::vector<T>& v)
 {
   return *v.rbegin();
 }
-
 
 #endif // _AircraftTrack_hh_

@@ -1,5 +1,80 @@
 
 ===========================================================================
+Still to do:
+
+If tas_cutoff is set to zero, then the ramp location will fill up with
+timestamp labels.  So the timestamp path can be clipped by tas, but then
+add a point for the beginning and end.  It's that or somehow limiting
+labels in space.  The beginning and end should be in opposite directions so
+they aren't on top of each other on the ramp, or else don't label the
+beginning, just the end.  Or maybe we shouldn't label the end, but only
+label the last of the timestamps. ie, without tas cutoff, find 15-minute
+path.  Then mask that path with inverse of tas cutoff, and the last point
+will be the one on the 15-minute interval but just before takeoff.
+
+The TAS clipping is still needed for the coordinates paths when the path
+algorithm is not headingstep.
+
+===========================================================================
+Testing
+
+There is a google test module, test_track.cc, and tests which compare
+output with expected output files, both of which are run by the scons alias
+'test'.  There are also python tests, but they only run with the 'pytests'
+alias.
+
+On systems with a recent version of GCC, the tests will be run with
+sanitized versions of acTrack2kml and actrackx, but only the normal build
+of acTrack2kml is installed.
+
+===========================================================================
+Steps to generating KML image dumps:
+
+Retrieve the full web page source with the substitutions for the platform,
+and call that output flight_data.html:
+
+wget --no-cookies --header "Cookie: platform=GV" http://www.eol.ucar.edu/cgi-bin/flight_data/osm_index.pl
+
+Change the osm.js href in flight_data.html to point to a local copy.
+
+The headless rendering requires the python selenium remote control API,
+which is used with the phantomjs driver.
+
+Get selenium/phantomjs working:
+
+  http://stackoverflow.com/questions/13287490/is-there-a-way-to-use-phantomjs-in-python
+
+On Fedora:
+
+  su
+  yum install python-selenium
+  yum install npm
+
+On RHEL6 (barolo), there is no python-selenium package, so use pip:
+
+  pip install -U selenium
+
+Then continue with installing the phantomjs browser:
+
+  yum install npm
+  npm -g install phantomjs
+
+Running renderkml.py: The renderkml.py generates a special file,
+flight_data/flight_data.js, which contains the list of kml files to render
+and the bounding box, then it uses selenium and phantomjs to render the
+flight_data.html web page.  That same page can be opened with firefox to
+view the KML files interactively, similarly to the EOL flight_data web
+site.  For example, to generate the flight_data.js for the combined winter
+flights and then browse the tracks:
+
+  scons winter
+  firefox flight_data.html
+
+Most of the javascript code is still pulled from the web, so renderkml.py
+and firefox cannot render the page if not online.
+
+
+===========================================================================
 How best to check that acTrack2kml is running and updating files correctly?
 The check needs to know whether the plane is flying (and submitting
 position data).  
@@ -37,11 +112,27 @@ rendering uses a "View" on the track which limits it to the window
    15-minutes pre-takeoff and 15-minutes prior to now (whether on ground or
    not)
 
-Maybe "ground compression" can be used throughout the whole track,
-generating kml points only once the position/direction has changed
-considerably.  Eg, draw fewer points on straight runs and when sitting on
-ramp but more points for tight turns.  Maybe there's an algorithm out there
-for this?
+============================================================================
+Path algorithms
+
+A TrackPath is a subset of points selected from an AircraftTrack by various
+algorithms.  First of all a TrackPath has a clipping window, which can be
+specified by time, index, or by a true airspeed threshold.  Only points
+within the clipping window will ever be selected by the path algorithm.
+Then these algorithms can be used to select points:
+
+  timestep: Pick only one point within each interval of a specified number
+  of seconds.
+
+  headingstep: Pick a point only once the heading differs by some threshold
+  from the previous path point.
+
+  pointstep: Pick one point for every pointstep points.
+
+There are other algorithms for simplifying a path, namely the
+Ramer-Douglas-Peucker algorithm.  That might be interesting to implement,
+and unlike the heading and time step algorithms it can be used to generate
+a path for varying resolutions.
 
  - http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm
 
@@ -49,86 +140,96 @@ for this?
 
  - Paper on simplifying Ramer: http://www.cs.ubc.ca/cgi-bin/tr/1992/TR-92-07
 
- - hard part is choosing tolerance parameter: could consider binary search
-   to the value which achieves the right ratio of reduced of points; could
-   adjust the tolerance according to speed, perhaps beneath take-off
-   threshold the tolerance is very small while above threshold it is
-   higher, but how much higher?  Should it be proportional?
+The whole point to picking a subset of the points is to optimize web
+displays and cut down on unnecessary points (read: indistiguishable) in the
+KML track.
 
- - also need a parameter for maximum time or distance interval between
-   points, so they can be labelled.--> That's incorrect.  The landmarks are
-   a separate list, so they can be labelled on their own interval even if
-   their points do not actually appear in the simplified track.
+Consider how the headingstep path differs from a ramer-douglas-peucker path
+in spirals.  If the spirals were smaller than the distance tolerance (ie,
+the track resolution), then they would not be in the path at all, whereas
+the heading step would still include them and require a lot of points to do
+it.
 
- - maybe thdg is what should select track points?  if thdg does not change
-   between two points, and no thdg is very different from another, then no
-   need to include the intervening points.  isn't that essentially
-   equivalent to deciding based on tolerance and the perpendicular
-   distance?  except the tolerance represents different fractions of a
-   heading change depending upon the distance between the points.  And the
-   distance between the points depends on the ground speed.
+============================================================================
+Path statistics and comparisons
 
-   are there platforms without a heading variable?  if so, should it be
-   computed from the position data?
+There are a few things in place to help compare KML tracks made by
+different algorithms and settings, and to help verify that the code is
+still generating reasonable tracks.
 
-   I don't see a heading variable in the ground database...osm.cc computes
-   the heading from the last two points, which could be problematic, so
-   maybe incorporating a real heading would be more accurate for that and
-   also useful for filtering points.
+There is a color option to change the default yellow/red colors of a KML
+track, so two tracks can be generated with different colors and rendered on
+the same web map.
 
-   --> THDG can be added to the ground variables, so it should be available
-       for simplifying the track.  And if not then we'd just revert to the
-       perpendicular distance or to computing the heading.
+The actrackx program is a utility to generate two alternative tracks and
+also report statistics about them:
 
- - acTrack2kml should add some indicator about the timeliness of the track
-   and the aircraft position, ie, change the colors, change to an alert
-   icon, or maybe make the track red only for the last hour of clock time
-   instead of last hour of flight time (but only for real-time?)
+number of points in the whole track
+number of points in the path
+time span of points
+lat/lon coordinates of whole track
 
- - maybe the update rate for the track could increase when the plane is
-   turning more, so it is easier to estimate exact plane location in
-   between updates
+The number of path points can be compared between two paths to see which
+settings trimmed more points.
+
+An obvious question is whether the search for the optimum algorithm and
+parameters can be automated.  Maybe paths can be generated with a binary
+search until the target is met, but what's the target?  Max absolute number
+of path points?  Minimum percent reduction?
+
+Should the headingstep algo be curbed by time interval also?  If thdg
+flatlines, then we'll get no points.  Likewise if thdg is broken and just
+changes randomly, then we'll get all the points or random points.  Too
+unlikely to worry about?  Or detect those conditions and revert to the
+timestep algorithm?  The histogram (see below) would make it easy to detect
+a thdg flatline problem.  If all the deltas are in the lowest bin then it
+flatlined, or if no division can be found between bins which sufficiently
+reduces points.  If all the thdg deltas are large, then again, then all (or
+too many) bins would be beyond the configured thdg interval.
+
+ - a simple safety measure would be to choose some large timestep interval
+   and merge that path with the headingstep path, so the timestep interval
+   is like a timeout on waiting for the heading to change
+
+Consider using a binary search to optimize automatically the thdg interval.
+Set a goal for percent of points to include or maximum size, then find the
+thdg interval which satisfies that goal.  Could even scale the search
+according the ratio of the goal.  If one thdg interval produces twice as
+many points as desired, then cut the thdg interval by half and try again.
+Or maybe create a histogram of thdg changes, then pick the thdg interval at
+the right cutoff in the histogram to include the desired number of points.
+eg, if the goal is to cut by half the number of points, then choose the thdg
+interval in the histogram where half the points have a lesser thdg change.
+There are probably some library routines in gsl or something to pick medians
+or quartiles or even build histograms.
+
+What a second!  The thdg delta between any two points should be small.  The
+algo doesn't include a point until it differs by more than the interval, so
+we need to bin the thdg itself, not the deltas.  If all the thdgs are in one
+bin, it flatlined.  Usually they will be evenly distributed in the
+histogram.  So can we find an optimal thdg interval from that?  The interval
+is some number of bins, so the number of points that will be skipped (on
+average) is the average number of points in that many bins.
+
+In real-time mode, the thdg delta does not need to computed every time.  It
+could be updated periodically as the number of points increases, and it
+might need to start out with some default until enough points are collected
+to do an analysis.
 
 
-Algorithm: keep a linked list of points in the simplified path, and use a
-pointer for each point in the full path to point to the linked list node.
-Mark 
+============================================================================
+Other ideas:
 
-To use the Heading, do we just look forward in the path to the next point
-where the heading differs by enough, and then progress through the track
-that way?  Is there any reason to use DP to find a vertex at which to
-divide the track?  Where would that point be?  Where the heading most
-differs from the first point, second point, average, both?  And how to
-handle the modulus problem?  Is the heading between two ends of a segment
-calculated from the coordinates or does it use an average of the headings?
-If the two headings are close, and all the headings on the segment are
-close to the average, then there is no point drawing the points in between.
-(The heading algorithm assumes the affect of side slip is negligible on the
-representation of the track.)
+acTrack2kml should add some indicator about the timeliness of the track and
+the aircraft position, ie, change the colors, change to an alert icon, or
+maybe make the track red only for the last hour of clock time instead of
+last hour of flight time (but only for real-time?)
 
-heading_distance(P1, P2, P3):
+In raf/nimbus/test, try getting this to run to generate a sql file for the
+HIPPO-2 rf06 flight which crosses the IDL.  I'm wondering if the
+double-precision database and 1-second data have the same bugs in the track
+as the netcdf file.  I should update the netcdf file too.
 
-  hdg2 = hdg(P2)
-  hdg1 = hdg(P1)
-  hdg3 = hdg(P3)
-  hdiff = abs(hdg2 - hdg1)
-  if (hdiff > 180)
-  {
-      hdiff -= 360;
-  }
-  else if (hdiff < -180)
-  {
-      hdiff += 360;
-  }
-  havg = h1 + hdiff/2
-
-We need an operation to find difference between two angles.  eg, 5 - 355
-should be 10, not -350.  And 355 - 5 should be -10 not 350.  So if
-difference is outside -180,180 then add or subtract 360.  The distance
-metric is the absolute value of the difference.  There is no need to
-compute the average angle in complex coordinates.  Doing that would
-automatically take care of returning the angle between the other two
-angles, but if fails if the angles are too close to opposite, because
-finding the argument of the averaged coordinate near zero could be
-unreliable.
+./load_database.sh ~/code/projects/HIPPO-2/GV_N677F/nidas/default.xml \
+     ~/Data/raf/Raw_Data/HIPPO-2/20091111_212527_rf06.ads 
 

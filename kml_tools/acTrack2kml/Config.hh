@@ -4,6 +4,7 @@
 
 #include <string>
 #include <iosfwd>
+#include <vector>
 
 class Config
 {
@@ -15,8 +16,8 @@ public:
   bool
   verifyDatabaseHost();
 
-  void
-  dump(std::ostream& out);
+  std::string
+  dump();
 
   /**
    * The path to the output directory which contains the GE subdirectory.
@@ -39,6 +40,21 @@ public:
    **/
   int TimeStep;
 
+  /**
+   * The degrees by which heading must change to add a point in the
+   * "heading" track simplification algorithm.  The default is 0.25 degrees.
+   **/
+  float HeadingStep;
+
+  /**
+   * For renderings like KML which select a subset of points to include in
+   * the track, this can be used to select the algorithm for simplifying
+   * the track.  The "timestep" method, the default, picks points every
+   * TimeStep seconds.  The "headingstep" method picks points when the
+   * heading changes by HeadingStep degrees.
+   **/
+  string path_method;
+
   /// True Airspeed cut-off (take-off and landing speed).
   float TAS_CutOff;
 
@@ -53,17 +69,23 @@ public:
 
   string netCDFinputFile;
   string outputKML;
+  string outputAnimatedKML;
+  string outputPositionKML;
   string outputPositionJSON;
+  string outputPrefix;
   string database_host;
   string platform;
   string dbname;
 
+  /// Compress KML output files.
+  bool compressKML;
+
   /// If alt is in meters this gets changed to 3.28.
   float convertToFeet;
 
-  bool showit;
   bool onboard;
   int verbose;
+  bool showstats;
 
   int update_interval_secs;
   int position_interval_secs;
@@ -74,6 +96,12 @@ public:
 
   bool run_once;
   bool check;
+
+  /// Override the red-yellow track colors with this hex color string for
+  /// KML track styles.  The order of expression is aabbggrr, where
+  /// aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red
+  /// (00 to ff).
+  string color;
 
   /**
    * Select the latitude variable name from a default name derived from the
@@ -106,6 +134,24 @@ public:
   void
   setAltitudeUnits(const string& units);
 
+  bool
+  setPlatform(const std::string& platname);
+
+  void
+  fillDefaults();
+
+  bool
+  realtimeMode();
+
+  static
+  std::vector<std::string>
+  getPlatformNames();
+
+  static string
+  defaultGroundFlightDataURL();
+
+  static string
+  defaultOnboardFlightDataURL();
 
 };
 

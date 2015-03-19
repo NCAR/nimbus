@@ -20,7 +20,7 @@ public:
   }
 
   std::string
-  formatPositionJSON(AircraftTrack& track);
+  formatPositionJSON(AircraftTrack& track, int i=-1);
 
   void
   writePositionJSON(AircraftTrack& track, const std::string& file);

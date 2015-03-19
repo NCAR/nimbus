@@ -1,0 +1,36 @@
+# -*- python -*-
+
+# This SConscript builds the basic actrack tools, and it is suitable for
+# being called as part of a variant build because it does not install
+# anything or run any tests.
+
+env = Environment(tools=['default', 'netcdf', 'postgres_pq', 
+                         'boost_date_time', 'actrack'])
+
+env.Append(CXXFLAGS='-g -Werror -Wall')
+
+
+# The python wrapper must be built as a shared library, and so all the
+# libraries it links against must be relocatable.
+env.AppendUnique(CXXFLAGS=['-fPIC'])
+
+libactrack = env.StaticLibrary('actrack', [
+    'ACTrackDriver.cc',
+    'Config.cc',
+    'AircraftTrackKML.cc',
+    'AircraftTrack.cc',
+    'TrackPath.cc',
+    'acDatabase.cc',
+    'ncTrack.cc',
+    'osm.cc'])
+
+env.Append(LIBS=libactrack)
+actrackkml = env.Program(['acTrack2kml.cc'])
+
+# The program for experimenting with and comparing acTrack2kml algorithms.
+actrackx = env.Program(['actrackx.cc'])
+
+targets = (libactrack, actrackkml, actrackx)
+
+Return('targets')
+

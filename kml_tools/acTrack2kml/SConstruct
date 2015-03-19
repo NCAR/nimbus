@@ -2,6 +2,7 @@
 
 import os
 import sys
+import re
 import difflib
 
 # This is for building in the RAF source tree.  When building standalone,
@@ -11,143 +12,174 @@ sys.path.append(os.path.abspath("../../caledit/site_scons"))
 import site_init
 
 env = Environment(tools=['default', 'netcdf', 'postgres_pq', 
-                         'boost_date_time', 'postgres_testdb'])
-env['JLOCAL'] = os.environ['JLOCAL']
+                         'boost_date_time', 'postgres_testdb',
+                         'prefixoptions', 'jlocal', 'testing'])
 
-env.Append(CXXFLAGS='-g -Werror -Wall')
+def actrack(env):
+    # Tool to configure the library build.  The actrack library itself is
+    # not included to make it possible to link against different build
+    # variants.
+    env.Require(['netcdf', 'postgres_pq', 'boost_date_time'])
+    if env.Dir('.').get_abspath().endswith('sanitized'):
+        env.SanitizeAddress()
 
-# ------------------------------------------------------------------------
-# All the talk beneath here about static linking appears to be obsolete,
-# since near as I can tell the current system installation of acTrack2kml
-# uses dynamic linking of netcdf and probably has for some time, so this
-# should be removed soon...
+Export('actrack')
 
-#env.Append(CPPPATH = '/usr/include/netcdf')
-#env.Append(LIBS = ['pq', 'boost_date_time'])
-
-# To get netcdf libraries on the link command line with static linking,
-# they need to be added to the end of the link command.  Adding them to
-# LINKFLAGS does not work, because LINKFLAGS is expanded on the command
-# line *before* LIBFLAGS.  There is no way to specify the libraries as
-# static in LIBS, since members of LIBS are always expanded to -l<lib>.
-# The only way to avoid that would be to replace the _stripixes() function,
-# and I don't want to go there.  I've been there, and it's not pretty.
-
-#env['NETCDFLIBS'] = ['-lnetcdf_c++', '-lnetcdf', '-lhdf5_hl', '-lhdf5']
-#env['LINKCOM'] = env['LINKCOM'] + " $NETCDFLIBS"
-
-# The Configure context is just being used as a check here.  We don't want
-# the checks to affect the special linking setup above by appending
-# libraries to LIBS.  Thus we create the context on a copy of the
-# environment, and we don't use the Finish()ed product.  All the Configure
-# checks appeared to do before were add -lnetcdf_c++ and -lpq to the LIBS,
-# but those had already been given on the command line anyway.  Really this
-# could be removed, since if netcdf or pq aren't installed, then the build
-# will still fail.  However it's left here in case someday someone wants to
-# really make it work.
-
-# conf = Configure(env.Clone())
-#if not conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'C'):
-#    print 'netCDF must be installed!'
-#    Exit(1)
-
-#if not conf.CheckLibWithHeader('netcdf_c++', 'netcdf.hh', 'C++'):
-#    print 'netCDF C++ must be installed!'
-#    Exit(1)
-
-#if not conf.CheckLibWithHeader('pq', 'libpq-fe.h', 'C'):
-#    print 'PostgreSQL must be installed!'
-#    Exit(1)
-
-# As mentioned above, we need to ignore the alterations Configure
-# makes to the environment.
-# env = conf.Finish()
-
-# If you rely on Configure to add libraries, you have to check for them in
-# reverse order of their dependencies, ie, check for netcdf before
-# netcdf_c++, otherwise netcdf_c++ cannot be linked.  However, when
-# statically linking, that means the libraries need to be listed in LIBS in
-# the reverse order they are checked by Configure.  Since at the moment
-# Configure is not being used to add to LIBS, we don't need this.
-# env['LIBS'].reverse()
-
-# print env.Dump()
-
-objects = env.StaticObject([
-                       'Config.cc',
-                       'AircraftTrackKML.cc',
-                       'AircraftTrack.cc',
-                       'acDatabase.cc',
-                       'ncTrack.cc',
-                       'osm.cc'])
-
-actrack = env.Program(['acTrack2kml.cc'] + objects)
-env.Default(actrack)
+(libactrack, actrackkml, actrackx) = SConscript('SConscript')
+libactrackpub = libactrack
+env.Default(actrackkml)
+env.Default(actrackx)
 
 Alias('install', env.Install('$JLOCAL/bin', 'acTrack2kml'))
 
+rootenv = env
 
-# Find aircraft production netcdf files to test against.
-#
-def FindAircraftData(filename):
-    searchdirs = ['$DATA_DIR/HIPPO', '/scr/raf_data/HIPPO']
-    for d in searchdirs:
-        d = os.path.expandvars(d)
-        path = os.path.join(d, filename)
-        if os.path.exists(path):
-            print("found %s in %s" % (filename, path))
+# ----------------------------------------------------------------------------
+# Python module
+# ----------------------------------------------------------------------------
+
+env = env.Clone()
+env.MergeFlags('!python-config --includes')
+env.Append(LIBS=['boost_python', libactrackpub])
+env.Require('actrack')
+
+module = env.SharedLibrary(env.File('raf/actrack/_actrack.so'), 
+                           ['actrack_python.cc'])
+# I don't know why this Depends() is necessary, but the library does not
+# get rebuilt without it.  SCons may not realize that the static
+# libactrack.a is a LIBS dependency even though the target is a shared
+# library.
+env.Depends(module, libactrackpub)
+pysrcs = Split("raf/actrack/__init__.py")
+tests = Split("raf/actrack/test_actrack.py")
+
+# test_actrack.py needs DATA_DIR to find test data
+env['ENV']['DATA_DIR'] = os.environ['DATA_DIR']
+runtest = env.TestRun('pytests', tests+module+pysrcs, "py.test ${SOURCE}")
+
+# ----------------------------------------------------------------------------
+# Testing
+# ----------------------------------------------------------------------------
+
+env = Environment(tools=['default', 'actrack', 'postgres_testdb', 'testing'])
+
+env['ACTRACKOPTS'] = '--path timestep'
+
+# Testing uses instrumented code, unless instrumenting not supported.
+if env.SanitizeSupported():
+    (libactrack, actrackkml, actrackx) = SConscript('SConscript', 
+                                                    variant_dir='sanitized', 
+                                                    duplicate=1)
+
+class DataFileCache(object):
+    """
+    Provide an API to lookup and search for test data files on the local
+    filesystem without requiring tests to know how they are stored and
+    where.  Someday eventually this can include the ability to fetch data
+    files remotely and cache them on the local filesystem.
+    """
+
+    def __init__(self):
+        self.cached_paths = {}
+        self.search_dirs = []
+
+    def addSearchDirs(self, idirs):
+        self.search_dirs.extend([os.path.expandvars(d) for d in idirs])
+
+    def findFile(self, filepath):
+        path = self.cached_paths.get(filepath)
+        if not path:
+            path = self.cached_paths.get(os.path.basename(filepath))
+        if path:
             return path
-    return None
+        for dpath in self.search_dirs:
+            for root, dirs, files in os.walk(dpath):
+                path = os.path.join(root, filepath)
+                if os.path.exists(path):
+                    print("found %s" % (path))
+                    self.cached_paths[filepath] = path
+                    self.cached_paths[os.path.basename(path)] = path
+                    return path
+        return None
 
+dfcache = DataFileCache()
+dfcache.addSearchDirs(['$DATA_DIR/HIPPO', '/scr/raf_data/HIPPO',
+                       '$DATA_DIR/WINTER', '/scr/raf_data/WINTER'])
 
 # Generate KML from a netcdf file.
 def NetcdfKML(target, source, env):
-  ifile = str(env.File(source[0]))
-  ofile = str(env.File(target[0]))
-  jfile = str(env.File(target[1]))
-  env.Execute("${ACTRACK2KML} %s %s %s" % (ifile, ofile, jfile))
+    ifile = str(env.File(source[0]))
+    ofile = str(env.File(target[0]))
+    jfile = ""
+    if len(target) > 1 and str(target[1]).endswith('.json'):
+        jfile = str(env.File(target[1]))
+    cmd = "${ACTRACK2KML} ${ACTRACKOPTS} %s %s %s" % (ifile, ofile, jfile)
+    env.Execute(env.AsanFilter(cmd))
 
 
 def kml_emitter(source, target, env):
-  ofile = str(env.File(target[0]))
-  jfile = ofile + ".json"
-  if ofile.endswith(".kml"):
-      jfile = ofile[:-4] + ".json"
-  if not env.has_key('ACTRACK2KML'):
-      env['ACTRACK2KML'] = actrack[0].get_abspath()
-  return (target + [jfile], source + [ env['ACTRACK2KML'] ])
+    ofile = str(env.File(target[0]))
+    if not env.has_key('ACTRACK2KML'):
+        env['ACTRACK2KML'] = actrackkml[0].get_abspath()
+    return (target, source + [ env['ACTRACK2KML'] ])
 
 
 env['BUILDERS']['NetcdfKML'] = Builder(action=NetcdfKML, emitter=kml_emitter)
 
-ncpath = FindAircraftData('HIPPO-2rf06.nc')
-if ncpath:
-    ekml = 'HIPPO-2rf06.kml'
-    ejson = 'HIPPO-2rf06.json'
-    akml = 'HIPPO-2rf06-actual.kml'
-    (akml, ajson) = env.NetcdfKML(akml, ncpath)
+hippopath = dfcache.findFile('HIPPO-2rf06.nc')
+if not hippopath:
+    print("*** HIPPO-2rf06.nc not found, test targets not available. ***")
+else:
+    ekml = 'expected/HIPPO-2rf06.kml'
+    ejson = 'expected/HIPPO-2rf06.json'
+    akml = 'kml/HIPPO-2rf06-actual.kml'
+    ajson = 'kml/HIPPO-2rf06-actual.json'
+    (akml, ajson) = env.NetcdfKML([akml, ajson], hippopath)
     env.Alias('xdiff', 
               env.Command("diff", [ekml, akml],
                           "diff --side-by-side --width=170 ${SOURCES}"))
     env.Alias('test', env.Command("diff1", [ekml, akml], "diff ${SOURCES}"))
     env.Alias('test', env.Command("diff2", [ejson, ajson], "diff ${SOURCES}"))
+    env.AlwaysBuild(akml)
 
-gtests = env.Program('gtests', ["test_track.cc"] + objects,
-                     LIBS=env['LIBS'] + ['gtest_main', 'gtest'])
+tenv = Environment(tools=['default', 'actrack', 'testing', 'gtest_main'])
+tenv.SanitizeAddress()
+tenv.Append(LIBS=libactrack)
+gtests = tenv.Program('gtests', ["test_track.cc"])
 
-env.Alias('test', env.Command('gtest', gtests, gtests[0].abspath))
+env.Alias('test', env.Command('gtest', gtests,
+                              env.AsanFilter("${SOURCE.abspath}")))
 
 pg = env.PostgresTestDB()
 
 # Generate KML output from a database SQL file.  The source is the SQL dump
 # and the target is the real-time.kml file.
+def database_kml_emitter(target, source, env):
+    # Turn KMLOUTPUT into a file node so we can use .dir substitution with
+    # it.
+    if env.has_key('KMLOUTPUT'):
+        env['KMLOUTPUTDIR'] = str(env.File("$KMLOUTPUT").get_dir())
+    return target, ["${ACTRACK2KML}"] + source
+
 database_kml_builder = Builder(action=[
     pg.action_init,
     Mkdir("${TARGET.dir}"),
-    "${ACTRACK2KML} -v --once -p ${AIRCRAFT} -f ${TARGET.dir}/..",
-    pg.action_stop])
+    "${SOURCES[0].abspath} ${ACTRACKOPTS} "
+    "-v --once -p ${AIRCRAFT} -f ${TARGET.dir}/..",
+    pg.action_destroy],
+                               emitter=database_kml_emitter)
 
-env.Append(BUILDERS = {'DatabaseKML':database_kml_builder})
+database_kml_output_builder = Builder(action=[
+    pg.action_init,
+    Mkdir("${KMLOUTPUTDIR}"),
+    "${SOURCES[0].abspath} ${ACTRACKOPTS} "
+    "-v --once -p ${AIRCRAFT} --output ${KMLOUTPUT}",
+    pg.action_destroy],
+                                      emitter=database_kml_emitter)
+
+env.Append(BUILDERS = {'DatabaseRealtimeKML':database_kml_builder})
+env.Append(BUILDERS = {'DatabaseOutputKML':database_kml_output_builder})
+
 
 def diff_files(target, source, env):
     diffs = None
@@ -168,8 +200,9 @@ def diff_files(target, source, env):
 diff_builder = Builder(action=[diff_files])
 env.Append(BUILDERS = {'Diff':diff_builder})
 
-gvkml = env.DatabaseKML("GV-actual/GE/real-time.kml", "real-time-GV.sql",
-                        AIRCRAFT='GV', ENV=pg.getEnvironment())
+gvkml = env.DatabaseRealtimeKML("GV-actual/GE/real-time.kml",
+                                "sql/real-time-GV.sql", AIRCRAFT='GV')
+env.AlwaysBuild(gvkml)
 
 # Only the GV SQL data has points, so add it to the test alias.  The C-130
 # comparison fails because no files are generated.
@@ -177,37 +210,97 @@ gvkml = env.DatabaseKML("GV-actual/GE/real-time.kml", "real-time-GV.sql",
 env.Alias('test', env.Diff('testgv-kml',
                            ["GV-expected/GE/real-time.kml",
                             "GV-actual/GE/real-time.kml"]))
-#env.Alias('test', env.Diff('testgv-animated',
-#                           ["GV-expected/GE/animated-track.kml",
-#                            "GV-actual/GE/animated-track.kml"]))
 env.Alias('test', env.Diff('testgv-position',
                            ["GV-expected/position.json",
                             "GV-actual/position.json"]))
-env.DatabaseKML('C130-actual/GE/real-time.kml', 'real-time-C130.sql', 
-                AIRCRAFT='C130', ENV=pg.getEnvironment())
+env.DatabaseOutputKML('kml/C130-real-time.kml', 'sql/real-time-C130.sql', 
+                      AIRCRAFT='C130', KMLOUTPUT="kml/C130-")
 
 # The DLR test just makes sure it terminates and exits successfully.
-dlr = env.DatabaseKML('DLR-actual/GE/real-time.kml', 'real-time-DLR.sql', 
-                      AIRCRAFT='DLR', ENV=pg.getEnvironment())
-env.Alias('test', dlr)
+dlr = env.DatabaseOutputKML('kml/DLR-real-time.kml',
+                            'sql/real-time-DLR.sql', 
+                            AIRCRAFT='DLR', KMLOUTPUT='kml/DLR-')
 
-def dumpdb(target, source, env):
-    platform = env['AIRCRAFT']
-    db = "real-time"
-    if platform:
-        db = db + "-" + platform
-    pg.dump("eol-rt-data.fl-ext.ucar.edu", "ads", db, target[0].get_abspath())
+rf13kml = env.DatabaseOutputKML(['kml/WINTER-rf13-real-time-timestep.kml',
+                                 'kml/WINTER-rf13-real-time-headingstep.kml'],
+                                'sql/real-time-WINTER-rf13.sql',
+                                AIRCRAFT="C130", ACTRACK2KML=actrackx,
+                                KMLOUTPUT='kml/WINTER-rf13-')
 
+# Accumulate all the targets generated in the kml subdirectory.
+kmldir = [dlr, rf13kml]
 
-def DumpSql(env, sqltarget, aircraft):
-    if [ t for t in BUILD_TARGETS if str(t).endswith(sqltarget) ]:
-        sql = env.Command(sqltarget, None, env.Action(dumpdb), 
-                          AIRCRAFT=aircraft)
-        env.AlwaysBuild(sql)
+# Render the whole of RF13.
+kmldir += env.Command('kml/WINTER-rf13.png', rf13kml, 
+                      "./renderkml.py ${SOURCES} "
+                      "-77.9957,28.9685,-74.2237,37.1555 ${TARGET}")
 
+# Render just the figure eight.
+kmldir += env.Command('kml/WINTER-rf13-loop.png', rf13kml, 
+                      "./renderkml.py ${SOURCES} -77.9825,34.07,-77.7403,34.1869 "
+                      "${TARGET}")
 
-DumpSql(env, 'real-time-GV.sql', 'GV')
-DumpSql(env, 'real-time-C130.sql', 'C130')
-DumpSql(env, 'real-time-N42RF.sql', 'N42RF')
-DumpSql(env, 'real-time-DLR.sql', 'DLR')
+def RenderNetcdf(env, ncfile, bounds):
+    ncpath = dfcache.findFile(ncfile)
+    if not ncpath:
+        print("*** Data not found: %s, test targets not created. ***" % (ncfile))
+        return []
+    ncfile = os.path.basename(ncfile)
+    (base, ext) = os.path.splitext(ncfile)
+    if ext != ".nc":
+        base = ncfile
+    base = "kml/" + base
+    kmls = [base + "-timestep.kml", base + "-headingstep.kml"]
+    kmls = env.Command(kmls, [actrackx, ncpath], [
+            Mkdir("kml"),
+            "${SOURCES[0].abspath} ${ACTRACKOPTS} ${SOURCES[1]} %s.kml" % (base)])
+    png = env.Command(base + '.png', kmls, 
+                      "./renderkml.py ${SOURCES} %s ${TARGET}" % (bounds))
+    return kmls + png
 
+kmldir += RenderNetcdf(env, 'HIPPO-2rf06.nc', "172.236,-66.0481,187.508,-43.4905")
+kmldir += RenderNetcdf(env, 'HIPPO-5rf13.nc', "-150.438,60.1847,-145.201,87.0433")
+
+kmldir += RenderNetcdf(env, 'WINTERrf01.nc', "-76.7107,37.0417,-71.1004,41.42")
+kmldir += RenderNetcdf(env, 'WINTERrf02.nc', "-85.2695,37.0526,-76.2321,40.2853")
+kmldir += RenderNetcdf(env, 'WINTERrf03.nc', "-76.4838,37.0583,-67.9553,42.3435")
+
+# Generate all the .kml files as part of the test target, since they are
+# quick.  The rendering (meaning the generation of all the .png files) is
+# only done if explicitly requested, such as with the 'render' alias.
+
+allkml = [kml for kml in kmldir if re.search('\.kml$', str(kml))]
+env.Alias('test', allkml)
+
+# Render a web page with all the WINTER tracks together.
+allwinter = [kml for kml in kmldir if re.search('WINTER.*\.kml$', str(kml))]
+kmldir += env.Alias('winter', env.Command('kml/WINTER.png', allwinter, 
+                                       "./renderkml.py ${SOURCES} -86,30,-72,45 "
+                                       "${TARGET}"))
+
+if kmldir:
+    env.Alias('render', kmldir)
+
+# The 'expected' directory is a snapshot of all the known good and expected
+# output files, so we can generate test targets which compare all of them.
+for kml in allkml:
+    kmlname = os.path.basename(str(kml))
+    env.Alias('test', env.Diff('diff-'+kmlname, ['expected/'+kmlname, kml]))
+
+# Generate html page for comparing plots.
+page = env.ImageComparisonPage()
+for png in [png for png in kmldir if re.search('\.png', str(png))]:
+    pngname = os.path.basename(str(png))
+    page.addComparison("expected/"+pngname, str(png))
+
+html = page.build(env, "tracks.html")
+env.Alias('render', html)
+
+# Convenience targets in case anyone ever wants to download and test
+# against a current real-time database.
+env.DumpAircraftSQL('sql/real-time-GV.sql', 'GV')
+env.DumpAircraftSQL('sql/real-time-C130.sql', 'C130')
+env.DumpAircraftSQL('sql/real-time-N42RF.sql', 'N42RF')
+env.DumpAircraftSQL('sql/real-time-DLR.sql', 'DLR')
+
+env.SetHelp()

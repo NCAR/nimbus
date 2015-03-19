@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include "AircraftTrack.hh"
+#include "TrackPath.hh"
 #include "ProjectInfo.hh"
 #include "Config.hh"
 
@@ -46,7 +47,7 @@ public:
   WriteGoogleEarthKML(const std::string& file);
 
   void
-  renamefile(string file, string outFile);
+  WriteCurrentPositionKML(const std::string& outfile);
 
   /**
    * Return false if this file needs to be updated because there are track
@@ -65,6 +66,8 @@ public:
   bool
   appendStatus(std::ostream& out, const std::string& file, int lag = -1);
 
+private:
+
   /**
    * Producing kmz files may not by useful for mission coordinator.  kmz is
    * uncompressed server side and sent to client, so there is no bandwidth
@@ -75,6 +78,9 @@ public:
   compressKML(const std::string& file);
 
   void
+  renamefile(string file, string outFile);
+
+  void
   WriteWindBarbsKML_Folder(std::ofstream& googleEarth);
 
   void
@@ -82,9 +88,6 @@ public:
 
   void
   WriteLandmarksKML_Folder(std::ofstream& googleEarth);
-
-  void
-  WriteCurrentPositionKML(const std::string& outfile);
 
   void
   WriteSpecialInclude(std::ofstream& googleEarth);
@@ -99,15 +102,22 @@ public:
   midBubbleCDATA(int i);
 
   size_t
-  writeCoordinates(std::ostream& out, size_t& i, 
-		   boost::posix_time::ptime& end_ts);
+  writeCoordinates(std::ostream& out, TrackPath& path);
 
-  /// Don't compress files for netCDF post-processing.
-  bool postProcessMode;
+  size_t
+  writeCoordinates(std::ostream& out, size_t i, 
+		   boost::posix_time::ptime end_ts);
+
+  void
+  generatePaths();
 
 private:
 
   AircraftTrack* _track;
+  TrackPath timestampsPath;
+  TrackPath windbarbsPath;
+  TrackPath coordsPath;
+  TrackPath lasthourPath;
   Config cfg;
 
 };

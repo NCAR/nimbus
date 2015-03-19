@@ -377,7 +377,9 @@ buildDataQueryString(AircraftTrack& track)
   }
   query << " from raf_lrt where ";
 
-  if (variable(TAS))
+  // TAS cutoff deprecated in favor of loading the whole track and
+  // letting the renderer clip as necessary.
+  if (false && variable(TAS))
   {
     query << variable(TAS)->name << " > " << cfg.TAS_CutOff << " AND ";
   }
@@ -572,5 +574,43 @@ fillAircraftTrack(AircraftTrack& track)
   fillProjectInfo(track.projInfo);
 
   return changed || ntuples > 0;
+}
+
+
+
+void
+acDatabase::
+updateTrack(AircraftTrack& track)
+{
+  std::ostringstream msg;
+  ptime now = second_clock::universal_time();
+  if (cfg.verbose)
+  {
+    cerr << now << ": updating track from database " 
+	 << cfg.database_host << "..." << endl;
+  }
+  if (openDatabase())
+  {
+    bool rewrite = fillAircraftTrack(track) && track.npoints() > 0;
+    closeDatabase();
+    if (rewrite)
+    {
+      msg << "Track updated to " << track.npoints() 
+	  << " at " << now;
+      track.setStatus(AircraftTrack::UPDATED, msg.str());
+    }
+    else
+    {
+      msg << "Track still at " << track.npoints() << " points as of "
+	  << now;
+      track.setStatus(AircraftTrack::NOCHANGE, msg.str());
+    }
+  }
+  else
+  {
+    msg << "Database connection failed: "
+	<< cfg.database_host;
+    track.setStatus(AircraftTrack::ERROR, msg.str());
+  }
 }
 

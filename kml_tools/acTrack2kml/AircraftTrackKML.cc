@@ -1,5 +1,6 @@
 
 #include "AircraftTrackKML.hh"
+#include "TrackPath.hh"
 
 #include <sstream>
 #include <iostream>
@@ -18,7 +19,6 @@ using namespace boost::posix_time;
 
 AircraftTrackKML::
 AircraftTrackKML() :
-  postProcessMode(false),
   _track(0)
 {
 }
@@ -32,6 +32,9 @@ WriteCurrentPositionKML(const std::string& finalfile)
   ofstream googleEarth;
   AircraftTrack& track = *_track;
   ProjectInfo& projInfo = track.projInfo;
+
+  if (track.npoints() == 0)
+    return;
 
   string file = finalfile + ".tmp";
   googleEarth.open(file.c_str());
@@ -118,20 +121,6 @@ WriteLandmarksKML_Folder(ofstream& googleEarth)
 }
 
 
-/**
- * Given timestamp @current, compute the next timestamp following it which
- * falls on an even multiple of @p seconds.
- **/
-ptime
-nextTimestamp(ptime current, int mod_seconds)
-{
-  ptime basetime = ptime(current.date());
-  int seconds = current.time_of_day().total_seconds();
-  seconds = (seconds / mod_seconds + 1) * mod_seconds;
-  return basetime + boost::posix_time::seconds(seconds);
-}
-
-
 /* -------------------------------------------------------------------- */
 void
 AircraftTrackKML::
@@ -151,32 +140,31 @@ WriteTimeStampsKML_Folder(ofstream& googleEarth)
   //
   // Time format: 2014-01-19T00:27:38Z
   //
-  ptime next_ts = track.date[0];
-  for (size_t i = 0; i < track.date.size(); i++)
-  {
-    if ( (i == 0) || (track.date[i] >= next_ts) || (i == track.date.size()-1) )
-    {
-      next_ts = nextTimestamp(track.date[i], cfg.ts_Freq*60);
-      struct tm tm = to_tm(track.date[i]);
-      char label[64];
-      strftime(label, sizeof(label), "%H:%M", &tm);
+  TrackPath& path(timestampsPath);
 
-      googleEarth
-        << "  <Placemark>\n"
-        << "   <name>" << label << " " << projInfo.platform << "</name>\n"
-	<< "   <description>" << midBubbleCDATA(i) << "</description>\n"
-        << "   <TimeStamp>\n"
-        << "    <when>" << track.formatTimestamp(track.date[i]) << "</when>\n"
-        << "   </TimeStamp>\n"
-        << "   <styleUrl>#PM1</styleUrl>\n"
-        << "   <Point>\n"
-	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
-        << "    <coordinates>"
-	<< Coordinates(track, i)
-	<< "</coordinates>\n"
-        << "   </Point>\n"
-        << "  </Placemark>\n";
-    }
+  for (size_t ip = 0; ip < path.npoints(); ip++)
+  {
+    int i = path.path[ip];
+    boost::posix_time::ptime date = track.date[i];
+    struct tm tm = to_tm(date);
+    char label[64];
+    strftime(label, sizeof(label), "%H:%M", &tm);
+
+    googleEarth
+      << "  <Placemark>\n"
+      << "   <name>" << label << " " << projInfo.platform << "</name>\n"
+      << "   <description>" << midBubbleCDATA(i) << "</description>\n"
+      << "   <TimeStamp>\n"
+      << "    <when>" << track.formatTimestamp(date) << "</when>\n"
+      << "   </TimeStamp>\n"
+      << "   <styleUrl>#PM1</styleUrl>\n"
+      << "   <Point>\n"
+      << "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
+      << "    <coordinates>"
+      << Coordinates(track, i)
+      << "</coordinates>\n"
+      << "   </Point>\n"
+      << "  </Placemark>\n";
   }
 
   googleEarth << " </Folder>\n";
@@ -196,45 +184,43 @@ WriteWindBarbsKML_Folder(ofstream& googleEarth)
     << " <Folder>\n"
     << "  <name>Wind Barbs</name>\n";
 
-  ptime next_ts = track.date[0];
-  for (size_t i = 0; i < track.date.size(); i++)
+  TrackPath& path(windbarbsPath);
+
+  for (size_t ip = 0; ip < path.npoints(); ip++)
   {
-    if ( (i == 0) || (track.date[i] >= next_ts) || (i == track.date.size()-1) )
-    {
-      next_ts = nextTimestamp(track.date[i], cfg.barb_Freq*60);
-      int iws = track.barbSpeed(track.ws[i]);	// make sure to pass in knots.
-      int iwd = (int)track.wd[i];
-      char url[8192];
+    int i = path.path[ip];
+    int iws = track.barbSpeed(track.ws[i]);	// make sure to pass in knots.
+    int iwd = (int)track.wd[i];
+    char url[8192];
 
-      if (iws < 0) iws = 0;
-      if (iws > 200) iws = 200;	// we only have barbs to 200 Knots.
+    if (iws < 0) iws = 0;
+    if (iws > 200) iws = 200;	// we only have barbs to 200 Knots.
 
-      // Force wind direction into 0-360.
-      normalizeAngles(&iwd, &iwd+1, 0);
+    // Force wind direction into 0-360.
+    heading_degrees<int>::normalize(&iwd, &iwd+1);
 
-      sprintf(url, "<href>%s/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n",
-	      cfg.flightDataURL.c_str(), iws, iws, iwd);
+    sprintf(url, "<href>%s/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n",
+	    cfg.flightDataURL.c_str(), iws, iws, iwd);
 
-      struct tm tm = to_tm(track.date[i]);
-      char label[64];
-      strftime(label, sizeof(label), "%H:%M", &tm);
+    struct tm tm = to_tm(track.date[i]);
+    char label[64];
+    strftime(label, sizeof(label), "%H:%M", &tm);
 
-      googleEarth
-        << "  <Placemark>\n"
-        << "   <name>" << label << " " << projInfo.platform << "</name>\n"
-	<< "   <description>" << midBubbleCDATA(i) << "</description>\n"
-        << "   <Style>\n"
-        << "    <IconStyle>\n"
-        << "     <scale>3</scale>\n"
-        << "     <Icon>" << url << "</Icon>\n"
-        << "    </IconStyle>\n"
-        << "   </Style>\n"
-        << "   <Point>\n"
-	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
-        << "    <coordinates>" << Coordinates(track, i) << "</coordinates>\n"
-        << "   </Point>\n"
-        << "  </Placemark>\n";
-    }
+    googleEarth
+      << "  <Placemark>\n"
+      << "   <name>" << label << " " << projInfo.platform << "</name>\n"
+      << "   <description>" << midBubbleCDATA(i) << "</description>\n"
+      << "   <Style>\n"
+      << "    <IconStyle>\n"
+      << "     <scale>3</scale>\n"
+      << "     <Icon>" << url << "</Icon>\n"
+      << "    </IconStyle>\n"
+      << "   </Style>\n"
+      << "   <Point>\n"
+      << "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
+      << "    <coordinates>" << Coordinates(track, i) << "</coordinates>\n"
+      << "   </Point>\n"
+      << "  </Placemark>\n";
   }
 
   googleEarth << " </Folder>\n";
@@ -274,39 +260,106 @@ compressKML(const std::string& file)
 }
 
 
-size_t
+void
 AircraftTrackKML::
-writeCoordinates(std::ostream& out, size_t& i, ptime& end_ts)
+generatePaths()
 {
   AircraftTrack& track = *_track;
-  size_t ilast = i;
-  ptime next_ts = track.date[i];
-  // minpoints is the minimum number of points to include in this segment.
-  // Anything less than 2 risks an infinite loop, because it's possible a
-  // segment will have only one point before reaching the end time, in
-  // which case ilast will be returned with the same value as was passed in
-  // i.
-  int npoints = 2;
 
-  for ( ; (i < (size_t)track.npoints()) &&
-	  (track.date[i] <= end_ts || npoints > 0);
-	++i)
+  // The "label" paths are basic time intervals and do not need to be
+  // clipped, except by airspeed, otherwise labels will end up on top of
+  // each other.  Just add the latest point to each if there are no points
+  // in the clip window.
+  windbarbsPath.clipTAS(cfg.TAS_CutOff);
+  windbarbsPath.generateByTimeStep(cfg.barb_Freq*60);
+  if (cfg.verbose > 1)
   {
-    if (track.date[i] < next_ts)
-      continue;
-    next_ts = nextTimestamp(track.date[i], cfg.TimeStep);
-    out << Coordinates(track, i) << "\n";
-    ilast = i;
-    --npoints;
+    cerr << "After clipping TAS at " << cfg.TAS_CutOff << ", windbarbs path: \n"
+	 << windbarbsPath.getStats() << "\n"
+	 << "clipping begin: " << windbarbsPath.begin << "; "
+	 << "clipping end: " << windbarbsPath.end << "\n";
+  }
+  timestampsPath.clipTAS(cfg.TAS_CutOff);
+  timestampsPath.generateByTimeStep(cfg.ts_Freq*60);
+
+  // If no points yet because of the clipping, then just clear the clipping
+  // and add the latest point to the path.
+  if (windbarbsPath.npoints() == 0)
+  {
+    windbarbsPath.setClipping();
+    windbarbsPath.addPoint(track.npoints() - 1);
+  }
+  if (timestampsPath.npoints() == 0)
+  {
+    timestampsPath.setClipping();
+    timestampsPath.addPoint(track.npoints() - 1);
   }
 
-  // Always write the last point in the segment, unless already written.
-  if (ilast != i - 1)
+  // The first part of the path, up to the last hour.  It might be empty if
+  // the track is shorter than an hour.
+  ptime hourbreak = last(track.date) - hours(1);
+
+  // Specify the path generation settings.  First the defaults, and then
+  // the specifier may override them.
+  coordsPath.setTimeStep(cfg.TimeStep);
+  coordsPath.setHeadingStep(cfg.HeadingStep);
+  coordsPath.setSpecifier(cfg.path_method);
+
+  lasthourPath.setTimeStep(cfg.TimeStep);
+  lasthourPath.setHeadingStep(cfg.HeadingStep);
+  lasthourPath.setSpecifier(cfg.path_method);
+
+  if (cfg.showstats)
   {
-    out << Coordinates(track, i-1) << "\n";
-    ilast = i - 1;
+    // Before clipping the main path for time, report the stats for
+    // a whole path.
+    coordsPath.generate();
+    std::cout << "KML coordinates path stats: " 
+	      << coordsPath.getStats() << "\n";
   }
-  return ilast;
+  coordsPath.clipTimes(track.date[0], hourbreak);
+  coordsPath.generate();
+
+  // The last hour of the track, beginning where the first path left off.
+  lasthourPath.clipTimes(track.date[coordsPath.lastIndex()], last(track.date));
+  lasthourPath.generate();
+
+  // Lastly, merge the wind barb and timestamp paths into the track path,
+  // so they will always appear as points on the line.
+  lasthourPath.mergePath(windbarbsPath);
+  lasthourPath.mergePath(timestampsPath);
+  coordsPath.mergePath(windbarbsPath);
+  coordsPath.mergePath(timestampsPath);
+}
+
+
+size_t
+AircraftTrackKML::
+writeCoordinates(std::ostream& out, size_t i, boost::posix_time::ptime end_ts)
+{
+  AircraftTrack& track = *_track;
+  TrackPath path(track);
+ 
+  // Set the clipping window according to the time region being rendered.
+  path.clipTimes(track.date[i], end_ts);
+
+  path.setTimeStep(cfg.TimeStep);
+  path.setHeadingStep(cfg.HeadingStep);
+  path.setSpecifier(cfg.path_method);
+  path.generate();
+  return writeCoordinates(out, path);
+}  
+
+
+size_t
+AircraftTrackKML::
+writeCoordinates(std::ostream& out, TrackPath& path)
+{
+  for (size_t i = 0; i < path.npoints(); ++i)
+  {
+    out << Coordinates(*_track, path.path[i]) << "\n";
+  }
+  return path.lastIndex();
 }
 
 
@@ -321,10 +374,11 @@ WriteGoogleEarthKML(const std::string& finalfile)
   {
     return;
   }
+  generatePaths();
 
   if (cfg.verbose)
   {
-    cerr << "WriteGoogleEarthKML(" << finalfile << ", projectInfo);\n";
+    cerr << "WriteGoogleEarthKML(" << finalfile << ");\n";
   }
   ofstream googleEarth;
 
@@ -336,98 +390,84 @@ WriteGoogleEarthKML(const std::string& finalfile)
     return;
   }
 
+  // By default the last hour is red and previous is yellow.
+  string color_latest = "ff0000aa";
+  string color_oldest = "ff00ffff";
+
+  if (!cfg.color.empty())
+  {
+    color_latest = cfg.color;
+    color_oldest = cfg.color;
+  }
+
   googleEarth
-	<< "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-	<< "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
-	<< "<Document>\n"
-	<< " <name>" << projInfo.projectName << " " << projInfo.flightNumber << "</name>\n"
-	<< " <Style id=\"PM1\">\n"
-	<< "  <IconStyle>\n"
-	<< "   <scale>0.5</scale>\n"
-	<< "   <Icon>\n"
-	<< "    <href>" << cfg.flightDataURL << "/display/red.png</href>\n"
-	<< "   </Icon>\n"
-	<< "  </IconStyle>\n"
-	<< " </Style>\n"
-	<< " <Style id=\"PM2\">\n"
-	<< "  <IconStyle>\n"
-	<< "   <scale>0.5</scale>\n"
-	<< "   <Icon>\n"
-	<< "    <href>" << cfg.flightDataURL << "/display/white.png</href>\n"
-	<< "   </Icon>\n"
-	<< "  </IconStyle>\n"
-	<< " </Style>\n"
-	<< " <Style id=\"BOUND\">\n"
-	<< "  <LineStyle>\n"
-	<< "   <color>ffff0000</color>\n"
-	<< "   <width>1</width>\n"
-	<< "  </LineStyle>\n"
-	<< " </Style>\n"
+    << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
+    << "<Document>\n"
+    << " <name>" << projInfo.projectName << " " << projInfo.flightNumber << "</name>\n"
+    << " <Style id=\"PM1\">\n"
+    << "  <IconStyle>\n"
+    << "   <scale>0.5</scale>\n"
+    << "   <Icon>\n"
+    << "    <href>" << cfg.flightDataURL << "/display/red.png</href>\n"
+    << "   </Icon>\n"
+    << "  </IconStyle>\n"
+    << " </Style>\n"
+    << " <Style id=\"PM2\">\n"
+    << "  <IconStyle>\n"
+    << "   <scale>0.5</scale>\n"
+    << "   <Icon>\n"
+    << "    <href>" << cfg.flightDataURL << "/display/white.png</href>\n"
+    << "   </Icon>\n"
+    << "  </IconStyle>\n"
+    << " </Style>\n"
+    << " <Style id=\"BOUND\">\n"
+    << "  <LineStyle>\n"
+    << "   <color>ffff0000</color>\n"
+    << "   <width>1</width>\n"
+    << "  </LineStyle>\n"
+    << " </Style>\n"
 
-	<< " <Style id=\"TRACK_RED\">\n"
-	<< "  <LineStyle>\n"
-	<< "   <color>ff0000aa</color>\n"
-	<< "   <width>2</width>\n"
-	<< "  </LineStyle>\n"
-	<< "  <PolyStyle>\n"
-	<< "   <color>7f00ff00</color>\n"
-	<< "  </PolyStyle>\n"
-	<< " </Style>\n"
+    << " <Style id=\"TRACK_LATEST\">\n"
+    << "  <LineStyle>\n"
+    << "   <color>" << color_latest << "</color>\n"
+    << "   <width>2</width>\n"
+    << "  </LineStyle>\n"
+    << " </Style>\n"
 
-	<< " <Style id=\"TRACK_YELLOW\">\n"
-	<< "  <LineStyle>\n"
-	<< "   <color>ff00ffff</color>\n"
-	<< "   <width>2</width>\n"
-	<< "  </LineStyle>\n"
-	<< "  <PolyStyle>\n"
-	<< "   <color>7f00ff00</color>\n"
-	<< "  </PolyStyle>\n"
-	<< " </Style>\n"
+    << " <Style id=\"TRACK_OLDEST\">\n"
+    << "  <LineStyle>\n"
+    << "   <color>" << color_oldest << "</color>\n"
+    << "   <width>2</width>\n"
+    << "  </LineStyle>\n"
+    << " </Style>\n";
 
-	<< "<LookAt>\n"
-	<< "  <range>1500000</range>\n"
-	<< "  <longitude>" << last(track.lon) << "</longitude>\n"
-	<< "  <latitude>" << last(track.lat) << "</latitude>\n"
-	<< "</LookAt>\n"
+  googleEarth
+    << "<LookAt>\n"
+    << "  <range>1500000</range>\n"
+    << "  <longitude>" << last(track.lon) << "</longitude>\n"
+    << "  <latitude>" << last(track.lat) << "</latitude>\n"
+    << "</LookAt>\n"
 
-	<< " <Folder>\n"
-	<< "  <name>" << projInfo.flightNumber << "</name>\n"
-	<< "  <open>1</open>\n"
+    << " <Folder>\n"
+    << "  <name>" << projInfo.flightNumber << "</name>\n"
+    << "  <open>1</open>\n";
 
-/* Greg Stossmeister asked to have this removed.  Only useful to GoogleEarth.
- * Perhaps move to the wrapper KML RealTimeGV.kml if still desirable.
-
-	<< "  <ScreenOverlay>\n"
-	<< "    <name>Last Camera Image</name>\n"
-	<< "    <Icon>\n"
-	<< "      <href>http://www.eol.ucar.edu/flight_data/" << platform << "/images/latest_camera.jpg</href>\n"
-	<< "    </Icon>\n"
-	<< "    <overlayXY x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
-	<< "    <screenXY x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
-	<< "    <rotationXY x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
-	<< "    <size x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
-	<< "  </ScreenOverlay>\n";
-*/;
-
-  // All the points but the last hour of the track are added in yellow.
-  ptime hourbreak = last(track.date) - hours(1);
-  size_t i = 0;
-  size_t ilast = 0;
-
-  if (track.date[0] < hourbreak)
+  // LineString elements must have more than one coordinate.
+  if (coordsPath.npoints() > 1)
   {
     googleEarth
 	<< "  <Placemark>\n"
-	<< "   <name>Track, yellow</name>\n"
+	<< "   <name>Track, older</name>\n"
 	<< "   <visibility>1</visibility>\n"
 	<< "   <open>1</open>\n"
-	<< "   <styleUrl>#TRACK_YELLOW</styleUrl>\n"
+	<< "   <styleUrl>#TRACK_OLDEST</styleUrl>\n"
 	<< "   <LineString>\n"
 	<< "    <extrude>1</extrude>\n"
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
-    ilast = writeCoordinates(googleEarth, i, hourbreak);
+    writeCoordinates(googleEarth, coordsPath);
 
     googleEarth
 	<< "    </coordinates>\n"
@@ -440,16 +480,15 @@ WriteGoogleEarthKML(const std::string& finalfile)
 	<< "   <name>Track, last hour</name>\n"
 	<< "   <visibility>1</visibility>\n"
 	<< "   <open>1</open>\n"
-	<< "   <styleUrl>#TRACK_RED</styleUrl>\n"
+	<< "   <styleUrl>#TRACK_LATEST</styleUrl>\n"
 	<< "   <LineString>\n"
 	<< "    <extrude>1</extrude>\n"
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
-  // Output last hour of track, in red, starting from the last point
-  // output in the yellow segment.
-  i = ilast;
-  ilast = writeCoordinates(googleEarth, i, last(track.date));
+  // Output last hour of track, with style TRACK_LATEST, starting from the
+  // last point output in the previous segment.
+  writeCoordinates(googleEarth, lasthourPath);
 
   googleEarth
 	<< "    </coordinates>\n"
@@ -488,7 +527,7 @@ WriteGoogleEarthKML(const std::string& finalfile)
 
   googleEarth.close();
   renamefile(file, finalfile);
-  if (! postProcessMode)
+  if (cfg.compressKML)
   {
     compressKML(finalfile);
   }
@@ -502,6 +541,12 @@ WriteGoogleEarthAnimatedKML(const std::string& finalfile)
   AircraftTrack& track = *_track;
   ProjectInfo& projInfo = track.projInfo;
   ofstream googleEarth;
+
+  if (track.npoints() == 0)
+  {
+    return;
+  }
+  generatePaths();
 
   string file = finalfile + ".tmp";
   if (cfg.verbose > 1)
@@ -594,10 +639,16 @@ WriteGoogleEarthAnimatedKML(const std::string& finalfile)
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
-    i = ilast;
     ptime start = track.date[i];
     ptime break_ts = start + boost::posix_time::seconds(spanseconds);
+
+    // We have to be careful about empty or single-point paths here,
+    // because it's possible a segment will have only one point, in which
+    // case ilast will be returned with the same value as was passed in i.
+    // So always advance the returned index.
+
     ilast = writeCoordinates(googleEarth, i, break_ts);
+    i = ilast+1;
     ptime end = track.date[ilast];
 
     googleEarth
@@ -651,7 +702,7 @@ WriteGoogleEarthAnimatedKML(const std::string& finalfile)
 
   googleEarth.close();
   renamefile(file, finalfile);
-  if (! postProcessMode)
+  if (cfg.compressKML)
   {
     compressKML(finalfile);
   }
@@ -755,15 +806,20 @@ midBubbleCDATA(int i)
   e	<< std::fixed << "<![CDATA[" << " Lat : " << track.lat[i]
 	<< " deg_N<br>Lon : " << track.lon[i] << " deg_E<br>";
   e.precision(0);
-  if (track.alt[i] != track.missing_value) e << "Alt : " << track.alt[i] << " feet<br>";
+  if (track.alt[i] != track.missing_value)
+    e << "Alt : " << track.alt[i] << " feet<br>";
   e.precision(2);
-  if (track.at[i] != track.missing_value) e << "Temp : " << track.at[i] << " C<br>";
-  if (track.dp[i] != track.missing_value) e << "DP : " << track.dp[i] << " C<br>";
-  if (track.ws[i] != track.missing_value) e << "WS : " << track.ws[i] << " knots<br>";
-  if (track.wd[i] != track.missing_value) e << "WD : " << track.wd[i] << " degree_T<br>";
-  if (track.wi[i] != track.missing_value) e << "WI : " << track.wi[i] << " m/s";
+  if (track.at[i] != track.missing_value) 
+    e << "Temp : " << track.at[i] << " C<br>";
+  if (track.dp[i] != track.missing_value) 
+    e << "DP : " << track.dp[i] << " C<br>";
+  if (track.ws[i] != track.missing_value) 
+    e << "WS : " << track.ws[i] << " knots<br>";
+  if (track.wd[i] != track.missing_value) 
+    e << "WD : " << track.wd[i] << " degree_T<br>";
+  if (track.wi[i] != track.missing_value) 
+    e << "WI : " << track.wi[i] << " m/s";
   e << "]]>";
-
 
   return e.str();
 }
@@ -786,12 +842,20 @@ setTrack(AircraftTrack* track_in)
   // {
   //   cfg.TimeStep = track.projInfo.groundFeedDataRate;
   // }
+  track.computeLongitudeOffset();
   if (cfg.verbose > 1)
   {
     cerr << "KML.TimeStep = " << cfg.TimeStep << endl;
+  }
+  if (cfg.verbose && _track->offset_longitude)
+  {
     cerr << "KML: Normalizing longitude to 0-360." << endl;
   }
-  track.normalizeLongitude(-180.0);
+
+  coordsPath.resetTrack(_track);
+  lasthourPath.resetTrack(_track);
+  timestampsPath.resetTrack(_track);
+  windbarbsPath.resetTrack(_track);
 }
 
 
@@ -886,7 +950,10 @@ appendStatus(std::ostream& out, const std::string& file, int lag)
 std::ostream&
 AircraftTrackKML::Coordinates::asKML(std::ostream& out) const
 {
-  out << track.lon[i] << "," << track.lat[i] << "," << (int)track.alt[i];
+  // KML spec requires no spaces between tuples.
+  out << track.offsetLongitude(i) << "," 
+      << track.lat[i] << "," 
+      << (int)track.alt[i];
   return out;
 }
 

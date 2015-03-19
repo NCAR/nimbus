@@ -164,7 +164,9 @@ fillAircraftTrack(AircraftTrack& track)
   track.reserve(n);
   for (size_t i = 0; i < n; ++i)
   {
-    for (; i < n && tas_vals->as_float(i) < cfg.TAS_CutOff; ++i)
+    // TAS cutoff deprecated in favor of loading the whole track and
+    // letting the renderer clip as necessary.
+    for (; false && i < n && tas_vals->as_float(i) < cfg.TAS_CutOff; ++i)
       ;
 
     for (; i < n &&
@@ -183,6 +185,7 @@ fillAircraftTrack(AircraftTrack& track)
     if (value != AircraftTrack::missing_value)
       value *= cfg.convertToFeet;
     track.alt.push_back( value );
+    track.tas.push_back ( tas_vals->as_float(i) );
     track.at.push_back( atx_vals->as_float(i) );
     track.dp.push_back( dp_vals->as_float(i) );
     value = ws_vals->as_float(i);
@@ -192,6 +195,30 @@ fillAircraftTrack(AircraftTrack& track)
     track.wi.push_back( wi_vals->as_float(i) );
     track.wd.push_back( wd_vals->as_float(i) );
     track.thdg.push_back( thdg_vals->as_float(i) );
+  }
+}
+
+
+void
+ncTrack::
+updateTrack(AircraftTrack& track, const std::string& ncpath)
+{
+  std::ostringstream msg;
+  if (cfg.verbose)
+  {
+    cerr << "updating track from netcdf: " << ncpath << endl;
+  }
+  if (open(ncpath))
+  {
+    fillAircraftTrack(track);
+    msg << "Loaded track of " << track.npoints() << " points "
+	<< " from " << ncpath;
+    track.setStatus(AircraftTrack::UPDATED, msg.str());
+  }
+  else
+  {
+    msg << "Error opening " << ncpath;
+    track.setStatus(AircraftTrack::ERROR, msg.str());
   }
 }
 

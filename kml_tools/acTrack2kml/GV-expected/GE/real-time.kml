@@ -24,23 +24,17 @@
    <width>1</width>
   </LineStyle>
  </Style>
- <Style id="TRACK_RED">
+ <Style id="TRACK_LATEST">
   <LineStyle>
    <color>ff0000aa</color>
    <width>2</width>
   </LineStyle>
-  <PolyStyle>
-   <color>7f00ff00</color>
-  </PolyStyle>
  </Style>
- <Style id="TRACK_YELLOW">
+ <Style id="TRACK_OLDEST">
   <LineStyle>
    <color>ff00ffff</color>
    <width>2</width>
   </LineStyle>
-  <PolyStyle>
-   <color>7f00ff00</color>
-  </PolyStyle>
  </Style>
 <LookAt>
   <range>1500000</range>
@@ -51,10 +45,10 @@
   <name>29Oct14</name>
   <open>1</open>
   <Placemark>
-   <name>Track, yellow</name>
+   <name>Track, older</name>
    <visibility>1</visibility>
    <open>1</open>
-   <styleUrl>#TRACK_YELLOW</styleUrl>
+   <styleUrl>#TRACK_OLDEST</styleUrl>
    <LineString>
     <extrude>1</extrude>
     <altitudeMode>absolute</altitudeMode>
@@ -142,7 +136,7 @@
    <name>Track, last hour</name>
    <visibility>1</visibility>
    <open>1</open>
-   <styleUrl>#TRACK_RED</styleUrl>
+   <styleUrl>#TRACK_LATEST</styleUrl>
    <LineString>
     <extrude>1</extrude>
     <altitudeMode>absolute</altitudeMode>

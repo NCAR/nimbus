@@ -15,10 +15,14 @@ OSM()
 
 std::string
 OSM::
-formatPositionJSON(AircraftTrack& track)
+formatPositionJSON(AircraftTrack& track, int i)
 {
-  float thdg;
-  if (!track.getHeading(track.npoints()-1, thdg))
+  if (i == -1)
+  {
+    i = track.npoints()-1;
+  }
+  double thdg;
+  if (!track.getHeading(i, thdg))
   {
     if (_config.verbose)
     {
@@ -29,19 +33,16 @@ formatPositionJSON(AircraftTrack& track)
 
   // Grab copies of lat and lon so we can normalize them as needed for the
   // position file.
-  float lat = last(track.lat);
-  float lon = last(track.lon);
-
-  normalizeAngles(&lon, &lon+1, -180);
-  normalizeAngles(&lat, &lat+1, -90);
-  normalizeAngles(&thdg, &thdg+1, 0.0);
+  double lat = track.lat[i];
+  longitude_double lon = track.lon[i];
 
   char output[1024] = "";
   sprintf(output,
 	  "{\"timestamp\":\"%s\",\"alt\":\"%.1f\",\"lat\":\"%f\","
-	  "\"head\":\"%.1f\",\"declination\":\"0\",\"lon\":\"%f\"}",
-	  track.formatTimestamp(track.lastTime(), "%Y-%m-%d %H:%M:%S").c_str(),
-	  last(track.alt), lat, thdg, lon);
+	  "\"head\":\"%s\",\"declination\":\"0\",\"lon\":\"%f\"}",
+	  track.formatTimestamp(track.date[i], "%Y-%m-%d %H:%M:%S").c_str(),
+	  track.alt[i], lat, heading_double(thdg).format("%.1f").c_str(), 
+	  lon.value());
   return output;
 }
 
