@@ -28,14 +28,15 @@ int PRM_DAC_Write(BYTE Channel, float volts)
 	
 	//find the channel number to append to the MSB, default is channel 0
 	switch (Channel) 
-	{
-		case 1 : mask = 0x4F; break;
-		case 2 : mask = 0x8F; break;
-		case 3 : mask = 0xCF; break;
-		default: mask = 0x0F; break; 
+	{	
+		case 0 : mask = 0x00; break;
+		case 1 : mask = 0x40; break;
+		case 2 : mask = 0x80; break;
+		case 3 : mask = 0xC0; break;
+		//default: mask = 0x0F; break; 
 	}
 	
-	MSB = (write_code >> 8) & mask;
+	MSB = ((write_code >> 8) & 0x0F) | mask;
 		
 	//wait while DAC is busy. DAC busy bit is bit 4 in register 3 when read. 
 	for( iAlert=0; inb( Base + 3) & 0x10; iAlert++ ) // wait for DAC busy bit (bit 7) = 0
