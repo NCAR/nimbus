@@ -3,7 +3,6 @@
 import os
 import sys
 import re
-import difflib
 
 # This is for building in the RAF source tree.  When building standalone,
 # site_scons is checked out directly into this directory and that takes
@@ -61,6 +60,19 @@ runtest = env.TestRun('pytests', tests+module+pysrcs, "py.test ${SOURCE}")
 # Testing
 # ----------------------------------------------------------------------------
 
+# If a testing-related target does not look to be in the command-line,
+# then there's no point in continuing past here.
+
+testing = False
+for target in COMMAND_LINE_TARGETS:
+    if bool(target in ['.', 'test', 'render', 'tracks.html', 'datasync'] or
+            target.startswith('kml/')):
+        testing = True;
+            
+if not testing:
+    env.SetHelp()
+    Return()
+
 env = Environment(tools=['default', 'actrack', 'postgres_testdb', 'testing'])
 
 env['ACTRACKOPTS'] = '--path timestep'
@@ -71,40 +83,9 @@ if env.SanitizeSupported():
                                                     variant_dir='sanitized', 
                                                     duplicate=1)
 
-class DataFileCache(object):
-    """
-    Provide an API to lookup and search for test data files on the local
-    filesystem without requiring tests to know how they are stored and
-    where.  Someday eventually this can include the ability to fetch data
-    files remotely and cache them on the local filesystem.
-    """
+dfcache = env.DataFileCache()
+dfcache.setPrefix('rafdata:/scr/raf_data')
 
-    def __init__(self):
-        self.cached_paths = {}
-        self.search_dirs = []
-
-    def addSearchDirs(self, idirs):
-        self.search_dirs.extend([os.path.expandvars(d) for d in idirs])
-
-    def findFile(self, filepath):
-        path = self.cached_paths.get(filepath)
-        if not path:
-            path = self.cached_paths.get(os.path.basename(filepath))
-        if path:
-            return path
-        for dpath in self.search_dirs:
-            for root, dirs, files in os.walk(dpath):
-                path = os.path.join(root, filepath)
-                if os.path.exists(path):
-                    print("found %s" % (path))
-                    self.cached_paths[filepath] = path
-                    self.cached_paths[os.path.basename(path)] = path
-                    return path
-        return None
-
-dfcache = DataFileCache()
-dfcache.addSearchDirs(['$DATA_DIR/HIPPO', '/scr/raf_data/HIPPO',
-                       '$DATA_DIR/WINTER', '/scr/raf_data/WINTER'])
 
 # Generate KML from a netcdf file.
 def NetcdfKML(target, source, env):
@@ -126,20 +107,18 @@ def kml_emitter(source, target, env):
 
 env['BUILDERS']['NetcdfKML'] = Builder(action=NetcdfKML, emitter=kml_emitter)
 
-hippopath = dfcache.findFile('HIPPO-2rf06.nc')
+
+hippopath = dfcache.getFile('HIPPO/prod_data/HIPPO-2rf06.nc')
 if not hippopath:
     print("*** HIPPO-2rf06.nc not found, test targets not available. ***")
 else:
     ekml = 'expected/HIPPO-2rf06.kml'
     ejson = 'expected/HIPPO-2rf06.json'
-    akml = 'kml/HIPPO-2rf06-actual.kml'
-    ajson = 'kml/HIPPO-2rf06-actual.json'
+    akml = 'kml/HIPPO-2rf06.kml'
+    ajson = 'kml/HIPPO-2rf06.json'
     (akml, ajson) = env.NetcdfKML([akml, ajson], hippopath)
-    env.Alias('xdiff', 
-              env.Command("diff", [ekml, akml],
-                          "diff --side-by-side --width=170 ${SOURCES}"))
-    env.Alias('test', env.Command("diff1", [ekml, akml], "diff ${SOURCES}"))
-    env.Alias('test', env.Command("diff2", [ejson, ajson], "diff ${SOURCES}"))
+    env.Alias('test', env.Diff([ekml, akml]))
+    env.Alias('test', env.Diff([ejson, ajson]))
     env.AlwaysBuild(akml)
 
 tenv = Environment(tools=['default', 'actrack', 'testing', 'gtest_main'])
@@ -180,25 +159,6 @@ database_kml_output_builder = Builder(action=[
 env.Append(BUILDERS = {'DatabaseRealtimeKML':database_kml_builder})
 env.Append(BUILDERS = {'DatabaseOutputKML':database_kml_output_builder})
 
-
-def diff_files(target, source, env):
-    diffs = None
-    p1 = source[0].get_abspath()
-    p2 = source[1].get_abspath()
-    f1 = open(p1, "rb")
-    f2 = open(p2, "rb")
-    diff = difflib.unified_diff(f1.readlines(), f2.readlines())
-    f1.close()
-    f2.close()
-    diffs = [line for line in diff]
-    if diffs:
-        print("".join(diffs))
-        return str("Differences found between " + 
-                   str(source[0]) + " and " + str(source[1]))
-    return None
-
-diff_builder = Builder(action=[diff_files])
-env.Append(BUILDERS = {'Diff':diff_builder})
 
 gvkml = env.DatabaseRealtimeKML("GV-actual/GE/real-time.kml",
                                 "sql/real-time-GV.sql", AIRCRAFT='GV')
@@ -241,7 +201,7 @@ kmldir += env.Command('kml/WINTER-rf13-loop.png', rf13kml,
                       "${TARGET}")
 
 def RenderNetcdf(env, ncfile, bounds):
-    ncpath = dfcache.findFile(ncfile)
+    ncpath = dfcache.getFile(ncfile)
     if not ncpath:
         print("*** Data not found: %s, test targets not created. ***" % (ncfile))
         return []
@@ -258,12 +218,17 @@ def RenderNetcdf(env, ncfile, bounds):
                       "./renderkml.py ${SOURCES} %s ${TARGET}" % (bounds))
     return kmls + png
 
-kmldir += RenderNetcdf(env, 'HIPPO-2rf06.nc', "172.236,-66.0481,187.508,-43.4905")
-kmldir += RenderNetcdf(env, 'HIPPO-5rf13.nc', "-150.438,60.1847,-145.201,87.0433")
+kmldir += RenderNetcdf(env, 'HIPPO/prod_data/HIPPO-2rf06.nc',
+                       "172.236,-66.0481,187.508,-43.4905")
+kmldir += RenderNetcdf(env, 'HIPPO/prod_data/HIPPO-5rf13.nc',
+                       "-150.438,60.1847,-145.201,87.0433")
 
-kmldir += RenderNetcdf(env, 'WINTERrf01.nc', "-76.7107,37.0417,-71.1004,41.42")
-kmldir += RenderNetcdf(env, 'WINTERrf02.nc', "-85.2695,37.0526,-76.2321,40.2853")
-kmldir += RenderNetcdf(env, 'WINTERrf03.nc', "-76.4838,37.0583,-67.9553,42.3435")
+kmldir += RenderNetcdf(env, 'WINTER/WINTERrf01.nc',
+                       "-76.7107,37.0417,-71.1004,41.42")
+kmldir += RenderNetcdf(env, 'WINTER/WINTERrf02.nc',
+                       "-85.2695,37.0526,-76.2321,40.2853")
+kmldir += RenderNetcdf(env, 'WINTER/WINTERrf03.nc',
+                       "-76.4838,37.0583,-67.9553,42.3435")
 
 # Generate all the .kml files as part of the test target, since they are
 # quick.  The rendering (meaning the generation of all the .png files) is
