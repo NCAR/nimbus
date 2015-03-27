@@ -389,7 +389,33 @@ buildDataQueryString(AircraftTrack& track)
 	<< " <> " << AircraftTrack::missing_value;
   query << " AND " << variable(LON)->name << " <> " 
 	<< AircraftTrack::missing_value;
-  if (track.npoints())
+  if (track.npoints() == 0)
+  {
+    // This is the initial query to fill a track.  Limit the request to the
+    // most recent flight by time period, in case the database contains
+    // data from past flights.
+    string qdate = "SELECT max(datetime) from raf_lrt;";
+    PGresult *res = PQexec(db->_conn, qdate.c_str());
+    if (!cfg.check || cfg.verbose)
+      cerr << PQerrorMessage(db->_conn);
+    int ntuples = PQntuples(res);
+    if (ntuples > 0)
+    {
+      ptime latest = time_from_string(extractPQvalue<string>(res, 0, 0));
+      ptime cutoff = latest - hours(12);
+      query << " AND " << variable(TIME)->name << " > " 
+	    << AircraftTrack::formatTimestamp(cutoff,
+					      "'%Y-%m-%d %H:%M:%S'");
+      if (cfg.verbose)
+      {
+	cerr << "selecting only the most recent 12 hours, from "
+	     << AircraftTrack::formatTimestamp(cutoff) << " to " 
+	     << AircraftTrack::formatTimestamp(latest) << endl;
+      }
+    }
+    PQclear(res);
+  }
+  else
   {
     // 2014-01-28 23:54:15
     query << " AND " << variable(TIME)->name << " > " 
@@ -402,6 +428,15 @@ buildDataQueryString(AircraftTrack& track)
 	  << AircraftTrack::missing_value;
   }
   query << " ORDER BY " << variable(TIME)->name;
+  // This is just a failsafe to avoid requesting too many points if the
+  // other checks fail.  This is 12 hours of 1-second data, so really a
+  // database should never have more points than this in the last 12 hours.
+  // Note that if this takes effect, then it will cut off the most recent
+  // points since the rows are selected in order of datetime.  Someday this
+  // could select rows in reverse order, then set them in the track
+  // beginning with the last point and working backwards to the first
+  // point.
+  query << " LIMIT 43200";
   return query.str();
 }
 
