@@ -392,8 +392,15 @@ buildDataQueryString(AircraftTrack& track)
   if (track.npoints() == 0)
   {
     // This is the initial query to fill a track.  Limit the request to the
-    // most recent flight by time period, in case the database contains
-    // data from past flights.
+    // most recent flight by a 12-hour time period, in case the database
+    // contains data from past flights.
+    query << " AND " << variable(TIME)->name << " > "
+	  << "(SELECT MAX(datetime) - interval '12 hours' from raf_lrt)";
+    if (cfg.verbose)
+    {
+      cerr << "Selecting only the most recent 12 hours of points." << endl;
+    }
+#ifdef notdef
     string qdate = "SELECT max(datetime) from raf_lrt;";
     PGresult *res = PQexec(db->_conn, qdate.c_str());
     if (!cfg.check || cfg.verbose)
@@ -414,6 +421,7 @@ buildDataQueryString(AircraftTrack& track)
       }
     }
     PQclear(res);
+#endif
   }
   else
   {
