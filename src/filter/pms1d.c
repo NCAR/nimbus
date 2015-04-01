@@ -293,6 +293,13 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("A1DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
   }
+  else
+  if (cfg.ProjectName().compare("WINTER") == 0)
+  {
+    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_CDP);
+    setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+  }
 }
 
 /* -------------------------------------------------------------------- */
