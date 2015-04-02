@@ -508,13 +508,11 @@ mainLoop()
     track.clearStatus();
     loadTrack();
 
-    if (cfg.realtimeMode() && !track.ok())
+    while (cfg.realtimeMode() && !track.ok())
     {
-      do
-      {
-	sleep(3);
-      }
-      while (!track.ok());
+      sleep(3);
+      track.clearStatus();
+      loadTrack();
     }
 
     if (!track.ok())
