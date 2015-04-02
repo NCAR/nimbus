@@ -145,7 +145,16 @@ private:
 
   typedef std::map<std::string, Variable> dir_t;
   dir_t _directory;
+
+  /// Parameterize the maximum length of a single flight.  The database
+  /// class uses this to limit the number of points selected for a track,
+  /// to decide when to refresh the columns and variable metadata, and to
+  /// decide when an older track should be replaced by starting a new
+  /// track.  The hardcoded default for now is 12 hours.
+  int _max_flight_seconds;
+
 };
+
 
 
 #endif // _acDatabase_hh_
