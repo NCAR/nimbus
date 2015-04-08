@@ -22,7 +22,7 @@ variables:
 		Time:strptime_format = "seconds since %F %T %z" ;
 	float BT_MTP(MTPTime, sps1, MTPChan, Vector10) ;
 		BT_MTP:_FillValue = -32767.f ;
-		BT_MTP:units = "Deg_K" ;
+		BT_MTP:units = "deg_K" ;
 		BT_MTP:MTPTemplIdx = 4 ;  	// The index of the template used to generate this BT
                 BT_MTP:MTPTemplElev = 5 ;       // The index of the template elevation used
 		BT_MTP:long_name = "MTP Brightness Temperatures" ;
@@ -37,7 +37,7 @@ variables:
 		CNT_MTP:ScanAngles = 80.f, 55.f,42.f,25.f,12.f,0.f,-12.f,-25.f,-42.f,-80.f ;
 	float TEMPLBT_MTP(MTPTempl, MTPTemplElev, MTPChan, sps1, Vector10) ;
 		TEMPLBT_MTP:_FillValue = -32767.f ;
-		TEMPLBT_MTP:units = "Deg_K" ;
+		TEMPLBT_MTP:units = "deg_K" ;
 		TEMPLBT_MTP:long_name = "MTP Template Brightness Temperature" ;
 		TEMPLBT_MTP:Category = "MTP Template" ;
 		TEMPLBT_MTP:SampledRate = 0.283f ;
