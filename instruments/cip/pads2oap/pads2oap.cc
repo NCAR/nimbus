@@ -30,8 +30,11 @@ void defineProbes(OAPfile& oap)
 //  oap.AddProbe(PMS2D_P4, 100, 64, "2DP100", "_RWI");
 
 
+//  oap.AddProbe(PMS2D_C8, 25, 64, "CIP001", "_CIP");
+  oap.AddProbe(PMS2D_P8, 100, 64, "PIP001", "_PIP");
+
   // NCAR RAL - processing workshop.
-  oap.AddProbe(PMS2D_C8, 25, 64, "CIP001", "_RWI");
+//  oap.AddProbe(PMS2D_C8, 25, 64, "CIP001", "_RWI");
 
   // IDEAS-4
 //  oap.AddProbe(PMS2D_C4, 25, 64, "F2DC001", "_LWI");
