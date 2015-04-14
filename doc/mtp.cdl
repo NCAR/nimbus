@@ -5,7 +5,7 @@ dimensions:
         MTPTempl = 30 ;		/// the number of templates created for the MTP
         MTPTemplElev = 33 ;	/// the number of flight levels for templates
         MTPChan = 3 ;		/// the number of frequency channels for the MTP
-	Vector33 = 33 ;		/// for Profile Temperatures and Altitudes
+	MTPProfIdx = 33 ;	/// for Profile Temperatures and Altitudes
 	BTScanAngle = 10 ;	/// for Brightness Temperatures
 	CountScanAngle = 12 ;	/// for Raw Scans including 2 target counts
 variables:
@@ -22,10 +22,10 @@ variables:
 	float BT_MTP(MTPTime, MTPChan, BTScanAngle) ;
 		BT_MTP:_FillValue = -32767.f ;
 		BT_MTP:units = "deg_K" ;
-		BT_MTP:MTPTemplIdx = 4 ;  	// The index of the template used to generate this BT
-                BT_MTP:MTPTemplElev = 5 ;       // The index of the template elevation used
 		BT_MTP:long_name = "MTP Brightness Temperatures" ;
 		BT_MTP:Category = "MTP" ;
+	int BT_TemplIdx(MTPTime) ;    // The index of the template used to generate this BT
+	int BT_TemplElev(MTPTime) ;   // The index of the template elevation used
 	float BTScanAngle(BTScanAngle) ;
 	float CNT_MTP(MTPTime, MTPChan, CountScanAngle) ;
 		CNT_MTP:_FillValue = -32767.f ;
@@ -33,20 +33,24 @@ variables:
 		CNT_MTP:long_name = "MTP Channel Scan Counts (incl Target)" ;
 		CNT_MTP:Category = "MTP" ;
         float CountScanAngle(CountScanAngle) ;
+	float MTPTemplElev(MTPTempl, MTPTemplElev) ;
 	float TEMPLBT_MTP(MTPTempl, MTPTemplElev, MTPChan, BTScanAngle) ;
 		TEMPLBT_MTP:_FillValue = -32767.f ;
 		TEMPLBT_MTP:units = "deg_K" ;
 		TEMPLBT_MTP:long_name = "MTP Template Brightness Temperature" ;
 		TEMPLBT_MTP:Category = "MTP" ;
-	float MTPTemplElev(MTPTempl, MTPTemplElev) ;
-	float ALT_MTP(MTPTime, Vector33) ;
+        string TEMPL_ID_MTP(MTPTempl) ;  // Template identifier
+	float TEMPL_OBSTIME_MTP(MTPTempl) ;
+	float TEMPL_LAT_MTP(MTPTempl) ;
+	float TEMPL_LON_MTP(MTPTempl) ;
+	float ALT_MTP(MTPTime, MTPProfIdx) ;
 		ALT_MTP:_FillValue = -32767.f ;
 		ALT_MTP:units = "km" ;
 		ALT_MTP:long_name = "MTP ATP Altitude" ;
 		ALT_MTP:standard_name = "altitude" ;
 		ALT_MTP:actual_range = 0.f, 31.1f ;
 		ALT_MTP:Category = "MTP" ;
-	float TEMP_MTP(MTPTime, Vector33) ;
+	float TEMP_MTP(MTPTime, MTPProfIdx) ;
 		TEMP_MTP:_FillValue = -32767.f ;
 		TEMP_MTP:units = "deg_K" ;
 		TEMP_MTP:long_name = "MTP ATP Temperature" ;
@@ -58,6 +62,8 @@ variables:
 		MRI_MTP:long_name = "MTP Quality Indicator" ;
 		MRI_MTP:actual_range = 0.f, 2.f ;
 		MRI_MTP:Category = "MTP" ;
+	float MTPFREQ(MTPChan) ;
+		MTPFREQ:units = "GHz";
 	float ACCPCNTE_MTP(MTPTime) ;
 		ACCPCNTE_MTP:_FillValue = -32767.f ;
 		ACCPCNTE_MTP:units = "count" ;
@@ -365,4 +371,5 @@ data:
 
         CountScanAngle = 80.f,55.f,42.f,25.f,12.f,0.f,-12.f,-25.f,-42.f,-80.f,-32767,-32767 ;
 	BTScanAngle = 80.f, 55.f,42.f,25.f,12.f,0.f,-12.f,-25.f,-42.f,-80.f ;
+        MTPFREQ = 56.363f, 57.612f, 58.363f ;
 }
