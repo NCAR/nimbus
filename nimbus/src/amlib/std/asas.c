@@ -8,7 +8,7 @@ DESCRIPTION:
 
 NOTES:		Calculations taken from Bulletin 24 dated 1/89.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2009
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2015
 -------------------------------------------------------------------------
 */
 
@@ -260,14 +260,13 @@ void suflwc(DERTBL *varp)
   psxc	= GetSample(varp, 2);
   atx	= GetSample(varp, 3);
 
-  /* In HIPPO-3 the UHSAS flow readout would periodically saturate the A/2 to
-   * about 1.5 even though the flow was actually correct.  Hold flow to average
-   * controlled value when this happens.  Dave Rogers says average is 0.72623 with
-   * std dev of +-0.00023 sccs.  May 17 2010.
+  /* The UHSAS sample flow readout will periodically saturate the A/2 to
+   * about 1.5 even though the flow was actually correct.  Hold flow to
+   * average controlled value when this happens.  Dave Rogers 2010, confirmed
+   * Mike Reeves 2014.
    */
-//  if (cfg.ProjectName().compare("HIPPO-3") == 0) // Do it all the time, MikeReeves 5/1/2014
   if (flow > 1.0)
-    flow = 0.72623;
+    flow = 0.836;
 
   /* UHSAS flow algorithm changed to correct error.  09/29/2014, M Reeves.
    * Previously flow was interpreted as a mass flow referenced to standard
