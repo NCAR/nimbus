@@ -2,12 +2,14 @@ netcdf MTP {
 dimensions:
 	MTPTime = UNLIMITED ; 
 	Time = UNLIMITED ; 
-        MTPTempl = 30 ;		/// the number of templates created for the MTP
-        MTPTemplElev = 33 ;	/// the number of flight levels for templates
+        MTPTpl = 30 ;		/// the number of templates created for the MTP
+        ALT_MTP = 33 ;		/// the number of flight levels for templates
+        TPLALT_MTP = 33;	/// the flight level Altitudes for templates
+	TPLIDX_MTP = 43;	/// index into templates
         MTPChan = 3 ;		/// the number of frequency channels for the MTP
-	MTPProfIdx = 33 ;	/// for Profile Temperatures and Altitudes
-	BTScanAngle = 10 ;	/// for Brightness Temperatures
-	CountScanAngle = 12 ;	/// for Raw Scans including 2 target counts
+	MTPProfAlt = 33 ;	/// for Profile Temperatures and Altitudes
+	BTSCANANGLE_MTP = 10 ;	/// for Brightness Temperatures
+	CNTSCANANGLE_MTP = 12 ;	/// for Raw Scans including 2 target counts
 variables:
 	int MTPTime(MTPTime) ;
 		MTPTime:long_name = "time of MTP measurement" ;
@@ -19,43 +21,58 @@ variables:
 		Time:standard_name = "time" ;
 		Time:units = "seconds since 2014-07-20 00:00:00 +0000" ;
 		Time:strptime_format = "seconds since %F %T %z" ;
-	float BT_MTP(MTPTime, MTPChan, BTScanAngle) ;
-		BT_MTP:_FillValue = -32767.f ;
-		BT_MTP:units = "deg_K" ;
-		BT_MTP:long_name = "MTP Brightness Temperatures" ;
-		BT_MTP:Category = "MTP" ;
-	int BT_TemplIdx(MTPTime) ;    // The index of the template used to generate this BT
-	int BT_TemplElev(MTPTime) ;   // The index of the template elevation used
-	float BTScanAngle(BTScanAngle) ;
-	float CNT_MTP(MTPTime, MTPChan, CountScanAngle) ;
+        float CNTSCANANGLE_MTP(CNTSCANANGLE_MTP) ;
+		CNTSCANANGLE_MTP:long_name = "MTP Pointing Angle (incl Target)" ;
+		CNTSCANANGLE_MTP:units = "degree" ;
+		CNTSCANANGLE_MTP:valid_range = -180.f, 90.f ;
+	float CNT_MTP(MTPTime, MTPChan, CNTSCANANGLE_MTP) ;
 		CNT_MTP:_FillValue = -32767.f ;
 		CNT_MTP:units = "count" ;
 		CNT_MTP:long_name = "MTP Channel Scan Counts (incl Target)" ;
 		CNT_MTP:Category = "MTP" ;
-        float CountScanAngle(CountScanAngle) ;
-	float MTPTemplElev(MTPTempl, MTPTemplElev) ;
-	float TEMPLBT_MTP(MTPTempl, MTPTemplElev, MTPChan, BTScanAngle) ;
-		TEMPLBT_MTP:_FillValue = -32767.f ;
-		TEMPLBT_MTP:units = "deg_K" ;
-		TEMPLBT_MTP:long_name = "MTP Template Brightness Temperature" ;
-		TEMPLBT_MTP:Category = "MTP" ;
-        string TEMPL_ID_MTP(MTPTempl) ;  // Template identifier
-	float TEMPL_OBSTIME_MTP(MTPTempl) ;
-	float TEMPL_LAT_MTP(MTPTempl) ;
-	float TEMPL_LON_MTP(MTPTempl) ;
-	float ALT_MTP(MTPTime, MTPProfIdx) ;
+	float BTSCANANGLE_MTP(BTSCANANGLE_MTP) ; 
+		BTSCANANGLE_MTP:long_name = "MTP Pointing Angle" ;
+		BTSCANANGLE_MTP:units = "degree" ;
+		BTSCANANGLE_MTP:valid_range = -180.f, 90.f ;
+	float BT_MTP(MTPTime, MTPChan, BTSCANANGLE_MTP) ;
+		BT_MTP:_FillValue = -32767.f ;
+		BT_MTP:units = "deg_K" ;
+		BT_MTP:long_name = "MTP Brightness Temperatures" ;
+		BT_MTP:Category = "MTP" ;
+	int TPLIDX_MTP(MTPTime) ;    // Primary template index used to generate this profile
+	int TPLIDX2_MTP(MTPTime) ;   // 2ndary template index (if used) to generate this profile
+		TPLIDX2_MTP:_FillValue = -32767 ; // Indicates not used
+	float TPLALT_MTP(MTPTime, TPLALT_MTP) ;   // Template Altitude used
+		TPLALT_MTP:long_name = "MTP Template Altitude" ;
+	float TPLBT_MTP(TPLIDX_MTP, TPLALT_MTP, MTPChan, BTSCANANGLE_MTP) ;
+		TPLBT_MTP:_FillValue = -32767.f ;
+		TPLBT_MTP:units = "deg_K" ;
+		TPLBT_MTP:long_name = "MTP Template Brightness Temperature" ;
+		TPLBT_MTP:Category = "MTP" ;
+        string TPLID_MTP(TPLIDX_MTP) ;  // Template identifier
+	string TPLOBSTIME_MTP(MTPTpl) ;
+		TPLOBSTIME_MTP:units = "ISO 8601 UTC string" ;
+	float TPLLAT_MTP(MTPTpl) ;
+		TPLLAT_MTP:_FillValue = -32767.f ;
+                TPLLAT_MTP:units = "degree_N" ;
+                TPLLAT_MTP:long_name = "Latitude of Rawindsonde used for template" ;
+	float TPLLON_MTP(MTPTpl) ;
+                TPLLON_MTP:_FillValue = -32767.f ;
+                TPLLON_MTP:units = "degree_E" ;
+                TPLLON_MTP:long_name = "Longitude of Rawindsonde used for template" ;
+	float TEMP_MTP(MTPTime, ALT_MTP) ;
+		TEMP_MTP:_FillValue = -32767.f ;
+		TEMP_MTP:units = "deg_K" ;
+		TEMP_MTP:long_name = "MTP ATP Temperature" ;
+		TEMP_MTP:actual_range = 0.f, 278.93f ;
+		TEMP_MTP:Category = "MTP" ;
+	float ALT_MTP(MTPTime, ALT_MTP) ;
 		ALT_MTP:_FillValue = -32767.f ;
 		ALT_MTP:units = "km" ;
 		ALT_MTP:long_name = "MTP ATP Altitude" ;
 		ALT_MTP:standard_name = "altitude" ;
 		ALT_MTP:actual_range = 0.f, 31.1f ;
 		ALT_MTP:Category = "MTP" ;
-	float TEMP_MTP(MTPTime, MTPProfIdx) ;
-		TEMP_MTP:_FillValue = -32767.f ;
-		TEMP_MTP:units = "deg_K" ;
-		TEMP_MTP:long_name = "MTP ATP Temperature" ;
-		TEMP_MTP:actual_range = 0.f, 278.93f ;
-		TEMP_MTP:Category = "MTP" ;
 	float MRI_MTP(MTPTime) ;
 		MRI_MTP:_FillValue = -32767.f ;
 		MRI_MTP:units = "count" ;
@@ -84,6 +101,7 @@ variables:
 		SMENC_MTP:Category = "MTP" ;
 	float TAIRCNTE_MTP(MTPTime) ;
 		TAIRCNTE_MTP:_FillValue = -32767.f ;
+		TAIRCNTE_MTP:units = "count" ;
 		TAIRCNTE_MTP:units = "count" ;
 		TAIRCNTE_MTP:long_name = "MTP Engineering Multiplxr T Pod Air Counts" ;
 		TAIRCNTE_MTP:actual_range = 2461.f, 3077.f ;
@@ -363,13 +381,12 @@ variables:
 	float SYEAR_MTP(MTPTime) ;
 		SYEAR_MTP:_FillValue = -32767.f ;
 		SYEAR_MTP:units = "count" ;
-		SYEAR_MTP:long_name = "MTP Scan Year" ;
 		SYEAR_MTP:actual_range = 2014.f, 2014.f ;
 		SYEAR_MTP:Category = "MTP" ;
 ///
 data:
 
-        CountScanAngle = 80.f,55.f,42.f,25.f,12.f,0.f,-12.f,-25.f,-42.f,-80.f,-32767,-32767 ;
-	BTScanAngle = 80.f, 55.f,42.f,25.f,12.f,0.f,-12.f,-25.f,-42.f,-80.f ;
+        CNTSCANANGLE_MTP = 80.f,55.f,42.f,25.f,12.f,0.f,-12.f,-25.f,-42.f,-80.f,-180.f,-180.f ;
+	BTSCANANGLE_MTP = 80.f, 55.f,42.f,25.f,12.f,0.f,-12.f,-25.f,-42.f,-80.f ;
         MTPFREQ = 56.363f, 57.612f, 58.363f ;
 }
