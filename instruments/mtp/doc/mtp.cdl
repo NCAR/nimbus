@@ -3,11 +3,10 @@ dimensions:
 	MTPTime = UNLIMITED ; 
 	Time = UNLIMITED ; 
         MTPTpl = 30 ;		/// the number of templates created for the MTP
-        ALT_MTP = 33 ;		/// the number of flight levels for templates
+        ALT_MTP = 33 ;		/// the Altitude coordinate variable for profiles
         TPLALT_MTP = 33;	/// the flight level Altitudes for templates
 	TPLIDX_MTP = 43;	/// index into templates
         MTPChan = 3 ;		/// the number of frequency channels for the MTP
-	MTPProfAlt = 33 ;	/// for Profile Temperatures and Altitudes
 	BTSCANANGLE_MTP = 10 ;	/// for Brightness Temperatures
 	CNTSCANANGLE_MTP = 12 ;	/// for Raw Scans including 2 target counts
 variables:
@@ -33,7 +32,7 @@ variables:
 	float BTSCANANGLE_MTP(BTSCANANGLE_MTP) ; 
 		BTSCANANGLE_MTP:long_name = "MTP Pointing Angle" ;
 		BTSCANANGLE_MTP:units = "degree" ;
-		BTSCANANGLE_MTP:valid_range = -180.f, 90.f ;
+		BTSCANANGLE_MTP:valid_range = -90.f, 90.f ;
 	float BT_MTP(MTPTime, MTPChan, BTSCANANGLE_MTP) ;
 		BT_MTP:_FillValue = -32767.f ;
 		BT_MTP:units = "deg_K" ;
@@ -44,6 +43,7 @@ variables:
 		TPLIDX2_MTP:_FillValue = -32767 ; // Indicates not used
 	float TPLALT_MTP(MTPTime, TPLALT_MTP) ;   // Template Altitude used
 		TPLALT_MTP:long_name = "MTP Template Altitude" ;
+		TPLALT_MTP:units = "km" ;
 	float TPLBT_MTP(TPLIDX_MTP, TPLALT_MTP, MTPChan, BTSCANANGLE_MTP) ;
 		TPLBT_MTP:_FillValue = -32767.f ;
 		TPLBT_MTP:units = "deg_K" ;
@@ -60,19 +60,17 @@ variables:
                 TPLLON_MTP:_FillValue = -32767.f ;
                 TPLLON_MTP:units = "degree_E" ;
                 TPLLON_MTP:long_name = "Longitude of Rawindsonde used for template" ;
-	float TEMP_MTP(MTPTime, ALT_MTP) ;
-		TEMP_MTP:_FillValue = -32767.f ;
-		TEMP_MTP:units = "deg_K" ;
-		TEMP_MTP:long_name = "MTP ATP Temperature" ;
-		TEMP_MTP:actual_range = 0.f, 278.93f ;
-		TEMP_MTP:Category = "MTP" ;
 	float ALT_MTP(MTPTime, ALT_MTP) ;
 		ALT_MTP:_FillValue = -32767.f ;
 		ALT_MTP:units = "km" ;
 		ALT_MTP:long_name = "MTP ATP Altitude" ;
 		ALT_MTP:standard_name = "altitude" ;
-		ALT_MTP:actual_range = 0.f, 31.1f ;
 		ALT_MTP:Category = "MTP" ;
+	float TEMP_MTP(MTPTime, ALT_MTP) ;
+		TEMP_MTP:_FillValue = -32767.f ;
+		TEMP_MTP:units = "deg_K" ;
+		TEMP_MTP:long_name = "MTP ATP Temperature" ;
+		TEMP_MTP:Category = "MTP" ;
 	float MRI_MTP(MTPTime) ;
 		MRI_MTP:_FillValue = -32767.f ;
 		MRI_MTP:units = "count" ;
