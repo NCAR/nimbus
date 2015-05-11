@@ -38,8 +38,8 @@
  </Style>
 <LookAt>
   <range>1500000</range>
-  <longitude>-76.3778</longitude>
-  <latitude>37.0828</latitude>
+  <longitude>-76.3581</longitude>
+  <latitude>37.0842</latitude>
 </LookAt>
  <Folder>
   <name>rf02</name>
@@ -53,584 +53,13 @@
     <extrude>1</extrude>
     <altitudeMode>absolute</altitudeMode>
     <coordinates>
--76.3766,37.085,-423
--76.3766,37.085,-423
--76.3765,37.085,-423
--76.3765,37.085,-423
--76.3765,37.085,-423
--76.3764,37.085,-423
--76.3764,37.085,-423
--76.3764,37.085,-423
--76.3764,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-422
--76.3763,37.085,-423
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-423
--76.3763,37.085,-422
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-422
--76.3763,37.085,-422
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-423
--76.3763,37.085,-424
--76.3763,37.085,-424
--76.3763,37.085,-424
--76.3763,37.085,-424
--76.3763,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-426
--76.3762,37.085,-426
--76.3762,37.085,-425
--76.3762,37.085,-426
--76.3762,37.085,-426
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-426
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-424
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-425
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-424
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-422
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-422
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-420
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-419
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-419
--76.3762,37.085,-419
--76.3762,37.085,-419
--76.3762,37.085,-418
--76.3762,37.085,-418
--76.3762,37.085,-418
--76.3762,37.085,-418
--76.3762,37.085,-418
--76.3762,37.085,-418
--76.3762,37.085,-418
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-415
--76.3762,37.085,-416
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-415
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-413
--76.3762,37.085,-414
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-412
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-415
--76.3762,37.085,-414
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-416
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-415
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-415
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-417
--76.3762,37.085,-416
--76.3762,37.085,-415
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-417
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-418
--76.3762,37.085,-418
--76.3762,37.085,-418
--76.3762,37.085,-418
--76.3762,37.085,-419
--76.3762,37.085,-419
--76.3762,37.085,-419
--76.3762,37.085,-419
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-422
--76.3762,37.085,-421
--76.3762,37.085,-422
--76.3762,37.085,-421
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-422
--76.3762,37.085,-423
--76.3762,37.085,-422
--76.3762,37.085,-423
--76.3762,37.085,-422
--76.3762,37.085,-423
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-421
--76.3762,37.085,-422
--76.3762,37.085,-421
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-423
--76.3762,37.085,-422
--76.3762,37.085,-423
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-422
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-421
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-420
--76.3762,37.085,-419
--76.3762,37.085,-420
--76.3762,37.085,-419
--76.3762,37.085,-419
--76.3762,37.085,-419
--76.3762,37.085,-419
--76.3762,37.085,-419
--76.3762,37.085,-419
--76.3762,37.085,-419
--76.3762,37.085,-418
--76.3762,37.085,-419
--76.3762,37.085,-418
--76.3762,37.085,-418
--76.3762,37.085,-418
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-418
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-418
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-416
--76.3762,37.085,-417
--76.3762,37.085,-417
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-416
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-415
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-415
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-414
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-413
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-413
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-412
--76.3762,37.085,-411
--76.3762,37.085,-411
--76.3762,37.085,-411
--76.3762,37.085,-411
--76.3762,37.085,-410
--76.3762,37.085,-410
--76.3762,37.085,-410
--76.3762,37.085,-409
--76.3762,37.085,-409
--76.3762,37.085,-409
--76.3762,37.085,-408
--76.3762,37.085,-407
--76.3762,37.085,-407
--76.3762,37.085,-406
--76.3762,37.085,-407
--76.3762,37.085,-405
--76.3762,37.085,-405
--76.3762,37.085,-405
--76.3762,37.085,-405
--76.3762,37.085,-405
--76.3762,37.085,-405
--76.3762,37.085,-405
--76.3762,37.085,-404
--76.3762,37.085,-404
--76.3762,37.085,-403
--76.3762,37.085,-403
--76.3762,37.085,-403
--76.3762,37.085,-402
--76.3762,37.085,-402
--76.3762,37.085,-402
--76.3762,37.085,-402
--76.3762,37.085,-400
--76.3762,37.085,-401
--76.3762,37.085,-399
--76.3762,37.085,-400
--76.3762,37.085,-399
--76.3762,37.085,-398
--76.3762,37.085,-398
--76.3762,37.085,-398
--76.3762,37.085,-399
--76.3762,37.085,-398
--76.3763,37.085,-399
--76.3764,37.0849,-398
--76.3768,37.0846,-398
--76.3769,37.0841,-398
--76.377,37.0835,-397
--76.3771,37.0827,-398
--76.3772,37.0818,-398
--76.3773,37.0809,-397
--76.3774,37.0805,-397
--76.3773,37.08,-399
--76.377,37.0795,-398
--76.3767,37.0789,-398
--76.3766,37.0786,-399
--76.3766,37.0786,-398
--76.3766,37.0786,-399
--76.3766,37.0786,-399
--76.3766,37.0786,-399
--76.3766,37.0786,-400
--76.3766,37.0786,-399
--76.3766,37.0786,-399
--76.3766,37.0786,-397
--76.3766,37.0785,-397
--76.3762,37.0779,-399
--76.375,37.0782,-398
--76.3734,37.0787,-400
--76.3728,37.0789,-390
--76.3728,37.0789,-342
--76.3726,37.079,-384
+-76.3727,37.079,-384
 -76.3682,37.0804,-387
--76.3593,37.0834,-352
+-76.3594,37.0834,-352
 -76.3482,37.0869,-101
 -76.3359,37.0909,94
 -76.3217,37.0953,439
--76.3069,37.1001,911
+-76.307,37.1001,911
 -76.2917,37.1051,1420
 -76.2767,37.1103,1980
 -76.2627,37.1172,2446
@@ -638,15 +67,15 @@
 -76.2561,37.1395,3427
 -76.2659,37.1479,3749
 -76.2803,37.15,4095
--76.2955,37.1488,4477
+-76.2954,37.1488,4477
 -76.311,37.1469,4638
 -76.3279,37.1446,4746
 -76.3453,37.1422,5089
 -76.3627,37.1402,5483
--76.3799,37.1385,5953
+-76.3798,37.1385,5953
 -76.3965,37.1367,6440
--76.4128,37.1345,6937
--76.4285,37.1326,7428
+-76.4127,37.1346,6937
+-76.4285,37.1327,7428
 -76.4437,37.1307,7911
 -76.4584,37.1287,8378
 -76.4728,37.1267,8773
@@ -658,8 +87,8 @@
 -76.5564,37.1165,11057
 -76.5696,37.1146,11426
 -76.5828,37.1128,11682
--76.5963,37.1111,11921
--76.6099,37.1096,12179
+-76.5963,37.1112,11921
+-76.6098,37.1096,12179
 -76.6234,37.1079,12441
 -76.637,37.1061,12702
 -76.6506,37.1044,12963
@@ -670,7 +99,7 @@
 -76.7184,37.0958,14233
 -76.732,37.094,14447
 -76.7456,37.0923,14659
--76.7594,37.0905,14875
+-76.7593,37.0905,14875
 -76.7731,37.0886,15085
 -76.787,37.0868,15298
 -76.8009,37.0851,15508
@@ -2161,6 +1590,19 @@
 -79.9628,39.5673,2219
 -79.954,39.5548,2223
 -79.9493,39.5415,2237
+    </coordinates>
+   </LineString>
+  </Placemark>
+  <Placemark>
+   <name>Track, last hour</name>
+   <visibility>1</visibility>
+   <open>1</open>
+   <styleUrl>#TRACK_LATEST</styleUrl>
+   <LineString>
+    <extrude>1</extrude>
+    <altitudeMode>absolute</altitudeMode>
+    <coordinates>
+-79.9493,39.5415,2237
 -79.9482,39.5282,2308
 -79.9486,39.5152,2400
 -79.9486,39.5017,2420
@@ -2179,20 +1621,6 @@
 -79.9524,39.3223,2523
 -79.9526,39.3087,2514
 -79.9529,39.2949,2520
--79.9531,39.2875,2523
-    </coordinates>
-   </LineString>
-  </Placemark>
-  <Placemark>
-   <name>Track, last hour</name>
-   <visibility>1</visibility>
-   <open>1</open>
-   <styleUrl>#TRACK_LATEST</styleUrl>
-   <LineString>
-    <extrude>1</extrude>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>
--79.9531,39.2875,2523
 -79.9533,39.281,2531
 -79.9538,39.2671,2522
 -79.9541,39.2532,2522
@@ -2415,44 +1843,25 @@
 -76.3482,37.0875,-268
 -76.3549,37.0853,-419
 -76.3581,37.0842,-305
--76.3604,37.0834,-300
--76.3623,37.0828,-297
--76.3641,37.0822,-287
--76.3667,37.0814,-293
--76.3693,37.0805,-296
--76.3717,37.0797,-301
--76.3731,37.0792,-297
--76.3738,37.079,-295
--76.3746,37.0787,-294
--76.3757,37.0784,-296
--76.3766,37.0782,-295
--76.3771,37.0785,-295
--76.3774,37.0791,-293
--76.3777,37.0797,-294
--76.3781,37.0804,-293
--76.378,37.0812,-292
--76.3779,37.0818,-292
--76.3779,37.0825,-294
--76.3778,37.0828,-294
     </coordinates>
    </LineString>
   </Placemark>
   <Placemark>
    <name>N130AR</name>
-   <description><![CDATA[23:31:38<br> Lat : 37.082848 deg_N<br>Lon : -76.377815 deg_E<br>Alt : -294 feet<br>Temp : 1.99 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
+   <description><![CDATA[23:27:00<br> Lat : 37.084213 deg_N<br>Lon : -76.358131 deg_E<br>Alt : -305 feet<br>Temp : 2.53 C<br>DP : -13.16 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
    <styleUrl>#PM1</styleUrl>
    <Point>
     <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3778,37.0828,-294</coordinates>
+    <coordinates>-76.3581,37.0842,-305</coordinates>
    </Point>
   </Placemark>
   <Placemark>
    <name>Take off</name>
-   <description><![CDATA[13:38:10 Lat : 37.085037 deg_N<br>Lon : -76.376610 deg_E<br>Alt : -423 feet<br>Temp : 2.06 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
+   <description><![CDATA[16:03:00 Lat : 37.078968 deg_N<br>Lon : -76.372650 deg_E<br>Alt : -384 feet<br>Temp : -0.37 C<br>DP : -19.22 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
    <styleUrl>#PM2</styleUrl>
    <Point>
     <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3766,37.085,-423</coordinates>
+    <coordinates>-76.3727,37.079,-384</coordinates>
    </Point>
   </Placemark>
  <Folder>
@@ -2468,8 +1877,8 @@
  <Folder>
   <name>Wind Barbs</name>
   <Placemark>
-   <name>13:38 N130AR</name>
-   <description><![CDATA[ Lat : 37.085037 deg_N<br>Lon : -76.376610 deg_E<br>Alt : -423 feet<br>Temp : 2.06 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
+   <name>16:03 N130AR</name>
+   <description><![CDATA[ Lat : 37.078968 deg_N<br>Lon : -76.372650 deg_E<br>Alt : -384 feet<br>Temp : -0.37 C<br>DP : -19.22 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
    <Style>
     <IconStyle>
      <scale>3</scale>
@@ -2479,447 +1888,12 @@
    </Style>
    <Point>
     <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3766,37.085,-423</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>13:40 N130AR</name>
-   <description><![CDATA[ Lat : 37.085011 deg_N<br>Lon : -76.376358 deg_E<br>Alt : -423 feet<br>Temp : 3.66 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3764,37.085,-423</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>13:45 N130AR</name>
-   <description><![CDATA[ Lat : 37.085011 deg_N<br>Lon : -76.376259 deg_E<br>Alt : -423 feet<br>Temp : 7.92 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3763,37.085,-423</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>13:50 N130AR</name>
-   <description><![CDATA[ Lat : 37.085011 deg_N<br>Lon : -76.376251 deg_E<br>Alt : -424 feet<br>Temp : 12.48 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3763,37.085,-423</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>13:55 N130AR</name>
-   <description><![CDATA[ Lat : 37.085007 deg_N<br>Lon : -76.376244 deg_E<br>Alt : -424 feet<br>Temp : 14.52 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-424</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:00 N130AR</name>
-   <description><![CDATA[ Lat : 37.084995 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -426 feet<br>Temp : 15.50 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-425</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:05 N130AR</name>
-   <description><![CDATA[ Lat : 37.085003 deg_N<br>Lon : -76.376244 deg_E<br>Alt : -426 feet<br>Temp : 13.84 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-426</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:10 N130AR</name>
-   <description><![CDATA[ Lat : 37.085003 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -425 feet<br>Temp : 16.09 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-425</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:15 N130AR</name>
-   <description><![CDATA[ Lat : 37.084999 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -425 feet<br>Temp : 17.77 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-425</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:20 N130AR</name>
-   <description><![CDATA[ Lat : 37.085007 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -423 feet<br>Temp : 16.16 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-422</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:25 N130AR</name>
-   <description><![CDATA[ Lat : 37.084999 deg_N<br>Lon : -76.376244 deg_E<br>Alt : -422 feet<br>Temp : 16.56 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-421</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:30 N130AR</name>
-   <description><![CDATA[ Lat : 37.084995 deg_N<br>Lon : -76.376244 deg_E<br>Alt : -419 feet<br>Temp : 18.61 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-418</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:35 N130AR</name>
-   <description><![CDATA[ Lat : 37.084999 deg_N<br>Lon : -76.376228 deg_E<br>Alt : -416 feet<br>Temp : 18.11 C<br>DP : 19.62 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-415</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:40 N130AR</name>
-   <description><![CDATA[ Lat : 37.084995 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -414 feet<br>Temp : 17.78 C<br>DP : 19.84 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-413</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:45 N130AR</name>
-   <description><![CDATA[ Lat : 37.084995 deg_N<br>Lon : -76.376228 deg_E<br>Alt : -414 feet<br>Temp : 20.18 C<br>DP : 20.02 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-413</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:50 N130AR</name>
-   <description><![CDATA[ Lat : 37.084999 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -416 feet<br>Temp : 21.28 C<br>DP : 20.14 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-416</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>14:55 N130AR</name>
-   <description><![CDATA[ Lat : 37.084995 deg_N<br>Lon : -76.376228 deg_E<br>Alt : -416 feet<br>Temp : 20.99 C<br>DP : -20.62 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-415</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:00 N130AR</name>
-   <description><![CDATA[ Lat : 37.085003 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -417 feet<br>Temp : 18.37 C<br>DP : -20.64 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-417</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:05 N130AR</name>
-   <description><![CDATA[ Lat : 37.084999 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -421 feet<br>Temp : 13.04 C<br>DP : -20.72 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-420</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:10 N130AR</name>
-   <description><![CDATA[ Lat : 37.084999 deg_N<br>Lon : -76.376228 deg_E<br>Alt : -423 feet<br>Temp : 8.77 C<br>DP : -19.95 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-423</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:15 N130AR</name>
-   <description><![CDATA[ Lat : 37.084999 deg_N<br>Lon : -76.376228 deg_E<br>Alt : -422 feet<br>Temp : 16.54 C<br>DP : -20.35 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-422</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:20 N130AR</name>
-   <description><![CDATA[ Lat : 37.084999 deg_N<br>Lon : -76.376228 deg_E<br>Alt : -422 feet<br>Temp : 14.64 C<br>DP : -20.24 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-421</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:25 N130AR</name>
-   <description><![CDATA[ Lat : 37.085007 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -418 feet<br>Temp : 15.23 C<br>DP : -20.06 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-418</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:30 N130AR</name>
-   <description><![CDATA[ Lat : 37.085003 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -416 feet<br>Temp : 9.50 C<br>DP : -20.08 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-416</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:35 N130AR</name>
-   <description><![CDATA[ Lat : 37.085007 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -416 feet<br>Temp : 11.06 C<br>DP : -20.16 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-415</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:40 N130AR</name>
-   <description><![CDATA[ Lat : 37.085007 deg_N<br>Lon : -76.376228 deg_E<br>Alt : -413 feet<br>Temp : 9.78 C<br>DP : -19.94 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-412</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:45 N130AR</name>
-   <description><![CDATA[ Lat : 37.085003 deg_N<br>Lon : -76.376228 deg_E<br>Alt : -410 feet<br>Temp : 9.41 C<br>DP : -19.74 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-410</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:50 N130AR</name>
-   <description><![CDATA[ Lat : 37.085007 deg_N<br>Lon : -76.376236 deg_E<br>Alt : -406 feet<br>Temp : 2.79 C<br>DP : -19.79 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-405</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>15:55 N130AR</name>
-   <description><![CDATA[ Lat : 37.085011 deg_N<br>Lon : -76.376228 deg_E<br>Alt : -398 feet<br>Temp : 1.74 C<br>DP : -19.06 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3762,37.085,-398</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>16:00 N130AR</name>
-   <description><![CDATA[ Lat : 37.078560 deg_N<br>Lon : -76.376587 deg_E<br>Alt : -399 feet<br>Temp : 0.74 C<br>DP : -19.08 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3766,37.0786,-399</coordinates>
+    <coordinates>-76.3727,37.079,-384</coordinates>
    </Point>
   </Placemark>
   <Placemark>
    <name>16:05 N130AR</name>
-   <description><![CDATA[ Lat : 37.110313 deg_N<br>Lon : -76.276703 deg_E<br>Alt : 1980 feet<br>Temp : -7.31 C<br>DP : -25.37 C<br>WS : 9.37 knots<br>WD : 262.63 degree_T<br>WI : -0.05 m/s]]></description>
+   <description><![CDATA[ Lat : 37.110306 deg_N<br>Lon : -76.276703 deg_E<br>Alt : 1980 feet<br>Temp : -7.31 C<br>DP : -25.37 C<br>WS : 9.43 knots<br>WD : 262.65 degree_T<br>WI : -0.05 m/s]]></description>
    <Style>
     <IconStyle>
      <scale>3</scale>
@@ -2934,7 +1908,7 @@
   </Placemark>
   <Placemark>
    <name>16:10 N130AR</name>
-   <description><![CDATA[ Lat : 37.121620 deg_N<br>Lon : -76.515419 deg_E<br>Alt : 9912 feet<br>Temp : -14.71 C<br>DP : -19.99 C<br>WS : 38.16 knots<br>WD : 302.46 degree_T<br>WI : 0.24 m/s]]></description>
+   <description><![CDATA[ Lat : 37.121635 deg_N<br>Lon : -76.515396 deg_E<br>Alt : 9912 feet<br>Temp : -14.71 C<br>DP : -19.99 C<br>WS : 38.16 knots<br>WD : 302.41 degree_T<br>WI : 0.24 m/s]]></description>
    <Style>
     <IconStyle>
      <scale>3</scale>
@@ -2949,7 +1923,7 @@
   </Placemark>
   <Placemark>
    <name>16:15 N130AR</name>
-   <description><![CDATA[ Lat : 37.086838 deg_N<br>Lon : -76.787010 deg_E<br>Alt : 15299 feet<br>Temp : -17.77 C<br>DP : -42.78 C<br>WS : 51.50 knots<br>WD : 303.04 degree_T<br>WI : 0.46 m/s]]></description>
+   <description><![CDATA[ Lat : 37.086838 deg_N<br>Lon : -76.787003 deg_E<br>Alt : 15299 feet<br>Temp : -17.77 C<br>DP : -42.78 C<br>WS : 51.50 knots<br>WD : 303.04 degree_T<br>WI : 0.46 m/s]]></description>
    <Style>
     <IconStyle>
      <scale>3</scale>
@@ -4253,8 +3227,8 @@
    </Point>
   </Placemark>
   <Placemark>
-   <name>23:30 N130AR</name>
-   <description><![CDATA[ Lat : 37.078495 deg_N<br>Lon : -76.377075 deg_E<br>Alt : -295 feet<br>Temp : 2.46 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
+   <name>23:27 N130AR</name>
+   <description><![CDATA[ Lat : 37.084213 deg_N<br>Lon : -76.358131 deg_E<br>Alt : -305 feet<br>Temp : 2.53 C<br>DP : -13.16 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
    <Style>
     <IconStyle>
      <scale>3</scale>
@@ -4264,49 +3238,34 @@
    </Style>
    <Point>
     <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3771,37.0785,-295</coordinates>
-   </Point>
-  </Placemark>
-  <Placemark>
-   <name>23:31 N130AR</name>
-   <description><![CDATA[ Lat : 37.082848 deg_N<br>Lon : -76.377815 deg_E<br>Alt : -294 feet<br>Temp : 1.99 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
-   <Style>
-    <IconStyle>
-     <scale>3</scale>
-     <Icon><href>http://www.eol.ucar.edu/flight_data/display/windbarbs/000/wb_000_000.png</href>
-</Icon>
-    </IconStyle>
-   </Style>
-   <Point>
-    <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3778,37.0828,-294</coordinates>
+    <coordinates>-76.3581,37.0842,-305</coordinates>
    </Point>
   </Placemark>
  </Folder>
  <Folder>
   <name>Time Stamps</name>
   <Placemark>
-   <name>13:38 N130AR</name>
-   <description><![CDATA[ Lat : 37.085037 deg_N<br>Lon : -76.376610 deg_E<br>Alt : -423 feet<br>Temp : 2.06 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
+   <name>16:03 N130AR</name>
+   <description><![CDATA[ Lat : 37.078968 deg_N<br>Lon : -76.372650 deg_E<br>Alt : -384 feet<br>Temp : -0.37 C<br>DP : -19.22 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
    <TimeStamp>
-    <when>2015-02-06T13:38:10Z</when>
+    <when>2015-02-06T16:03:00Z</when>
    </TimeStamp>
    <styleUrl>#PM1</styleUrl>
    <Point>
     <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3766,37.085,-423</coordinates>
+    <coordinates>-76.3727,37.079,-384</coordinates>
    </Point>
   </Placemark>
   <Placemark>
-   <name>23:31 N130AR</name>
-   <description><![CDATA[ Lat : 37.082848 deg_N<br>Lon : -76.377815 deg_E<br>Alt : -294 feet<br>Temp : 1.99 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
+   <name>23:27 N130AR</name>
+   <description><![CDATA[ Lat : 37.084213 deg_N<br>Lon : -76.358131 deg_E<br>Alt : -305 feet<br>Temp : 2.53 C<br>DP : -13.16 C<br>WS : 0.00 knots<br>WD : 0.00 degree_T<br>WI : 0.00 m/s]]></description>
    <TimeStamp>
-    <when>2015-02-06T23:31:38Z</when>
+    <when>2015-02-06T23:27:00Z</when>
    </TimeStamp>
    <styleUrl>#PM1</styleUrl>
    <Point>
     <altitudeMode>absolute</altitudeMode>
-    <coordinates>-76.3778,37.0828,-294</coordinates>
+    <coordinates>-76.3581,37.0842,-305</coordinates>
    </Point>
   </Placemark>
  </Folder>
