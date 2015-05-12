@@ -174,6 +174,12 @@ fillDefaults()
       // from the ground database.
       set_default(cfg.database_host, "eol-rt-data.fl-ext.ucar.edu");
     }
+    else
+    {
+      // We're onboard with no platform set, so the default is the
+      // local server database.
+      set_default(cfg.database_host, "localhost");
+    }
   }
   else if (cfg.platform.length() > 0)
   {
@@ -205,10 +211,10 @@ fillDefaults()
     set_default(cfg.outputKML, cfg.flightDataDir + "/GE/real-time.kml");
     set_default(cfg.outputAnimatedKML,
 		cfg.flightDataDir + "/GE/animated-track.kml");
-    set_default(cfg.outputPositionKML, cfg.flightDataDir + "/GE/current_pos.kml");
+    set_default(cfg.outputPositionKML, 
+		cfg.flightDataDir + "/GE/current_pos.kml");
     set_default(cfg.outputPositionJSON, cfg.flightDataDir + "/position.json");
   }
-
 }
 
 
