@@ -218,19 +218,45 @@ fillDefaults()
 }
 
 
+/*
+ * The acTrack2kml code has always opened the postgresql database
+ * connection with a connection string in this form:
+ *
+ *    sprintf(conn_str, "host='%s' dbname='%s' user ='ads'", 
+ *	    cfg.database_host.c_str(), cfg.dbname.c_str());
+ *
+ * Even though it looks like the host is being specified explicitly, in
+ * fact the psql library will accept an empty host name and then default to
+ * 'localhost'.  So it is possible to connect to the real-time database on
+ * the aircraft server without setting PGHOST and without setting the host
+ * on the command line.  This is how it worked for a long time, since the
+ * PGHOST and other environment settings were not actually being passed to
+ * the acTrack2kml process when it was started by cron.  Is it better to
+ * set an explicit default of 'localhost' in the Config class, or allow
+ * database_host to be empty in the psql connection string when in "onboard
+ * real-time mode"?  In light of confusion about why the PGHOST setting was
+ * not working for cron processes, the Config code now sets 'localhost' as
+ * the explicit default, but it also allows the database_host setting to be
+ * empty when in onboard real-time mode.
+ */
 bool
 Config::
 verifyDatabaseHost()
 {
   if (database_host.empty())
   {
+    // It is not strictly necessary to copy PGHOST into database_host,
+    // since the psql library will use PGHOST if the host specifier in the
+    // connect string is empty.  However, this allows the database host to
+    // be logged, and it means database_host must be non-empty in modes
+    // where a database is required.
     char *p = getenv("PGHOST");
     if (p) 
     {
       database_host = p;
     }
   }
-  return !database_host.empty();
+  return !database_host.empty() || (onboard && platform.empty());
 }
 
 
