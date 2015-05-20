@@ -100,7 +100,6 @@ variables:
 	float TAIRCNTE_MTP(MTPTime) ;
 		TAIRCNTE_MTP:_FillValue = -32767.f ;
 		TAIRCNTE_MTP:units = "count" ;
-		TAIRCNTE_MTP:units = "count" ;
 		TAIRCNTE_MTP:long_name = "MTP Engineering Multiplxr T Pod Air Counts" ;
 		TAIRCNTE_MTP:actual_range = 2461.f, 3077.f ;
 		TAIRCNTE_MTP:Category = "MTP" ;
