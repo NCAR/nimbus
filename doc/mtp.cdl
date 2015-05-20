@@ -40,7 +40,7 @@ variables:
 		BT_MTP:Category = "MTP" ;
 	int TPLIDX_MTP(MTPTime) ;    // Primary template index used to generate this profile
 	int TPLIDX2_MTP(MTPTime) ;   // 2ndary template index (if used) to generate this profile
-		TPLIDX2_MTP:_FillValue = -32767 ; // Indicates not used
+		TPLIDX2_MTP:_FillValue = -32767.f ; // Indicates not used
 	float TPLALT_MTP(MTPTime, TPLALT_MTP) ;   // Template Altitude used
 		TPLALT_MTP:long_name = "MTP Template Altitude" ;
 		TPLALT_MTP:units = "km" ;
