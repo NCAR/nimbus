@@ -49,7 +49,7 @@ variables:
 		TPLBT_MTP:units = "deg_K" ;
 		TPLBT_MTP:long_name = "MTP Template Brightness Temperature" ;
 		TPLBT_MTP:Category = "MTP" ;
-        string TPLID_MTP(TPLIDX_MTP) ;  // Template identifier
+	string TPLID_MTP(TPLIDX_MTP) ;  // Template identifier
 	string TPLOBSTIME_MTP(MTPTpl) ;
 		TPLOBSTIME_MTP:units = "ISO 8601 UTC string" ;
 	float TPLLAT_MTP(MTPTpl) ;
