@@ -2,11 +2,11 @@ netcdf MTP {
 dimensions:
 	MTPTime = UNLIMITED ; 
 	Time = UNLIMITED ; 
-        MTPTpl = 30 ;		/// the number of templates created for the MTP
-        ALT_MTP = 33 ;		/// the Altitude coordinate variable for profiles
-        TPLALT_MTP = 33;	/// the flight level Altitudes for templates
+	MTPTpl = 30 ;		/// the number of templates created for the MTP
+	ALT_MTP = 33 ;		/// the Altitude coordinate variable for profiles
+	TPLALT_MTP = 33;	/// the flight level Altitudes for templates
 	TPLIDX_MTP = 43;	/// index into templates
-        MTPChan = 3 ;		/// the number of frequency channels for the MTP
+	MTPChan = 3 ;		/// the number of frequency channels for the MTP
 	BTSCANANGLE_MTP = 10 ;	/// for Brightness Temperatures
 	CNTSCANANGLE_MTP = 12 ;	/// for Raw Scans including 2 target counts
 variables:
@@ -20,7 +20,7 @@ variables:
 		Time:standard_name = "time" ;
 		Time:units = "seconds since 2014-07-20 00:00:00 +0000" ;
 		Time:strptime_format = "seconds since %F %T %z" ;
-        float CNTSCANANGLE_MTP(CNTSCANANGLE_MTP) ;
+	float CNTSCANANGLE_MTP(CNTSCANANGLE_MTP) ;
 		CNTSCANANGLE_MTP:long_name = "MTP Pointing Angle (incl Target)" ;
 		CNTSCANANGLE_MTP:units = "degree" ;
 		CNTSCANANGLE_MTP:valid_range = -180.f, 90.f ;
@@ -54,12 +54,12 @@ variables:
 		TPLOBSTIME_MTP:units = "ISO 8601 UTC string" ;
 	float TPLLAT_MTP(MTPTpl) ;
 		TPLLAT_MTP:_FillValue = -32767.f ;
-                TPLLAT_MTP:units = "degree_N" ;
-                TPLLAT_MTP:long_name = "Latitude of Rawindsonde used for template" ;
+		TPLLAT_MTP:units = "degree_N" ;
+		TPLLAT_MTP:long_name = "Latitude of Rawindsonde used for template" ;
 	float TPLLON_MTP(MTPTpl) ;
-                TPLLON_MTP:_FillValue = -32767.f ;
-                TPLLON_MTP:units = "degree_E" ;
-                TPLLON_MTP:long_name = "Longitude of Rawindsonde used for template" ;
+		TPLLON_MTP:_FillValue = -32767.f ;
+		TPLLON_MTP:units = "degree_E" ;
+		TPLLON_MTP:long_name = "Longitude of Rawindsonde used for template" ;
 	float ALT_MTP(MTPTime, ALT_MTP) ;
 		ALT_MTP:_FillValue = -32767.f ;
 		ALT_MTP:units = "km" ;
