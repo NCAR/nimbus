@@ -4,7 +4,7 @@ dimensions:
 	Time = UNLIMITED ; 
 	MTPTpl = 30 ;		/// the number of templates created for the MTP
 	ALT_MTP = 33 ;		/// the Altitude coordinate variable for profiles
-	TPLALT_MTP = 33;	/// the flight level Altitudes for templates
+	TPLALT_MTP = 34;	/// the flight level Altitudes for templates
 	TPLIDX_MTP = 43;	/// index into templates
 	MTPChan = 3 ;		/// the number of frequency channels for the MTP
 	BTSCANANGLE_MTP = 10 ;	/// for Brightness Temperatures
@@ -77,6 +77,11 @@ variables:
 		MRI_MTP:long_name = "MTP Quality Indicator" ;
 		MRI_MTP:actual_range = 0.f, 2.f ;
 		MRI_MTP:Category = "MTP" ;
+        float TROP_MTP(MTPTime) ;
+		TROP_MTP:_FillValue = -32767.f ;
+		TROP_MTP:units = "km" ;
+		TROP_MTP:long_name = "MTP Calculated Tropopause altitude for this profile" ;
+		TROP_MTP:Category = "MTP" ;
 	float MTPFREQ(MTPChan) ;
 		MTPFREQ:units = "GHz";
 	float ACCPCNTE_MTP(MTPTime) ;
