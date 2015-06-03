@@ -238,20 +238,20 @@ def CreateNetCDFHeader(f):
 
 
 def parseMTPATP(line):
-    print line
+    parts = line.split(',')
 
 
 def parseMTP(line):
-    print line
+    parts = line.split(',')
 
 
 
+# Open/Create netCDF.
 f = Dataset('simple.nc', 'w', format='NETCDF4')
-
 CreateNetCDFHeader(f)
 
 
-
+# Scan data from stdin (data_dump).
 for line in sys.stdin:
     if 'MTP' not in line: continue
 
