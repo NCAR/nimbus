@@ -1,0 +1,11 @@
+#!/bin/csh
+
+# Disposable program to convert MTP from existing nidas files to netCDF for
+# aeros testing purposes.
+#
+# $1 is raw ADS file
+# $2 is output netCDF file
+#
+
+data_dump -i 99,500-700 $1 | ./nidas2cdf.py $2
+
