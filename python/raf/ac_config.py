@@ -4,10 +4,10 @@
 #
 # Get operations will be for specific actions using '.' to denote hierarchy.
 #
-# Current top level are: aircraft, project, cameras
+# Current top level are: aircraft, project, cameras, dropsonde
 #
 #  examples: aircraft.tailnumber, project.path, project.name, project.flightnumber, cameras.path
-#		toga.path, mtp.path, avaps.path
+#		toga.path, mtp.path, dropsonde.path
 #
 #  COPYRIGHT: University Corporation for Atmospheric Research, 2015
 
@@ -18,6 +18,7 @@ import sys
 import psycopg2
 
 instrument_path_base = '/mnt/r1/'
+www_path_base = '/var/www/html'
 
 ac_config_dict = {
 	'aircraft.tailnumber' : os.getenv("AIRCRAFT"),
@@ -55,7 +56,8 @@ def get_config(key):
 
   ac_config_dict['toga.path'] = instrument_path_base + ac_config_dict['project.name'] + '/toga'
   ac_config_dict['mtp.path'] = instrument_path_base + ac_config_dict['project.name'] + '/mtp'
-  ac_config_dict['avaps.path'] = instrument_path_base + ac_config_dict['project.name'] + '/avaps'
+  ac_config_dict['dropsonde.raw_path'] = instrument_path_base + '/dropsondes'
+  ac_config_dict['dropsonde.skewt_path'] = www_path_base + '/skewt'
 
   db.close()
 
