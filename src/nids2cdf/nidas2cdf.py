@@ -37,7 +37,7 @@ def CreateNetCDFHeader(f):
   cnts_angle.units = 'degree'
   cnts_angle.Category = 'MTP'
 
-  cnts = f.createVariable('CNT_MTP', 'f4', ('MTP_NumberChannels', 'MTP_CntScanAngle'))
+  cnts = f.createVariable('CNT_MTP', 'f4', ('MTP_Time', 'MTP_NumberChannels', 'MTP_CntScanAngle'))
   cnts.long_name = 'MTP Channel Scan Counts (incl Target)'
   cnts.units = 'count'
   cnts.Category = 'MTP'
@@ -47,7 +47,7 @@ def CreateNetCDFHeader(f):
   bt_angle.units = 'degree'
   bt_angle.Category = 'MTP'
 
-  bt = f.createVariable('BT_MTP', 'f4', ('MTP_NumberChannels', 'MTP_BTScanAngle'))
+  bt = f.createVariable('BT_MTP', 'f4', ('MTP_Time', 'MTP_NumberChannels', 'MTP_BTScanAngle'))
   bt.long_name = 'MTP Brightness Temperatures'
   bt.units = 'deg_K'
   bt.Category = 'MTP'
