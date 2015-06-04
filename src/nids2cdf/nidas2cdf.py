@@ -4,6 +4,7 @@ import os
 import re
 import sys
 
+import numpy
 import psycopg2
 
 # if using something from RAF tree.
@@ -13,8 +14,11 @@ import psycopg2
 from netCDF4 import Dataset
 
 
+mtp_time = 0
 
 def CreateNetCDFHeader(f):
+  global mtp_time
+
   # Dimensions.
   f.createDimension('MTP_Time', None)
   f.createDimension('MTP_NumberTemplates', 30)
@@ -237,31 +241,33 @@ def CreateNetCDFHeader(f):
   vvid.Category = 'MTP'
 
 
-def parseMTPATP(line):
-    parts = line.split(',')
 
 
-def parseMTP(line):
-    parts = line.split(',')
+# Extract date time and turn it into usec (seconds since midnight)
+dt = numpy.genfromtxt(sys.argv[1], dtype=None, delimiter=',', usecols=(1))
+
+s = dt[0]
+start_date = "seconds since " + s[0:4] + '-' + s[4:6] + '-' + s[6:8] + ' 00:00:00 +0000'
+usec = []
+for s in dt:
+  usec.append(int(s[9:11]) * 3600 + int(s[11:13]) * 60 + int(s[13:15]))
+
+
+# numpy.loadtxt(sys.argv[1], delimiter=',', usecols=(0, 2), unpack=True)
+
+# Load temperature profile (MTPP data).
+alt  = numpy.loadtxt(sys.argv[2], delimiter=',', usecols=(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34), ndmin=2)
+temp = numpy.loadtxt(sys.argv[2], delimiter=',', usecols=(35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67), ndmin=2)
 
 
 
 # Open/Create netCDF.
 f = Dataset('simple.nc', 'w', format='NETCDF4')
 CreateNetCDFHeader(f)
+f.set_fill_on()
 
-
-# Scan data from stdin (data_dump).
-for line in sys.stdin:
-    if 'MTP' not in line: continue
-
-    parts = line.split()
-    if line.startswith('MTPP'):
-        parseMTPATP(parts[8])
-    else:
-        parseMTP(parts[8])
-
-
+mtp_time.units = start_date
+mtp_time[:] = usec
 
 f.close()
 

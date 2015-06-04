@@ -7,5 +7,9 @@
 # $2 is output netCDF file
 #
 
-data_dump -i 99,500-700 $1 | ./nidas2cdf.py $2
+#data_dump -i 99,500-700 $1 | ./nidas2cdf.py $2
 
+data_dump -i 99,500 $1 | grep MTP | awk '{print $7}' > mtp.out
+data_dump -i 99,700 $1 | grep MTP | awk '{print $7}' > mtpp.out
+
+./nidas2cdf.py mtp.out mtpp.out
