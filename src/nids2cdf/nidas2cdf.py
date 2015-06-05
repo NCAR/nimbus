@@ -15,9 +15,13 @@ from netCDF4 import Dataset
 
 
 mtp_time = 0
+alt = 0.0
+temp = 0.0
 
 def CreateNetCDFHeader(f):
   global mtp_time
+  global alt
+  global temp
 
   # Dimensions.
   f.createDimension('MTP_Time', None)
@@ -256,8 +260,8 @@ for s in dt:
 # numpy.loadtxt(sys.argv[1], delimiter=',', usecols=(0, 2), unpack=True)
 
 # Load temperature profile (MTPP data).
-alt  = numpy.loadtxt(sys.argv[2], delimiter=',', usecols=(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34), ndmin=2)
-temp = numpy.loadtxt(sys.argv[2], delimiter=',', usecols=(35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67), ndmin=2)
+alt_in  = numpy.loadtxt(sys.argv[2], dtype='f4', delimiter=',', usecols=(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34), ndmin=2)
+temp_in = numpy.loadtxt(sys.argv[2], dtype='f4', delimiter=',', usecols=(35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67), ndmin=2)
 
 
 
@@ -269,5 +273,8 @@ f.set_fill_on()
 mtp_time.units = start_date
 mtp_time[:] = usec
 
-f.close()
+# Write temp/alt profile (skew-t).
+temp[:] = temp_in
+alt[:] = alt_in
 
+f.close()
