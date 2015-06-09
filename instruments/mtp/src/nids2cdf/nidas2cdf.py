@@ -18,8 +18,24 @@ class MTPNetCDF:
 
   def __init__(self, path):
     # Open/Create netCDF.
-    self.ncf = Dataset(path, 'w', format='NETCDF4')
+    if os.path.isfile(path):
+      if os.access(path, os.W_OK):
+        mode = 'a'
+      else:
+        print "Can't open file " + path
+        sys.exit(1)
+    else:
+      mode = 'w'
+
+
+    # Nimbus is NetCDF3 classic.  But that can only have one UNLIMITED dimension.  Time to switch to ncf4?
+    self.ncf = Dataset(path, mode, clobber=False, format='NETCDF3_CLASSIC')
     self.ncf.set_fill_on()
+
+    # This really needs to get the variables, not just return.
+    # ... actually needs to delete them and create again.
+    if 'MTP_Time' in self.ncf.dimensions:
+      return
 
     # Dimensions.
     self.ncf.createDimension('MTP_Time', None)
