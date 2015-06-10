@@ -271,6 +271,16 @@ class MTPNetCDF:
     self.mtp_time.units = start_date
     self.mtp_time[:] = usec
 
+    vm08,vvid,vp08,vmtr,vsync,vp15,vp05,vm15 = numpy.genfromtxt(sys.argv[1], dtype='f4', delimiter=',', usecols=(46,47,48,49,50,51,52,53), unpack=True)
+    self.vm08[:] = vm08
+    self.vvid[:] = vvid
+    self.vp08[:] = vp08
+    self.vmtr[:] = vmtr
+    self.vsync[:] = vsync
+    self.vp15[:] = vp15
+    self.vp05[:] = vp05
+    self.vm15[:] = vm15
+
 
   def loadMTPP(self, path):
     # Load temperature profile (MTPP data).
