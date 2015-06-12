@@ -271,6 +271,11 @@ class MTPNetCDF:
     self.mtp_time.units = start_date
     self.mtp_time[:] = usec
 
+    # will read six cols of junk into target loads, since they were not sent to nidas, beware bogus data.
+    cnts = numpy.loadtxt(sys.argv[1], dtype='f4', delimiter=',', usecols=(tuple(range(16,52))))
+    cnts1 = numpy.reshape(cnts, (1244,3,12), 'F')
+    self.cnts[:] = cnts1
+
     vm08,vvid,vp08,vmtr,vsync,vp15,vp05,vm15 = numpy.genfromtxt(sys.argv[1], dtype='f4', delimiter=',', usecols=(46,47,48,49,50,51,52,53), unpack=True)
     self.vm08[:] = vm08
     self.vvid[:] = vvid
