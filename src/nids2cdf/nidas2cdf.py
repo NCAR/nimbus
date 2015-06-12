@@ -277,8 +277,12 @@ class MTPNetCDF:
 
     # will read six cols of junk into target loads, since they were not sent to nidas, beware bogus data.
     cnts = numpy.loadtxt(sys.argv[1], dtype='f4', delimiter=',', usecols=(tuple(range(16,52))))
-    cnts1 = numpy.reshape(cnts, (dt.size,3,12), 'F')
-    self.cnts[:] = cnts1
+    self.cnts[:] = numpy.reshape(cnts, (dt.size,3,12), 'F')
+
+    bt = numpy.loadtxt(sys.argv[1], dtype='f4', delimiter=',', usecols=(tuple(range(16,46))))
+    # DEEPWAVE specific, since no BT was sent to nidas, fake it here.
+    bt[:] = [x / 70 for x in bt]
+    self.bt[:] = numpy.reshape(bt, (dt.size,3,10), 'F')
 
     vm08,vvid,vp08,vmtr,vsync,vp15,vp05,vm15 = numpy.genfromtxt(sys.argv[1], dtype='f4', delimiter=',', usecols=(46,47,48,49,50,51,52,53), unpack=True)
     self.vm08[:] = vm08
