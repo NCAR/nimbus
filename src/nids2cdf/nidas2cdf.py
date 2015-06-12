@@ -32,13 +32,15 @@ class MTPNetCDF:
     self.ncf = Dataset(path, mode, clobber=False, format='NETCDF3_CLASSIC')
     self.ncf.set_fill_on()
 
+
+  def createVariables(self, size):
     # This really needs to get the variables, not just return.
     # ... actually needs to delete them and create again.
     if 'MTP_Time' in self.ncf.dimensions:
       return
 
     # Dimensions.
-    self.ncf.createDimension('MTP_Time', None)
+    self.ncf.createDimension('MTP_Time', size)
     self.ncf.createDimension('MTP_NumberTemplates', 30)
     self.ncf.createDimension('MTP_ALT', 33)
     self.ncf.createDimension('MTP_TemplateALT', 33)
@@ -268,12 +270,14 @@ class MTPNetCDF:
     for s in dt:
       usec.append(int(s[9:11]) * 3600 + int(s[11:13]) * 60 + int(s[13:15]))
 
+    self.createVariables(dt.size)
+
     self.mtp_time.units = start_date
     self.mtp_time[:] = usec
 
     # will read six cols of junk into target loads, since they were not sent to nidas, beware bogus data.
     cnts = numpy.loadtxt(sys.argv[1], dtype='f4', delimiter=',', usecols=(tuple(range(16,52))))
-    cnts1 = numpy.reshape(cnts, (1244,3,12), 'F')
+    cnts1 = numpy.reshape(cnts, (dt.size,3,12), 'F')
     self.cnts[:] = cnts1
 
     vm08,vvid,vp08,vmtr,vsync,vp15,vp05,vm15 = numpy.genfromtxt(sys.argv[1], dtype='f4', delimiter=',', usecols=(46,47,48,49,50,51,52,53), unpack=True)
