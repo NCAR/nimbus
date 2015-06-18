@@ -70,7 +70,7 @@ const double Planck = 6.62606957e-34;
 
 const double GRAVITY = 9.780327;	// Gravity at surface and equator.
 
-const double StdSpeedOfSound = sqrt(2.0 * Cp * Tr);
+const double StdSpeedOfSound = sqrt(2.0 * Cpd * Tr);
 
 const double StdSpeedOfLight = 299792458.0;	// m/s
 
