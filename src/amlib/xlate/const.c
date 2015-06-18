@@ -28,8 +28,17 @@ const double StdPress = 1013.25;
 // Reference temperature in a standard atmosphere at sea level..
 const double Tr = 15.0 + Kelvin;
 
+// Molecular weight dry air
+const double Md = 28.9637; kg kmol-1
+
+// Molecular weight water
+const double Mw = 18.0153; kg kmol-1
+
+// Universal gas constant
+const double R0 = 8314.472;
+
 // The specific gas constant for dry air (J/(kg*K))
-const double Rd = 8314.472 / 28.96194;
+const double Rd = R0 / Md;
 
 /* Specific heat capacity of dry air (J/(kg*K))
  * Computed as: (7/2) * Rd
