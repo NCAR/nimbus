@@ -4,7 +4,7 @@
 #include "amlib.h"
 
 
-extern NR_TYPE compute_tas(NR_TYPE, NR_TYPE);
+NR_TYPE compute_tas(NR_TYPE, NR_TYPE);
 
 /* -------------------------------------------------------------------- */
 void stas(DERTBL *varp)
