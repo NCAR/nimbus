@@ -16,8 +16,10 @@ OUTPUT:		LATC LONC VNSC VEWC
 
 REFERENCE:	Electra Measurements of Wind and Position in HaRP.
 		William Cooper.
+		Latest co-efficients and constants are derived Cooper Wind
+		Uncertainty document May 2015.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2015
 -------------------------------------------------------------------------
 */
 
@@ -28,9 +30,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 
 static NR_TYPE
 	UPFCTR	= 0.999444,
-	FCTRF	= 0.995,	// Previous values was 0.997.
-	TAUP	= 600.0,	// Very original value was 150.
-	TAU	= 600.0,
+	FCTRF	= 0.98,
+	TAUP	= 300.0,
+	TAU	= 300.0,
 	CDM	= 111120.0,
 	ROLL_MAX = 40.0;
 
@@ -68,6 +70,8 @@ void initLATC(var_base *varp)
   else
     ROLL_MAX = tmp[0];
 
+  // At this time do not allow over-rides in the Defaults file.  cjw 5/15
+/*
   if ((tmp = GetDefaultsValue("GPS_TAUP", varp->name)) == NULL)
   {
     sprintf(buffer, "GPS_TAUP set to %f in AMLIB function slatc.\n", TAUP);
@@ -99,6 +103,7 @@ void initLATC(var_base *varp)
   }
   else
     FCTRF = tmp[0];
+*/
 
   memset((char *)zf, 0, sizeof(zf));
   memset((char *)am, 0, sizeof(am));
@@ -362,15 +367,9 @@ void slatc(DERTBL *varp)
     assert(!isnan(glon));
     assert(!isnan(gvew));
     assert(!isnan(gvns));
-    /*gvnsf	= filter((double)gvns, zf[FeedBack][0]);
-    gvewf	= filter((double)gvew, zf[FeedBack][1]);
-    vnsf	= filter((double)vns, zf[FeedBack][2]);
-    vewf	= filter((double)vew, zf[FeedBack][3]);*/
 
-    /*dvy[FeedBack]	= gvnsf - vnsf;*/
     dvy[FeedBack]	+= (1.-fctrf[FeedBack])\
 	   *(filter((double)(gvns-vns),zf[FeedBack][0])-dvy[FeedBack]);
-    /*dvx[FeedBack]	= gvewf - vewf;*/
     dvx[FeedBack]	+= (1.-fctrf[FeedBack])\
 	   *(filter((double)(gvew-vew),zf[FeedBack][1])-dvx[FeedBack]);
     dlat[FeedBack]	= glat - alat;
@@ -494,37 +493,27 @@ static NR_TYPE filter(double x, double zf[])
       /* TAU *= (float)cfg.ProcessingRate(); */
       /* These constants were calculated with tau = 25sps*600 */
       if (cfg.ProcessingRate() == 25) {
-        bfb[0] = 9.18319789058178e-12;
-        bfb[1] = 2.75495936717454e-11;
-        bfb[2] = 2.75495936717454e-11;
-        bfb[3] = 9.18319789058178e-12;
+        bfb[0] = 1.25734516578082039e-07;
+        bfb[1] = 3.77203549734246089e-07;
+        bfb[2] = 3.77203549734246089e-07;
+        bfb[3] = 1.25734516578082039e-07;
         bfa[0] = 1.0;
-        bfa[1] = -2.999162241965168;
-        bfa[2] =  2.998324834812849;
-        bfa[3] = -0.999162592774216;
+        bfa[1] = -2.97989389167679875;
+        bfa[2] =  2.95998940318073878;
+        bfa[3] = -0.980094505627807311;
       } else {
 	  sprintf(buffer,"Butterworth filter not implemented for processing rate %d. Edit gpsc.c and follow instructions for generating coefficients for this rate.\n",cfg.ProcessingRate());
           LogMessage(buffer);
       }
     } else {
-      /* a[FeedBack]	= 2.0 * M_PI / TAU;
-      b1		= sqrt(3.0 / 2.0);
-      b2		= sqrt(1.0 / 3.0);
-      c		= exp(-0.5 * a[FeedBack]);
-      e		= a[FeedBack] * b1;
-      f		= c * (cos(e) + b2 * sin(e));
-      a2[FeedBack]= a[FeedBack] * f;
-      a3[FeedBack]= 2.0 * exp(-a[FeedBack] / 2.0) * cos(e);
-      a4[FeedBack]= exp(-a[FeedBack]); */
-    
-      bfb[0] = 1.42056081706421e-07;
-      bfb[1] = 4.26168245119263e-07; 
-      bfb[2] = 4.26168245119263e-07; 
-      bfb[3] = 1.42056081706421e-07;
+      bfb[0] = 1.56701035058826933e-03;
+      bfb[1] = 4.70103105176480820e-03; 
+      bfb[2] = 4.70103105176480820e-03; 
+      bfb[3] = 1.56701035058826933e-03;
       bfa[0] = 1.0;
-      bfa[1] = -2.97905614466461; 
-      bfa[2] =  2.95833103772367;
-      bfa[3] = -0.97927375661041;
+      bfa[1] = -2.49860834469117776; 
+      bfa[2] =  2.11525412700315840;
+      bfa[3] = -6.04109699507274889e-1;
     }
 
     firstTime[FeedBack] = false;
@@ -541,13 +530,6 @@ static NR_TYPE filter(double x, double zf[])
   zf[5] = zf[4];
   zf[4] = xf;
 
-  /* zf[2] = -a[FeedBack] * x + a2[FeedBack] * zf[5] + a3[FeedBack] * zf[3] - a4[FeedBack] * zf[4];
-  zf[1] = a[FeedBack] * x + a4[FeedBack] * zf[1];
-  zf[4] = zf[3];
-  zf[3] = zf[2];
-  zf[5] = x; */
-
-  /* return(zf[1] + zf[2]);*/
   return(xf);
 
 }	/* END FILTER */
