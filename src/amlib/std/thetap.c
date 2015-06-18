@@ -48,7 +48,7 @@ void sthetap(DERTBL *varp)
   double thetaDL = theta(Tk, psxc-edpc) * pow((Tk / Tl), 0.28e-3 * r);
 
   // Davies-Jones 2009.
-  double thetap = thetaDL * exp( ((L0-L1 * (Tl - Kelvin) + K2 * r) * r) / (Cp * Tl) );
+  double thetap = thetaDL * exp( ((L0-L1 * (Tl - Kelvin) + K2 * r) * r) / (Cpd * Tl) );
 
   PutSample(varp, (NR_TYPE)thetap);
 }
@@ -63,7 +63,7 @@ void sthetaq(DERTBL *varp)
   double lwcc	= GetSample(varp, 4);	// PLWCC, equation fails with no LWC.
 
   double rt = 0.001 * (mr + lwcc * Rd * Tk / (psxc * 100));
-  double cpt = Cp + rt * Cw;
+  double cpt = Cpd + rt * Cw;
   double lv = 2.501e6 + Lv * (Tk - Kelvin);
   double thetaq = Tk * pow((1000.0 / (psxc - edpc)), Rd / cpt) * exp(lv * 0.001 * mr / (cpt * Tk));
 
