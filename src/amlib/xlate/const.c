@@ -28,7 +28,10 @@ const double StdPress = 1013.25;
 // Reference temperature in a standard atmosphere at sea level..
 const double Tr = 15.0 + Kelvin;
 
-// Molecular weight dry air (kg/kmol-1)
+/* Molecular weight dry air (kg/kmol-1)
+ * NIST 1978 defines as 28.96194
+ * Al Cooper recomputed for 2012 with increased CO2 in atmosphere.
+ */
 const double Md = 28.9637;
 
 // Molecular weight water (kg/kmol-1)
