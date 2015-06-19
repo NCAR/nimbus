@@ -29,6 +29,7 @@ dprho.c
 esubt.c
 f300.c
 fssp.c
+gas_const.c
 ggps.c
 gpsc.c
 gsf.c
