@@ -31,7 +31,7 @@ extern const double RESOLV14BIT, RESOLV16BIT;
 enum RateFeedBack { LOW_RATE_FEEDBACK, HIGH_RATE_FEEDBACK, nFeedBackTypes };
 
 #define AMBIENT(t, rf, xm2) \
-		((t + Kelvin) / (1.0 + 0.2 * rf * xm2) - Kelvin)
+		((t + Kelvin) / (1.0 + (rf * xm2 * R() / (2.0 * Cv()))) - Kelvin)
 
 #define XMAC2(a) \
 		(5.0 * (pow((double)((a)+1.0), Rd_DIV_Cpd) - 1.0))
@@ -80,6 +80,8 @@ struct _dnfn
 
 NR_TYPE	FirstPoly(NR_TYPE x, std::vector<NR_TYPE>& cof);
 NR_TYPE	SecondPoly(NR_TYPE x, std::vector<NR_TYPE>& cof);
+
+double Fr(), R(), Cv(), Cp(); // Gas constants.
 
 int	SearchDERIVFTNS(const char target[]);
 void	RunAMLIBinitializers(), LogXlateMsg(const char msg[]),

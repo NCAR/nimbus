@@ -4,7 +4,19 @@
 #include "amlib.h"
 
 
-NR_TYPE compute_tas(NR_TYPE, NR_TYPE);
+static const double Yd = Cpd / Cvd;
+
+/* -------------------------------------------------------------------- */
+NR_TYPE compute_tas(NR_TYPE t, NR_TYPE m)
+{
+  double Y = Cp() / Cv();
+  double term = m * sqrt(Y * R() * (t + Kelvin));	// Using ATX
+
+  if (term < 0.0)
+    term = -term;
+
+  return term;
+}
 
 /* -------------------------------------------------------------------- */
 void stas(DERTBL *varp)
@@ -15,15 +27,4 @@ void stas(DERTBL *varp)
   NR_TYPE tas	= compute_tas(at, mach);
 
   PutSample(varp, tas);
-}
-
-/* -------------------------------------------------------------------- */
-NR_TYPE compute_tas(NR_TYPE t, NR_TYPE m)
-{
-  double term = m * sqrt((double)7.0 / 5.0 * Rd * (t + Kelvin));	// Using ATX
-
-  if (term < 0.0)
-    term = -term;
-
-  return term;
 }
