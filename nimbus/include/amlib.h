@@ -81,7 +81,7 @@ struct _dnfn
 NR_TYPE	FirstPoly(NR_TYPE x, std::vector<NR_TYPE>& cof);
 NR_TYPE	SecondPoly(NR_TYPE x, std::vector<NR_TYPE>& cof);
 
-double Fr(), R(), Cv(), Cp(); // Gas constants.
+double R(), Cv(), Cp(); // Gas constants.
 
 int	SearchDERIVFTNS(const char target[]);
 void	RunAMLIBinitializers(), LogXlateMsg(const char msg[]),
