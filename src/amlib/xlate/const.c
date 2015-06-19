@@ -39,7 +39,7 @@ const double MolecularWeightWater = 18.01528;	// kg kmol-1
 const double R0 = 8314.472;
 
 // The specific gas constant for dry air (J/(kg*K))
-const double Rd = R0 / Md;
+const double Rd = R0 / MolecularWeightDryAir;
 
 /* Specific heat capacity of dry air (J/(kg*K))
  * Computed as: (7/2) * Rd
