@@ -32,10 +32,8 @@ const double Tr = 15.0 + Kelvin;
  * NIST 1978 defines as 28.96194
  * Al Cooper recomputed for 2012 with increased CO2 in atmosphere.
  */
-const double Md = 28.9637;
-
-// Molecular weight water (kg/kmol-1)
-const double Mw = 18.0153;
+const double MolecularWeightDryAir = 28.9637;	// kg kmol-1
+const double MolecularWeightWater = 18.01528;	// kg kmol-1
 
 // Universal gas constant
 const double R0 = 8314.472;
@@ -76,9 +74,6 @@ const double GRAVITY = 9.780327;	// Gravity at surface and equator.
 const double StdSpeedOfSound = sqrt(2.0 * Cpd * Tr);
 
 const double StdSpeedOfLight = 299792458.0;	// m/s
-
-const double MolecularWeightDryAir = 28.9637;	// kg kmol-1
-const double MolecularWeightWater = 18.01523;	// kg kmol-1
 
 const double PI = M_PI;			// defined in math.h 
 
