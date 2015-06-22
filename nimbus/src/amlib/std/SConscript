@@ -11,10 +11,8 @@ akrd.c
 altc.c
 angcr.c
 asas.c
-atb.c
 atf.c
-atfh.c
-ath_gv.c
+ath.c
 boomln.c
 cdp.c
 cnctr.c
