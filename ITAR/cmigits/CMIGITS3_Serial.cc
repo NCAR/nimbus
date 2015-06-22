@@ -850,7 +850,7 @@ throw()
         return false;
     }
 
-    unsigned short  j=0, message_id, flag_word;
+    unsigned short  j=0, message_id;
     unsigned short  cm_hdr[CM_HDR_SIZE], data_size, ckSum;
     size_t data_length = samp->getDataLength();
 
@@ -875,7 +875,7 @@ throw()
 
     message_id = cm_hdr[1];
     data_size = cm_hdr[2];
-    flag_word = cm_hdr[3];
+//    flag_word = cm_hdr[3];
 
 /** Comment out by default.  3623 will spew this non-stop.  And interpretation of the manual
  * says it will always be true anyways.
