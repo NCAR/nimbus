@@ -771,6 +771,8 @@ void CMIGITS3_Serial::parseNavSoln(const unsigned short* input,
 
     Ctrue_heading = _cm2dsmcvtr->int32Value(input);
     DCtrue_heading = 180.0 * cm31 * Ctrue_heading;
+    if (DCtrue_heading < 0.0)
+      DCtrue_heading += 360.0;
     dout[iout++] = DCtrue_heading;
 }
 
