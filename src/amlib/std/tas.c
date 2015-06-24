@@ -19,6 +19,26 @@ NR_TYPE compute_tas(NR_TYPE t, NR_TYPE m)
 }
 
 /* -------------------------------------------------------------------- */
+void stas_flag(DERTBL *varp)
+{
+  NR_TYPE q = GetSample(varp, 0);
+  NR_TYPE p = GetSample(varp, 1);
+  NR_TYPE rt = GetSample(varp, 2);
+  NR_TYPE ew = GetSample(varp, 3);
+
+  void setEOP(double);
+  setEOP(0.0);
+
+/*
+  if (!isnan(ew) && !isnan(p))
+  {
+    setEOP(ew/p);
+  }
+*/
+  PutSample(varp, 0.0);
+}
+
+/* -------------------------------------------------------------------- */
 void stas(DERTBL *varp)
 {
   NR_TYPE mach	= GetSample(varp, 0);
