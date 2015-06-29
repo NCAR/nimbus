@@ -720,15 +720,17 @@
 #
 #	Ambient Temperature.
 #
-	"ATITR",	NULL,				NULL,	sitrAT,
 	"ATW",		(void(*)(void*))atfInit,	NULL,	satf,
 	"ATX",		NULL,				NULL,	sRefer,
 	"ATRR",		(void(*)(void*))atfInit,	NULL,	satf,
 	"ATRL",		(void(*)(void*))atfInit,	NULL,	satf,
 	"ATFR",		(void(*)(void*))atfInit,	NULL,	satf,
+	"ATF1",		(void(*)(void*))atfInit,	NULL,	satf,
 #	"TTWHC",	(void(*)(void*))tthcInit,	NULL,	sttwhc,
 	"ATFH1",	(void(*)(void*))athInit,	NULL,	sath,
 	"ATFH2",	(void(*)(void*))athInit,	NULL,	sath,
+	"ATH1",		(void(*)(void*))athInit,	NULL,	sath,
+	"ATH2",		(void(*)(void*))athInit,	NULL,	sath,
 	"ATHR1",	(void(*)(void*))athInit,	NULL,	sath,
 	"ATHR2",	(void(*)(void*))athInit,	NULL,	sath,
 	"ATHL1",	(void(*)(void*))athInit,	NULL,	sath,
