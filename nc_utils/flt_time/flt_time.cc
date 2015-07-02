@@ -64,13 +64,16 @@ main(int argc, char *argv[])
 {
   int indx = 1;
   float speed_cutoff = 25.0;	// Default.
+  char variable[16] = "GSF";
+  float delta = 1.0;
 
 
   // Check arguments / usage.
   if (argc < 2)
   {
-    cerr << "Print out take-off and landing times from a netCDF file.\nUses true airspeed above 25 m/s (use -t to change).\n\n";
-    cerr << "Usage: flt_time [-t value] netcdf_file\n";
+    cerr << "Print out take-off and landing times from a netCDF file.\nUses true airspeed (use -v to change) above 25 m/s (use -t to change).\n\n";
+    cerr << "Usage: flt_time [-t value] [-v variable] netcdf_file\n";
+    cerr << "Currently takes -t or -v, but not both\n";
     exit(1);
   }
 
@@ -78,6 +81,16 @@ main(int argc, char *argv[])
   {
     ++indx;
     speed_cutoff = atof(argv[indx++]);
+  } 
+  else if (strcmp(argv[indx], "-v") == 0)
+  {
+    ++indx;
+    strcpy(variable,argv[indx++]);
+    if (strncmp(variable,"WOW",3) == 0)
+    {
+    speed_cutoff = .5;
+    delta = -1.0; // For Takeoff apply speed_cutoff when passes value decreasing
+    }
   }
 
   // keep program from exiting, if netCDF API doesn't find something.
@@ -101,8 +114,9 @@ main(int argc, char *argv[])
 
   NcValues * time_data = getData(ncFile, "Time");
 
+  // If user specified variable, use that.
   // Try ground speed first, otherwise airspeed.
-  NcValues * speed_data = getData(ncFile, "GSF");
+  NcValues * speed_data = getData(ncFile, variable);
   if (speed_data == 0)
     speed_data = getData(ncFile, "TASX");
 
@@ -123,7 +137,7 @@ main(int argc, char *argv[])
   // Locate Start of Flight
   long i;
   for (i = 0; i < time_var->num_vals(); ++i)
-    if (speed_data->as_float(i) > speed_cutoff)
+    if (((delta > 0.0 && speed_data->as_float(i) > speed_cutoff) || (delta < 0.0 && speed_data->as_float(i) < speed_cutoff)) && speed_data->as_float(i) != -32767.0)
     {
       time_t x = start_t + i;
 
@@ -138,7 +152,7 @@ main(int argc, char *argv[])
 
   // Locate End of Flight
   for (; i < time_var->num_vals(); ++i)
-    if (speed_data->as_float(i) < speed_cutoff && speed_data->as_float(i) != -32767.0)
+    if (((delta > 0.0 && speed_data->as_float(i) < speed_cutoff) || (delta < 0.0 && speed_data->as_float(i) > speed_cutoff)) && speed_data->as_float(i) != -32767.0)
     {
       time_t x = start_t + i;
 
