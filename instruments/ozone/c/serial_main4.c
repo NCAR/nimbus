@@ -156,12 +156,14 @@ int main(int argc, const char* argv[])
 		unsigned char c_buf[4];
 	} serial_buf;
 		
+	// for Flow control DAC
+	float flow_setpoint=2.5, curr_flow=0.;
+	int flow_flag=0;
+	char DAC_flow_channel;
+	// End Flow variables
 	
-	
-	//float val=0;// for Flow control DAC
-	//float flow_buffer[32];
-	//float median_flow, ctr_volt;
-			
+	float curr_T=0.; // Temperature variable - for lamp warmup delay
+
 	char udp_buffer[32]; //UDP broadcast variables
 	
 	int usectimeout=200000;
@@ -204,13 +206,14 @@ int main(int argc, const char* argv[])
 	{
 		fprintf(stderr, "Instrument is OP1\n");
 		sprintf( dataFName, getDate( &t, "/mnt/hda1/data/OP1_%Y%m%d_%H%M%S.dat") );
+		DAC_flow_channel = 0; // DAC channel is different in OP1 vs OP2. In OP2, chan 0 burned up I think.
 	}
 	else
 	{
 		fprintf(stderr, "Instrument is OP2\n");
 		sprintf( dataFName, getDate( &t, "/mnt/hda1/data/OP2_%Y%m%d_%H%M%S.dat") );
+		DAC_flow_channel = 2; // DAC channel is different in OP1 vs OP2. In OP2, chan 0 burned up I think.
 	}
-
 	
 	// Prepare output file.
 	dataFile = fopen( dataFName, "w");
@@ -343,8 +346,10 @@ int main(int argc, const char* argv[])
 			}
 		
 
-	printf("press any key to continue\n");
-	scanf("%c",buf);
+	//printf("press any key to continue\n");
+	//scanf("%c",buf);
+	
+	
 	// Reset last stored value in Digial pots to the wiper by !PR strobe
 /*	sprintf(send_buff_a,"d%c%c%c",'a', 17, 1);
 	wr=write(fd1,&send_buff_a,4);
@@ -387,34 +392,49 @@ int main(int argc, const char* argv[])
 		GetEngData( engData, dmmChanConf, nChanDMM ); // Get engineering data.
 		
 		/*---------------- Flow Control -------------*/
-		//printf("engData # 7=%f \n", engData[7]); // engData[7] is most recent MAF value in SLPM
+		//engData[7] is most recent Flow value in SLPM.
+		curr_flow = engData[7];
 
-		//Write MAF data do UPB buffer
-	//	sprintf(udp_buffer , " %f ,", engData[7]);
+		//Write Flow data do UPB buffer
+		//printf(udp_buffer , " %f ,", curr_flow);
 		
-		//calculate control voltage
-		/* save flow values */
-	//	flow_buffer[i%32]= engData[7];
+		// if flow value is outside of desired range, count the number of readings outside the range
+		if ( curr_flow < 1.8 ) {
+			flow_flag += 1;
+		} else if ( curr_flow > 2.0 ) {
+			flow_flag -= 1;
+		}
 		
-		/* sort flow values */ 
-		// sort_low_to_high(flow_buffer);
-	//	median_flow = flow_buffer[16]; // only after sorting
-		 
-		/* some_look_up_table_function*/
-		/* write desired voltage out to ctr_volt */
-	//	ctr_volt = median_flow;// look_up_flow(median_flow)
+		// ... and if over 10 readings are outside the range, adjust setpoint slowly.
+		if ( flow_flag > 10 ) {
+			if (flow_setpoint < 9.8 ) flow_setpoint += 0.1; // Increase voltage but not past fully open position.
+			flow_flag = 0; // Trim flag in case adjustment was sufficient.
+		} else if ( flow_flag < -10 ) {
+			if (flow_setpoint > 0.1) flow_setpoint -= 0.1; // Decrease voltage but not past fully closed position.
+			flow_flag = 0; // Trim flag in case adjustment was sufficient.
+		}
 		
 		//write control voltage to DAQ
-	//	PRM_DAC_Write( 0 , val ); /*replace arg2 with ctr_volt */
+		PRM_DAC_Write( DAC_flow_channel , flow_setpoint ); /*replace arg2 with flow control voltage value */
 		
+		printf("Setpoint: %.2f, flow: %.2f, Flag: %d\n", flow_setpoint, curr_flow, flow_flag);
 		/*---------------- End Flow Control ---------*/
 		
+		// Verify that OP is warmed up. If is not, do not continue execution until it is.
+		// Find the largest of the primary channel temperatures.
+		curr_T = stateParams[0] > stateParams[1] ? stateParams[0] : stateParams[1];
+		if ( curr_T < stateParams[2] ) curr_T = stateParams[2];
+		if ( curr_T < stateParams[3] ) curr_T = stateParams[3];
+		if ( curr_T < 32.0 ) {
+			sleep(2); // Wait for a bit of time before checking again.
+			continue; // Do not adjust biases or write data until instrument is warmed up.
+		}
 				
 		/* ---- Serial Comm ---- */
 
 			rd=read_timeout(fd1, buf, 10,usectimeout,&sigset);
 			
-			if(rd != 10)// ADC read fail
+			if(rd != 10) // ADC read fail
 			{	
 				log_tty_error(rd,10,"conversion");
 				exit(1);	
@@ -425,21 +445,20 @@ int main(int argc, const char* argv[])
 								
 			//	printf("0=0x%X, 1=0x%X, 2=0x%X, 3=0x%X, 4=0x%X, 5=0x%X\n",buf[0], buf[1], buf[2], buf[3], buf[4], buf[5]);
 				bits_a = serial_fix_24(buf);
-				printf("a=0x%X\n",bits_a);
+				//printf("a=0x%X\n",bits_a);
 				//volts_a= (float) bits_a * 5 / 16777215 / 128;
 				//printf("A =%7.7f \t",volts_a);
 				
 				bits_b = serial_fix_24(buf+3);		
-				printf("b=0x%X\n",bits_b);						
+				//printf("b=0x%X\n",bits_b);						
 				//volts_b= (float) bits_b * 5 / 16777215 / 128;
 				//printf("B=%7.7f\n",volts_b);
 				
 				bias_a= (int) (buf[6]<<8) | (int) buf[7];//(((int)buf[8])<<8) | ((int)buf[7]);
-				
-				printf("bias A=0x%X=%f\n",bias_a, ((float)bias_a * 3.3)/4095);
+				//printf("bias A=0x%X=%f\n",bias_a, ((float)bias_a * 3.3)/4095);
 				
 				bias_b= (int) (buf[8]<<8) | (int) buf[9];//(((int)buf[10])<<8) | ((int)buf[9]);
-				printf("bias B=0x%X=%f\n",bias_b, ((float)bias_b * 3.3)/4095);
+				//printf("bias B=0x%X=%f\n",bias_b, ((float)bias_b * 3.3)/4095);
 			}		
 		/* ---- End Serial Comm ---- */
 		
@@ -481,7 +500,7 @@ int main(int argc, const char* argv[])
 			//check flag conditions	
 			if((trailo_a >= ORAIL_CK_NUM)&&(trailo_a < ORAIL_CK_NUM_LOG))//if the signal is on the top rail for a few samples
 			{	//increment bias by 1
-				printf("\ninc A\n");
+				//printf("\ninc A\n");
 				for(j=0; j<1; j++)
 				{
 					//increment rdac 1 on board A by 1
@@ -493,7 +512,7 @@ int main(int argc, const char* argv[])
 		
 			else if(trailo_a >= ORAIL_CK_NUM_LOG)// if the signal is on the top rail for several samples
 			{
-				printf("\nInc A 6dB\n");
+				//printf("\nInc A 6dB\n");
 				//increment both rdacs on board A by 6 dB
 				//sprintf((char *)buf, "d%c%c%c", 'a', 0x13, 0x0);
 				sprintf((char *)buf, "d%c%c%c", 'a', 0x14, 0x1);
@@ -513,7 +532,7 @@ int main(int argc, const char* argv[])
 							
 			if((brailo_a >= ORAIL_CK_NUM)&&(brailo_a < ORAIL_CK_NUM_LOG))//if the signal is on the bottom rail for a few samples
 			{ //decrement bias by 10
-				printf("\ndec A\n");
+				//printf("\ndec A\n");
 				for(j=0; j<1; j++)
 				{
 					//decrement rdac 1 on board A by 1
@@ -524,11 +543,11 @@ int main(int argc, const char* argv[])
 			
 			else if(brailo_a >= ORAIL_CK_NUM_LOG)// if the signal is on the bottom rail for several samples
 			{
-				printf("\nDec A 6dB\n");
+				//printf("\nDec A 6dB\n");
 				//decrement both rdacs on board A by 6dB (right shift bit value for half)
 				//sprintf((char *)buf, "d%c%c%c", 'a', 0x5, 0x0);
 				sprintf((char *)buf, "d%c%c%c", 'a', 0x6, 0x1);
-				wr=write(fd1, buf ,4);	
+				wr=write(fd1, buf ,4);
 				brailo_a--;
 			}
 			
@@ -581,7 +600,7 @@ int main(int argc, const char* argv[])
 			{	//increment bias by 1
 				//for(j=0; j<1; j++)
 				//{	
-					printf("\ninc B\n");
+					//printf("\ninc B\n");
 					//increment rdac 1 on board B by 1
 					sprintf((char *)buf, "d%c%c%c", 'b', 0x14, 0x1);
 					wr=write(fd1, buf ,4);	
@@ -590,7 +609,7 @@ int main(int argc, const char* argv[])
 		
 			else if(trailo_b >= ORAIL_CK_NUM_LOG)// if the signal is on the top rail for several samples
 			{
-				printf("\nInc B 6dB\n");
+				//printf("\nInc B 6dB\n");
 				////increment both rdacs on board B by 6 dB
 				////sprintf((char *)buf, "d%c%c%c", 'b', 0x13, 0x0);
 				sprintf((char *)buf, "d%c%c%c", 'b', 0x14, 0x1);
@@ -610,7 +629,7 @@ int main(int argc, const char* argv[])
 							
 			if((brailo_b >= ORAIL_CK_NUM)&&(brailo_b < ORAIL_CK_NUM_LOG))//if the signal is on the bottom rail for a few samples
 			{ //decrement bias by 1
-				printf("\ndec B\n");
+				//printf("\ndec B\n");
 				//for(j=0; j<1; j++)
 				//{	//decrement rdac 1 on board B by 1
 					sprintf((char *)buf, "d%c%c%c", 'b', 0x6, 0x1);
@@ -620,7 +639,7 @@ int main(int argc, const char* argv[])
 								
 			else if(brailo_b >= ORAIL_CK_NUM_LOG)
 			{
-				printf("\nDec B 6dB\n");
+				//printf("\nDec B 6dB\n");
 				////decrement both rdacs on board B by 6dB (right shift bit value for half)
 				//sprintf((char *)buf, "d%c%c%c", 'b', 0x5, 0x0);
 				sprintf((char *)buf, "d%c%c%c", 'b', 0x6, 0x1);
@@ -639,14 +658,14 @@ int main(int argc, const char* argv[])
 			}		
 		
 		/* <> <> <> End Check for Board B <> <> <> */	
-		printf("trailo_a=%d\t",trailo_a);		
+/*		printf("trailo_a=%d\t",trailo_a);		
 		printf("brailo_a=%d\t",brailo_a);	
 		printf("trailc_a=%d\t",trailc_a);			
 		printf("brailc_a=%d\n",brailc_a);
 		printf("trailo_b=%d\t",trailo_b);		
 		printf("brailo_b=%d\t",brailo_b);	
 		printf("trailc_b=%d\t",trailc_b);			
-		printf("brailc_b=%d\n",brailc_b);
+		printf("brailc_b=%d\n",brailc_b); */
 						
 		/* ---- End bias check and control ---- */
 		
