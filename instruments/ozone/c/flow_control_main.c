@@ -137,8 +137,8 @@ int main(int argc, const char* argv[])
 	_socket.openSock(UDP_BOUND);
 	int nBytes = 32;
 	
-	float val=0.; // Define the original DAC value for the flow controller.
-	PRM_DAC_Write( 2, 1.0 ); // Set it to slightly open.
+	float val=2.; // Define the original DAC value for the flow controller.
+	PRM_DAC_Write( 2, val ); // Set it to slightly open.
 	
 		// =============== Main DAQ loop start. Should be infinite in the actual application. ==================
 	for ( i=0; i < n_iter; i++ )
@@ -180,13 +180,14 @@ int main(int argc, const char* argv[])
 		
 		//printf("enter DAC value: ");
 		//scanf("%f",&val);
-		
-		if (((i % 50) == 0)) { // Change setpoint every 5 s. This way all setpoints will run through twice in 5 min.
-			if (val == 10) {
-				val = 0;
+
+		if (((i % 25) == 0)) { // Change setpoint every 5 s. This way all setpoints will run through twice in 5 min.
+			if (val >= 3.5) {
+				val = 2.0;
 				}
-			val += 1.;
-			printf("Valve setpoint is: %f\n", val);
+			
+			printf("Valve setpoint is: %.2f, flow is: %.2f, pressure %.1f\n", val, engData[7], stateParams[5]);
+			val += 0.1;
 			PRM_DAC_Write( 2 , val ); /*replace arg2 with ctr_volt */
 		}
 
