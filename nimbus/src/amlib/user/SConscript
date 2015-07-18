@@ -5,6 +5,7 @@ Import('env')
 sources = Split("""
 IDEAS2.c
 ACEASIA.c
+CSET.c
 DEEPWAVE.c
 DYCOMS.c
 NOMADSS.c
