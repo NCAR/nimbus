@@ -62,14 +62,15 @@ Config() :
 
 static const char* platform_names_array[] =
   {
-    "GV", 
-    "C130",
+    "GV", 	// NCAR GV
+    "C130",	// NCAR C130
     "N42RF",	// NOAA AOC P3 - Kermit
     "N43RF",	// NOAA AOC P3 - Miss Piggy
     "N49RF",	// NOAA AOC G4
-    "DC8",
-    "A10",
+    "DC8",	// NASA DC-8
+    "A10",	// South Dakota School of Mines A-10.
     "WKA",	// Wyoming King Air
+    "WB57",	// NASA WB-57
     "B146",	// UK BAE146
     "DLR"	// DLR Falcon
   };
