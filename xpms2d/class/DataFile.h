@@ -51,8 +51,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #define PMS2DG1		0x4731
 #define PMS2DG2		0x4732
 // SPEC HVPS
-#define PMS2DH1		0x4831
-#define PMS2DH2		0x4832
+#define HVPS1		0x4831
+#define HVPS2		0x4832
+// SPEC 2DS / 3V-CPI
+#define SPEC2DSH	0x3348
+#define SPEC2DSV	0x3356
  
 
 #define PMS2_SIZE	4116
@@ -109,9 +112,9 @@ public:
   Probes() const { return _probeList; }
 
 protected:
-  enum HeaderType { NoHeader, ADS2, PMS2D };
+  enum HeaderType { NoHeader, ADS2, OAP };
 
-  typedef struct { long long index; short time[3]; } Index;
+  typedef struct { long long index; int16_t time[4]; } Index;
 
   void		initADS2();
   void		initADS3(char *hdrString);
@@ -139,7 +142,7 @@ protected:
   int		gz_fd;
 #endif
   FILE		*fp;
-  long long	savePos;
+  long long	_savePos;
 
   ProbeList	_probeList;
 

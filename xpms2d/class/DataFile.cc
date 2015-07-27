@@ -197,7 +197,7 @@ void ADS_DataFile::initADS3(char *hdrString)
 {
   std::string XMLgetElementValue(const char s[]);
 
-  _fileHeaderType = PMS2D;
+  _fileHeaderType = OAP;
 
   // Extract version number.  ADS2 versions are less than 5.0.
   strcpy(_version, "5");
@@ -519,13 +519,13 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
 #ifdef PNG
   if (_gzipped)
     {
-    savePos = gztell(gz_fd);
+    _savePos = gztell(gz_fd);
     rc = gzread(gz_fd, buff, size) / size;
     }
   else
 #endif
     {
-    savePos = ftello(fp);
+    _savePos = ftello(fp);
 //  if ((nBytes = read(fileno(fp), buff, size)) == 0 && GetNextADSfile())
     rc = fread(buff, size, 1, fp);
     }
@@ -557,11 +557,12 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
 
     case PMS2DC1: case PMS2DC2: // Original 32 diode PMS2D C probes (25um).
     case PMS2DP1: case PMS2DP2:	// Original 32 diode PMS2D P probes (200um).
-    case PMS2DH1: case PMS2DH2: // HVPS
-    case PMS2DC4: case PMS2DC5:	// 64 diode 2DC (25um).
-    case PMS2DC6:		// 64 diode 2DC (10um).
-    case PMS2DP4:		// 64 diode 2DP (150?um).
+    case PMS2DC4: case PMS2DC5:	// 64 diode 25 um 2DC.
+    case PMS2DC6:		// 64 diode 10 um 2DC.
     case PMS2DC8:		// CIP
+    case PMS2DP4:		// 64 bit 2DP.
+    case SPEC2DSH: case SPEC2DSV:	// SPEC 2DS
+    case HVPS1: case HVPS2:	// HVPS
       size = (P2dLRpPR * sizeof(P2d_rec)) - sizeof(short);
       break;
 
@@ -684,13 +685,13 @@ void ADS_DataFile::buildIndices()
 
     for (i = 0; i < 1; ++i)
       {
-      indices[cnt].index = savePos + (sizeof(P2d_rec) * i);
+      indices[cnt].index = _savePos + (sizeof(P2d_rec) * i);
       memcpy(indices[cnt].time, &buffer[2], 6);
       ++cnt;
       }
     }
 
-  if (_fileHeaderType != PMS2D)
+  if (_fileHeaderType != OAP)
     {
 #ifdef PNG
     if (_gzipped)
@@ -752,6 +753,9 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
     for (int i = 1; i < 10; ++i)
       sp[i] = ntohs(sp[i]);
 
+    if (ProbeType(buff) == TWODS)
+      ;
+    else
     if (ProbeType(buff) == FAST2D)
     {
       long long *lp = (long long *)buff->data;
@@ -800,7 +804,6 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
     check_rico_half_buff(buff, 0, nSlices_32bit/2);
     check_rico_half_buff(buff, nSlices_32bit/2, nSlices_32bit);
   }
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -808,6 +811,10 @@ bool ADS_DataFile::isValidProbe(const char *pr) const
 {
   // Sanity check.
   if ((pr[0] == 'C' || pr[0] == 'P' || pr[0] == 'H') && isdigit(pr[1]))
+    return(true);
+
+  // SPEC 2DS
+  if ((pr[0] == '2' || pr[0] == '3') && (pr[1] == 'V' || pr[1] == 'H'))
     return(true);
 
   return(false);
