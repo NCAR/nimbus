@@ -1,7 +1,7 @@
 Summary: Spec file for xpms2d
 Name: xpms2d
 Version: 2.7
-Release: 0
+Release: 1
 License: GPL
 Group: System Environment/Daemons
 Url: http://www.eol.ucar.edu/
@@ -39,6 +39,9 @@ rm -rf %{buildroot}
 %{_bindir}/%{name}
 
 %changelog
+
+* Mon Jul 27 2015 Chris Webster <cjw@ucar.edu> - 2.7-1
+- Merge in 2DS branch.
 
 * Fri Dec 05 2014 Chris Webster <cjw@ucar.edu> - 2.7-0
 - Add support for CIP & PIP probes.  Files still need to meet OAP format.  I would call this beta support.

@@ -23,7 +23,7 @@ static String fallback_resources[] =
   "*XmTextField.foreground:		black",
   "*XmForm.horizontalSpacing:		4",
   "*XmForm.verticalSpacing:		4",
-  "*canvasShell.title:			xpms2d 2.7.0",
+  "*canvasShell.title:			xpms2d 2.7.1",
   "*canvasShell.iconName:		xpms2d",
   "*canvasShell.allowShellResize:	True",
   "*canvasShell.x:			25",
@@ -64,7 +64,7 @@ static String fallback_resources[] =
 
   "*canvas.background:			grey",
   "*canvas.height:			880",
-  "*canvas.width:			1050",
+  "*canvas.width:			1200",
 
   "*magShell.title:			Magnify Window",
   "*magShell.iconName:			2d Mag",

@@ -75,6 +75,9 @@ ProbeType ProbeType(P2d_rec *record)
     return PMS2D;
   }
 
+  if (p[0] == '2' || p[0] == '3')
+    return TWODS;
+
   if (p[0] == 'H')
     return HVPS;
 
@@ -122,8 +125,6 @@ struct recStats &ProcessRecord(P2d_rec *record, float version)
   output.thisTime = (record->hour * 3600 + record->minute * 60 + record->second) * 1000 + record->msec; // in milliseconds
 
   nDiodes = 32;
-  if (ProbeType(record) == HVPS)
-    nDiodes = 128;
 
   if (ProbeType(record) == FAST2D || ProbeType(record) == CIP)
     nDiodes = 64;
@@ -155,8 +156,16 @@ if (probeID[1] == '8')	// CIP
     else
       output.SampleVolume = 61.0 * (output.resolution * nDiodes / 1000);
     }
-  if (probeID[0] == 'H')
+
+  if (ProbeType(record) == TWODS)
   {
+    nDiodes = 128;
+    output.resolution = 10;
+  }
+
+  if (ProbeType(record) == HVPS)
+  {
+    nDiodes = 128;
     output.resolution = 200;
   }
 
@@ -174,8 +183,16 @@ if (probeID[1] == '8')	// CIP
   if (ProbeType(record) == PMS2D)
     return(ProcessPMS2D(record, version));
 
+  if (ProbeType(record) == TWODS)
+  {
+//  Add ProcessSPEC2DS();    
+    return(output);
+  }
+
   if (ProbeType(record) == HVPS)
     return(ProcessHVPSrecord(record, version));
+
+  return(output);
 }
 
 /* -------------------------------------------------------------------- */

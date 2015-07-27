@@ -57,6 +57,7 @@ const unsigned long long Fast2D_Mask = 0xFFFFFE0000000000LL;
 
 const size_t nSlices_32bit = 1024;
 const size_t nSlices_64bit = 512;
+const size_t nSlices_128bit = 256;
 
 #define TITLESIZE	80
 
@@ -119,7 +120,7 @@ enum { NORMAL, DIAGNOSTIC, ENCHILADA, RAW_RECORD };
 /* Values for "HandleError"		*/
 enum { RETURN, EXIT, IRET };
 
-enum ProbeType { UNKNOWN, PMS2D, HVPS, GREYSCALE, FAST2D, CIP };
+enum ProbeType { UNKNOWN, PMS2D, HVPS, GREYSCALE, FAST2D, TWODS, CIP };
 
 extern char buffer[], *outFile, DataPath[], *timeSeg, pngPath[], psPath[];
 
