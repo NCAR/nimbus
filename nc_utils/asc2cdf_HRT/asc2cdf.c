@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
       startSecond = second;
       }
 
-    dataValue = (float)(nRecords * BaseDataRate);
+    dataValue = (float)(nRecords);
     nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
     nc_put_var1_float(ncid, timeVarID, &nRecords, &dataValue);
     dataValue = (float)hour;
