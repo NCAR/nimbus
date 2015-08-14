@@ -9,9 +9,11 @@
 #include <errno.h>
 #include <signal.h>
 #include <math.h>
+#include <iostream>
 #include "config_base.h"
 #include "config_extern.h"
 #include "UdpSocket.h"
+using namespace std;
 //#include "rs232.h" //http://www.teuniz.net/RS-232/
 //http://softexpert.wordpress.com/2007/10/18/how-to-connect-to-a-serial-port-in-linux-using-c/
 
@@ -156,8 +158,8 @@ int main(int argc, const char* argv[])
 		unsigned char c_buf[4];
 	} serial_buf;
 		
-	// for Flow control DAC
-	float flow_setpoint=2.5, curr_flow=0.;
+	// for Flow control DAC. target_flow is in SLPM. flow_setpoint is in Volts. curr_flow is in SLPM (this comes from the instrument)
+	float flow_setpoint=3.5, curr_flow=0., target_flow=1.8; // Initialize the flow control valve seting in mid open position.
 	int flow_flag=0;
 	char DAC_flow_channel;
 	// End Flow variables
@@ -394,14 +396,22 @@ int main(int argc, const char* argv[])
 		/*---------------- Flow Control -------------*/
 		//engData[7] is most recent Flow value in SLPM.
 		curr_flow = engData[7];
+		
+		// Manual flow control setpoint entry. Comment out for measurement mode.
+		/* cout << "Enter flow control set point: ";
+		cin >> flow_setpoint;
+		cout << "Setting flow controller to : " << flow_setpoint << " volts.\n";
+		PRM_DAC_Write( DAC_flow_channel , flow_setpoint ); // Replace arg2 with flow control voltage value
+		if ( flow_setpoint > 10.0 ) return 0; // Give a way to exit the program
+		continue; */
 
 		//Write Flow data do UPB buffer
 		//printf(udp_buffer , " %f ,", curr_flow);
 		
 		// if flow value is outside of desired range, count the number of readings outside the range
-		if ( curr_flow < 1.8 ) {
+		if ( curr_flow < target_flow - 0.1 ) {
 			flow_flag += 1;
-		} else if ( curr_flow > 2.0 ) {
+		} else if ( curr_flow > target_flow + 0.1 ) {
 			flow_flag -= 1;
 		}
 		
@@ -417,19 +427,9 @@ int main(int argc, const char* argv[])
 		//write control voltage to DAQ
 		PRM_DAC_Write( DAC_flow_channel , flow_setpoint ); /*replace arg2 with flow control voltage value */
 		
-		printf("Setpoint: %.2f, flow: %.2f, Flag: %d\n", flow_setpoint, curr_flow, flow_flag);
+		//printf("Setpoint: %.2f, flow: %.2f, Flag: %d\n", flow_setpoint, curr_flow, flow_flag);
 		/*---------------- End Flow Control ---------*/
 		
-		// Verify that OP is warmed up. If is not, do not continue execution until it is.
-		// Find the largest of the primary channel temperatures.
-		curr_T = stateParams[0] > stateParams[1] ? stateParams[0] : stateParams[1];
-		if ( curr_T < stateParams[2] ) curr_T = stateParams[2];
-		if ( curr_T < stateParams[3] ) curr_T = stateParams[3];
-		if ( curr_T < 32.0 ) {
-			sleep(2); // Wait for a bit of time before checking again.
-			continue; // Do not adjust biases or write data until instrument is warmed up.
-		}
-				
 		/* ---- Serial Comm ---- */
 
 			rd=read_timeout(fd1, buf, 10,usectimeout,&sigset);
@@ -463,6 +463,15 @@ int main(int argc, const char* argv[])
 		/* ---- End Serial Comm ---- */
 		
 		rd=0;
+		
+		
+		// Start instrument warm-up check.
+		// Verify that OP is warmed up. If is not, do not continue execution until it is.
+		// Find the largest of the primary channel temperatures.
+		curr_T = stateParams[0] > stateParams[1] ? stateParams[0] : stateParams[1];
+		if ( curr_T < stateParams[2] ) curr_T = stateParams[2];
+		if ( curr_T < stateParams[3] ) curr_T = stateParams[3];
+		if ( curr_T > 32.0 ) {
 		
 		/* ---- Start bias check and control ---- */		
 		/* <> <> <> Start Check for Board A <> <> <> */
@@ -668,7 +677,8 @@ int main(int argc, const char* argv[])
 		printf("brailc_b=%d\n",brailc_b); */
 						
 		/* ---- End bias check and control ---- */
-		
+		} // End instrument warm-up check.
+
 		
 		// Write data to UDP
 		sprintf( udp_buffer, "O3,%d,%d,",bits_a,bits_b);
