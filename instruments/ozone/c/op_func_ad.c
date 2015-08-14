@@ -56,6 +56,7 @@ vRange is the Vref voltage (5V in our case, typically). */
 float TemperatureCalc( float inData, float R1, float R2, float vRange )
 {
 	inData = inData * (R1 + R2)/(vRange - inData) * 1000; //Calculate thermistor resistance in Ohms.
+	if ( inData < 0 ) return -90.0;
 	return (1 / (0.001126 + 0.0002346 * log(inData) + 0.0000000861 * ( pow( log(inData), 3 )))) - 273.16;
 }
 
