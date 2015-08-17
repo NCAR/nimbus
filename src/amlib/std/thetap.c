@@ -59,13 +59,20 @@ void sthetaq(DERTBL *varp)
   double Tk	= GetSample(varp, 0) + Kelvin;
   double psxc	= GetSample(varp, 1);
   double ew	= GetSample(varp, 2);
-  double mr	= GetSample(varp, 3);
+  double r	= GetSample(varp, 3) / 1000.0;	// MR / 1000.0
   double lwcc	= GetSample(varp, 4);	// PLWCC, equation fails with no LWC.
+  double rhum	= GetSample(varp, 5);
 
-  double rt = 0.001 * (mr + lwcc * Rd * Tk / ((psxc - ew)* 100));
+  double Pd = (psxc - ew) * 100.0;
+  double rt = r + lwcc / 1000.0 * Rd * Tk / Pd;
   double cpt = Cpd + rt * Cw;
   double lv = 2.501e6 + Lv * (Tk - Kelvin);
-  double thetaq = Tk * pow((1000.0 / (psxc - ew)), Rd / cpt) * exp(lv * 0.001 * mr / (cpt * Tk));
+
+  double F1 = 1.0;
+  if (rhum < 100.0)
+    F1 = pow(rhum / 100.0, -(r * Rw / cpt));
+
+  double thetaq = Tk * pow(100000.0 / Pd, Rd / cpt) * F1 * exp(lv * r / (cpt * Tk));
 
   PutSample(varp, (NR_TYPE)thetaq);
 }
