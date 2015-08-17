@@ -41,6 +41,9 @@ const double R0 = 8314.472;
 // The specific gas constant for dry air (J/(kg*K))
 const double Rd = R0 / MolecularWeightDryAir;
 
+// The specific gas constant for water vapor (J/(kg*K))
+const double Rw = R0 / MolecularWeightWater;
+
 /* Specific heat capacity of dry air (J/(kg*K))
  * Computed as: (7/2) * Rd
  */
