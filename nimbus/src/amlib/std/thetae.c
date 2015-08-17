@@ -17,9 +17,9 @@ double theta(double Tk, double psxc);
 
 /* -------------------------------------------------------------------- */
 // Temperature at LCL.  Bolton 1980, Eq 21.
-double Tlcl(double Tk, double edpc)
+double Tlcl(double Tk, double ew)
 {
-  double tl = (2840.0 / (3.5 * log(Tk) - log(edpc) - 4.805)) + 55.0;
+  double tl = (2840.0 / (3.5 * log(Tk) - log(ew) - 4.805)) + 55.0;
 
   if (tl <= 0.0)
     return 0.0001;
@@ -32,15 +32,15 @@ void sthetae(DERTBL *varp)
 {
   double Tk	= GetSample(varp, 0) + Kelvin;	// ATX
   double psxc	= GetSample(varp, 1);
-  double edpc	= GetSample(varp, 2);
+  double ew	= GetSample(varp, 2);
   double mr	= GetSample(varp, 3);
 
   if (Tk <= 0.0)
     Tk = 0.0001;
-  if (edpc <= 0.0)
-    edpc = 0.0001;
+  if (ew <= 0.0)
+    ew = 0.0001;
 
-  double exparg = ((3.376 / Tlcl(Tk, edpc)) - 0.00254) * (mr * (1.0 + (0.00081 * mr)));
+  double exparg = ((3.376 / Tlcl(Tk, ew)) - 0.00254) * (mr * (1.0 + (0.00081 * mr)));
   if (exparg > 741.0)
     exparg = 0.0001;
 
