@@ -7,6 +7,7 @@ FULL NAME:	Water Vapor Pressure
 ENTRY POINTS:	esubt()
 		ew()
 		sedpc()
+		cavpe()
 
 DESCRIPTION:	ESUBT function prior to 2011was based on the Goff-Gratch formula
 		("Trans. Am.  Soc. Heat. Vent. Eng.," Vol. 52, pp. 95-121, 1946)
@@ -171,4 +172,30 @@ void sedpc(DERTBL *varp)
   NR_TYPE psxc = GetSample(varp, 1);
  
   PutSample(varp, (NR_TYPE)esubt(dpxc, psxc));
+}
+/* -------------------------------------------------------------------- */
+void scavpe(DERTBL *varp)
+// Dew point correction for pressure in housing from Al Cooper's 12 Oct 2011
+// memo "Dew point correction for pressure in housing"
+{
+  NR_TYPE psxc = GetSample(varp, 0);
+  NR_TYPE qcxc = GetSample(varp, 1);
+  NR_TYPE mach = GetSample(varp, 2);
+  double cavpe = floatNAN;
+
+// Constants for Left DP sensor
+  double a0=1.064737656;
+  double a1=0.001574938;
+  double a2=-1.249778256;
+
+// Constants for Right DP sensor
+if (strstr(varp->name, "DPR"))
+  {
+    a0=1.016216249;
+    a1=0.003024151;
+    a2=-1.345207603;
+  }
+
+  cavpe = psxc*(a0 + a1*qcxc + a2*mach*mach);
+  PutSample(varp, (NR_TYPE)cavpe);
 }
