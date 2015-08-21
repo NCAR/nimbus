@@ -300,6 +300,13 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
   }
+  else
+  if (cfg.ProjectName().compare("ARISTO2015") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC_LPB", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DC_RPB", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
+  }
 }
 
 /* -------------------------------------------------------------------- */
