@@ -136,6 +136,7 @@ void sconcv(DERTBL *varp)
   if (varp->ndep > 5)
   {
     pregain = (int)GetSample(varp, 5);
+    if (pregain < 0) pregain = 0;
     if (pregain > 1) pregain = 1;
   }
   else
