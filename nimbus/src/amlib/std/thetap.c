@@ -12,7 +12,7 @@ OUTPUT:		THETAP deg_K
 
 REFERENCES:	Davies-Jones 2009, Bolton 1980
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2011
+COPYRIGHT:	University Corporation for Atmospheric Research, 2011-2015
 -------------------------------------------------------------------------
 */
 
