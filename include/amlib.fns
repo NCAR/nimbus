@@ -943,7 +943,7 @@
 	"TASFR",	NULL,		NULL,		stas,
 	"TASW",		NULL,		NULL,		stas,
 	"TASX",		NULL,		NULL,		stasx,
-	"TASHC",	NULL,		NULL,		stash,
+	"TASDRY",	NULL,		NULL,		stas_dry,
 	"TASFLG",	NULL,		NULL,		stas_flag,
 	"IAS",		NULL,		NULL,		sias,
 	"CAS",		NULL,		NULL,		sias,
