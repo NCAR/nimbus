@@ -3,6 +3,8 @@
 
 import os, re
 
+import eol_scons
+
 opts = Variables('nidas.conf')
 opts.AddVariables(('PREFIX',
                    'path to nidas include directory',
