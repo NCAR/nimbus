@@ -38,9 +38,9 @@ void initGust(var_base *varp)
   DELT[HIGH_RATE_FEEDBACK] = 1.0/(float)cfg.ProcessingRate();
 
   for (int i = 0; i < MAX_PROBES; i++)
-    {
+  {
     firstTime[i][LOW_RATE_FEEDBACK] = firstTime[i][HIGH_RATE_FEEDBACK] = true;
-    }
+  }
 
   memset(pitch0, 0, sizeof(pitch0));
   memset(thdg0, 0, sizeof(thdg0));
@@ -81,7 +81,7 @@ void swi(DERTBL *varp)
   vspd	= GetSample(varp, 8);
 
   if (isnan(pitch) || isnan(thdg) || isnan(tas) || isnan(vspd))
-    {
+  {
     ui[probeCnt] = floatNAN;
     vi[probeCnt] = floatNAN;
     ux[probeCnt] = floatNAN;
@@ -89,17 +89,17 @@ void swi(DERTBL *varp)
     wi = floatNAN;
     PutSample(varp, wi);
     return;
-    }
+  }
 
   if (firstTime[probeCnt][FeedBack])
-    {
+  {
     if (!isnan(pitch))
       pitch0[probeCnt][FeedBack] = pitch;
     if (!isnan(thdg))
       thdg0[probeCnt][FeedBack] = thdg;
 
     firstTime[probeCnt][FeedBack] = FALSE;
-    }
+  }
 
 
   /* Coordinate transformation
@@ -126,13 +126,13 @@ void swi(DERTBL *varp)
   delph	= pitch - pitch0[probeCnt][FeedBack];
 
   if ((NR_TYPE)fabs((double)delph) >= PITCH_TEST)
-    {
+  {
     if (delph > 0)
       pitch0[probeCnt][FeedBack] += PITCH_TEST * 2.0;
 
     if (delph < 0)
       pitch0[probeCnt][FeedBack] -= PITCH_TEST * 2.0;
-    }
+  }
 
   thedot = (pitch - pitch0[probeCnt][FeedBack]) / DELT[FeedBack];
 
@@ -140,13 +140,13 @@ void swi(DERTBL *varp)
   delth	= thdg - thdg0[probeCnt][FeedBack];
 
   if ((NR_TYPE)fabs((double)delth) >= THDG_TEST)
-    {
+  {
     if (delth > 0)
       thdg0[probeCnt][FeedBack] += THDG_TEST * 2.0;
 
     if (delth < 0)
       thdg0[probeCnt][FeedBack] -= THDG_TEST * 2.0;
-    }
+  }
 
   psidot = (thdg - thdg0[probeCnt][FeedBack]) / DELT[FeedBack];
 
@@ -173,13 +173,13 @@ void swi(DERTBL *varp)
   /* Blow-up protection:  output no winds while on-ground (TAS < 30.0 m/s)
        installed by Ron Ruth  18 October 2001 */
   if (tas < 30.0)
-    {
+  {
     ui[probeCnt] = 0.0;
     vi[probeCnt] = 0.0;
     ux[probeCnt] = 0.0;
     vy[probeCnt] = 0.0;
     wi = 0.0;
-    }
+  }
 
 //printf("wi=%g, tas_dab=%g, ab=%g, t=%g, thedot=%g\n", wi, tas_dab, ab, t, thedot);
   PutSample(varp, wi);
