@@ -8,7 +8,7 @@ import re
 # site_scons is checked out directly into this directory and that takes
 # precedence.
 sys.path.append(os.path.abspath("../../caledit/site_scons"))
-import site_init
+import eol_scons
 
 env = Environment(tools=['default', 'netcdf', 'postgres_pq', 
                          'boost_date_time', 'postgres_testdb',
