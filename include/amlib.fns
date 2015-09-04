@@ -477,6 +477,8 @@
 	"UXC",		NULL,				NULL,		sux,
 	"WSC",		NULL,				NULL,		sws,
 	"WDC",		NULL,				NULL,		swd,
+	"ROC",		NULL,				NULL,		sroc,
+	"WIR",		(void(*)(void*))initGust,	NULL,		swi,
 #
 #	Fluxes
 #						ProbeCount field.
