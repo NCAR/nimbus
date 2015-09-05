@@ -65,8 +65,8 @@ runtest = env.TestRun('pytests', tests+module+pysrcs, "py.test ${SOURCE}")
 
 testing = False
 for target in COMMAND_LINE_TARGETS:
-    if bool(target in ['.', 'test', 'asan', 'render', 'tracks.html', 'datasync'] or
-            target.startswith('kml/')):
+    if bool(target in ['.', 'test', 'asan', 'render', 'tracks.html',
+                       'datasync'] or target.startswith('kml/')):
         testing = True;
             
 if not testing:
