@@ -65,7 +65,7 @@ runtest = env.TestRun('pytests', tests+module+pysrcs, "py.test ${SOURCE}")
 
 testing = False
 for target in COMMAND_LINE_TARGETS:
-    if bool(target in ['.', 'test', 'render', 'tracks.html', 'datasync'] or
+    if bool(target in ['.', 'test', 'asan', 'render', 'tracks.html', 'datasync'] or
             target.startswith('kml/')):
         testing = True;
             
@@ -117,6 +117,7 @@ else:
     akml = 'kml/HIPPO-2rf06.kml'
     ajson = 'kml/HIPPO-2rf06.json'
     (akml, ajson) = env.NetcdfKML([akml, ajson], hippopath)
+    env.Alias('asan', [akml, ajson])
     env.Alias('test', env.Diff([ekml, akml]))
     env.Alias('test', env.Diff([ejson, ajson]))
     env.AlwaysBuild(akml)
