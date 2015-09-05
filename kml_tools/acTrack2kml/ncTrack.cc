@@ -5,11 +5,22 @@
 
 #include <iostream>
 
+#include <boost/scoped_ptr.hpp>
+using boost::scoped_ptr;
+
 using std::cerr;
 using std::endl;
 using std::string;
 
 using namespace boost::posix_time;
+
+std::string
+array_to_string(char* array)
+{
+  std::string x = array;
+  delete[] array;
+  return x;
+}
 
 ncTrack::
 ncTrack()
@@ -78,40 +89,39 @@ fillAircraftTrack(AircraftTrack& track)
 
   NcError err(NcError::silent_nonfatal);
 
-  NcAtt* attr;
-  attr = file.get_att("FlightNumber");
+  scoped_ptr<NcAtt> attr(file.get_att("FlightNumber"));
   if (attr)
-    projInfo.flightNumber = attr->as_string(0);
+    projInfo.flightNumber = array_to_string(attr->as_string(0));
 
-  attr = file.get_att("ProjectName");
+  attr.reset(file.get_att("ProjectName"));
   if (attr)
-    projInfo.projectName = attr->as_string(0);
+    projInfo.projectName = array_to_string(attr->as_string(0));
 
-  attr = file.get_att("Platform");
+  attr.reset(file.get_att("Platform"));
   if (attr)
-    projInfo.platform = attr->as_string(0);
+    projInfo.platform = array_to_string(attr->as_string(0));
 
-  attr = file.get_att("landmarks");
+  attr.reset(file.get_att("landmarks"));
   if (attr)
-    projInfo.landmarks = attr->as_string(0);
+    projInfo.landmarks = array_to_string(attr->as_string(0));
 
   string lon = "LONC";
   string lat = "LATC";
   string tim = "Time";
 
-  attr = file.get_att("longitude_coordinate");
+  attr.reset(file.get_att("longitude_coordinate"));
   if (attr)
-    lon = attr->as_string(0);
+    lon = array_to_string(attr->as_string(0));
   lon = cfg.getLongitudeVariable(lon);
 
-  attr = file.get_att("latitude_coordinate");
+  attr.reset(file.get_att("latitude_coordinate"));
   if (attr)
-    lat = attr->as_string(0);
+    lat = array_to_string(attr->as_string(0));
   lat = cfg.getLatitudeVariable(lat);
 
-  attr = file.get_att("time_coordinate");
+  attr.reset(file.get_att("time_coordinate"));
   if (attr)
-    tim = attr->as_string(0);
+    tim = array_to_string(attr->as_string(0));
 
   NcVar *tim_v = getNetcdfVariable(tim);
   NcVar *tas_v = getNetcdfVariable("TASX");
@@ -132,29 +142,31 @@ fillAircraftTrack(AircraftTrack& track)
     alt = "PALT";
     if ((alt_v = file.get_var(alt.c_str())) == 0)
     {
-      attr = file.get_att("zaxis_coordinate");
-      alt = attr->as_string(0);
+      attr.reset(file.get_att("zaxis_coordinate"));
+      alt = array_to_string(attr->as_string(0));
     }
   }
   alt = cfg.getAltitudeVariable(alt);
   alt_v = getNetcdfVariable(alt);
-  cfg.setAltitudeUnits(alt_v->get_att("units")->as_string(0));
+  attr.reset(alt_v->get_att("units"));
+  cfg.setAltitudeUnits(array_to_string(attr->as_string(0)));
 
-  NcValues *tim_vals = tim_v->values();
-  NcValues *tas_vals = tas_v->values();
-  NcValues *lat_vals = lat_v->values();
-  NcValues *lon_vals = lon_v->values();
-  NcValues *alt_vals = alt_v->values();
-  NcValues *atx_vals = atx_v->values();
-  NcValues *dp_vals = dp_v->values();
-  NcValues *ws_vals = ws_v->values();
-  NcValues *wi_vals = wi_v->values();
-  NcValues *wd_vals = wd_v->values();
-  NcValues *thdg_vals = thdg_v->values();
+  scoped_ptr<NcValues> tim_vals(tim_v->values());
+  scoped_ptr<NcValues> tas_vals(tas_v->values());
+  scoped_ptr<NcValues> lat_vals(lat_v->values());
+  scoped_ptr<NcValues> lon_vals(lon_v->values());
+  scoped_ptr<NcValues> alt_vals(alt_v->values());
+  scoped_ptr<NcValues> atx_vals(atx_v->values());
+  scoped_ptr<NcValues> dp_vals(dp_v->values());
+  scoped_ptr<NcValues> ws_vals(ws_v->values());
+  scoped_ptr<NcValues> wi_vals(wi_v->values());
+  scoped_ptr<NcValues> wd_vals(wd_v->values());
+  scoped_ptr<NcValues> thdg_vals(thdg_v->values());
 
-  attr = tim_v->get_att("units");
+  attr.reset(tim_v->get_att("units"));
   struct tm tm;
-  strptime(attr->as_string(0), "seconds since %F %T +0000", &tm);
+  strptime(array_to_string(attr->as_string(0)).c_str(),
+	   "seconds since %F %T +0000", &tm);
   char tz[] = "TZ=UTC";
   putenv(tz);
   ptime basetime = from_time_t(mktime(&tm));
