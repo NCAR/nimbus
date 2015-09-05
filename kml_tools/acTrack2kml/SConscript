@@ -14,7 +14,7 @@ env.Append(CXXFLAGS='-g -Werror -Wall')
 # libraries it links against must be relocatable.
 env.AppendUnique(CXXFLAGS=['-fPIC'])
 
-libactrack = env.StaticLibrary('actrack', [
+sources = [
     'ACTrackDriver.cc',
     'Config.cc',
     'AircraftTrackKML.cc',
@@ -22,7 +22,9 @@ libactrack = env.StaticLibrary('actrack', [
     'TrackPath.cc',
     'acDatabase.cc',
     'ncTrack.cc',
-    'osm.cc'])
+    'osm.cc']
+
+libactrack = env.StaticLibrary('actrack', sources)
 
 env.Append(LIBS=libactrack)
 actrackkml = env.Program(['acTrack2kml.cc'])
@@ -31,6 +33,12 @@ actrackkml = env.Program(['acTrack2kml.cc'])
 actrackx = env.Program(['actrackx.cc'])
 
 targets = (libactrack, actrackkml, actrackx)
+
+# print(env.Dump())
+# 
+# cppcheck = env.Command('cppcheck', sources+['acTrack2kml.cc'],
+#                        "cppcheck --enable=all $_CCCOMCOM $SOURCES")
+
 
 Return('targets')
 
