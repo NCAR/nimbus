@@ -21,6 +21,9 @@ def actrack(env):
     env.Require(['netcdf', 'postgres_pq', 'boost_date_time'])
     if env.Dir('.').get_abspath().endswith('sanitized'):
         env.SanitizeAddress()
+    elif env.Dir('.').get_abspath().endswith('clang'):
+        env['CC'] = os.environ.get('CC', env['CC'])
+        env['CXX'] = os.environ.get('CXX', env['CXX'])
 
 Export('actrack')
 
@@ -66,7 +69,8 @@ runtest = env.TestRun('pytests', tests+module+pysrcs, "py.test ${SOURCE}")
 testing = False
 for target in COMMAND_LINE_TARGETS:
     if bool(target in ['.', 'test', 'asan', 'render', 'tracks.html',
-                       'datasync'] or target.startswith('kml/')):
+                       'datasync', 'clang', 'sanitized'] or
+            target.startswith('kml/')):
         testing = True;
             
 if not testing:
@@ -81,6 +85,19 @@ env['ACTRACKOPTS'] = '--path timestep'
 if env.SanitizeSupported():
     (libactrack, actrackkml, actrackx) = SConscript('SConscript', 
                                                     variant_dir='sanitized', 
+                                                    duplicate=1)
+
+# Clang analysis works by running the scons build under the scan-build
+# program, which replaces the CC and CXX environment variables with the
+# paths to the clang analyzer executables.  So if CC is not set in the
+# environment to one of those executables, then we are not really set up to
+# run a clang analysis.  Someday this should be part of a clang analyzer
+# scons tool.  Maybe the CC and CXX paths should be overridden by the tool,
+# rather than requiring the use of scan-build, but I think scan-build also
+# sets up other artifacts like the reports directory.
+if env.Detect('scan-build') and os.environ.get('CC', "").endswith('analyzer'):
+    (libactrack, actrackkml, actrackx) = SConscript('SConscript', 
+                                                    variant_dir='clang', 
                                                     duplicate=1)
 
 dfcache = env.DataFileCache()
