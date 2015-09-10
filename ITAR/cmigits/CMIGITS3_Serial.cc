@@ -43,9 +43,9 @@ const char CMIGITS3_Serial::SyncBytes[2] = { '\xff', '\x81' };
 const uint16_t  CMIGITS3_Serial::ReadyFlag = 0x8000;    // Indication of CMIGITS Ready State
 
 const unsigned int  CMIGITS3_Serial::CM_HDR_SIZE = 5;       // Size of the CMigits header elements
-const unsigned int   CMIGITS3_Serial::CM_3500_SIZE = 16;     // Size of Msg 3500 Data Segment minus chksum
-const unsigned int   CMIGITS3_Serial::CM_3501_SIZE = 22;     // Size of Msg 3501 Data Segment minus chksum
-const unsigned int   CMIGITS3_Serial::CM_3502_SIZE = 16;     // Size of Msg 3502 Data Segment minus chksum
+const unsigned int  CMIGITS3_Serial::CM_3500_SIZE = 16;     // Size of Msg 3500 Data Segment minus chksum
+const unsigned int  CMIGITS3_Serial::CM_3501_SIZE = 22;     // Size of Msg 3501 Data Segment minus chksum
+const unsigned int  CMIGITS3_Serial::CM_3502_SIZE = 16;     // Size of Msg 3502 Data Segment minus chksum
 const double    CMIGITS3_Serial::cm31 = 4.656613e-10;   // Used for lat, lon, pitch, roll and true heading
 const double    CMIGITS3_Serial::cm21 = 4.768372e-07;   // Used for VelN, VelE and VelUp
 const double    CMIGITS3_Serial::cm16 = 1.525879e-05;   // Used for altitude 
@@ -261,7 +261,6 @@ enum CMIGITS3_Serial::MsgStatus CMIGITS3_Serial::parseAckHandshake(const uint16_
 
 void CMIGITS3_Serial::derivedDataNotify(const nidas::core::DerivedDataReader * s) throw()
 {
-
     float speedValue = s->getGroundSpeed();
     if (::isnan(speedValue)) {
         if (!(_noSpeedCnt++ % 60))
@@ -463,7 +462,6 @@ void CMIGITS3_Serial::sendConfigForAccel() throw (n_u::IOException)
 
 void CMIGITS3_Serial::sendOrientationLAMS() throw(n_u::IOException)
 {
-
     Message msg(3511,22);   // Message 3511
     msg.setWord(0x9200,3);  // Handshake - generate Ack
 
@@ -496,7 +494,6 @@ void CMIGITS3_Serial::sendOrientationLAMS() throw(n_u::IOException)
 
 void CMIGITS3_Serial::sendLeverArm() throw(n_u::IOException)
 {
-
     Message msg(3511,22);   // Message 3511
     msg.setWord(0x9200,3);  // Handshake - generate Ack
 
