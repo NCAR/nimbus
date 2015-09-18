@@ -279,7 +279,8 @@ void CMIGITS3_Serial::derivedDataNotify(const nidas::core::DerivedDataReader * s
     /* Wait 2.5 minutes from first valid heading to let the INS finish aligning.
      * If speed is over 50 then assume mid air re-init, don't wait 2.5 minutes.
      */
-    if (speedValue < 50.0 && _delayCntr++ < 150)
+//    if (speedValue < 50.0 && _delayCntr++ < 150)
+    if (speedValue < 50.0 && _delayCntr++ < 5)
         return;
 
     WLOG(("%s: CMIGITS: True Heading: %f",getName().c_str(), s->getTrueHeading())); 
@@ -540,6 +541,8 @@ void CMIGITS3_Serial::sendControlInit3510(double gspd, double thdg, double lat, 
     else
         dvalidity = 0x0013;	// Data Validity - mode command and position & heading data, no gps antenna
 
+    WLOG(("%s: CMIGITS dvalidity=%x.", getName().c_str(), dvalidity));
+
     // Position Data
     if (dvalidity & 0x0002)
     {
@@ -584,7 +587,16 @@ void CMIGITS3_Serial::sendControlInit3510(double gspd, double thdg, double lat, 
         msg.setWord(ivalue,23);
     }
 
+    WLOG(("%s: CMIGITS dvalidity=%x.", getName().c_str(), dvalidity));
+
     // True Heading.
+#ifdef BAD_DVALIDITY
+// The dvalidity word is getting corrupted somehow from its assignment 30 lines above.
+// By leaving the two WLOG() msgs above in for dvalidity, we arrive with the correct
+// value here.  This is during ARISTO2015.  CJW
+dvalidity = 0x0071;
+#endif
+
     if (dvalidity & 0x0010)
     {
         ivalue = (int16_t) lrint(thdg);
