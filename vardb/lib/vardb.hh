@@ -21,77 +21,6 @@
 #include <sstream>
 #include <vector>
 
-/**
-
-@mainpage VarDB Library
-
-@section Introduction
-
-VDBFile is the main class for accessing XML variable databases.  The other
-classes are VDBVar and VDBDictionary.
-
-The classes use the Xerces-C++ Document Object Model API to manipulate the
-XML database, but that model is hidden by VarDB API.
-
-@section Recent Changes
-
-Here are changes to the VarDB library since adding the XML format for the
-variable database:
-
-1. Resolve the XSD schema from memory so it does not need to be installed
-   next to the vardb.xml file.  Likewise, force the validating schema to be
-   fixed (rather than varying according to the elements in the dictionary),
-   and force that schema to be used regardless of any schema specified in
-   the XML file.
-
-2. Improve the error reporting on parser errors.
-
-3. Keep the use of xerces hidden from the vardb public API rather than
-   exposing it in the vardb.hh header.
-
-4. Add testing.  The tests source directory contains tests written using
-   the Google test framework.  The tests verify things like API behavior
-   and preservation of XML comments across edits.
-
-5. Clean up and simplify vdb2xml.  The converter now uses the VDBFile API
-   to create a variable database rather than printing XML syntax directly.
-   The API directly modifies the DOM in memory as the database is changed,
-   and then that DOM can be streamed to a file as XML.
-
-6. All of the python artifacts for generating XML have been removed, such
-   as schemaMaker.py, standardNameCorrection.py, appendInfo.py, and the
-   vdb2xml.sh script.
-
-Originally the schema was generated according to the contents of the
-Dictionary file, meaning elements had to exist in the Dictionary before
-they could be validated in an XML database file.  However, that introduces
-practical problems as far as where the Dictionary should be located, and it
-means each XML database also has its own specific schema file to which it
-must refer.  Instead, the schema is now fixed and compiled into the code.
-The dictionary is the part of the schema, and it can describe the variable
-attributes in the schema as well as attributes not in the schema.  However,
-there is currently no way to validate an XML file with variable attributes
-which are only in the dictionary and not in the schema.  If we end up
-wanting to use Xerces to validate against the dictionary, then it may be
-possible to load the XML first without validation, find the dictionary
-element, generate a schema in memory, and finally supply the generated
-schema to load the XML a second time and validate it.
-
-The use of 'any' in XML Schema may also provide a cool solution for this.
-As new elements are added, they could be defined in their own schemas, and
-a vdb xml file can extend the basic schema with those new schemas.  New
-elements still cannot be added arbitarily though (ie, at runtime).
-
-Another option is to drop schema validation completely.  Instead, load the
-XML without validation (meaning it is well-formed), then explicitly check
-that all the variable attribute elements exist in the dictionary.
-
-For the moment, though, there is not enough of a need to extend the
-variable attributes in the database to warrant more complicated validation.
-
- **/
-
-
 #ifndef _vardb_cc_
 /**
  * The xercesc_forward namespace is a little bit of a hack.  Xerces hides
@@ -253,7 +182,7 @@ public:
   add_var(const std::string& vname);
 
   /**
-   * @param variable position in varDB
+   * @param index Index position in varDB, first position is 0.
    * @returns VDBVar class pointer
    */
   VDBVar*
@@ -437,14 +366,15 @@ public:
 
   /**
    * Return value of variable attribute named @p attr_name, or else return
-   * @p dfault if no such attribute exists.
+   * @p value if no such attribute exists.
    *
    * @param attr_name: name of attribute requested
-   * @returns the requested attribute value
+   * @param value: a default value to return if the attribute is not present
+   * @returns the value of the requested attribute or the default
    */
   std::string
   get_attribute(const std::string& attr_name,
-		const std::string& dfault = "") const;
+		const std::string& value = "") const;
 
   /**
    * @returns variable name

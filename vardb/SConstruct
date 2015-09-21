@@ -15,6 +15,7 @@ def vardb_global(env):
     # and libVarDB.
     env.AppendUnique(CXXFLAGS=['-fPIC'])
     env.Require('prefixoptions')
+    env['VARDB_README_FILE'] = env.File("#/README")
     
 env = Environment(tools=['default'], GLOBAL_TOOLS=[vardb_global])
 

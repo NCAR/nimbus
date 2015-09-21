@@ -22,7 +22,8 @@ env.Install("$JLOCAL/man/man3", "vardb.3")
 libdir = env.Dir('.')
 
 env['DOXYFILE_DICT'].update({'PROJECT_NAME' : 'VarDB Library'})
-doxyfile = env.Doxyfile(target="#/apidocs/vardb/Doxyfile", source=srcs+headers)
+doxyfile = env.Doxyfile(target="#/apidocs/vardb/Doxyfile",
+                        source=srcs+headers+[env['VARDB_README_FILE']])
 tdoxygen = env.Doxygen(source=doxyfile)
 
 env.Apidocs(srcs+headers)

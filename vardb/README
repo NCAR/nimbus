@@ -1,0 +1,138 @@
+/**
+
+@mainpage VarDB Library
+
+## Introduction ##
+
+VDBFile is the main class for accessing XML variable databases.  The other
+classes are VDBVar and VDBDictionary.
+
+The classes use the Xerces-C++ Document Object Model API to manipulate the
+XML database, but that model is hidden by VarDB API.
+
+## Building ##
+
+The vardb library uses eol_scons as the build tool.
+
+@code
+scons              # Build default targets
+scons test         # Run tests
+scons pytests      # Build the python module and run the python tests
+scons apidocs      # Generate HTML documentation with doxygen
+@endcode
+
+## Recent Changes
+
+Here are changes to the VarDB library since adding the XML format for the
+variable database:
+
+1. Resolve the XSD schema from memory so it does not need to be installed
+   next to the vardb.xml file.  Likewise, force the validating schema to be
+   fixed (rather than varying according to the elements in the dictionary),
+   and force that schema to be used regardless of any schema specified in
+   the XML file.
+
+2. Improve the error reporting on parser errors.
+
+3. Keep the use of xerces hidden from the vardb public API rather than
+   exposing it in the vardb.hh header.
+
+4. Add testing.  The tests source directory contains tests written using
+   the Google test framework.  The tests verify things like API behavior
+   and preservation of XML comments across edits.
+
+5. Clean up and simplify vdb2xml.  The converter now uses the VDBFile API
+   to create a variable database rather than printing XML syntax directly.
+   The API directly modifies the DOM in memory as the database is changed,
+   and then that DOM can be streamed to a file as XML.
+
+6. All of the python artifacts for generating XML have been removed, such
+   as schemaMaker.py, standardNameCorrection.py, appendInfo.py, and the
+   vdb2xml.sh script.
+
+Originally the schema was generated according to the contents of the
+Dictionary file, meaning elements had to exist in the Dictionary before
+they could be validated in an XML database file.  However, that introduces
+practical problems as far as where the Dictionary should be located, and it
+means each XML database also has its own specific schema file to which it
+must refer.  Instead, the schema is now fixed and compiled into the code.
+The dictionary is the part of the schema, and it can describe the variable
+attributes in the schema as well as attributes not in the schema.  However,
+there is currently no way to validate an XML file with variable attributes
+which are only in the dictionary and not in the schema.  If we end up
+wanting to use Xerces to validate against the dictionary, then it may be
+possible to load the XML first without validation, find the dictionary
+element, generate a schema in memory, and finally supply the generated
+schema to load the XML a second time and validate it.
+
+The use of 'any' in XML Schema may also provide a cool solution for this.
+As new elements are added, they could be defined in their own schemas, and
+a vdb xml file can extend the basic schema with those new schemas.  New
+elements still cannot be added arbitarily though (ie, at runtime).
+
+Another option is to drop schema validation completely.  Instead, load the
+XML without validation (meaning it is well-formed), then explicitly check
+that all the variable attribute elements exist in the dictionary.
+
+For the moment, though, there is not enough of a need to extend the
+variable attributes in the database to warrant more complicated validation.
+
+## To Do ##
+
+### Rewrite the Graphical Editor ###
+
+Wrap the C++ VDBFile interface in a python module and re-write the
+Python-Qt editor to use that interface.  (Presumably that would be easier
+than porting the binary editor to the new API and a newer GUI toolkit.)
+
+Probably there needs to be a standalone vardb editor first, to facilitate
+replacing the binary vardb files with XML, until the variable metadata
+editing can be incorporated into the config editor.
+
+### Implement a Validation Layer in the Library ###
+
+Start including and migrating "business and validation logic" into the
+VDBFile library, eg, the standard_name attribute must be in the list of
+standard_names, likewise for category, some attributes take specific forms
+like voltage ranges, and some must be numeric.  Some of that validation
+could be done by the schema.
+
+### Incorporate Other Config Files as Possible ###
+
+Somehow reconcile the rest of the files in Configuration/raf and the
+project directory associated with variable metadata and processing, eg,
+include _projdir_/Lags in vardb.xml.  From _defaultprojdir_ include
+SumVars, LowRateVars, Despike, and BcastVars, MetaDataTable.  These and the
+DerivedNames and other cross-project defaults should be in one variable
+database XML file, and then project-specific settings can be overridden
+(where they are not already exclusive to one domain or the other) in the
+project file.
+
+
+### Consolidate Variable Metadata from XML File and Real-time Database ###
+
+The database variable_list table contains the currently active real-time
+variables and some of their metadata, so in real-time it should serve as
+the most consistent and accessible source for variables and metadata.
+Normally it will be consistent with what is in the nidas XML file and the
+XML variable database (VDBFile), but it does not contain all the metadata
+from those files.  For example, the variable_list table does not contain
+the min/max limits from the XML file, and those are needed for tools like
+real-time qc checks.  Therefore this class provides a consolidated view of
+the real-time variable metadata by augmenting the database variable_list
+with the metadata from the VDB XML file.  Eventually this consolidated view
+should also include the nidas XML file.  Either all of the requisite
+metadata can be put in the variable_list table where other applications can
+get it, or there should be an API in both C++ and Python which provides a
+single, consistent, consolidated view of variables and metadata.  The
+latter would be better, since it might be made to work the same for both
+real-time and post-processing and encapsulate the SQL access.
+
+More elaborate solutions for consolidated access to variable metadata could
+use a web application with a SOAP or REST interface.  A web app which
+encapsulates variable metadata can run on the plane and in EOL and provide
+access methods (and perhaps even editing) for both software and users.
+
+ **/
+
+
