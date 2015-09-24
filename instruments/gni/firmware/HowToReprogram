@@ -1,0 +1,25 @@
+Steps to reprogram the GNI.  This assumes a .hex has been produced from the
+Keil compiler.
+
+1. Install the reset cable.  This is an RS-232 connector one end and a little
+   black box with button on the other end.  Cable hooks to internal port in GNI.
+
+2. Power on the GNI while reset button is depressed.  Release button soon after
+   power on (perhaps 1 second).
+
+3. Start hyperterminal
+ - type in 5-6 capital U's.  These should echo back as U, if they are garbled,
+   then it didn't get the baud rate correct, go back to step 2.
+ - Quit hyperterminal
+
+5. Start Flash Magic
+ - Select Hex file (in middle of screen), it defaults to last file/path.
+ - Press Start Programming, just below this.
+ - Go to ISP menu -> Device Configuration
+   - Uncheck 'Enable Debugger' and 'Enable Brownout'
+   - Click Reprogram
+ - Quit Flash Magic
+
+6. Start hyperterminal
+
+7. Cycle power on GNI.
