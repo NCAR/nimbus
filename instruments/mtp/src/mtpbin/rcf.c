@@ -1,5 +1,5 @@
-// reading an entire binary file
 #include "rcf.h"
+#include <vector>
 
 using namespace std;
 
@@ -7,7 +7,7 @@ int main () {
 
   My_Rcf_Hdr_Un thisRcfHdr;
   My_RC_FL_Un thisRcFl;
-  My_RC_FL_Un thisRcFl2;
+  vector<My_RC_FL_Un> flightLevelRCInfoVec;
 
   streampos size;
 
@@ -19,8 +19,11 @@ int main () {
     file.seekg (0, ios::beg);
     file.read (thisRcfHdr.Array, size);
     file.seekg ((-2*sizeof(float)),ios::cur);
-    file.read (thisRcFl.Array, sizeof(RC_FL_Read));
-    file.read (thisRcFl2.Array, sizeof(RC_FL_Read));
+
+    for (int i=0; i<thisRcfHdr.Rcf_Hdr.NFL; i++) {
+      file.read (thisRcFl.Array, sizeof(RC_FL_Read));
+      flightLevelRCInfoVec.push_back(thisRcFl);
+    }
 
     if (file)
       cout<< "all: "<<size<<" bytes were read.\n";
@@ -41,9 +44,6 @@ int main () {
       }
     }
       
-    cout << "int size: "<<sizeof(int)<<"  short: "<<sizeof(short)<<"  long: "<<sizeof(long)<<"  float:"<< sizeof(float)<<"\n";
-    cout<< "size:"<<size<<"\n";
-  
     cout << "\n";
     cout << "Format    :"<<thisRcfHdr.Rcf_Hdr.RCformat << '\n';
     thisRcfHdr.Rcf_Hdr.RAOBfilename[79] = '\n';
@@ -66,10 +66,6 @@ int main () {
     cout << "Zr:\n";
     for (int i=0; i<19; i++) {cout << thisRcfHdr.Rcf_Hdr.Zr[i] <<", ";}
     cout << thisRcfHdr.Rcf_Hdr.Zr[19]<<'\n';
-    for (int i=0; i<20; i++) { 
-      swap_endian(reinterpret_cast<byte*>(&thisRcfHdr.Rcf_Hdr.Zr[i]), sizeof(float), ENDIAN_BIG, ENDIAN_LITTLE); 
-      cout << thisRcfHdr.Rcf_Hdr.Zr[i] << ", ";
-    }
     cout << "\n";
     cout << "Nlo:"<<thisRcfHdr.Rcf_Hdr.Nlo<<'\n';
     cout << "SURC:"<<thisRcfHdr.Rcf_Hdr.SURC<<'\n';
@@ -157,8 +153,15 @@ cout << "************************************\n";
     }
 */
 
+    vector<My_RC_FL_Un>::const_iterator it;
+    for(it=flightLevelRCInfoVec.begin(); it!=flightLevelRCInfoVec.end(); it+=1)
+    {
+      cout << it->RC_read.sBP <<endl;
+    } 
+
     //cout << "the entire file content is in memory";
     //
+    /*
     cout << "sBP:" << thisRcFl.RC_read.sBP<<'\n';
     for (j=0; j<30; j++) cout << "SOBrms["<<j<<"]:"<<thisRcFl.RC_read.sOBrms[j];
     cout << '\n';
@@ -175,6 +178,7 @@ cout << "************************************\n";
     cout << '\n';
     for (j=0; j<990; j++) cout << "Src["<<j<<"]:"<<thisRcFl2.RC_read.Src[j];
     cout << '\n';
+    */
     
   }
   else cout << "Unable to open file";

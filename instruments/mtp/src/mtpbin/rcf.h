@@ -1,9 +1,18 @@
+/*
+ *************************************************************************** 
+ ** RCF.h
+ ** 
+ ** The Microwave Temperature Profiler (MTP) instrument build by JPL for
+ ** NCAR as part of the set of instruments known as HAIS (build specifically
+ ** in support of the Haiper GV aircraft) came with processing software 
+ ** written in Visual Basic 6.0. 
+ ** Retrieval Coeeficient Files (RCFs)
+*/
 #pragma once
 #include <iostream>
 #include <fstream>
 #include <arpa/inet.h>
 
-typedef unsigned char   byte;
 
 typedef struct {
   short RCformat;
@@ -82,29 +91,4 @@ typedef struct {
   float Spare[67];
 } RC_Set_1FL;
 
-enum Endianness
-{
-    ENDIAN_BIG,
-    ENDIAN_LITTLE
-};
-
-inline void swap_endian(byte* bytes, unsigned int nBytes, 
-                        Endianness source, Endianness dest )
-{
-  if (source == dest)
-    return;
-
-  byte* head = bytes;
-  byte* last = bytes + nBytes - 1;
-
-  while (head < last)
-  {
-    byte temp = *head;
-    *head = *last;
-    *last = temp;
-
-    head++;
-    last--;
-  }
-}
 
