@@ -1,17 +1,18 @@
+#include <iostream>
+#include <fstream>
+#include <arpa/inet.h>
 #include "rcf.h"
-#include <vector>
 
 using namespace std;
 
-int main () {
+RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename) 
+{
 
-  My_Rcf_Hdr_Un thisRcfHdr;
-  My_RC_FL_Un thisRcFl;
-  vector<My_RC_FL_Un> flightLevelRCInfoVec;
+  _RCFFileName = Filename;
 
   streampos size;
 
-  ifstream file ("RCF/NRCKA189.RCF", ios::in|ios::binary|ios::ate);
+  ifstream file (_RCFFileName.c_str(), ios::in|ios::binary);
   if (file.is_open())
   {
     //size = file.tellg();
@@ -156,7 +157,7 @@ cout << "************************************\n";
     vector<My_RC_FL_Un>::const_iterator it;
     for(it=flightLevelRCInfoVec.begin(); it!=flightLevelRCInfoVec.end(); it+=1)
     {
-      cout << it->RC_read.sBP <<endl;
+      cout << it->RC_read.sBP <<'\n';
     } 
 
     //cout << "the entire file content is in memory";
@@ -182,5 +183,5 @@ cout << "************************************\n";
     
   }
   else cout << "Unable to open file";
-  return 0;
+  return;
 }
