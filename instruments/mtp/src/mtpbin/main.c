@@ -2,6 +2,6 @@
 
 main () {
 
-RetrievalCoefficientFile RCF(std::string("RCF/NRCDE067.RCF"));
+RetrievalCoefficientFile RCF(std::string("RCF/NRCKA189.RCF"));
 
 }
