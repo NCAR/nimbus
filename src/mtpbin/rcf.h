@@ -1,91 +1,36 @@
 /*
  *************************************************************************** 
- ** RCF.h
+ ** rcf.h
  ** 
  ** The Microwave Temperature Profiler (MTP) instrument build by JPL for
  ** NCAR as part of the set of instruments known as HAIS (build specifically
  ** in support of the Haiper GV aircraft) came with processing software 
  ** written in Visual Basic 6.0. 
- ** Retrieval Coeeficient Files (RCFs)
+ **
+ ** Copyright 2015 University Corporation for Atmospheric Research
+ **  - VB6 and Algorithm Copyright MJ Mahoney, NASA Jet Propulsion Laborator
+ **
+ ** Retrieval Coeeficient Files (RCFs) are currently written by the VB program
+ ** RCCalc which takes RAOB data and converts it into Templates that describe
+ ** what that RAOB profile would look like to the MTP instrument if the 
+ ** instrument was used to measure the atmosphere described by the profile. 
+ ** Since the profile would appear differerntly to the MTP depending upon 
+ ** the altitude at which the instrument was performing the measurement, the
+ ** RCF files have multiple flight levels containing expected brightness 
+ ** temperatures (observables), assocciated rms values and the retrieval
+ ** coefficients that would allow one to convert from the brightness 
+ ** temperatures to the profile temperatures.
+ ** 
+ ** This class provides for reading in an RCF, storing and providing access to
+ ** its data.
+ **
 */
 #ifndef _RCF_h
 #define _RCF_h
 
 #include <vector>
 #include <string> 
-
-// Structure and Union to Read the header record.  Note: For some reason the
-//  Header structure itself is not matching up with this (despite the VB6 
-//  code indicating that it "should").  For this reason another Union to get
-//  second half of the RCF header record is defined below.
-typedef struct {
-  short RCformat;
-  char  CreationDateTime[8];
-  char  RAOBfilename[80];
-  char  RCfilename[80];
-  short RAOBcount;
-  float LR1;     		// LR above top of RAOB
-  float zLRb;			// LR break altitude
-  float LR2;			// LR above break altitude
-  float RecordStep;		// Record Step through available RAOBs
-  float RAOBmin;		// Minimum acceptable RAOB altitude
-  float ExcessTamplitude;	// Random Excess Noise Level on Ground
-  short Nobs;			// Number of observables
-  short Nret;			// Number of retrieval levels
-  float dZ[33];                 // Retrieval offset levels wrt flight level
-  short NFL;			// Number of flight levels
-  float Zr[20];                 // Flight levels (km)
-  short Nlo;			// Number of LO channels
-  float LO[3];                  // LO frequencies (GHz)
-  short Nel;			// Number of elevation angles
-  float El[10];                 // Scan mirror elevation angles
-  short Nif;			// Number of IF frequencies
-  float IFoff[3][16];    	// IF frequency offsets (GHz)
-  float IFwt[3][16];     	// Weights assigned to each IF frequency
-  float Spare[130] ;
-  char SURC[4];          	// SU IFB used to calculate RCs (added 20050128)
-  float CHnLSBloss[3];          // CHn LSB RF loss
-  float RAOBbias;         	// Bias added to RAOB before calculating RCs
-  float CH1LSBloss;		// CH1 LSB linear RF loss gradient
-  //   Sensitivity matrix: iRC, NFL, Nlo, Nel
-  float SmatrixN1[15][3][10];   // Linear term
-  float SmatrixN2[15][3][10];   // Quadratic term
-} RCF_HDR;
-  
-typedef union{RCF_HDR Rcf_Hdr ; char Array[sizeof(RCF_HDR)];} My_Rcf_Hdr_Un;
-  
-// Structure and Union to obtain the 2nd half of the header structure.  Note 
-//  That this also only obtains part of the rest of the header with the 
-//  floating point values going to 0.00 too early into the reading of the 
-//  Sentitivey matrix linear and Quadratic terms.  A puzzle for
-//  another day.
-typedef struct {
-  char SURC[4];                 // SU IFB used to calculate RCs (added 20050128)
-  float CHnLSBloss[3];          // CHn LSB RF loss
-  float RAOBbias;               // Bias added to RAOB before calculating RCs
-  float CH1LSBloss;             // CH1 LSB linear RF loss gradient
-  //   Sensitivity matrix: iRC, NFL, Nlo, Nel
-  //float SmatrixN1[15][3][10];   // Linear term
-  //float SmatrixN2[15][3][10];   // Quadratic term
-  float Gmatrix[900];
-} END_HDR;
-
-typedef union{END_HDR EH ; char Array[sizeof(END_HDR)];} My_EH;
-  
-// Structure and union to read each flight level co-efficient info
-typedef struct {
-  float sBP; 			//Flight level pressure altitude (hPa)
-  float sOBrms[30];             //1-sigma apriori observable errors
-  float sOBav[30];              //Archive Average observables
-  float sBPrl[33];              //Pressure at retrieval levels
-  float sRTav[33];              //Average T at retrieval levels
-  float sRMSa[33];              //Variance in T at retrieval levels
-  float sRMSe[33];              //Formal error in T at retrieval levels
-  float Src[990];     	        //33 reztrieval levels, 30 observables
-  float Spare[67];
-} RC_FL_Read;
-
-typedef union{RC_FL_Read RC_read ; char Array[sizeof(RC_FL_Read)];} My_RC_FL_Un;
+#include "rcf_structs.h"
 
 class RetrievalCoefficientFile 
 {
@@ -93,24 +38,17 @@ class RetrievalCoefficientFile
 public:
   RetrievalCoefficientFile(std::string);
 
-  std::string _RCFFileName;
-   
-  // Structure to hold each flight level retrieval coefficient information.
-  typedef struct {
-    float sBP; 			//Flight level pressure altitude (hPa)
-    float sOBrms[30];             //1-sigma apriori observable errors
-    float sOBav[30];              //Archive Average observables
-    float sBPrl[33];              //Pressure at retrieval levels
-    float sRTav[33];              //Average T at retrieval levels
-    float sRMSa[33];              //Variance in T at retrieval levels
-    float sRMSe[33];              //Formal error in T at retrieval levels
-    float Src[33][30]; 	        //33 reztrieval levels, 30 observables
-    float Spare[67];
-  } RC_Set_1FL;
+  // Convert the elements of the Union used to read a flight level 
+  // Retrieval Coefficient set into a more usable form.
+  void FlUn2FlRcSet(My_RC_FL_Un, RC_Set_1FL);
 
-  My_Rcf_Hdr_Un thisRcfHdr;
-  My_RC_FL_Un thisRcFl;
+  std::string _RCFFileName;
+
+  My_Rcf_Hdr_Un RcfHdr;
+  My_RC_FL_Un RcFlUn;
+  RC_Set_1FL FlRcSet;
   std::vector<My_RC_FL_Un> flightLevelRCInfoVec;
+  std::vector<RC_Set_1FL> FlRcSetVec;
   
 };
 
