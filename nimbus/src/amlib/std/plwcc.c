@@ -179,7 +179,8 @@ NR_TYPE CooperLWC_GV(const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE atx,
   static const double Nu_b1 = 0.638318;
   static const double Nu_c1 = 0.3823;
 
-  NR_TYPE Nu;
+  static NR_TYPE Nu = Nu_c0;
+
   NR_TYPE tm = (atx + tWire[indx]) / 2.0;		// Mean T
   NR_TYPE cond = cond0 + cond1 * tm;			// thermal conductivity, air
   NR_TYPE visc = visc0 + visc1 * tm;			// Viscosity of air
@@ -221,18 +222,18 @@ NR_TYPE CooperLWC_GV(const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE atx,
 
       Nu_b0 += (Nu / pow(Re, Nu_b1) - Nu_b0) / tau_Nu[indx];
     }
+
+    if (tasx < 150.0)
+      { Nu = Nu_c0 * pow(Re, Nu_c1); }
+    else
+    if (Re < 7244.0)
+      { Nu = Nu_a0 * pow(Re, Nu_a1); }
+    else
+      { Nu = Nu_b0 * pow(Re, Nu_b1); }
+
+    prevTAS = tasx;
+    prevRe = Re;
   }
-
-  if (tasx < 150.0)
-    { Nu = Nu_c0 * pow(Re, Nu_c1); }
-  else
-  if (Re < 7244.0)
-    { Nu = Nu_a0 * pow(Re, Nu_a1); }
-  else
-    { Nu = Nu_b0 * pow(Re, Nu_b1); }
-
-  prevTAS = tasx;
-  prevRe = Re;
 
   // Power required in dry air.
   Pdry[indx] = M_PI * lWire[indx] * cond * (tWire[indx] - atx) * Nu;
