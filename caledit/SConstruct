@@ -1,6 +1,8 @@
 # -*- python -*-
 ##  Copyright 2013 UCAR, NCAR, All Rights Reserved
 
+import eol_scons
+
 from SCons.Errors import StopError
 
 env = Environment(tools = ['default', 'qt4', 'qwt', 'gsl'])
