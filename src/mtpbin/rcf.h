@@ -38,15 +38,29 @@ class RetrievalCoefficientFile
 public:
   RetrievalCoefficientFile(std::string);
 
+  //std::string getId() {return _RCFId;}
+  std::string getId() ;
+
+  /**
+   * Get the weighted average Retrieval Coefficient Set
+   * @param PAlt pressure altitude at which to weight the elements of the set.
+   * The observables and rmms vectors as well as the retrieval coefficient
+   * matrices from flight levels above and below PAlt are averaged with a 
+   * weight factor based on nearness of PAlt to the pressure altitude of 
+   * the flight level.
+   */
+  RC_Set_1FL getRCAvgWt(float);
+
+
+private: 
+
   // Convert the elements of the Union used to read a flight level 
   // Retrieval Coefficient set into a more usable form.
-  void FlUn2FlRcSet(My_RC_FL_Un, RC_Set_1FL);
+  void FlUn2FlRcSet(My_RC_FL_Un, RC_Set_1FL*);
 
   std::string _RCFFileName;
+  std::string _RCFId;
 
-  My_Rcf_Hdr_Un RcfHdr;
-  My_RC_FL_Un RcFlUn;
-  RC_Set_1FL FlRcSet;
   std::vector<My_RC_FL_Un> flightLevelRCInfoVec;
   std::vector<RC_Set_1FL> FlRcSetVec;
   

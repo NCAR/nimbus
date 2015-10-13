@@ -10,6 +10,18 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
 
   _RCFFileName = Filename;
 
+  My_Rcf_Hdr_Un RcfHdr;
+  My_RC_FL_Un RcFlUn;
+  RC_Set_1FL FlRcSet;
+
+  string temp = _RCFFileName;
+  size_t last_slash = temp.find_last_of("/");
+  size_t last_dot = temp.find_last_of(".");
+cout << "slash:" << last_slash << " dot: "<<last_dot<<" size:"<<temp.length()<<'\n';
+  _RCFId = temp.substr(last_slash+1, last_dot-last_slash-1);
+
+cout << "RCFId:"<<_RCFId<<'\n';
+
   streampos size;
 
   ifstream file (_RCFFileName.c_str(), ios::in|ios::binary);
@@ -23,9 +35,14 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
 
     for (int i=0; i<RcfHdr.Rcf_Hdr.NFL; i++) {
       file.read (RcFlUn.Array, sizeof(RC_FL_Read));
-      FlUn2FlRcSet(RcFlUn, FlRcSet);
+      FlUn2FlRcSet(RcFlUn, &FlRcSet);
       flightLevelRCInfoVec.push_back(RcFlUn);
+cout<<"IN LOOP:"<<FlRcSet.Palt;
+      FlRcSetVec.push_back(FlRcSet);
+      if (i+1 == RcfHdr.Rcf_Hdr.NFL) FlRcSetVec.push_back(FlRcSet);
     }
+cout<<"\nAfter pushbacks:"<<FlRcSetVec.end()->Palt<<"\n";
+    FlRcSetVec.pop_back();
 
     if (file)
       cout<< "all: "<<size<<" bytes were read.\n";
@@ -36,8 +53,8 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
 
     cout << "\n";
     cout << "Format    :"<<RcfHdr.Rcf_Hdr.RCformat << '\n';
-//    RcfHdr.Rcf_Hdr.RAOBfilename[79] = '\n';
-//    cout << RcfHdr.Rcf_Hdr.RAOBfilename << '\n';
+    RcfHdr.Rcf_Hdr.RAOBfilename[79] = '\n';
+    cout << RcfHdr.Rcf_Hdr.RAOBfilename << '\n';
     RcfHdr.Rcf_Hdr.RCfilename[79] = '\n';
     cout << RcfHdr.Rcf_Hdr.RCfilename << '\n';
     cout << "Raobcount :" << RcfHdr.Rcf_Hdr.RAOBcount << '\n';
@@ -59,6 +76,7 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
     cout << "\n";
     cout << "Nlo:"<<RcfHdr.Rcf_Hdr.Nlo<<'\n';
     cout << "SURC:"<<RcfHdr.Rcf_Hdr.SURC<<'\n';
+
 
     My_EH EH;
     int i = 0;
@@ -85,9 +103,10 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
         }
       }
     }
+/*
     for (int i=0; i<10;i++) {
       cout << "SMATRIXN1:"<<SmatrixN1[14][2][i]<<'\n';
-//      cout << "    SMATrIXN2:"<<EH.EH.SmatrixN2[14][2][i]<<'\n';
+      cout << "    SMATrIXN2:"<<EH.EH.SmatrixN2[14][2][i]<<'\n';
     }
     cout << "SmatrixN1[5][1][5]:"<<SmatrixN1[5][1][5]<<'\n';
     for (int i = 450; i<460;i++) {cout<<" GM["<<i<<"]:"<<EH.EH.Gmatrix[i];}
@@ -112,6 +131,7 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
       cout << "    SMATrIXN2:"<<SmatrixN2[14][2][i]<<'\n';
     }
     cout << "SmatrixN2[5][1][5]:"<<SmatrixN2[5][1][5]<<'\n';
+*/
     //char SURC[4]; 
     //for (int j=1376; j<1380; j++,i++) SURC[i]=RcfHdr.Array[j];
     //cout << "NewSURC:"<<SURC<<"\n";
@@ -132,61 +152,141 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
     }
 */
 
+    cout << "PALT at Flight Levels:" << '\n';
     vector<My_RC_FL_Un>::const_iterator it;
     for(it=flightLevelRCInfoVec.begin(); it!=flightLevelRCInfoVec.end(); it+=1)
     {
       cout << it->RC_read.sBP <<'\n';
     } 
+    vector<RC_Set_1FL>::const_iterator rit;
+    for (rit=FlRcSetVec.begin(); rit!=FlRcSetVec.end(); rit+=1)
+    {
+      cout << rit->Palt<<'\n';
+    }
 
-    //cout << "the entire file content is in memory";
-    //
-    /*
-    cout << "sBP:" << RcFlUn.RC_read.sBP<<'\n';
-    for (j=0; j<30; j++) cout << "SOBrms["<<j<<"]:"<<RcFlUn.RC_read.sOBrms[j];
-    cout << '\n';
-    for (j=0; j<30; j++) cout << "SOBav["<<j<<"]:"<<RcFlUn.RC_read.sOBav[j];
-    cout << '\n';
-    for (j=0; j<990; j++) cout << "Src["<<j<<"]:"<<RcFlUn.RC_read.Src[j];
-    cout << '\n';
-
-    cout << "__((___(((_)(()________\n\n";
-    cout << "sBP:" << RcFlUn2.RC_read.sBP<<'\n';
-    for (j=0; j<30; j++) cout << "SOBrms["<<j<<"]:"<<RcFlUn2.RC_read.sOBrms[j];
-    cout << '\n';
-    for (j=0; j<30; j++) cout << "SOBav["<<j<<"]:"<<RcFlUn2.RC_read.sOBav[j];
-    cout << '\n';
-    for (j=0; j<990; j++) cout << "Src["<<j<<"]:"<<RcFlUn2.RC_read.Src[j];
-    cout << '\n';
-    */
-    
   }
   else cout << "Unable to open file";
   return;
 }
 
-void RetrievalCoefficientFile::FlUn2FlRcSet(My_RC_FL_Un RcUn, RC_Set_1FL RcSet) 
+std::string RetrievalCoefficientFile::getId() 
 {
-  RcSet.Palt = RcUn.RC_read.sBP;
+  return _RCFId;
+}
+
+RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(float PAlt)
+{
+  RC_Set_1FL RcSetAvWt;
+
+  // First check to see if PAlt is outside the range of Flight Level PAlts
+  //  - if so then the weighted average observalbe will be the average
+  //    observable associated with the flight level whose PAlt is closest 
+  //    Assumption is that the Flight Level Retrieval Coefficient Set vector
+  //    is stored in increasing Palt (decreasing aircraft altitude).
+std::vector<int>::size_type sz = FlRcSetVec.size();
+cout<<"In get avg: PAlt:"<<PAlt<<"  1st level:"<<FlRcSetVec.begin()->Palt<<"  last level:"<<FlRcSetVec.end()->Palt<<"  -1:"<<FlRcSetVec[sz-2].Palt<<"\n";
+  if (PAlt <= FlRcSetVec.begin()->Palt) 
+  {
+    for (int i = 0; i< NUM_OBSVBLS; i++) 
+    {
+      RcSetAvWt.OBAvg[i] = FlRcSetVec.begin()->OBAvg[i];
+      RcSetAvWt.OBRms[i] = FlRcSetVec.begin()->OBRms[i];
+      for (int j = 0; j < NUM_RETR_LVLS; j++) 
+      {
+        RcSetAvWt.RC[j][i] = FlRcSetVec.begin()->RC[j][i];
+      }
+    }
+    return RcSetAvWt;
+  }
+  if (PAlt >= FlRcSetVec.end()->Palt)
+  {
+    for (int i = 0; i< NUM_OBSVBLS; i++) 
+    {
+      RcSetAvWt.OBAvg[i] = FlRcSetVec.end()->OBAvg[i];
+      RcSetAvWt.OBRms[i] = FlRcSetVec.end()->OBRms[i];
+      for (int j = 0; j < NUM_RETR_LVLS; j++) 
+      {
+        RcSetAvWt.RC[j][i] = FlRcSetVec.end()->RC[j][i];
+      }
+    }
+    return RcSetAvWt;
+  }
+
+  // Find two Flight Level Sets that are above and below the PAlt provided.
+  // Calculate the weight for averaging and identify the RC sets.
+  vector<RC_Set_1FL>::const_iterator it, Botit, Topit;
+  float BotWt,TopWt;
+  for(it=FlRcSetVec.begin(); it!=FlRcSetVec.end(); it+=1)
+  {
+    if (PAlt >= it->Palt and PAlt <= (it+1)->Palt)
+    {
+      BotWt = 1 - ((PAlt - (it+1)->Palt)/(it->Palt - (it+1)->Palt));
+      Topit = it;
+      Botit = it+1;
+cout<< "TopAlt:"<<it->Palt<<"  BotAlt:"<<(it+1)->Palt<<"  BotWt:"<<BotWt<<"\n";
+    }
+  }
+  TopWt = 1-BotWt;
+
+
+  // Calculate the Weighted averages 
+  for (int i = 0; i < NUM_OBSVBLS; i++)
+  {
+    RcSetAvWt.OBAvg[i] = Botit->OBAvg[i]*BotWt + Topit->OBAvg[i]*(1-BotWt);
+    RcSetAvWt.OBRms[i] = Botit->OBRms[i]*BotWt + Topit->OBRms[i]*(1-BotWt);
+    for (int j = 0; j < NUM_RETR_LVLS; j++)
+    {
+      RcSetAvWt.RC[j][i] = Botit->RC[j][i]*BotWt + Topit->RC[j][i]*(1-BotWt);
+    }
+  }
+
+cout<<" RCwt:\n";
+for (int j = 0; j < NUM_RETR_LVLS; j++) {
+  for (int i = 0; i < NUM_OBSVBLS; i++) {
+    if (i%5 != 0) cout<<"["<<j<<"]["<<i<<"]:"<<RcSetAvWt.RC[j][i];
+    else cout<<"["<<j<<"]["<<i<<"]:"<<RcSetAvWt.RC[j][i]<<'\n';
+  }
+}
+cout <<"\n\n";
+
+  return RcSetAvWt;
+
+}
+
+void RetrievalCoefficientFile::FlUn2FlRcSet(My_RC_FL_Un RcUn, RC_Set_1FL *RcSet)
+{
+  RcSet->Palt = RcUn.RC_read.sBP;
+cout<<"Palt:"<<RcSet->Palt<<"  RMS vec:"<<'\n';
   for (int i=0; i<NUM_OBSVBLS; i++) 
   {
-    RcSet.OBRms[i] = RcUn.RC_read.sOBrms[i];
-    RcSet.OBAvg[i] = RcUn.RC_read.sOBav[i];
+    RcSet->OBRms[i] = RcUn.RC_read.sOBrms[i];
+cout << " ["<<i<<"]: "<<RcSet->OBRms[i];
+    RcSet->OBAvg[i] = RcUn.RC_read.sOBav[i];
   }
+cout<<'\n';
   for (int i=0; i<NUM_RETR_LVLS; i++) 
   {
-    RcSet.PAltRl[i] = RcUn.RC_read.sBPrl[i];
-    RcSet.TAvgRl[i] = RcUn.RC_read.sRTav[i];
-    RcSet.TVarRl[i] = RcUn.RC_read.sRMSa[i];
-    RcSet.TRmsRl[i] = RcUn.RC_read.sRMSe[i];
+    RcSet->PAltRl[i] = RcUn.RC_read.sBPrl[i];
+    RcSet->TAvgRl[i] = RcUn.RC_read.sRTav[i];
+    RcSet->TVarRl[i] = RcUn.RC_read.sRMSa[i];
+    RcSet->TRmsRl[i] = RcUn.RC_read.sRMSe[i];
   }
   // Convert Retrieval coefficients from column major storage
   int x=0,y=0;
   for (int i=0; i<990; i++) {
-    RcSet.RC[x][y] = RcUn.RC_read.Src[i];
-if (i%4==0) cout << " ["<<x<<"]["<<y<<"]:"<<RcUn.RC_read.Src[i]<<"\n";
-else cout << "["<<x<<"]["<<y<<"]:"<<RcUn.RC_read.Src[i];
+    RcSet->RC[x][y] = RcUn.RC_read.Src[i];
     x++;
     if (x>=NUM_RETR_LVLS) { x=0; y++; }
   }
+
+/* Output the RC matrix
+for (x=0; x<NUM_RETR_LVLS; x++) {
+  for (y=0; y<NUM_OBSVBLS; y++) {
+    if (y%4==0) cout << " ["<<x<<"]["<<y<<"]:"<<RcSet->RC[x][y]<<"\n";
+    else cout << "["<<x<<"]["<<y<<"]:"<<RcSet->RC[x][y];
+  }
+}
 cout<<'\n';
+*/
+
 }
