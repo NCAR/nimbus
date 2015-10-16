@@ -43,14 +43,22 @@ public:
 
   /**
    * Get the weighted average Retrieval Coefficient Set
-   * @param PAlt pressure altitude at which to weight the elements of the set.
-   * The observables and rmms vectors as well as the retrieval coefficient
-   * matrices from flight levels above and below PAlt are averaged with a 
-   * weight factor based on nearness of PAlt to the pressure altitude of 
-   * the flight level.
+   * @param PAltKm pressure altitude in KM at which to weight the elements 
+   * of the set: the observables and rmms vectors as well as the retrieval 
+   * coefficient matrices from flight levels above and below PAltKm are 
+   * averaged with a weight factor based on nearness of PAltkm to the 
+   * pressure altitude of the flight level as described in the RCF header.
    */
   RC_Set_1FL getRCAvgWt(float);
 
+  /**
+   * Set the Flight Levels in KM.  
+   * @param is a vector of floating point values indicating the km
+   * above sea level of each flight level in the retrieval coefficient file.
+   * Flight levels should be ordered in decreasing altitude.
+   * @returns true if levels successfully set, false if not.
+   */
+  bool setFlightLevelsKm(float[], int);
 
 private: 
 
@@ -60,9 +68,11 @@ private:
 
   std::string _RCFFileName;
   std::string _RCFId;
+  RCF_HDR     _RCFHdr;
+
+  std::vector<RC_Set_1FL> _FlRcSetVec;
 
   std::vector<My_RC_FL_Un> flightLevelRCInfoVec;
-  std::vector<RC_Set_1FL> FlRcSetVec;
   
 };
 
