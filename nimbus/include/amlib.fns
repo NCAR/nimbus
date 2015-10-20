@@ -29,6 +29,11 @@
 	"XITAS",	NULL,		NULL,		ssteve,
 	"XPFLW",	NULL,		NULL,		spflow,
 #
+# HIPPO-1.
+#
+	"EW_GMD",	NULL,           NULL,		smr2ew,
+	"DP_GMD",	(void(*)(void*))dpmkInit,	NULL,	sdpc_MK,
+#
 # PACDEX, maybe ongoing also.
 #
 	"CONCU100",	NULL,           NULL,		sconcu100,
