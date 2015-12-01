@@ -226,6 +226,7 @@ void PMS1D_SetupForADS3()
   if (cfg.ProjectName().compare("IDEAS-4") == 0 && cfg.Aircraft() == Config::HIAPER)
   {
     setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
+    setSerialNumberAndProbeType("AUHSAS", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
 
     if (cfg.FlightNumber().compare("rf08") <= 0) 
     {
