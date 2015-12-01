@@ -303,6 +303,7 @@ void PMS1D_SetupForADS3()
   else
   if (cfg.ProjectName().compare("ARISTO2015") == 0)
   {
+    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_CDP);
     setSerialNumberAndProbeType("A1DC_LPB", "F2DC001", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A1DC_RPB", "F2DC002", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
