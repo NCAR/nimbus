@@ -124,6 +124,7 @@ protected:
 
   void dropAllTables();
   void createTables();
+  void grantSelectToTables(const std::string);
   void initializeGlobalAttributes();
   void initializeVariableList();
 
