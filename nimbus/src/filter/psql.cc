@@ -66,6 +66,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
     sleep(3);
     initializeGlobalAttributes();
     initializeVariableList();
+    grantSelectToTables("ads");
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current;", true);
 
@@ -265,6 +266,36 @@ PostgreSQL::createTables()
 
 }	// END CREATETABLES
 
+/* -------------------------------------------------------------------- */
+void
+PostgreSQL::grantSelectToTables(const std::string user)
+{
+  _sqlString.str("");
+
+  _sqlString << "GRANT SELECT ON Global_Attributes TO " << user << ";";
+  _sqlString << "GRANT SELECT ON Variable_List TO " << user << ";";
+  _sqlString << "GRANT SELECT ON Categories TO " << user << ";";
+
+  /*
+   * PMS tables.
+   */
+  _sqlString << "GRANT SELECT ON PMS1D_list TO " << user << ";";
+  _sqlString << "GRANT SELECT ON PMS2D_list TO " << user << ";";
+
+
+  /*
+   * Low rate table
+   */
+  _sqlString << "GRANT SELECT ON " << LRT_TABLE << " TO " << user << ";";
+
+  /*
+   * TODO: if we ever make read only users (ads) on non-ground db
+   *       we will need to grant access to all Sample rate tables
+   */
+
+  submitCommand(_sqlString.str(), true);
+
+}	// END GRANTSELECTTOTABLES
 /* -------------------------------------------------------------------- */
 void
 PostgreSQL::initializeGlobalAttributes()
