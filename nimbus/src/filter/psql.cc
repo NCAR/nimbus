@@ -66,7 +66,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
     sleep(3);
     initializeGlobalAttributes();
     initializeVariableList();
-    grantSelectToTables("ads");
+    grantSelectToTables("guest");
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current;", true);
 
