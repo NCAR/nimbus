@@ -5,8 +5,8 @@ import sys
 import re
 
 # This is for building in the RAF source tree.  When building standalone,
-# site_scons is checked out directly into this directory and that takes
-# precedence.
+# site_scons is checked out directly into this directory (or else into
+# ~/.scons/site_scons) and that takes precedence.
 sys.path.append(os.path.abspath("../../caledit/site_scons"))
 import eol_scons
 
@@ -63,21 +63,8 @@ runtest = env.TestRun('pytests', tests+module+pysrcs, "py.test ${SOURCE}")
 # Testing
 # ----------------------------------------------------------------------------
 
-# If a testing-related target does not look to be in the command-line,
-# then there's no point in continuing past here.
-
-testing = False
-for target in COMMAND_LINE_TARGETS:
-    if bool(target in ['.', 'test', 'asan', 'render', 'tracks.html',
-                       'datasync', 'clang', 'sanitized'] or
-            target.startswith('kml/')):
-        testing = True;
-            
-if not testing:
-    env.SetHelp()
-    Return()
-
-env = Environment(tools=['default', 'actrack', 'postgres_testdb', 'testing'])
+env = Environment(tools=['default', 'actrack', 'postgres_testdb', 'testing',
+                         'datafilecache'])
 
 env['ACTRACKOPTS'] = '--path timestep'
 
@@ -102,7 +89,7 @@ if env.Detect('scan-build') and os.environ.get('CC', "").endswith('analyzer'):
 
 dfcache = env.DataFileCache()
 dfcache.setPrefix('rafdata:/scr/raf_data')
-
+dfcache.insertCachePath('~/Data/raf/Prod_Data')
 
 # Generate KML from a netcdf file.
 def NetcdfKML(target, source, env):
@@ -125,19 +112,16 @@ def kml_emitter(source, target, env):
 env['BUILDERS']['NetcdfKML'] = Builder(action=NetcdfKML, emitter=kml_emitter)
 
 
-hippopath = dfcache.getFile('HIPPO/prod_data/HIPPO-2rf06.nc')
-if not hippopath:
-    print("*** HIPPO-2rf06.nc not found, test targets not available. ***")
-else:
-    ekml = 'expected/HIPPO-2rf06.kml'
-    ejson = 'expected/HIPPO-2rf06.json'
-    akml = 'kml/HIPPO-2rf06.kml'
-    ajson = 'kml/HIPPO-2rf06.json'
-    (akml, ajson) = env.NetcdfKML([akml, ajson], hippopath)
-    env.Alias('asan', [akml, ajson])
-    env.Alias('test', env.Diff([ekml, akml]))
-    env.Alias('test', env.Diff([ejson, ajson]))
-    env.AlwaysBuild(akml)
+hippopath = env.DownloadDataFile('HIPPO/prod_data/HIPPO-2rf06.nc')
+ekml = 'expected/HIPPO-2rf06.kml'
+ejson = 'expected/HIPPO-2rf06.json'
+akml = 'kml/HIPPO-2rf06.kml'
+ajson = 'kml/HIPPO-2rf06.json'
+(akml, ajson) = env.NetcdfKML([akml, ajson], hippopath)
+env.Alias('asan', [akml, ajson])
+env.Alias('test', env.Diff([ekml, akml]))
+env.Alias('test', env.Diff([ejson, ajson]))
+env.AlwaysBuild(akml)
 
 tenv = Environment(tools=['default', 'actrack', 'testing', 'gtest_main'])
 tenv.SanitizeAddress()
@@ -218,12 +202,10 @@ kmldir += env.Command('kml/WINTER-rf13-loop.png', rf13kml,
                       "./renderkml.py ${SOURCES} -77.9825,34.07,-77.7403,34.1869 "
                       "${TARGET}")
 
-def RenderNetcdf(env, ncfile, bounds):
-    ncpath = dfcache.getFile(ncfile)
-    if not ncpath:
-        print("*** Data not found: %s, test targets not created. ***" % (ncfile))
-        return []
-    ncfile = os.path.basename(ncfile)
+def RenderNetcdf(env, ncpath, bounds):
+    if isinstance(ncpath, type("")):
+        ncpath = env.DownloadDataFile(ncpath)
+    ncfile = os.path.basename(str(ncpath))
     (base, ext) = os.path.splitext(ncfile)
     if ext != ".nc":
         base = ncfile
@@ -236,8 +218,7 @@ def RenderNetcdf(env, ncfile, bounds):
                       "./renderkml.py ${SOURCES} %s ${TARGET}" % (bounds))
     return kmls + png
 
-kmldir += RenderNetcdf(env, 'HIPPO/prod_data/HIPPO-2rf06.nc',
-                       "172.236,-66.0481,187.508,-43.4905")
+kmldir += RenderNetcdf(env, hippopath, "172.236,-66.0481,187.508,-43.4905")
 kmldir += RenderNetcdf(env, 'HIPPO/prod_data/HIPPO-5rf13.nc',
                        "-150.438,60.1847,-145.201,87.0433")
 
