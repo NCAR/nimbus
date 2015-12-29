@@ -1,7 +1,26 @@
 #!/usr/bin/python
 #
-# Server relay program for Auto GNI.  Runs on a Raspberry PI and converts/relays commands 
-# from a client UI via UDP to the GNI instrument via RS-232.
+# Server relay program for Auto GNI.  Runs on a Raspberry PI and
+# converts/relays commands from a client UI via UDP to the GNI instrument
+# via RS-232.
+#
+# Requires the pyserial package, preferably version 3.0:
+#
+#   Github: https://github.com/pyserial/pyserial
+#   PyPI downloads: https://pypi.python.org/pypi/pyserial
+#
+# On the Raspberry PI, download the tar.gz link with wget, then extract the
+# tar file:
+#
+#   tar zxf pyserial-3.0.tar.gz
+#   cd pyserial-3.0
+#   python setup.py install --user
+#
+# That installs pyserial into the user's site-packages directory.  pyserial
+# 3.0 includes a miniterm tool that can be used to test the GNI serial
+# connection directly, like so:
+#
+#   python -m serial.tools.miniterm /dev/ttyUSB0
 #
 
 import os
