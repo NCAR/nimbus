@@ -9,7 +9,7 @@ import socket
 import sys
 import time
 
-UDP_IP = "192.168.184.191"
+UDP_IP = "192.168.84.204"
 UDP_PORT = 41002
 
 def printMenu():
