@@ -151,10 +151,16 @@ class GNIStatus:
   def parseStatusLine(self, line):
     "Parse lines of the form: GNI,,c,9,c3,1,1"
     line = line.strip()
+    self.message = line
     fields = line.split(',')
     if len(fields) != 7 or fields[0] != "GNI":
       raise Exception("Could not parse status line: %s" % (line))
-    self.message = line
+    if len(fields[1]) == 0:
+      # Add local timestamp if none from GNI.
+      t = time.time()
+      fields[1] = time.strftime("%Y%m%dT%H%M%S", time.gmtime(t))
+      fields[1] = fields[1] + '.' + str(int((t - int(t)) * 10))
+      self.message = 'GNI,' + fields[1] + line[4:]
     self.fields = fields
 
 
