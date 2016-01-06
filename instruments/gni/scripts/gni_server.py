@@ -169,7 +169,9 @@ class GNIServer:
 
   def __init__(self):
     self.UDP_IP = "192.168.84.1"
-    self.UDP_PORT = 41002
+    self.UDP_SEND_PORT = 32100
+    self.UDP_READ_PORT = 32101
+#    self.UDP_PORT = 41002
     self.sigCnt = 0
     self.timedExposure = 0.0
     self.statusElapsed = 0.0
@@ -180,11 +182,11 @@ class GNIServer:
 
     # Connection to User Interface
     self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    self.sock.bind(("0.0.0.0", self.UDP_PORT))
+    self.sock.bind(("0.0.0.0", self.UDP_READ_PORT))
 
   def sendClient(self, message):
     logger.debug("sending: %s" % (message))
-    self.sock.sendto(message, (self.UDP_IP, self.UDP_PORT))
+    self.sock.sendto(message, (self.UDP_IP, self.UDP_SEND_PORT))
 
   def setSerialGNI(self, gni):
     self.gni = gni
@@ -214,12 +216,12 @@ class GNIServer:
         self.statusElapsed = 0.0
 
       logger.debug("elapse = " + str(elapsed))
-    #  send_status()
 
       if self.sock in readable:
         data = self.sock.recv(1024)
         print 'Read ' + data
-        ser.write(data)
+        fields = data.split(',')
+        ser.write(fields[2])
       if ser in readable:
         self.gni.readData()
         if self.gni.gotstatus:
