@@ -34,6 +34,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from optparse import OptionParser
+import gni
+
 # When the GNI is prompted with a string of "0\r\n", it echoes back
 # the 0 then prints the status line followed by the menu, but it does
 # it twice:
@@ -73,11 +76,14 @@ Set In Program Mode
 10 = Home Slide Actuator
 """
 
-class GNISerial:
+class GNISerial(object):
 
-  def __init__(self):
+  def __init__(self, device=None):
     "Serial connection to GNI."
-    self.sport = serial.Serial('/dev/ttyUSB0', 9600, timeout=0)
+    if not device:
+      device = '/dev/ttyUSB0'
+    self.device = device
+    self.sport = serial.Serial(self.device, 9600, timeout=0)
     self.sport.nonblocking()
     # This is a buffer of characters read from the serial port.  It
     # should be replaced with a real buffer at some point.
@@ -124,8 +130,14 @@ class GNISerial:
       self.gotstatus = True
     elif text.startswith("10 = Home Slide Actuator"):
       self.gotmenu = True
+    elif re.search("^Set In Program Mode", text):
+      # Ignore this line
+      pass
     elif re.match("^\d\d? = ", text):
       # Menu entry
+      pass
+    elif re.match("^\d+\s*$", text):
+      # Command echo
       pass
     elif not text:
       # Empty line
@@ -134,38 +146,54 @@ class GNISerial:
       logger.error("Unrecognized data line from GNI: %s" % (text))
 
   def getStatus(self):
-    return self.status.message
+    return self.status.getMessage()
 
   def close(self):
     self.sport.close()
 
 
-class GNIStatus:
+class GNIStatus(object):
   "Keep track of the current state of the GNI."
 
   def __init__(self):
     self.error = False
-    self.fields = None
     self.message = None
+    self.timestamp = None
 
-  def parseStatusLine(self, line):
+  def formatTimestamp(self, when=None):
+    if when is None:
+      when = self.timestamp
+    if when is None:
+      when = time.time()
+    stime = time.strftime("%Y%m%dT%H%M%S", time.gmtime(when))
+    stime = stime + '.' + str(int((when - int(when)) * 10))
+    return stime
+
+  def getMessage(self):
+    "Return the latest status message, or else build one."
+    if self.message is not None:
+      return self.message
+    # Create a null status
+    self.timestamp = time.time()
+    return "GNI,%s," % (self.formatTimestamp())
+    
+  def parseStatusLine(self, line, when=None):
     "Parse lines of the form: GNI,,c,9,c3,1,1"
     line = line.strip()
     self.message = line
+    if when is None:
+      when = time.time()
+    self.timestamp = when
     fields = line.split(',')
     if len(fields) != 7 or fields[0] != "GNI":
       raise Exception("Could not parse status line: %s" % (line))
     if len(fields[1]) == 0:
       # Add local timestamp if none from GNI.
-      t = time.time()
-      fields[1] = time.strftime("%Y%m%dT%H%M%S", time.gmtime(t))
-      fields[1] = fields[1] + '.' + str(int((t - int(t)) * 10))
+      fields[1] = self.formatTimestamp()
       self.message = 'GNI,' + fields[1] + line[4:]
-    self.fields = fields
 
 
-
-class GNIServer:
+class GNIServer(object):
 
   def __init__(self):
     self.UDP_IP = "192.168.84.255"
@@ -173,7 +201,7 @@ class GNIServer:
     self.UDP_READ_PORT = 32101
     self.UDP_NIDAS_PORT = 32102
 #    self.UDP_PORT = 41002
-    self.sigCnt = 0
+    self.timerq = gni.TimerQueue()
     self.timedExposure = 0.0
     self.statusElapsed = 0.0
     self.exposeTime = 0.0
@@ -192,34 +220,43 @@ class GNIServer:
     self.sock.sendto(message, (self.UDP_IP, self.UDP_SEND_PORT))
     self.sock.sendto(message, (self.UDP_IP, self.UDP_NIDAS_PORT))
 
-  def setSerialGNI(self, gni):
-    self.gni = gni
+  def setSerialGNI(self, serial):
+    self.gni = serial
 
   def sendStatus(self):
-    s = "GNI,," + str(self.sigCnt)
-    self.sendClient(s)
-    self.sigCnt += 1
+    self.sendClient(self.gni.getStatus())
 
   def loop(self):
+    # Every 5 seconds send the latest status.  This is in addition to
+    # sending the status whenever a new status is received.
+    tv = gni.TimerEvent(5, repeating=True)
+    tv.setHandler(lambda tv: self.sendStatus())
+    self.timerq.append(tv)
+
+    # Every 2 seconds request a new status.  When the GNI responds, the
+    # updated status will be immediately sent out from inside the event
+    # loop.
+    tv = gni.TimerEvent(2, repeating=True)
+    tv.setHandler(lambda tv: self.gni.requestStatus())
+    self.timerq.append(tv)
+
     while True:
-      start = time.time()
       ser = self.gni.getSerial()
       ports = [ser, self.sock]
-      readable, writable, exceptional = select.select(ports, [], ports, 1.0)
+      start = time.time()
+      remaining = self.timerq.timeToNextEvent(99)
+      print(str(remaining))
+      readable, writable, exceptional = select.select(ports, [], ports, remaining)
       elapsed = time.time() - start
+      logger.debug("elapse = " + str(elapsed))
+
+      self.timerq.handleExpired()
 
       if self.timedExposure:
         self.exposeTime -= elapsed
         if self.exposeTime <= 0:
           self.gni.retractSlide()
           self.timedExposure = 0
-
-      self.statusElapsed += elapsed
-      if self.statusElapsed > 2.0:
-        self.gni.requestStatus()
-        self.statusElapsed = 0.0
-
-      logger.debug("elapse = " + str(elapsed))
 
       if self.sock in readable:
         data = self.sock.recv(1024)
@@ -230,18 +267,31 @@ class GNIServer:
       if ser in readable:
         self.gni.readData()
         if self.gni.gotstatus:
-          self.sendClient(self.gni.getStatus())
+          self.sendStatus()
           self.gni.gotstatus = False
 
   def close(self):
     self.sock.close()
 
 
-logging.basicConfig(level=logging.DEBUG)
+def main(args):
+  parser = OptionParser()
+  parser.add_option("--debug", dest="level", action="store_const",
+                    const=logging.DEBUG, default=logging.ERROR)
+  parser.add_option("--info", dest="level", action="store_const",
+                    const=logging.INFO, default=logging.ERROR)
+  parser.add_option("--device", type="string", default='/dev/ttyUSB0')
+  (options, args) = parser.parse_args(args)
+  logging.basicConfig(level=options.level)
+  server = GNIServer()
+  device = GNISerial(options.device)
+  server.setSerialGNI(device)
+  server.loop()
+  server.close()
+  device.close()
 
-server = GNIServer()
-gni = GNISerial()
-server.setSerialGNI(gni)
-server.loop()
-server.close()
-gni.close()
+
+if __name__ == "__main__":
+  main(sys.argv)
+
+
