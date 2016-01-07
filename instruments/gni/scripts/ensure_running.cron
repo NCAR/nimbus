@@ -1,7 +1,7 @@
-#!/bin/csh -x
+#!/bin/bash
 
 # Start / keep running gni_server.py (relay program from GNI instrument to control.
 ps ax | grep gni_server | grep -qv grep
-if ($status) then
-  nohup /home/pi/gni/scripts/gni_server.py >& /tmp/gni_server.log &
-endif
+if [ $? -ne 0 ]; then
+  nohup /home/pi/gni/scripts/gni_server.py > /tmp/gni_server.log 2>&1 &
+fi
