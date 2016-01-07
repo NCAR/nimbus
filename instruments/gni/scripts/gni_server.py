@@ -168,7 +168,7 @@ class GNIStatus:
 class GNIServer:
 
   def __init__(self):
-    self.UDP_IP = "192.168.255.255"
+    self.UDP_IP = "192.168.84.255"
     self.UDP_SEND_PORT = 32100
     self.UDP_READ_PORT = 32101
 #    self.UDP_PORT = 41002
@@ -182,8 +182,8 @@ class GNIServer:
 
     # Connection to User Interface
     self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    self.setsocket(SOL_SOCKET, SO_REUSEADDR, 1)
-    self.setsocket(SOL_SOCKET, SO_BROADCAST, 1)
+    self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     self.sock.bind(("0.0.0.0", self.UDP_READ_PORT))
 
   def sendClient(self, message):
