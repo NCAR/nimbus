@@ -9,8 +9,12 @@ import socket
 import sys
 import time
 
-UDP_IP = "192.168.84.204"
-UDP_PORT = 41002
+UDP_IP = "127.0.0.1"
+UDP_READ_PORT = 32100
+UDP_SEND_PORT = 32101
+
+#UDP_IP = "192.168.84.204"
+#UDP_PORT = 41002
 
 def printMenu():
   print "Please issue a command:"
@@ -30,7 +34,7 @@ def printMenu():
 
 # Connection to User Interface
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(("0.0.0.0", UDP_PORT))
+sock.bind(("0.0.0.0", UDP_READ_PORT))
 
 
 while True:
@@ -44,6 +48,9 @@ while True:
       print 'STATUS :' + data
     else:
       data = sys.stdin.readline()
-      sock.sendto(data, (UDP_IP, UDP_PORT))
+      t = time.time()
+      ts = time.strftime("%Y%m%dT%H%M%S", time.gmtime(t))
+      msg = 'GNI,' + ts + ',' + data
+      sock.sendto(msg, (UDP_IP, UDP_SEND_PORT))
 
 sock.close()
