@@ -15,11 +15,11 @@ of virtual serial port devices using 'socat', and it connects the emulator
 to one of the ports.  The other port can be passed to the gni_server.py
 script or opened with a terminal program.  The port should behave as if it
 was connected to a GNI, with whatever functionality is implemented in the
-emulator.  The path to the GNI port is printed in the "using virtual port"
-line of the output:
+emulator.  The path to the GNI port is printed as the "user port":
 
   > gni_emulator.py pty
-  pty device specified, using virtual serial port: /tmp/tmp15Bo4Q/gniport
+  Emulator connecting to virtual serial port: /tmp/tmpJD610z/gniport
+  User clients connect to virtual serial port: /tmp/tmpJD610z/userport
 
 Finally this module can be imported in python and used to create the
 virtual port pair and the connected emulator at runtime.  The tests in
@@ -31,7 +31,6 @@ GNI server code without any GNI hardware.
   emu = GNIVirtualPorts()
   userport = emu.start()
   device = gni.GNISerial(userport)
-
 """
 
 
@@ -116,6 +115,7 @@ class GNIEmulator(object):
     self.status = "GNI,,c,9,c3,1,1"
     self.interrupted = False
     self.cdata = ""
+    self.writeLines("GNI,,Controller ready")
 
   def writeLines(self, text):
     """Write the given text to the serial port, pausing between lines."""
@@ -223,6 +223,9 @@ class GNIVirtualPorts(object):
   def start(self):
     "Start the emulator processes and return the user port."
     self.startPorts()
+    return self.startEmulator()
+
+  def startEmulator(self):
     cmd = ["python", __file__, "--debug", self.gniport]
     logger.info(" ".join(cmd))
     self.emulator = sp.Popen(cmd, close_fds=True, shell=False)
@@ -272,7 +275,9 @@ def main(args):
   if gniport == "pty":
     vports = GNIVirtualPorts()
     gniport = vports.startPorts()
-    print("pty device specified, using virtual serial port: %s" % (gniport))
+    print("Emulator connecting to virtual serial port: %s" % (gniport))
+    print("User clients connect to virtual serial port: %s" %
+          (vports.getUserPort()))
   gni = GNIEmulator(gniport)
   gni.loop()
   vports.stop()

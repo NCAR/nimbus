@@ -89,8 +89,9 @@ class GNISerial(object):
 
   def handleLine(self, text):
     logger.debug("handling line: " + text.rstrip())
-    if text.startswith("GNI"):
+    if text.startswith("GNI,"):
       self.status.parseStatusLine(text)
+      logger.info("GNI status line: %s" % (self.status.getMessage()))
       self.gotstatus = True
     elif text.startswith("10 = Home Slide Actuator"):
       self.gotmenu = True
@@ -107,10 +108,19 @@ class GNISerial(object):
       # Empty line
       pass
     else:
-      logger.error("Unrecognized data line from GNI: %s" % (text))
+      # Everything not recognized as a status or menu line is just a "data
+      # line".  The line is logged as an info message so it shows up in the
+      # output with the default logging level, since that's what users seem
+      # to like, but probably something smarter can be done with it.  For
+      # example, consider relaying these lines back through the server so
+      # they can be seen by the client, as long as they are not too large.
+      # Maybe there should be two different modes, either high or low
+      # bandwitdh, where everything can be sent back to the client in high
+      # bandwidth mode, even the menu.
+      logger.info("GNI data line: %s" % (text))
 
-  def getStatus(self):
-    return self.status.getMessage()
+  def getStatus(self, when=None):
+    return self.status.getMessage(when)
 
   def close(self):
     self.sport.close()
@@ -133,27 +143,31 @@ class GNIStatus(object):
     stime = stime + '.' + str(int((when - int(when)) * 10))
     return stime
 
-  def getMessage(self):
+  def getMessage(self, when=None):
     "Return the latest status message, or else build one."
     if self.message is not None:
       return self.message
-    # Create a null status
-    self.timestamp = time.time()
+    # Create a null status as of when or now.
+    if not when:
+      when = time.time()
+    self.timestamp = when
     return "GNI,%s," % (self.formatTimestamp())
     
-  # GNI,,Controller ready
   def parseStatusLine(self, line, when=None):
-    "Parse lines of the form: GNI,,c,9,c3,1,1"
+    """
+    Parse lines like GNI,,c,9,c3,1,1 and GNI,,Controller ready
+
+    Insert a timestamp into the second field if it's empty.
+    """
     line = line.strip()
     self.message = line
     if when is None:
       when = time.time()
     self.timestamp = when
     fields = line.split(',')
-    if len(fields) != 7 or fields[0] != "GNI":
-      logger.error("Could not parse status line: %s" % (line))
-      return
-    if len(fields[1]) == 0:
+    if len(fields) < 3 or fields[0] != "GNI":
+      logger.error("Unexpected status line: %s" % (line))
+    if len(fields) > 1 and fields[0] == "GNI" and len(fields[1]) == 0:
       # Add local timestamp if none from GNI.
       fields[1] = self.formatTimestamp()
       self.message = 'GNI,' + fields[1] + line[4:]
@@ -239,12 +253,26 @@ class GNIServer(object):
     self.sock.close()
 
 
+_usage = """%prog [log-level-option] [--device <device>]
+
+Run the server for a GNI connected to the given serial device.
+
+The default INFO logging level prints all status and data lines received
+from the GNI, skipping all the menu lines.  Specifying the ERROR logging
+level will suppress all output except for errors.  The DEBUG logging level
+is much more verbose, showing most messages back and forth as well as some
+timing information."""
+
+
+
 def main(args):
-  parser = OptionParser()
+  parser = OptionParser(usage=_usage)
   parser.add_option("--debug", dest="level", action="store_const",
-                    const=logging.DEBUG, default=logging.ERROR)
+                    const=logging.DEBUG, default=logging.INFO)
   parser.add_option("--info", dest="level", action="store_const",
-                    const=logging.INFO, default=logging.ERROR)
+                    const=logging.INFO, default=logging.INFO)
+  parser.add_option("--error", dest="level", action="store_const",
+                    const=logging.ERROR, default=logging.INFO)
   parser.add_option("--device", type="string", default='/dev/ttyUSB0')
   (options, args) = parser.parse_args(args)
   logging.basicConfig(level=options.level)
