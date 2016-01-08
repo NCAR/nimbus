@@ -141,6 +141,7 @@ class GNIStatus(object):
     self.timestamp = time.time()
     return "GNI,%s," % (self.formatTimestamp())
     
+  # GNI,,Controller ready
   def parseStatusLine(self, line, when=None):
     "Parse lines of the form: GNI,,c,9,c3,1,1"
     line = line.strip()
@@ -150,7 +151,8 @@ class GNIStatus(object):
     self.timestamp = when
     fields = line.split(',')
     if len(fields) != 7 or fields[0] != "GNI":
-      raise Exception("Could not parse status line: %s" % (line))
+      logger.error("Could not parse status line: %s" % (line))
+      return
     if len(fields[1]) == 0:
       # Add local timestamp if none from GNI.
       fields[1] = self.formatTimestamp()
