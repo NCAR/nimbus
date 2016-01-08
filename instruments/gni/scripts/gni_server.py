@@ -209,7 +209,6 @@ class GNIServer(object):
       ports = [ser, self.sock]
       start = time.time()
       remaining = self.timerq.timeToNextEvent(99)
-      print(str(remaining))
       readable, writable, exceptional = select.select(ports, [], ports, remaining)
       elapsed = time.time() - start
       logger.debug("elapse = " + str(elapsed))
