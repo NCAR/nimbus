@@ -1,10 +1,13 @@
-#
+# -*- mode:python; python-indent-offset: 2; -*-
 # Run these tests like so:
 #
 # env PYTHONPATH=/home/local/raf/python py.test test_gni_server.py
 #
 
 import gni
+import time
+import logging
+
 
 def test_status_parser():
   import iss.time_tools as tt
@@ -66,4 +69,25 @@ def test_expired():
   assert(tv.ncalls == 1)
   assert(len(tq) == 0)
 
+  
+def test_emulator():
+  "Start an emulator and connect a server to it, and see if it works!"
+  logging.basicConfig(level=logging.DEBUG)
+  from gni_emulator import GNIVirtualPorts
+  emu = GNIVirtualPorts()
+  userport = emu.start()
+  device = gni.GNISerial(userport)
+  assert(device.gotstatus == False)
+  assert(device.gotmenu == False)
+  device.requestStatus()
+  # Rather than get too fancy, just brute force a read loop long enough
+  # that the emulator should have responded.
+  i = 0
+  while i < 10 and not device.gotstatus and not device.gotmenu:
+    time.sleep(0.5)
+    device.readData()
+    i += 1
+  assert(device.gotstatus == True)
+  assert(device.gotmenu == True)
+  
   

@@ -37,45 +37,6 @@ logger = logging.getLogger(__name__)
 from optparse import OptionParser
 import gni
 
-# When the GNI is prompted with a string of "0\r\n", it echoes back
-# the 0 then prints the status line followed by the menu, but it does
-# it twice:
-
-_example_menu = """
-0
-GNI,,c,9,c3,1,1
-
-Set In Program Mode
-
-0 = Status
-1 = Home Drives
-2 = Advance Carousel
-3 = Advance Slide
-4 = Load Slide
-5 = Expose Slide
-6 = Retract Slide
-7 = Advance, Load, Expose & Retract
-8 = Retract Slide Pickup
-9 = Home Shuttle
-10 = Home Slide Actuator
-
-GNI,,c,9,c3,1,1
-
-Set In Program Mode
-
-0 = Status
-1 = Home Drives
-2 = Advance Carousel
-3 = Advance Slide
-4 = Load Slide
-5 = Expose Slide
-6 = Retract Slide
-7 = Advance, Load, Expose & Retract
-8 = Retract Slide Pickup
-9 = Home Shuttle
-10 = Home Slide Actuator
-"""
-
 class GNISerial(object):
 
   def __init__(self, device=None):
@@ -110,7 +71,9 @@ class GNISerial(object):
 
   def readData(self):
     "Read data from the serial port and parse it for status updates."
-    self.cdata = self.cdata + self.sport.read(128)
+    rdata = self.sport.read(512)
+    logger.debug("read data: " + repr(rdata))
+    self.cdata = self.cdata + rdata
     self.handleData()
 
   def handleData(self):
@@ -125,6 +88,7 @@ class GNISerial(object):
       self.handleLine(l)
 
   def handleLine(self, text):
+    logger.debug("handling line: " + text.rstrip())
     if text.startswith("GNI"):
       self.status.parseStatusLine(text)
       self.gotstatus = True
