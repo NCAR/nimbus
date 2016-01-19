@@ -6,7 +6,7 @@ from Router import RouterStatus
 _logger = logging.getLogger(__name__)
 
 
-_pppoe_status_patterns = [ r"""
+_pppoe_status_patterns = [r"""
 	<tr>
 		<td><FONT face="Arial, Helvetica, sans-serif"><B>Connection Time</B></FONT></td>
 		<td><FONT face="Arial, Helvetica, sans-serif">(?P<connectiontime>\S+)</FONT></td>
@@ -16,11 +16,11 @@ _pppoe_status_patterns = [ r"""
 		<td><FONT face="Arial, Helvetica, sans-serif"><B>Getting IP address</B></FONT></td>
 		<td><FONT face="Arial, Helvetica, sans-serif">(?P<pppoeip>\S+)</FONT></td>
 	</tr>
-""" ]
+"""]
 
 
 
-_status_page_patterns = [ r"""
+_status_page_patterns = [r"""
                 <tr>
                         <td width="60%">
                                 <b>Account Name</b> 
@@ -108,11 +108,10 @@ _status_page_patterns = [ r"""
 			<td width="40%">
 				(?P<lansubnet>\S+)
 			</td>
-		</tr>"""
-                      ]
+		</tr>"""]
 
 
-_stats_page_patterns = [ r"""
+_stats_page_patterns = [r"""
        <tr> 
  	<td nowrap width="10%" align="center"> <span class="thead">WAN</span> 
  	</td>
@@ -150,7 +149,7 @@ _stats_page_patterns = [ r"""
         <td nowrap width="20%" align="center"> <span class="ttext">(?P<lanuptime>[\w\s:]+)</span> 
  
  	 </td>
-        </tr>""" ]
+        </tr>"""]
                 
 
 def _match_regex_template(patterns, text):
@@ -196,9 +195,13 @@ def NetgearStatusHelper(router):
                           router.fetchPage("mtenstatisticTable.html"),
                           router.fetchPage("pppoestatus.html"))
 
+def _localpath(filename):
+    import os
+    return os.path.join(os.path.dirname(__file__), filename)
+
 def _NetgearStatusTester(router):
-    with open("sysstatus-example.html", "r") as sysfile:
-        with open("stats-example.html", "r") as statfile:
-            with open("pppoestatus-example.html", "r") as pppoefile:
+    with open(_localpath("sysstatus-example.html"), "r") as sysfile:
+        with open(_localpath("stats-example.html"), "r") as statfile:
+            with open(_localpath("pppoestatus-example.html"), "r") as pppoefile:
                 _update_router_status(router, sysfile.read(), statfile.read(),
                                       pppoefile.read())

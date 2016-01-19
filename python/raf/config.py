@@ -75,6 +75,9 @@ class Config(dict):
         self.setupAircraft()
         return self.plane
 
+    def getCatalogIngestDir(self):
+        return '/home/catalog/products/incoming/' + self.plane.lower()
+
     # Try a little dependency inversion and create the service objects from
     # Config factory methods, so the Config has a chance to modify the
     # objects according to the current configuration.

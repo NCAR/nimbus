@@ -74,9 +74,11 @@ class Router(object):
         "Build a status log message from the current status info."
         return self._log_status % self.status.__dict__
 
-    def parseLogTime(self, message):
+    def parseLogTime(self, message, when=None):
         # We have to kludge the current year.
-        return tt.timeFromPtime(tt.formatTime(time.time(), "%Y ") + message[0:15],
+        if when is None:
+            when = time.time()
+        return tt.timeFromPtime(tt.formatTime(when, "%Y ") + message[0:15],
                                 "%Y %b %d %H:%M:%S")
 
     def parseLogMessage(self, message):
@@ -112,8 +114,13 @@ def skip_test_router_getpage():
     assert(status['lanmac'] == "00:18:4D:D7:6E:6A")
 
 
+def _localpath(filename):
+    import os
+    return os.path.join(os.path.dirname(__file__), filename)
+
+
 def test_status_patterns():
-    with open("sysstatus-example.html", "r") as pfile:
+    with open(_localpath("sysstatus-example.html"), "r") as pfile:
         page = pfile.read()
     import netgear
     status = netgear.parseStatusPage(page)
@@ -124,7 +131,7 @@ def test_status_patterns():
     assert(status['lanip'] == "192.168.99.1")
 
 def test_stats_patterns():
-    with open("stats-example.html", "r") as pfile:
+    with open(_localpath("stats-example.html"), "r") as pfile:
         page = pfile.read()
     import netgear
     stats = netgear.parseStatsPage(page)
@@ -146,7 +153,7 @@ def test_stats_patterns():
 
 
 def test_pppoe_patterns():
-    with open("pppoestatus-example.html", "r") as pfile:
+    with open(_localpath("pppoestatus-example.html"), "r") as pfile:
         page = pfile.read()
     import netgear
     stats = netgear.parsePPPOE(page)
@@ -155,7 +162,7 @@ def test_pppoe_patterns():
 
 
 def test_stats_object():
-    with open("stats-example.html", "r") as pfile:
+    with open(_localpath("stats-example.html"), "r") as pfile:
         page = pfile.read()
     import netgear
     dstats = netgear.parseStatsPage(page)
@@ -205,7 +212,8 @@ _log2 = "Jan 23 20:58:01 acserver router/logstatus: WAN Link Up: IP=193.220.216.
 
 def test_log_parse():
     r = Router()
-    t1 = r.parseLogTime("Jan 21 15:18:01")
+    year = tt.parseTime("20150101000000")
+    t1 = r.parseLogTime("Jan 21 15:18:01", year)
     t2 = tt.parseTime("20150121151801")
     assert(tt.formatTime(t1) == tt.formatTime(t2))
     status = r.parseLogMessage(_log)

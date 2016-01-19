@@ -11,22 +11,74 @@ def timeFromPtime(text, pattern="%Y%m%d%H%M%S"):
 
 
 class Duration(object):
+    """
+    Associate time fields with a duration in seconds with the strftime
+    format necessary to exactly represent a time to that resolution.  The
+    duration is positive if the period is always exactly that long,
+    otherwise the duration magnitude is the maximum length of the period.
+    """
 
-    # duration_seconds is positive if the period is always exactly that
-    # long, allowing the start() and next() methods to use optimized
-    # algorithms.  If it is negative, then the duration is not exact, and
-    # the duration magnitude is the maximum length of the period.  advance
-    # is a function to increment the correct field of a struct_time
-    # instance.
     def __init__(self, duration_seconds, sftime):
+        """
+        Create a Duration instance.
+
+        duration_seconds is positive if the period is always exactly that
+        long, allowing the start() and next() methods to use optimized
+        algorithms.  If it is negative, then the duration is not exact, and
+        the start() and next() methods will search for the next interval by
+        advancing half the duration magnitude until the formatted time
+        field changes.
+        """
         self._period = duration_seconds
         self._sftime = sftime
 
     def period(self):
         return self._period
 
+    def duration(self):
+        return abs(self._period)
+
     def ftime_start(self):
         return self._sftime
+
+    def formatTime(self, ttime):
+        "Convert the given time to a string using the format."
+        return _datetime.utcfromtimestamp(ttime).strftime(self._sftime)
+
+    def start(self, ttime):
+        "Return the start time for the period containing the given time."
+        # Use the ftime for the period start to make the comparison.
+        period = self._period
+        if period > 0:
+            tstart = ttime - (ttime % period)
+        else:
+            sstart = self.formatTime(ttime)
+            tstart = _timegm(_strptime(sstart, self._sftime))
+        return tstart
+
+    def next(self, ttime):
+        """
+        Return the next start of the time period containing ttime.
+
+        If the duration is exact, then it is just added to the period start
+        time.  If not, the start period must be explicitly computed after
+        advancing to a time in the next time period.
+        """
+        # This is not the most efficient approach, but at least it's robust.
+        period = self._period
+        if period > 0:
+            tend = self.start(ttime)
+            tend += period
+        else:
+            stime = self.formatTime(ttime)
+            tend = ttime
+            for i_ in xrange(3):
+                tend -= period / 2
+                if self.formatTime(tend) != stime:
+                    break
+            tend = self.start(tend)
+        return tend
+
 
 Year = Duration(-365*24*3600, "%Y")
 Month = Duration(-32*24*3600, "%Y%m")
@@ -41,40 +93,29 @@ class DatePatternPeriod(object):
         self._duration = duration
         self._wildcard = wildcard
         self._ftime = ftime
-        self._sftime = duration.ftime_start()
 
-    def formatTime(self, ttime, pattern=None):
+    def _formatTime(self, ttime, pattern=None):
         if not pattern:
             pattern = self._ftime
         return _datetime.utcfromtimestamp(ttime).strftime(pattern)
 
     def startPeriod(self, ttime):
         "Return the start time for the period containing the given time."
-        # Use the ftime for the period start to make the comparison.
-        period = self._duration.period()
-        if period > 0:
-            tstart = ttime - (ttime % period)
-        else:
-            sstart = self.formatTime(ttime, self._sftime)
-            tstart = _timegm(_strptime(sstart, self._sftime))
-        return tstart
+        return self._duration.start(ttime)
 
     def nextPeriod(self, ttime):
         "Return the next start of this time period."
-        # This is not the most efficient approach, but at least it's robust.
-        period = self._duration.period()
-        if period > 0:
-            tend = self.startPeriod(ttime)
-            tend += period
-        else:
-            stime = self.formatTime(ttime)
-            tend = ttime
-            for i_ in xrange(3):
-                tend -= period / 2
-                if self.formatTime(tend) != stime:
-                    break
-            tend = self.startPeriod(tend)
-        return tend
+        return self._duration.next(ttime)
+
+    def duration(self):
+        return self._duration.duration()
+
+    def containedBy(self, begin, end):
+        """
+        Return True if the time range completely contains this period.
+        """
+        return bool(self.startPeriod(begin) == begin and
+                    self.nextPeriod(begin) - 1 <= end)
 
     def wildcard(self, pattern):
         "Replace date pattern with wildcards for this time period."
@@ -85,8 +126,8 @@ class GlobDatePeriods(object):
     """
     A set of DatePatternPeriod instances from year through seconds.
 
-    This includes methods to replace periods with their wildcards.  It can
-    be subclassed to use different wildcard schemes such as regular
+    This includes methods to replace periods with their glob wildcards.  It
+    can be subclassed to use different wildcard schemes such as regular
     expressions and different strftime fields.
     """
     def __init__(self):
@@ -119,8 +160,20 @@ class GlobDatePeriods(object):
 
 class DatePattern(object):
     """
-    A general strftime date pattern which can be used to generate specific
-    pattern instances to match a given time range.
+    A strftime pattern which can match all times in a given time range.
+
+    The strftime pattern is used to generate patterns which can match all
+    the times in an arbitrary range of time.  For example, the code below
+    generates a list of rsync options by replacing time fields with either
+    wild cards or specific values according to the requested time range.
+
+       togadirpattern = "%Y-%m-%d-%H*.b"
+       dp = datepattern.DatePattern(togadirpattern)
+       rsyncopts = dp.generateRsyncRules(times[0], times[1])
+
+    By default time fields are replaced with GlobDatePeriods, but alternate
+    periods could be used, such as periods which replace time specifiers
+    with regular expression matches.
     """
 
     def __init__(self, pattern=None, periods=None):
@@ -137,15 +190,29 @@ class DatePattern(object):
             pattern = self.pattern
         return _datetime.utcfromtimestamp(ttime).strftime(pattern)
 
-    def generate(self, begin, end):
-        "Generate the date pattern over the given range, inclusive."
+    def generate(self, begin, end, duration=None):
+        """
+        Generate the date pattern over the given range, inclusive.
+
+        If a Duration instance is provided, then all time fields of lesser
+        duration will be replaced with wildcards.  This reduces the number
+        of patterns generated for the given time period, but it may include
+        files which do not actually fall within the time period.  For
+        example, passing duration=Day will only generate patterns with
+        specific day fields, leaving hours, minutes, and seconds as
+        wildcards, even though the time period covers only specific hours
+        in a day rather than the whole day.  FTP retrievers use this to
+        limit the number of directory requests that must be sent,
+        preferring instead to filter the final file list on the local side.
+        """
         patterns = []
         tt = int(begin)
         while tt <= int(end):
             # logger.debug("checking time %s" % 
             #              (self.formatTime(tt, "%Y-%m-%d,%H:%M:%S")))
             for p in self.periods.getPeriods():
-                if p.startPeriod(tt) == tt and p.nextPeriod(tt) - 1 <= end:
+                if bool(p.containedBy(tt, end) or
+                        (duration and p.duration() <= duration.duration())):
                     # All the times in this period are included, so replace
                     # all the lesser periods with wildcards.
                     pattern = self.periods.wildcard(self.pattern, p)
@@ -237,6 +304,17 @@ def test_generate_patterns():
     assert dp.generate(begin, end) == [ 
         "2001-03-15-22*", "2001-03-15-23*",
         "2001-03-16-00*", "2001-03-16-01*"]
+
+
+def test_generalize_datepattern():
+    # Test the API to limit the number of generated patterns.
+    pattern = '%Y%m%d%H%M'
+    begin = timeFromPtime("200103152208", "%Y%m%d%H%M")
+    end = timeFromPtime("200103160123", "%Y%m%d%H%M")
+    dp = DatePattern(pattern)
+    plist = dp.generate(begin, end, Day)
+    assert plist == ['20010315[0-2][0-9][0-5][0-9]',
+                     '20010316[0-2][0-9][0-5][0-9]']
 
 def test_generate_inclusive():
     begin = timeFromPtime("200103152208", "%Y%m%d%H%M")

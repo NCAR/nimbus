@@ -7,6 +7,7 @@ import iss.time_tools as tt
 from raf.datepattern import DatePattern
 import raf.singleton as singleton
 import raf.config
+import shutil
 import logging
 
 logger = logging.getLogger(__name__)
@@ -69,7 +70,7 @@ class Downloader(object):
         logger.info("%d %s files found for time range %s to %s" %
                     (len(listing), self.file_type, 
                      tt.formatTime(self.begin), tt.formatTime(self.end)))
-        listing.sort(key = lambda de: de.filename())
+        listing = self.ftp.sortListing(listing)
         return listing
 
     def downloadEntry(self, entry):
@@ -85,15 +86,24 @@ class Downloader(object):
         """
         Install local file as the new latest file for some file type.
 
-        If transform is given, then pass each line into the function
-        and write the result to the destination file.
+        If transform is given, then pass each line into the function and
+        write the result to the destination file.  Otherwise use a straight
+        copy.
         """
-        with open(localpath, "r") as src:
-            with open(destpath, "w") as dest:
-                lines = src.readlines()
-                if transform:
-                    lines = [ transform(line) for line in lines ]
-                dest.writelines(lines)
+        destdir = os.path.dirname(os.path.abspath(destpath))
+        if not os.path.isdir(destdir):
+            logger.info("Skipping install of %s because %s does not exist.",
+                        destpath, destdir)
+            return
+        if transform:
+            with open(localpath, "r") as src:
+                with open(destpath, "w") as dest:
+                    lines = src.readlines()
+                    if transform:
+                        lines = [transform(line) for line in lines]
+                    dest.writelines(lines)
+        else:
+            shutil.copyfile(localpath, destpath)
         logger.info("%s copied to %s.", localpath, destpath)
 
     def run(self, args):
@@ -132,4 +142,26 @@ class Downloader(object):
                                os.path.join(self.local_dir, 
                                             self.latest_file_name))
         print("Done.")
+
+        
+def main():
+    _pattern = 'satellite.GOES-13.%Y%m%d%H%M.*thermal-IR.jpg'
+    dld = Downloader()
+    cfg = raf.config.Config()
+    cfg.parseArgs(["--debug"])
+    cfg.setupLogging()
+    cfg.ftp_site = 'ftp.eol.ucar.edu'
+    dld.setFtp(cfg.FTP())
+    dld.setFiles('IR', _pattern)
+    dld.setFtpDirectory('/pub/archive/projects/tests/ORCAS')
+    begin = tt.parseTime('201601181400')
+    end = tt.parseTime('201601190259')
+    dld.setTimeRange(begin, end)
+    listing = dld.remoteListing()
+    for de in listing:
+        print(de.path)
+
+
+if __name__ == "__main__":
+    main()
 

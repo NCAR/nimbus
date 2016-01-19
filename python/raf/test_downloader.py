@@ -6,40 +6,47 @@ import os
 import re
 import pytest
 
-_pattern = 'gis.CDPHE_Monitor.%Y%m%d%H*.ozone_obs.kml'
+
+_pattern = 'satellite.GOES-13.%Y%m%d*thermal-IR.jpg'
+
 
 @pytest.fixture
 def dld():
     dld = Downloader()
-    dld.setFtp(config.Config().FTP())
-    dld.setFiles('C130_cdphe_ozone', _pattern)
-    dld.setFtpDirectory('/pub/incoming/OSM/C130')
-    begin = tt.parseTime('20120101')
-    end = tt.parseTime('20121231235959')
+    cfg = config.Config()
+    cfg.parseArgs(["--debug"])
+    cfg.setupLogging()
+    cfg.ftp_site = 'ftp.eol.ucar.edu'
+    dld.setFtp(cfg.FTP())
+    dld.setFiles('IR', _pattern)
+    dld.setFtpDirectory('/pub/archive/projects/tests/ORCAS')
+    begin = tt.parseTime('201601181400')
+    end = tt.parseTime('201601190259')
     dld.setTimeRange(begin, end)
     return dld
 
 def test_downloader(dld):
     assert dld.file_pattern == _pattern
-    assert dld.file_type == 'C130_cdphe_ozone'
-    assert dld.ftp_dir == '/pub/incoming/OSM/C130'
-    assert dld.ftp.host == 'catalog.eol.ucar.edu'
-    assert dld.begin == tt.parseTime('20120101')
-    assert dld.end == tt.parseTime('20121231235959')
+    assert dld.file_type == 'IR'
+    assert dld.ftp_dir == '/pub/archive/projects/tests/ORCAS'
+    assert dld.ftp.host == 'ftp.eol.ucar.edu'
+    assert dld.begin == tt.parseTime('201601181400')
+    assert dld.end == tt.parseTime('201601190259')
+
 
 @pytest.mark.slowtest
 def test_remote_listing(dld, tmpdir):
+    (begin, end) = (dld.begin, dld.end)
+    dld.setTimeRange(begin - 48*3600, end - 48*3600)
     listing = dld.remoteListing()
     assert not listing
-    end = tt.parseTime('now')
-    begin = end - 24*3600
     dld.setTimeRange(begin, end)
     listing = dld.remoteListing()
-    assert listing
-    assert listing[-1].path.endswith('ozone_obs.kml')
-    assert listing[0] <= listing[-1]
     for de in listing:
         print(de.path)
+    assert listing
+    assert listing[-1].path.endswith('IR.jpg')
+    assert listing[0] <= listing[-1]
     latest = listing[-1]
     print("downloading %s..." % (latest.path))
     dld.setLocalDirectory(str(tmpdir))
@@ -85,7 +92,7 @@ def test_transform(dld, tmpdir):
     spath.write(_source)
     rx = re.compile(r'www\.nrlmry\.navy\.mil/TC/kml/TC/images')
     dpath = tmpdir.join("latest.txt")
-    dld.installLatest(str(spath), str(dpath), transform = lambda line: 
+    dld.installLatest(str(spath), str(dpath), transform=lambda line: 
                       rx.sub(r'acserver.raf.ucar.edu/flight_data/display',
                              line))
     transformed = dpath.read()
