@@ -272,6 +272,7 @@ def main(args):
     print("A device name must be specified.  Use -h to see usage info.")
     return 1
   gniport = args[1]
+  vports = None
   if gniport == "pty":
     vports = GNIVirtualPorts()
     gniport = vports.startPorts()
@@ -280,7 +281,8 @@ def main(args):
           (vports.getUserPort()))
   gni = GNIEmulator(gniport)
   gni.loop()
-  vports.stop()
+  if vports:
+    vports.stop()
   return 0
 
 
