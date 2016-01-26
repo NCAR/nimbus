@@ -54,7 +54,6 @@ class GNISerial(object):
     # GNI, as a sanity check and to make it possible to keep the
     # message exchange more orderly.
     self.gotmenu = False
-    self.gotstatus = False
 
   def getSerial(self):
     return self.sport
@@ -63,7 +62,6 @@ class GNISerial(object):
     logger.debug("requesting status")
     self.sport.write("0\r\n")
     self.gotmenu = False
-    self.gotstatus = False
 
   def retractSlide(self):
     self.sport.write("6") # retract slide
@@ -87,12 +85,21 @@ class GNISerial(object):
     for l in lines:
       self.handleLine(l)
 
+  def setStatusHandler(self, handler):
+    self._status_handler = handler
+
+  def handleStatus(self):
+    "Call a handler function on status changes."
+    if self._status_handler:
+      logger.debug("calling status handler")
+      self._status_handler(self)
+
   def handleLine(self, text):
     logger.debug("handling line: " + text.rstrip())
     if text.startswith("GNI,"):
       self.status.parseStatusLine(text)
       logger.info("GNI status line: %s" % (self.status.getMessage()))
-      self.gotstatus = True
+      self.handleStatus()
     elif text.startswith("10 = Home Slide Actuator"):
       self.gotmenu = True
     elif re.search("^Set In Program Mode", text):
@@ -177,6 +184,7 @@ class GNIServer(object):
 
   def __init__(self):
     self.UDP_IP = "192.168.84.255"
+    self.UDP_IP = "127.0.0.1"
     self.UDP_SEND_PORT = 32100
     self.UDP_READ_PORT = 32101
     self.UDP_NIDAS_PORT = 32102
@@ -220,12 +228,19 @@ class GNIServer(object):
     tv.setHandler(lambda tv: self.gni.requestStatus())
     self.timerq.append(tv)
 
+    # Whenever the serial port receives a new status, we want to send it
+    # immediately.
+    self.gni.setStatusHandler(lambda sp: self.sendStatus())
+
     while True:
       ser = self.gni.getSerial()
       ports = [ser, self.sock]
       start = time.time()
       remaining = self.timerq.timeToNextEvent(99)
-      readable, writable, exceptional = select.select(ports, [], ports, remaining)
+      # We do not need to check for any "exceptional conditions" on the
+      # fds.  According to the select_tut(2) man page, we are not
+      # interested in any of them.
+      readable, writable, exceptional = select.select(ports, [], [], remaining)
       elapsed = time.time() - start
       logger.debug("elapse = " + str(elapsed))
 
@@ -245,9 +260,6 @@ class GNIServer(object):
         self.sock.sendto(data, (self.UDP_IP, self.UDP_NIDAS_PORT))
       if ser in readable:
         self.gni.readData()
-        if self.gni.gotstatus:
-          self.sendStatus()
-          self.gni.gotstatus = False
 
   def close(self):
     self.sock.close()

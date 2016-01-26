@@ -87,17 +87,20 @@ def test_emulator():
   emu = GNIVirtualPorts()
   userport = emu.start()
   device = gni.GNISerial(userport)
-  assert(device.gotstatus == False)
+  # Verify null status at first.
+  when = tt.parseTime("20160102T102030")
+  assert(device.getStatus(when) == "GNI,20160102T102030.0,")
   assert(device.gotmenu == False)
+  status = device.getStatus()
   device.requestStatus()
   # Rather than get too fancy, just brute force a read loop long enough
   # that the emulator should have responded.
   i = 0
-  while i < 10 and not device.gotstatus and not device.gotmenu:
+  while i < 10 and device.getStatus() == status and not device.gotmenu:
     time.sleep(0.5)
     device.readData()
     i += 1
-  assert(device.gotstatus == True)
+  assert(device.getStatus() != status)
   assert(device.gotmenu == True)
   
   
@@ -110,7 +113,6 @@ def test_emulator_ready():
   # port.
   userport = emu.getUserPort()
   device = gni.GNISerial(userport)
-  assert(device.gotstatus == False)
   assert(device.gotmenu == False)
   assert(device.getStatus(when) == "GNI,20160102T102030.0,")
 
@@ -120,10 +122,11 @@ def test_emulator_ready():
   # Rather than get too fancy, just brute force a read loop long enough
   # that the emulator should have responded.
   i = 0
-  while i < 10 and not device.gotstatus:
+  status = device.getStatus()
+  while i < 10 and status == device.getStatus():
     time.sleep(0.5)
     device.readData()
     i += 1
-  assert(device.gotstatus == True)
+  assert(device.getStatus() != status)
   assert(re.match("^GNI,\d{8}T\d{6}\.\d,Controller ready", device.getStatus()))
   
