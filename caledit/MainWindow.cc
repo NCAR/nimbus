@@ -1011,7 +1011,7 @@ void MainWindow::importRemoteCalibTable(QString remote)
     qDebug() << "connectStr:" << connectStr;
 
     QString insertStr = QString("INSERT INTO "DB_TABLE" SELECT * FROM dblink(%1, "
-      "'SELECT * FROM "DB_TABLE" WHERE pulled=\\'0\\' ORDER BY cal_date') AS ("
+      "'SELECT * FROM "DB_TABLE" WHERE pulled=''0'' ORDER BY cal_date') AS ("
       "rid character(36),"
       "pid character(36),"
       "site character varying(20),"
@@ -1042,12 +1042,12 @@ void MainWindow::importRemoteCalibTable(QString remote)
       " WHERE pulled=\'0\' ORDER BY cal_date");
 
     QString updateMasterStr = QString(
-      "UPDATE "DB_TABLE" SET pulled=\\'1\\' WHERE pulled=\\'0\\'");
+      "UPDATE "DB_TABLE" SET pulled=1 WHERE pulled=''0''");
 
     QString updateRemoteStr = QString("SELECT * FROM dblink_exec(%1, '%2')")
       .arg(connectStr, updateMasterStr);
 
-    updateMasterStr.replace("\\", "");
+    updateMasterStr = QString("UPDATE "DB_TABLE" SET pulled=1");
 
     // insert unpulled rows from remote database
     qDebug() << "insertStr:" << insertStr;
@@ -1055,6 +1055,7 @@ void MainWindow::importRemoteCalibTable(QString remote)
     if (!query.exec(insertStr)) {
         QMessageBox::information(0, tr("remote database query failed"),
           query.lastError().text());
+        qDebug() << query.lastError().text();
         return;
     }
     query.finish();
