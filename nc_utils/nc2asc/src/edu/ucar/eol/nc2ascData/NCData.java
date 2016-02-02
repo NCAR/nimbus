@@ -795,11 +795,10 @@ public class NCData {
 	private String trimBegEndQuotes(String str) {
 		str = str.substring(str.indexOf('\"')+1);  //take off the first "
 		int idx = str.indexOf('\"');  				//takeoff the second "
-		if (idx > 0) {
-			return str.substring(0, idx);
-		} else {
-			return " ";
-		}
+		if (idx > 0)
+			str = str.substring(0, idx);
+
+		return str;
 	}
 
 	/**
@@ -868,7 +867,7 @@ public class NCData {
 		if (platform.equals("N130AR")) {
 		    platform += " - NSF C-130";
 		}
-		String ret = "Schanot, Allen\n";
+		String ret = "Romashkin, Pavel\n";
 		ret += trimBegEndQuotes(""+ fin.findGlobalAttribute("institution")) +"\n";
 		ret += "RAF instruments on "+ platform +"\n";
 		ret += trimBegEndQuotes(""+ fin.findGlobalAttribute("ProjectName")) +"\n";
@@ -925,7 +924,7 @@ public class NCData {
 		mdata += "ASSOCIATED_DATA: Full data in netCDF file.\n";
 		mdata += "INSTRUMENT_INFO: \n";
 		mdata += "DATA_INFO: data reported in ambient condition, ambient temperature and pressure are given for conversion to STP (273.15K and 1013 mb)\n";
-		mdata += "UNCERTAINTY: contact PI Allen Schanot or Jorgen Jensen, jbj@ucar.edu, 303-497-1028\n";
+		mdata += "UNCERTAINTY: contact PI Pavel Romasshkin or Jorgen Jensen, jbj@ucar.edu, 303-497-1028\n";
 		mdata += "ULOD_FLAG: -77777\n";
 		mdata += "ULOD_VALUE: N/A\n";
 		mdata += "LLOD_FLAG: -88888\n";
