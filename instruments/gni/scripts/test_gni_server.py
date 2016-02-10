@@ -50,8 +50,30 @@ def test_repeating_timer_event():
   assert(tv.period == 10)
   assert(tv.expires == tv.started + tv.period)
   assert(tv.repeating == True)
-  tv.reset()
+  tv.reset(when+10)
   assert(tv.expires == tv.started + 2*tv.period)
+
+
+def test_time_change():
+  """
+  Repeating events should advance past the current system clock.
+  """
+  when = tt.parseTime("20160102T102030")
+  tv = gni.TimerEvent(10, repeating=True, when=when)
+  now = float(int(time.time()/10)*10)
+  tv.reset(now)
+  assert(tv.expires == now + 10)
+  tv.reset(now - 5)
+  assert(tv.expires == now)
+  tv.reset(now + 59.9)
+  assert(tv.expires == now + 60)
+  tv.reset(now + 60.1)
+  assert(tv.expires == now + 70)
+  # Check that system clock used if no reference time is passed.
+  now = time.time()
+  tv.reset()
+  assert(now < tv.expires <= now + 10)
+  assert(tv.expires == (now - (now % 10)) + 10)
 
 
 def test_timer_queue():

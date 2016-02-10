@@ -54,6 +54,7 @@ class GNISerial(object):
     # GNI, as a sanity check and to make it possible to keep the
     # message exchange more orderly.
     self.gotmenu = False
+    self._status_handler = None
 
   def getSerial(self):
     return self.sport

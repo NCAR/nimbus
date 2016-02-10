@@ -26,10 +26,17 @@ class TimerEvent(object):
     self.started = when
     self.expires = self.started + self.period
 
-  def reset(self):
-    "Restart repeating timers and nullify expired ones."
+  def reset(self, when=None):
+    """
+    Restart repeating timers and nullify expired ones.  Repeating timers
+    are always advanced relative to the current system clock, in case the
+    system time changes.
+    """
     if self.repeating and self.period and self.expires:
-      self.expires += self.period
+      if not when:
+        when = time.time()
+      when = when - (when % self.period)
+      self.expires = when + self.period
     else:
       self.expires = None
 
