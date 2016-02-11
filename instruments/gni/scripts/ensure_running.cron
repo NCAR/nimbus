@@ -3,5 +3,5 @@
 # Start / keep running gni_server.py (relay program from GNI instrument to control.
 ps ax | grep gni_server | grep -qv grep
 if [ $? -ne 0 ]; then
-  nohup /home/pi/gni/scripts/gni_server.py > /tmp/gni_server.log 2>&1 &
+  nohup /home/pi/gni/scripts/gni_server.py --device /dev/ttyACM0 >> /home/pi/gni_server.log 2>&1 &
 fi
