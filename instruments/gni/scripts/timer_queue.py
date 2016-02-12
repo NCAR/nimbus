@@ -10,7 +10,7 @@ class TimerEvent(object):
     Timed events trigger callbacks from the event loop at specified times
     or intervals.
     """
-    def __init__(self, period, repeating=False, when=None):
+    def __init__(self, period, repeating=False, when=None, name=None):
         self.period = period
         self.repeating = repeating
         self.started = None
@@ -18,7 +18,14 @@ class TimerEvent(object):
         self.expires = None
         self.start(when)
         self.handler = None
+        self.name = name
         self.ncalls = 0
+
+    def getName(self):
+        name = self.name
+        if not name:
+            name = str(self.handler)
+        return name
 
     def start(self, when=None):
         if when is None:
@@ -30,6 +37,8 @@ class TimerEvent(object):
         """
         Reinitialize this TimerEvent with a new start time and expiration time.
         """
+        logger.debug("restarting timer @ %s: %s" %
+                     (str(time.time()), self.getName()))
         self.start(when)
 
     def reset(self, when=None):
@@ -61,11 +70,15 @@ class TimerEvent(object):
         self.handler = handler
 
     def handle(self):
-        logger.debug("timer handle: %s" % (str(self.handler)))
+        expired = self.expires
+        logger.debug("handling timer@%s, expired@%s: %s" %
+                     (str(time.time()), str(self.expires), self.getName()))
         self.ncalls += 1
         if self.handler is not None:
             self.handler(self)
-        self.reset()
+        # Reschedule this timer unless it was restarted in the handler.
+        if self.expires == expired:
+            self.reset()
 
 
 
@@ -77,11 +90,14 @@ class TimerQueue(list):
     def __init__(self):
         list.__init__(self)
 
-    def nextEvent(self):
-        "Return seconds until next event or else max."
+    def _normalize(self):
         for xt in [xt for xt in self if xt.expires is None]:
             del self[self.index(xt)]
         self.sort(key=lambda te: te.expires)
+
+    def nextEvent(self):
+        "Return seconds until next event or else max."
+        self._normalize()
         if self:
             return self[0]
         return None
@@ -94,16 +110,19 @@ class TimerQueue(list):
 
     def expired(self, when=None):
         "Return the timer events which have expired as of when."
+        self._normalize()
         if not when:
             when = time.time()
         return [t for t in self if t.expires <= when]
 
     def handleExpired(self, when=None):
         expired = self.expired(when)
+        logger.debug("handleExpired(): %d timers expired: %s" %
+                     (len(expired), ",".join([te.getName() for te in expired])))
         for xt in expired:
             xt.handle()
-        # Resort the events and filter the expired ones.
-        nxt_ = self.nextEvent() 
-
-
-
+        # This is kind of redundant, since the queue will be normalized
+        # again on the next method call.  However, since this inherits
+        # list, it makes sense that it be normalized after being modified
+        # too, rather than letting expired timers remain in the queue.
+        self._normalize()
