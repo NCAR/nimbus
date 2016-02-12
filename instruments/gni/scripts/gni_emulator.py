@@ -112,177 +112,179 @@ Set In Program Mode
 
 class GNIEmulator(object):
 
-  def __init__(self, device):
-    """Open the given serial device."""
-    self.device = device
-    self.hang = None
-    logger.debug("Opening device: %s" % (self.device))
-    self.sport = serial.Serial(self.device, 9600, timeout=0)
-    self.sport.nonblocking()
-    self.status = "GNI,,c,9,c3,1,1"
-    self.started = None
-    self.interrupted = False
-    self.cdata = ""
-    self.writeLines("GNI,,Controller ready")
+    def __init__(self, device):
+        """Open the given serial device."""
+        self.device = device
+        self.hang = None
+        logger.debug("Opening device: %s" % (self.device))
+        self.sport = serial.Serial(self.device, 9600, timeout=0)
+        self.sport.nonblocking()
+        self.status = "GNI,,c,9,c3,1,1"
+        self.started = None
+        self.interrupted = False
+        self.cdata = ""
+        self.writeLines("GNI,,Controller ready")
 
-  def setHangup(self, hang):
-    self.hang = hang
+    def setHangup(self, hang):
+        self.hang = hang
 
-  def isStopped(self):
-    return self.hang is not None and self.started + self.hang <= time.time()
+    def isStopped(self):
+        return self.hang is not None and self.started + self.hang <= time.time()
 
-  def writeLines(self, text):
-    """Write the given text to the serial port, pausing between lines."""
-    # When hung, do not write any data back.
-    if self.isStopped():
-      return
-    lines = text.splitlines()
-    for line in lines:
-      buf = line.rstrip() + "\r\n"
-      logger.debug("writing to serial port:'%s'" % (repr(buf)))
-      self.sport.write(buf)
-      self.sport.flush()
-      time.sleep(0.01)
+    def writeLines(self, text):
+        """Write the given text to the serial port, pausing between lines."""
+        # When hung, do not write any data back.
+        if self.isStopped():
+            return
+        lines = text.splitlines()
+        for line in lines:
+            buf = line.rstrip() + "\r\n"
+            logger.debug("writing to serial port:'%s'" % (repr(buf)))
+            self.sport.write(buf)
+            self.sport.flush()
+            time.sleep(0.01)
 
-  def sendMenu(self):
-    "Write the menu to the serial port."
-    self.writeLines(_menu)
+    def sendMenu(self):
+        "Write the menu to the serial port."
+        self.writeLines(_menu)
 
-  def sendStatus(self):
-    self.writeLines(self.status)
+    def sendStatus(self):
+        self.writeLines(self.status)
 
-  def readData(self):
-    "Read data from the serial port and echo it back."
-    rdata = self.sport.read(128)
-    logger.debug("readData() got: '%s'" % (repr(rdata)))
-    if not self.isStopped():
-      self.sport.write(rdata)
-    self.cdata = self.cdata + rdata
-    self.handleData()
+    def readData(self):
+        "Read data from the serial port and echo it back."
+        rdata = self.sport.read(128)
+        logger.debug("readData() got: '%s'" % (repr(rdata)))
+        if not self.isStopped():
+            self.sport.write(rdata)
+        self.cdata = self.cdata + rdata
+        self.handleData()
 
-  def handleData(self):
-    # Only handle lines whose newline has been received.
-    lines = self.cdata.splitlines()
-    remainder = ""
-    if lines and not self.cdata.endswith("\n"):
-      remainder = lines[-1]
-      lines = lines[:-1]
-    self.cdata = remainder
-    for l in lines:
-      self.handleLine(l)
+    def handleData(self):
+        # Only handle lines whose newline has been received.
+        lines = self.cdata.splitlines()
+        remainder = ""
+        if lines and not self.cdata.endswith("\n"):
+            remainder = lines[-1]
+            lines = lines[:-1]
+        self.cdata = remainder
+        for l in lines:
+            self.handleLine(l)
 
-  def handleLine(self, text):
-    "Respond to commands and ignore the rest."
-    logger.debug("handling line: '%s'" % (text))
-    text = text.strip()
-    if text == "0":
-      # The GNI actually repeats itself, so emulate that here.
-      self.sendStatus()
-      self.sendMenu()
-      self.sendStatus()
-      self.sendMenu()
-    elif text == "STOP":
-      # Special command recognized by the emulator to enter "hung" state.
-      self.hang = 0
-    elif text == "RESUME":
-      self.hang = None
-    else:
-      logger.debug("unrecognized command: '%s'" % (text))
+    def handleLine(self, text):
+        "Respond to commands and ignore the rest."
+        logger.debug("handling line: '%s'" % (text))
+        text = text.strip()
+        if text == "0":
+            # The GNI actually repeats itself, so emulate that here.
+            self.sendStatus()
+            self.sendMenu()
+            self.sendStatus()
+            self.sendMenu()
+        elif text == "STOP":
+            # Special command recognized by the emulator to enter "hung" state.
+            self.hang = 0
+        elif text == "RESUME":
+            self.hang = None
+        else:
+            logger.debug("unrecognized command: '%s'" % (text))
 
-  def loop(self):
-    "Read commands from the port and respond."
-    try:
-      self.selectLoop()
-    except KeyboardInterrupt:
-      self.interrupted = True
+    def loop(self):
+        "Read commands from the port and respond."
+        try:
+            self.selectLoop()
+        except KeyboardInterrupt:
+            self.interrupted = True
 
-  def selectLoop(self):
-    logger.debug("entering selectLoop()...")
-    self.started = time.time()
-    while not self.interrupted:
-      (readers, writers_, xers_) = select.select([self.sport], [], [])
-      if self.sport in readers:
-        self.readData()
+    def selectLoop(self):
+        logger.debug("entering selectLoop()...")
+        self.started = time.time()
+        while not self.interrupted:
+            (readers, writers_, xers_) = select.select([self.sport], [], [])
+            if self.sport in readers:
+                self.readData()
             
 
 class GNIVirtualPorts(object):
-  """
-  Setup virtual serial devices, with a GNI emulator connected to one end.
+    """
+    Setup virtual serial devices, with a GNI emulator connected to one end.
 
-  This creates two subprocesses: the socat process which manages the pty
-  devices for us, and the actual emulator process connected to one end of
-  the socat "serial relay".
+    This creates two subprocesses: the socat process which manages the pty
+    devices for us, and the actual emulator process connected to one end of
+    the socat "serial relay".
 
-  The GNI emulator opens the "GNI port", or gniport, while the 
-  GNI server opens the "user port", or userport.
-  """
-  def __init__(self):
-    self.socat = None
-    self.emulator = None
-    self.gniport = None
-    self.userport = None
-    self.tmpdir = None
-    self.debug = False
+    The GNI emulator opens the "GNI port", or gniport, while the 
+    GNI server opens the "user port", or userport.
+    """
+    def __init__(self):
+        self.socat = None
+        self.emulator = None
+        self.gniport = None
+        self.userport = None
+        self.tmpdir = None
+        self.debug = False
 
-  def getUserPort(self):
-    return self.userport
+    def getUserPort(self):
+        return self.userport
 
-  def getGNIPort(self):
-    return self.gniport
+    def getGNIPort(self):
+        return self.gniport
 
-  def startPorts(self):
-    "Start just the ports, leaving the emulator to be run separately."
-    self.tmpdir = tempfile.mkdtemp()
-    self.userport = os.path.join(self.tmpdir, "userport")
-    self.gniport = os.path.join(self.tmpdir, "gniport")
-    cmd = ["socat"]
-    if self.debug:
-      cmd.extend(["-v"] + ["-d"]*4)
-    cmd.extend(["PTY,echo=0,link=%s" % (self.gniport),
-                "PTY,echo=0,link=%s" % (self.userport)])
-    logger.info(" ".join(cmd))
-    self.socat = sp.Popen(cmd, close_fds=True, shell=False)
-    started = time.time()
-    found = False
-    while time.time() - started < 5 and not found:
-      time.sleep(1)
-      found = os.path.exists(self.userport) and os.path.exists(self.gniport)
-    if not found:
-      raise Exception("serial port devices still do not exist after 5 seconds")
-    return self.gniport
+    def startPorts(self):
+        "Start just the ports, leaving the emulator to be run separately."
+        self.tmpdir = tempfile.mkdtemp()
+        self.userport = os.path.join(self.tmpdir, "userport")
+        self.gniport = os.path.join(self.tmpdir, "gniport")
+        cmd = ["socat"]
+        if self.debug:
+            cmd.extend(["-v"] + ["-d"]*4)
+        cmd.extend(["PTY,echo=0,link=%s" % (self.gniport),
+                    "PTY,echo=0,link=%s" % (self.userport)])
+        logger.info(" ".join(cmd))
+        self.socat = sp.Popen(cmd, close_fds=True, shell=False)
+        started = time.time()
+        found = False
+        while time.time() - started < 5 and not found:
+            time.sleep(1)
+            found = bool(os.path.exists(self.userport) and
+                         os.path.exists(self.gniport))
+        if not found:
+            raise Exception("serial port devices still do not exist "
+                            "after 5 seconds")
+        return self.gniport
 
-  def start(self):
-    "Start the emulator processes and return the user port."
-    self.startPorts()
-    return self.startEmulator()
+    def start(self):
+        "Start the emulator processes and return the user port."
+        self.startPorts()
+        return self.startEmulator()
 
-  def startEmulator(self):
-    cmd = ["python", __file__, "--debug", self.gniport]
-    logger.info(" ".join(cmd))
-    self.emulator = sp.Popen(cmd, close_fds=True, shell=False)
-    # Give the emulator process time to open the port and get ready to talk.
-    time.sleep(2)
-    logger.debug("Emulator started on %s, returning user port: %s" %
-                 (self.gniport, self.userport))
-    return self.userport
+    def startEmulator(self):
+        cmd = ["python", __file__, "--debug", self.gniport]
+        logger.info(" ".join(cmd))
+        self.emulator = sp.Popen(cmd, close_fds=True, shell=False)
+        # Give the emulator process time to open the port and get ready to talk.
+        time.sleep(2)
+        logger.debug("Emulator started on %s, returning user port: %s" %
+                     (self.gniport, self.userport))
+        return self.userport
 
-  def stop(self):
-    logger.info("Stopping...")
-    if self.emulator:
-      logger.debug("killing emulator...")
-      self.emulator.kill()
-      self.emulator.wait()
-      self.emulator = None
-    if self.socat:
-      logger.debug("killing socat...")
-      self.socat.kill()
-      self.socat.wait()
-      self.socat = None
-    if self.tmpdir:
-      logger.debug("removing %s" % (self.tmpdir))
-      shutil.rmtree(self.tmpdir)
-      self.tmpdir = None
-      
+    def stop(self):
+        logger.info("Stopping...")
+        if self.emulator:
+            logger.debug("killing emulator...")
+            self.emulator.kill()
+            self.emulator.wait()
+            self.emulator = None
+        if self.socat:
+            logger.debug("killing socat...")
+            self.socat.kill()
+            self.socat.wait()
+            self.socat = None
+        if self.tmpdir:
+            logger.debug("removing %s" % (self.tmpdir))
+            shutil.rmtree(self.tmpdir)
+            self.tmpdir = None
+
 
 
 _usage = """Usage: gni_emulator.py [--debug] [--info] <device>
@@ -294,36 +296,37 @@ created.
 
         
 def main(args):
-  parser = OptionParser(usage=_usage)
-  parser.add_option("--debug", dest="level", action="store_const",
-                    const=logging.DEBUG, default=logging.ERROR)
-  parser.add_option("--info", dest="level", action="store_const",
-                    const=logging.INFO, default=logging.ERROR)
-  parser.add_option("--hang", type="int", default=None,
-                    help=
-                    "Stop responding (hang) after the given number of seconds")
-  (options, args) = parser.parse_args(args)
-  logging.basicConfig(level=options.level)
-  if len(args) != 2:
-    print("A device name must be specified.  Use -h to see usage info.")
-    return 1
-  gniport = args[1]
-  vports = None
-  if gniport == "pty":
-    vports = GNIVirtualPorts()
-    gniport = vports.startPorts()
-    print("Emulator connecting to virtual serial port: %s" % (gniport))
-    print("User clients connect to virtual serial port: %s" %
-          (vports.getUserPort()))
-  gni = GNIEmulator(gniport)
-  gni.setHangup(options.hang)
-  gni.loop()
-  if vports:
-    vports.stop()
-  return 0
+    parser = OptionParser(usage=_usage)
+    parser.add_option("--debug", dest="level", action="store_const",
+                      const=logging.DEBUG, default=logging.ERROR)
+    parser.add_option("--info", dest="level", action="store_const",
+                      const=logging.INFO, default=logging.ERROR)
+    parser.add_option("--hang", type="int", default=None,
+                      help=
+                      "Stop responding (hang) after the "
+                      "given number of seconds")
+    (options, args) = parser.parse_args(args)
+    logging.basicConfig(level=options.level)
+    if len(args) != 2:
+        print("A device name must be specified.  Use -h to see usage info.")
+        return 1
+    gniport = args[1]
+    vports = None
+    if gniport == "pty":
+        vports = GNIVirtualPorts()
+        gniport = vports.startPorts()
+        print("Emulator connecting to virtual serial port: %s" % (gniport))
+        print("User clients connect to virtual serial port: %s" %
+              (vports.getUserPort()))
+    gni = GNIEmulator(gniport)
+    gni.setHangup(options.hang)
+    gni.loop()
+    if vports:
+        vports.stop()
+    return 0
 
 
 if __name__ == "__main__":
-  import sys
-  sys.exit(main(sys.argv))
+    import sys
+    sys.exit(main(sys.argv))
   

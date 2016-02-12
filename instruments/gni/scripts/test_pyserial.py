@@ -14,12 +14,12 @@ def main(args):
         #print("entering select()...")
         # fds = [ser.fileno()]
         fds = [ser]
-        (rlist, wlist, xlist) = select.select(fds, [], fds, 5)
+        (rlist, wlist_, xlist_) = select.select(fds, [], fds, 5)
         #print("returned from select().")
-	now = time.time()
-	if now >= tprompt:
-	    ser.write("0\r\n")
-	    tprompt = now + 5
+        now = time.time()
+        if now >= tprompt:
+            ser.write("0\r\n")
+            tprompt = now + 5
         if rlist:
             data = ser.read(100)
             sys.stdout.write(data)
