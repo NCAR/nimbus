@@ -152,7 +152,7 @@ class GNIStatus(object):
         # string is the same and the timestamps are close.
         self.latest = None
         self.previous = None
-        self.time_tolerance = 0.2
+        self.time_tolerance = 0.25
         self.srx = re.compile(r"^GNI,(?P<gnitime>[^,]*),(?P<status>.*)$")
 
     def formatTimestamp(self, when=None):
@@ -200,9 +200,10 @@ class GNIStatus(object):
         """
         prev = self.previous
         last = self.latest
-        return bool(not prev or not last or
-                    abs(last.timestamp - prev.timestamp) > self.time_tolerance
-                    or prev.status != last.status)
+        same = bool(prev and last and
+                    abs(last.timestamp - prev.timestamp) <= self.time_tolerance
+                    and prev.status == last.status)
+        return not same
 
     def parseStatusLine(self, line, when=None):
         """
@@ -399,7 +400,7 @@ def main(args):
     logging.basicConfig(level=options.level)
     server = GNIServer()
     if options.client:
-        server.setClientAddress(client)
+        server.setClientAddress(options.client)
     server.connect()
     device = GNISerial(options.device)
     server.setSerialGNI(device)

@@ -43,6 +43,8 @@ def test_status_changed():
     assert(gstat.getMessage() == "GNI,20160102T102030.3,c,8,c3,2,2")
     assert(gstat.getTimestamp() == when+0.3)
     assert(gstat.changed() == True)
+    gstat.snapshot()
+    assert(gstat.changed() == False)
 
   
 def test_ready_status():

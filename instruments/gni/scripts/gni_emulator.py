@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# -*- mode: python; python-indent-offset: 2; -*-
+# -*- mode: python; python-indent-offset: 4; -*-
 """
 Emulate the GNI serial interface.
 
@@ -219,10 +219,24 @@ class GNIVirtualPorts(object):
     def __init__(self):
         self.socat = None
         self.emulator = None
+        self.server = None
         self.gniport = None
         self.userport = None
         self.tmpdir = None
-        self.debug = False
+        self.loglevel = logging.ERROR
+
+    def setLogLevel(self, level):
+        self.loglevel = level
+
+    def logOption(self, level=None):
+        if level is None:
+            level = self.loglevel
+        if level == logging.INFO:
+            return "--info"
+        if level == logging.ERROR:
+            return "--error"
+        if level == logging.DEBUG:
+            return "--debug"
 
     def getUserPort(self):
         return self.userport
@@ -236,8 +250,9 @@ class GNIVirtualPorts(object):
         self.userport = os.path.join(self.tmpdir, "userport")
         self.gniport = os.path.join(self.tmpdir, "gniport")
         cmd = ["socat"]
-        if self.debug:
-            cmd.extend(["-v"] + ["-d"]*4)
+        if self.loglevel == logging.DEBUG:
+            cmd.extend(["-v"])
+            # cmd.extend(["-d"]*4)
         cmd.extend(["PTY,echo=0,link=%s" % (self.gniport),
                     "PTY,echo=0,link=%s" % (self.userport)])
         logger.info(" ".join(cmd))
@@ -259,7 +274,9 @@ class GNIVirtualPorts(object):
         return self.startEmulator()
 
     def startEmulator(self):
-        cmd = ["python", __file__, "--debug", self.gniport]
+        cmd = ["python", __file__]
+        cmd.append(self.logOption())
+        cmd.append(self.gniport)
         logger.info(" ".join(cmd))
         self.emulator = sp.Popen(cmd, close_fds=True, shell=False)
         # Give the emulator process time to open the port and get ready to talk.
@@ -268,6 +285,17 @@ class GNIVirtualPorts(object):
                      (self.gniport, self.userport))
         return self.userport
 
+    def startServer(self):
+        path = os.path.join(os.path.dirname(__file__), "gni_server.py")
+        cmd = ["python", path]
+        cmd.append(self.logOption())
+        cmd.extend(["--device", self.userport, "--client", "127.0.0.1"])
+        logger.info(" ".join(cmd))
+        self.server = sp.Popen(cmd, close_fds=True, shell=False)
+        # Give the server process time to open the port and get ready to talk.
+        time.sleep(2)
+        logger.debug("Server started on %s..." % (self.userport))
+
     def stop(self):
         logger.info("Stopping...")
         if self.emulator:
@@ -275,6 +303,11 @@ class GNIVirtualPorts(object):
             self.emulator.kill()
             self.emulator.wait()
             self.emulator = None
+        if self.server:
+            logger.debug("killing server...")
+            self.server.kill()
+            self.server.wait()
+            self.server = None
         if self.socat:
             logger.debug("killing socat...")
             self.socat.kill()
@@ -290,9 +323,10 @@ class GNIVirtualPorts(object):
 _usage = """Usage: gni_emulator.py [--debug] [--info] <device>
 Emulate the GNI serial interface on the given serial device.
 
-If the device name is 'pty', then a virtual serial port connection will be
-created.
-"""
+If the device name is 'pty', then this creates a virtual serial port
+connection using 'socat' and connects the emulator to the gni port.  If the
+device name is 'server', then this also starts a server process connected
+to the 'user' end of the virtual serial connection."""
 
         
 def main(args):
@@ -301,6 +335,8 @@ def main(args):
                       const=logging.DEBUG, default=logging.ERROR)
     parser.add_option("--info", dest="level", action="store_const",
                       const=logging.INFO, default=logging.ERROR)
+    parser.add_option("--error", dest="level", action="store_const",
+                      const=logging.ERROR, default=logging.ERROR)
     parser.add_option("--hang", type="int", default=None,
                       help=
                       "Stop responding (hang) after the "
@@ -310,14 +346,19 @@ def main(args):
     if len(args) != 2:
         print("A device name must be specified.  Use -h to see usage info.")
         return 1
+    mode = args[1]
     gniport = args[1]
     vports = None
-    if gniport == "pty":
+    if mode in ["pty", "server"]:
         vports = GNIVirtualPorts()
+        vports.setLogLevel(options.level)
         gniport = vports.startPorts()
         print("Emulator connecting to virtual serial port: %s" % (gniport))
         print("User clients connect to virtual serial port: %s" %
               (vports.getUserPort()))
+    if mode == "server":
+        vports.startServer()
+        print("Server started on port: %s" % (vports.getUserPort()))
     gni = GNIEmulator(gniport)
     gni.setHangup(options.hang)
     gni.loop()
