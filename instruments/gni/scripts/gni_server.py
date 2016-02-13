@@ -236,15 +236,20 @@ class GNIStatus(object):
 
 class GNIServer(object):
 
+    DEFAULT_IP = "192.168.84.255"
+    LOCALHOST_IP = "127.0.0.1"
+
+    UDP_SEND_PORT = 32100
+    UDP_READ_PORT = 32101
+    UDP_NIDAS_PORT = 32102
+
     def __init__(self):
-        self.udp_ip = "192.168.84.255"
-        self.udp_ip = "127.0.0.1"
+        self.udp_ip = GNIServer.DEFAULT_IP
         # Corresponds to udp_read_port in GNIClient
-        self.udp_send_port = 32100
+        self.udp_send_port = GNIServer.UDP_SEND_PORT
         # Corresponds to udp_send_port in GNIClient
-        self.udp_read_port = 32101
-        self.udp_nidas_port = 32102
-        # self.UDP_PORT = 41002
+        self.udp_read_port = GNIServer.UDP_READ_PORT
+        self.udp_nidas_port = GNIServer.UDP_NIDAS_PORT
         self.timerq = gni.TimerQueue()
         self.timed_exposure = 0.0
         self.expose_time = 0.0
@@ -264,6 +269,10 @@ class GNIServer(object):
         self.sock = None
         self.interrupted = False
         self.nsent = 0
+
+    def setClientAddress(self, client):
+        if client:
+            self.udp_ip = client
 
     def connect(self):
         # Connection to User Interface
@@ -349,15 +358,25 @@ class GNIServer(object):
             self.sock.close()
 
 
-_usage = """%prog [log-level-option] [--device <device>]
+_usage = "%prog " + """[log-level-option] [--device <device>] [--client <host>]
 
 Run the server for a GNI connected to the given serial device.
+
+The server sends status updates to <client>:%s, where by default the
+<client> host or broadcast address is %s.  The server listens for commands
+from clients on port %s.  Set the client address with the --client option.
+All UDP status updates are also copied to a second port, %s, for recording
+by NIDAS, assuming NIDAS is listening on the <client> host or broadcast
+address.
 
 The default INFO logging level prints all status and data lines received
 from the GNI, skipping all the menu lines.  Specifying the ERROR logging
 level will suppress all output except for errors.  The DEBUG logging level
 is much more verbose, showing most messages back and forth as well as some
-timing information."""
+timing information.""" % (GNIServer.UDP_SEND_PORT,
+                          GNIServer.DEFAULT_IP,
+                          GNIServer.UDP_READ_PORT,
+                          GNIServer.UDP_NIDAS_PORT)
 
 
 
@@ -370,9 +389,17 @@ def main(args):
     parser.add_option("--error", dest="level", action="store_const",
                       const=logging.ERROR, default=logging.INFO)
     parser.add_option("--device", type="string", default='/dev/ttyUSB0')
+    parser.add_option("--client", type="string", default=None,
+                      help="The address of the host which will receive "
+                      "UDP status packets from the GNI.  By default this "
+                      "is the aircraft server at %s, where the RIC proxy "
+                      "runs.  Set it to 'localhost' to connect to a client "
+                      "running on the same host.")
     (options, args) = parser.parse_args(args)
     logging.basicConfig(level=options.level)
     server = GNIServer()
+    if options.client:
+        server.setClientAddress(client)
     server.connect()
     device = GNISerial(options.device)
     server.setSerialGNI(device)
