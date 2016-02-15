@@ -9,6 +9,7 @@ import socket
 import sys
 import time
 import logging
+from gni_emulator import GNIVirtualPorts
 from optparse import OptionParser
 
 logger = logging.getLogger(__name__)
@@ -76,6 +77,7 @@ class GNIClient(object):
             self.readInput()
 
     def loop(self):
+        self.printMenu()
         try:
             while True:
                 self.select()
@@ -101,6 +103,11 @@ def main(args):
                       const=logging.INFO, default=logging.INFO)
     parser.add_option("--error", dest="level", action="store_const",
                       const=logging.ERROR, default=logging.INFO)
+    parser.add_option("--simulate", action="store_const",
+                      const=True, default=False,
+                      help=
+                      "Create an emulator with a server connected "
+                      "to it, and connect to that server.")
     parser.add_option("--server", type="string", default=None,
                       help="Host name or IP address where the GNI server "
                       """or RIC proxy is running.
@@ -110,12 +117,20 @@ on the Raspberry Pi, pass the Pi's IP address or try the host name 'gni'.
 """)
     (options, args) = parser.parse_args(args)
     logging.basicConfig(level=options.level)
+    if options.server and options.simulate:
+        print("Cannot combine --server option with --simulate.")
+        sys.exit(1)
+
+    vports = GNIVirtualPorts()
+    if options.simulate:
+        vports.startChain(options)
     client = GNIClient()
     if options.server:
         client.setServerAddress(options.server)
     client.connect()
     client.loop()
     client.close()
+    vports.stop()
 
 
 if __name__ == "__main__":

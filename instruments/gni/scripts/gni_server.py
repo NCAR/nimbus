@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 from optparse import OptionParser
 import collections
-import gni
+from timer_queue import TimerQueue, TimerEvent
 
 class GNISerial(object):
 
@@ -251,18 +251,18 @@ class GNIServer(object):
         # Corresponds to udp_send_port in GNIClient
         self.udp_read_port = GNIServer.UDP_READ_PORT
         self.udp_nidas_port = GNIServer.UDP_NIDAS_PORT
-        self.timerq = gni.TimerQueue()
+        self.timerq = TimerQueue()
         self.timed_exposure = 0.0
         self.expose_time = 0.0
         # Repeat the last status if no new status has been received in the last
         # 5 seconds.
-        self.repeater = gni.TimerEvent(5, repeating=True, name="repeater")
+        self.repeater = TimerEvent(5, repeating=True, name="repeater")
         self.repeater.setHandler(lambda tv: self.sendStatus(True))
         self.timerq.append(self.repeater)
         # Every 2 seconds request a new status.  When the GNI responds, the
         # updated status will be immediately sent out from inside the event
         # loop, and the repeater status timer will be restarted.
-        tv = gni.TimerEvent(2, repeating=True, name="requester")
+        tv = TimerEvent(2, repeating=True, name="requester")
         tv.setHandler(lambda tv: self.requestStatus())
         self.timerq.append(tv)
         # Connection to the GNI serial interface

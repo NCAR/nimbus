@@ -296,6 +296,37 @@ class GNIVirtualPorts(object):
         time.sleep(2)
         logger.debug("Server started on %s..." % (self.userport))
 
+    def emulatorMain(self, devicemode, options):
+        """
+        Main method for running just the emulator, possibly over virtual ports.
+        """
+        gniport = devicemode
+        if devicemode in ["pty", "server"]:
+            self.setLogLevel(options.level)
+            gniport = self.startPorts()
+            print("Emulator connecting to virtual serial port: %s" % (gniport))
+            print("User clients connect to virtual serial port: %s" %
+                  (self.getUserPort()))
+        if devicemode == "server":
+            self.startServer()
+            print("Server started on port: %s" % (self.getUserPort()))
+        gni = GNIEmulator(gniport)
+        gni.setHangup(options.hang)
+        gni.loop()
+        self.stop()
+
+    def startChain(self, options):
+        """
+        Start the whole chain: an emulator connected to a server over virtual
+        serial ports.
+        """
+        self.setLogLevel(options.level)
+        self.startPorts()
+        self.startServer()
+        logger.info("Server started on port: %s" % (self.getUserPort()))
+        self.startEmulator()
+        logger.info("Emulator started.")
+
     def stop(self):
         logger.info("Stopping...")
         if self.emulator:
@@ -346,24 +377,8 @@ def main(args):
     if len(args) != 2:
         print("A device name must be specified.  Use -h to see usage info.")
         return 1
-    mode = args[1]
-    gniport = args[1]
-    vports = None
-    if mode in ["pty", "server"]:
-        vports = GNIVirtualPorts()
-        vports.setLogLevel(options.level)
-        gniport = vports.startPorts()
-        print("Emulator connecting to virtual serial port: %s" % (gniport))
-        print("User clients connect to virtual serial port: %s" %
-              (vports.getUserPort()))
-    if mode == "server":
-        vports.startServer()
-        print("Server started on port: %s" % (vports.getUserPort()))
-    gni = GNIEmulator(gniport)
-    gni.setHangup(options.hang)
-    gni.loop()
-    if vports:
-        vports.stop()
+    vports = GNIVirtualPorts()
+    vports.emulatorMain(args[1], options)
     return 0
 
 
