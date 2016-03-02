@@ -7,7 +7,7 @@
 #	Name		Constructor	xlate fn	compute fn
 # ----------------------------------------------------------------------------
 # CSET
-	"XGGALTF",	NULL,		NULL,		sggaltf,
+	"GGALTF",	NULL,		NULL,		sggaltf,
 #
 # DEEPWAVE
 #
