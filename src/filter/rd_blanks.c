@@ -24,7 +24,7 @@ static void clear_sacred_variables();
 /* -------------------------------------------------------------------- */
 void ReadBlankOuts()
 {
-  char	*bo[512], target[NAMELEN];
+  char	*bo[1024], target[NAMELEN];
 
   struct tm st, et;
 
