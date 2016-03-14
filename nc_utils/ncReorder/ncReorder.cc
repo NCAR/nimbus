@@ -19,6 +19,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2004-11
 #include <netcdfcpp.h>
 
 #include <cstring>
+#include <stdio.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -166,6 +168,11 @@ int main(int argc, char *argv[])
   }
 
 
+  bool showprogress = true;
+  if (!isatty(fileno(stdout)))
+  {
+    showprogress = false;
+  }
 
   // Transfer data.
   long	nVars = inFile.num_vars();
@@ -175,8 +182,10 @@ int main(int argc, char *argv[])
       continue;
 
     if (verbose)
+    {
       cout << inFile.get_var(i)->name() << ", nDims = " << inFile.get_var(i)->num_dims() << endl;
-    else
+    }
+    else if (showprogress)
     {
       cout << '\r' << (int)(100 * ((float)i / nVars)) << '%';
       flush(cout);
@@ -215,7 +224,10 @@ int main(int argc, char *argv[])
     }
   }
 
-  cout << endl;
+  if (showprogress)
+  {
+    cout << endl;
+  }
   inFile.close();
   outFile.close();
 
