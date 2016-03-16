@@ -144,6 +144,9 @@ void splwcc(DERTBL *varp)
   atx   = GetSample(varp, 2);	// Ambient Temperature
   psxc  = GetSample(varp, 3);	// Static Pressure
  
+  /* This cut-off is about a broken wire or some other issue with probe.
+   * Still under investigation if 10.0 is the best value.
+   */
   if (plwc < 10.0 || isnan(plwc))
   {
     PutSample(varp, floatNAN);
@@ -157,7 +160,7 @@ void splwcc(DERTBL *varp)
   }
 
   if (varp->ndep >= 5)
-    concf = GetSample(varp, 4);	// FSSP (preferably) concntration
+    concf = GetSample(varp, 4);	// FSSP (preferably) concentration
 
   plwcc = (*lwcFn)(plwc, tasx, atx, psxc, concf, varp->ProbeCount);
 
