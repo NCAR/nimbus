@@ -6,7 +6,7 @@ FULL NAME:	Attack Angle from the Radome
 
 DESCRIPTION:    
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2014
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2016
 -------------------------------------------------------------------------
 */
 
@@ -20,6 +20,31 @@ static int	gv_radome_ssn = 1;	// default to first radome.
 static int      c130_radome_ssn = 1;      // default to first radome.
 
 static std::vector<float> akrd_coeff;
+static std::vector<float> low, mid, high;	// Altitude specific coef's.
+
+
+/* -------------------------------------------------------------------- */
+static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
+{
+  float *tmp;
+  std::vector<float> c = akrd_coeff;
+
+  if ((tmp = GetDefaultsValue(name, varp->name)) != NULL)
+  {
+    c.clear();
+    c.push_back(tmp[0]);
+    c.push_back(tmp[1]);
+    c.push_back(tmp[2]);
+    sprintf(buffer,
+	"akrd: %s set to %f, %f, %f from Defaults file.\n", name,
+	  c[0], c[1], c[2]);
+    LogMessage(buffer);
+  }
+  else
+    AddToDefaults(varp->name, "CalibrationCoefficients", c);
+
+  return c;
+}
 
 /* -------------------------------------------------------------------- */
 void initAKRD(var_base *varp)
@@ -89,19 +114,13 @@ void initAKRD(var_base *varp)
       HandleFatalError("akrd.c: No valid aircraft, no coefficients, exiting.");
   }
 
-  if ((tmp = GetDefaultsValue("AKRD_COEFF", varp->name)) != NULL)
+  akrd_coeff = load_AKRD_Default(varp, "AKRD_COEFF");
+  if (cfg.ProjectName().compare("CSET") == 0)
   {
-    akrd_coeff.clear();
-    akrd_coeff.push_back(tmp[0]);
-    akrd_coeff.push_back(tmp[1]);
-    akrd_coeff.push_back(tmp[2]);
-    sprintf(buffer,
-	"akrd: AKRD_COEFF set to %f, %f, %f from Defaults file.\n",
-	  akrd_coeff[0], akrd_coeff[1], akrd_coeff[2]);
-    LogMessage(buffer);
+    low = load_AKRD_Default(varp, "AKRD_COEFF_LOW");
+    mid = load_AKRD_Default(varp, "AKRD_COEFF_MID");
+    high = load_AKRD_Default(varp, "AKRD_COEFF_HIGH");
   }
-  else
-    AddToDefaults(varp->name, "CalibrationCoefficients", akrd_coeff);
 }
 
 /* -------------------------------------------------------------------- */
@@ -133,6 +152,14 @@ void sakrd(DERTBL *varp)
       case Config::HIAPER:
         psf = GetSample(varp, 2);	// PSF
         mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
+        if (varp->ndep == 4)
+        {
+          NR_TYPE alt = GetSample(varp, 3);
+          if (alt < 6500) akrd_coeff = low; else
+          if (alt < 9300) akrd_coeff = mid; else
+          akrd_coeff = high;
+        }
+
         akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach);
         break;
 
