@@ -163,11 +163,6 @@ cout<<"\n";
   return;
 }
 
-std::string RetrievalCoefficientFile::getId() 
-{
-  return _RCFId;
-}
-
 RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(float PAltKm)
 {
   RC_Set_1FL RcSetAvWt;
