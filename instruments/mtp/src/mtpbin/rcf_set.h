@@ -37,6 +37,9 @@ class RetrievalCoefficientFileSet
 {
 
 public:
+
+  std::vector<RetrievalCoefficientFile> getRCFVector() {return _RCFs;}
+
   /**
    * Constructor
    * @param std::string is directory name containing the RCF files to be 
