@@ -19,7 +19,6 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
   string temp = _RCFFileName;
   size_t last_slash = temp.find_last_of("/");
   size_t last_dot = temp.find_last_of(".");
-cout << "slash:" << last_slash << " dot: "<<last_dot<<" size:"<<temp.length()<<'\n';
   _RCFId = temp.substr(last_slash+1, last_dot-last_slash-1);
 
 cout << "RCFId:"<<_RCFId<<'\n';
@@ -43,7 +42,9 @@ cout << "RCFId:"<<_RCFId<<'\n';
       if (i+1 == RcfHdr.Rcf_Hdr.NFL) _FlRcSetVec.push_back(FlRcSet);
     }
     //
-cout<<"\nAfter pushbacks:"<<_FlRcSetVec.end()->Palt<<"\n";
+cout<<"\nAfter pushbacks:";
+cout<<_FlRcSetVec.begin()->Palt;
+cout<<"\n";
     _FlRcSetVec.pop_back();
 
     if (file)
@@ -254,13 +255,19 @@ bool RetrievalCoefficientFile::setFlightLevelsKm(float FlightLevels[], int Len)
 {
   if (Len != _RCFHdr.NFL) 
   {
-    cout<<"ERROR:Number of flight levels input is not equal to number in RCF\n";
+    cout<<"In "<< __func__ << " for RCFID: " << getId() << "\n";
+    cout<<"ERROR:Number of flight levels input:";
+    cout<< Len;
+    cout<< " is not equal to number in RCF:";
+    cout<< _RCFHdr.NFL;
+    cout<<"\n";
     return false;
   } 
   for (int i = 0; i<Len; i++)
   {
     if ((i+1<Len) && (FlightLevels[i] <= FlightLevels[i+1]))
     {
+      cout<<"In "<< __func__ << " for RCFID: " << getId() << "\n";
       cout<<"ERROR: Flight Levels are not in decreasing altitude\n";
       return false;
     }
