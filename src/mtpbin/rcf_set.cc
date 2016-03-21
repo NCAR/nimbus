@@ -26,8 +26,8 @@ RetrievalCoefficientFileSet::RetrievalCoefficientFileSet(const string Directory)
         itr->path().extension() == ".RCF") {
       string rcf_path = itr->path().string();
       _RCFs.push_back(RetrievalCoefficientFile(rcf_path));
-      cout << "Found RCF file:"<<rcf_path<<"  with ID:"
-           <<_RCFs[i].getId()<<"\n";
+      //cout << "Found RCF file:"<<rcf_path<<"  with ID:"
+       //    <<_RCFs[i].getId()<<"\n";
       i++;
     }
   }
