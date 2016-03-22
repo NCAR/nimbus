@@ -1,0 +1,191 @@
+Check that setting flight levels on uninitialized set fails. 
+In: setFlightLevelsKm call failed:
+ERROR:There are currently no RCFs in the set
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLJ189.RCF with ID:NRCLJ189
+Raobcount :190
+NFL:15
+Last Smatrix2:-0.00166649
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKW189.RCF with ID:NRCKW189
+Raobcount :195
+NFL:15
+Last Smatrix2:-0.00170668
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKZ189.RCF with ID:NRCKZ189
+Raobcount :191
+NFL:15
+Last Smatrix2:-0.00170149
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLS189.RCF with ID:NRCLS189
+Raobcount :189
+NFL:15
+Last Smatrix2:-0.00166569
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKG189.RCF with ID:NRCKG189
+Raobcount :186
+NFL:15
+Last Smatrix2:-0.00167259
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKP189.RCF with ID:NRCKP189
+Raobcount :184
+NFL:15
+Last Smatrix2:-0.00170519
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKO189.RCF with ID:NRCKO189
+Raobcount :189
+NFL:15
+Last Smatrix2:-0.00166861
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLQ189.RCF with ID:NRCLQ189
+Raobcount :111
+NFL:15
+Last Smatrix2:-0.00162657
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKL189.RCF with ID:NRCKL189
+Raobcount :127
+NFL:15
+Last Smatrix2:-0.00165554
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLC189.RCF with ID:NRCLC189
+Raobcount :187
+NFL:15
+Last Smatrix2:-0.0016613
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKX189.RCF with ID:NRCKX189
+Raobcount :190
+NFL:15
+Last Smatrix2:-0.00170021
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLB189.RCF with ID:NRCLB189
+Raobcount :188
+NFL:15
+Last Smatrix2:-0.00169916
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLU189.RCF with ID:NRCLU189
+Raobcount :199
+NFL:15
+Last Smatrix2:-0.00167469
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLE189.RCF with ID:NRCLE189
+Raobcount :177
+NFL:15
+Last Smatrix2:-0.00166323
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLO189.RCF with ID:NRCLO189
+Raobcount :190
+NFL:15
+Last Smatrix2:-0.00170355
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKA189.RCF with ID:NRCKA189
+Raobcount :156
+NFL:15
+Last Smatrix2:-0.0016798
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKS189.RCF with ID:NRCKS189
+Raobcount :195
+NFL:15
+Last Smatrix2:-0.00170317
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKM189.RCF with ID:NRCKM189
+Raobcount :198
+NFL:15
+Last Smatrix2:-0.00169081
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKD189.RCF with ID:NRCKD189
+Raobcount :190
+NFL:15
+Last Smatrix2:-0.00167576
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLA189.RCF with ID:NRCLA189
+Raobcount :199
+NFL:15
+Last Smatrix2:-0.00170223
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLH189.RCF with ID:NRCLH189
+Raobcount :170
+NFL:15
+Last Smatrix2:-0.00168076
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKK189.RCF with ID:NRCKK189
+Raobcount :197
+NFL:15
+Last Smatrix2:-0.00169016
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKH189.RCF with ID:NRCKH189
+Raobcount :187
+NFL:15
+Last Smatrix2:-0.00167013
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKN189.RCF with ID:NRCKN189
+Raobcount :114
+NFL:15
+Last Smatrix2:-0.00166498
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKE189.RCF with ID:NRCKE189
+Raobcount :166
+NFL:15
+Last Smatrix2:-0.00168203
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLD189.RCF with ID:NRCLD189
+Raobcount :187
+NFL:15
+Last Smatrix2:-0.00165552
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKT189.RCF with ID:NRCKT189
+Raobcount :194
+NFL:15
+Last Smatrix2:-0.00170216
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKR189.RCF with ID:NRCKR189
+Raobcount :191
+NFL:15
+Last Smatrix2:-0.00170252
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLK189.RCF with ID:NRCLK189
+Raobcount :190
+NFL:15
+Last Smatrix2:-0.00167774
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLP189.RCF with ID:NRCLP189
+Raobcount :114
+NFL:15
+Last Smatrix2:-0.00164612
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKB189.RCF with ID:NRCKB189
+Raobcount :158
+NFL:15
+Last Smatrix2:-0.001677
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKV189.RCF with ID:NRCKV189
+Raobcount :187
+NFL:15
+Last Smatrix2:-0.00170399
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKU189.RCF with ID:NRCKU189
+Raobcount :187
+NFL:15
+Last Smatrix2:-0.0017037
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLF189.RCF with ID:NRCLF189
+Raobcount :144
+NFL:15
+Last Smatrix2:-0.00165993
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKC189.RCF with ID:NRCKC189
+Raobcount :171
+NFL:15
+Last Smatrix2:-0.00167625
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKJ189.RCF with ID:NRCKJ189
+Raobcount :163
+NFL:15
+Last Smatrix2:-0.00167814
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLI189.RCF with ID:NRCLI189
+Raobcount :198
+NFL:15
+Last Smatrix2:-0.0016921
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLN189.RCF with ID:NRCLN189
+Raobcount :189
+NFL:15
+Last Smatrix2:-0.00170452
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKY189.RCF with ID:NRCKY189
+Raobcount :189
+NFL:15
+Last Smatrix2:-0.00170359
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLT189.RCF with ID:NRCLT189
+Raobcount :174
+NFL:15
+Last Smatrix2:-0.00169708
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLG189.RCF with ID:NRCLG189
+Raobcount :197
+NFL:15
+Last Smatrix2:-0.00166729
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLR189.RCF with ID:NRCLR189
+Raobcount :189
+NFL:15
+Last Smatrix2:-0.00167259
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKF189.RCF with ID:NRCKF189
+Raobcount :196
+NFL:15
+Last Smatrix2:-0.00166637
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKI189.RCF with ID:NRCKI189
+Raobcount :118
+NFL:15
+Last Smatrix2:-0.00167553
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKQ189.RCF with ID:NRCKQ189
+Raobcount :194
+NFL:15
+Last Smatrix2:-0.00170259
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLL189.RCF with ID:NRCLL189
+Raobcount :188
+NFL:15
+Last Smatrix2:-0.00169922
+Found RCF file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLM189.RCF with ID:NRCLM189
+Raobcount :192
+NFL:15
+Last Smatrix2:-0.00170313
