@@ -21,8 +21,6 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
   size_t last_dot = temp.find_last_of(".");
   _RCFId = temp.substr(last_slash+1, last_dot-last_slash-1);
 
-cout << "RCFId:"<<_RCFId<<'\n';
-
   streampos size;
 
   ifstream file (_RCFFileName.c_str(), ios::in|ios::binary);
@@ -42,15 +40,14 @@ cout << "RCFId:"<<_RCFId<<'\n';
       if (i+1 == RcfHdr.Rcf_Hdr.NFL) _FlRcSetVec.push_back(FlRcSet);
     }
     //
-cout<<"\nAfter pushbacks:";
-cout<<_FlRcSetVec.begin()->Palt;
-cout<<"\n";
     _FlRcSetVec.pop_back();
 
-    if (file)
-      cout<< "all: "<<size<<" bytes were read.\n";
-    else
-      cout << "error: only " <<file.gcount()<<" bytes were read.\n";
+    if (!file)
+    {
+      cout << "In: RetrievalCoefficientFile Constructor:\n";
+      cout << "ERROR!: only " <<file.gcount()<<" bytes were read.\n";
+      cout << "From RCF file:"<<_RCFFileName.c_str()<<"\n\n";
+    }
 
     file.close();
 
@@ -85,13 +82,6 @@ cout<<"\n";
     // Finish filling our header record with what we can get.
     strncpy(_RCFHdr.SURC, EH.EH.SURC, 4);
     cout << "SURC:" << _RCFHdr.SURC << '\n';
-    cout << "CHnLSBloss:\n";
-    for (int i=0; i<3;i++) 
-    {
-      _RCFHdr.CHnLSBloss[i] = EH.EH.CHnLSBloss[i];
-      cout<< _RCFHdr.CHnLSBloss[i]<<',';
-    }
-    cout << '\n';
     _RCFHdr.RAOBbias=EH.EH.RAOBbias;
     _RCFHdr.CH1LSBloss=EH.EH.CH1LSBloss;
     //Convert from column major storage for SmatrixN1
