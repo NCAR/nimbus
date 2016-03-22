@@ -81,9 +81,6 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
       _RCFHdr.dZ[i]=RcfHdr.Rcf_Hdr.dZ[i];
     _RCFHdr.NFL=RcfHdr.Rcf_Hdr.NFL;
     
-    cout << "Raobcount :" << _RCFHdr.RAOBcount << '\n';
-    cout << "NFL:"<<_RCFHdr.NFL<<'\n';
-
     // Resynch header decoding at SURC
     My_EH EH;
     int i = 0;
@@ -91,7 +88,6 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
   
     // Finish filling our header record with what we can get.
     strncpy(_RCFHdr.SURC, EH.EH.SURC, 4);
-    cout << "SURC:" << _RCFHdr.SURC << '\n';
     _RCFHdr.RAOBbias=EH.EH.RAOBbias;
     _RCFHdr.CH1LSBloss=EH.EH.CH1LSBloss;
     //Convert from column major storage for SmatrixN1
@@ -145,18 +141,6 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
     }
     cout << "SmatrixN2[5][1][5]:"<<_RCFHdr.SmatrixN2[5][1][5]<<'\n';
 */
-
-    cout << "PALT at Flight Levels:" << '\n';
-//    vector<My_RC_FL_Un>::const_iterator it;
-//    for(it=flightLevelRCInfoVec.begin(); it!=flightLevelRCInfoVec.end(); it+=1)
-//    {
-//      cout << it->RC_read.sBP <<'\n';
-//    } 
-    vector<RC_Set_1FL>::const_iterator rit;
-    for (rit=_FlRcSetVec.begin(); rit!=_FlRcSetVec.end(); rit+=1)
-    {
-      cout << rit->Palt<<'\n';
-    }
 
   }
   else cout << "Unable to open file";
