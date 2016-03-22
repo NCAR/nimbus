@@ -27,13 +27,29 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
   if (file.is_open())
   {
     //size = file.tellg();
-    size = sizeof(RCF_HDR);
+    size = sizeof(RCF_HDR); 
     file.seekg (0, ios::beg);
     file.read (RcfHdr.Array, size);
+
+    if (!file)
+    {
+      cout << "In: RetrievalCoefficientFile Constructor:\n";
+      cout << "ERROR!: Reading Header only " <<file.gcount()
+           <<" bytes were read.\n";
+      cout << "From RCF file:"<<_RCFFileName.c_str()<<"\n\n";
+    }
+
     file.seekg ((-2*sizeof(float)),ios::cur);
 
     for (int i=0; i<RcfHdr.Rcf_Hdr.NFL; i++) {
       file.read (RcFlUn.Array, sizeof(RC_FL_Read));
+      if (!file)
+      {
+        cout << "In: RetrievalCoefficientFile Constructor:\n";
+        cout << "  ERROR!: only " <<file.gcount()<<" bytes were read.\n";
+        cout << "  From Flight Level #:" << i << "\n";
+        cout << "  From RCF file:"<<_RCFFileName.c_str()<<"\n\n";
+      }
       FlUn2FlRcSet(RcFlUn, &FlRcSet);
       flightLevelRCInfoVec.push_back(RcFlUn);
       _FlRcSetVec.push_back(FlRcSet);
@@ -42,12 +58,6 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
     //
     _FlRcSetVec.pop_back();
 
-    if (!file)
-    {
-      cout << "In: RetrievalCoefficientFile Constructor:\n";
-      cout << "ERROR!: only " <<file.gcount()<<" bytes were read.\n";
-      cout << "From RCF file:"<<_RCFFileName.c_str()<<"\n\n";
-    }
 
     file.close();
 
