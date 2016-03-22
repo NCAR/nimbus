@@ -252,7 +252,7 @@ void main(void)
       I2C_master_receive();
     }
     k = 0;
-	mode = 0;
+    mode = 0;
     while((switches[2] & man_over_ride) != FALSE) {
       if(k == 0) {
         printf("GNI In Manual Mode\r\n");
@@ -275,15 +275,15 @@ void main(void)
 //      printf("ESC found\r\n");
 //      wait_buf();
 //    }
-  	serial_char[0] = 0x00;
-  	serial_char[1] = 0x00;
-  	serial_char[2] = 0x00;
-  	serial_char[3] = 0x00;
+    serial_char[0] = 0x00;
+    serial_char[1] = 0x00;
+    serial_char[2] = 0x00;
+    serial_char[3] = 0x00;
     printf("\r\n");
     wait_buf();
-	printf ("Please issue a command:\r\n");
+    printf ("Please issue a command:\r\n");
     wait_buf();
-	printf ("0 = Status\r\n");
+    printf ("0 = Status\r\n");
     wait_buf();
     printf ("1 = Home Drives\r\n");
     wait_buf();
@@ -314,34 +314,33 @@ void main(void)
       }
       else {
         if(serial_char[i] == SPACE){
-  	      val = 0;
+          val = 0;
           mul = 1;
           cmd_num = 0;
-	        for (jj = i-1; jj >= 0; jj--) {
-	          val = (serial_char[jj] - 0x30) * mul;
+          for (jj = i-1; jj >= 0; jj--) {
+            val = (serial_char[jj] - 0x30) * mul;
             cmd_num += val;
-  	        mul *= 10;
+            mul *= 10;
           }  
 //        j = i;  
         }
 
-		if(serial_char[i] == LF) {
-  	      val = 0;
+        if(serial_char[i] == LF) {
+          val = 0;
           mul = 1;
           slide_num = 0;
-	      for (jj = i-1; jj >= 0; jj--) {
-	        val = (serial_char[jj] - 0x30) * mul;
+          for (jj = i-1; jj >= 0; jj--) {
+            val = (serial_char[jj] - 0x30) * mul;
             slide_num += val;
-  	        mul *= 10;
+            mul *= 10;
           }    
         }
       }
       if(serial_char[i] == LF) break;
       i += 1;
-	}
+    }
     
-// Switch Case here to check for command
-
+    // Switch Case here to check for command
     switch (val) {
       case 0:             
         status();    
@@ -364,7 +363,7 @@ void main(void)
         break;
       case 6:
         retract_slide();
-// Check for slide presence here. If no slide print error.
+        // Check for slide presence here. If no slide print error.
         read_switches(1);
         if((switches[1] & slide_presence) == TRUE) {
           printf("Slide retracted \r\n");                                
@@ -374,29 +373,29 @@ void main(void)
           printf("No slide detected! \r\n");
           wait_buf();   
           while((switches[1] & slide_presence) == FALSE) {
-	        load_slide();
+            load_slide();
             expose_slide();
             retract_slide();
             read_switches(1);
+          }
+          home_slide_pickup();
+          printf("Slide detected \r\n");                                
+          wait_buf();                          
         }
-        home_slide_pickup();
-        printf("Slide detected \r\n");                                
-        wait_buf();                          
-		    }
         break;
       case 7:
         advance_slide();
-// Check for slide presence here. If no slide print error.
+        // Check for slide presence here. If no slide print error.
         read_switches(1);
         if((switches[1] & slide_presence) == FALSE) {
           printf("Slide Not Detected! \r\n");                                
           wait_buf(); 
           break;					
         }
-		load_slide();
+        load_slide();
         expose_slide();
-		retract_slide();
-// Check for slide presence here. If no slide print error.
+        retract_slide();
+        // Check for slide presence here. If no slide print error.
         read_switches(1);
         if((switches[1] & slide_presence) == TRUE) {
           printf("Slide retracted \r\n");                                
@@ -406,15 +405,15 @@ void main(void)
           printf("No slide detected! \r\n");
           wait_buf();   
           while((switches[1] & slide_presence) == FALSE) {
-	      load_slide();
-          expose_slide();
-          retract_slide();
-          read_switches(1);
+            load_slide();
+            expose_slide();
+            retract_slide();
+            read_switches(1);
+          }
+          home_slide_pickup();
+          printf("Slide detected \r\n");                                
+          wait_buf();                          
         }
-        home_slide_pickup();
-        printf("Slide detected \r\n");                                
-        wait_buf();                          
-		}
         break;
       case 8:
         slide_pickup_to_cassette();
@@ -435,12 +434,12 @@ void main(void)
       break;
     }
 
-	EWDRT = 0;
+    EWDRT = 0;
     RTCCON = 0x60; //clear flag
-//	  printf("Seconds = %u\r\n",(unsigned int)seconds);
+//    printf("Seconds = %u\r\n",(unsigned int)seconds);
 //    wait_buf();
-	t_in = 0;
-	t_out = 0;
+    t_in = 0;
+    t_out = 0;
   }
 }
 
@@ -469,8 +468,8 @@ void home_drives(void)
   wait_buf();               
   printf("GNI reset complete.\r\n");
   wait_buf();
-               
 }
+
 //***************************************************************************
 //* Return status.
 //***************************************************************************
@@ -484,6 +483,7 @@ void status(void)
   printf("Slide = %x \r\n", (unsigned char)slide_number);
   wait_buf();               
 }
+
 //***************************************************************************
 //* Advance to next slide.
 //***************************************************************************
@@ -663,6 +663,7 @@ void advance_slide(void)
   printf("Advanced to slide #%u\r\n",(unsigned int)slide_number);
   wait_buf(); 
 }
+
 //***************************************************************************
 //* Doop delay.
 //***************************************************************************
@@ -687,8 +688,8 @@ void loop_times(char loop_count)
     nnn += 1;
     if(nnn == 3) nnn = 0;
   }
-
 }
+
 //***************************************************************************
 //* Load slide.
 //***************************************************************************
@@ -716,6 +717,7 @@ void load_slide(void)
   printf("Slide pickup to shuttle \r\n");
   wait_buf();               
 }
+
 //***************************************************************************
 //* Expose slide.
 //***************************************************************************
@@ -729,6 +731,7 @@ void expose_slide(void)
   slide_pickup_to_cassette();
                
 }
+
 //***************************************************************************
 //* Retract slide.
 //***************************************************************************
@@ -738,12 +741,12 @@ void retract_slide(void)
   wait_buf();
   home_shuttle();
  // return;
-    RTCH = 0x16;    // 1 Hz
-    RTCL = 0x7F;
-    step_wait = 0;
-    begin_RTC();
-    while(TRUE) {
-      if(step_wait) break;
+  RTCH = 0x16;    // 1 Hz
+  RTCL = 0x7F;
+  step_wait = 0;
+  begin_RTC();
+  while(TRUE) {
+    if(step_wait) break;
   }
   if(escape) return;
   slide_pickup_to_shuttle();
@@ -753,6 +756,7 @@ void retract_slide(void)
   actuator_pin_pickup(0);
   
 }
+
 //***************************************************************************
 //* Carousel to home position.
 //***************************************************************************
@@ -767,29 +771,31 @@ void home_carousel(void)
   printf("Cassette # %u\r\n", (unsigned int)cassette_count);
   wait_buf();
 }
+
 //***************************************************************************
 //* Slide pickup to home position.
 //***************************************************************************
 void home_slide_pickup(void)
 {
-// Rewind slide pickup motor (forwards) to the home position.
+  // Rewind slide pickup motor (forwards) to the home position.
   read_switches(1);
   if((switches[1] & slide_pickup_home) == FALSE) {
     motor_run(4, 3, 1, 1, 1, slide_pickup_home,0,42);
   }
 }
+
 //***************************************************************************
 //* Slide retainer actuator to home position.
 //***************************************************************************
 void home_slide_retainer_actuator(void)
 {
-// Rewind slide retainer actuator motor (forward) to the home position.
-  
+  // Rewind slide retainer actuator motor (forward) to the home position.
   read_switches(0);
   if((switches[0] & slide_act_home) == FALSE) {
     motor_run(5, 1, 1, 1, 0, slide_act_home,0,0);
   }
 }
+
 //***************************************************************************
 //* Linear stage to home position.
 //***************************************************************************
@@ -878,12 +884,13 @@ void home_linear_stage(void)
   slide_number = 0;
   EA = 1;
 }                                   
+
 //***************************************************************************
 //* Shuttle to home position.
 //***************************************************************************
 void home_shuttle(void)
 {
-// Rewind shuttle motor (backwards) to the home position.
+  // Rewind shuttle motor (backwards) to the home position.
   read_switches(1);
   if (( switches[1] & shut_exp_slide) != FALSE){   //!= False
     motor_run(0, 4, 1, 0, 1, shut_home,0,35);  //2,157
@@ -894,11 +901,9 @@ void home_shuttle(void)
 //    }
 //    motor_run(0, 4, 1, 0, 1, 0, 0, 10);  //2,157
   }
-  
   else { 
     motor_run(0, 4, 0, 0, 1, 0, 1, 0); //4,0
     motor_run(0, 4, 1, 0, 1, shut_home,0,35);  //2,157
-
   }
 }
 //***************************************************************************
@@ -989,6 +994,7 @@ void I2C_master_receive(void)
   switches[3] = I2DAT;
   I2CON = 0x54;  //Generate STOP bit
 }
+
 //***************************************************************************
 //* Advance carousel to next cassette position (45 deg).
 //***************************************************************************
@@ -1021,6 +1027,7 @@ void advance_carousel(void)
         (unsigned int)cassette_count);
   wait_buf();
 }
+
 //***************************************************************************
 //* Advance to actuator pin pickup.
 //***************************************************************************
@@ -1030,8 +1037,7 @@ void actuator_pin_pickup(bit dir)
   if((switches[0] & slide_act_home) != FALSE) {
     motor_run(5, 1, dir, 1, 0, slide_act_pickup,0,30);
   }
-
-// Move from slide pickup position (backwards ~600 steps).
+  // Move from slide pickup position (backwards ~600 steps).
   else {
     motor_run(5, 1, dir, 1, 0, slide_act_pickup,0,30);
   }
@@ -1042,8 +1048,7 @@ void actuator_pin_pickup(bit dir)
 //***************************************************************************
 void actuator_slide_pickup(void)
 {
- // Move from pin pickup postion to slide release position (600 steps).
-
+   // Move from pin pickup postion to slide release position (600 steps).
   read_switches(0);
   if((switches[0] & slide_act_pickup) != FALSE) {
     motor_run(5, 1, 1, 1, 0, slide_act_release,8,0);
@@ -1055,7 +1060,7 @@ void actuator_slide_pickup(void)
 //***************************************************************************
 void slide_pickup_to_cassette(void)
 {
-// Turn the slide pickup motor to the cassette position.
+  // Turn the slide pickup motor to the cassette position.
   read_switches(1);
   if((switches[1] & slide_pickup_home) != FALSE) {
 //    direction = BACKWARD;
@@ -1069,86 +1074,85 @@ void slide_pickup_to_cassette(void)
      motor_run(4, 3, 1, 1, 1, slide_pickup_cas,0,35); //1,120 for geared
   }
 }
+
 //***************************************************************************
 //* Slide pickup to shuttle position.
 //***************************************************************************
 void slide_pickup_to_shuttle(void)
 {
-// Turn the slide pickup motor to the shuttle position.
+  // Turn the slide pickup motor to the shuttle position.
   read_switches(1);
   if((switches[1] & slide_pickup_shut) == FALSE) {
     motor_run(4, 3, 0, 1, 1, slide_pickup_shut,0,60); //0,100 geared
   }
 }
+
 //***************************************************************************
 //* Manual motor controls
 //***************************************************************************
 void manual(void)
 {
- // Check to determine which motor/direction is being slected
-//  switch (switches[2]) {   
-	   
-    if((switches[2] & man_carousel_fwd) == 0){
-      printf("Carousel forward\r\n");
-      wait_buf();
-      man_car_fwd();
-    }
+  // Check to determine which motor/direction is being slected
+  if((switches[2] & man_carousel_fwd) == 0){
+    printf("Carousel forward\r\n");
+    wait_buf();
+    man_car_fwd();
+  }
 
-    if((switches[2] & man_carousel_back) == 0) {
-      printf("Carousel backward\r\n");
-      wait_buf();
-      man_car_back();
-    }
+  if((switches[2] & man_carousel_back) == 0) {
+    printf("Carousel backward\r\n");
+    wait_buf();
+    man_car_back();
+  }
 
-    if((switches[3] & man_slide_act_fwd) == 0){
-      printf("Slide Actuator forward\r\n");
-      wait_buf();
-      man_slide_ret_fwd();
-    }
+  if((switches[3] & man_slide_act_fwd) == 0){
+    printf("Slide Actuator forward\r\n");
+    wait_buf();
+    man_slide_ret_fwd();
+  }
 
-    if((switches[3] & man_slide_act_back) == 0) {
-      printf("Slide Actuator backward\r\n");
-      wait_buf();
-      man_slide_ret_back();
-    }
+  if((switches[3] & man_slide_act_back) == 0) {
+    printf("Slide Actuator backward\r\n");
+    wait_buf();
+    man_slide_ret_back();
+  }
 
-    if((switches[3] & man_stage_fwd) == 0){
-      printf("Linear Stage forward\r\n");
-      wait_buf();
-      man_linear_stage_fwd();
-    }
+  if((switches[3] & man_stage_fwd) == 0){
+    printf("Linear Stage forward\r\n");
+    wait_buf();
+    man_linear_stage_fwd();
+  }
 
-    if((switches[3] & man_stage_back) == 0) {
-      printf("Linear Stage backward\r\n");
-      wait_buf();
-      man_linear_stage_back();
-    }
+  if((switches[3] & man_stage_back) == 0) {
+    printf("Linear Stage backward\r\n");
+    wait_buf();
+    man_linear_stage_back();
+  }
 
-    if((switches[3] & man_slide_pkup_fwd) == 0){
-      printf("Slide Pickup forward\r\n");
-      wait_buf();
-      man_slide_pickup_fwd();
-    }
+  if((switches[3] & man_slide_pkup_fwd) == 0){
+    printf("Slide Pickup forward\r\n");
+    wait_buf();
+    man_slide_pickup_fwd();
+  }
 
-    if((switches[3] & man_slide_pkup_back) == 0) {
-      printf("Slide Pickup backward\r\n");
-      wait_buf();
-      man_slide_pickup_back();
-    }
+  if((switches[3] & man_slide_pkup_back) == 0) {
+    printf("Slide Pickup backward\r\n");
+    wait_buf();
+    man_slide_pickup_back();
+  }
 
-    if((switches[3] & man_shuttle_fwd) == 0){
-      printf("Slide Shuttle forward\r\n");
-      wait_buf();
-      man_slide_shuttle_fwd();
-    }
+  if((switches[3] & man_shuttle_fwd) == 0){
+    printf("Slide Shuttle forward\r\n");
+    wait_buf();
+    man_slide_shuttle_fwd();
+  }
 
-    if((switches[3] & man_shuttle_back) == 0) {
-      printf("Slide Shuttle backward\r\n");
-      wait_buf();
-      man_slide_shuttle_back();
-    }
-    I2C_master_receive();
-
+  if((switches[3] & man_shuttle_back) == 0) {
+    printf("Slide Shuttle backward\r\n");
+    wait_buf();
+    man_slide_shuttle_back();
+  }
+  I2C_master_receive();
 }
 
 //***************************************************************************
@@ -1156,34 +1160,37 @@ void manual(void)
 //***************************************************************************
 void man_car_back(void)
 {
- // Backwards 20 steps per degree.
+  // Backwards 20 steps per degree.
   motor_drive(5, 0, 1, 0, 2, man_carousel_back);
 }  
+
 //***************************************************************************
 //* Manual motor control
 //***************************************************************************
 void man_car_fwd(void)
 {
- // Backwards 20 steps per degree.
+  // Backwards 20 steps per degree.
   motor_drive(5, 0, 0, 0, 2, man_carousel_fwd);
 }
+
 //***************************************************************************
 //* Manual motor control
 //***************************************************************************
 void man_slide_ret_back(void)
 {
- // Backwards 20 steps per step.
+  // Backwards 20 steps per step.
   motor_drive(5, 1, 0, 1, 3, man_slide_act_back);
 }
+
 //***************************************************************************
 //* Manual motor control
 //***************************************************************************
 void man_slide_ret_fwd(void)
 {
- // Forwards 20 steps per step.
+  // Forwards 20 steps per step.
   motor_drive(5, 1, 1, 1, 3, man_slide_act_fwd);
-
 }
+
 //***************************************************************************
 //* Manual motor control
 //***************************************************************************
@@ -1191,6 +1198,7 @@ void man_slide_shuttle_back(void)
 {
   motor_drive(0, 4, 0, 0, 3, man_shuttle_back);
 }
+
 //***************************************************************************
 //* Manual motor control
 //***************************************************************************
@@ -1198,6 +1206,7 @@ void man_slide_shuttle_fwd(void)
 {
   motor_drive(0, 4, 1, 0, 3, man_shuttle_fwd);
 }
+
 //***************************************************************************
 //* Manual motor control
 //***************************************************************************
@@ -1205,6 +1214,7 @@ void man_slide_pickup_back(void)
 {
   motor_drive(4, 3, 0, 1, 3, man_slide_pkup_back);
 }
+
 //***************************************************************************
 //* Manual motor control
 //***************************************************************************
@@ -1212,6 +1222,7 @@ void man_slide_pickup_fwd(void)
 {
   motor_drive(4, 3, 1, 1, 3, man_slide_pkup_fwd);
 }
+
 //***************************************************************************
 //* Manual motor control
 //***************************************************************************
@@ -1219,6 +1230,7 @@ void man_linear_stage_back(void)
 {
   motor_drive(4, 2, 0, 0, 3, man_stage_back);
 }
+
 //***************************************************************************
 //* Manual motor control
 //***************************************************************************
@@ -1226,66 +1238,63 @@ void man_linear_stage_fwd(void)
 {
   motor_drive(4, 2, 1, 0, 3, man_stage_fwd);
 }              
+
 //***************************************************************************
 //* begin_RTC
 //* Input(s) : none.
 //* Returns : none.
 //* Description : initialization of Real Time Clock
 //***************************************************************************
-
 void begin_RTC(void)
 {
 //  RTCH = 0xE0;   // 1 Hz
-//	RTCL = 0xFF;   
+//  RTCL = 0xFF;   
 //  RTCH = 0x16;    // 10 Hz
-//	RTCL = 0x7F;
-	RTCCON = 0x62; //clear flag
-	EWDRT = 1;
-	RTCCON = 0x63; //clear flag
+//  RTCL = 0x7F;
+  RTCCON = 0x62; //clear flag
+  EWDRT = 1;
+  RTCCON = 0x63; //clear flag
 }
 
 void wait_buf(void)
 {
-	while(t_in != 0) {
-	  if(t_in == t_out){
-		  t_in = 0;
-			t_out = 0;
-		}
-	}
+  while(t_in != 0) {
+    if(t_in == t_out){
+      t_in = 0;
+      t_out = 0;
+    }
+  }
 }
 
-/*------------------------------------------------------------------------------
-------------------------------------------------------------------------------*/
+//------------------------------------------------------------------------------
 bit write_flash(void)
 {
-  #define LOAD 0x00
-	#define EP 0x68
-	unsigned char data Fm_stat;
-	bit prog_fail;
+#define LOAD 0x00
+#define EP 0x68
+  unsigned char data Fm_stat;
+  bit prog_fail;
 //  printf("Write flash\r\n");
 //  wait_buf();
 
   EA = 0;
   FMCON = LOAD;
-	FMADRH = 0x1F;
-	FMADRL = 0xC0;
+  FMADRH = 0x1F;
+  FMADRL = 0xC0;
   for ( i = 0; i < 5; i++) {
-	  FMDATA = drive[i][count[i]];
+    FMDATA = drive[i][count[i]];
   }
   FMCON = EP;
-	Fm_stat = FMCON;
+  Fm_stat = FMCON;
   prog_fail = 1;
   while (prog_fail) {
-	if ((Fm_stat & 0x0F) != 0) prog_fail = 1;		// write failed.
-	else prog_fail = 0;
+    if ((Fm_stat & 0x0F) != 0) prog_fail = 1;		// write failed.
+    else prog_fail = 0;
   }
   EA = 1;
-	return (prog_fail);
+  return (prog_fail);
 }
 
-/*------------------------------------------------------------------------------
-------------------------------------------------------------------------------*/
-
+//------------------------------------------------------------------------------
 char _getkey (void)
 {
   do
@@ -1298,7 +1307,6 @@ char _getkey (void)
   return ((unsigned char) k);
 }
 
-//------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 char putchar (char c)
 {
@@ -1313,7 +1321,7 @@ char putchar (char c)
   }
   return (c);
 }
-//------------------------------------------------------------------------------
+
 //------------------------------------------------------------------------------
 void inhibits_on (char motor_num)
 {
@@ -1354,7 +1362,7 @@ void inhibits_on (char motor_num)
       break;
   }
 }
-//------------------------------------------------------------------------------
+
 //------------------------------------------------------------------------------
 void inhibits_off (char motor_num)
 {
@@ -1394,10 +1402,8 @@ void inhibits_off (char motor_num)
     default:
       break;
   }
-
-
 }
-//------------------------------------------------------------------------------
+
 //------------------------------------------------------------------------------
 // portnum = microprocessor port 0, 4 or 5.  
 // motor = motor number 0,1,2,3,4. 
@@ -1503,8 +1509,6 @@ void motor_run(char portnum, char motor, bit dir, bit hilow, char switchnum,
 }
 
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-
 void motor_drive(char portnum, char motor, bit dir, bit hilow, char switchnum,
                  char switchbit)
 {
@@ -1541,8 +1545,6 @@ void motor_drive(char portnum, char motor, bit dir, bit hilow, char switchnum,
 }
 
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-
 void motor_step(char portnum, char motor, bit dir, bit hilow)
 {
   switch (portnum) {
@@ -1605,9 +1607,8 @@ void motor_step(char portnum, char motor, bit dir, bit hilow)
       break;
   }
 }
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 void read_switches(char switch_num)
 {
   unsigned char ic;
@@ -1644,4 +1645,3 @@ void read_switches(char switch_num)
   I2CON = 0x54;  //Generate STOP bit
   return;
 }
-
