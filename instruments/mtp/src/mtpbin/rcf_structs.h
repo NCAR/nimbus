@@ -10,6 +10,8 @@
 //  Header structure itself is not matching up with this (despite the VB6 
 //  code indicating that it "should").  For this reason another Union to get
 //  second half of the RCF header record is defined below.
+//  WARNING: Because VB does not have an end char, these char arrays don't 
+//  have an end char!!
 typedef struct {
   short RCformat;
   char  CreationDateTime[8];
@@ -82,8 +84,8 @@ typedef union{RC_FL_Read RC_read ; char Array[sizeof(RC_FL_Read)];} My_RC_FL_Un;
 // Structure to hold each flight level retrieval coefficient information.
 typedef struct {
   float Palt; 		         // Flight level pressure altitude (hPa)
-  float OBRms[NUM_OBSVBLS];      // 1-sigma apriori observable errors
-  float OBAvg[NUM_OBSVBLS];      // Archive Average observables
+  float MBTRms[NUM_OBSVBLS];     // 1-sigma apriori Model Brightness Temp err
+  float MBTAvg[NUM_OBSVBLS];     // Model Brightness Temperature Averages
   float PAltRl[NUM_RETR_LVLS];   // Pressure at retrieval levels
   float TAvgRl[NUM_RETR_LVLS];   // Average T at retrieval levels
   float TVarRl[NUM_RETR_LVLS];   // Variance in T at retrieval levels
