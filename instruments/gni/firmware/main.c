@@ -198,6 +198,8 @@ void main(void)
   shuttle_inhibit = 1;
   com_initialize ();
   set_switch = 0;
+  slide_number = 1;
+  cassette_count = 1;
   codeptr = 0x1FC0;
   for (i = 0; i < 5; i++) {
 	  drive[i][0] = 0x04;
@@ -238,7 +240,7 @@ void main(void)
   RTCL = 0x7F;
   step_wait = 0;
   begin_RTC();
-  printf ("GNI controller ready!\r\n");
+  printf ("Controller ready\r\n");
   wait_buf();
   while(TRUE) {
     if(step_wait) break;
@@ -255,7 +257,7 @@ void main(void)
     mode = 0;
     while((switches[2] & man_over_ride) != FALSE) {
       if(k == 0) {
-        printf("GNI In Manual Mode\r\n");
+        printf("In Manual Mode\r\n");
         wait_buf();
         k = 1;
         mode = 0;
@@ -279,9 +281,9 @@ void main(void)
     serial_char[1] = 0x00;
     serial_char[2] = 0x00;
     serial_char[3] = 0x00;
+    status();
+/* Menu commented out for ORCAS.  CJW.
     printf("\r\n");
-    wait_buf();
-    printf ("Please issue a command:\r\n");
     wait_buf();
     printf ("0 = Status\r\n");
     wait_buf();
@@ -305,7 +307,7 @@ void main(void)
     wait_buf();
     printf ("10 = Home Slide Actuator\r\n");
     wait_buf();
-
+*/
     while(TRUE) {
       serial_char[i] = getchar();
       if(mode == 0) break;
@@ -366,12 +368,12 @@ void main(void)
         // Check for slide presence here. If no slide print error.
         read_switches(1);
         if((switches[1] & slide_presence) == TRUE) {
-          printf("Slide retracted \r\n");                                
-          wait_buf();               
+          printf("Slide retracted\r\n");                                
+          wait_buf();
         }
         else {
-          printf("No slide detected! \r\n");
-          wait_buf();   
+          printf("No slide detected!\r\n");
+          wait_buf();
           while((switches[1] & slide_presence) == FALSE) {
             load_slide();
             expose_slide();
@@ -379,8 +381,8 @@ void main(void)
             read_switches(1);
           }
           home_slide_pickup();
-          printf("Slide detected \r\n");                                
-          wait_buf();                          
+          printf("Slide detected\r\n");                                
+          wait_buf();
         }
         break;
       case 7:
@@ -388,8 +390,8 @@ void main(void)
         // Check for slide presence here. If no slide print error.
         read_switches(1);
         if((switches[1] & slide_presence) == FALSE) {
-          printf("Slide Not Detected! \r\n");                                
-          wait_buf(); 
+          printf("Slide Not Detected!\r\n");                                
+          wait_buf();
           break;					
         }
         load_slide();
@@ -398,12 +400,12 @@ void main(void)
         // Check for slide presence here. If no slide print error.
         read_switches(1);
         if((switches[1] & slide_presence) == TRUE) {
-          printf("Slide retracted \r\n");                                
-          wait_buf();               
+          printf("Slide retracted\r\n");                                
+          wait_buf();
         }
         else {
-          printf("No slide detected! \r\n");
-          wait_buf();   
+          printf("No slide detected!\r\n");
+          wait_buf();
           while((switches[1] & slide_presence) == FALSE) {
             load_slide();
             expose_slide();
@@ -411,8 +413,8 @@ void main(void)
             read_switches(1);
           }
           home_slide_pickup();
-          printf("Slide detected \r\n");                                
-          wait_buf();                          
+          printf("Slide detected\r\n");                                
+          wait_buf();
         }
         break;
       case 8:
@@ -452,20 +454,20 @@ void home_drives(void)
   wait_buf();
   home_shuttle();
   printf("Shuttle home.\r\n");
-  wait_buf();               
+  wait_buf();
   home_slide_pickup();
   printf("Slide pickup home.\r\n");
-  wait_buf(); 
+  wait_buf();
 //  motor_run(5, 1, 1, 1, 0, slide_act_pickup,0,0);
   home_linear_stage();
   printf("Linear Stage home.\r\n");
-  wait_buf();             
+  wait_buf();
   home_slide_retainer_actuator();
   printf("Slide retainer actuator home.\r\n");
-  wait_buf();               
+  wait_buf();
   home_carousel();
   printf("Carousel home.\r\n");
-  wait_buf();               
+  wait_buf();
   printf("GNI reset complete.\r\n");
   wait_buf();
 }
@@ -475,13 +477,10 @@ void home_drives(void)
 //***************************************************************************
 void status(void)
 {
-  printf("Status = %x %x %x\r\n",(unsigned int)switches[0],
-         (unsigned int)switches[1],(unsigned int)switches[2]);
+  printf("GNI,,%x,%x,%x,%u,%u\r\n",(unsigned int)switches[0],
+	(unsigned int)switches[1],(unsigned int)switches[2],
+	(unsigned int)cassette_count, (unsigned int)slide_number);
   wait_buf();
-  printf("Cassette = %x \r\n", (unsigned char)cassette_count);
-  wait_buf();               
-  printf("Slide = %x \r\n", (unsigned char)slide_number);
-  wait_buf();               
 }
 
 //***************************************************************************
@@ -491,7 +490,7 @@ void advance_slide(void)
 {
   unsigned short ll, limit, limit1, limit2;         
   
-  printf("Advancing to next Slide... \r\n");
+  printf("Advancing to next Slide...\r\n");
   wait_buf();
   actuator_pin_pickup(0);
   i = count[2];
@@ -615,7 +614,7 @@ void advance_slide(void)
 
   else {
     printf("Slide Position Lost\r\n");
-    wait_buf(); 
+    wait_buf();
     limit1 = 0;
   }
   for(j = 0; j < limit1; j++){                                                
@@ -661,7 +660,7 @@ void advance_slide(void)
   EA = 1;
   while(write_flash());
   printf("Advanced to slide #%u\r\n",(unsigned int)slide_number);
-  wait_buf(); 
+  wait_buf();
 }
 
 //***************************************************************************
@@ -695,12 +694,12 @@ void loop_times(char loop_count)
 //***************************************************************************
 void load_slide(void)
 {
-  printf("Loading Slide \r\n");
+  printf("Loading Slide\r\n");
   wait_buf();
   slide_pickup_to_cassette();
   if(escape) return;
-  printf("Slide Pickup to cassette \r\n");
-  wait_buf();                                                               
+  printf("Slide Pickup to cassette\r\n");
+  wait_buf();
 // Delay here.
   RTCH = 0x16;    // 10 Hz
   RTCL = 0x7F;
@@ -709,13 +708,14 @@ void load_slide(void)
   while(TRUE) {
     if(step_wait) break;
   }
+  status();
   actuator_slide_pickup();
   printf("Actuator slide pickup \r\n");
-  wait_buf();              
+  wait_buf();
   if(escape) return;
   slide_pickup_to_shuttle();
   printf("Slide pickup to shuttle \r\n");
-  wait_buf();               
+  wait_buf();
 }
 
 //***************************************************************************
@@ -723,11 +723,12 @@ void load_slide(void)
 //***************************************************************************
 void expose_slide(void)
 {
-  printf("Exposing Slide... \r\n");
+  printf("Exposing Slide...\r\n");
   wait_buf();
   motor_run(0, 4, 0, 0, 1, shut_exp_slide,0,50); //150
   printf("Slide exposed. \r\n");
   wait_buf();
+  status();
   slide_pickup_to_cassette();
                
 }
@@ -737,7 +738,7 @@ void expose_slide(void)
 //***************************************************************************
 void retract_slide(void)
 {
-  printf("Retracting...... \r\n");
+  printf("Retracting...\r\n");
   wait_buf();
   home_shuttle();
  // return;
@@ -881,7 +882,7 @@ void home_linear_stage(void)
   count[2] = i;
   if(set_switch) set_switch = 0;
   while(write_flash());
-  slide_number = 0;
+  slide_number = 1;
   EA = 1;
 }                                   
 
@@ -1004,23 +1005,22 @@ void advance_carousel(void)
  // Advance 900 steps.
   home_shuttle();
   printf("Shuttle home.\r\n");
-  wait_buf(); 
+  wait_buf();
   home_slide_pickup();
   printf("Slide pickup home.\r\n");
   wait_buf();
   home_linear_stage();
   printf("Linear Stage home.\r\n");
-  wait_buf(); 
+  wait_buf();
   home_slide_retainer_actuator();
   printf("Slide retainer actuator home.\r\n");
-  wait_buf();  
+  wait_buf();
   motor_run(5, 0, 0, 0, 0, 0,1,9);
   motor_run(5, 0, 0, 0, 2, 2,0,1);
   cassette_count = cassette_count +1; 
   if (cassette_count == 9) {
     cassette_count = 1;
-    printf("\r\nYou have completed 1 revolution");
-    printf(" of the carousel!\r\n\r\n");
+    printf("\r\nYou have completed 1 revolution of the carousel\r\n\r\n");
     wait_buf();
   }
   printf("Carousel turned 45 Degrees to Cassette # %u\r\n",
