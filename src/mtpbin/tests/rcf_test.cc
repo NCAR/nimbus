@@ -38,13 +38,13 @@ main () {
   AvgWtSet1 = RCF.getRCAvgWt(5.3473);
 
 
-  std::cout<<"OBAvg:\n";
+  std::cout<<"MBTAvg:\n";
   for (int i = 0; i<NUM_OBSVBLS; i++) 
-    std::cout << " ["<<i<<"]:"<<AvgWtSet1.OBAvg[i];
+    std::cout << " ["<<i<<"]:"<<AvgWtSet1.MBTAvg[i];
   std::cout<<"\n";
-  std::cout<<"OBRms:\n";
+  std::cout<<"MBTRms:\n";
   for (int i = 0; i<NUM_OBSVBLS; i++) 
-    std::cout << " ["<<i<<"]:"<<AvgWtSet1.OBRms[i];
+    std::cout << " ["<<i<<"]:"<<AvgWtSet1.MBTRms[i];
   std::cout<<"\n";
   
   RetrievalCoefficientFile RCF2(std::string("/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKB189.RCF"));
@@ -66,13 +66,13 @@ main () {
   RC_Set_1FL AvgWtSet2;
   AvgWtSet2 = RCF2.getRCAvgWt(5.3473);
   
-  std::cout<<"OBAvg:\n";
+  std::cout<<"MBTAvg:\n";
   for (int i = 0; i<NUM_OBSVBLS; i++) 
-    std::cout << " ["<<i<<"]:"<<AvgWtSet2.OBAvg[i];
+    std::cout << " ["<<i<<"]:"<<AvgWtSet2.MBTAvg[i];
   std::cout<<"\n";
-  std::cout<<"OBRms:\n";
+  std::cout<<"MBTRms:\n";
   for (int i = 0; i<NUM_OBSVBLS; i++) 
-    std::cout << " ["<<i<<"]:"<<AvgWtSet2.OBRms[i];
+    std::cout << " ["<<i<<"]:"<<AvgWtSet2.MBTRms[i];
   std::cout<<"\n";
   
   RetrievalCoefficientFile RCF3(std::string("/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKH189.RCF"));
@@ -86,13 +86,13 @@ main () {
   RC_Set_1FL AvgWtSet3;
   AvgWtSet3 = RCF3.getRCAvgWt(5.3473);
   
-  std::cout<<"OBAvg:\n";
+  std::cout<<"MBTAvg:\n";
   for (int i = 0; i<NUM_OBSVBLS; i++) 
-    std::cout << " ["<<i<<"]:"<<AvgWtSet3.OBAvg[i];
+    std::cout << " ["<<i<<"]:"<<AvgWtSet3.MBTAvg[i];
   std::cout<<"\n";
-  std::cout<<"OBRms:\n";
+  std::cout<<"MBTRms:\n";
   for (int i = 0; i<NUM_OBSVBLS; i++) 
-    std::cout << " ["<<i<<"]:"<<AvgWtSet3.OBRms[i];
+    std::cout << " ["<<i<<"]:"<<AvgWtSet3.MBTRms[i];
   std::cout<<"\n";
   
 }

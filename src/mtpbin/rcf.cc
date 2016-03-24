@@ -162,8 +162,8 @@ cout<<"In get avg: PAltKm:"<<PAltKm<<"  1st level:"<<_FlRcSetVec.begin()->Palt<<
   {
     for (int i = 0; i< NUM_OBSVBLS; i++) 
     {
-      RcSetAvWt.OBAvg[i] = _FlRcSetVec.begin()->OBAvg[i];
-      RcSetAvWt.OBRms[i] = _FlRcSetVec.begin()->OBRms[i];
+      RcSetAvWt.MBTAvg[i] = _FlRcSetVec.begin()->MBTAvg[i];
+      RcSetAvWt.MBTRms[i] = _FlRcSetVec.begin()->MBTRms[i];
       for (int j = 0; j < NUM_RETR_LVLS; j++) 
       {
         RcSetAvWt.RC[j][i] = _FlRcSetVec.begin()->RC[j][i];
@@ -175,8 +175,8 @@ cout<<"In get avg: PAltKm:"<<PAltKm<<"  1st level:"<<_FlRcSetVec.begin()->Palt<<
   {
     for (int i = 0; i< NUM_OBSVBLS; i++) 
     {
-      RcSetAvWt.OBAvg[i] = _FlRcSetVec.end()->OBAvg[i];
-      RcSetAvWt.OBRms[i] = _FlRcSetVec.end()->OBRms[i];
+      RcSetAvWt.MBTAvg[i] = _FlRcSetVec.end()->MBTAvg[i];
+      RcSetAvWt.MBTRms[i] = _FlRcSetVec.end()->MBTRms[i];
       for (int j = 0; j < NUM_RETR_LVLS; j++) 
       {
         RcSetAvWt.RC[j][i] = _FlRcSetVec.end()->RC[j][i];
@@ -209,8 +209,8 @@ cout<< "i:"<<i<<"  iAlt:"<<_RCFHdr.Zr[i]<<"  i++Alt:"<<_RCFHdr.Zr[i+1]<<"  ChkAl
   // Calculate the Weighted averages 
   for (int i = 0; i < NUM_OBSVBLS; i++)
   {
-    RcSetAvWt.OBAvg[i] = Botit->OBAvg[i]*BotWt + Topit->OBAvg[i]*TopWt;
-    RcSetAvWt.OBRms[i] = Botit->OBRms[i]*BotWt + Topit->OBRms[i]*TopWt;
+    RcSetAvWt.MBTAvg[i] = Botit->MBTAvg[i]*BotWt + Topit->MBTAvg[i]*TopWt;
+    RcSetAvWt.MBTRms[i] = Botit->MBTRms[i]*BotWt + Topit->MBTRms[i]*TopWt;
     for (int j = 0; j < NUM_RETR_LVLS; j++)
     {
       RcSetAvWt.RC[j][i] = Botit->RC[j][i]*BotWt + Topit->RC[j][i]*(1-BotWt);
@@ -261,8 +261,8 @@ void RetrievalCoefficientFile::FlUn2FlRcSet(My_RC_FL_Un RcUn, RC_Set_1FL *RcSet)
   RcSet->Palt = RcUn.RC_read.sBP;
   for (int i=0; i<NUM_OBSVBLS; i++) 
   {
-    RcSet->OBRms[i] = RcUn.RC_read.sOBrms[i];
-    RcSet->OBAvg[i] = RcUn.RC_read.sOBav[i];
+    RcSet->MBTRms[i] = RcUn.RC_read.sOBrms[i];
+    RcSet->MBTAvg[i] = RcUn.RC_read.sOBav[i];
   }
   for (int i=0; i<NUM_RETR_LVLS; i++) 
   {
