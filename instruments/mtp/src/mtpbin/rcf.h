@@ -40,6 +40,7 @@ public:
 
   std::string getId()        {return _RCFId;}
   std::string getFileName()  {return _RCFFileName;}
+  // When using getRCF_HDR, be advised that char arrays have no endstring!
   RCF_HDR     getRCF_HDR()   {return _RCFHdr;}
   std::vector<RC_Set_1FL> 
               getFL_RC_Vec() {return _FlRcSetVec;}

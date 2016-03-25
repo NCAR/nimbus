@@ -39,11 +39,11 @@ main () {
 
 
   std::cout<<"MBTAvg:\n";
-  for (int i = 0; i<NUM_OBSVBLS; i++) 
+  for (int i = 0; i<NUM_BRT_TEMPS; i++) 
     std::cout << " ["<<i<<"]:"<<AvgWtSet1.MBTAvg[i];
   std::cout<<"\n";
   std::cout<<"MBTRms:\n";
-  for (int i = 0; i<NUM_OBSVBLS; i++) 
+  for (int i = 0; i<NUM_BRT_TEMPS; i++) 
     std::cout << " ["<<i<<"]:"<<AvgWtSet1.MBTRms[i];
   std::cout<<"\n";
   
@@ -67,11 +67,11 @@ main () {
   AvgWtSet2 = RCF2.getRCAvgWt(5.3473);
   
   std::cout<<"MBTAvg:\n";
-  for (int i = 0; i<NUM_OBSVBLS; i++) 
+  for (int i = 0; i<NUM_BRT_TEMPS; i++) 
     std::cout << " ["<<i<<"]:"<<AvgWtSet2.MBTAvg[i];
   std::cout<<"\n";
   std::cout<<"MBTRms:\n";
-  for (int i = 0; i<NUM_OBSVBLS; i++) 
+  for (int i = 0; i<NUM_BRT_TEMPS; i++) 
     std::cout << " ["<<i<<"]:"<<AvgWtSet2.MBTRms[i];
   std::cout<<"\n";
   
@@ -87,11 +87,11 @@ main () {
   AvgWtSet3 = RCF3.getRCAvgWt(5.3473);
   
   std::cout<<"MBTAvg:\n";
-  for (int i = 0; i<NUM_OBSVBLS; i++) 
+  for (int i = 0; i<NUM_BRT_TEMPS; i++) 
     std::cout << " ["<<i<<"]:"<<AvgWtSet3.MBTAvg[i];
   std::cout<<"\n";
   std::cout<<"MBTRms:\n";
-  for (int i = 0; i<NUM_OBSVBLS; i++) 
+  for (int i = 0; i<NUM_BRT_TEMPS; i++) 
     std::cout << " ["<<i<<"]:"<<AvgWtSet3.MBTRms[i];
   std::cout<<"\n";
   

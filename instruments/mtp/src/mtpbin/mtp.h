@@ -14,6 +14,7 @@
 #define _mtp_han 
 
 #define NUM_RETR_LVLS 33  // # of retrieval levels per flight level in RCFs
-#define NUM_OBSVBLS 30    // # of observables = #scan angles * # channels
+#define NUM_BRT_TEMPS 30        // # of brightness temperaturs= 
+                          //     #scan angles * # channels
 
 #endif
