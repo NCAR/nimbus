@@ -49,14 +49,31 @@ public:
 
   /**
    * Set the Flight Levels in KM.  
-   * @param is a vector of floating point values indicating the km
+   * @param[in] is an array of floating point values indicating the km
    * above sea level of each flight level in each retrieval coefficient file.
+   * @param[in] is the size fo the vector
    * Flight levels should be ordered in decreasing altitude.
    * @returns true if levels successfully set, false if not.
    * Assumes that all RCFs in the set have the same flight levels - 
    * historically that has been the case, but it may not have to be.
    */
   bool setFlightLevelsKm(float[], int);
+
+  /**
+   * Get the Retrieval Coefficient Set from the "best" template
+   * weighted according to the flight level of the aircraft and given
+   * a set of Scan Brightness Temperatures
+   * @param[in] is an array of Scan Brightness Temperatures and is expected
+   *  to be NUM_OBSVBLSs in length.
+   * @param[in] is the altitude of the aircraft in km at the time that the 
+   *  Scan was taken.
+   * @pram [in] is an Brightness Temperature Bias provided by user
+   * @return is the weighted average set of Model Brightness Temperatures, 
+   *  RMS values, and Retrieval Coefficients from the template that best 
+   *  matches the input Scan Brightness Temperatures as observed from 
+   *  the input flight altitude. 
+   */
+  RC_Set_1FL getBestWeightedRCSet(float*, float, float);
 
 private: 
 
