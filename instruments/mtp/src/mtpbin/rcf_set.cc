@@ -4,6 +4,7 @@
 #include <fstream>
 #include <arpa/inet.h>
 #include <boost/filesystem.hpp>
+#include <math.h>
 #include "rcf_set.h"
 #include "rcf.h"
 
@@ -57,5 +58,53 @@ bool RetrievalCoefficientFileSet::setFlightLevelsKm(float FlightLevels[],
   }
 
   return true;
+}
+
+RC_Set_1FL RetrievalCoefficientFileSet::getBestWeightedRCSet
+                                  (float ScanBrightnessTemps[],float PAltKm,
+                                   float BTBias)
+{
+
+  RC_Set_1FL AvgWtSet;
+  float Weight, SumWeights;         // For RMS weighting
+  float SumWeightedAvg, SumSquares; // Sum of weighted differences
+  float Diff;			    // Measured BT - Model BT - BTBias
+  int   NumBTsIncl;		    // Count of BTs included in Weighting
+  int   BestRCIndex = 0;            // Index of "best" template (so far)
+  int   BTIndex;		    // Index into Scan and Model BT arrays
+  float RCFBTWeightedMean;	    // The weighted mean of this RCF's BTs
+  float RCFBTStdDev;		    // Standard Deviation about weighted mean(?)
+  float Numerator, Denominator;	    // For RCFBTStdDev calculation
+  float BestlnP;  // The sum of the ln of Probabilities for the BestRCIndex
+  float thislnP;  // The sum of the ln of Probabilities for "this" RCF
+  for (std::vector<RetrievalCoefficientFile>::iterator
+       RCFit = _RCFs.begin(); RCFit != _RCFs.end(); ++RCFit)
+  {
+    SumWeightedAvg = SumSquares = SumWeights = NumBTsIncl = 0;
+    AvgWtSet=RCFit->getRCAvgWt(PAltKm);
+    for (BTIndex = 0; BTIndex < NUM_BRT_TEMPS; BTIndex++) 
+    {
+      Weight = 1/AvgWtSet.MBTRms[BTIndex]*AvgWtSet.MBTRms[BTIndex];
+      SumWeights = SumWeights + Weight;
+      Diff = ScanBrightnessTemps[BTIndex]-AvgWtSet.MBTAvg[BTIndex];
+      if (Weight > 0)
+      {
+        NumBTsIncl+=1;
+        SumWeightedAvg = SumWeightedAvg+Weight*Diff;
+        SumSquares = SumSquares+Weight*Diff*Diff;
+      }
+    }
+
+    RCFBTWeightedMean = SumWeightedAvg/SumWeights;
+
+    Numerator = (SumSquares-(SumWeights*RCFBTWeightedMean*RCFBTWeightedMean));
+    Denominator = ((NumBTsIncl-1)*SumWeights/NumBTsIncl);
+    if (Numerator/Denominator >= 0)
+      RCFBTStdDev = sqrt(Numerator/Denominator);
+    else
+      RCFBTStdDev = RCFBTWeightedMean; // MJ "kludge" 
+  }
+
+  // TODO: lnP calculations
 }
 
