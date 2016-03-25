@@ -69,8 +69,8 @@ typedef union{END_HDR EH ; char Array[sizeof(END_HDR)];} My_EH;
 // Structure and union to read each flight level co-efficient info
 typedef struct {
   float sBP; 			// Flight level pressure altitude (hPa)
-  float sOBrms[NUM_OBSVBLS];    // 1-sigma apriori observable errors
-  float sOBav[NUM_OBSVBLS];     // Archive Average observables
+  float sOBrms[NUM_BRT_TEMPS];    // 1-sigma apriori observable errors
+  float sOBav[NUM_BRT_TEMPS];     // Archive Average observables
   float sBPrl[NUM_RETR_LVLS];   // Pressure at retrieval levels
   float sRTav[NUM_RETR_LVLS];   // Average T at retrieval levels
   float sRMSa[NUM_RETR_LVLS];   // Variance in T at retrieval levels
@@ -84,11 +84,11 @@ typedef union{RC_FL_Read RC_read ; char Array[sizeof(RC_FL_Read)];} My_RC_FL_Un;
 // Structure to hold each flight level retrieval coefficient information.
 typedef struct {
   float Palt; 		         // Flight level pressure altitude (hPa)
-  float MBTRms[NUM_OBSVBLS];     // 1-sigma apriori Model Brightness Temp err
-  float MBTAvg[NUM_OBSVBLS];     // Model Brightness Temperature Averages
+  float MBTRms[NUM_BRT_TEMPS];     // 1-sigma apriori Model Brightness Temp err
+  float MBTAvg[NUM_BRT_TEMPS];     // Model Brightness Temperature Averages
   float PAltRl[NUM_RETR_LVLS];   // Pressure at retrieval levels
   float TAvgRl[NUM_RETR_LVLS];   // Average T at retrieval levels
   float TVarRl[NUM_RETR_LVLS];   // Variance in T at retrieval levels
   float TRmsRl[NUM_RETR_LVLS];   // Formal error in T at retrieval levels
-  float RC[NUM_RETR_LVLS][NUM_OBSVBLS];  // Retrieval Coefficients 
+  float RC[NUM_RETR_LVLS][NUM_BRT_TEMPS];  // Retrieval Coefficients 
 } RC_Set_1FL;

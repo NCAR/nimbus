@@ -160,7 +160,7 @@ std::vector<int>::size_type sz = _FlRcSetVec.size();
 cout<<"In get avg: PAltKm:"<<PAltKm<<"  1st level:"<<_FlRcSetVec.begin()->Palt<<"  last level:"<<_FlRcSetVec.end()->Palt<<"  -1:"<<_FlRcSetVec[sz-2].Palt<<"\n";
   if (PAltKm >= _RCFHdr.Zr[0]) 
   {
-    for (int i = 0; i< NUM_OBSVBLS; i++) 
+    for (int i = 0; i< NUM_BRT_TEMPS; i++) 
     {
       RcSetAvWt.MBTAvg[i] = _FlRcSetVec.begin()->MBTAvg[i];
       RcSetAvWt.MBTRms[i] = _FlRcSetVec.begin()->MBTRms[i];
@@ -173,7 +173,7 @@ cout<<"In get avg: PAltKm:"<<PAltKm<<"  1st level:"<<_FlRcSetVec.begin()->Palt<<
   }
   if (PAltKm <= _RCFHdr.Zr[_RCFHdr.NFL-1])
   {
-    for (int i = 0; i< NUM_OBSVBLS; i++) 
+    for (int i = 0; i< NUM_BRT_TEMPS; i++) 
     {
       RcSetAvWt.MBTAvg[i] = _FlRcSetVec.end()->MBTAvg[i];
       RcSetAvWt.MBTRms[i] = _FlRcSetVec.end()->MBTRms[i];
@@ -207,7 +207,7 @@ cout<< "i:"<<i<<"  iAlt:"<<_RCFHdr.Zr[i]<<"  i++Alt:"<<_RCFHdr.Zr[i+1]<<"  ChkAl
 
 
   // Calculate the Weighted averages 
-  for (int i = 0; i < NUM_OBSVBLS; i++)
+  for (int i = 0; i < NUM_BRT_TEMPS; i++)
   {
     RcSetAvWt.MBTAvg[i] = Botit->MBTAvg[i]*BotWt + Topit->MBTAvg[i]*TopWt;
     RcSetAvWt.MBTRms[i] = Botit->MBTRms[i]*BotWt + Topit->MBTRms[i]*TopWt;
@@ -219,7 +219,7 @@ cout<< "i:"<<i<<"  iAlt:"<<_RCFHdr.Zr[i]<<"  i++Alt:"<<_RCFHdr.Zr[i+1]<<"  ChkAl
 
 cout<<" RCwt:\n";
 for (int j = 0; j < NUM_RETR_LVLS; j++) {
-  for (int i = 0; i < NUM_OBSVBLS; i++) {
+  for (int i = 0; i < NUM_BRT_TEMPS; i++) {
     if (i%5 != 0) cout<<"["<<j<<"]["<<i<<"]:"<<RcSetAvWt.RC[j][i];
     else cout<<"["<<j<<"]["<<i<<"]:"<<RcSetAvWt.RC[j][i]<<'\n';
   }
@@ -259,7 +259,7 @@ bool RetrievalCoefficientFile::setFlightLevelsKm(float FlightLevels[], int Len)
 void RetrievalCoefficientFile::FlUn2FlRcSet(My_RC_FL_Un RcUn, RC_Set_1FL *RcSet)
 {
   RcSet->Palt = RcUn.RC_read.sBP;
-  for (int i=0; i<NUM_OBSVBLS; i++) 
+  for (int i=0; i<NUM_BRT_TEMPS; i++) 
   {
     RcSet->MBTRms[i] = RcUn.RC_read.sOBrms[i];
     RcSet->MBTAvg[i] = RcUn.RC_read.sOBav[i];
@@ -281,7 +281,7 @@ void RetrievalCoefficientFile::FlUn2FlRcSet(My_RC_FL_Un RcUn, RC_Set_1FL *RcSet)
 
 /* Output the RC matrix
 for (x=0; x<NUM_RETR_LVLS; x++) {
-  for (y=0; y<NUM_OBSVBLS; y++) {
+  for (y=0; y<NUM_BRT_TEMPS; y++) {
     if (y%4==0) cout << " ["<<x<<"]["<<y<<"]:"<<RcSet->RC[x][y]<<"\n";
     else cout << "["<<x<<"]["<<y<<"]:"<<RcSet->RC[x][y];
   }
