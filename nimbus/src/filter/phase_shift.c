@@ -84,17 +84,9 @@ void PhaseShift(
   {
     RAWTBL	*rp = raw[i];
     int		lag = 0;
-    bool	noMissingData = true;
 
     if (cfg.TimeShifting())
       lag = rp->StaticLag + rp->DynamicLag;
-
-    if (cfg.Despiking())
-    {
-      for (size_t j = 0; j < rp->SampleRate; ++j)
-        if (isnan(this_rec[rp->SRstart + j]))
-          noMissingData = false;
-    }
 
     if (abs((lag)) > MaxLag)
     {
@@ -109,8 +101,13 @@ void PhaseShift(
       LogMessage(buffer);
     }
 
-    // Only resample data, if we have a lag or some 'missing values'.
-    if (lag == 0 && noMissingData)
+    // Don't time-shift if lag is less than 33% of sample spacing.
+    size_t gap_size = 1000 / rp->SampleRate;
+    if (rp->StaticLag == 0 && abs(lag) < gap_size / 3)
+      lag = 0;
+
+    // Only resample data if we have a lag.
+    if (lag == 0)
       srt_out = 0;
     else
       srt_out = output;
