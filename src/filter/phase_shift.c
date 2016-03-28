@@ -5,7 +5,6 @@ OBJECT NAME:	phase_shift.c
 FULL NAME:	Phase Shift Logical Records
 
 ENTRY POINTS:	PhaseShift()
-		AddVariableToSDIlagList()
 		AddVariableToRAWlagList()
 
 STATIC FNS:	resample()
@@ -15,7 +14,7 @@ DESCRIPTION:	Interpolate missing data (spikes) and phase shift data.
 		Also create HRT interpolated data.  At some point this
 		should be renamed "resampler.c".
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2016
 -------------------------------------------------------------------------
 */
 
@@ -110,8 +109,7 @@ void PhaseShift(
       LogMessage(buffer);
     }
 
-    /* Only resample data, if we have a lag or some 'missing values'.
-     */
+    // Only resample data, if we have a lag or some 'missing values'.
     if (lag == 0 && noMissingData)
       srt_out = 0;
     else
