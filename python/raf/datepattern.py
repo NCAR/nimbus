@@ -181,6 +181,11 @@ class DatePattern(object):
         if not periods:
             periods = GlobDatePeriods()
         self.periods = periods
+        # If true, the end time is open rather than part of the interval.
+        self.exclusive = False
+
+    def setExclusive(self, exclusive):
+        self.exclusive = exclusive
 
     def setPattern(self, pattern):
         self.pattern = pattern
@@ -192,7 +197,7 @@ class DatePattern(object):
 
     def generate(self, begin, end, duration=None):
         """
-        Generate the date pattern over the given range, inclusive.
+        Generate the date pattern over the given range.
 
         If a Duration instance is provided, then all time fields of lesser
         duration will be replaced with wildcards.  This reduces the number
@@ -207,7 +212,9 @@ class DatePattern(object):
         """
         patterns = []
         tt = int(begin)
-        while tt <= int(end):
+        # If the interval end time is not inclusive, then exit as soon
+        # as the end time reached
+        while tt < int(end) or (not self.exclusive and tt <= int(end)):
             # logger.debug("checking time %s" % 
             #              (self.formatTime(tt, "%Y-%m-%d,%H:%M:%S")))
             for p in self.periods.getPeriods():
@@ -235,8 +242,39 @@ class DatePattern(object):
 
     def generateRsyncRules(self, begin, end):
         patterns = self.generate(begin, end)
+        # If the patterns contain directories, then the parent directories
+        # of each pattern must be included explicitly also, otherwise the
+        # trailing exclude will skip them and the subdirectories will never
+        # be traversed.  (See the rsync man page.)  This algorithm adds all
+        # the path components up until the last one.
+        dirs = []
+        for p in patterns:
+            comps = p.split("/")
+            for i, c in enumerate(comps):
+                if i == len(comps)-1:
+                    break
+                subdir = "/".join(comps[0:i+1])
+                if subdir not in dirs:
+                    dirs.append(subdir)
 	options = []
-        options.extend(['--include=%s**' % (p) for p in patterns])
+        options.extend(['--include=%s/' % (d) for d in dirs])
+        for p in patterns:
+            # We need the extra asterisks if this is a directory, otherwise
+            # only the directory gets sync'd and not the contents because
+            # of the trailing exclude, and presumably if the pattern is a
+            # directory (it ends with a /) then the caller wants to sync
+            # the entire contents.
+            opt = '--include=%s' % (p)
+            # In theory, if the pattern matches filenames, then the **
+            # suffix is not needed, and in fact leaving it off avoids
+            # accidentally matching directories which match the filename
+            # pattern.  However, we have no way of knowing a priori whether
+            # the pattern matches filenames or directories, so we require
+            # directory patterns to end with a /.
+            if opt.endswith('/'):
+                opt = opt + "**"
+            if opt not in options:
+                options.append(opt)
         options.extend(['--exclude=*'])
         return options
 
@@ -375,6 +413,19 @@ def test_generate_mixed():
         "2000-01-01-00:05*"]
 
 
+def test_generate_rsync():
+    begin = timeFromPtime("201603240000", "%Y%m%d%H%M")
+    end = timeFromPtime("201603250000", "%Y%m%d%H%M")
+    dp = DatePattern("%y%m%d[NF]F/%H/")
+    dp.setExclusive(True)
+    opts = dp.generateRsyncRules(begin, end)
+    assert opts == ['--include=160324[NF]F/',
+                    '--include=160324[NF]F/[0-2][0-9]/',
+                    '--include=160324[NF]F/[0-2][0-9]/**',
+                    '--exclude=*']
+
+    
+    
 
 
 

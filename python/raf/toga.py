@@ -111,7 +111,7 @@ default is 1.""", type="int", default=1)
     if not times[1]:
         times[1] = time.time()
 
-    togadirpattern = "%Y-%m-%d-%H*.b"
+    togadirpattern = "%Y-%m-%d-%H*.b/"
     dp = datepattern.DatePattern(togadirpattern)
     logging.debug("generating rsync patterns for interval (%s,%s)" %
                   (tt.formatTime(times[0]), tt.formatTime(times[1])))

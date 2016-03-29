@@ -16,6 +16,7 @@ class Rsync(object):
         self.options = options
         self.source = source
         self.dest = dest
+        self.status = None
 
     def setDryrun(self, enabled):
         self.dryrun = enabled
@@ -36,15 +37,20 @@ class Rsync(object):
         cmd += [self.source, self.dest]
         return cmd
         
+    def exitStatus(self):
+        return self.status
+
     def run(self):
         cmd = self._generate_command()
         logger.info(" ".join(cmd))
         p = sp.Popen(cmd, shell=False)
-        _pid_, _status_ = os.waitpid(p.pid, 0)
+        _pid_, status = os.waitpid(p.pid, 0)
+        self.status = status
+        return status
 
 
 def runrsync(options, source, dest):
     rsync = Rsync(source, dest, options)
-    rsync.run()
+    return rsync.run()
 
 
