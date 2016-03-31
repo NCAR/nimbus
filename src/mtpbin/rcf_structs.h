@@ -84,8 +84,8 @@ typedef union{RC_FL_Read RC_read ; char Array[sizeof(RC_FL_Read)];} My_RC_FL_Un;
 // Structure to hold each flight level retrieval coefficient information.
 typedef struct {
   float Palt; 		         // Flight level pressure altitude (hPa)
-  float MBTRms[NUM_BRT_TEMPS];     // 1-sigma apriori Model Brightness Temp err
-  float MBTAvg[NUM_BRT_TEMPS];     // Model Brightness Temperature Averages
+  float MBTRms[NUM_BRT_TEMPS];   // 1-sigma apriori Model Brightness Temp err
+  float MBTAvg[NUM_BRT_TEMPS];   // Model Brightness Temperature Averages
   float PAltRl[NUM_RETR_LVLS];   // Pressure at retrieval levels
   float TAvgRl[NUM_RETR_LVLS];   // Average T at retrieval levels
   float TVarRl[NUM_RETR_LVLS];   // Variance in T at retrieval levels
