@@ -157,6 +157,7 @@ RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(float PAltKm)
   //    Assumption is that the Flight Level Retrieval Coefficient Set vector
   //    is stored in increasing Palt (decreasing aircraft altitude).
 std::vector<int>::size_type sz = _FlRcSetVec.size();
+cout<<"FileName:"<<_RCFFileName.c_str()<<"\n";
 cout<<"In get avg: PAltKm:"<<PAltKm<<"  1st level:"<<_FlRcSetVec.begin()->Palt<<"  last level:"<<_FlRcSetVec.end()->Palt<<"  -1:"<<_FlRcSetVec[sz-2].Palt<<"\n";
   if (PAltKm >= _RCFHdr.Zr[0]) 
   {
@@ -206,11 +207,15 @@ cout<< "i:"<<i<<"  iAlt:"<<_RCFHdr.Zr[i]<<"  i++Alt:"<<_RCFHdr.Zr[i+1]<<"  ChkAl
   TopWt = 1-BotWt;
 
 
+cout<<"Num, Avg, Bot, Top, Rms, Bot, Top\n";
   // Calculate the Weighted averages 
   for (int i = 0; i < NUM_BRT_TEMPS; i++)
   {
+    RcSetAvWt.Palt = Botit->Palt*BotWt + Topit->Palt*TopWt;
     RcSetAvWt.MBTAvg[i] = Botit->MBTAvg[i]*BotWt + Topit->MBTAvg[i]*TopWt;
     RcSetAvWt.MBTRms[i] = Botit->MBTRms[i]*BotWt + Topit->MBTRms[i]*TopWt;
+cout<<i<<","<<RcSetAvWt.MBTAvg[i]<<","<<Botit->MBTAvg[i]<<","<<Topit->MBTAvg[i]
+ <<","<<RcSetAvWt.MBTRms[i]<<","<<Botit->MBTRms[i]<<","<<Topit->MBTRms[i]<<"\n";
     for (int j = 0; j < NUM_RETR_LVLS; j++)
     {
       RcSetAvWt.RC[j][i] = Botit->RC[j][i]*BotWt + Topit->RC[j][i]*(1-BotWt);
