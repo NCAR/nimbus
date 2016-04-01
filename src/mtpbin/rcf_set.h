@@ -73,7 +73,7 @@ public:
    *  matches the input Scan Brightness Temperatures as observed from 
    *  the input flight altitude. 
    */
-  RC_Set_1FL getBestWeightedRCSet(float*, float, float);
+  RC_Set_4Retrieval getBestWeightedRCSet(float*, float, float);
 
 private: 
 

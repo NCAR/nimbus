@@ -92,3 +92,10 @@ typedef struct {
   float TRmsRl[NUM_RETR_LVLS];   // Formal error in T at retrieval levels
   float RC[NUM_RETR_LVLS][NUM_BRT_TEMPS];  // Retrieval Coefficients 
 } RC_Set_1FL;
+
+typedef struct {
+  std::string RCFFileName;
+  std::string RCFId;
+  float SumLnProb;
+  RC_Set_1FL FL_RCs;
+} RC_Set_4Retrieval;

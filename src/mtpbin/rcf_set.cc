@@ -60,7 +60,7 @@ bool RetrievalCoefficientFileSet::setFlightLevelsKm(float FlightLevels[],
   return true;
 }
 
-RC_Set_1FL RetrievalCoefficientFileSet::getBestWeightedRCSet
+RC_Set_4Retrieval RetrievalCoefficientFileSet::getBestWeightedRCSet
                                   (float ScanBrightnessTemps[],float PAltKm,
                                    float BTBias)
 {
@@ -128,13 +128,15 @@ RC_Set_1FL RetrievalCoefficientFileSet::getBestWeightedRCSet
       BestlnP = thislnP;
       BestRCIndex = thisRCFIndex;
     }
-std::cout<<"Index:";
-std::cout<<thisRCFIndex<<"  lnP:";
-std::cout<<thislnP<<"\n";
     thisRCFIndex++;
   }
 
-  return _RCFs[BestRCIndex].getRCAvgWt(PAltKm);
+  RC_Set_4Retrieval RC4R;
+  RC4R.SumLnProb = BestlnP;
+  RC4R.RCFFileName = _RCFs[BestRCIndex].getFileName();
+  RC4R.RCFId = _RCFs[BestRCIndex].getId();
+  RC4R.FL_RCs = _RCFs[BestRCIndex].getRCAvgWt(PAltKm);
+  return RC4R;
 
 }
 

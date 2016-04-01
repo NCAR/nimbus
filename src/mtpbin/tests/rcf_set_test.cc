@@ -44,5 +44,30 @@ main () {
                      219.3694, 219.3111, 219.1711, 219.6915, 220.3420};
 
   cout<<"About to call getBestWeightedRCSet\n";
-  RC_Set_1FL BestWtdRCSet = RCF_Set.getBestWeightedRCSet(scanBTs, 12.49947, 0.0);
+  RC_Set_4Retrieval BestWtdRCSet = RCF_Set.getBestWeightedRCSet(scanBTs, 
+                                                                12.49947, 0.0);
+
+  cout<<"Best Retrieval Coef for HIPPO-5 flt on 8/9/2011 at 152700 hours:\n"
+      <<"  ID:"<<BestWtdRCSet.RCFId.c_str()<<"\n  "
+      <<"Filename:"<<BestWtdRCSet.RCFFileName.c_str()<<"\n  "
+      <<"SumLnProb:"<<BestWtdRCSet.SumLnProb<<"\n";
+
+  // ob(1)-ob(30) values for scan at 220214 HIPPPO-5 flight date 20110901
+  scanBTs   =       {262.1815, 262.0143, 262.2418, 263.3536, 264.2274,
+                     264.8418, 264.9377, 265.8375, 266.8653, 268.4430,
+                     263.2054, 263.5550, 263.7445, 264.3099, 264.4827, 
+                     264.8418, 264.9814, 265.5672, 266.2898, 267.8371,
+                     262.9489, 263.1401, 263.4613, 264.2195, 264.6548,
+                     264.8418, 265.1116, 265.6754, 266.2920, 267.0385};
+
+  cout<<"About to call getBestWeightedRCSet\n";
+  BestWtdRCSet = RCF_Set.getBestWeightedRCSet(scanBTs, 
+                                                                2.050817, 0.0);
+
+  cout<<"Best Retrieval Coef for HIPPO-5 flt on 9/1/2011 at 220214 hours:\n"
+      <<"  ID:"<<BestWtdRCSet.RCFId.c_str()<<"\n  "
+      <<"Filename:"<<BestWtdRCSet.RCFFileName.c_str()<<"\n  "
+      <<"SumLnProb:"<<BestWtdRCSet.SumLnProb<<"\n";
+
+
 }
