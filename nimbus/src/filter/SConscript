@@ -101,4 +101,5 @@ deplibs = Split("""
 env.Append(LIBS=[libnimbus] + deplibs)
 nimbus = env.Program('nimbus', ['nimbus.c'])
 env.Default(nimbus)
+Alias('install', env.Install('$JLOCAL/bin', nimbus))
 
