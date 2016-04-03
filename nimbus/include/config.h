@@ -43,9 +43,11 @@ public:
   bool BlankoutVariables() const	{ return _blankout; }
   bool QCenabled() const		{ return _qcEnabled; }
   bool ProductionRun() const		{ return _productionRun; }
+  bool WarnTimeLags() const		{ return _warnTimeLags; }
   bool OutputNetCDF() const		{ return _outputNetCDF; }
   bool OutputSQL() const		{ return _outputSQL; }
   bool TransmitToGround() const		{ return _transmitToGround; }
+  bool EnableBroadcast() const		{ return _enableBroadcast; }
   int GroundFeedDataRate() const	{ return _transmitRate; }
   bool AsyncFileEnabled() const		{ return _asyncFileEnabled; }
   bool LoadProductionSetup() const	{ return _loadProductionSetup; }
@@ -73,8 +75,12 @@ public:
   pms2dProcessing TwoDProcessingMethod() const { return _pms2dProcessing; }
   float TwoDAreaRejectRatio() const	{ return _twoDrejectRatio; }
 
+  size_t AnalyzeInterval() const        { return _analyzeInterval; }
+  size_t VacuumInterval() const         { return _vacuumInterval; }
+
   void SetInteractive(bool state)	{ _interactive = state; }
   void SetProductionRun(bool state)	{ _productionRun = state; }
+  void SetWarnTimeLags(bool state)	{ _warnTimeLags = state; }
   void SetDespiking(bool state)		{ _despiking = state; }
   void SetTimeShifting(bool state)	{ _timeShifting = state; }
   void SetBlankoutVariables(bool state)	{ _blankout = state; }
@@ -82,6 +88,7 @@ public:
   void SetOutputNetCDF(bool state)	{ _outputNetCDF = state; }
   void SetOutputSQL(bool state)		{ _outputSQL = state; }
   void SetTransmitToGround(bool state)	{ _transmitToGround = state; }
+  void SetEnableBroadcast(bool state)	{ _enableBroadcast = state; }
   void SetGroundFeedDataRate(int rate)	{ _transmitRate = rate; }
   void SetAsyncFileEnabled(bool state)	{ _asyncFileEnabled = state; }
   void SetLoadProductionSetup(bool state) { _loadProductionSetup = state; }
@@ -104,6 +111,9 @@ public:
   void SetLagErrorReporting(bool state)	{ _lagReporting = state; }
 
   void SetADSVersion(ADSVersion nv) { _adsVersion = nv; }
+
+  void SetAnalyzeInterval(size_t ai)              { _analyzeInterval = ai; }
+  void SetVacuumInterval(size_t vi)               { _vacuumInterval = vi; }
 
   const std::string& ProjectDirectory() const	{ return _projectDirectory; }
   const std::string& ProjectName() const	{ return _projectName; }
@@ -150,6 +160,7 @@ public:
 private:
   bool _interactive;
   bool _productionRun;
+  bool _warnTimeLags;
   bool _despiking;
   bool _timeShifting;
   bool _blankout;
@@ -157,6 +168,7 @@ private:
   bool _outputNetCDF;
   bool _outputSQL;
   bool _transmitToGround;
+  bool _enableBroadcast;
   bool _asyncFileEnabled;
   bool _loadProductionSetup;
   bool _honeywellCleanup;
@@ -169,6 +181,9 @@ private:
   bool _lagReporting;
 
   int _transmitRate;
+
+  size_t _analyzeInterval;
+  size_t _vacuumInterval;
 
   aircraft _aircraft;
   ADSVersion _adsVersion;

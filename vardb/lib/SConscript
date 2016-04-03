@@ -4,10 +4,10 @@ env = Environment(tools=['default', 'jlocal', 'text2cc', 'domx', 'boost_regex'])
 
 env.Append(CXXFLAGS=Split("-Wall -g -O2"))
 
-headers = Split("vardb.h vardb.hh")
+headers = Split("vardb.h vardb.hh VarDBConverter.hh")
 srcs = Split("""
 init.cc get.cc set.cc save.cc merge.cc sort.cc category.cc std_name.cc 
-VDBFile.cc VDBVar.cc VDBDictionary.cc
+VDBFile.cc VDBVar.cc VDBDictionary.cc VarDBConverter.cc
 """)
 
 env.EmbedTextCC("vdbschema.xsd.cc", "VDBSchema.xsd", "VDBSCHEMA")

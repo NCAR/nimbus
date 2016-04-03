@@ -44,7 +44,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 #include "decode.h"
 #include "gui.h"
 #include "injectsd.h"
-
+#include "sync_reader.hh"
 
 static Widget   EditShell = 0, EditWindow = 0;
 
@@ -228,6 +228,8 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
 
         rp->cof.insert(rp->cof.begin(), f);
         }
+
+      SetCalibration(rp);
 
       newAttr = CreateListLineItem(rp, RAW);
       break;

@@ -6,7 +6,6 @@ FULL NAME:	Decode Header
 
 ENTRY POINTS:	DecodeHeader()
 		DecodeHeader3()
-		closeSyncRecordReader()
 
 DESCRIPTION:	Read header & add variables to appropriate table.  There
 		are 2 major tables here:
@@ -37,11 +36,16 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
 #include "gui.h"
 #include <raf/ctape.h>	// ADS header API
 #include <raf/vardb.hh>	// Variable DataBase
+#include <raf/VarDBConverter.hh>
 #include "amlib.h"
 
-#include <nidas/core/Socket.h>
-#include <nidas/dynld/raf/SyncRecordReader.h>
-extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
+#include "sync_reader.hh"
+#include <nidas/core/NidasApp.h>
+#include <nidas/core/Project.h>
+
+using nidas::dynld::raf::Aircraft;
+using nidas::core::NidasApp;
+using nidas::core::Project;
 
 VDBFile *vardb = 0; // Exports to cb_main.c and netcdf.c
 
@@ -106,7 +110,8 @@ static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
 		*rawlist[MAX_DEFAULTS*4];	/* RawNames file	*/
 
 
-static RAWTBL	*initSDI_ADS3(nidas::dynld::raf::SyncRecordVariable* var);
+static RAWTBL	*initSDI_ADS3(nidas::core::Variable* var,
+			      time_t startTime);
 static RAWTBL	*add_name_to_RAWTBL(const char []);
 static DERTBL	*add_name_to_DERTBL(const char []);
 
@@ -279,7 +284,7 @@ for (size_t i = 0; i < derived.size(); ++i)
 }	// END COMMONPOSTINITIALIZATION
 
 /* -------------------------------------------------------------------- */
-static void addSerialNumber(nidas::dynld::raf::SyncRecordVariable *var, var_base *rp)
+static void addSerialNumber(nidas::core::Variable *var, var_base *rp)
 {
   const std::list<const nidas::core::Parameter *> parms = var->getParameters();
 
@@ -295,83 +300,131 @@ static void addSerialNumber(nidas::dynld::raf::SyncRecordVariable *var, var_base
 }
 
 /* -------------------------------------------------------------------- */
-int DecodeHeader3(const char header_file[])
+#include <sys/types.h>
+#include <sys/param.h>
+#include <dirent.h>
+#include <libgen.h>
+#include <set>
+
+std::set<std::string>
+GetADSFileList(const std::string& adsFileName)
 {
-  nidas::util::Socket * sock;
+  std::set<std::string> fileList;
+  DIR *dir;
+  char tmp_dir[MAXPATHLEN];
 
-  strcpy(sync_server_pipe, "/tmp/sync_server_XXXXXX");
+  strcpy(tmp_dir, adsFileName.c_str());
+  char *directory = dirname(tmp_dir);
 
-  ILOG(("DecodeHeader3: header_file=%s", header_file));
+  if ((dir = opendir(directory)) == 0)
+  {
+    std::ostringstream oss;
+    oss << "Failed to open directory " << directory;
+    perror(oss.str().c_str());
+    return fileList;
+  }
+
+  struct dirent *entry;
+
+  // Read directory entries & get all files with matching flight number.
+  while ( (entry = readdir(dir)) )
+    if ( strstr(entry->d_name, cfg.FlightNumber().c_str()) &&
+         strstr(entry->d_name, cfg.ADSfileExtension().c_str()))
+    {
+      std::string s(directory);
+      s += "/";
+      s += entry->d_name;
+      fileList.insert(s);
+    }
+  closedir(dir);
+
+  std::set<std::string>::iterator it;
+  for (it = fileList.begin(); it != fileList.end(); ++it)
+    if ((*it).compare(adsFileName) < 0)
+      fileList.erase(*it);
+
+  for (it = fileList.begin(); it != fileList.end(); ++it)
+    printf("%s\n", (*it).c_str());
+
+  return fileList;
+}
+
+
+std::set<std::string>
+get_header_files(const std::string& header_file)
+{
+  std::set<std::string> fileList;
 
   if (cfg.ProcessingMode() == Config::PostProcessing)
   {
-    mktemp(sync_server_pipe);
-
-    extern pid_t syncPID;
-    syncPID = fork();
-
-    if (syncPID == 0)
-    {
-      // Acquire list of all files which match the first 4 chars of this one
-      // plus are greater in time.  Pass this list of file names into
-      // launch_ss (which runs sync_server).
-      std::set<std::string> fileList, GetADSFileList(const char *);
-      fileList = GetADSFileList(header_file);
-      char *files[128];
-
-      size_t i = 0;
-      files[i++] = (char*)"sync_server";
-      files[i++] = (char*)"-l";
-      files[i++] = (char*)"60";	// 60 second time-sorter.
-      files[i++] = (char*)"-p";
-      files[i++] = sync_server_pipe;
-      std::set<std::string>::iterator it;
-      for (it = fileList.begin(); it != fileList.end(); ++it)
-        files[i++] = (char *)&(*it).c_str()[0];
-
-      files[i] = 0;
-
-      execvp("sync_server", files);
-      fprintf(stderr, "nimbus: failed to exec sync_server\n");
-      _exit(1);
-    }
-
-    sleep(2);
-    nidas::util::UnixSocketAddress usa(sync_server_pipe);
-    sock = new nidas::util::Socket(usa);
+    // Acquire list of all files which match the first 4 chars of this one
+    // plus are greater in time.  Pass this list of file names into
+    // launch_ss (which runs sync_server).
+    fileList = GetADSFileList(header_file);
   }
-  else
-    // establish socket to dsm_server
-    sock = new nidas::util::Socket("localhost", 30001);
+  // File list is empty in real-time mode, meaning get header directly from
+  // DSM server.
+  return fileList;
+}
 
-  nidas::core::IOChannel * iochan = new nidas::core::Socket(sock);
 
-  syncRecReader = new nidas::dynld::raf::SyncRecordReader(iochan);
 
-  // the SyncRecordReader::getVariables() throws Exception if
-  // something is wrong with the header.
-  std::list<const nidas::dynld::raf::SyncRecordVariable*> vars;
-  try {
-      // Loop over all variables from sync_server/nidas.
-      vars = syncRecReader->getVariables();
-  }
-  catch(const nidas::util::Exception& e) {
-    PLOG(("Error reading sync record:") << e.what());
-    fprintf(stderr, "Fatal error: syncRecReader->getVariables() failed.\n");
-    fprintf(stderr, "  Check XML file, space in project name?  Check units for odd characters.\n");
+/* -------------------------------------------------------------------- */
+int DecodeHeader3(const char header_file[])
+{
+  bool postprocess = (cfg.ProcessingMode() == Config::PostProcessing);
+
+  std::set<std::string> headerfiles = get_header_files(header_file);
+
+  // At this point we have header files which specify the XML path, and we
+  // may have an XML path specified in the NidasApp instance.  From these
+  // we need to find and parse the right XML file into a Project and
+  // retrieve all the metadata.
+
+  // However, we need to start reading the data stream to get the header.
+  // Therefore we rely on SyncServer to populate the application Project
+  // instance and then retrieve a pointer to it here.
+
+  NidasApp& napp = *NidasApp::getApplicationInstance();
+  Project* project = napp.getProject();
+  SetSyncXMLPath(napp.xmlHeaderFile());
+
+  nidas::dynld::raf::SyncRecordReader* syncRecReader;
+
+  // After calling this, the SyncServer should have created the project and
+  // initialized all the sensors.
+  syncRecReader = StartSyncReader(headerfiles, postprocess);
+
+  //  const std::list<Site*>& sites = project->getSites();
+  //  const std::list<Site*>::iterator si;
+  
+  Aircraft* aircraft = Aircraft::getAircraft(project);
+  if (!aircraft)
+  {
+    std::cerr << "No Aircraft site found in XML file, exiting!" << std::endl;
     exit(1);
   }
+  cfg.SetProjectNumber(aircraft->getProject()->getName());
+  cfg.SetTailNumber(aircraft->getTailNumber());
+  if (cfg.FlightNumber().length() == 0)
+    cfg.SetFlightNumber(aircraft->getProject()->getFlightName());
+  cfg.SetNIDASrevision(nidas::core::Version::getSoftwareVersion());
 
+#ifdef notdef
   cfg.SetProjectNumber(syncRecReader->getProjectName());
   cfg.SetTailNumber(syncRecReader->getTailNumber());
   if (cfg.FlightNumber().length() == 0)
     cfg.SetFlightNumber(syncRecReader->getFlightName());
   cfg.SetNIDASrevision(syncRecReader->getSoftwareVersion());
+#endif
 
-//  This is temporary until we get the netcdf VarDB.ncml file going.
-sprintf(buffer, "/opt/local/bin/update_depend %s", cfg.ProjectNumber().c_str());
-system(buffer);
-
+  if (0)
+  {
+    // Using the VarDBConverter to open either a binary or xml vardb makes
+    // this script obsolete.
+    sprintf(buffer, "update_depend %s", cfg.ProjectNumber().c_str());
+    system(buffer);
+  }
 
 printf("ProjectName: %s\n", cfg.ProjectNumber().c_str());
 printf("TailNumber: %s\n", cfg.TailNumber().c_str());
@@ -403,10 +456,15 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
   bool gustPodAdded = false;
 
-  std::list<const nidas::dynld::raf::SyncRecordVariable*>::const_iterator vi;
+  std::list<const nidas::core::Variable*> vars;
+  //  vars = syncRecReader->getVariables();
+  vars = selectVariablesFromProject(project);
+
+  time_t startTime = syncRecReader->getStartTime();
+  std::list<const nidas::core::Variable*>::const_iterator vi;
   for (vi = vars.begin(); vi != vars.end(); ++vi)
   {
-    nidas::dynld::raf::SyncRecordVariable *var = const_cast<nidas::dynld::raf::SyncRecordVariable*>(*vi);
+    nidas::core::Variable *var = const_cast<nidas::core::Variable*>(*vi);
 
     char name_sans_location[64];
     strcpy(name_sans_location, var->getName().c_str());
@@ -449,7 +507,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     if (var->getConverter() == 0)
     {
       rp = add_name_to_RAWTBL(name_sans_location);
-      rp->LAGstart = var->getLagOffset();
+      rp->LAGstart = syncRecReader->getLagOffset(var);
       rp->Units = var->getUnits();
       rp->LongName = var->getLongName();
       rp->dsmID = var->getSampleTag()->getDSMId();
@@ -462,7 +520,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     }
     else
     {
-      rp = initSDI_ADS3(var);
+      rp = initSDI_ADS3(var, startTime);
 
       // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
@@ -498,15 +556,15 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   CommonPostInitialization();
   GenerateProbeListADS3();
 
-// in pms1d.c, temporary until we get sync_esrver merged in.
-void PMS1D_SetupForADS3();
-PMS1D_SetupForADS3();
+  // in pms1d.c, temporary until we get sync_server merged in.
+  void PMS1D_SetupForADS3();
+  PMS1D_SetupForADS3();
 
   return OK;
 }
 
 /* -------------------------------------------------------------------- */
-static RAWTBL* initSDI_ADS3(nidas::dynld::raf::SyncRecordVariable* var)
+static RAWTBL* initSDI_ADS3(nidas::core::Variable* var, time_t startTime)
 {
   RAWTBL *cp = new RAWTBL(var->getName().c_str());
   raw.push_back(cp);
@@ -517,27 +575,18 @@ static RAWTBL* initSDI_ADS3(nidas::dynld::raf::SyncRecordVariable* var)
 
   cp->SampleRate   = rate;
 
-  cp->LAGstart = var->getLagOffset();
+  nidas::dynld::raf::SyncRecordReader* syncRecReader = GetSyncReader();
+  cp->LAGstart = syncRecReader->getLagOffset(var);
+
+  LoadCalibration(var, startTime, cp->cof);
+  if (0)
+  {
+    printf("VAR %s cal coefficients: %f %f ...", var->getName().c_str(), 
+	   cp->cof[0], cp->cof[1]);
+  }
 
   nidas::core::VariableConverter* converter =
-		const_cast<nidas::core::VariableConverter*>(var->getConverter());
-
-  nidas::core::Polynomial* poly;
-  nidas::core::Linear* linear = dynamic_cast<nidas::core::Linear*>(converter);
-  if (linear)
-  {
-     cp->cof.push_back(linear->getIntercept());
-     cp->cof.push_back(linear->getSlope());
-  }
-  else
-  if ((poly = dynamic_cast<nidas::core::Polynomial*>(converter)))
-  {
-    const std::vector<float>& coefs = poly->getCoefficients();
-//    cp->cof = coefs;
-    for (size_t i = 0; i < coefs.size(); ++i)
-      cp->cof.push_back((NR_TYPE)coefs[i]);
-  } 
-
+    const_cast<nidas::core::VariableConverter*>(var->getConverter());
   if (converter)
   {
     cp->AltUnits = var->getUnits();
@@ -2082,6 +2131,8 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   strcpy(fullName, name);
   strcat(fullName, location);
 
+  nidas::dynld::raf::SyncRecordReader* syncRecReader = GetSyncReader();
+
   if (indx == ERR && (cfg.isADS2() || syncRecReader->getVariable(fullName) == 0))
   {
     char msg[128];
@@ -2346,15 +2397,37 @@ static void
 openVariableDatabase()
 {
   MakeProjectFileName(buffer, VARDB);
-  vardb = new VDBFile(buffer);
+  std::string vardbfile(buffer);
+
+  /*
+   * Use the vardb library to handle reading either a VarDB binary file or
+   * an XML file.  For now we expect the VarDB file only, but update the
+   * vardb.xml file same as update_depend would have done.
+   */
+  VarDBConverter vdbc;
+  vardb = vdbc.open(new VDBFile(), vardbfile);
+
   if (! vardb->is_valid())
   {
-    LogMessage("InitializeVarDB for project specific failed, trying master file.\n");
-
-    sprintf(buffer, VARDB.c_str(), cfg.ProjectDirectory().c_str(), "Configuration/", "raf/");
+    LogMessage("InitializeVarDB for project specific failed, "
+	       "trying master file.\n");
+    sprintf(buffer, VARDB.c_str(), cfg.ProjectDirectory().c_str(),
+	    "Configuration/", "raf/");
     vardb->open(buffer);
     if (! vardb->is_valid())
-      HandleFatalError("InitializeVarDB for master file failed, this is fatal.");
+    {
+      std::ostringstream oss;
+      oss << "InitializeVarDB for master file ("
+	  << buffer << ") failed, this is fatal.";
+      HandleFatalError(oss.str().c_str());
+    }
+  }
+  else if (vdbc.defaultOutputPath() != vardbfile)
+  {
+    // Successfully opened a binary file, so update the xml file.
+    ILOG(("Updating ")
+	 << vdbc.defaultOutputPath() << " from " << vardbfile);
+    vardb->save(vdbc.defaultOutputPath());
   }
 }
 
@@ -2418,14 +2491,6 @@ DERTBL::DERTBL(const char s[]) : var_base(s)
   Initializer = 0;
   compute = 0;
   ndep = 0;
-}
-
-void closeSyncRecordReader()
-{
-  void ShutdownSyncServer();
-  ShutdownSyncServer();
-  if (syncRecReader)
-    delete syncRecReader;
 }
 
 /* END HDR_DECODE.C */

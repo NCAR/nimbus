@@ -22,9 +22,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 
 #include <Xm/TextF.h>
 
-#include <nidas/dynld/raf/SyncRecordReader.h>
-#include <nidas/util/Socket.h>
-#include <nidas/core/SocketAddrs.h>
+#include "sync_reader.hh"
 
 #include <ctime>
 #include <unistd.h>
@@ -128,7 +126,7 @@ void RealTimeLoop3()
   char timeStamp[32];
   size_t cntr = 0;
   Broadcast *bcast;
-  GroundFeed *grnd_feed;
+  GroundFeed *grnd_feed = 0;
   nidas::core::dsm_time_t tt;
 
   ILOG(("RealTimeLoop3 entered."));
@@ -144,8 +142,7 @@ void RealTimeLoop3()
     psql = new PostgreSQL(BuildPGspecString());
   }
 
-  extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
-
+  nidas::dynld::raf::SyncRecordReader* syncRecReader = GetSyncReader();
   int nExpected = syncRecReader->getNumValues();
 
   for (;;)
@@ -185,7 +182,8 @@ void RealTimeLoop3()
     if (cfg.OutputSQL())
       psql->WriteSQL(timeStamp);
 
-    bcast->BroadcastData(tt);
+    if (cfg.EnableBroadcast())
+      bcast->BroadcastData(tt);
 
     if (cfg.TransmitToGround())
       grnd_feed->BroadcastData(tt);
@@ -206,7 +204,7 @@ void RealTimeLoop3()
     /* Check every 20 seconds to see if we are lagging more than 10 seconds
      * behind the system clock.
      */
-    if ((++cntr % 20) == 0)
+    if (cfg.WarnTimeLags() && (++cntr % 20) == 0)
     {
       time_t sys_time = time(0);
 

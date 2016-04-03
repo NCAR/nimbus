@@ -1,5 +1,7 @@
 # -*- python -*-
 
+import os
+
 test_sources = Split("""
 test_vdbfile.cc
 """)
@@ -8,7 +10,7 @@ def gtest(env):
   env.Append(LIBS=['gtest'])
 
 env = Environment(tools=['default', 'vardb', 'boost_regex', 
-                         gtest, 'valgrind'])
+                         gtest, 'valgrind', 'testing'])
 
 tv = env.Program('vardb_tests', test_sources)
 
@@ -23,3 +25,29 @@ memcheck = env.Command('vg.memcheck.log', [tv],
                        " >& ${TARGET.abspath}")
 env.ValgrindLog('memcheck', memcheck)
 
+# Smoke test for vdb2xml
+vdb2xml = env.File("../vdb2xml/vdb2xml")
+
+def vdb2xml_compare(env, source, xmlin):
+  xd = None
+  if os.path.exists(source) and os.path.exists(xmlin):
+    print("Creating vdb2xml comparison test for %s" % (source))
+    xmlname = xmlin.replace('/', '-').strip('-')
+    xmlout = env.Command([xmlname], [vdb2xml, source],
+                         "${SOURCES[0]} ${SOURCES[1]} ${TARGET}")
+    xd = env.Diff([xmlout, xmlin])
+    env.Alias('test', xd)
+  else:
+    print("Skipping comparison test: %s or %s does not exist." % (source, xmlin))
+  return xd
+    
+
+projdir = os.getenv('PROJ_DIR')
+if projdir:
+  env['ENV']['PROJ_DIR'] = projdir
+  vdb2xml_compare(env,
+                  projdir+'/DEEPWAVE/GV_N677F/VarDB',
+                  projdir+'/DEEPWAVE/GV_N677F/vardb.xml')
+
+# Test a direct translation
+vdb2xml_compare(env, 'contrast_vardb.xml', env.File('contrast_vardb.xml').abspath)

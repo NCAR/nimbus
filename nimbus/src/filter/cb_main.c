@@ -40,9 +40,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 #include <ctime>
 #include <unistd.h>
 #include <sys/param.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/wait.h>
 
 #include <Xm/List.h>
 #include <Xm/Text.h>
@@ -51,12 +49,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 
 #include "nimbus.h"
 #include "decode.h"
+#include "timeseg.h"
 #include <raf/ctape.h>
 #include "gui.h"
 #include <raf/vardb.hh>
 #include "psql.h"
 #include "svnInfo.h"
-
+#include "sync_reader.hh"
 
 static char	ADSfileName[MAXPATHLEN];
 char		OutputFileName[MAXPATHLEN];  /* Export to xlate/rdma.c */
@@ -72,7 +71,6 @@ static clock_t	startCPU, finishCPU;
 extern Widget	Shell001;
 extern size_t	nDefaults;
 extern DEFAULT	*Defaults[];
-extern pid_t	syncPID;
 
 
 void	CloseSQL(), ProcessFlightDate();
@@ -89,44 +87,6 @@ void	InitAsyncModule(char fileName[]), RealTimeLoop(),
 	CloseLogFile(), LogDespikeInfo(), InitAircraftDependencies(),
 	CloseRemoveLogFile(), LogIRSerrors(), RealTimeLoop3();
 
-
-/* -------------------------------------------------------------------- */
-/* Check if sync_server has exited or died, report status */
-void CheckSyncServer()
-{
-  extern pid_t syncPID;
-  if (syncPID > 0) {
-    int status;
-    int res = waitpid(syncPID,&status,WNOHANG);
-    if (res < 0) WLOG(("error waiting on sync_server, pid=%d: %m",syncPID));
-    else if (res > 0) {
-      if (WIFEXITED(status))
-        ILOG(("sync_server finished, status=%d",WEXITSTATUS(status)));
-      else if (WIFSIGNALED(status)) {
-        int sig = WTERMSIG(status);
-        PLOG(("sync_server terminated on signal %s(%d)",strsignal(sig),sig));
-      }
-      syncPID = -1;
-    }
-  }
-}
-
-void ShutdownSyncServer()
-{
-  extern pid_t syncPID;
-  CheckSyncServer();
-  // send SIGTERM to sync_server. If it doesn't shutdown send SIGKILL.
-  for (int i = 0; syncPID > 0 && i < 5; i++) {
-    kill(syncPID, SIGTERM);
-    sleep(1);
-    CheckSyncServer();
-  }
-  if (syncPID > 0) {
-    kill(syncPID, SIGKILL);
-    sleep(1);
-    CheckSyncServer();
-  }
-}
 
 /* -------------------------------------------------------------------- */
 void CancelSetup(Widget w, XtPointer client, XtPointer call)
@@ -509,9 +469,7 @@ void stopProcessing()
 */
 
   CloseLogFile();
-
-  extern void closeSyncRecordReader();
-  closeSyncRecordReader();
+  CloseSyncReader();
 
   /* Turn "Pause" button back into "Go" button.
    */
@@ -788,10 +746,6 @@ void Quit(Widget w, XtPointer client, XtPointer call)
 
   CloseRemoveLogFile();
   ShutdownSyncServer();
-
-  if (strlen(sync_server_pipe))
-    unlink(sync_server_pipe);
-
   exit(0);
 }
 
@@ -1327,7 +1281,6 @@ static void EngageSignals()
 {
   ILOG(("EngageSignals"));
   signal(SIGINT, sighandler);
-  signal(SIGKILL, sighandler);
   signal(SIGFPE, sighandler);
   signal(SIGTERM, sighandler);
   signal(SIGSEGV, sighandler);

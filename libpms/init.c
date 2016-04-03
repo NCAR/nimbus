@@ -32,19 +32,23 @@ char	*GetMemory();
 /* -------------------------------------------------------------------- */
 void InitPMSspecs(const char fileName[])
 {
-  int	i, cnt, fCnt = 0;
-  char	*file[2048], PMSbuffer[512], *p;
+  int	i;
+  int   cnt;
+  int   fCnt = 0;
+  char	*file[2048];
+  char  PMSbuffer[512];
+  char  *p;
   FILE	*fp[5];
 
   if (PMSfile)
     return;
 
   if ((fp[fCnt] = fopen(fileName, "r")) == NULL)
-    {
+  {
     fprintf(stderr, "libpms: Can't open PMSspecs file [%s]\n", fileName);
     exit(1);
-    }
-
+  }
+  fprintf(stderr, "libpms: Opened PMSspecs file: %s\n", fileName);
 
   /* Read file and strip out comments.
    */
@@ -57,8 +61,10 @@ void InitPMSspecs(const char fileName[])
       }
 
     if (strncmp(PMSbuffer, "#include", 8) == 0)
-      {
-      char	newName[256], *p, *p1;
+    {
+      char newName[256];
+      char *p;
+      char *p1;
 
       strcpy(newName, fileName);
       p1 = strrchr(newName, '/');
@@ -72,27 +78,32 @@ void InitPMSspecs(const char fileName[])
         strcpy(p1+1, p);
 
       if ((fp[++fCnt] = fopen(newName, "r")) == NULL)
-        {
-        fprintf(stderr, "libpms: Can't open PMSspecs include file [%s], continuing.\n", newName);
+      {
+        fprintf(stderr,
+		"libpms: Can't open PMSspecs include file [%s], continuing.\n",
+		newName);
         --fCnt;
-        }
-
-      continue;
       }
+      else
+      {
+	fprintf(stderr, "libpms: Opened include file: %s\n", newName);
+      }
+      continue;
+    }
 
     if (PMSbuffer[0] == COMMENT)
       continue;
-
-
-    PMSbuffer[strlen(PMSbuffer)] = '\0';	/* Ditch newline	*/
 
     if ( (p = strchr(PMSbuffer, COMMENT)) )
       *p = '\0';
     else
       p = &PMSbuffer[strlen(PMSbuffer)];
 
-    while ( isspace(*(--p)) )	/* Strip trailing white-space	*/
+    /* Strip trailing white-space	*/
+    while ((--p > PMSbuffer) && isspace(*p))
+    {
       *p = '\0';
+    }
 
     if ( isspace(PMSbuffer[0]) )	/* Belongs to previous line	*/
       {

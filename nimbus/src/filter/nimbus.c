@@ -19,6 +19,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2008
 #include "fbr.h"
 #include "svnInfo.h"
 
+#include <nidas/core/NidasApp.h>
+
+using nidas::util::Logger;
+
 #include <csignal>
 
 #define APP_CLASS	"XmNimbus"
@@ -52,6 +56,14 @@ void	CreateErrorBox(Widget parent),
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
+  nidas::core::NidasApp napp("nimbus");
+  napp.setApplicationInstance();
+  napp.enableArguments(napp.XmlHeaderFile | napp.LogLevel |
+		       napp.StartTime | napp.EndTime);
+  // Require long flags to avoid confusion with nimbus flags like -x.
+  napp.requireLongFlag(napp.XmlHeaderFile | napp.LogLevel |
+		       napp.StartTime | napp.EndTime);
+
   Arg		args[8];
   Cardinal	n;
 
@@ -91,9 +103,22 @@ int main(int argc, char *argv[])
   signal(SIGUSR2, (void (*) (int))Quit);
 
   nidas::util::LogConfig lc;
-  logger = nidas::util::Logger::createInstance("nimbus", LOG_CONS, LOG_LOCAL5);
-  lc.level = nidas::util::LOGGER_INFO;
-  logger->setScheme(nidas::util::LogScheme().addConfig (lc));
+  nidas::util::LogScheme ls("nimbus");
+  if (napp.logLevel() == nidas::util::LOGGER_DEBUG)
+  {
+    logger = Logger::createInstance(&std::cerr);
+    ls.setShowFields("time,level,thread,function,file,message");
+  }
+  else
+  {
+    logger = Logger::createInstance("nimbus", LOG_CONS, LOG_LOCAL5);
+  }
+  lc.level = napp.logLevel();
+  logger->setScheme(ls.addConfig(lc));
+
+  std::cerr << "log fields set: "
+	    << Logger::getInstance()->getScheme().getShowFieldsString()
+	    << std::endl;
 
   if (cfg.Interactive())
   {

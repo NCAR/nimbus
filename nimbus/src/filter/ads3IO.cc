@@ -6,7 +6,6 @@ FULL NAME:	ADS3 Record IO routines
 
 ENTRY POINTS:	FindFirstLogicalADS3(char *record, long starttime)
 		FindNextLogicalADS3(char *record, long endtime)
-		GetADSFileList(char *adsFileName)
 
 DESCRIPTION:	
 
@@ -21,14 +20,14 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-06
 
 #include "nimbus.h"
 #include "decode.h"
+#include "timeseg.h"
 
 #include <nidas/dynld/raf/SyncRecordReader.h>
 #include <nidas/util/EOFException.h>
 
 #include <iomanip>
-#include <sys/param.h>
 
-extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
+#include "sync_reader.hh"
 
 /* -------------------------------------------------------------------- */
 time_t xlateToSecondsSinceMidnight(time_t ut) // Unused now.
@@ -100,6 +99,15 @@ int32_t FindFirstLogicalADS3(
   time_t recTime = 0;
   int rc;
 
+  // Set the overall time window on the sync record processing chain before
+  // starting anything.
+  time_t swindow, ewindow;
+  GetTimeWindow(&swindow, &ewindow);
+  SyncReaderSetTimeWindow(startTime, ewindow);
+
+  nidas::dynld::raf::SyncRecordReader* syncRecReader;
+  syncRecReader = StartReadingSyncRecords();
+
   do
   {
     try
@@ -129,9 +137,12 @@ int32_t FindNextLogicalADS3(char record[], time_t endTime)
   nidas::core::dsm_time_t tt;
   int rc;
 
+  nidas::dynld::raf::SyncRecordReader* syncRecReader = GetSyncReader();
+
   try
   {
-    rc = syncRecReader->read(&tt, (NR_TYPE *)record, syncRecReader->getNumValues());
+    rc = syncRecReader->read(&tt, (NR_TYPE *)record, 
+			     syncRecReader->getNumValues());
   }
   catch (const nidas::util::IOException& e)
   {
@@ -153,51 +164,5 @@ int32_t FindNextLogicalADS3(char record[], time_t endTime)
   return rc * sizeof(NR_TYPE);
 
 }	// END FINDNEXTLOGICALADS3
-
-/* -------------------------------------------------------------------- */
-#include <sys/types.h>
-#include <dirent.h>
-#include <libgen.h>
-#include <set>
-
-std::set<std::string> GetADSFileList(const char *adsFileName)
-{
-  std::set<std::string> fileList;
-  DIR *dir;
-  char tmp_dir[MAXPATHLEN];
-
-  strcpy(tmp_dir, adsFileName);
-  char *directory = dirname(tmp_dir);
-
-  if ((dir = opendir(directory)) == 0)
-  {
-    sprintf(buffer, "Failed to open directory %s\n", directory);
-    perror(buffer);
-    return fileList;
-  }
-
-  struct dirent *entry;
-
-  // Read directory entries & get all files with matching flight number.
-  while ( (entry = readdir(dir)) )
-    if ( strstr(entry->d_name, cfg.FlightNumber().c_str()) &&
-         strstr(entry->d_name, cfg.ADSfileExtension().c_str()))
-    {
-      std::string s(directory);
-      s += "/";
-      s += entry->d_name;
-      fileList.insert(s);
-    }
-
-  std::set<std::string>::iterator it;
-  for (it = fileList.begin(); it != fileList.end(); ++it)
-    if ((*it).compare(adsFileName) < 0)
-      fileList.erase(*it);
-
-  for (it = fileList.begin(); it != fileList.end(); ++it)
-    printf("%s\n", (*it).c_str());
-
-  return fileList;
-}
 
 // END ADS3IO.CC

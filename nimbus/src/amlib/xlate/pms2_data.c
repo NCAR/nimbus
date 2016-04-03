@@ -122,19 +122,23 @@ void xlTwodInit(var_base *varp)
   /* Acquire time stamps from first record, and throw data away.
    */
   do
-    {
+  {
     if (Next2dRecord(&rec, probeCnt, probeIDorder[probeCnt]) == false)
-      {
+    {
+      WLOG(("xlTwodInit(%s) probeCnt=", varp->name) << probeCnt
+	   << ": Next2dRecord() failed.");
       startTime[probeCnt] = startMilliSec[probeCnt] = 0;
       break;
-      }
+    }
 
     startTime[probeCnt]	= ntohs(rec.hour)*3600+ntohs(rec.minute)*60+ntohs(rec.second);
     startMilliSec[probeCnt] = ntohs(rec.msec);
 
-printf("clTwodInit: %x startTime = %d.%d\n", ntohs(rec.id), startTime[probeCnt], startMilliSec[probeCnt]);
-printf("  %02d:%02d:%02d\n", ntohs(rec.hour), ntohs(rec.minute), ntohs(rec.second));
-    }
+    printf("xlTwodInit: %x startTime = %d.%d\n", ntohs(rec.id),
+	   startTime[probeCnt], startMilliSec[probeCnt]);
+    printf("  %02d:%02d:%02d\n",
+	   ntohs(rec.hour), ntohs(rec.minute), ntohs(rec.second));
+  }
   while (startTime[probeCnt] < 0 || startTime[probeCnt] > 86400);
 
 }	/* END XLTWODINIT */

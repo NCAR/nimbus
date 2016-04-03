@@ -22,8 +22,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 #include "gui.h"
 
 #include <nidas/util/Process.h>
+#include <nidas/core/NidasApp.h>
 
-static void ReadBatchFile(char *filename), usage();
+using nidas::core::NidasApp;
+
+static void ReadBatchFile(const char *filename), usage();
 
 void	Set_SetupFileName(char s[]);
 
@@ -47,7 +50,6 @@ void Initialize()
   PauseFlag		= false;
   PauseWhatToDo		= P_CONTINUE;
   FeedBack		= LOW_RATE_FEEDBACK;
-  sync_server_pipe[0]	= '\0';
 
   pos = XmTextFieldGetLastPosition(aDSdataText);
   XmTextFieldSetInsertionPosition(aDSdataText, pos);
@@ -95,25 +97,31 @@ void ProcessArgv(int argc, char **argv)
   cfg.SetInteractive(true);
   cfg.SetLoadProductionSetup(true);
 
-  for (i = 1; i < argc; ++i)
+  std::vector<std::string> args(argv+1, argv+argc);
+  NidasApp& napp = *NidasApp::getApplicationInstance();
+
+  napp.parseArguments(args);
+
+  for (i = 0; i < (int)args.size(); ++i)
   {
-    if (strstr(argv[i], "help"))
+    std::string arg = args[i];
+    if (strstr(arg.c_str(), "help"))
       usage();
 
-    if (argv[i][0] != '-')
+    if (arg.length() < 2 || arg[0] != '-')
     {
-      fprintf(stderr, "Invalid option %s, ignoring.\n", argv[i]);
+      fprintf(stderr, "Invalid option '%s', ignoring.\n", arg.c_str());
       continue;
     }
 
-    switch (argv[i][1])
+    switch (arg[1])
     {
       case 'h':
         usage();
         break;
       case 'b':
         cfg.SetInteractive(false);
-        ReadBatchFile(argv[++i]);
+        ReadBatchFile(args[++i].c_str());
         break;
       case 'r':
         if (nimbusIsAlreadyRunning())
@@ -127,10 +135,10 @@ void ProcessArgv(int argc, char **argv)
         cfg.SetDespiking(false);
         cfg.SetBlankoutVariables(false);
         cfg.SetOutputSQL(true);
-        if (strcmp(argv[i], "-rt") == 0)	/* RealTime ADS2 */
+        if (arg == "-rt")	/* RealTime ADS2 */
           RTinit_ADS2();
         else
-        if (strcmp(argv[i], "-rt3") == 0)	/* RealTime ADS3 */
+        if (arg == "-rt3")	/* RealTime ADS3 */
           RTinit_ADS3();
         else
         {
@@ -145,9 +153,16 @@ void ProcessArgv(int argc, char **argv)
         else
           fprintf(stderr, "Must be in RealTime mode to TransmitToGround, ignoring -x.\n");
 
-        if (i+1 < argc && isdigit(argv[i+1][0]))
-          cfg.SetGroundFeedDataRate(atoi(argv[++i]));
+        if (i+1 < (int)args.size() && isdigit(args[i+1][0]))
+          cfg.SetGroundFeedDataRate(atoi(args[++i].c_str()));
         break;
+      case 'y':
+	cfg.SetEnableBroadcast(false);
+	cfg.SetWarnTimeLags(false);
+	/* Disable ANALYZE and VACUUM when loading a raw file. */
+	cfg.SetAnalyzeInterval(0);
+	cfg.SetVacuumInterval(0);
+	break;
       case 'n':
         cfg.SetLoadProductionSetup(false);
         break;
@@ -155,7 +170,7 @@ void ProcessArgv(int argc, char **argv)
         cfg.SetQCenabled(true);
         break;
       default:
-        fprintf(stderr, "Invalid option %s, ignoring.\n", argv[i]);
+        fprintf(stderr, "Invalid option %s, ignoring.\n", arg.c_str());
     }
   }
 }	/* END PROCESSARGV */
@@ -185,7 +200,7 @@ static char *processFileName(const char *in, char *out, size_t out_len)
 }
 
 /* -------------------------------------------------------------------- */
-static void ReadBatchFile(char *fileName)
+static void ReadBatchFile(const char *fileName)
 {
   FILE	*fp;
   char	*p;
@@ -299,8 +314,15 @@ static void usage()
   -rt3:	Real-time for ADS3.\n\
   -x:	Produce and transmit SQL statements to ground (see groundvars file), add an\n\
         optional frequency which to transmit the data.  Default is every 5 seconds.\n\
-  -n:	Do NOT load any existing production setup files.\n");
-
+  -y:   When running real-time on old data: do not broadcast IWG1 packets,\n\
+        do not warn about time lags, and disable periodic ANALYZE and VACUUM\n\
+        on the database.\n\
+  -n:	Do NOT load any existing production setup files.\n\
+\n\
+NIDAS-related options:\n");
+  
+  NidasApp& napp = *NidasApp::getApplicationInstance();
+  fprintf(stderr, "%s", napp.usage().c_str());
   exit(0);
 }
 

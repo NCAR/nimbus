@@ -77,7 +77,7 @@ static int	baseTimeID;
 static float	TimeOffset = 0.0;
 
 
-static Queue	*missingRecords;
+static Queue	*missingRecords = 0;
 static void	WriteMissingRecords();
 
 extern NR_TYPE	*SampledData, *AveragedData, *HighRateData;
@@ -672,12 +672,10 @@ void WriteNetCDF()
 void QueueMissingData(int h, int m, int s, int nRecords)
 {
   struct missDat	*dp;
-  static int		firstTime = true;
 
-  if (firstTime)
+  if (! missingRecords)
   {
     missingRecords = CreateQueue();
-    firstTime = false;
   }
 
   dp = new struct missDat;
@@ -687,6 +685,8 @@ void QueueMissingData(int h, int m, int s, int nRecords)
   dp->second = s;
   dp->nRecords = nRecords;
 
+  DLOG(("enqueuing missing data record %02d:%02d:%02d, nrecords=%d",
+	h, m, s, nRecords));
   EnQueue(missingRecords, (void *)dp);
 
   if (cfg.ProcessingMode() == Config::RealTime)
@@ -698,16 +698,18 @@ void QueueMissingData(int h, int m, int s, int nRecords)
 static void WriteMissingRecords()
 {
   size_t	i;
-  float		*d, hour, minute, second;
+  float		hour, minute, second = -1;
+  /* 5000 is fastest sampling rate */
+  std::vector<float> d(5000, MISSING_VALUE);
   void		*ldp[MAX_VARIABLES];
   struct missDat	*dp;
 
+  if (! missingRecords)
+  {
+    DLOG(("missing records queue does not exist yet."));
+    return;
+  }
   dp = (struct missDat *)FrontQueue(missingRecords);
-  d = new float[5000];
-  /* 5000 is fastest sampling rate */
-
-  for (i = 0; i < 5000; ++i)
-    d[i] = (float)MISSING_VALUE;
 
   int indx = 0;
   ldp[indx++] = (void *)&TimeVar;
@@ -737,12 +739,28 @@ static void WriteMissingRecords()
       second = dp->second;
       }
     else
-      ldp[indx++] = (void *)d;
+      ldp[indx++] = (void *)&d[0];
     }
+
+  hour = dp->hour;
+  minute = dp->minute;
+  second = dp->second;
+
+  if (second < 0)
+  {
+    ELOG(("Somehow second for missing record not set. "
+	  "Time from queue is %02d:%02d:%02d, initialized time "
+	  "is %02d:%02d:%02d.  Raw table size=%d, derived size=%d, "
+	  "num missing records=%d",
+	  int(dp->hour), int(dp->minute), int(dp->second),
+	  int(hour), int(minute), int(second),
+	  int(raw.size()), int(derived.size()), int(dp->nRecords)));
+    second = dp->second;
+  }
 
   for (i = 0; i < derived.size(); ++i)
     if (derived[i]->Output)
-      ldp[indx++] = (void *)d;
+      ldp[indx++] = (void *)&d[0];
 
   for (i = 0; i < dp->nRecords; ++i)
     {
@@ -765,7 +783,7 @@ static void WriteMissingRecords()
     }
 
   DeQueue(missingRecords);
-  delete [] d;
+  delete dp;
 
 }	/* END WRITEMISSINGRECORDS */
 

@@ -14,13 +14,6 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 
 #define ONE_WORD        sizeof(short)
 
-#define GAP_FOUND	true	/* For CheckForTimeGap()	*/
-
-/* Used for defining time segments that start/end at one end of the tape */
-#define BEG_OF_TAPE	(-1)
-#define END_OF_TAPE	(-1)
-
-
 /* ProbeType field.  Bottom nibble is used for ProbeCount.  Top nibble is
  * Catagory of probe.  This method of implementation will handle up to 24
  * different probes before it needs to be re-coded.
@@ -85,7 +78,7 @@ void	SetLookupSuffix(const char *new_suffix),
 	ReadDefaultDerivedOutputRate(), ReadSumVariables(),
 	ReadDefaultsFile(), ReadStaticLags(), ReadModuloVariables(),
 	ReadGroundVarsFile(), ReadBlankOuts(),
-	RunAMLIBinitializers(), GetUserTimeIntervals(),
+        RunAMLIBinitializers(),
 	ReadDependencies(), SetupDependencies(), GenerateComputeOrder(),
 	CleanOutUnwantedVariables(),
 	CreateNetCDF(const char file_name[]),
@@ -104,17 +97,17 @@ void	Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l, MOD *mp),
 	AverageVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l),
 	Average(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l, MOD *mp);
 
-void	AllocateDataArrays(), FreeDataArrays(), ResetTimeGapper(),
+void	AllocateDataArrays(), FreeDataArrays(),
 	processTimeADS3(NR_TYPE *output, time_t ut);
 
 int	SearchDERIVEFTNS(const char target[]),
 	DecodeHeader(const char header_file[]),
 	DecodeHeader3(const char header_file[]),
 	DependIndexLookup(DERTBL *dp, int which_dep, bool init_depends),
-	NextTimeInterval(time_t *start, time_t *end),
 	CloseADSfile(),
 	LowRateLoop(time_t starttime, time_t endtime),
 	HighRateLoop(time_t starttime, time_t endtime);
+
 
 int32_t	FindFirstLogicalADS2(char record[], time_t starttime),
 	FindNextLogicalADS2(char record[], time_t endtime),

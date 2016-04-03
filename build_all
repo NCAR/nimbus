@@ -78,7 +78,7 @@ end
 
 # Programs using 'scons' and 'scons install'.
 
-foreach file ( nimbus caledit kml_tools/acTrack2kml instruments/pms2d/process2d instruments/pms2d/oapinfo instruments/cip/padsinfo instruments/sid2h instruments/cpi/cpidisplay nc_utils/ncReorder nc_utils/ncvarlist nc_utils/nc_gap nc_utils/flt_time )
+foreach file ( nimbus caledit kml_tools/acTrack2kml instruments/pms2d/process2d instruments/pms2d/oapinfo instruments/cip/padsinfo instruments/sid2h instruments/cpi/cpidisplay nc_utils/ncReorder nc_utils/nc_compare nc_utils/ncvarlist nc_utils/nc_gap nc_utils/flt_time )
   (cd $file; echo $file; scons install)
   if ($num > 0) then
     echo "$file BUILT"
@@ -91,7 +91,7 @@ end
 # nc_utils using "make install" target.
 
 cd nc_utils
-foreach file ( asc2cdf nc_compare ncav ncextr ncfillvar ncmerge nc_sane )
+foreach file ( asc2cdf ncav ncextr ncfillvar ncmerge nc_sane )
   (cd $file; echo $file; make install)
   if ($num > 0) then
     echo "$file BUILT"

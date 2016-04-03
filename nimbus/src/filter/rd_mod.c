@@ -24,6 +24,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "decode.h"
 
 
+void
+reset_modulo(var_base* varp, MOD* mp)
+{
+  if (varp->Modulo)
+  {
+    WLOG(("changing existing Modulo pointer for variable %s", varp->name));
+    delete varp->Modulo;
+    varp->Modulo = 0;
+  }
+  varp->Modulo = mp;
+}
+
+
 /* -------------------------------------------------------------------- */
 void ReadModuloVariables()
 {
@@ -50,24 +63,24 @@ void ReadModuloVariables()
   // struct, so each instance can delete its copy when it gets destroyed.
   if ((index = SearchTableSansLocation(raw, target)) != ERR)
     {
-    raw[index]->Modulo = mp;
+      reset_modulo(raw[index], mp);
 
     strcat(target, "_");
 
     while (++index < (int)raw.size() &&
 	strncmp((char *)raw[index]->name, target, strlen(target)) == 0)
-      raw[index]->Modulo = new MOD(*mp);
+      reset_modulo(raw[index], new MOD(*mp));
     }
   else
   if ((index = SearchTableSansLocation(derived, target)) != ERR)
     {
-    derived[index]->Modulo = mp;
+      reset_modulo(derived[index], mp);
 
     strcat(target, "_");
 
     while (++index < (int)derived.size() &&
 	strncmp((char *)derived[index]->name,target,strlen(target)) == 0)
-      derived[index]->Modulo = new MOD(*mp);
+      reset_modulo(derived[index], new MOD(*mp));
     }
   else
     delete mp;

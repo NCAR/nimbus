@@ -23,6 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 
 #include "nimbus.h"
 #include "decode.h"
+#include "timeseg.h"
 #include "gui.h"
 #include "circbuff.h"
 #include "amlib.h"

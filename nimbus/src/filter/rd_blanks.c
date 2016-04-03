@@ -27,6 +27,8 @@ void ReadBlankOuts()
   char	*bo[1024], target[NAMELEN];
 
   struct tm st, et;
+  memset(&st, 0, sizeof(struct tm));
+  memset(&et, 0, sizeof(struct tm));
 
   if (cfg.BlankoutVariables() == false)
     return;

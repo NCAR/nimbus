@@ -1,7 +1,7 @@
 
 #include "gtest/gtest.h"
 
-#include "../parseInt.cc"
+#include "parseInt.cc"
 
 
 TEST(ParseIntTest, ParseInts)

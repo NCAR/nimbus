@@ -1,0 +1,140 @@
+nc_compare(1)
+===========
+:doctype: manpage
+
+
+NAME
+----
+nc_compare - Compare netCDF files and report differences.
+
+
+SYNOPSIS
+--------
+*nc_compare* ['OPTIONS'] 'LEFTFILE' 'RIGHTFILE'
+
+
+DESCRIPTION
+-----------
+
+nc_compare(1) reads two netcdf files and compares their contents, printing
+out differences in the dimensions, global attributes, variables, and
+variable attributes.  The LEFTFILE and RIGHTFILE are taken as in diff(1),
+and the output looks similar to a context diff of ncdump(1) output.  Unlike
+diff(1), data values are also compared numerically, and some attributes are
+ignored by default since they are expected to be different in different
+files.  Also time coordinates are interpreted as times and reported as
+different if they do not overlap exactly.
+
+Numberic variables with identical names are compared statistically.  All
+the values for each variable are read, missing values removed, and the mean
+is computed.  The means of the two variables are used to compute an
+absolute difference and a relative error between the variables.  Variables
+are reported as different when their means differ according to the current
+floating point comparison method.  Statistical differences are printed out
+in a table following all the other output, with the variables ordered from
+largest relative error to least.
+
+Numeric attribute values are compared as numbers rather than as text.  So
+floating point values do not have to be exactly equal to be considered not
+different, they just have to compare as equal with the current floating
+point comparison method.
+
+By default, floating point values only have to be close to be considered
+equal, even if they are not exactly equal.  For all other data types, the
+values must be exactly equal or else they are different.  There are two
+options for comparing floats, one uses an error delta and the other
+compares Units in the Last Place.  See the --delta and --ulps options for
+details.
+
+
+OPTIONS
+-------
+
+*--showequal*::
+
+    Show the text summary of every component in the netcdf files, even if
+    they are equal between the two files.  Usually only the differences are
+    reported.
+
+*--ignore*='IGNORE'::
+
+    Set a variable or attribute name to ignore when checking for
+    differences.  By default nc_compare(1) ignores these names which
+    typically appear as global attributes and vary for each generation of a
+    data file:
+
+    date_created, ProcessorURL, ProcessorRevision, NIDASrevision
+
+    Passing an ignore option resets the list, so you can pass an empty or
+    unused name to reset the ignore list and show everything, like so:
+
+    `--ignore ''`
+
+    Multiple ignore options can be used, each use adds a name to the ignore
+    list.
+    
+*--delta*='DELTA'::
+
+    Specify that floating point values must be within DELTA of each other
+    to be considered equal.  The default error delta is 1e-6 for 32-bit
+    float and 1e-10 for 64-bit float, but this option must be set to change
+    the comparison method from the default ULPS method.
+
+*--ulps*='ULPS'::
+
+    Specify that floating point numbers must be within ULPS steps of each
+    other to be considered equal.  One floating point number is advanced to
+    the next representable floating point value towards the other number,
+    and if the numbers are within ULPS steps of each other, they are close
+    enough.  The default floating point comparison test uses 4 ULPS.
+
+*--help*::
+
+    Show usage information.
+
+EXIT STATUS
+-----------
+*0*::
+    Success
+
+*N*::
+    Failure.  The exit status is the number of differences found.
+
+
+EXAMPLES
+--------
+
+.........................
+> nc_compare HIPPO/BASE/HIPPO-5rf05.nc HIPPO/HIPPO-5rf05.nc
+--- HIPPO/BASE/HIPPO-5rf05.nc (left)
++++ HIPPO/HIPPO-5rf05.nc (right)
+variables:
+!          float IRIG_Tdiff_LWO(Time) ;
+ -                 SerialNumber = "F2DC001" ;
+ +                 SerialNumber = "F2DC003" ;
+!          float PS_VXL(Time) ;
+ -                 actual_range = 183.317749, 1005.51453 ;
+ +                 actual_range = 183.318161, 1005.51678 ;
+ -                 CalibrationCoefficients = 0, 1.33322001 ;
+ +                 CalibrationCoefficients = 0, 1.33322299 ;
+   Variable              Left Mean     Right Mean  Abs Error  Rel Err (%)
+   --------              ---------     ---------- ---------- ------------
+   PS_VXL               629.370728     629.372131  -0.001404         0.00
+19 differences.
+.........................
+
+The actual_range and CalibrationCoefficients attributes of the PS_VXL
+variable differ by more than 4 ULPS, and so they are reported in the
+output.  The '-' line shows the values from the LEFTFILE, while the '+'
+line shows the RIGHTFILE.  The means for the variable also differ, and so
+the statistics for that variable are reported in a table.  If the
+`--showequal` option were enabled, then all the dimensions, variables,
+attributes and statistics would be shown.
+
+AUTHOR
+------
+
+AsciiDoc was originally written by Chris Webster for EOL aircraft data files,
+then extended by Gary Granger to work with EOL profiler data files.
+
+

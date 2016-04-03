@@ -23,6 +23,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2011
 #include <raf/pms.h>
 #include <netcdf.h>
 
+#include "sync_reader.hh"
+#include <nidas/core/Project.h>
+
 static int getCellSizes(const var_base * rp, float cellSizes[]);
 
 
@@ -30,18 +33,31 @@ static int getCellSizes(const var_base * rp, float cellSizes[]);
 static void setSerialNumberAndProbeType(const char * name, const char * serialNum, int probeType)
 {
   int raw_indx, der_indx;
-  char tmp[64], *location;
+  char cname[64], *location;
 
-  strcpy(tmp, name); tmp[0] = 'C';
+  DLOG(("probe for variable '") << std::string(name)
+       << "' getting serial number '" << std::string(serialNum) << "'");
+
+  strcpy(cname, name); 
+
+  // A variables are raw Accumulation histograms.  C variables are the
+  // derived Concentrations.  Particle probes also have raw and derived
+  // scalars, which are matched to this serial number by location.  So for
+  // a particle probe variable with location _LWOO, all variables with the
+  // same location will get the same serial number.  It's possible this
+  // could collide with other DSM variables when the DSM and probe have the
+  // same location suffix, such as LWO.
+  cname[0] = 'C';
+
   if (strrchr(name, '_'))	// If this is a specific probe & location.
   {
     raw_indx = SearchTable(raw, name);
-    der_indx = SearchTable(derived, tmp);
+    der_indx = SearchTable(derived, cname);
   }
   else
   {
     raw_indx = SearchTableSansLocation(raw, name);
-    der_indx = SearchTableSansLocation(derived, tmp);
+    der_indx = SearchTableSansLocation(derived, cname);
   }
 
   if (raw_indx == ERR)
@@ -75,9 +91,12 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
     derived[der_indx]->Length	= raw[raw_indx]->Length;
   }
   else
-    printf("Debug: No concentration %s found for %s.\n", tmp, name);
+    printf("Debug: No concentration %s found for %s.\n", cname, name);
 
 
+#ifdef of_questionable_use
+  // This may be related to older work that was not finished, and may be
+  // unnecessary for now.
   if (strstr(name, "1D") || strstr(name, "2D"))	// 2D data, we need probeCount setup.
   {
     char target[12];
@@ -97,12 +116,69 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
         derived[i]->ProbeType = probeType;
       }
   }
+#endif
 }
+
+
+static void
+setVariableProbeType(const std::string& aname, int probeType)
+{
+  // Look for all instances of this accumulation variable name, and use it
+  // to pull the serial number for it's particle probe from the XML.
+  nidas::core::Project* project = nidas::core::Project::getInstance();
+  
+  varlist_t variables;
+  variables = selectVariablesFromProject(project);
+
+  for (varlist_t::iterator it = variables.begin(); it != variables.end(); ++it)
+  {
+    const nidas::core::Variable* var = *it;
+    std::string vname = var->getName();
+
+    if (vname == aname || vname.find(aname + "_") == 0)
+    {
+      DLOG(("matched ") << aname << " with " << vname);
+      //const nidas::core::SampleTag* tag = var->getSampleTag();
+      //const nidas::core::DSMSensor* sensor = project->findSensor(tag);
+      std::string snumber = getSerialNumber(var);
+      setSerialNumberAndProbeType(vname.c_str(), snumber.c_str(), probeType);
+    }
+  }
+}
+
 
 
 // Temporary hack, until I finish consolidating suport files into VarDB.ncml.
 void PMS1D_SetupForADS3()
 {
+  // Grab the Project configuration and traverse it looking for particle
+  // probes.  A particle probe is anything whose catalog name is known in
+  // the probe-model-to-probe-type map.  Then retrieve the serial number
+  // parameter from the Sensor and propagate it to all the variables
+  // related to that sensor.
+
+  // Really this should be extended to all variables, so that all sensor
+  // serial numbers are associated with their variables, at least their
+  // "raw" variables.
+
+
+  // Step through all the known particle probe accumulation variables,
+  // looking them up, finding the serial number and propagating it.
+  setVariableProbeType("AS100", PROBE_PMS1D | PROBE_FSSP);
+  setVariableProbeType("AS200", PROBE_PMS1D | PROBE_PCASP);
+  setVariableProbeType("AS300", PROBE_PMS1D | PROBE_F300);
+  setVariableProbeType("A260X", PROBE_PMS1D | PROBE_260X);
+  setVariableProbeType("ACDP", PROBE_PMS1D | PROBE_CDP);
+  setVariableProbeType("AUHSAS", PROBE_PMS1D | PROBE_PCASP);
+  setVariableProbeType("A1DC", PROBE_PMS2D | PROBE_2DC);
+  setVariableProbeType("A2DC", PROBE_PMS2D | PROBE_2DC);
+  setVariableProbeType("A1DP", PROBE_PMS2D | PROBE_2DP);
+  setVariableProbeType("A2DP", PROBE_PMS2D | PROBE_2DP);
+
+#ifdef notdef
+  // Remove this section once the sync-server branch is merged and the
+  // above is confirmed to work.
+
   // Start with these serial numbers as defaults.
   setSerialNumberAndProbeType("AS100", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
   setSerialNumberAndProbeType("AS200", "PCAS108", PROBE_PMS1D | PROBE_PCASP);
@@ -315,6 +391,7 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
   }
+#endif
 }
 
 /* -------------------------------------------------------------------- */
@@ -590,13 +667,16 @@ static int getCellSizes(const var_base * rp, float cellSize[])
   if (rp->SerialNumber.find("F2D", 0) != std::string::npos)
     nBins <<= 1;
 
-  float	min = 0.0, max = 0.0, step = 0.0;
+  float	min = 0.0, step = 0.0;
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "MIN_RANGE")) )
     min = atof(p);
 
+#ifdef notdef
+  float max = 0.0;
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "MAX_RANGE")) )
     max = atof(p);
+#endif
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "RANGE_STEP")) )
     step = atof(p);

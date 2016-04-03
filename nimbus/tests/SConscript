@@ -1,0 +1,176 @@
+# -*- python -*-
+
+Import('env')
+
+import re
+
+def jsoncpp(env):
+  env.Append(CPPDEFINES="SYNC_RECORD_JSON_OUTPUT")
+  env.Append(LIBS='jsoncpp')
+  env.Append(CPPFLAGS='-Wno-effc++')
+
+
+env = env.Clone(toolpath=['.'])
+env.Require([jsoncpp, 'valgrind', 'pylint',
+             'nimbus', 'testing', 'gtest_main', 'datafilecache'])
+
+# Override the PROJ_DIR setting and force the use of the local project
+# configurations for consistent testing.
+env.SetProjDirENV('projects')
+env['NIMBUS'] = env.File("#/src/filter/nimbus")
+
+test_sources = Split("""
+test_Interpolator.cc
+test_parseInt.cc
+test_sync_reader.cc
+""")
+
+# Extracting subsets of test data:
+#
+# IDEAS RF02: 2013 09 26 18:39:15.
+# nidsmerge -i ~/Data/raf/Raw_Data/IDEAS-4-GV/20130926_183907_rf02.ads
+#  -s "2013 Sep 26 19:00"
+#  -e "2013 Sep 26 19:05"
+#  -o %Y%m%d_%H%M%S_rf02_extract.ads
+#
+# nidsmerge -i ~/Data/raf/Raw_Data/IDEAS-4-GV/20130926_183907_rf02.ads 
+# -s "2013 Sep 26 18:00" -e "2013 Sep 26 18:45"
+# -o %Y%m%d_%H%M%S_rf02_extract.ads
+
+
+if 'updatetestdata' in COMMAND_LINE_TARGETS:
+    nenv = Environment(tools=['default'], toolpath=['.'])
+    nenv.Tool('nidas')
+    nenv.Tool('nimbus')
+    nenv.SetProjDirENV('projects')
+    # nenv['NIDAS_PATH'] = '/opt/local/nidas'
+    sync_server = nenv.NidasApp('sync_server')
+    sync_dump = nenv.NidasApp('sync_dump')
+    
+    # need this to set the right flight in the sync header
+    nenv['ENV']['FLIGHT'] = "rf02"
+
+    tdrf02 = nenv.Command(['IDEAS-4-rf02-190000/rf02-update.json',
+                           'IDEAS-4-rf02-190000/rf02.json.gz'],
+                          [sync_server, sync_dump,
+                           "IDEAS-4-rf02-190000/20130926_190000_rf02_extract.ads"],
+                          ["${SOURCES[0]} -l 60 ${SOURCES[2]} &",
+                           "sleep 5",
+                           "${SOURCES[1]} -j ${TARGETS[0]} CAVP_DPR "
+                           " sock:localhost:30001",
+                           "gzip -c ${TARGETS[0]} > ${TARGETS[1]}"])
+    nenv.Alias('updatetestdata', tdrf02)
+    nenv.AlwaysBuild(tdrf02)
+
+
+# Make sure update_depend and vdb2xml are found in the local RAF source
+# tree when running local nimbus.
+env.PrependENVPath('PATH', [env.subst("#/src/scripts"),
+                            env.subst("#/../vardb/vdb2xml")])
+
+env.NidasRuntimeENV()
+
+nt = env.Program('nimbus_tests', test_sources)
+
+utd = env.Command("IDEAS-4-rf02-190000/rf02.json",
+                  "IDEAS-4-rf02-190000/rf02.json.gz",
+                  "gunzip -c ${SOURCE} > ${TARGET}")
+env.Depends(nt, utd)
+
+# env['GTESTS'] = "--gtest_filter=*AircraftTest*"
+# env['GTESTS'] = "--gtest_filter=*CompareHeader*"
+# env['GTESTS'] = "--gtest_filter=*SyncReaderTest.CheckCurrentCalCoefficients*"
+# env['GTESTS'] = "--gtest_filter=*SyncReaderTest.*"
+env.Alias('test', env.Command('xtest', nt, 
+                              "cd ${SOURCE.dir} && ./${SOURCE.file} ${GTESTS}"))
+
+env['VALGRIND_OPTIONS'] = str("--leak-check=full"
+                              " --show-leak-kinds=definite,possible"
+                              " --errors-for-leak-kinds=definite"
+                              " -v --leak-check=full --show-leak-kinds=all"
+                              " --gen-suppressions=all")
+env['HELGRIND_OPTIONS'] = str("--tool=helgrind --gen-suppressions=all")
+
+sfile = env.File("vg.suppressions.txt")
+
+memcheck = env.Valgrind('memcheck', [nt, sfile],
+                        "cd ${SOURCE.dir} && "
+                        "${VALGRIND_COMMAND} ./${SOURCE.file} ${GTESTS}")
+
+threadcheck = env.Valgrind('threadcheck', [nt, sfile],
+                           "cd ${SOURCE.dir} && "
+                           "${VALGRIND_COMMAND} ./${SOURCE.file} ${GTESTS}",
+                           VALGRIND_OPTIONS="$HELGRIND_OPTIONS")
+
+# Setup a DataFileCache for the raw data files on which the tests will run
+# and from which nidsmerge can create excerpts.
+
+dfcache = env.DataFileCache()
+dfcache.setRemotePrefix('rafdata:/scr/raf_Raw_Data')
+
+# We want to use this directory if it exists, but if not then use the
+# default #/DataCache instead.
+dfcache.insertCachePath("~/Data/raf/Raw_Data")
+print("datafilecache paths: " + str(dfcache.expandedCachePaths()))
+
+# ICE-T is commented out because the configuration does not work yet.
+testcases = [
+    ("IDEAS-4", "rf02", "IDEAS-4-GV/20130926_183907_rf02.ads",
+     "2013 sep 26 18:39", "2013 sep 26 18:42"),
+    ("WINTER", "rf03", "WINTER/20150207_161945_rf03.ads",
+     "2015 feb 07 21:00", "2015 feb 07 21:05"),
+    ("CONTRAST", "rf04", "CONTRAST/20140118_220322_rf04.ads",
+     "2014 jan 18 22:04", "2014 jan 18 22:05"),
+    ("ARISTO2015", "rf04", "ARISTO2015/20150930_135509_rf04.ads",
+     "2015 sep 30 15:30", "2015 sep 30 15:35"),
+#    ("ICE-T", "rf03", "ICE-T/20110706_132113_rf03.ads",
+#     "2011 jul 06 16:30", "2011 jul 06 16:35")
+]
+
+base = env.Clone()
+base.NimbusProdENV()
+
+# env['NIMBUS_LOGLEVEL'] = "--loglevel debug"
+
+def nimbus_diff_case(case, name):
+    if base.get('NIMBUS_PROD'):
+        casea = env.BatchNIMBUS(case.createCase('actual').writeSetupFile(),
+                                valgrind='off',
+                                vgsuppressions=sfile)
+        casex = base.BatchNIMBUS(case.createCase('base').writeSetupFile())
+        # We still don't have all the dependencies captured, since it
+        # includes all the project configuration files, so just force
+        # nimbus to run whenever it's output is a target.
+        env.AlwaysBuild(casea)
+        env.AlwaysBuild(casex)
+        xd = env.Alias(name+'-xdiff', env.CompareNimbusNetCDF(casex, casea))
+        env.Alias('xdiff', xd)
+        env.Alias('xtest', xd)
+    
+for tc in testcases:
+    project = tc[0]
+    case = env.NimbusSetup(project=project, flight=tc[1],
+                           ifile=env.DownloadDataFile(tc[2]),
+                           outputdir=env.Dir(project).abspath)
+    tbegin = case.timeFromPtime(tc[3], "%Y %b %d %H:%M")
+    tend = case.timeFromPtime(tc[4], "%Y %b %d %H:%M")
+    case.setTimeWindow(tbegin, tend)
+    nimbus_diff_case(case, re.sub('[^a-z]', '', tc[0].lower()))
+
+# Create an alias to run all the tests and diffs.
+env.Alias('xtest', 'test')
+
+env.Alias('html',
+          env.Command("README.html", "README.rst", "rst2html ${SOURCE} ${TARGET}"))
+
+import sys
+env.PythonLint('pylint', 
+               Split("NimbusSetup.py NimbusProject.py nimbus.py pnimbus.py"),
+               PYLINTPYTHONPATH=":".join(sys.path))
+
+# Create a simple environment just for generating documentation.
+
+docenv = Environment(tools=['default', 'pythonsphinx'])
+
+docenv.SphinxHTML("doc", "doc/source")
+

@@ -1,0 +1,117 @@
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr4
+   obj:/usr/lib64/libstdc++.so.6.0.19
+   fun:_ZNSsD1Ev
+   fun:__cxa_finalize
+   obj:/usr/lib64/libxmlrpcpp.so.0.7
+   fun:_dl_fini
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_GLOBAL__sub_I_XmlRpcServerConnection.cpp
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_GLOBAL__sub_I_XmlRpcValue.cpp
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Free
+   fun:_ZdlPv
+   fun:_ZNSsD1Ev
+   fun:__cxa_finalize
+   obj:*libxmlrpcpp.so*
+   fun:_dl_fini
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr4
+   fun:_ZNSsD1Ev
+   fun:__cxa_finalize
+   obj:*libxmlrpcpp.so*
+   fun:_dl_fini
+}
+{
+   timezone set by time.h functions is not thread-safe
+   Helgrind:Race
+   fun:_ZN5nidas4util5UTime6fromTmEbPK2tmi
+   fun:_ZN5nidas4util5UTimeC1Ebiiiiid
+   fun:_ZN5nidas5dynld15GPS_NMEA_Serial8parseRMCEPKcPdix
+   fun:_ZN5nidas5dynld15GPS_NMEA_Serial7processEPKNS_4core6SampleERSt4listIS5_SaIS5_EE
+   fun:_ZN5nidas4core9DSMSensor7receiveEPKNS0_6SampleE
+   fun:_ZN5nidas4core19SampleSourceSupport10distributeEPKNS0_6SampleE
+   fun:_ZN5nidas4core12SampleSorter3runEv
+   fun:_ZN5nidas4util6Thread4pRunEv
+   fun:_ZN5nidas4util6Thread7thr_runEPv
+   obj:/usr/lib64/valgrind/vgpreload_helgrind-amd64-linux.so
+   fun:start_thread
+   fun:clone
+}
+{
+   Sample::_nsamps variable is unguarded in Sample<float> constructor
+   Helgrind:Race
+   fun:_ZN5nidas4core10SamplePoolINS0_7SampleTIfEEE9getSampleEPPS3_Pij
+   fun:_ZN5nidas4core10SamplePoolINS0_7SampleTIfEEE9getSampleEj
+}
+{
+   Sample::_nsamps variable is unguarded in Sample<char> constructor
+   Helgrind:Race
+   fun:_ZN5nidas4core10SamplePoolINS0_7SampleTIcEEE9getSampleEPPS3_Pij
+   fun:_ZN5nidas4core10SamplePoolINS0_7SampleTIcEEE9getSampleEj
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:__static_initialization_and_destruction_0
+   fun:_GLOBAL__sub_I_XmlRpc*
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Param
+   writev(vector[...])
+   fun:__writev_nocancel
+   obj:/usr/lib64/libxcb.so.1.1.0
+   obj:/usr/lib64/libxcb.so.1.1.0
+   fun:xcb_writev
+   fun:_XSend
+   fun:XAllocNamedColor
+   fun:XtCvtStringToPixel
+   obj:/usr/lib64/libXt.so.6.0.0
+   fun:_XtConvert
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:XtMalloc
+   fun:XmTextFieldGetString
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znam
+   fun:_Z21GenerateProbeListADS3v
+}
