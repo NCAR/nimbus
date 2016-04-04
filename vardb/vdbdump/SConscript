@@ -1,8 +1,9 @@
 # -*- python -*-
 
-env = Environment(tools=['default', 'jlocal', 'vardb'])
+env = Environment(tools=['default', 'jlocal', 'vardb', 'netcdf'])
 
 env.Append(CXXFLAGS=Split("-Wall -g -O2"))
+env.Append(LIBS='raf')
 
 vdbdump = env.Program("vdbdump.cc")
 

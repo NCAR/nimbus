@@ -16,6 +16,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2014
 #include <cstring>
 
 #include <raf/vardb.hh>
+#include <raf/VarDBConverter.hh>
 
 bool tracker = false;
 
@@ -38,7 +39,8 @@ main(int argc, char *argv[])
   }
 
   VDBFile file;
-  file.open(argv[i]);
+  VarDBConverter vdbc;
+  vdbc.open(&file, argv[i]);
   if (file.is_valid() == false)
   {
     std::cerr << "vdbdump: Initialize failure.\n";
