@@ -502,9 +502,64 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
       gustPodAdded = true;
     }
 
+    // If a variable does not have a converter (ie, it has no calibration
+    // and no analog conversion from volts to engineering units), then it
+    // is considered a Raw variable.  Historically, I think this meant the
+    // variable was extracted from the instrument data stream, typically
+    // some binary block format, and taken as is.  So Analog does not
+    // necessarily mean an Analog A2D channel.
+
+    // Either way, the nidas sync header introduced an inconsistency in
+    // this logic.  When a variables calfile does not exist, NIDAS gives it
+    // NANs for coefficients.  These NANs were printed in the sync header
+    // but then could not be parsed on the client end.  So even though a
+    // variable had a converter defined in the XML, it would not have a
+    // converter in the sync record client.  This was "fixed" when the
+    // sync_server was merged into nimbus, since the variable converter is
+    // parsed and attached even if the file itself does not exist.
+
+    // To be consistent with the behavior prior to the sync_server merge,
+    // the variable converter is checked for NAN coefficients.  If the
+    // coefficients are NAN, then the converter is ignored for the purpose
+    // of identifying Analog variables.  The converter is not removed
+    // because it is still needed to maintain the past behavior of
+    // replacing the variable with NANs.  Note that it is perfectly valid
+    // for a NIDAS calibration to have NAN coefficients, and ISFS even uses
+    // this in practice to replace periods of bad data.  However, NIMBUS
+    // does not use this intenionally anywhere else.  So really this kludge
+    // is just to maintain consistency with previous kludges, and this
+    // comment in no way implies that the current behavior is correct, only
+    // that it is consistent with past behavior.
+
+    nidas::core::VariableConverter* converter =
+      const_cast<nidas::core::VariableConverter*>(var->getConverter());
+    if (converter)
+    {
+      nidas::core::Polynomial* poly =
+	dynamic_cast<nidas::core::Polynomial*>(converter);
+      nidas::core::Linear* linear = 
+	dynamic_cast<nidas::core::Linear*>(converter);
+      if (linear)
+      {
+	if (isnan(linear->getIntercept()) || isnan(linear->getSlope()))
+	{
+	  converter = 0;
+	  //	  var->setConverter(0);
+	}
+      }
+      else if (poly)
+      {
+	const std::vector<float>& dcoefs = poly->getCoefficients();
+	if (dcoefs.size() == 0 || isnan(dcoefs[0]))
+	{
+	  converter = 0;
+	  //	  var->setConverter(0);
+	}
+      } 
+    }
 
     RAWTBL *rp;
-    if (var->getConverter() == 0)
+    if (converter == 0)
     {
       rp = add_name_to_RAWTBL(name_sans_location);
       rp->LAGstart = syncRecReader->getLagOffset(var);
