@@ -104,21 +104,23 @@ int main(int argc, char *argv[])
 
   nidas::util::LogConfig lc;
   nidas::util::LogScheme ls("nimbus");
+  // For now, always log to the console.  Previous to the sync_server
+  // merge, NIDAS messages from the separate sync_server process were
+  // interleaved with the NIMBUS output.  To keep that behavior, which
+  // probably users will still expect, nimbus must send all NIDAS log
+  // messages to the console.  If we really need to see NIDAS messages on
+  // syslog instead, such as in real-time mode on the plane, then maybe
+  // that becomes a command-line option.
+  logger = Logger::createInstance(&std::cerr);
+  // logger = Logger::createInstance("nimbus", LOG_CONS, LOG_LOCAL5);
   if (napp.logLevel() == nidas::util::LOGGER_DEBUG)
   {
-    logger = Logger::createInstance(&std::cerr);
     ls.setShowFields("time,level,thread,function,file,message");
-  }
-  else
-  {
-    logger = Logger::createInstance("nimbus", LOG_CONS, LOG_LOCAL5);
   }
   lc.level = napp.logLevel();
   logger->setScheme(ls.addConfig(lc));
-
-  std::cerr << "log fields set: "
-	    << Logger::getInstance()->getScheme().getShowFieldsString()
-	    << std::endl;
+  DLOG(("log fields set: ")
+       << Logger::getInstance()->getScheme().getShowFieldsString());
 
   if (cfg.Interactive())
   {
