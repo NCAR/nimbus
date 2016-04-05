@@ -225,6 +225,36 @@ class NimbusSetup(object):
         self.caseid = caseid
         return self
 
+    def resolveInputFile(self):
+        """
+        Search for and return a new input file path if it does not exist.
+        """
+        if not self.ifile:
+            return None
+        if os.path.exists(self.ifile):
+            return self.ifile
+        rawdatadir = os.environ.get("RAW_DATA_DIR")
+        if not rawdatadir:
+            return None
+        # Break up the path and start looking for it relative to
+        # RAW_DATA_DIR.
+        ifile = None
+        (parent, path) = os.path.split(self.ifile)
+        found = False
+        while parent and path:
+            ifile = os.path.join(rawdatadir, path)
+            # print("parent=%s, path=%s, ifile=%s" % (parent, path, ifile))
+            found = os.path.exists(ifile)
+            if found or parent == "/":
+                break
+            (parent, ppath) = os.path.split(parent)
+            path = os.path.join(ppath, path)
+        if found:
+            self.ifile = ifile
+        else:
+            ifile = None
+        return ifile
+
     def setOutputDirectory(self, outdir):
         "Retarget output parameter to write to @p outdir."
         if outdir:

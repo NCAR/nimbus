@@ -336,11 +336,18 @@ nimbus path."""
         """
         setup = NimbusSetup(path, self.project)
         if not setup.flight:
-            logger.error("could not determine flight number for "
-                         "setup file: %s" % (path))
+            logger.error("Skipping %s: could not determine flight number." %
+                         (path))
+            return
         if self.output_dir is None:
             raise NimbusProjectException("No output directory is set.")
         setup.setOutputDirectory(self.output_dir)
+        ifile = setup.resolveInputFile()
+        if not ifile:
+            logger.error("Skipping %s: input file could not be found." %
+                         (path))
+            return
+        logger.debug("Resolved input file: %s" % (ifile))
         self.setups[setup.flight] = setup
 
     def getFlights(self):
@@ -446,11 +453,10 @@ nimbus path."""
             setup.writeSetupFile()
         logfile = setup.getPath() + ".log"
         xcode = self._runCommand(cmd, logfile)
-        # Run ncReorder on the output file if NIMBUS succeeds.
-        if xcode == 0:
-            self.runReorder(setup)
-        else:
-            logger.info("Skipping ncReorder due to error from nimbus.")
+        # Run ncReorder on the output file no matter what.  If the output
+        # was not created, then it fails.  If it was created but nimbus
+        # exited with an error, then it will still be reordered.
+        self.runReorder(setup)
 
     def getComparisonOutputFile(self, setup):
         """
