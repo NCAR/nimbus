@@ -52,7 +52,14 @@ operations.  These are the available operations:
 
     Run diff on the nimbus output logs.  This is not necessarily possible
     except when comparing against a base project (see --base), since
-    otherwise there are no log files.
+    otherwise there are no log files.  The log files are preprocessed to
+    remove timestamps from the log messages.
+
+  ncdiff:
+
+    Run diff on the ncdump output of the netcdf output files.  The diff
+    command adds options to ignore the typical differences, and the ncdump
+    prints floating point numbers with 6 significant digits.
 
   flights:
 

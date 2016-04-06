@@ -80,7 +80,7 @@ class NimbusProject(object):
         # holds the base project instance.
         self.base = None
 
-    operations = ['nimbus', 'reorder', 'compare', 'diff',
+    operations = ['nimbus', 'reorder', 'compare', 'diff', 'ncdiff',
                   'flights', 'process2d']
 
     @staticmethod
@@ -487,6 +487,26 @@ nimbus path."""
         cmd = ['nc_compare', cfile, ofile]
         self._runCommand(cmd)
 
+    def runNcDiff(self, setup):
+        "Run diff on the ncdump output rather than nc_compare."
+        diff = str("diff --side-by-side --width=200 "
+                   "--ignore-matching-lines=date_created "
+                   "--ignore-matching-lines=ProcessorURL "
+                   "--ignore-matching-lines=ProcessorRevision "
+                   "--ignore-matching-lines=NIDASrevision "
+                   "--ignore-matching-lines=netcdf "
+                   "--suppress-common-lines").split()
+        cfile = self.getComparisonOutputFile(setup)
+        ofile = setup.getOutputFile()
+        tdir = tempfile.mkdtemp()
+        ncdump = "ncdump -p 6".split()
+        base = os.path.join(tdir, 'base_'+os.path.basename(cfile)+".txt")
+        actual = os.path.join(tdir, 'actual_'+os.path.basename(ofile)+".txt")
+        self._runCommand(ncdump + [cfile], base)
+        self._runCommand(ncdump + [ofile], actual)
+        self._runCommand(diff + [base, actual])
+        shutil.rmtree(tdir)
+
     def runDiff(self, setup):
         "Run diff between the nimbus log files."
         cfile = self.getComparisonOutputFile(setup)
@@ -494,8 +514,16 @@ nimbus path."""
         cfile = os.path.join(cfile, os.path.basename(setup.getPath()))
         cfile += ".log"
         ofile = setup.getPath() + ".log"
-        cmd = ['diff', '--side-by-side', '--width=200', cfile, ofile]
+        # Preprocess the files to remove the nidas log message timestamps,
+        # since they interfere with the diff: 2016-04-05,14:30:10|
+        tdir = tempfile.mkdtemp()
+        base = os.path.join(tdir, 'base_'+os.path.basename(cfile))
+        actual = os.path.join(tdir, 'actual_'+os.path.basename(ofile))
+        self._runCommand(['sed', '-e', 's/[-0-9,:][-0-9,-:]*|/|/', cfile], base)
+        self._runCommand(['sed', '-e', 's/[-0-9,:][-0-9,-:]*|/|/', ofile], actual)
+        cmd = ['diff', '--side-by-side', '--width=200', base, actual]
         self._runCommand(cmd)
+        shutil.rmtree(tdir)
 
     def _runFlights(self, flights, opfun):
         if not flights:
@@ -533,6 +561,9 @@ nimbus path."""
     def diffFlights(self, flights):
         self._runFlights(flights, self.runDiff)
 
+    def ncdiffFlights(self, flights):
+        self._runFlights(flights, self.runNcDiff)
+
     @staticmethod
     def splitOperations(args):
         "Separate operations from flights in an argument list."
@@ -559,7 +590,7 @@ nimbus path."""
         # not relevant.
         if self.base:
             self.base.run([op for op in operations 
-                           if op not in ['compare', 'diff']], flights)
+                           if op not in ['compare', 'diff', 'ncdiff']], flights)
 
         for op in operations:
             if op == "nimbus":
@@ -574,6 +605,8 @@ nimbus path."""
                 self.compareFlights(flights)
             elif op == "diff":
                 self.diffFlights(flights)
+            elif op == "ncdiff":
+                self.ncdiffFlights(flights)
 
 
 _setup_files = """
