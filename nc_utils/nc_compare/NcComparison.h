@@ -266,6 +266,28 @@ public:
 };
 
 
+/**
+ * Record a difference between two vectors with start and end coordinates,
+ * inclusive.
+ **/
+struct variable_range
+{
+  variable_range(const coordinates& coords):
+    start(coords),
+    end(coords)
+  {}
+
+  variable_range(const coordinates& a, const coordinates& b):
+    start(a),
+    end(b)
+  {}
+
+  coordinates start;
+  coordinates end;
+};
+
+typedef std::vector<variable_range> variable_ranges;
+
 class CompareVariables : public CompareObjects<nc_variable>
 {
 public:
@@ -298,7 +320,8 @@ public:
   double absolute_error;
   double relative_error;
   std::vector< boost::shared_ptr<CompareAttributes> > atts;
-
+  bool dimsequal;
+  variable_ranges ranges;
 };
 
 
@@ -336,6 +359,30 @@ public:
   getShowEqual()
   {
     return _show_equal;
+  }
+
+  void
+  showIndex(bool flag)
+  {
+    _show_index = flag;
+  }
+
+  bool
+  getShowIndex()
+  {
+    return _show_index;
+  }
+
+  void
+  setReportLimit(int limit)
+  {
+    _report_limit = limit;
+  }
+
+  int
+  getReportLimit()
+  {
+    return _report_limit;
   }
 
   void
@@ -379,6 +426,8 @@ public:
     return _warnings;
   }
 
+  static int DEFAULT_REPORT_LIMIT;
+
 private:
 
   void
@@ -393,6 +442,8 @@ private:
   NcCache* _left;
   NcCache* _right;
   bool _show_equal;
+  bool _show_index;
+  int _report_limit;
   std::vector<std::string> _ignores;
 
   std::vector< boost::shared_ptr<CompareDimensions> > dims;

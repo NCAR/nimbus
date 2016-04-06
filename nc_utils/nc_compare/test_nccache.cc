@@ -59,6 +59,51 @@ TEST(NcCache, Dimensions)
 }
 
 
+TEST(NcCache, coordinates)
+{
+  NcCache* ncf = 0;
+  nc_dimension time(ncf, "time", 0, 100);
+  nc_dimension height(ncf, "height", 1, 88);
+  nc_dimension freq(ncf, "frequency", 2, 256);
+  std::vector<nc_dimension*> dims;
+  dims.push_back(&time);
+  dims.push_back(&height);
+  dims.push_back(&freq);
+  coordinates coords(dims);
+  EXPECT_EQ(coords.npoints, 100*88*256);
+  EXPECT_EQ(coords.index, 0);
+  EXPECT_EQ(coords.dims.size(), 3);
+  EXPECT_EQ(coords.next(), true);
+  EXPECT_EQ(coords.index, 1);
+  coords_t ic;
+  ic = coords.as_vector();
+  EXPECT_EQ(ic.size(), 3);
+  EXPECT_EQ(ic[0], 0);
+  EXPECT_EQ(ic[1], 0);
+  EXPECT_EQ(ic[2], 1);
+  coords.index = 150;
+  ic = coords.as_vector();
+  EXPECT_EQ(ic[0], 0);
+  EXPECT_EQ(ic[1], 0);
+  EXPECT_EQ(ic[2], 150);
+  coords.index = 256;
+  ic = coords.as_vector();
+  EXPECT_EQ(ic[0], 0);
+  EXPECT_EQ(ic[1], 1);
+  EXPECT_EQ(ic[2], 0);
+  coords.index = 256*88;
+  ic = coords.as_vector();
+  EXPECT_EQ(ic[0], 1);
+  EXPECT_EQ(ic[1], 0);
+  EXPECT_EQ(ic[2], 0);
+  coords.index = 256*88+513;
+  ic = coords.as_vector();
+  EXPECT_EQ(ic[0], 1);
+  EXPECT_EQ(ic[1], 2);
+  EXPECT_EQ(ic[2], 1);
+}
+
+
 TEST(NcCache, Attributes)
 {
   NcCache ncc("IDEAS-4rf02-expected.nc");

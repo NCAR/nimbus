@@ -15,11 +15,16 @@ using boost::shared_ptr;
 using std::cout;
 using std::cerr;
 
+int CompareNetcdf::DEFAULT_REPORT_LIMIT = 100;
+
+
 CompareNetcdf::
 CompareNetcdf(NcCache* left, NcCache* right):
   _left(left),
   _right(right),
   _show_equal(false),
+  _show_index(false),
+  _report_limit(DEFAULT_REPORT_LIMIT),
   times(this)
 {
   const char* default_ignores[] =
@@ -451,8 +456,105 @@ computeDifferences()
 
 CompareVariables::
 CompareVariables(CompareNetcdf* ncf, nc_variable* left, nc_variable* right):
-  CompareObjects<nc_variable>(ncf, left, right)
+  CompareObjects<nc_variable>(ncf, left, right),
+  absolute_error(0),
+  relative_error(0),
+  dimsequal(false)
 {}
+
+
+// We want to compare variables in their native type, so create a template
+// which does that, and use a visitor interface to dispatch the comparison
+// to the right template instantiation.
+
+template <typename T>
+variable_ranges
+compare_variables(CompareNetcdf* ncf, nc_var<T>* left, nc_variable* _right)
+{
+  variable_ranges diffs;
+  nc_var<T>* right = dynamic_cast<nc_var<T>*>(_right);
+  coordinates coords = left->begin();
+  bool inrange = false;
+  variable_range range(coords);
+  do
+  {
+    if (! ncf->near_equal(left->get(coords), right->get(coords)))
+    {
+      if (!inrange)
+      {
+	range.start = coords;
+	inrange = true;
+      }
+    }
+    else if (inrange)
+    {
+      inrange = false;
+      diffs.push_back(variable_range(range.start, coords));
+    }
+  }
+  while (coords.next());
+  return diffs;
+}
+
+class compare_visitor : public variable_visitor
+{
+public:
+  compare_visitor(CompareNetcdf* ncf, nc_variable* right) :
+    _ncf(ncf),
+    _right(right)
+  {}
+
+  virtual void visit(nc_var<double>* left)
+  {
+    _ranges = compare_variables(_ncf, left, _right);
+  };
+
+  virtual void visit(nc_var<float>* left)
+  {
+    _ranges = compare_variables(_ncf, left, _right);
+  };
+
+  virtual void visit(nc_var<int>* left)
+  {
+    _ranges = compare_variables(_ncf, left, _right);
+  };
+
+  virtual void visit(nc_var<unsigned int>* left)
+  {
+    _ranges = compare_variables(_ncf, left, _right);
+  };
+
+  virtual void visit(nc_var<char>* left)
+  {
+    _ranges = compare_variables(_ncf, left, _right);
+  };
+
+  virtual void visit(nc_var<unsigned char>* left)
+  {
+    _ranges = compare_variables(_ncf, left, _right);
+  };
+
+  virtual void visit(nc_var<short>* left)
+  {
+    _ranges = compare_variables(_ncf, left, _right);
+  };
+
+  virtual void visit(nc_var<unsigned short>* left)
+  {
+    _ranges = compare_variables(_ncf, left, _right);
+  };
+
+  variable_ranges&
+  get_ranges()
+  {
+    return _ranges;
+  }
+
+private:
+  CompareNetcdf* _ncf;
+  nc_variable* _right;
+  variable_ranges _ranges;
+};
 
 
 Comparison::Result
@@ -470,6 +572,21 @@ computeDifferences()
   if (result != Comparison::Unknown)
   {
     return result;
+  }
+
+  // The dimensions should be the same too.
+  dimsequal = (left->dimensions.size() == right->dimensions.size());
+  for (unsigned int d = 0; dimsequal && d < left->dimensions.size(); ++d)
+  {
+    dimsequal = (*left->dimensions[d] == *right->dimensions[d]);
+  }
+  
+  // Run element by element comparisons using the comparison visitor.
+  if (dimsequal)
+  {
+    compare_visitor cv(this->_ncf, right);
+    left->visit(&cv);
+    ranges = cv.get_ranges();
   }
 
   // Compute statistical differences.
@@ -497,6 +614,7 @@ CompareVariables::
 generateReport(std::ostream& out)
 {
   bool header = false;
+  std::string indent(16, ' ');
   if (!left || !right || left->textSummary() != right->textSummary())
   {
     header = true;
@@ -505,10 +623,28 @@ generateReport(std::ostream& out)
   // Dump attribute differences next, if any.
   int ndiff = count_if(atts.begin(), atts.end(),
 		       bind(mem_fn(&CompareAttributes::isDifferent), _1));
-  if ((ndiff || _ncf->getShowEqual()) && !header)
+  if ((ndiff || !dimsequal ||
+       (_ncf->getShowIndex() && ranges.size()) ||
+       _ncf->getShowEqual()) && !header)
   {
     Comparison::generateReport(out);
   }
+  if (_ncf->getShowIndex())
+  {
+    if (!dimsequal)
+    {
+      out << indent << "[Dimensions differ, values not compared by index.]\n";
+    }
+    // The dimension differences are included in the header.  Now report
+    // any ranges where variables differ, up to the limit.
+    for (unsigned int i = 0;
+	 i < ranges.size() && i < (unsigned int)_ncf->getReportLimit(); ++i)
+    {
+      out << indent << "values differ from " << ranges[i].start << " to "
+	  << ranges[i].end << "\n";
+    }
+  }
+
   for (unsigned int i = 0; i < atts.size(); ++i)
   {
     if (_ncf->getShowEqual() || atts[i]->getResult() != Comparison::Equal)

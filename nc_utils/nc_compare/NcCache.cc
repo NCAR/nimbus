@@ -401,12 +401,7 @@ loadValues()
   int ncid = ncc->ncid;
   nc_inq_var(ncid, id, name, &datatype, 0, 0, 0); 
 
-  npoints = 1;
-  for (unsigned int d = 0; d < dimensions.size(); ++d)
-  {
-    npoints *= dimensions[d]->len;
-  }
-
+  npoints = coordinates(dimensions).npoints;
   data.reset(new T[npoints]);
   nc_get_var(ncid, id, data.get());
   nc_get_att(ncid, id, "_FillValue", &missing_value);

@@ -28,6 +28,8 @@ nc_compare(int argc, char *argv[])
   desc.add_options()
     ("help", "Show this help message.")
     ("showequal", "Show equal objects as well as different.")
+    ("showindex",
+     "For vector values, report the indexes of the differences.")
     ("ignore", po::value<std::vector<std::string> >()->composing(),
      "Ignore attributes and variables with the given names.")
     ("file", po::value<std::vector<std::string> >(), "Input files.")
@@ -37,9 +39,15 @@ nc_compare(int argc, char *argv[])
      "the absolute difference between two numbers, no matter how large, must "
      "be less than the error delta.  To determine if floats of arbitrary "
      "range are close enough, use the ulps option.")
-    ("ulps", po::value<int>(),
+    ("ulps",
+     po::value<int>()->default_value(compare_floating_point().getULPS()),
      "Number of Units the Last Places in which floating point numbers can "
-     "differ and still be considered equal.")
+     "differ and still be considered equal.  This is the floating point "
+     "comparison used if --delta or --ulps is not specified explicitly.")
+    ("limit",
+     po::value<int>()->default_value(CompareNetcdf::DEFAULT_REPORT_LIMIT),
+     "Maximum number of differences to show in the report.  Once the limit "
+     "is reached, no more differences are shown.")
     ;
 
   po::positional_options_description p;
@@ -72,12 +80,18 @@ nc_compare(int argc, char *argv[])
 
   CompareNetcdf ncdiff(&left, &right);
   ncdiff.showEqual(vm.count("showequal") > 0);
+  ncdiff.showIndex(vm.count("showindex") > 0);
   std::vector<std::string> ignores;
   if (vm.count("ignore"))
     ignores = vm["ignore"].as<std::vector<std::string> >();
   if (ignores.size())
   {
     ncdiff.ignore(ignores);
+  }
+  if (vm.count("limit"))
+  {
+    int limit = vm["limit"].as<int>();
+    ncdiff.setReportLimit(limit);
   }
   compare_floating_point cfp;
   if (vm.count("ulps"))

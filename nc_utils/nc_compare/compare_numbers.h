@@ -223,6 +223,12 @@ public:
     return *this;
   }
 
+  int
+  getULPS()
+  {
+    return _nulps;
+  }
+
   bool
   near_equal_ulps_float(float left, float right)
   {

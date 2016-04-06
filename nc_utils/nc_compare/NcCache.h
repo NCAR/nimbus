@@ -139,6 +139,101 @@ struct nc_att<std::string> : public nc_attribute
 typedef nc_att<std::string> nc_string_attribute;
 
 
+typedef std::vector<unsigned int> coords_t;
+
+
+class coordinates
+{
+public:
+  coordinates(const std::vector<nc_dimension*>& dimensions) :
+    dims(dimensions),
+    coords(dims.size(), 0),
+    index(0)
+  {
+    npoints = 1;
+    for (unsigned int d = 0; d < dimensions.size(); ++d)
+    {
+      npoints *= dimensions[d]->len;
+    }
+  }
+    
+  inline bool
+  next()
+  {
+    if (index < npoints)
+    {
+      ++index;
+      return true;
+    }
+    return false;
+  }
+
+#ifdef notdef
+  // This might be useful to step through a variable using the netcdf
+  // coordinate interface, but for the moment we always have a flat copy of
+  // the variable in memory and so the 1-d index is enough to traverse the
+  // values.
+  bool
+  next()
+  {
+    unsigned int ndims = dims.size();
+    int carry = 1;
+    for (unsigned int d = ndims-1; d >= 0 && carry; --d)
+    {
+      unsigned int dlen = dimensions[d]->len;
+      n[d] += carry;
+      if (n[d] >= dlen)
+      {
+	carry = n[d] / dlen;
+	n[d] = n[d] % dlen;
+      }
+    }
+    return (!carry);
+  }
+#endif
+
+  /**
+   * Return the coordinate vector, possible converted from the index.
+   **/
+  coords_t
+  as_vector() const
+  {
+    coords_t coords(dims.size(), 0);
+    unsigned int factor = npoints;
+    unsigned int i = index;
+    for (unsigned int d = 0; d < dims.size(); ++d)
+    {
+      factor = factor / dims[d]->len;
+      coords[d] = i / factor;
+      i = i % factor;
+    }
+    return coords;
+  }
+
+  std::vector<nc_dimension*> dims;
+  coords_t coords;
+  unsigned int index;
+  unsigned int npoints;
+};
+
+
+inline std::ostream&
+operator<<(std::ostream& out, const coordinates& c)
+{
+  out << "[";
+  coords_t cv = c.as_vector();
+  for (unsigned int d = 0; d < c.dims.size(); ++d)
+  {
+    if (d)
+      out << ",";
+    out << c.dims[d]->name << "=" << cv[d];
+  }
+  out << "]";
+  return out;
+}
+
+
+class variable_visitor;
 
 struct nc_variable : public nc_object
 {
@@ -167,6 +262,15 @@ struct nc_variable : public nc_object
 
   nc_attribute*
   getAttribute(const std::string& name);
+
+  coordinates
+  begin()
+  {
+    return coordinates(dimensions);
+  }
+
+  virtual void
+  visit(variable_visitor*) = 0;
 
   // The variable owns its attributes because they are not shared with
   // anything else.  Dimensions belong to the file, but can be referenced
@@ -201,11 +305,60 @@ public:
   virtual std::string
   textSummary();
 
+  virtual void
+  visit(variable_visitor*);
+
+  inline T
+  get(const coordinates& where)
+  {
+    return data[where.index];
+  }
+
   boost::shared_array<T> data;
   T missing_value;
   T mean;
 };
 
+
+/**
+ * Visitor interface for getting at native variable types.
+ **/
+class variable_visitor
+{
+public:
+  virtual void visit(nc_var<double>*)
+  {};
+
+  virtual void visit(nc_var<float>*)
+  {};
+
+  virtual void visit(nc_var<int>*)
+  {};
+
+  virtual void visit(nc_var<unsigned int>*)
+  {};
+
+  virtual void visit(nc_var<char>*)
+  {};
+
+  virtual void visit(nc_var<unsigned char>*)
+  {};
+
+  virtual void visit(nc_var<short>*)
+  {};
+
+  virtual void visit(nc_var<unsigned short>*)
+  {};
+
+};
+
+
+template <typename T>
+void
+nc_var<T>::visit(variable_visitor* visitor)
+{
+  visitor->visit(this);
+}
 
 
 inline bool
