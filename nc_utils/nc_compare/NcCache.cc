@@ -391,6 +391,44 @@ textSummary()
 
 
 template <typename T>
+std::string
+nc_var<T>::
+rangeSummary(const variable_range& range)
+{
+  std::ostringstream out;
+  std::string indent(16, ' ');
+
+  int nvalues = range.end.index - range.start.index + 1;
+  out << indent << range.start;
+  if (nvalues > 1)
+    out << "-" << range.end;
+  out << ": ";
+  // We are just going to arbitrarily show the first and last 5 values
+  // in the range.
+  std::ostringstream values;
+  coordinates current = range.start;
+  unsigned int i = 0;
+  do {
+    if (i)
+    {
+      values << ", ";
+    }
+    values << get(current);
+    if (i >= 4 && (int)i < nvalues - 5)
+    {
+      values << " ... ";
+      current.index = range.end.index - 6;
+      i = nvalues - 6;
+    }
+    ++i;
+  }
+  while (current.next() && current.index <= range.end.index);
+  out << values.str();
+  return out.str();
+}
+
+
+template <typename T>
 void
 nc_var<T>::
 loadValues()

@@ -15,7 +15,7 @@ using boost::shared_ptr;
 using std::cout;
 using std::cerr;
 
-int CompareNetcdf::DEFAULT_REPORT_LIMIT = 100;
+int CompareNetcdf::DEFAULT_REPORT_LIMIT = 10;
 
 
 CompareNetcdf::
@@ -485,11 +485,12 @@ compare_variables(CompareNetcdf* ncf, nc_var<T>* left, nc_variable* _right)
 	range.start = coords;
 	inrange = true;
       }
+      range.end = coords;
     }
     else if (inrange)
     {
       inrange = false;
-      diffs.push_back(variable_range(range.start, coords));
+      diffs.push_back(range);
     }
   }
   while (coords.next());
@@ -609,6 +610,7 @@ computeDifferences()
 }
 
 
+
 std::ostream&
 CompareVariables::
 generateReport(std::ostream& out)
@@ -640,8 +642,8 @@ generateReport(std::ostream& out)
     for (unsigned int i = 0;
 	 i < ranges.size() && i < (unsigned int)_ncf->getReportLimit(); ++i)
     {
-      out << indent << "values differ from " << ranges[i].start << " to "
-	  << ranges[i].end << "\n";
+      out << " - " << left->rangeSummary(ranges[i]) << "\n";
+      out << " + " << right->rangeSummary(ranges[i]) << "\n";
     }
   }
 

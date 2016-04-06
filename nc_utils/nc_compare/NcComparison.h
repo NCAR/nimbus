@@ -266,28 +266,6 @@ public:
 };
 
 
-/**
- * Record a difference between two vectors with start and end coordinates,
- * inclusive.
- **/
-struct variable_range
-{
-  variable_range(const coordinates& coords):
-    start(coords),
-    end(coords)
-  {}
-
-  variable_range(const coordinates& a, const coordinates& b):
-    start(a),
-    end(b)
-  {}
-
-  coordinates start;
-  coordinates end;
-};
-
-typedef std::vector<variable_range> variable_ranges;
-
 class CompareVariables : public CompareObjects<nc_variable>
 {
 public:

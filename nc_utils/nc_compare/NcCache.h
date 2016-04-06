@@ -217,6 +217,27 @@ public:
 };
 
 
+/**
+ * Identify a variable range with start and end coordinates, inclusive.
+ **/
+struct variable_range
+{
+  variable_range(const coordinates& coords):
+    start(coords),
+    end(coords)
+  {}
+
+  variable_range(const coordinates& a, const coordinates& b):
+    start(a),
+    end(b)
+  {}
+
+  coordinates start;
+  coordinates end;
+};
+
+typedef std::vector<variable_range> variable_ranges;
+
 inline std::ostream&
 operator<<(std::ostream& out, const coordinates& c)
 {
@@ -252,6 +273,9 @@ struct nc_variable : public nc_object
 
   virtual std::string
   textSummary() = 0;
+
+  virtual std::string
+  rangeSummary(const variable_range& range) = 0;
 
   /**
    * Add a dimension to this variable and update the total number of points
@@ -304,6 +328,9 @@ public:
 
   virtual std::string
   textSummary();
+
+  virtual std::string
+  rangeSummary(const variable_range& range);
 
   virtual void
   visit(variable_visitor*);
