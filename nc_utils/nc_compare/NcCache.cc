@@ -483,30 +483,31 @@ rangeSummary(const variable_range& range)
   out << range.start;
   if (nvalues > 1)
   {
-    out << "-" << range.end;
+    out << "-" << range.end << " (" << nvalues << " pts)";
   }
   out << ": ";
   // We are just going to arbitrarily show the first and last 5 values
   // in the range.
-  std::ostringstream values;
   coordinates current = range.start;
   unsigned int i = 0;
+  bool comma = false;
   do {
-    if (i)
+    if (comma)
     {
-      values << ", ";
+      out << ", ";
     }
-    values << get(current);
+    comma = true;
+    out << get(current);
     if (i >= 4 && (int)i < nvalues - 5)
     {
-      values << " ... ";
-      current.index = range.end.index - 6;
-      i = nvalues - 6;
+      out << " ... ";
+      comma = false;
+      current.index = range.end.index - 5;
+      i = current.index - range.start.index;
     }
     ++i;
   }
   while (current.next() && current.index <= range.end.index);
-  out << values.str();
   return out.str();
 }
 
