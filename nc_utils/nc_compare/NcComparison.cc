@@ -42,10 +42,9 @@ CompareTimes(CompareNetcdf* ncf):
 
 std::ostream&
 CompareTimes::
-generateReport(std::ostream& out)
+generateReport(std::ostream& out, const ReportStyle& style)
 {
   nc_time epoch = nc_time_from_time_t(0);
-  std::string indent("     ");
   out << "Time comparison:\n";
   if (leftbegin == epoch || rightbegin == epoch)
   {
@@ -68,17 +67,17 @@ generateReport(std::ostream& out)
       "     Data comparison may be invalid.\n";
   }
 
-  out << indent
+  out << style
       << "Left file time period: " << leftbegin << " - " << leftend << "\n";
-  out << indent
+  out << style
       << "Right file time period: " << rightbegin << " - " << rightend << "\n";
-  out <<indent
+  out << style
       << "Number of times in common: " << noverlap << "\n";
-  out << indent
+  out << style
       << "Number of unique times in left file: " << nuniqueleft << "\n";
-  out << indent
+  out << style
       << "Number of unique times in right file: " << nuniqueright << "\n";
-  out << indent
+  out << style
       << format("Percentage of overlap: %3.1f%%\n") % percent_overlap;
   return out;
 }
@@ -212,6 +211,7 @@ std::ostream&
 CompareNetcdf::
 report(std::ostream& out)
 {
+  const ReportStyle& style = getLeft()->getStyle();
   if (_show_equal || countDifferences())
   {
     out << "--- " << _left->getPath() << " (left)\n";
@@ -219,7 +219,7 @@ report(std::ostream& out)
   }
   if (_show_equal || times.isDifferent())
   {
-    times.generateReport(out);
+    times.generateReport(out, style.derive(1));
   }
   bool header = false;
   for (unsigned int i = 0; i < dims.size(); ++i)
@@ -231,7 +231,7 @@ report(std::ostream& out)
 	header = true;
 	out << "dimensions:\n";
       }
-      dims[i]->generateReport(out);
+      dims[i]->generateReport(out, style.derive(1));
     }
   }
   header = false;
@@ -244,7 +244,7 @@ report(std::ostream& out)
 	cout << "global attributes:\n";
 	header = true;
       }
-      atts[i]->generateReport(out);
+      atts[i]->generateReport(out, style.derive(1));
     }
   }
   header = false;
@@ -257,7 +257,7 @@ report(std::ostream& out)
 	cout << "variables:\n";
 	header = true;
       }
-      vars[i]->generateReport(out);
+      vars[i]->generateReport(out, style.derive(1));
     }
   }
 
@@ -351,12 +351,11 @@ computeDifferences()
 
 std::ostream&
 Comparison::
-generateReport(std::ostream& out)
+generateReport(std::ostream& out, const ReportStyle& style)
 {
   Result result = getResult();
   std::string tleft;
   std::string tright;
-
   if (getLeft())
   {
     tleft = getLeft()->textSummary() + "\n";
@@ -375,32 +374,32 @@ generateReport(std::ostream& out)
   {
     if (result == Equal)
     {
-      out << "   " << tleft;
+      out << style << tleft;
     }
     else
     {
-      out << "!  " << tleft;
+      out << style.merge("!  ") << tleft;
     }
     return out;
   }
   switch (result)
   {
   case Added:
-    out << " + " << tright;
+    out << style.merge(" + ") << tright;
     break;
   case Deleted:
-    out << " - " << tleft;
+    out << style.merge(" - ") << tleft;
     break;
   case Equal:
-    out << "   " << tleft;
+    out << style.merge("   ") << tleft;
     break;
   case Different:
-    out << " - " << tleft;
-    out << " + " << tright;
+    out << style.merge(" - ") << tleft;
+    out << style.merge(" + ") << tright;
     break;
   case Unknown:
-    out << " ? " << tleft;
-    out << " ? " << tright;
+    out << style.merge(" ? ") << tleft;
+    out << style.merge(" ? ") << tright;
     break;
   }
   return out;
@@ -613,14 +612,13 @@ computeDifferences()
 
 std::ostream&
 CompareVariables::
-generateReport(std::ostream& out)
+generateReport(std::ostream& out, const ReportStyle& style)
 {
   bool header = false;
-  std::string indent(16, ' ');
   if (!left || !right || left->textSummary() != right->textSummary())
   {
     header = true;
-    Comparison::generateReport(out);
+    Comparison::generateReport(out, style);
   }
   // Dump attribute differences next, if any.
   int ndiff = count_if(atts.begin(), atts.end(),
@@ -629,21 +627,21 @@ generateReport(std::ostream& out)
        (_ncf->getShowIndex() && ranges.size()) ||
        _ncf->getShowEqual()) && !header)
   {
-    Comparison::generateReport(out);
+    Comparison::generateReport(out, style);
   }
   if (_ncf->getShowIndex())
   {
     if (!dimsequal)
     {
-      out << indent << "[Dimensions differ, values not compared by index.]\n";
+      out << style << "[Dimensions differ, values not compared by index.]\n";
     }
     // The dimension differences are included in the header.  Now report
     // any ranges where variables differ, up to the limit.
     for (unsigned int i = 0;
 	 i < ranges.size() && i < (unsigned int)_ncf->getReportLimit(); ++i)
     {
-      out << " - " << left->rangeSummary(ranges[i]) << "\n";
-      out << " + " << right->rangeSummary(ranges[i]) << "\n";
+      out << style.derive(1, " - ") << left->rangeSummary(ranges[i]) << "\n";
+      out << style.derive(1, " + ") << right->rangeSummary(ranges[i]) << "\n";
     }
   }
 
@@ -651,7 +649,7 @@ generateReport(std::ostream& out)
   {
     if (_ncf->getShowEqual() || atts[i]->getResult() != Comparison::Equal)
     {
-      atts[i]->generateReport(out);
+      atts[i]->generateReport(out, style);
     }
   }
   return out;
@@ -778,8 +776,8 @@ computeDifferences()
 
 std::ostream&
 CompareAttributes::
-generateReport(std::ostream& out)
+generateReport(std::ostream& out, const ReportStyle& style)
 {
-  return CompareObjects<nc_attribute>::generateReport(out);
+  return CompareObjects<nc_attribute>::generateReport(out, style.derive(1));
 }
 

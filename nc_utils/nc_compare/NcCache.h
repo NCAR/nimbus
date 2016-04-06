@@ -25,6 +25,84 @@ nc_time_from_time_t(time_t ttime)
 }
 
 
+/**
+ * ReportStyle provides parameters and formatting for rendering netcdf
+ * elements and comparisons in a report, such as indent length and line
+ * prefix symbols.
+ **/
+class ReportStyle
+{
+public:
+  ReportStyle(int indent=4);
+
+  /**
+   * Render the symbols string merged with the current indent to the output
+   * stream.
+   **/
+  std::ostream&
+  prefix(std::ostream& out) const;
+
+  /**
+   * Return a new ReportStyle with the indent increased by step and
+   * optionally with new symbols to be merged into the line prefix.
+   **/
+  ReportStyle
+  derive(int step, const std::string& symbols="") const
+  {
+    ReportStyle copy(*this);
+    copy.stepLevel(step);
+    if (symbols.length())
+    {
+      copy._symbols = symbols;
+    }
+    return copy;
+  }
+
+  ReportStyle
+  merge(const std::string& symbols) const
+  {
+    ReportStyle copy(*this);
+    copy._symbols = symbols;
+    return copy;
+  }
+
+  void
+  stepLevel(int step)
+  {
+    _level += step;
+  }
+
+  void
+  setIndent(int indent)
+  {
+    _indent = indent;
+  }
+
+  int
+  getIndent()
+  {
+    return _indent;
+  }
+
+private:
+  std::string _symbols;
+  int _indent;
+  int _level;
+};
+
+
+/**
+ * Render the ReportStyle prefix to the output stream.
+ **/
+inline std::ostream&
+operator<<(std::ostream& out, const ReportStyle& style)
+{
+  style.prefix(out);
+  return out;
+}
+
+
+
 class NcCache;
 
 /**
@@ -147,8 +225,8 @@ class coordinates
 public:
   coordinates(const std::vector<nc_dimension*>& dimensions) :
     dims(dimensions),
-    coords(dims.size(), 0),
-    index(0)
+    index(0),
+    coords(dims.size(), 0)
   {
     npoints = 1;
     for (unsigned int d = 0; d < dimensions.size(); ++d)
@@ -168,52 +246,71 @@ public:
     return false;
   }
 
-#ifdef notdef
-  // This might be useful to step through a variable using the netcdf
-  // coordinate interface, but for the moment we always have a flat copy of
-  // the variable in memory and so the 1-d index is enough to traverse the
-  // values.
-  bool
-  next()
+  coordinates&
+  set(const coords_t& c)
   {
-    unsigned int ndims = dims.size();
-    int carry = 1;
-    for (unsigned int d = ndims-1; d >= 0 && carry; --d)
+    coords = c;
+    coords.resize(dims.size());
+    int factor = 1;
+    index = 0;
+    for (unsigned int d = dims.size(); d > 0; --d)
     {
-      unsigned int dlen = dimensions[d]->len;
-      n[d] += carry;
-      if (n[d] >= dlen)
-      {
-	carry = n[d] / dlen;
-	n[d] = n[d] % dlen;
-      }
+      index += factor*coords[d-1];
+      factor *= dims[d-1]->len;
     }
-    return (!carry);
+    return *this;
+  }    
+
+  coordinates&
+  set(unsigned int x)
+  {
+    if (coords.size() >= 1)
+    {
+      coords[0] = x;
+    }
+    set(coords);
+    return *this;
   }
-#endif
+
+  coordinates&
+  set(unsigned int x, unsigned int y)
+  {
+    if (coords.size() >= 2)
+    {
+      coords[0] = x;
+      coords[1] = y;
+    }
+    set(coords);
+    return *this;
+  }
+
+  coordinates&
+  set(unsigned int x, unsigned int y, unsigned int z)
+  {
+    if (coords.size() >= 3)
+    {
+      coords[0] = x;
+      coords[1] = y;
+      coords[2] = z;
+    }
+    set(coords);
+    return *this;
+  }
 
   /**
    * Return the coordinate vector, possible converted from the index.
    **/
   coords_t
-  as_vector() const
-  {
-    coords_t coords(dims.size(), 0);
-    unsigned int factor = npoints;
-    unsigned int i = index;
-    for (unsigned int d = 0; d < dims.size(); ++d)
-    {
-      factor = factor / dims[d]->len;
-      coords[d] = i / factor;
-      i = i % factor;
-    }
-    return coords;
-  }
+  as_vector() const;
+
+  std::ostream&
+  print(std::ostream& out) const;
 
   std::vector<nc_dimension*> dims;
-  coords_t coords;
   unsigned int index;
   unsigned int npoints;
+private:
+  coords_t coords;
 };
 
 
@@ -241,16 +338,7 @@ typedef std::vector<variable_range> variable_ranges;
 inline std::ostream&
 operator<<(std::ostream& out, const coordinates& c)
 {
-  out << "[";
-  coords_t cv = c.as_vector();
-  for (unsigned int d = 0; d < c.dims.size(); ++d)
-  {
-    if (d)
-      out << ",";
-    out << c.dims[d]->name << "=" << cv[d];
-  }
-  out << "]";
-  return out;
+  return c.print(out);
 }
 
 
@@ -449,6 +537,9 @@ public:
     return _times;
   }
 
+  bool
+  getTime(const coordinates& where, nc_time* timestamp);
+
   void
   loadGlobalAttributes();
 
@@ -465,6 +556,12 @@ public:
   basetime()
   {
     return _basetime;
+  }
+
+  const ReportStyle&
+  getStyle()
+  {
+    return _style;
   }
 
   typedef std::vector< boost::shared_ptr<nc_dimension> > dimension_vector_t;
@@ -495,6 +592,7 @@ private:
   nc_time _basetime;
   std::vector<nc_time> _times;
 
+  ReportStyle _style;
 };
 
 

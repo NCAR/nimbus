@@ -101,6 +101,9 @@ TEST(NcCache, coordinates)
   EXPECT_EQ(ic[0], 1);
   EXPECT_EQ(ic[1], 2);
   EXPECT_EQ(ic[2], 1);
+
+  coords.set(1, 2, 3);
+  EXPECT_EQ(256*88+515, coords.index);
 }
 
 
@@ -155,35 +158,36 @@ TEST(Comparison, Dimensions)
   nc_dimension height1(ncf1, "height", 0, 99);
   nc_dimension height2(ncf2, "height", 1, 100);
 
+  ReportStyle style(8);
   {
     CompareDimensions cdim(0, &left, &right);
     EXPECT_EQ(cdim.compare(), Comparison::Equal);
     std::ostringstream out;
-    cdim.generateReport(out);
-    EXPECT_EQ(out.str(), "           time = 100 ;\n");
+    cdim.generateReport(out, style.derive(2));
+    EXPECT_EQ(out.str(), "                time = 100 ;\n");
   }
   {
     CompareDimensions cdim(0, &height1, &height2);
     EXPECT_EQ(cdim.compare(), Comparison::Different);
     std::ostringstream out;
-    cdim.generateReport(out);
+    cdim.generateReport(out, style.derive(1));
     EXPECT_EQ(out.str(),
-	      " -         height = 99 ;\n"
-	      " +         height = 100 ;\n");
+	      " -      height = 99 ;\n"
+	      " +      height = 100 ;\n");
   }
   {
     CompareDimensions cdim(0, &height1, 0);
     EXPECT_EQ(cdim.compare(), Comparison::Deleted);
     std::ostringstream out;
-    cdim.generateReport(out);
-    EXPECT_EQ(out.str(), " -         height = 99 ;\n");
+    cdim.generateReport(out, style.derive(1));
+    EXPECT_EQ(out.str(), " -      height = 99 ;\n");
   }
   {
     CompareDimensions cdim(0, 0, &height2);
     EXPECT_EQ(cdim.compare(), Comparison::Added);
     std::ostringstream out;
-    cdim.generateReport(out);
-    EXPECT_EQ(out.str(), " +         height = 100 ;\n");
+    cdim.generateReport(out, style.derive(1));
+    EXPECT_EQ(out.str(), " +      height = 100 ;\n");
   }
 }
 
@@ -216,7 +220,7 @@ TEST(Comparison, Variables)
   nc_var<float> pres(ncf, "pres", 0);
   nc_dimension timed(ncf, "time", 0, 1440);
   pres.addDimension(&timed);
-  EXPECT_EQ("        float pres(time) ;", pres.textSummary());
+  EXPECT_EQ("float pres(time) ;", pres.textSummary());
 }
 
 

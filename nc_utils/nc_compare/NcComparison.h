@@ -92,7 +92,7 @@ public:
    * prefix for objects which are identical.
    **/
   virtual std::ostream&
-  generateReport(std::ostream& out);
+  generateReport(std::ostream& out, const ReportStyle& style);
 
   /**
    * Return a pointer to the left object.  Subclasses implement this to
@@ -153,7 +153,7 @@ public:
   }
 
   virtual std::ostream&
-  generateReport(std::ostream& out)
+  generateReport(std::ostream& out, const ReportStyle& style)
   {
     throw CompareNetcdfException("FileComparison does not implement "
 				 "generateReport()");
@@ -178,7 +178,7 @@ public:
   CompareTimes(CompareNetcdf* ncf);
 
   virtual std::ostream&
-  generateReport(std::ostream& out);
+  generateReport(std::ostream& out, const ReportStyle& style);
 
 protected:
   virtual Result
@@ -254,7 +254,7 @@ public:
   computeDifferences();
 
   virtual std::ostream&
-  generateReport(std::ostream& out);
+  generateReport(std::ostream& out, const ReportStyle& style);
 
   using typename Comparison::Result;
   using CompareObjects<nc_attribute>::left;
@@ -280,7 +280,7 @@ public:
    * reported in reportStatistics().
    **/
   virtual std::ostream&
-  generateReport(std::ostream& out);
+  generateReport(std::ostream& out, const ReportStyle& style);
 
   std::ostream&
   statisticsHeader(std::ostream& out);

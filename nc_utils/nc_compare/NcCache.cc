@@ -111,6 +111,25 @@ loadTimes()
   }
 }
 
+
+bool
+NcCache::
+getTime(const coordinates& where, nc_time* timestamp)
+{
+  if (where.dims.size() && _vtime && _vtime->dimensions.size() &&
+      where.dims[0] == _vtime->dimensions[0])
+  {
+    // This variable has a time dimension, so get the timestamp at that
+    // coordinate.
+    coordinates tc(_vtime->dimensions);
+    tc.set(where.as_vector()[0]);
+    *timestamp = _times[tc.index];
+    return true;
+  }
+  return false;
+}
+
+
 NcCache::
 ~NcCache()
 {
@@ -318,9 +337,74 @@ nc_dimension::
 textSummary()
 {
   std::ostringstream out;
-  out << "        " << name << " = " << len << " ;";
+  out << name << " = " << len << " ;";
   return out.str();
 }
+
+
+std::ostream&
+coordinates::
+print(std::ostream& out) const
+{
+  out << "[";
+  coords_t cv = as_vector();
+  for (unsigned int d = 0; d < dims.size(); ++d)
+  {
+    if (d)
+      out << ",";
+    out << dims[d]->name << "=" << cv[d];
+  }
+  out << "]";
+  nc_time timestamp;
+  if (dims.size() && dims[0]->ncc->getTime(*this, &timestamp))
+  {
+    // This variable has a time dimension, so print the timestamp.
+    out << "@" << timestamp;
+  }
+  return out;
+}
+
+
+coords_t
+coordinates::
+as_vector() const
+{
+  coords_t coords(dims.size(), 0);
+  unsigned int factor = npoints;
+  unsigned int i = index;
+  for (unsigned int d = 0; d < dims.size(); ++d)
+  {
+    factor = factor / dims[d]->len;
+    coords[d] = i / factor;
+    i = i % factor;
+  }
+  return coords;
+}
+
+#ifdef notdef
+// This might be useful to step through a variable using the netcdf
+// coordinate interface, but for the moment we always have a flat copy of
+// the variable in memory and so the 1-d index is enough to traverse the
+// values.
+bool
+coordinates::
+next()
+{
+  unsigned int ndims = dims.size();
+  int carry = 1;
+  for (unsigned int d = ndims-1; d >= 0 && carry; --d)
+  {
+    unsigned int dlen = dimensions[d]->len;
+    n[d] += carry;
+    if (n[d] >= dlen)
+    {
+      carry = n[d] / dlen;
+      n[d] = n[d] % dlen;
+    }
+  }
+  return (!carry);
+}
+#endif
 
 
 nc_variable::
@@ -376,8 +460,7 @@ nc_var<T>::
 textSummary()
 {
   std::ostringstream out;
-  out << "        "
-      << nc_typename<T>() << " "
+  out << nc_typename<T>() << " "
       << name << "(";
   for (unsigned int d = 0; d < dimensions.size(); ++d)
   {
@@ -396,12 +479,12 @@ nc_var<T>::
 rangeSummary(const variable_range& range)
 {
   std::ostringstream out;
-  std::string indent(16, ' ');
-
   int nvalues = range.end.index - range.start.index + 1;
-  out << indent << range.start;
+  out << range.start;
   if (nvalues > 1)
+  {
     out << "-" << range.end;
+  }
   out << ": ";
   // We are just going to arbitrarily show the first and last 5 values
   // in the range.
@@ -502,8 +585,7 @@ textSummary()
   std::string quote;
   if (datatype == NC_CHAR)
     quote = "\"";
-  out << "                "
-      << name << " = " << quote << as_string() << quote << " ;";
+  out << name << " = " << quote << as_string() << quote << " ;";
   return out.str();
 }
 
@@ -643,3 +725,20 @@ template class nc_att<float>;
 template class nc_att<int>;
 template class nc_att<short>;
 template class nc_att<std::string>;
+
+
+ReportStyle::
+ReportStyle(int indent):
+  _indent(indent),
+  _level(0)
+{}
+
+
+std::ostream&
+ReportStyle::
+prefix(std::ostream& out) const
+{
+  out << std::setw(_level*_indent) << std::left << _symbols;
+  return out;
+}
+
