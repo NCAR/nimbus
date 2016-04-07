@@ -484,7 +484,7 @@ nimbus path."""
         "Run nc_compare between the setup output and the comparison file."
         cfile = self.getComparisonOutputFile(setup)
         ofile = setup.getOutputFile()
-        cmd = ['nc_compare', cfile, ofile]
+        cmd = ['nc_compare', '--showindex', cfile, ofile]
         self._runCommand(cmd)
 
     def runNcDiff(self, setup):
