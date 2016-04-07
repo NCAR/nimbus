@@ -170,13 +170,15 @@ nimbus path."""
         Configure a base project instance against which the output from this
         NimbusProject instance can be compared.
         """
-        basedir = self.createBaseDirectory()
+        basedir = os.path.join(self.getOutputDirectory(), "BASE")
         base = NimbusProject()
         base.applyOptions(options)
         # Reset the nimbus path if it was set.  If it was not set, then
         # that is an error that will be caught on open().
         if options.nimbus:
             base.nimbus = None
+        # Propagate the project setting.
+        base.setProjectName(self.project)
         base.setOutputDirectory(basedir)
         self.setCompareDirectory(base.getOutputDirectory())
         self.base = base
@@ -249,6 +251,10 @@ nimbus path."""
         the list of flights whose setup files were loaded.  If a base
         project has been configured, then that will also be opened.
         """
+        # Do the parent first, in case the parent output directory needs to
+        # be created before the base output directory.
+        self.setupDirectories()
+        self.loadSetupFiles()
         if self.base:
             # Check that nimbus paths are different.
             bnimbus = self.base.getNimbusPath()
@@ -263,8 +269,6 @@ nimbus path."""
                     "Use --nimbus to set an alternate path for the "
                     "parent project configuration." % (dnimbus))
             self.base.open()
-        self.setupDirectories()
-        self.loadSetupFiles()
 
     def close(self):
         """
@@ -317,6 +321,11 @@ nimbus path."""
                                          (self.prodpath))
         if self.output_dir is None:
             self.output_dir = self.project
+        if not os.path.exists(self.output_dir):
+            logger.debug("creating directory %s...", self.output_dir)
+            if not self.dryrun:
+                os.mkdir(self.output_dir)
+        logger.info("Output directory: %s", self.output_dir)
 
     def loadSetupFiles(self):
         "Load and reconfigure all the setup files for this project."
