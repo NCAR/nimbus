@@ -139,6 +139,9 @@ nimbus path."""
         if options.base:
             options.base = False
             self.createBase(options)
+            # Restore the base option in case this options instance is applied
+            # to other project instances.
+            options.base = True
             # If using a base but nimbus not set, then use the local source
             # path as the default.
             if self.nimbus is None:
@@ -170,7 +173,6 @@ nimbus path."""
         Configure a base project instance against which the output from this
         NimbusProject instance can be compared.
         """
-        basedir = os.path.join(self.getOutputDirectory(), "BASE")
         base = NimbusProject()
         base.applyOptions(options)
         # Reset the nimbus path if it was set.  If it was not set, then
@@ -179,8 +181,6 @@ nimbus path."""
             base.nimbus = None
         # Propagate the project setting.
         base.setProjectName(self.project)
-        base.setOutputDirectory(basedir)
-        self.setCompareDirectory(base.getOutputDirectory())
         self.base = base
 
     def setProjectName(self, project):
@@ -268,6 +268,13 @@ nimbus path."""
                     "parent project are the same! (%s) "
                     "Use --nimbus to set an alternate path for the "
                     "parent project configuration." % (dnimbus))
+
+            # The base output directory is deferred to here in case the
+            # parent call to setupDirectories() just assigned a default
+            # output directory.
+            basedir = os.path.join(self.getOutputDirectory(), "BASE")
+            self.base.setOutputDirectory(basedir)
+            self.setCompareDirectory(self.base.getOutputDirectory())
             self.base.open()
 
     def close(self):
@@ -599,6 +606,8 @@ nimbus path."""
         flights = fnmatch.filter(flights, pattern)
         setups = {f:self.setups[f] for f in flights}
         self.setups = setups
+        if self.base:
+            self.base.selectFlights(pattern)
 
     def run(self, operations, flights=None):
         """
@@ -608,9 +617,9 @@ nimbus path."""
         """
         # When running a base project, the compare and diff operations are
         # not relevant.
+        xbase = ['compare', 'diff', 'ncdiff', 'flights']
         if self.base:
-            self.base.run([op for op in operations 
-                           if op not in ['compare', 'diff', 'ncdiff']], flights)
+            self.base.run([op for op in operations if op not in xbase], flights)
 
         for op in operations:
             if op == "nimbus":
