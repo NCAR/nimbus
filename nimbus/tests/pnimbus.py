@@ -7,6 +7,7 @@ NimbusProject class.
 
 import os
 import sys
+import fnmatch
 import logging
 
 # Hardcode some python paths so that SCons and eol_scons are found
@@ -22,7 +23,7 @@ from optparse import OptionParser
 from NimbusProject import NimbusProject
 from NimbusProject import NimbusProjectException
 
-_usage = """Usage: pnimbus.py [options] {operation ...} [flight ...]
+_usage = """Usage: pnimbus.py [options] {operation ...} [flight-spec ...]
 
 The named operations will be run for all the flights named by setup files
 in the <setup> directory, or else only the flights listed after the
@@ -65,9 +66,32 @@ operations.  These are the available operations:
 
     List the flights for all of the setup files loaded for this project.
 
-Modified setup files and netcdf output files will be written to the current
-directory by default, or to the directory named by the --output option."""
+Modified setup files and netcdf output files will be written to the output
+directory named by the --output option or else to a directory named
+after the project.
 
+The flight specifiers have the form <project>/<flight>, where either
+<project> or <flight> can be glob patterns.  If there is no /, then the
+specifier is just a project name and selects all the flights in that
+project.  An empty string on left side of the slash selects all the
+projects, and an empty string after the slash selects all the flights.  So
+a specifier like */rf01 selects the first research flight of all the known
+projects."""
+
+_default_projects = """
+HIPPO-1
+HIPPO-2
+HIPPO-3
+HIPPO-4
+HIPPO-5
+PREDICT
+TORRERO
+DC3
+MPEX
+DEEPWAVE
+CSET
+CONTRAST
+""".split()
 
 def main(args):
     dlevel = logging.INFO
@@ -85,12 +109,35 @@ def main(args):
     if not operations:
         print("Specify at least one operation.  Use --help to see usage info.")
         sys.exit(1)
+
     try:
-        np = NimbusProject()
-        np.applyOptions(options)
-        np.open()
-        np.run(operations, flights)
-        np.close()
+        nprojects = []
+        for fspec in flights:
+            pproject = None
+            pflights = ''
+            if '/' not in fspec:
+                pproject = fspec
+            else:
+                (pproject, slash, pflights) = fspec.partition('/')
+            if not pproject:
+                pproject = '*'
+            if not pflights:
+                pflights = '*'
+            
+            projects = fnmatch.filter(_default_projects, pproject)
+            if not projects:
+                # Nothing matched, accept it as a fixed project name.
+                projects = [pproject]
+            for project in projects:
+                np = NimbusProject(project)
+                np.applyOptions(options)
+                np.open()
+                np.selectFlights(pflights)
+                nprojects.append(np)
+
+            for np in nprojects:
+                np.run(operations)
+                np.close()
     except NimbusProjectException, ex:
         print(str(ex))
         sys.exit(1)

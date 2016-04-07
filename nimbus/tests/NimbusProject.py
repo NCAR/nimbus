@@ -8,6 +8,7 @@ import logging
 from NimbusSetup import NimbusSetup
 import shutil
 import tempfile
+import fnmatch
 import subprocess as sp
 
 logger = logging.getLogger(__name__)
@@ -100,9 +101,9 @@ class NimbusProject(object):
                           help="Specify project name to derive a setup "
                           "path using the Production directory of a "
                           "project configuration.")
-        parser.add_option("--output", type='string', default='.',
+        parser.add_option("--output", type='string', default=None,
                           help="Set output directory for netcdf files "
-                          "and modified setup files.")
+                          "and modified setup files. Defaults to project name.")
         parser.add_option("--compare", type='string', 
                           help="Look for primary netcdf files in this "
                           "directory, to be compared against the netcdf "
@@ -246,7 +247,7 @@ nimbus path."""
         Initialize and validate derived paths and load the setup files for the
         configured project.  After calling open(), getFlights() will return
         the list of flights whose setup files were loaded.  If a base
-        project has been configured, than that will also be opened.
+        project has been configured, then that will also be opened.
         """
         if self.base:
             # Check that nimbus paths are different.
@@ -299,8 +300,6 @@ nimbus path."""
         the project is specified and the aircraft can be inferred from the
         project directory with aircraftFromProject().
         """
-        if self.output_dir is None:
-            self.output_dir = '.'
         logger.debug("setupDirectories: " + self._dump())
         if self.project and not self.prodpath:
             pdir = os.path.join(self.projects, self.project)
@@ -316,6 +315,8 @@ nimbus path."""
         if not os.path.exists(self.prodpath):
             raise NimbusProjectException("Setup directory does not exist: %s" % 
                                          (self.prodpath))
+        if self.output_dir is None:
+            self.output_dir = self.project
 
     def loadSetupFiles(self):
         "Load and reconfigure all the setup files for this project."
@@ -580,7 +581,17 @@ nimbus path."""
                 flights.append(arg)
         return (operations, flights)
 
-    def run(self, operations, flights):
+    def selectFlights(self, pattern):
+        """
+        After loading all the setup files, filter them by matching the flights
+        against the pattern.
+        """
+        flights = self.getFlights()
+        flights = fnmatch.filter(flights, pattern)
+        setups = {f:self.setups[f] for f in flights}
+        self.setups = setups
+
+    def run(self, operations, flights=None):
         """
         For an open() project, run the given operations for each of the given
         flights.  If flights is empty, then run the operation for all of
@@ -598,7 +609,9 @@ nimbus path."""
             if op == "process2d":
                 self.process2dFlights(flights)
             elif op == "flights":
-                print("Flights: %s" % (" ".join(self.getFlights())))
+                print(self.project + " flights: " +
+                      " ".join(["%s/%s" % (self.project, f)
+                                for f in self.getFlights()]))
             elif op == "reorder":
                 self.reorderFlights(flights)
             elif op == "compare":
