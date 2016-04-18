@@ -127,7 +127,15 @@ main(int argc, char *argv[])
   }
   catch (const std::runtime_error& error)
   {
+    // Typically IO errors.
     cerr << "Error: " << error.what() << std::endl;
+    exit(1);
+  }
+  catch (const boost::program_options::error& error)
+  {
+    // Error parsing command-line options.
+    cerr << error.what() << std::endl;
+    cerr << "Use option --help to see usage info." << std::endl;
     exit(1);
   }
 }
