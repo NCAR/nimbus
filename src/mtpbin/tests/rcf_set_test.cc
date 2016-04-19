@@ -46,6 +46,26 @@ main () {
   cout<<"About to call getBestWeightedRCSet\n";
   RC_Set_4Retrieval BestWtdRCSet = RCF_Set.getBestWeightedRCSet(scanBTs, 
                                                                 12.49947, 0.0);
+  RetrievalCoefficientFile TempRCF1(RCF_Set.getRCFbyId(BestWtdRCSet.RCFId));
+  std::vector<RC_Set_1FL> FlRcSetVec;
+  std::vector<int>::size_type sz;
+  RC_Set_1FL AvgWtSet;
+  if (TempRCF1.isValid()) 
+  {
+    cout<<"1st BestWeightedRCSet is from file:"
+        <<BestWtdRCSet.RCFFileName.c_str()<<"\n";
+    FlRcSetVec = TempRCF1.getFL_RC_Vec();
+    sz = FlRcSetVec.size();
+    std::cout <<"PAltKm:12.49947  1st level:"<<FlRcSetVec.begin()->Palt
+              <<"  last level:"<<FlRcSetVec.end()->Palt<<"  -1:"
+              <<FlRcSetVec[sz-2].Palt<<"\n";
+    AvgWtSet = TempRCF1.getRCAvgWt(12.49947);
+    std::cout<<"Num,   Avg,  Rms\n";
+    for (int i = 0; i < NUM_BRT_TEMPS; i++) 
+    {
+      std::cout<<i<<", "<<AvgWtSet.MBTAvg[i]<<", "<<AvgWtSet.MBTRms[i]<<"\n";
+    }
+  }
 
   cout<<"Best Retrieval Coef for HIPPO-5 flt on 8/9/2011 at 152700 hours:\n"
       <<"  ID:"<<BestWtdRCSet.RCFId.c_str()<<"\n  "
@@ -63,6 +83,24 @@ main () {
   cout<<"About to call getBestWeightedRCSet\n";
   BestWtdRCSet = RCF_Set.getBestWeightedRCSet(scanBTs, 
                                                                 2.050817, 0.0);
+  RetrievalCoefficientFile TempRCF2(RCF_Set.getRCFbyId(BestWtdRCSet.RCFId));
+  if (TempRCF2.isValid()) 
+  {
+    cout<<"2nd BestWeightedRCSet is from file:"
+        <<BestWtdRCSet.RCFFileName.c_str()<<"\n";
+    FlRcSetVec = TempRCF2.getFL_RC_Vec();
+    sz = FlRcSetVec.size();
+    std::cout <<"PAltKm:2.050817  1st level:"<<FlRcSetVec.begin()->Palt
+              <<"  last level:"<<FlRcSetVec.end()->Palt<<"  -1:"
+              <<FlRcSetVec[sz-2].Palt<<"\n";
+    AvgWtSet = TempRCF2.getRCAvgWt(2.050817);
+    std::cout<<"Num,   Avg,  Rms\n";
+    for (int i = 0; i < NUM_BRT_TEMPS; i++) 
+    {
+      std::cout<<i<<", "<<AvgWtSet.MBTAvg[i]<<", "<<AvgWtSet.MBTRms[i]<<"\n";
+    }
+  }
+  
 
   cout<<"Best Retrieval Coef for HIPPO-5 flt on 9/1/2011 at 220214 hours:\n"
       <<"  ID:"<<BestWtdRCSet.RCFId.c_str()<<"\n  "

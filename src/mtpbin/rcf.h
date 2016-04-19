@@ -37,6 +37,7 @@ class RetrievalCoefficientFile
 
 public:
   RetrievalCoefficientFile(std::string);
+  RetrievalCoefficientFile();
 
   std::string getId()        {return _RCFId;}
   std::string getFileName()  {return _RCFFileName;}
@@ -44,6 +45,7 @@ public:
   RCF_HDR     getRCF_HDR()   {return _RCFHdr;}
   std::vector<RC_Set_1FL> 
               getFL_RC_Vec() {return _FlRcSetVec;}
+  bool isValid();
 
   /**
    * Get the weighted average Retrieval Coefficient Set

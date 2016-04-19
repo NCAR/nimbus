@@ -38,14 +38,19 @@ class RetrievalCoefficientFileSet
 
 public:
 
-  std::vector<RetrievalCoefficientFile> getRCFVector() {return _RCFs;}
-
   /**
    * Constructor
    * @param std::string is directory name containing the RCF files to be 
    * pulled into the set.
    */
   RetrievalCoefficientFileSet(const std::string);
+
+  /** 
+   * Get functions
+   *
+   */
+  std::vector<RetrievalCoefficientFile> getRCFVector() {return _RCFs;}
+  RetrievalCoefficientFile getRCFbyId(std::string RCFId);
 
   /**
    * Set the Flight Levels in KM.  

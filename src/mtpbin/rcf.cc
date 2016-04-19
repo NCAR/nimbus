@@ -147,6 +147,21 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
   return;
 }
 
+/*
+ *  Null Constructor
+ */
+RetrievalCoefficientFile::RetrievalCoefficientFile() 
+{
+  _RCFFileName = std::string();
+  _RCFId = std::string();
+}
+
+bool RetrievalCoefficientFile::isValid()
+{
+  if (_RCFFileName.size() == 0) return false;
+  return true;
+}
+
 RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(float PAltKm)
 {
   RC_Set_1FL RcSetAvWt;
