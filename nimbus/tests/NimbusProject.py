@@ -82,7 +82,7 @@ class NimbusProject(object):
         self.base = None
 
     operations = ['nimbus', 'reorder', 'compare', 'diff', 'ncdiff',
-                  'flights', 'process2d']
+                  'flights', 'process2d', 'slices']
 
     @staticmethod
     def addOptions(parser):
@@ -466,6 +466,8 @@ nimbus path."""
         logger.debug("PROJ_DIR=%s; DISPLAY=%s" % 
                      (os.environ['PROJ_DIR'], os.environ.get('DISPLAY')))
         cmd = [self.nimbus or "nimbus", '-b', setup.getPath()]
+        if False:
+            cmd += ['--loglevel', 'verbose']
         if not self.dryrun:
             setup.writeSetupFile()
         logfile = setup.getPath() + ".log"
@@ -538,9 +540,18 @@ nimbus path."""
         actual = os.path.join(tdir, 'actual_'+os.path.basename(ofile))
         self._runCommand(['sed', '-e', 's/[-0-9,:][-0-9,-:]*|/|/', cfile], base)
         self._runCommand(['sed', '-e', 's/[-0-9,:][-0-9,-:]*|/|/', ofile], actual)
-        cmd = ['diff', '--side-by-side', '--width=200', base, actual]
+        cmd = ['diff', '--side-by-side', '--width=300', base, actual]
         self._runCommand(cmd)
         shutil.rmtree(tdir)
+
+    def runSlices(self, setup):
+        # Post-process the log file to isolate slice debugging messages.
+        logfile = setup.getPath() + ".log"
+        cmd = str("egrep VERBOSE < %s | "
+                  "sed -e 's/[-0-9,:][-0-9,-:]*|VERBOSE|//' > %s" %
+                  (logfile, logfile.replace("setup", "slices")))
+        logger.info(cmd)
+        sp.call(cmd, shell=True)
 
     def _runFlights(self, flights, opfun):
         if not flights:
@@ -577,6 +588,9 @@ nimbus path."""
 
     def diffFlights(self, flights):
         self._runFlights(flights, self.runDiff)
+
+    def sliceFlights(self, flights):
+        self._runFlights(flights, self.runSlices)
 
     def ncdiffFlights(self, flights):
         self._runFlights(flights, self.runNcDiff)
@@ -636,6 +650,8 @@ nimbus path."""
                 self.compareFlights(flights)
             elif op == "diff":
                 self.diffFlights(flights)
+            elif op == "slices":
+                self.sliceFlights(flights)
             elif op == "ncdiff":
                 self.ncdiffFlights(flights)
 
