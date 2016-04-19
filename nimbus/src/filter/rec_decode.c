@@ -37,15 +37,13 @@ void DecodeADSrecord(
 	short	lr[],	/* ADS Logical Record	*/
 	NR_TYPE	nlr[])	/* New Logical Record	*/
 {
+  VLOG(("enter DecodeADSrecord()"));
   if (cfg.isADS3())
   {
     // Forcing ADS3 into the ADS2 architecture.  FindNextRecord will
     // put it into ADSrecord, copy it out here.
-#ifdef DEBUG
-    std::cerr << "memcpy(" << (void*)nlr << "," << (void*)lr << "," 
-	      << nSRfloats * sizeof(NR_TYPE) << "(" << nSRfloats << " doubles))"
-	      << std::endl;
-#endif
+    VLOG(("memcpy(") << (void*)nlr << "," << (void*)lr << "," 
+	 << nSRfloats * sizeof(NR_TYPE) << "(" << nSRfloats << " doubles))");
     memcpy((void *)nlr, (void *)lr, nSRfloats * sizeof(NR_TYPE));
 
     // Set dynamic lags.
