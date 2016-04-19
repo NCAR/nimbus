@@ -114,8 +114,6 @@ int32_t	FindFirstLogicalADS2(char record[], time_t starttime),
 	FindFirstLogicalADS3(char record[], time_t starttime),
 	FindNextLogicalADS3(char record[], time_t endtime);
 
-time_t	SampledDataTimeToSeconds(NR_TYPE *);
-
 extern int32_t
 	(*FindFirstLogicalRecord)(char record[], time_t starttime),
 	(*FindNextLogicalRecord)(char record[], time_t endtime);

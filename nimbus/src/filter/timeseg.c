@@ -21,8 +21,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 -------------------------------------------------------------------------
 */
 
-#include "timeseg.h"
-
 #include <netinet/in.h>
 
 #include <Xm/TextF.h>
@@ -31,6 +29,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 #include "decode.h"
 #include "gui.h"
 #include <raf/header.h>
+
+#include "timeseg.h"
 
 #include <sstream>
 using std::ostringstream;

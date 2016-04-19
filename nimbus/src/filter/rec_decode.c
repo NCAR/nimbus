@@ -23,6 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 
 #include "nimbus.h"
 #include "decode.h"
+#include "timeseg.h"
 
 #include <netinet/in.h>
 
