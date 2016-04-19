@@ -35,7 +35,17 @@ main () {
     std::cout << rit->Palt<<"\n";
   }
   RC_Set_1FL AvgWtSet1;
+  std::cout << "FileName:"<<RCF.getFileName().c_str()<<"\n";
+  std::vector<RC_Set_1FL> FlRcSetVec = RCF.getFL_RC_Vec();
+  std::vector<int>::size_type sz = FlRcSetVec.size();
+  std::cout <<"PAltKm:5.3473"<<"  1st level:"<<FlRcSetVec.begin()->Palt
+            <<"  last level:"<<FlRcSetVec.end()->Palt<<"  -1:"
+            <<FlRcSetVec[sz-2].Palt<<"\n";
   AvgWtSet1 = RCF.getRCAvgWt(5.3473);
+  std::cout<<"Num,   Avg,  Rms\n";
+  for (int i = 0; i < NUM_BRT_TEMPS; i++) {
+    std::cout<<i<<", "<<AvgWtSet1.MBTAvg[i]<<", "<<AvgWtSet1.MBTRms[i]<<"\n";
+  }
 
 
   std::cout<<"MBTAvg:\n";
@@ -64,7 +74,17 @@ main () {
   
   std::cout << "RCFid =" << RCF2.getId() << '\n';
   RC_Set_1FL AvgWtSet2;
+  std::cout << "FileName:"<<RCF2.getFileName().c_str()<<"\n";
+  FlRcSetVec = RCF2.getFL_RC_Vec();
+  sz = FlRcSetVec.size();
+  std::cout <<"PAltKm:5.3473"<<"  1st level:"<<FlRcSetVec.begin()->Palt
+            <<"  last level:"<<FlRcSetVec.end()->Palt<<"  -1:"
+            <<FlRcSetVec[sz-2].Palt<<"\n";
   AvgWtSet2 = RCF2.getRCAvgWt(5.3473);
+  std::cout<<"Num,   Avg,   Rms\n";
+  for (int i = 0; i < NUM_BRT_TEMPS; i++) {
+    std::cout<<i<<", "<<AvgWtSet2.MBTAvg[i]<<", "<<AvgWtSet2.MBTRms[i]<<"\n";
+  }
   
   std::cout<<"MBTAvg:\n";
   for (int i = 0; i<NUM_BRT_TEMPS; i++) 
@@ -84,7 +104,17 @@ main () {
   
   std::cout << "RCFid =" << RCF3.getId() << '\n';
   RC_Set_1FL AvgWtSet3;
+  std::cout << "FileName:"<<RCF3.getFileName().c_str()<<"\n";
+  FlRcSetVec = RCF3.getFL_RC_Vec();
+  sz = FlRcSetVec.size();
+  std::cout <<"PAltKm:5.3473"<<"  1st level:"<<FlRcSetVec.begin()->Palt
+            <<"  last level:"<<FlRcSetVec.end()->Palt<<"  -1:"
+            <<FlRcSetVec[sz-2].Palt<<"\n";
   AvgWtSet3 = RCF3.getRCAvgWt(5.3473);
+  std::cout<<"Num,   Avg,  Rms\n";
+  for (int i = 0; i < NUM_BRT_TEMPS; i++) {
+    std::cout<<i<<",  "<<AvgWtSet3.MBTAvg[i]<<",  "<<AvgWtSet3.MBTRms[i]<<"\n";
+  }
   
   std::cout<<"MBTAvg:\n";
   for (int i = 0; i<NUM_BRT_TEMPS; i++) 
