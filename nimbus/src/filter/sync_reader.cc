@@ -1,6 +1,5 @@
 
 #include "sync_reader.hh"
-#include "timeseg.h" // for BEG_OF_TAPE, END_OF_TAPE
 
 #include <nidas/core/Socket.h>
 #include <nidas/util/Logger.h>
@@ -18,6 +17,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+#include <iostream>
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
@@ -26,8 +26,11 @@ using std::vector;
 using nidas::core::Polynomial;
 using nidas::core::Project;
 using nidas::core::Variable;
+using nidas::dynld::raf::SyncRecordVariable;
 
 #include "nimbus.h"
+#include "timeseg.h" // for BEG_OF_TAPE, END_OF_TAPE
+#include "trace_variables.h"
 
 namespace 
 {
@@ -289,7 +292,6 @@ StartSyncReader(const std::set<std::string>& headerfiles, bool postprocess)
     // The reader attaches itself as a client of SyncServer and does other
     // setup like requesting the sync header.
     syncRecReader = new nidas::dynld::raf::SyncRecordReader(syncServer);
-
   }
   else
   {
@@ -338,7 +340,7 @@ StartSyncReader(const std::set<std::string>& headerfiles, bool postprocess)
 
   // the SyncRecordReader::getVariables() throws Exception if
   // something is wrong with the header.
-  std::list<const nidas::dynld::raf::SyncRecordVariable*> vars;
+  std::list<const SyncRecordVariable*> vars;
   try {
       // Loop over all variables from sync_server/nidas.
       vars = syncRecReader->getVariables();
@@ -448,3 +450,12 @@ SetCalibration(RAWTBL* rp)
 
 }
 
+
+int
+SyncRead(nidas::core::dsm_time_t* tt, double* record, int nvalues)
+{
+  static TraceVariables tv;
+  int rc = syncRecReader->read(tt, record, nvalues);
+  tv.trace_sync_record("sync read", *tt, record, nvalues);
+  return rc;
+}

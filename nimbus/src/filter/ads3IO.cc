@@ -112,7 +112,7 @@ int32_t FindFirstLogicalADS3(
   {
     try
     {
-      rc = syncRecReader->read(&tt, (NR_TYPE *)record, syncRecReader->getNumValues());
+      rc = SyncRead(&tt, (NR_TYPE *)record, syncRecReader->getNumValues());
     }
     catch (const nidas::util::IOException& e)
     {
@@ -141,8 +141,7 @@ int32_t FindNextLogicalADS3(char record[], time_t endTime)
 
   try
   {
-    rc = syncRecReader->read(&tt, (NR_TYPE *)record, 
-			     syncRecReader->getNumValues());
+    rc = SyncRead(&tt, (NR_TYPE *)record, syncRecReader->getNumValues());
   }
   catch (const nidas::util::IOException& e)
   {

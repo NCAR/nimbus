@@ -32,6 +32,9 @@ SyncReaderSetTimeWindow(time_t begin, time_t end);
 nidas::dynld::raf::SyncRecordReader* 
 StartSyncReader(const std::set<std::string>& headerfiles, bool postprocess);
 
+int
+SyncRead(nidas::core::dsm_time_t* tt, double* record, int nvalues);
+
 nidas::dynld::raf::SyncRecordReader* 
 GetSyncReader();
 
