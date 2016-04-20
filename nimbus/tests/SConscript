@@ -2,7 +2,11 @@
 
 Import('env')
 
+import os
 import re
+import tempfile
+import time
+import shutil
 
 def jsoncpp(env):
   env.Append(CPPDEFINES="SYNC_RECORD_JSON_OUTPUT")
@@ -37,6 +41,23 @@ test_sync_reader.cc
 # -s "2013 Sep 26 18:00" -e "2013 Sep 26 18:45"
 # -o %Y%m%d_%H%M%S_rf02_extract.ads
 
+# The first target is the ascii json file and the second is the compressed
+# json file.  The first source is the raw data file.
+def update_test_data(env, target, source):
+  tdir = tempfile.mkdtemp()
+  tpipe = os.path.join(tdir, "pipe")
+  # open(tpipe, "w").close()
+  # os.mknod(tpipe)
+  ads = source[0]
+  sync_server = source[1]
+  sync_dump = source[2]
+  env.Execute("%s -l 60 -p %s %s &" % (str(sync_server), str(tpipe), str(ads)))
+  time.sleep(5)
+  env.Execute("%s -j %s unix:%s > /dev/null" %
+              (str(sync_dump), str(target[0]), tpipe))
+  env.Execute("gzip -c %s > %s" % (str(target[0]), str(target[1])))
+  shutil.rmtree(tdir)
+  
 
 if 'updatetestdata' in COMMAND_LINE_TARGETS:
     nenv = Environment(tools=['default'], toolpath=['.'])
@@ -49,16 +70,11 @@ if 'updatetestdata' in COMMAND_LINE_TARGETS:
     
     # need this to set the right flight in the sync header
     nenv['ENV']['FLIGHT'] = "rf02"
-
     tdrf02 = nenv.Command(['IDEAS-4-rf02-190000/rf02-update.json',
                            'IDEAS-4-rf02-190000/rf02.json.gz'],
-                          [sync_server, sync_dump,
-                           "IDEAS-4-rf02-190000/20130926_190000_rf02_extract.ads"],
-                          ["${SOURCES[0]} -l 60 ${SOURCES[2]} &",
-                           "sleep 5",
-                           "${SOURCES[1]} -j ${TARGETS[0]} CAVP_DPR "
-                           " sock:localhost:30001",
-                           "gzip -c ${TARGETS[0]} > ${TARGETS[1]}"])
+                          ["IDEAS-4-rf02-190000/20130926_190000_rf02_extract.ads",
+                           sync_server, sync_dump],
+                          update_test_data)
     nenv.Alias('updatetestdata', tdrf02)
     nenv.AlwaysBuild(tdrf02)
 

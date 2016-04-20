@@ -547,6 +547,9 @@ TEST_P(SyncReaderTest, CompareHeaderAndRecords)
 
   typedef const std::list<const SyncRecordVariable*> varlist_t;
   varlist_t variables = syncRecReader->getVariables();
+  std::vector<const SyncRecordVariable*> variables_vector;
+  std::copy(variables.begin(), variables.end(),
+	    std::back_inserter(variables_vector));
 
   int ncompared = 0;
   int len = syncRecReader->getNumValues();
@@ -575,7 +578,8 @@ TEST_P(SyncReaderTest, CompareHeaderAndRecords)
       << "Failed to parse data object: " 
       << reader.getFormattedErrorMessages();
     int rc = syncRecReader->read(&tt, &record.front(), len);
-    write_sync_record_data_as_json(json, tt, &record.front(), len);
+    // write_sync_record_data_as_json(json, tt, &record.front(), len);
+    write_sync_record_as_json(json, tt, &record.front(), rc, variables_vector);
 
     std::cerr << "====> Sync record with "
 	      << len << " values at time "
@@ -585,20 +589,30 @@ TEST_P(SyncReaderTest, CompareHeaderAndRecords)
     EXPECT_EQ(rc, len);
     EXPECT_EQ(tt, root["time"].asUInt64());
     EXPECT_EQ(len, root["numValues"].asInt());
-    EXPECT_EQ(len, root["data"].size());
+    // EXPECT_EQ(len, root["data"].size());
 
-    // Finally compare the actual data values.
+    // Finally compare the actual data values.  The json data object is a
+    // vector of variable objects, each with a name, lagoffset, time, and
+    // array of values.
     Json::Value& data = root["data"];
+    int idata = 0;
     for (varlist_t::const_iterator it = variables.begin();
-	 it != variables.end(); ++it)
+	 it != variables.end(); ++it, ++idata)
     {
+      Json::Value& vdata = data[idata];
       const SyncRecordVariable* const &var = (*it);
-      int nvalues = var->getLength();
+      int length = var->getLength();
+      int irate = (int)ceil(var->getSampleRate());
       int offset = var->getSyncRecOffset();
+      int nvalues = length*irate;
 
+      EXPECT_EQ(nvalues, vdata["values"].size())
+	<< "variable " << var->getName() << " @ " << tt;
+      EXPECT_EQ(var->getName(), vdata["name"].asString())
+	<< "variable " << var->getName() << " @ " << tt;
       for (int j = 0; j < nvalues; ++j)
       {
-	double xf = strtod(data[offset+j].asCString(), NULL);
+	double xf = strtod(vdata["values"][j].asCString(), NULL);
 	double gotf = record[offset+j];
 	if (isnan(xf))
 	{
