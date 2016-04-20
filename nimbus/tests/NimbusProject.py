@@ -535,14 +535,22 @@ nimbus path."""
         ofile = setup.getPath() + ".log"
         # Preprocess the files to remove the nidas log message timestamps,
         # since they interfere with the diff: 2016-04-05,14:30:10|
-        tdir = tempfile.mkdtemp()
-        base = os.path.join(tdir, 'base_'+os.path.basename(cfile))
-        actual = os.path.join(tdir, 'actual_'+os.path.basename(ofile))
-        self._runCommand(['sed', '-e', 's/[-0-9,:][-0-9,-:]*|/|/', cfile], base)
-        self._runCommand(['sed', '-e', 's/[-0-9,:][-0-9,-:]*|/|/', ofile], actual)
+        base = cfile
+        actual = ofile
+        pp = False
+        tdir = None
+        if pp:
+            tdir = tempfile.mkdtemp()
+            base = os.path.join(tdir, 'base_'+os.path.basename(cfile))
+            actual = os.path.join(tdir, 'actual_'+os.path.basename(ofile))
+            self._runCommand(['sed', '-e', 's/[-0-9,:][-0-9,-:]*|/|/', cfile],
+                             base)
+            self._runCommand(['sed', '-e', 's/[-0-9,:][-0-9,-:]*|/|/', ofile],
+                             actual)
         cmd = ['diff', '--side-by-side', '--width=300', base, actual]
         self._runCommand(cmd)
-        shutil.rmtree(tdir)
+        if tdir:
+            shutil.rmtree(tdir)
 
     def runSlices(self, setup):
         # Post-process the log file to isolate slice debugging messages.
