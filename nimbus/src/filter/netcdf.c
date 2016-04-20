@@ -46,6 +46,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2012
 #include <raf/vardb.hh>
 #include "svnInfo.h"
 
+#include "trace_variables.h"
+
 static const std::string Source = "NCAR Research Aviation Facility";
 static const std::string Address = "P.O. Box 3000, Boulder, CO 80307-3000";
 static const std::string Phone = "(303) 497-1030";
@@ -563,11 +565,15 @@ void WriteNetCDF()
   start[0] = recordNumber; start[1] = start[2] = 0;
   count[0] = 1;
 
+  time_t stime = SampledDataTimeToSeconds(SampledData);
+
   // Output Time variable as seconds since midnight (UTSeconds).
   long ut_seconds = UTSeconds(SampledData);
   nc_put_var1_long(fd, timeVarID, start, &ut_seconds);
   if (cfg.isADS2())
     nc_put_var1_float(fd, timeOffsetID, start, &TimeOffset);
+
+  static TraceVariables tv;
 
   for (size_t i = 0; i < raw.size(); ++i)
   {
@@ -583,6 +589,11 @@ void WriteNetCDF()
 
     if (rp->OutputRate == Config::LowRate)
     {
+      if (tv.active())
+      {
+	tv.trace_variable("write netcdf lowrate", rp->name, stime,
+			  &(AveragedData[rp->LRstart]), N);
+      }
       for (size_t j = 0; j < N; ++j)
         data[j] = (float)AveragedData[rp->LRstart + j];
     }
