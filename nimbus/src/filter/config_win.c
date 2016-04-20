@@ -848,8 +848,6 @@ void CreateConfigWindow()
   Arg		args[16];
   Cardinal	n;
 
-  extern Widget	Shell001, AppShell;
-
   FlightInfo[0].Name = "   Project Number";
   FlightInfo[1].Name = "    Flight Number";
   FlightInfo[2].Name = "Date [MM/DD/YYYY]";

@@ -1,5 +1,5 @@
 
-bool
+inline bool
 parseInt(const char* p, int& value)
 {
   bool ok = true;

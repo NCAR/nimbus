@@ -68,7 +68,6 @@ extern VDBFile  *vardb;
 static time_t	startWALL, finishWALL;
 static clock_t	startCPU, finishCPU;
 
-extern Widget	Shell001;
 extern size_t	nDefaults;
 extern DEFAULT	*Defaults[];
 

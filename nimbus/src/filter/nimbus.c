@@ -27,14 +27,6 @@ using nidas::util::Logger;
 
 #define APP_CLASS	"XmNimbus"
 
-
-Widget	AppShell;		/* The Main Application Shell */
-Widget	Shell000, MainWindow;
-Widget	Shell001, SetupWindow;
-
-XtAppContext context;
-
-
 Widget	CreateMainWindow(Widget parent);
 Widget	CreateSetupWindow(Widget parent);
 void	CreateEditWindow();
@@ -58,10 +50,10 @@ int main(int argc, char *argv[])
 {
   nidas::core::NidasApp napp("nimbus");
   napp.setApplicationInstance();
-  napp.enableArguments(napp.XmlHeaderFile | napp.LogLevel |
+  napp.enableArguments(napp.XmlHeaderFile | napp.loggingArgs() |
 		       napp.StartTime | napp.EndTime);
   // Require long flags to avoid confusion with nimbus flags like -x.
-  napp.requireLongFlag(napp.XmlHeaderFile | napp.LogLevel |
+  napp.requireLongFlag(napp.XmlHeaderFile | napp.loggingArgs() |
 		       napp.StartTime | napp.EndTime);
 
   Arg		args[8];
@@ -113,14 +105,21 @@ int main(int argc, char *argv[])
   // that becomes a command-line option.
   logger = Logger::createInstance(&std::cerr);
   // logger = Logger::createInstance("nimbus", LOG_CONS, LOG_LOCAL5);
-  if (napp.logLevel() == nidas::util::LOGGER_DEBUG)
-  {
-    ls.setShowFields("time,level,thread,function,file,message");
-  }
-  lc.level = napp.logLevel();
-  logger->setScheme(ls.addConfig(lc));
-  DLOG(("log fields set: ")
-       << Logger::getInstance()->getScheme().getShowFieldsString());
+
+  // This will be removed when it can be set on command-line instead.
+  // XXX
+  ls.setShowFields("message");
+  ls.setParameter("trace_variables", "A1DC_LWOO,A1DC_LWO");
+  lc.level = nidas::util::LOGGER_VERBOSE;
+  lc.function_match = "TraceVariables";
+  ls.addConfig(lc);
+  // We still want info messages from everything else.
+  lc = nidas::util::LogConfig();
+  lc.parse("level=info");
+  ls.addConfig(lc);
+  logger->setScheme(ls);
+  DLOG(("log fields set: ") << ls.getShowFieldsString());
+  // XXX
 
   if (cfg.Interactive())
   {

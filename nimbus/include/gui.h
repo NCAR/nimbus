@@ -44,6 +44,9 @@ extern Widget	outputVarYes, outputVarNo;
 extern Widget	outputLRbutton, outputSRbutton, outputHRbutton;
 extern Widget	lagText, spikeText, synthConstText, ev_text[], ts_text[];
 
+extern Widget AppShell, Shell000, Shell001, MainWindow;
+extern XtAppContext	context;
+
 extern const char *dataQuality[];
 
 /*	Callback prototypes

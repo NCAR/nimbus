@@ -412,8 +412,6 @@ void CreateEditWindow()
   Widget        slPD, slButts[15],funcPD,funcButts[19];
   XmString      name;
 
-  extern Widget AppShell, Shell001;
-
   //**************Definition of FuncPD******************//
   func[0]="none";
   func[1]="abs";
