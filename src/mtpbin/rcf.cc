@@ -229,14 +229,6 @@ std::vector<int>::size_type sz = _FlRcSetVec.size();
     }
   }
 
-cout<<" RCwt:\n";
-for (int j = 0; j < NUM_RETR_LVLS; j++) {
-  for (int i = 0; i < NUM_BRT_TEMPS; i++) {
-    if (i%5 != 0) cout<<"["<<j<<"]["<<i<<"]:"<<RcSetAvWt.RC[j][i];
-    else cout<<"["<<j<<"]["<<i<<"]:"<<RcSetAvWt.RC[j][i]<<'\n';
-  }
-}
-cout <<"\n\n";
 
   return RcSetAvWt;
 
