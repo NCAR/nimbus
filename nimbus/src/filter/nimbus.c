@@ -22,6 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2008
 #include <nidas/core/NidasApp.h>
 
 using nidas::util::Logger;
+using nidas::util::LogConfig;
 
 #include <csignal>
 
@@ -94,7 +95,6 @@ int main(int argc, char *argv[])
 
   signal(SIGUSR2, (void (*) (int))Quit);
 
-  nidas::util::LogConfig lc;
   nidas::util::LogScheme ls("nimbus");
   // For now, always log to the console.  Previous to the sync_server
   // merge, NIDAS messages from the separate sync_server process were
@@ -110,13 +110,14 @@ int main(int argc, char *argv[])
   // XXX
   ls.setShowFields("message");
   ls.setParameter("trace_variables", "A1DC_LWOO,A1DC_LWO");
-  lc.level = nidas::util::LOGGER_VERBOSE;
-  lc.function_match = "TraceVariables";
-  ls.addConfig(lc);
+  ls.setParameter("trace_samples", "46,600-602");
+  ls.setParameter("warn_sync_earlier_times_interval", "1");
+  ls.addConfig(LogConfig("verbose,function=TraceVariables"));
+  ls.addConfig(LogConfig("verbose,file=TwoD"));
+  ls.addConfig(LogConfig("verbose,file=SamplePipeline"));
+  ls.addConfig(LogConfig("verbose"));
   // We still want info messages from everything else.
-  lc = nidas::util::LogConfig();
-  lc.parse("level=info");
-  ls.addConfig(lc);
+  ls.addConfig(LogConfig("level=info"));
   logger->setScheme(ls);
   DLOG(("log fields set: ") << ls.getShowFieldsString());
   // XXX
