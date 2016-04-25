@@ -142,11 +142,10 @@ public:
   trace_sync_record(const std::string& flag, nidas::core::dsm_time_t tt,
 		    double* record, int nvalues)
   {
-    if (active())
+    if (!active())
     {
       return;
     }
-    static std::string tfmt("%Y/%m/%d;%H:%M:%S");
     std::vector<const nidas::dynld::raf::SyncRecordVariable*>::iterator it;
     for (it = _syncvars.begin(); it != _syncvars.end(); ++it)
     {
