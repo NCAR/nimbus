@@ -23,7 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 
 #include <nidas/util/Process.h>
 
-static void ReadBatchFile(char *filename), usage();
+static void ReadBatchFile(char *filename, Config::processingRate * rate), usage();
 
 void	Set_SetupFileName(char s[]);
 
@@ -116,7 +116,7 @@ void ProcessArgv(int argc, char **argv)
 
       case 'b':	// Load batch file.
         cfg.SetInteractive(false);
-        ReadBatchFile(argv[++i]);
+        ReadBatchFile(argv[++i], &rate);
         break;
 
       case 'r':	// -r is for raw data, -rt is for real-time mode.
@@ -220,7 +220,7 @@ static char *processFileName(const char *in, char *out, size_t out_len)
 }
 
 /* -------------------------------------------------------------------- */
-static void ReadBatchFile(char *fileName)
+static void ReadBatchFile(char *fileName, Config::processingRate *rate)
 {
   FILE	*fp;
   char	*p;
@@ -267,14 +267,14 @@ static void ReadBatchFile(char *fileName)
       switch (value)
       {
         case Config::SampleRate:
-          cfg.SetProcessingRate(Config::SampleRate);
+          *rate = Config::SampleRate;
           break;
         case Config::LowRate:
-          cfg.SetProcessingRate(Config::LowRate);
+          *rate = Config::LowRate;
           break;
         case 25:
         case 50:
-          cfg.SetProcessingRate(Config::HighRate);
+          *rate = Config::HighRate;
           cfg.SetHRTRate((Config::hrtRate)value);
           break;
         default:
