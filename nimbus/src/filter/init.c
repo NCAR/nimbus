@@ -93,6 +93,7 @@ bool nimbusIsAlreadyRunning()
 void ProcessArgv(int argc, char **argv)
 {
   int	i;
+  int length;
 
   cfg.SetInteractive(true);
   cfg.SetLoadProductionSetup(true);
@@ -122,6 +123,18 @@ void ProcessArgv(int argc, char **argv)
       case 'b':
         cfg.SetInteractive(false);
         ReadBatchFile(args[++i].c_str());
+        break;
+      case 'l':
+	length = atoi(args[++i].c_str());
+	if (length > 0)
+	{
+	  cfg.SetSorterLength(length);
+	}
+	else
+	{
+	  fprintf(stderr, "invalid sorter length: %s\n", args[i].c_str());
+	  exit(1);
+	}
         break;
       case 'r':
         if (nimbusIsAlreadyRunning())

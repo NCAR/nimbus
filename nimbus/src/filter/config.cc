@@ -57,6 +57,8 @@ Config::Config() : _adsFileExtension(".ads")
   SetInterpolationType(_defaultInterp);
   SetTwoDProcessingMethod(_defaultPMS2DProcessingMethod);
   SetTwoDAreaRejectRatio(_defaultPMS2DAreaRatioReject);
+
+  SetSorterLength(60);
 }
 
 std::string

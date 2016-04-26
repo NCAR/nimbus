@@ -277,7 +277,16 @@ StartSyncReader(const std::set<std::string>& headerfiles, bool postprocess)
     // and then link it to a SyncRecordReader.
 
     syncServer = new nidas::dynld::raf::SyncServer();
-    syncServer->setSorterLengthSeconds(60);
+
+    // I could see an argument for setting both raw and processed to the
+    // same length, since if we need to be tolerant of time differences in
+    // the processed sample streams, then likely need to be tolerant of the
+    // same time differences in the raw.  However, really this setting is
+    // to accommodate the processed particle samples whose time tags can
+    // grossly precede the raw times, and traditionally the raw sorter
+    // length is left as the default.
+    // 
+    syncServer->setSorterLengthSeconds(cfg.GetSorterLength());
 
     if (sync_xml_path.length() > 0)
     {

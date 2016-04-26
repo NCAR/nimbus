@@ -156,6 +156,9 @@ public:
   pms2dProcessing DefaultPMS2DProcessingMethod();
   float DefaultPMS2DAreaRatioReject();
 
+  void SetSorterLength(int seconds) { _sorterLength = seconds; }
+  int GetSorterLength() { return _sorterLength; }
+  
 
 private:
   bool _interactive;
@@ -220,6 +223,9 @@ private:
   /* % of pixels which must be shaded inside particle bounding box.
    */
   float _twoDrejectRatio;
+
+  // Length in seconds of the nidas processed sample sorter.
+  int _sorterLength;
 
   static const interpolationType _defaultInterp;
   static const pms2dProcessing _defaultPMS2DProcessingMethod;
