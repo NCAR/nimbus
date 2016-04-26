@@ -62,10 +62,6 @@ operations.  These are the available operations:
     command adds options to ignore the typical differences, and the ncdump
     prints floating point numbers with 6 significant digits.
 
-  flights:
-
-    List the flights for all of the setup files loaded for this project.
-
 Modified setup files and netcdf output files will be written to the output
 directory named by the --output option or else to a directory named
 after the project.
@@ -102,16 +98,26 @@ def main(args):
                       const=logging.INFO, default=dlevel)
     parser.add_option("--error", dest="level", action="store_const",
                       const=logging.ERROR, default=dlevel)
+    parser.add_option("--flights", action="store_const",
+                      const=True, default=False,
+                      help="""\
+Ignore the operations and just list the flights selected by the specifiers.""")
     NimbusProject.addOptions(parser)
     (options, args) = parser.parse_args(args)
     logging.basicConfig(level=options.level)
     operations, flights = NimbusProject.splitOperations(args[1:])
-    if not operations:
+    if not options.flights and not operations:
         print("Specify at least one operation.  Use --help to see usage info.")
         sys.exit(1)
 
     try:
+        # Accumulate a list of flights as specified in the command line
+        # specifiers.  Allow duplicates for now.  It shouldn't hurt
+        # anything to have duplicate NimbusProject instances.
+
         nprojects = []
+        if not flights:
+            flights = _default_projects
         for fspec in flights:
             pproject = None
             pflights = ''
@@ -135,9 +141,15 @@ def main(args):
                 np.selectFlights(pflights)
                 nprojects.append(np)
 
+        if options.flights:
+            print(" ".join([" ".join(["%s/%s" % (np.project, f)
+                                      for f in np.getFlights()])
+                            for np in nprojects if np.getFlights()]))
+        else:
             for np in nprojects:
                 np.run(operations)
                 np.close()
+
     except NimbusProjectException, ex:
         print(str(ex))
         sys.exit(1)

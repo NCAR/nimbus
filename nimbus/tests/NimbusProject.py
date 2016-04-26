@@ -39,6 +39,30 @@ def which(program, env=None):
     return None
 
 
+class XvfbManager:
+
+    def __init__(self):
+        self._xvfb = None
+        self._xvfb_count = 0
+
+    def start(self):
+        self._xvfb_count += 1
+        if not self._xvfb:
+            logger.debug("Starting Xvfb.")
+            import eol_scons.xvfb
+            self._xvfb = eol_scons.xvfb.Xvfb()
+            self._xvfb.start()
+
+    def stop(self):
+        self._xvfb_count -= 1
+        if self._xvfb and self._xvfb_count == 0:
+            logger.debug("Stopping Xvfb.")
+            self._xvfb.stop()
+            self._xvfb = None
+
+_xvfb = XvfbManager()
+
+
 class NimbusProject(object):
 
     """
@@ -82,7 +106,7 @@ class NimbusProject(object):
         self.base = None
 
     operations = ['nimbus', 'reorder', 'compare', 'diff', 'ncdiff',
-                  'flights', 'process2d', 'slices']
+                  'process2d', 'slices']
 
     @staticmethod
     def addOptions(parser):
@@ -146,8 +170,8 @@ nimbus path."""
             # path as the default.
             if self.nimbus is None:
                 self.nimbus = self.getLocalNimbusPath()
-                logger.info("Using local nimbus path by default "
-                            "since base is enabled: " + str(self.nimbus))
+                logger.debug("Using local nimbus path by default "
+                             "since base is enabled: " + str(self.nimbus))
 
     def getLocalNimbusPath(self):
         """
@@ -236,7 +260,7 @@ nimbus path."""
         if not os.path.exists(base):
             logger.debug("creating directory %s", base)
             os.mkdir(base)
-        logger.info("BASE directory: %s", base)
+        logger.debug("BASE directory: %s", base)
         return base
 
     def _dump(self):
@@ -332,7 +356,7 @@ nimbus path."""
             logger.debug("creating directory %s...", self.output_dir)
             if not self.dryrun:
                 os.mkdir(self.output_dir)
-        logger.info("Output directory: %s", self.output_dir)
+        logger.debug("Output directory: %s", self.output_dir)
 
     def loadSetupFiles(self):
         "Load and reconfigure all the setup files for this project."
@@ -361,10 +385,11 @@ nimbus path."""
         setup.setOutputDirectory(self.output_dir)
         ifile = setup.resolveInputFile()
         if not ifile:
-            logger.error("Skipping %s: input file could not be found." %
-                         (path))
+            logger.debug("Skipping %s: "
+                         "input file could not be found." % (path))
             return
-        logger.debug("Resolved input file: %s" % (ifile))
+        logger.debug("Loaded %s, resolved input file: %s" %
+                     (setup.path, ifile))
         self.setups[setup.flight] = setup
 
     def getFlights(self):
@@ -573,16 +598,21 @@ nimbus path."""
     def process2dFlights(self, flights):
         self._runFlights(flights, self.runProcess2d)
 
+    def _startXvfb(self):
+        if not self.dryrun:
+            _xvfb.start()
+        
+    def _stopXvfb(self):
+        if not self.dryrun:
+            _xvfb.stop()
+
     def nimbusFlights(self, flights=None):
         "Run NIMBUS on all the setup files for a project."
-        import eol_scons.xvfb
-        xvfb = None
-        if not self.dryrun:
-            xvfb = eol_scons.xvfb.Xvfb()
-            xvfb.start()
-        self._runFlights(flights, self.runNimbus)
-        if xvfb:
-            xvfb.stop()
+        try:
+            self._startXvfb()
+            self._runFlights(flights, self.runNimbus)
+        finally:
+            self._stopXvfb()
 
     def compareFlights(self, flights):
         """
@@ -640,28 +670,38 @@ nimbus path."""
         # When running a base project, the compare and diff operations are
         # not relevant.
         xbase = ['compare', 'diff', 'ncdiff', 'flights']
-        if self.base:
-            self.base.run([op for op in operations if op not in xbase], flights)
 
-        for op in operations:
-            if op == "nimbus":
-                self.nimbusFlights(flights)
-            if op == "process2d":
-                self.process2dFlights(flights)
-            elif op == "flights":
-                print(self.project + " flights: " +
-                      " ".join(["%s/%s" % (self.project, f)
-                                for f in self.getFlights()]))
-            elif op == "reorder":
-                self.reorderFlights(flights)
-            elif op == "compare":
-                self.compareFlights(flights)
-            elif op == "diff":
-                self.diffFlights(flights)
-            elif op == "slices":
-                self.sliceFlights(flights)
-            elif op == "ncdiff":
-                self.ncdiffFlights(flights)
+        # If we'll be running nimbus anywhere, start xvfb.
+        try:
+            if 'nimbus' in operations:
+                self._startXvfb()
+
+            # Run the operations for each flight, beginning with base if enabled.
+            if not flights:
+                flights = self.getFlights()
+            for flight in flights:
+                if self.base:
+                    self.base.run([op for op in operations if op not in xbase],
+                                  [flight])
+                for op in operations:
+                    if op == "nimbus":
+                        self.nimbusFlights([flight])
+                    if op == "process2d":
+                        self.process2dFlights([flight])
+                    elif op == "reorder":
+                        self.reorderFlights([flight])
+                    elif op == "compare":
+                        self.compareFlights([flight])
+                    elif op == "diff":
+                        self.diffFlights([flight])
+                    elif op == "slices":
+                        self.sliceFlights([flight])
+                    elif op == "ncdiff":
+                        self.ncdiffFlights([flight])
+
+        finally:
+            if 'nimbus' in operations:
+                self._stopXvfb()
 
 
 _setup_files = """
