@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
   ls.setShowFields("message");
   ls.setParameter("trace_variables", "A1DC_LWOO,A1DC_LWO");
   ls.setParameter("trace_samples", "46,600-602");
-  ls.setParameter("warn_sync_earlier_times_interval", "1");
+  ls.setParameter("sync_warn_times_interval", "1");
   ls.addConfig(LogConfig("verbose,function=TraceVariables"));
   ls.addConfig(LogConfig("verbose,file=TwoD"));
   ls.addConfig(LogConfig("verbose,file=SamplePipeline"));
