@@ -15,7 +15,7 @@ def nimbusbase(env):
     env.Append(CPPPATH=['#/include', '#/src/filter'])
     env.Append(CCFLAGS=Split("-Wno-write-strings -Wstrict-aliasing"))
 
-env = Environment(platform='posix', tools=['default', nimbusbase])
+env = Environment(platform='posix', tools=['default', 'svninfo', nimbusbase])
 
 # This is defunct.  NIMBUS does not currently build without real-time enabled,
 # so it must be that no one still needs to build it that way.
@@ -37,6 +37,8 @@ SConsignFile(File(file).abspath)
 # except KeyError:
 #     print "\n$JLOCAL not found!  Defaulting to '/opt/local'\n"
 #     env['JLOCAL'] = '/opt/local/'
+
+env.SvnInfo('include/svnInfo.h', '.')
 
 Export('env')
 

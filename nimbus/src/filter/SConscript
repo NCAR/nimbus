@@ -80,6 +80,7 @@ libn = env.StaticLibrary('nimbus', sources)
 def libnimbus(env):
   if os.path.exists('/usr/lib/openmotif'):
     env.Append(LIBPATH=['/usr/lib/openmotif'])
+  env.Append(LIBS=libn)
   # In order:
   #  AMLIB (Atmospheric Mathmatical Library) calculations.
   #  raf 'building blocks'.
@@ -87,16 +88,16 @@ def libnimbus(env):
   #  X windows/GUI.
   #  General math libraries.
   #  ADS3 real-time libraries.
+  env.Require(['libncaru', 'libxlate', 'libstd', 'libuser', 'netcdf'])
   deplibs = Split("""
-    std user xlate
     hdr_api pms 
     VarDB domx logx log4cpp boost_regex
     raf raf++
-    ncaru netcdf hdf5_hl hdf5 pq
+    pq
     Xm Xt X11
     gsl gslcblas m bz2 z
   """)
-  env.Append(LIBS=[libn] + deplibs)
+  env.Append(LIBS=deplibs)
 
 Export('libnimbus')
 

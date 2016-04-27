@@ -202,7 +202,7 @@ void CreateNetCDF(const char fileName[])
   putGlobalAttribute("Metadata_Conventions", "Unidata Dataset Discovery v1.0"); 
   putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION.c_str());
   putGlobalAttribute("standard_name_vocabulary", "CF-1.0");
-  putGlobalAttribute("ProcessorRevision", &SVNREVISION[10]);
+  putGlobalAttribute("ProcessorRevision", SVNREVISION);
   putGlobalAttribute("NIDASrevision", cfg.NIDASrevision().c_str());
 
   if (strstr(SVNURL, "http"))

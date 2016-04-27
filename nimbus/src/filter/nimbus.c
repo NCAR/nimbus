@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
   Arg		args[8];
   Cardinal	n;
 
-  printf("%s\n", SVNREVISION);
+  printf("Revision: %s\n", SVNREVISION);
   printf("%s\n", SVNLASTCHANGEDDATE);
   printf("%s\n\n", SVNURL);
 

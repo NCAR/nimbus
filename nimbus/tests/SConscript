@@ -10,7 +10,7 @@ import shutil
 
 def jsoncpp(env):
   env.Append(CPPDEFINES="SYNC_RECORD_JSON_OUTPUT")
-  env.Append(LIBS='jsoncpp')
+  env.Append(LIBS=['jsoncpp'])
   env.Append(CPPFLAGS='-Wno-effc++')
 
 

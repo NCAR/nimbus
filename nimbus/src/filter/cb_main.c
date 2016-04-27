@@ -182,7 +182,7 @@ static void readHeader()
   XtSetSensitive(outputFileText, false);
 
   XmUpdateDisplay(Shell001);
-  LogMessage(SVNREVISION);
+  LogMessage(std::string("Revision: ") + SVNREVISION);
 
   int rc = ERR;
 
