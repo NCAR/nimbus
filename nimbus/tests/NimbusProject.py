@@ -66,7 +66,37 @@ _xvfb = XvfbManager()
 class NimbusProject(object):
 
     """
-    NIMBUS processing and comparison for an entire aircraft project.
+    NIMBUS processing for an entire aircraft project and related output
+    comparisons.
+
+    NIMBUS processing requires the following information at a minimum:
+
+    project name
+    aircraft name
+    projects directory (PROJ_DIR)
+    setup files (typically the Production directory)
+    input file named in the setup file
+    path to nimbus executable
+    output directory (by default from the setup files)
+
+    Together these settings make up a "project profile", described by an
+    instance of NimbusProject.  If all the setup files are loaded as is
+    from a standard Production directory, and if the nimbus executable is
+    the one installed on the path, then that encapsulates a normal run for
+    nimbus where the output will go to the paths hardcoded in the
+    Production setup files.
+
+    Two other profiles can be created.  A "local" profile takes all the
+    standard settings above, but adjusts them to use a new output and a
+    local nimbus executable.  The output defaults to a subdirectory named
+    after the project, and the nimbus executable is taken from the local
+    source tree.  Otherwise the settings are the same.
+
+    A "base" profile is a "local" profile using the nimbus installed on the
+    system path, with an output directory derived from the "local" output
+    directory name.
+
+    The various outputs from two NimbusProject instances can be compared.
 
     Provide methods to redirect output from production setup files and run
     the NIMBUS processing on the modified files, then compare the output
@@ -79,6 +109,16 @@ class NimbusProject(object):
     paths to raw data and production setup files.  See also
     setProjectName(), setAircraftName(), and setOutputDirectory().
 
+    The projects directory is set from the PROJ_DIR environment variable by
+    default.  It can be overridden by calling setProjectsPath().
+
+    The setup files are loaded from the conventional per-project Production
+    directory, based on PROJ_DIR, project, and aircraft, unless it is
+    specified explicitly with setSetupPath().
+
+    If a default NimbusProject is created, with no project or aircraft set,
+    then they can be set with the methods or by calling applyOptions().
+
     After configuring the NimbusProject, finish the setup by calling open().
     """
 
@@ -87,7 +127,7 @@ class NimbusProject(object):
         self.aircraft = aircraft
         self.output_dir = output_dir
         self.compare_dir = None
-        self.projects = os.environ['PROJ_DIR']
+        self.projects = os.environ.get('PROJ_DIR')
         self.prodpath = None
         # Custom executable path includes the locally built nc_compare.
         nccmp = os.path.join(os.path.dirname(__file__),
@@ -118,16 +158,23 @@ class NimbusProject(object):
                           help="Load configuration and echo steps but "
                           "do not run any commands.")
         parser.add_option("--setup", type='string', 
-                          help="Path to directory of setup files, "
-                          "typically the Production directory of a "
-                          "project configuration.")
+                          help="Path to a directory of setup files, "
+                          "such as the Production directory of a "
+                          "project configuration.  If the project or "
+                          "aircraft has not been set yet, then they will be "
+                          "set by parsing them from the setup path, "
+                          "assuming the path is a conventional "
+                          "Production directory.")
         parser.add_option("--project", type='string', 
-                          help="Specify project name to derive a setup "
-                          "path using the Production directory of a "
-                          "project configuration.")
+                          help="Specify the project name.  The default "
+                          "setup path is derived from the project name and "
+                          "projects directory using the conventional "
+                          "Production directory path.")
         parser.add_option("--output", type='string', default=None,
                           help="Set output directory for netcdf files "
-                          "and modified setup files. Defaults to project name.")
+                          "and modified setup files. Defaults to project name. "
+                          "With --base, the base output directory will be "
+                          "<output>/BASE.")
         parser.add_option("--compare", type='string', 
                           help="Look for primary netcdf files in this "
                           "directory, to be compared against the netcdf "
@@ -143,7 +190,8 @@ base project.  In other words, rather than compare against existing
 'production' netcdf output files, create the production files directly with
 this script using the installed nimbus (the one on the PATH), then compare
 those files with the output of this same script but run with the alternate
-nimbus path."""
+nimbus path.  The output directory is a subdirectory called BASE under the
+main output directory."""
         )
 # pylint: enable=C0330
 
@@ -207,6 +255,9 @@ nimbus path."""
         base.setProjectName(self.project)
         self.base = base
 
+    def setProjectsPath(self, projects):
+        self.projects = projects
+
     def setProjectName(self, project):
         """
         Set the project name, same as if done when this instance was created,
@@ -223,15 +274,19 @@ nimbus path."""
 
     def setSetupPath(self, prodpath):
         """
-        Set the production path and parse the project name and aircraft name
-        from it.
+        Set the path from which setup files will be loaded.  Parse a project
+        name, aircraft name, and projects path from the setup path, and use
+        them for any settings not already set.
         """
         logger.debug("setSetupPath(%s)" % (prodpath))
         self.prodpath = prodpath
         dirs = os.path.abspath(prodpath).split("/")
-        self.aircraft = dirs[-2]
-        self.project = dirs[-3]
-        self.projects = "/".join(dirs[:-3])
+        if not self.aircraft:
+            self.aircraft = dirs[-2]
+        if not self.project:
+            self.project = dirs[-3]
+        if not self.projects:
+            self.projects = "/".join(dirs[:-3])
         logger.debug("setSetupPath: %s" % (self._dump()))
 
     def setCompareDirectory(self, compdir):
@@ -407,6 +462,8 @@ nimbus path."""
         xpath = spenv.get('PATH', '').split(":")
         xpath = self.xpath + xpath
         spenv['PATH'] = os.pathsep.join(xpath)
+        if self.projects:
+            spenv['PROJ_DIR'] = self.projects
         return spenv
 
     def _runCommand(self, cmd, logpath=None):
@@ -415,7 +472,8 @@ nimbus path."""
         exe = which(cmd[0], spenv)
         if exe:
             cmd[0] = os.path.abspath(exe)
-        msg = " ".join(cmd)
+        msg = "env PROJ_DIR='%(PROJ_DIR)s' " % spenv
+        msg += " ".join(cmd)
         if logpath:
             msg += " >& " + logpath
         logger.info(msg)
@@ -485,7 +543,6 @@ nimbus path."""
         for NIMBUS to read with the -b option.  If NIMBUS succeeds, then
         the ncReorder step is run automatically on the output.
         """
-        os.environ['PROJ_DIR'] = self.projects
         logger.debug("Running setup file %s with output: %s" %
                      (setup.getPath(), setup.getOutputFile()))
         logger.debug("PROJ_DIR=%s; DISPLAY=%s" % 
@@ -726,6 +783,8 @@ setup_rf13
 # env PYTHONPATH=$HOME/.scons/site_scons:/usr/lib/scons py.test NimbusProject.py
 #
 
+logging.basicConfig(level=logging.DEBUG)
+
 def test_load_setups():
     np = NimbusProject('HIPPO-5', 'GV_N677F')
     np.open()
@@ -739,11 +798,12 @@ def test_load_setups():
 
 def test_prodpath_parse():
     np = NimbusProject()
-    np.setSetupPath("/net/jlocal/projects/HIPPO-5/GV_N677F/Production")
+    np.setSetupPath(os.environ['PROJ_DIR'] + "/HIPPO-5/GV_N677F/Production")
     assert(np.aircraft == "GV_N677F")
     assert(np.project == "HIPPO-5")
-    assert(np.prodpath == "/net/jlocal/projects/HIPPO-5/GV_N677F/Production")
-    assert(np.projects == "/net/jlocal/projects")
+    assert(np.prodpath ==
+           os.environ['PROJ_DIR'] + "/HIPPO-5/GV_N677F/Production")
+    assert(np.projects == os.environ['PROJ_DIR'])
     np = NimbusProject()
     np.setSetupPath("./projects/WINTER/C130_N130AR/Production")
     assert(np.aircraft == "C130_N130AR")
