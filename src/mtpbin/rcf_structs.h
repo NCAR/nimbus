@@ -66,7 +66,12 @@ typedef struct {
 
 typedef union{END_HDR EH ; char Array[sizeof(END_HDR)];} My_EH;
   
-// Structure and union to read each flight level co-efficient info
+/* Structure and union to read each flight level co-efficient info
+   *  NOTE: sOBav and sOBrms are expected to be that channel 1 will be
+   *  in array elements 0-9 with element 0 being the highest scan angle and 
+   *  element 9 is the lowest scan angle.  Similarly, channel 2 will be found 
+   *  in elements 10-19 and channel 3 will be in elements 20-29.
+*/
 typedef struct {
   float sBP; 			// Flight level pressure altitude (hPa)
   float sOBrms[NUM_BRT_TEMPS];    // 1-sigma apriori observable errors

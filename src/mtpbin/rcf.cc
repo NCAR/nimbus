@@ -218,13 +218,18 @@ std::vector<int>::size_type sz = _FlRcSetVec.size();
 
 
   // Calculate the Weighted averages 
+  RcSetAvWt.Palt = Botit->Palt*BotWt + Topit->Palt*TopWt;
   for (int i = 0; i < NUM_BRT_TEMPS; i++)
   {
-    RcSetAvWt.Palt = Botit->Palt*BotWt + Topit->Palt*TopWt;
-    RcSetAvWt.MBTAvg[i] = Botit->MBTAvg[i]*BotWt + Topit->MBTAvg[i]*TopWt;
     RcSetAvWt.MBTRms[i] = Botit->MBTRms[i]*BotWt + Topit->MBTRms[i]*TopWt;
+    RcSetAvWt.MBTAvg[i] = Botit->MBTAvg[i]*BotWt + Topit->MBTAvg[i]*TopWt;
     for (int j = 0; j < NUM_RETR_LVLS; j++)
     {
+      RcSetAvWt.PAltRl[j] = Botit->PAltRl[j]*BotWt + Topit->PAltRl[j]*TopWt;
+      RcSetAvWt.TAvgRl[j] = Botit->TAvgRl[j]*BotWt + Topit->TAvgRl[j]*TopWt;
+      RcSetAvWt.TVarRl[j] = Botit->TVarRl[j]*BotWt + Topit->TVarRl[j]*TopWt;
+      RcSetAvWt.TRmsRl[j] = Botit->TRmsRl[j]*BotWt + Topit->TRmsRl[j]*TopWt;
+
       RcSetAvWt.RC[j][i] = Botit->RC[j][i]*BotWt + Topit->RC[j][i]*(1-BotWt);
     }
   }

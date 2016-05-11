@@ -69,7 +69,10 @@ public:
    * weighted according to the flight level of the aircraft and given
    * a set of Scan Brightness Temperatures
    * @param[in] is an array of Scan Brightness Temperatures and is expected
-   *  to be NUM_OBSVBLSs in length.
+   *  to be NUM_OBSVBLSs in length.  It is also expected that channel 1 will be
+   *  in array elements 0-9 with element 0 being the highest scan angle and 
+   *  element 9 is the lowest scan angle.  Similarly, channel 2 will be found 
+   *  in elements 10-19 and channel 3 will be in elements 20-29.
    * @param[in] is the altitude of the aircraft in km at the time that the 
    *  Scan was taken.
    * @pram [in] is an Brightness Temperature Bias provided by user
