@@ -313,8 +313,13 @@ void PMS1D_SetupForADS3()
   else
   if (cfg.ProjectName().compare("ORCAS") == 0)
   {
-    setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+    if (cfg.FlightNumber().compare(0, 4, "ff01") == 0 ||
+        cfg.FlightNumber().compare(0, 4, "ff02") == 0 ||
+        cfg.FlightNumber().compare(0, 2, "tf") == 0)
+      setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    else
+      setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
   }
 }
 
