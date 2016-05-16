@@ -53,14 +53,24 @@ main () {
 
   cout<<"About to call Retrieve\n";
   std::vector<float> TempProf;
-  TempProf = Rtr.Retrieve(scanBTs, 12.49947);
+  AtmosphericTemperatureProfile ATP;
+  //TempProf = Rtr.Retrieve(scanBTs, 12.49947);
+  ATP = Rtr.Retrieve(scanBTs, 12.49947);
 
   cout<<"Profile Temperatures:\n";
   for (int i=0; i<NUM_RETR_LVLS; i++) 
   {
-    cout << "[" << i << "]:" << TempProf[i];
+    cout << "[" << i << "]:" << ATP.Temperatures[i];
     if (i%5 == 0) cout << "\n";
   }
+  cout<<"\n\n";
+
+  cout<<"Profile Altitudes:\n";
+  for (int i=0; i<NUM_RETR_LVLS; i++)
+  {
+    cout << "[" << i << "]:" << ATP.Altitudes[i];
+    if (i%5 == 0) cout << "\n";
+  } 
   cout<<"\n\n";
 
 /*

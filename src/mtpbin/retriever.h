@@ -37,6 +37,12 @@
 #include <vector>
 #include "rcf_set.h"
 
+typedef struct 
+{
+  std::vector<float> Temperatures;
+  std::vector<float> Altitudes;
+} AtmosphericTemperatureProfile;
+
 class Retriever
 {
 
@@ -60,10 +66,12 @@ public:
    * @param[in] is the floating point altitude of the aircraft in km
    *
    */
-  std::vector<float> Retrieve(float[], float) ;
+  AtmosphericTemperatureProfile Retrieve(float[], float) ;
 
 private:
   RetrievalCoefficientFileSet _Rcf_Set;
+
+  std::vector<float> Pressure2Km(std::vector<float>);
 
 };
 
