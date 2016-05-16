@@ -52,9 +52,7 @@ main () {
 
 
   cout<<"About to call Retrieve\n";
-  std::vector<float> TempProf;
   AtmosphericTemperatureProfile ATP;
-  //TempProf = Rtr.Retrieve(scanBTs, 12.49947);
   ATP = Rtr.Retrieve(scanBTs, 12.49947);
 
   cout<<"Profile Temperatures:\n";
@@ -73,6 +71,33 @@ main () {
   } 
   cout<<"\n\n";
 
+
+// Now a low level leg of the flight to assure altitudes turn out ok
+  scanBTs = {295.9447, 294.9844, 295.2653, 295.7357, 295.5644,
+             293.9797, 292.0251, 292.5367, 293.3295, 293.7696,
+             297.2932, 297.3831, 296.7744, 296.6493, 295.8458,
+             293.9797, 292.5577, 294.1493, 295.0679, 295.0130,
+             296.9786, 296.3578, 296.4440, 296.1351, 295.6343,
+             293.9797, 292.0367, 292.6659, 293.1209, 293.1770};
+
+  cout<<"About to call Retrieve for low leg\n";
+  ATP = Rtr.Retrieve(scanBTs, 2.205186);
+
+  cout<<"Profile Temperatures:\n";
+  for (int i=0; i<NUM_RETR_LVLS; i++) 
+  {
+    cout << "[" << i << "]:" << ATP.Temperatures[i];
+    if (i%5 == 0) cout << "\n";
+  }
+  cout<<"\n\n";
+
+  cout<<"Profile Altitudes:\n";
+  for (int i=0; i<NUM_RETR_LVLS; i++)
+  {
+    cout << "[" << i << "]:" << ATP.Altitudes[i];
+    if (i%5 == 0) cout << "\n";
+  } 
+  cout<<"\n\n";
 /*
   RC_Set_4Retrieval BestWtdRCSet = RCF_Set.getBestWeightedRCSet(scanBTs, 
                                                                 12.49947, 0.0);

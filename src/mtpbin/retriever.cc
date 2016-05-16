@@ -29,6 +29,15 @@ AtmosphericTemperatureProfile Retriever::Retrieve(float ScanBTs[],
 
   ATP.Altitudes = Pressure2Km(PressureAlts);
 
+  // Any Temperature with Altitude <= 0 is not valid (nor is altitude)
+  for (int L = 0; L < NUM_RETR_LVLS; L++)
+  {
+    if (ATP.Altitudes[L] <= 0) 
+    {
+      ATP.Altitudes[L] = NAN;
+      ATP.Temperatures[L] = NAN;
+    }
+  }
   return ATP;
 }
 
