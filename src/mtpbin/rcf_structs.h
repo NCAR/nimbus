@@ -91,7 +91,7 @@ typedef struct {
 
 typedef union{RC_FL_Read RC_read ; char Array[sizeof(RC_FL_Read)];} My_RC_FL_Un;
    
-/*
+/**
  * Structure to hold each flight level retrieval coefficient information.
  */
 typedef struct {
