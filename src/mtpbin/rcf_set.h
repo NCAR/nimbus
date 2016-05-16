@@ -7,21 +7,6 @@
  ** in support of the Haiper GV aircraft) came with processing software 
  ** written in Visual Basic 6.0. 
  **
- ** A set of Retrieval Coefficient Files (RCFs) are currently written 
- ** by the VB program RCCalc which takes RAOB data and converts it into 
- ** Templates that describe what that RAOB profile would look like to the MTP 
- ** instrument if the instrument was used to measure the atmosphere described 
- ** by the profile. 
- **
- ** When the MTP instrument completes a scan of the atmosphere the scan counts
- ** are converted to Brightness Temperatures, using these the "best match" 
- ** RCF is found and it's corresponding Retrieval Coefficients are used
- ** to determine the atmospheric temperature profile.
- ** 
- ** This class encapsulates the whole set of RCFs for a project and provides
- ** a method for determining which of the RCFs is the best match of a given
- ** set of brightness temperatures (scan) taken at a particular elevation.
- **
  ** Copyright 2015-2016 University Corporation for Atmospheric Research
  **  - VB6 and Algorithm Copyright MJ Mahoney, NASA Jet Propulsion Laboratory
  **
@@ -33,6 +18,23 @@
 #include <string> 
 #include "rcf.h"
 
+/**
+ * This class encapsulates the whole set of RCFs for a project and provides
+ * a method for determining which of the RCFs is the best match of a given
+ * set of brightness temperatures (scan) taken at a particular elevation.
+ *
+ * A set of Retrieval Coefficient Files (RCFs) are currently written 
+ * by the VB program RCCalc which takes RAOB data and converts it into 
+ * Templates that describe what that RAOB profile would look like to the MTP 
+ * instrument if the instrument was used to measure the atmosphere described 
+ * by the profile. 
+ *
+ * When the MTP instrument completes a scan of the atmosphere the scan counts
+ * are converted to Brightness Temperatures, using these the "best match" 
+ * RCF is found and it's corresponding Retrieval Coefficients are used
+ * to determine the atmospheric temperature profile.
+ * 
+ */
 class RetrievalCoefficientFileSet  
 {
 

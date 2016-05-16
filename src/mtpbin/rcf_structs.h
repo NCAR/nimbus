@@ -1,17 +1,19 @@
-/*
- ** Structures and Unions for holding Retrieval Coefficient File (RCF)
- ** data for the Microwave Temperature Profiler (MTP)
- ** See rcf.h for more information
+/**
+ * Structures and Unions for holding Retrieval Coefficient File (RCF)
+ * data for the Microwave Temperature Profiler (MTP)
+ * See rcf.h for more information
  */
 
 #include "mtp.h"
 
-// Structure and Union to Read the header record.  Note: For some reason the
-//  Header structure itself is not matching up with this (despite the VB6 
-//  code indicating that it "should").  For this reason another Union to get
-//  second half of the RCF header record is defined below.
-//  WARNING: Because VB does not have an end char, these char arrays don't 
-//  have an end char!!
+/**
+ * Structure and Union to Read the header record.  Note: For some reason the
+ * Header structure itself is not matching up with this (despite the VB6 
+ * code indicating that it "should").  For this reason another Union to get
+ * second half of the RCF header record is defined below.
+ * WARNING: Because VB does not have an end char, these char arrays don't 
+ * have an end char!!
+ */
 typedef struct {
   short RCformat;
   char  CreationDateTime[8];
@@ -48,11 +50,13 @@ typedef struct {
   
 typedef union{RCF_HDR Rcf_Hdr ; char Array[sizeof(RCF_HDR)];} My_Rcf_Hdr_Un;
   
-// Structure and Union to obtain the 2nd half of the header structure.  Note 
-//  That this also only obtains part of the rest of the header with the 
-//  floating point values going to 0.00 too early into the reading of the 
-//  Sentitivey matrix linear and Quadratic terms.  A puzzle for
-//  another day.
+/**
+ * Structure and Union to obtain the 2nd half of the header structure.  Note 
+ * That this also only obtains part of the rest of the header with the 
+ * floating point values going to 0.00 too early into the reading of the 
+ * Sentitivey matrix linear and Quadratic terms.  A puzzle for
+ * another day.
+ */
 typedef struct {
   char SURC[4];                 // SU IFB used to calculate RCs (added 20050128)
   float CHnLSBloss[3];          // CHn LSB RF loss
@@ -66,12 +70,13 @@ typedef struct {
 
 typedef union{END_HDR EH ; char Array[sizeof(END_HDR)];} My_EH;
   
-/* Structure and union to read each flight level co-efficient info
-   *  NOTE: sOBav and sOBrms are expected to be that channel 1 will be
-   *  in array elements 0-9 with element 0 being the highest scan angle and 
-   *  element 9 is the lowest scan angle.  Similarly, channel 2 will be found 
-   *  in elements 10-19 and channel 3 will be in elements 20-29.
-*/
+/**
+ * Structure and union to read each flight level co-efficient info
+ * NOTE: sOBav and sOBrms are expected to be that channel 1 will be
+ * in array elements 0-9 with element 0 being the highest scan angle and 
+ * element 9 is the lowest scan angle.  Similarly, channel 2 will be found 
+ * in elements 10-19 and channel 3 will be in elements 20-29.
+ */
 typedef struct {
   float sBP; 			// Flight level pressure altitude (hPa)
   float sOBrms[NUM_BRT_TEMPS];    // 1-sigma apriori observable errors
@@ -86,7 +91,9 @@ typedef struct {
 
 typedef union{RC_FL_Read RC_read ; char Array[sizeof(RC_FL_Read)];} My_RC_FL_Un;
    
-// Structure to hold each flight level retrieval coefficient information.
+/*
+ * Structure to hold each flight level retrieval coefficient information.
+ */
 typedef struct {
   float Palt; 		         // Flight level pressure altitude (hPa)
   float MBTRms[NUM_BRT_TEMPS];   // 1-sigma apriori Model Brightness Temp err
