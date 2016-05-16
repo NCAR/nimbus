@@ -105,6 +105,9 @@ typedef struct {
   float RC[NUM_RETR_LVLS][NUM_BRT_TEMPS];  // Retrieval Coefficients 
 } RC_Set_1FL;
 
+/**
+ *  Structure for returning needed information for performing a retrieval
+ */
 typedef struct {
   std::string RCFFileName;
   std::string RCFId;
