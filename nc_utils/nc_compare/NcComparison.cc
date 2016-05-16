@@ -60,13 +60,6 @@ generateReport(std::ostream& out, const ReportStyle& style)
     }
   }
 
-  if (rightend < leftbegin || rightbegin > leftend)
-  {
-    out <<
-      " *** Time periods do not overlap at all!\n"
-      "     Data comparison may be invalid.\n";
-  }
-
   out << style
       << "Left file time period: " << leftbegin << " - " << leftend << "\n";
   out << style
