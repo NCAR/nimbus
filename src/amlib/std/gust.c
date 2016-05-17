@@ -29,10 +29,23 @@ static NR_TYPE		pitch0[MAX_PROBES][nFeedBackTypes],
 			DELT[nFeedBackTypes];
 static bool		firstTime[MAX_PROBES][nFeedBackTypes];
 
+/* Under normal operation, if ADIFR is out, then both vertical and horizontal wind
+ * are not computed, and a nan is returned for all wind field.  Certain projects
+ * had large amounts of bad ADIFR and it may be desirable to compute the horizontal
+ * wind regardless.
+ */
+static bool computeHorizontalWindRegardless[MAX_PROBES] = { false, false, false, false };
+static double defaultATTACK = 2.5;
+
+
 /* -------------------------------------------------------------------- */
 void initGust(var_base *varp)
 {
   NR_TYPE	GetBoomLength();
+  bool		gustPod = false;
+
+  if (strstr(varp->name, "_GP"))
+    gustPod = true;
 
   DELT[LOW_RATE_FEEDBACK] = 1.0;
   DELT[HIGH_RATE_FEEDBACK] = 1.0/(float)cfg.ProcessingRate();
@@ -53,12 +66,16 @@ void initGust(var_base *varp)
    * time being.
    * @todo  This could be fetched from the nidas XML file after the sync_server/nimbus merge.
    */
-  if (strstr(varp->name, "_GP"))
+  if (gustPod)
     boomln[varp->ProbeCount] = 0.67;
 
   std::vector<float> bl;
   bl.push_back(boomln[varp->ProbeCount]);
   AddToDefaults(varp->name, "BoomLength", bl);
+
+  if (cfg.ProjectName().compare("PREDICT") == 0 && !gustPod)
+    computeHorizontalWindRegardless[varp->ProbeCount] = true;
+
 }
 
 /* -------------------------------------------------------------------- */
@@ -69,6 +86,7 @@ void swi(DERTBL *varp)
   NR_TYPE	tas_dab, delph, thedot, delth,
 		e, f, h, ab, p, r, s, t, psidot, bvns, bvew,
 		cs, ss, ch, sh, cr, sr, ta, tb;
+  bool		blankWI = false;
 
   tas	= GetSample(varp, 0);
   vew	= GetSample(varp, 1);
@@ -101,6 +119,12 @@ void swi(DERTBL *varp)
     firstTime[probeCnt][FeedBack] = FALSE;
   }
 
+  // For PREDICT, compute horizontal wind regardless of ADIFR/ATTACK status.
+  if (computeHorizontalWindRegardless[varp->ProbeCount] && isnan(attack))
+  {
+    attack = defaultATTACK;
+    blankWI = true;	// we will generate a WI also, blank it at the end.
+  }
 
   /* Coordinate transformation
    */
@@ -180,6 +204,11 @@ void swi(DERTBL *varp)
     vy[probeCnt] = 0.0;
     wi = 0.0;
   }
+
+  // For PREDICT, compute horizontal wind regardless of ADIFR/ATTACK status.
+  // Keep WI blanked though.
+  if (blankWI)
+    wi = floatNAN;
 
 //printf("wi=%g, tas_dab=%g, ab=%g, t=%g, thedot=%g\n", wi, tas_dab, ab, t, thedot);
   PutSample(varp, wi);
