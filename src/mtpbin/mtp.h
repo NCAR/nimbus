@@ -13,6 +13,7 @@
 #ifndef _mtp_h
 #define _mtp_han 
 
+#define NUM_CHANNELS   3  // # of frequencies used by the MTP
 #define NUM_RETR_LVLS 33  // # of retrieval levels per flight level in RCFs
 #define NUM_BRT_TEMPS 30        // # of brightness temperaturs= 
                           //     #scan angles * # channels

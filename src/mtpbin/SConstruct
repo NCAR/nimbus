@@ -64,4 +64,6 @@ env.Program(['tests/rcf_set_test.cc','rcf_set.cc','rcf.cc'])
 
 env.Program(['tests/retriever_test.cc','retriever.cc','rcf_set.cc','rcf.cc'])
 
+env.Program(['tests/Calibrator_test.cc', 'calibrator.cc'])
+
 #Alias('install', env.Install('$JLOCAL/bin', 'nc_gap'))
