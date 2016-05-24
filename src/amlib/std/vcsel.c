@@ -168,7 +168,10 @@ void sconcv(DERTBL *varp)
   }
 
 
-  if (strcmp(flightDateString, "201204") > 0)   // DC3 (May/June 2012) and later.
+  // Original new processing and co-efficients only went back to DC3.
+  // Now extending back to HIPPO-2.
+//  if (strcmp(flightDateString, "201204") > 0)   // DC3 (May/June 2012) and later.
+  if (strcmp(flightDateString, "200908") > 0)   // HIPPO-2 (Sep 2009) and later.
   {
     p_coeff = pCoeffs[1] * pow(PS_vxl, pCoeffs[2]) + pCoeffs[0];
     t_coeff = tCoeffs[1] * pow(AT_vxl, tCoeffs[2]) + tCoeffs[0];
