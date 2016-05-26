@@ -11,11 +11,14 @@ STATIC FNS:	none
 DESCRIPTION:	Boom Length is defined as the distance from the Inertial
 		system to the tip of the Radome.
 
-INPUT:		none
+NOTE:		Since corrected winds use the GPS or GPS blended data, they
+		need the boom length from the GPS antenna, which may be in
+		a different locale than the INS.
 
-OUTPUT:		float Boom_Length
+		e.g on the GV, INS is 4.4m from nose tip, Novatel antenna
+		is 8.7m from nose tip.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2016
 -------------------------------------------------------------------------
 */
 
