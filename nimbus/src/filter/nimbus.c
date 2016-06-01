@@ -91,11 +91,9 @@ int main(int argc, char *argv[])
   CreateFileSelectionBox(AppShell);
 
   Initialize();
-  ProcessArgv(argc, argv);
 
   signal(SIGUSR2, (void (*) (int))Quit);
 
-  nidas::util::LogScheme ls("nimbus");
   // For now, always log to the console.  Previous to the sync_server
   // merge, NIDAS messages from the separate sync_server process were
   // interleaved with the NIMBUS output.  To keep that behavior, which
@@ -106,21 +104,31 @@ int main(int argc, char *argv[])
   logger = Logger::createInstance(&std::cerr);
   // logger = Logger::createInstance("nimbus", LOG_CONS, LOG_LOCAL5);
 
-  // This will be removed when it can be set on command-line instead.
-  // XXX
-  ls.setShowFields("message");
-  ls.setParameter("trace_variables", "A1DC_LWOO,A1DC_LWO");
-  ls.setParameter("trace_samples", "46,600-602");
-  ls.setParameter("sync_warn_times_interval", "1");
-  ls.addConfig(LogConfig("verbose,function=TraceVariables"));
-  ls.addConfig(LogConfig("verbose,file=TwoD"));
-  ls.addConfig(LogConfig("verbose,file=SamplePipeline"));
-  ls.addConfig(LogConfig("verbose"));
-  // We still want info messages from everything else.
+  // Setup a default log scheme which can be overridden when log options
+  // are parsed in ProcessArgv() below.
+  nidas::util::LogScheme ls = logger->getScheme();
+  if (cfg.ProcessingMode() == Config::PostProcessing)
+  {
+    // We do not need to see logging timestamps when post-processing.
+    ls.setShowFields("message");
+  }
+
+  if (false)
+  {
+    ls.setParameter("trace_variables", "A1DC_LWOO,A1DC_LWO");
+    ls.setParameter("trace_samples", "46,600-602");
+    ls.setParameter("sync_warn_times_interval", "1");
+    ls.addConfig(LogConfig("verbose,function=TraceVariables"));
+    ls.addConfig(LogConfig("verbose,file=TwoD"));
+    ls.addConfig(LogConfig("verbose,file=SamplePipeline"));
+    ls.addConfig(LogConfig("verbose"));
+  }
+
+  // We still want at least info messages from everything else.
   ls.addConfig(LogConfig("level=info"));
   logger->setScheme(ls);
-  DLOG(("log fields set: ") << ls.getShowFieldsString());
-  // XXX
+
+  ProcessArgv(argc, argv);
 
   if (cfg.Interactive())
   {
