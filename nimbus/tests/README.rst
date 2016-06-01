@@ -282,11 +282,41 @@ Usage
 
 Pass the `--help` option to see all the usage info::
 
-    Usage: pnimbus.py [options] {operation ...} [flight ...]
+    Usage: pnimbus.py [options] {operation ...} [flight-spec ...]
 
-    The named operations will be run for all the flights named by setup files
-    in the <setup> directory, or else only the flights listed after the
-    operations.  These are the available operations:
+    The named operations will be run for all the flights with setup files which
+    match the flight specifiers listed after the operations.
+
+    Modified setup files, netcdf output files, and log files will be written to
+    the output directory named by the --output option.  The default output
+    directory is a subdirectory named after the project.
+
+    The flight specifiers have the form <project>/<profile>/<flight>, where any
+    of the fields can be glob patterns.  If there is no /, then the specifier
+    is just a project name and selects all the flights and profiles in that
+    project.  The project must be found as a subdirectory of the PROJ_DIR
+    variable.  An empty string on left side of the slash selects all the
+    projects, and an empty string after the slash selects all the flights.  The
+    profile field can be matched also, using the names mentioned below.  So a
+    specifier like //rf01 selects the first research flight of all the known
+    projects and profiles.
+
+    Two profiles are created automatically for each project: base and local.
+    The local profile runs the nimbus program within the local source tree.
+    The base profile runs the installed nimbus program and writes output to a
+    subdirectory of the local profile called BASE.  For the operations which
+    compare the outputs of a project, the local profiles will be compared
+    against the output of the corresponding base profiles.  In effect, the
+    comparison operations only run on the 'local' profiles and not on the
+    'base' profiles.  The command below only compares the local run with the
+    base run.
+
+      pnimbus.py compare CONTRAST//rf01
+
+    Even though CONTRAST//rf01 matches both local and base profiles, the base
+    profile does not have anything to compare against.
+
+    These are the available operations:
 
       nimbus:
 
@@ -305,74 +335,62 @@ Pass the `--help` option to see all the usage info::
 
       compare: 
 
-	Compare the netcdf files in the output directory with the output
-	specified in the original setup files.
+	Compare the netcdf file in the output directory with the output
+	specified in the original setup files, using nc_compare.
 
       diff:
 
 	Run diff on the nimbus output logs.  This is not necessarily possible
 	except when comparing against a base project (see --base), since
-	otherwise there are no log files.
+	otherwise there are no log files.  The log files are preprocessed to
+	remove timestamps from the log messages.
 
-      flights:
+      ncdiff:
 
-	List the flights for all of the setup files loaded for this project.
+	Run diff on the ncdump output of the netcdf output files.  The diff
+	command adds options to ignore the typical differences, and the ncdump
+	prints floating point numbers with 6 significant digits.
 
-    Modified setup files and netcdf output files will be written to the current
-    directory by default, or to the directory named by the --output option.
 
     Options:
       -h, --help         show this help message and exit
       --debug            
       --info             
       --error            
+      --flights          Ignore the operations and just list the flights selected by
+			 the specifiers.
       --dryrun           Load configuration and echo steps but do not run any
 			 commands.
-      --setup=SETUP      Path to directory of setup files, typically the
-			 Production directory of a project configuration.
-      --project=PROJECT  Specify project name to derive a setup path using the
-			 Production directory of a project configuration.
       --output=OUTPUT    Set output directory for netcdf files and modified setup
-			 files.
+			 files. Defaults to project name.
       --compare=COMPARE  Look for primary netcdf files in this directory, to be
-			 compared against the netcdf files in the output
-			 directory.
+			 compared against the netcdf files in the output directory.
       --nimbus=NIMBUS    Alternate path to nimbus executable.
-      --base             Generate a 'base' project from this project which uses
-			 the standard nimbus on the path, and compare this project
-			 against the output of that base project.  In other words,
-			 rather than compare against existing 'production' netcdf
-			 output files, create the production files directly with
-			 this script using the installed nimbus (the one on the
-			 PATH), then compare those files with the output of this
-			 same script but run with the alternate nimbus path.
 
 
 ^^^^^^^^^^^^^^^^^^^^^^
 Specifying the project
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The `pnimbus.py` script needs to know which project it is processing and
-where to find the raw data files.  Typically the raw data files are located
-by discovering all the setup files in the project's Production directory,
-and those in turn can be discovered in a two ways: specify the full path to
-the Production directory, or specify the project name and look for the
-project's configuration directory under the PROJ_DIR environment setting.
-The examples below use the 'flights' operation to just verify that the
-configuration loads correctly.
-
-Using `--project`::
+The `pnimbus.py` script needs to know which projects to process and where
+to find the raw data files.  Typically the raw data files are located by
+discovering all the setup files in each project's Production directory, and
+those in turn can be discovered by looking up the project name under the
+PROJ_DIR environment setting.  The examples below use the 'flights'
+operation to just verify that the configuration loads correctly.  We don't
+need to list all the profiles for each project, so the specifier matches
+only the 'local' profiles:
 
       barolo|139|% echo $PROJ_DIR
       /net/jlocal/projects
-      barolo|140|% ./pnimbus.py --project=CSET flights
-      Flights: ff01 rf01 rf02 rf03 rf04 rf05 rf06 rf07 rf08 rf09 rf10 rf11 rf12 rf13 rf14 rf15 rf16
+      barolo|140|% ./pnimbus.py --flights CSET/local
+CSET/local/ff01 CSET/local/rf01 CSET/local/rf02 CSET/local/rf03 CSET/local/rf04 CSET/local/rf05 CSET/local/rf06 CSET/local/rf07 CSET/local/rf08 CSET/local/rf09 CSET/local/rf10 CSET/local/rf11 CSET/local/rf12 CSET/local/rf13 CSET/local/rf14 CSET/local/rf15 CSET/local/rf16
 
-Using `--setup`:
+When no flight specifiers are given, the script uses a hardcoded list of
+default projects.  You can see the list of available default projects using
+the `--flights` option and matching a single flight:
 
-      barolo|141|% ./pnimbus.py --setup /net/jlocal/projects/CSET/GV_N677F/Production flights
-      Flights: ff01 rf01 rf02 rf03 rf04 rf05 rf06 rf07 rf08 rf09 rf10 rf11 rf12 rf13 rf14 rf15 rf16
-
+      ./pnimbus.py --flights nimbus '//rf01'
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Generating output for a project
@@ -395,16 +413,12 @@ the output file.
 
 This example runs NIMBUS on the CSET project, but only for flight `rf10`::
 
-      barolo|143|% mkdir CSET
-      barolo|144|% ./pnimbus.py --info --setup /net/jlocal/projects/CSET/GV_N677F/Production --output CSET nimbus rf10
-      Using site_tools: /h/eol/granger/.scons/site_scons/eol_scons/tools
-      Xvfb -displayfd 4
-      Looking for available displays...Ignore errors about servers already running.
-      INFO:NimbusProject:nimbus -b CSET/setup_rf10 >& CSET/setup_rf10.log
-      INFO:NimbusProject:ncReorder CSET/CSETrf10.nc /tmp/tmp_Awijl/CSETrf10.nc
-      99%
-      INFO:NimbusProject:mv /tmp/tmp_Awijl/CSETrf10.nc CSET/CSETrf10.nc
+     ./pnimbus.py --info nimbus CSET/local/rf10
 
+This command runs both base and local profiles for the same flight and then
+compares the output::
+
+     ./pnimbus.py --info nimbus compare CSET//rf10
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 Comparing project output
@@ -414,22 +428,6 @@ The output generated by the `pnimbus.py` script can be compared against
 other nimbus runs, either production data in the standard locations or
 output data generated by the `pnimbus.py` script with alternate versions of
 nimbus.
-
-By default `pnimbus.py` tries to locate and compare against existing
-production data, as shown in this example::
-
-      barolo|145|% ./pnimbus.py --info --setup /net/jlocal/projects/CSET/GV_N677F/Production --output CSET compare rf10
-      INFO:NimbusProject:nc_compare /scr/raf_data/CSET/CSETrf10.nc CSET/CSETrf10.nc
-      --- /scr/raf_data/CSET/CSETrf10.nc (left)
-      +++ CSET/CSETrf10.nc (right)
-      variables:
-	 Variable              Left Mean     Right Mean    Abs Error  Rel Err (%)
-	 --------              ---------     ---------- ------------ ------------
-	 DT1DC_LWOO             0.000014       0.000014   0.00000004         0.26
-	 RPS_LWOO               3.303371       3.294874   0.00849652         0.26
-	 A1DC_LWOO              1.608334       1.608337  -0.00000310         0.00
-      3 differences.
-      ERROR:NimbusProject:nc_compare exited with status 3
 
 The output files are compared using the `nc_compare` tool.  The
 `nc_compare` tool will show statistical differences between variables as
@@ -442,80 +440,32 @@ global attributes.
 Creating baseline output
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-The `--base` option to `pnimbus.py` can be used to create the baseline or
-"production" dataset manually, rather than relying on existing production
-data.  This is useful when the available production data have not been
-updated recently, so they are out of sync with the "production" nimbus.
-The raw data can be reprocessed with the production nimbus to create the
-baseline output files, against which the output from a development version
-of nimbus can be compared.
+`pnimbus.py` can be used to create a baseline dataset manually, rather than
+relying on existing production data.  This is useful when the available
+production data have not been updated recently, so they are out of sync
+with the "production" nimbus.  The raw data can be reprocessed with the
+production nimbus to create the baseline output files, against which the
+output from a development version (the "local" profile) of nimbus can be
+compared.
 
 This example runs nimbus for both the baseline and development project
 configurations to generate the nimbus output files.  The "production"
 nimbus is whatever is found on the PATH, while the development nimbus is
 specified with the `--nimbus` option.
 
-Really `--base` is a convenient way to specify an output direcory which is
-derived from the parent output directory.  If the parent project output
-directory is `CSET`, then the baseline output directory is `CSET/BASE`.
-The base and parent project can always be run separately by setting
-the output directory and nimbus path explicitly.  The two examples below
-run equivalent processing::
+The 'base' profile conveniently specifies an output direcory which is
+derived from the corresponding 'local' output directory.  If the local
+project output directory is `CSET`, then the baseline output directory is
+`CSET/BASE`.  The base and local project profiles can always be run
+separately by matching only those specifiers on the command-line
+specifiers.  For example, these commands create the baseline and local
+output separately, then compare them::
 
-      pnimbus.py --project=WINTER --output=WINTER2/BASE nimbus rf09
-      pnimbus.py --project=WINTER --output=WINTER2 --nimbus ../src/filter/nimbus nimbus rf09
+      pnimbus.py nimbus WINTER/base/rf09
+      pnimbus.py nimbus WINTER/local/rf09
+      pnimbus.py compare WINTER/local/rf09
 
-The above steps run with one command::
+This command runs the above three steps one after the other::
 
-      pnimbus.py --project=WINTER --base --output=WINTER2 nimbus rf09
+      pnimbus.py nimbus compare WINTER//rf09
 
-Here is the output from the above command::
-
-      barolo|166|% pnimbus.py --info --project=WINTER --base --output=WINTER2 nimbus rf09
-      INFO:NimbusProject:BASE directory: WINTER2/BASE
-      INFO:NimbusProject:Using local nimbus path by default since base is enabled: /h/eol/granger/code/sl7/raf-20140702-sync-server-merge/nimbus/src/filter/nimbus
-      Using site_tools: /h/eol/granger/.scons/site_scons/eol_scons/tools
-      Xvfb -displayfd 4
-      Looking for available displays...Ignore errors about servers already running.
-      _XSERVTransSocketINETCreateListener: ...SocketCreateListener() failed
-      _XSERVTransMakeAllCOTSServerListeners: server already running
-      _XSERVTransSocketINETCreateListener: ...SocketCreateListener() failed
-      _XSERVTransMakeAllCOTSServerListeners: server already running
-      INFO:NimbusProject:/opt/local/bin/nimbus -b WINTER2/BASE/setup_rf09 >& WINTER2/BASE/setup_rf09.log
-      INFO:NimbusProject:/h/eol/granger/code/sl7/raf-20140702-sync-server-merge/nc_utils/ncReorder/ncReorder WINTER2/BASE/WINTERrf09.nc /tmp/tmpBn77vn/WINTERrf09.nc
-      99%
-      INFO:NimbusProject:mv /tmp/tmpBn77vn/WINTERrf09.nc WINTER2/BASE/WINTERrf09.nc
-      Xvfb -displayfd 4
-      Looking for available displays...Ignore errors about servers already running.
-      _XSERVTransSocketINETCreateListener: ...SocketCreateListener() failed
-      _XSERVTransMakeAllCOTSServerListeners: server already running
-      _XSERVTransSocketINETCreateListener: ...SocketCreateListener() failed
-      _XSERVTransMakeAllCOTSServerListeners: server already running
-      INFO:NimbusProject:/h/eol/granger/code/sl7/raf-20140702-sync-server-merge/nimbus/src/filter/nimbus -b WINTER2/setup_rf09 >& WINTER2/setup_rf09.log
-      INFO:NimbusProject:/h/eol/granger/code/sl7/raf-20140702-sync-server-merge/nc_utils/ncReorder/ncReorder WINTER2/WINTERrf09.nc /tmp/tmpmCmlqm/WINTERrf09.nc
-      99%
-      INFO:NimbusProject:mv /tmp/tmpmCmlqm/WINTERrf09.nc WINTER2/WINTERrf09.nc
-
-
-The `--base` option is especially convenient when running comparisons::
-
-      barolo|150|% pnimbus.py --info --project=WINTER --base --output=WINTER2 compare rf09
-      INFO:NimbusProject:BASE directory: WINTER2/BASE
-      INFO:NimbusProject:nc_compare WINTER2/BASE/WINTERrf09.nc WINTER2/WINTERrf09.nc
-      --- WINTER2/BASE/WINTERrf09.nc (left)
-      +++ WINTER2/WINTERrf09.nc (right)
-      variables:
-      !          float DUMMY_AFTL1(Time) ;
-       -                 Category = "Raw" ;
-       +                 Category = "Analog" ;
-	 Variable              Left Mean     Right Mean    Abs Error  Rel Err (%)
-	 --------              ---------     ---------- ------------ ------------
-	 PFLWS_RPT             14.096433      14.096460  -0.00002766         0.00
-	 PTMP_RPT              17.957996      17.958014  -0.00001717         0.00
-	 PREF_RPT               8.163968       8.163973  -0.00000477         0.00
-	 PLGB_RPT               0.363005       0.363005   0.00000006         0.00
-	 PHGB_RPT               0.182454       0.182454   0.00000003         0.00
-	 DELTAT_RPT           100.464905     100.464890   0.00001526         0.00
-	 PMGB_RPT               0.352280       0.352280   0.00000003         0.00
-      8 differences.
-      ERROR:NimbusProject:nc_compare exited with status 8

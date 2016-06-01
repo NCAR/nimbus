@@ -140,10 +140,6 @@ class NimbusProject(object):
         self.dryrun = False
         # NIMBUS executable
         self.nimbus = None
-        # If this project run should be compared against the same project
-        # run but with a different nimbus executable, then this member
-        # holds the base project instance.
-        self.base = None
 
     operations = ['nimbus', 'reorder', 'compare', 'diff', 'ncdiff',
                   'process2d', 'slices']
@@ -157,43 +153,28 @@ class NimbusProject(object):
         parser.add_option("--dryrun", action="store_true", default=False,
                           help="Load configuration and echo steps but "
                           "do not run any commands.")
-        parser.add_option("--setup", type='string', 
-                          help="Path to a directory of setup files, "
-                          "such as the Production directory of a "
-                          "project configuration.  If the project or "
-                          "aircraft has not been set yet, then they will be "
-                          "set by parsing them from the setup path, "
-                          "assuming the path is a conventional "
-                          "Production directory.")
-        parser.add_option("--project", type='string', 
-                          help="Specify the project name.  The default "
-                          "setup path is derived from the project name and "
-                          "projects directory using the conventional "
-                          "Production directory path.")
+        # parser.add_option("--setup", type='string', 
+        #                   help="Path to a directory of setup files, "
+        #                   "such as the Production directory of a "
+        #                   "project configuration.  If the project or "
+        #                   "aircraft has not been set yet, then they will be "
+        #                   "set by parsing them from the setup path, "
+        #                   "assuming the path is a conventional "
+        #                   "Production directory tree.")
+        # parser.add_option("--project", type='string', 
+        #                   help="Specify the project name.  The default "
+        #                   "setup path is derived from the project name and "
+        #                   "projects directory using the conventional "
+        #                   "Production directory path.")
         parser.add_option("--output", type='string', default=None,
                           help="Set output directory for netcdf files "
-                          "and modified setup files. Defaults to project name. "
-                          "With --base, the base output directory will be "
-                          "<output>/BASE.")
+                          "and modified setup files. Defaults to project name.")
         parser.add_option("--compare", type='string', 
                           help="Look for primary netcdf files in this "
                           "directory, to be compared against the netcdf "
                           "files in the output directory.")
         parser.add_option("--nimbus", type='string', 
                           help="Alternate path to nimbus executable.")
-# pylint: disable=C0330
-        parser.add_option("--base", action="store_true", default=False,
-                          help=
-"""Generate a 'base' project from this project which uses the standard
-nimbus on the path, and compare this project against the output of that
-base project.  In other words, rather than compare against existing
-'production' netcdf output files, create the production files directly with
-this script using the installed nimbus (the one on the PATH), then compare
-those files with the output of this same script but run with the alternate
-nimbus path.  The output directory is a subdirectory called BASE under the
-main output directory."""
-        )
-# pylint: enable=C0330
 
     def applyOptions(self, options):
         """
@@ -202,24 +183,23 @@ main output directory."""
         """
         self.dryrun = options.dryrun
         self.nimbus = options.nimbus
-        if options.project:
-            self.project = options.project
+        # if options.project:
+        #     self.project = options.project
         self.setOutputDirectory(options.output)
         self.setCompareDirectory(options.compare)
-        if options.setup:
-            self.setSetupPath(options.setup)
-        if options.base:
-            options.base = False
-            self.createBase(options)
-            # Restore the base option in case this options instance is applied
-            # to other project instances.
-            options.base = True
-            # If using a base but nimbus not set, then use the local source
-            # path as the default.
-            if self.nimbus is None:
-                self.nimbus = self.getLocalNimbusPath()
-                logger.debug("Using local nimbus path by default "
-                             "since base is enabled: " + str(self.nimbus))
+        # if options.setup:
+        #     self.setSetupPath(options.setup)
+
+    def setupLocal(self):
+        """
+        Setup a 'local' configuration for this instance by setting the nimbus
+        executable to the path in the local source tree.  If no output
+        directory has been set, derive a local for that too.
+        """
+        if self.output_dir is None:
+            self.setOutputDirectory(self.project)
+        self.nimbus = self.getLocalNimbusPath()
+        logger.debug("Using local nimbus path: " + str(self.nimbus))
 
     def getLocalNimbusPath(self):
         """
@@ -240,20 +220,20 @@ main output directory."""
             nimbus = os.path.abspath(nimbus)
         return nimbus
 
-    def createBase(self, options):
+    def setupBase(self, project):
         """
-        Configure a base project instance against which the output from this
-        NimbusProject instance can be compared.
+        Setup a base configuration based on the given NimbusProject.  A base
+        configuration derives a different output directory path and resets
+        the nimbus executable to use the one on the path.
         """
-        base = NimbusProject()
-        base.applyOptions(options)
-        # Reset the nimbus path if it was set.  If it was not set, then
-        # that is an error that will be caught on open().
-        if options.nimbus:
-            base.nimbus = None
-        # Propagate the project setting.
-        base.setProjectName(self.project)
-        self.base = base
+        self.nimbus = None
+        outdir = self.getOutputDirectory()
+        if outdir is None:
+            outdir = self.project
+        base = os.path.join(outdir, "BASE")
+        self.setOutputDirectory(base)
+        logger.debug("BASE directory: %s", base)
+        project.setBaseProject(self)
 
     def setProjectsPath(self, projects):
         self.projects = projects
@@ -305,18 +285,14 @@ main output directory."""
         this directory.
         """
         self.output_dir = outdir
+        # If setup files already loaded, override their output directory.
+        if self.output_dir:
+            for setup in self.setups.values():
+                setup.setOutputDirectory(self.output_dir)
+        logger.debug("Output directory: %s", self.output_dir)
 
     def getOutputDirectory(self):
         return self.output_dir
-
-    def createBaseDirectory(self):
-        "Create and return a BASE directory under the output directory."
-        base = os.path.join(self.getOutputDirectory(), "BASE")
-        if not os.path.exists(base):
-            logger.debug("creating directory %s", base)
-            os.mkdir(base)
-        logger.debug("BASE directory: %s", base)
-        return base
 
     def _dump(self):
         return str({'projects':self.projects, 'project':self.project,
@@ -327,16 +303,22 @@ main output directory."""
         """
         Initialize and validate derived paths and load the setup files for the
         configured project.  After calling open(), getFlights() will return
-        the list of flights whose setup files were loaded.  If a base
-        project has been configured, then that will also be opened.
+        the list of flights whose setup files were loaded.
         """
-        # Do the parent first, in case the parent output directory needs to
-        # be created before the base output directory.
         self.setupDirectories()
         self.loadSetupFiles()
-        if self.base:
+
+    def setBaseProject(self, base):
+        """
+        Specify an instance of NimbusProject to be used as the base comparison
+        for this instance.  This method checks that the two projects
+        actually use different nimbus paths, just as a sanity check, and it
+        sets the base project's output directory as the compare directory
+        for this project.
+        """
+        if base:
             # Check that nimbus paths are different.
-            bnimbus = self.base.getNimbusPath()
+            bnimbus = base.getNimbusPath()
             dnimbus = self.getNimbusPath()
             if bnimbus is None:
                 raise NimbusProjectException(
@@ -347,21 +329,13 @@ main output directory."""
                     "parent project are the same! (%s) "
                     "Use --nimbus to set an alternate path for the "
                     "parent project configuration." % (dnimbus))
-
-            # The base output directory is deferred to here in case the
-            # parent call to setupDirectories() just assigned a default
-            # output directory.
-            basedir = os.path.join(self.getOutputDirectory(), "BASE")
-            self.base.setOutputDirectory(basedir)
-            self.setCompareDirectory(self.base.getOutputDirectory())
-            self.base.open()
+            self.setCompareDirectory(base.getOutputDirectory())
 
     def close(self):
         """
         Since there is an open() method, this is the corresponding close().
         """
-        if self.base:
-            self.base.close()
+        pass
 
     def aircraftFromProject(self, pdir):
         """
@@ -405,13 +379,15 @@ main output directory."""
         if not os.path.exists(self.prodpath):
             raise NimbusProjectException("Setup directory does not exist: %s" % 
                                          (self.prodpath))
+
+    def makeOutputDirectory(self):
+        "Make sure the output directory exists."
         if self.output_dir is None:
-            self.output_dir = self.project
+            self.setOutputDirectory(self.project)
         if not os.path.exists(self.output_dir):
             logger.debug("creating directory %s...", self.output_dir)
             if not self.dryrun:
                 os.mkdir(self.output_dir)
-        logger.debug("Output directory: %s", self.output_dir)
 
     def loadSetupFiles(self):
         "Load and reconfigure all the setup files for this project."
@@ -435,16 +411,10 @@ main output directory."""
             logger.error("Skipping %s: could not determine flight number." %
                          (path))
             return
-        if self.output_dir is None:
-            raise NimbusProjectException("No output directory is set.")
-        setup.setOutputDirectory(self.output_dir)
+        if self.output_dir:
+            setup.setOutputDirectory(self.output_dir)
         ifile = setup.resolveInputFile()
-        if not ifile:
-            logger.debug("Skipping %s: "
-                         "input file could not be found." % (path))
-            return
-        logger.debug("Loaded %s, resolved input file: %s" %
-                     (setup.path, ifile))
+        logger.debug("Loaded %s, input file: %s" % (setup.path, ifile))
         self.setups[setup.flight] = setup
 
     def getFlights(self):
@@ -543,17 +513,23 @@ main output directory."""
         for NIMBUS to read with the -b option.  If NIMBUS succeeds, then
         the ncReorder step is run automatically on the output.
         """
-        logger.debug("Running setup file %s with output: %s" %
-                     (setup.getPath(), setup.getOutputFile()))
+        ifile = setup.resolveInputFile()
+        if not ifile:
+            logger.error("Skipping %s, input file could not be resolved: %s" %
+                         (setup.path, setup.ifile))
+            return
+        logger.debug("Running setup file %s, input: %s, output: %s" %
+                     (setup.getPath(), ifile, setup.getOutputFile()))
         logger.debug("PROJ_DIR=%s; DISPLAY=%s" % 
                      (os.environ['PROJ_DIR'], os.environ.get('DISPLAY')))
+        self.makeOutputDirectory()
         cmd = [self.nimbus or "nimbus", '-b', setup.getPath()]
         if False:
             cmd += ['--loglevel', 'verbose']
         if not self.dryrun:
             setup.writeSetupFile()
         logfile = setup.getPath() + ".log"
-        xcode = self._runCommand(cmd, logfile)
+        xcode_ = self._runCommand(cmd, logfile)
         # Run ncReorder on the output file no matter what.  If the output
         # was not created, then it fails.  If it was created but nimbus
         # exited with an error, then it will still be reordered.
@@ -575,15 +551,21 @@ main output directory."""
         that to return the correct path to the output file.
         """
         cfile = setup.original_ofile
+        # Rather than default to the original output, the lack of a
+        # compare_dir indicates this project has nothing to compare
+        # against.
+        cfile = None
         # Redirect source file if comparison directory given.
         if self.compare_dir is not None:
-            cfile = os.path.basename(cfile)
+            cfile = os.path.basename(setup.original_ofile)
             cfile = os.path.join(self.compare_dir, cfile)
         return cfile
 
     def runCompare(self, setup):
         "Run nc_compare between the setup output and the comparison file."
         cfile = self.getComparisonOutputFile(setup)
+        if not cfile:
+            return
         ofile = setup.getOutputFile()
         cmd = ['nc_compare', '--showindex', cfile, ofile]
         self._runCommand(cmd)
@@ -598,6 +580,8 @@ main output directory."""
                    "--ignore-matching-lines=netcdf "
                    "--suppress-common-lines").split()
         cfile = self.getComparisonOutputFile(setup)
+        if not cfile:
+            return
         ofile = setup.getOutputFile()
         tdir = tempfile.mkdtemp()
         ncdump = "ncdump -p 6".split()
@@ -611,6 +595,8 @@ main output directory."""
     def runDiff(self, setup):
         "Run diff between the nimbus log files."
         cfile = self.getComparisonOutputFile(setup)
+        if not cfile:
+            return
         cfile = os.path.dirname(cfile)
         cfile = os.path.join(cfile, os.path.basename(setup.getPath()))
         cfile += ".log"
@@ -699,9 +685,6 @@ main output directory."""
         for arg in args:
             if arg in NimbusProject.operations:
                 operations.append(arg)
-            elif not operations:
-                raise NimbusProjectException(
-                    "An operation must be specified first.")
             else:
                 flights.append(arg)
         return (operations, flights)
@@ -715,8 +698,22 @@ main output directory."""
         flights = fnmatch.filter(flights, pattern)
         setups = {f:self.setups[f] for f in flights}
         self.setups = setups
-        if self.base:
-            self.base.selectFlights(pattern)
+
+    def _dispatch(self, operation, flight):
+        if operation == "nimbus":
+            self.nimbusFlights([flight])
+        elif operation == "process2d":
+            self.process2dFlights([flight])
+        elif operation == "reorder":
+            self.reorderFlights([flight])
+        elif operation == "compare":
+            self.compareFlights([flight])
+        elif operation == "diff":
+            self.diffFlights([flight])
+        elif operation == "slices":
+            self.sliceFlights([flight])
+        elif operation == "ncdiff":
+            self.ncdiffFlights([flight])
 
     def run(self, operations, flights=None):
         """
@@ -724,38 +721,18 @@ main output directory."""
         flights.  If flights is empty, then run the operation for all of
         the flights, the list returned by getFlights().
         """
-        # When running a base project, the compare and diff operations are
-        # not relevant.
-        xbase = ['compare', 'diff', 'ncdiff', 'flights']
-
         # If we'll be running nimbus anywhere, start xvfb.
         try:
             if 'nimbus' in operations:
                 self._startXvfb()
 
-            # Run the operations for each flight, beginning with base if enabled.
+            # Run the operations for each flight, beginning with base if
+            # enabled.
             if not flights:
                 flights = self.getFlights()
             for flight in flights:
-                if self.base:
-                    self.base.run([op for op in operations if op not in xbase],
-                                  [flight])
                 for op in operations:
-                    if op == "nimbus":
-                        self.nimbusFlights([flight])
-                    if op == "process2d":
-                        self.process2dFlights([flight])
-                    elif op == "reorder":
-                        self.reorderFlights([flight])
-                    elif op == "compare":
-                        self.compareFlights([flight])
-                    elif op == "diff":
-                        self.diffFlights([flight])
-                    elif op == "slices":
-                        self.sliceFlights([flight])
-                    elif op == "ncdiff":
-                        self.ncdiffFlights([flight])
-
+                    self._dispatch(op, flight)
         finally:
             if 'nimbus' in operations:
                 self._stopXvfb()
@@ -783,17 +760,18 @@ setup_rf13
 # env PYTHONPATH=$HOME/.scons/site_scons:/usr/lib/scons py.test NimbusProject.py
 #
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 def test_load_setups():
     np = NimbusProject('HIPPO-5', 'GV_N677F')
+    np.setOutputDirectory('/tmp')
     np.open()
     assert(len(np.setups) == len(_setup_files))
     _setup_files.sort()
     keys = np.setups.keys()
     keys.sort()
     assert([s.path for s in [np.setups[k] for k in keys]] == 
-           ['./'+s for s in _setup_files])
+           ['/tmp/'+s for s in _setup_files])
     np.close()
 
 def test_prodpath_parse():
