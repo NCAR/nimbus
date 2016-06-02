@@ -223,10 +223,10 @@ class NimbusProject(object):
     def setupBase(self, project):
         """
         Setup a base configuration based on the given NimbusProject.  A base
-        configuration derives a different output directory path and resets
-        the nimbus executable to use the one on the path.
+        configuration derives a different output directory path, but it
+        uses the nimbus executable specified in the options, since
+        setupLocal() overrides it to be the one in the source tree.
         """
-        self.nimbus = None
         outdir = self.getOutputDirectory()
         if outdir is None:
             outdir = self.project
