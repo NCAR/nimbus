@@ -528,6 +528,10 @@ class NimbusProject(object):
             cmd += ['--loglevel', 'verbose']
         if not self.dryrun:
             setup.writeSetupFile()
+            try:
+                os.unlink(setup.getOutputFile())
+            except OSError:
+                pass
         logfile = setup.getPath() + ".log"
         xcode_ = self._runCommand(cmd, logfile)
         # Run ncReorder on the output file no matter what.  If the output
