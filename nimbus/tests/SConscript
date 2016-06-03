@@ -64,7 +64,6 @@ if 'updatetestdata' in COMMAND_LINE_TARGETS:
     nenv.Tool('nidas')
     nenv.Tool('nimbus')
     nenv.SetProjDirENV('projects')
-    # nenv['NIDAS_PATH'] = '/opt/local/nidas'
     sync_server = nenv.NidasApp('sync_server')
     sync_dump = nenv.NidasApp('sync_dump')
     

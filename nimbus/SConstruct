@@ -11,32 +11,11 @@ import eol_scons
 def nimbusbase(env):
     env.Require(['buildmode', 'nidas', 'netcdf', 'jlocal'])
     env['CC'] = ['g++']
-    env.Append(LIBPATH=['#/lib', '$JLOCAL/lib'])
+    env.Append(LIBPATH=['$JLOCAL/lib'])
     env.Append(CPPPATH=['#/include', '#/src/filter'])
     env.Append(CCFLAGS=Split("-Wno-write-strings -Wstrict-aliasing"))
 
 env = Environment(platform='posix', tools=['default', 'svninfo', nimbusbase])
-
-# This is defunct.  NIMBUS does not currently build without real-time enabled,
-# so it must be that no one still needs to build it that way.
-#
-# env.realtime = ARGUMENTS.get('rt', 1)
-
-import SCons
-file = "sconsign-%s" % (SCons.__version__)
-print "Using SConsignFile: %s" % (file)
-SConsignFile(File(file).abspath)
-
-# No RCS/SCCS checkout.
-# env.SourceCode(['.', 'amlib', 'filter'], None)
-
-# This should be handled by the jlocal tool.
-#
-# # This is mostly for buildbot, which does not use the Jeffco login.
-# try: env['JLOCAL'] = os.environ['JLOCAL']
-# except KeyError:
-#     print "\n$JLOCAL not found!  Defaulting to '/opt/local'\n"
-#     env['JLOCAL'] = '/opt/local/'
 
 env.SvnInfo('include/svnInfo.h', '.')
 

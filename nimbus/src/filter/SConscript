@@ -71,9 +71,8 @@ sources = sources + [md5o]
 # This may be unnecessary and even undesirable with the introduction of
 # the ld.so.conf file.  However, leave it in for now, especially for the
 # case of building nimbus against the buildbot nidas.
-archlibdir = sharedlibrary.GetArchLibDir(env)
-nlibpath = os.path.join(env['NIDAS_PATH'], archlibdir)
-env.Append(_LIBFLAGS=['-Wl,-R', nlibpath])
+if env.get('NIDAS_LD_RUN_PATH'):
+  env.Append(_LIBFLAGS=['-Wl,-R', "${NIDAS_LD_RUN_PATH}"])
 
 libn = env.StaticLibrary('nimbus', sources)
 
