@@ -118,16 +118,20 @@ There is also an occasional need to look at data at the sample rate.
 
 <h3><a name="fname">1 Filename</a></h3>
 
-<p>RAF uses a naming convention consisting of the 3 digit project number,
-followed by the flight type, followed by a 2 digit flight number, followed
-by "<kbd>.nc</kbd>".
+<p>RAF uses a naming convention consisting of a project designator
+followed by the flight type, followed by a 2 digit flight number, followed by an 
+indicator of sample rate ( 'h' to indicate high-rate data, low-rate data has no indicator), 
+followed
+by "<kbd>.nc</kbd>". Prior to about 2005/2006, field projects were
+designated with a 3 digit number. With the adoption of ADS-3 / nidas in
+2005/2006, a switch was made to upper-case project names.
 <p>
 
 e.g.<br>
 <div class="example">
 
-<span class="runin">217tf01.nc</span> would be <b>test</b> flight 1 from project 217.<br>
-<span class="runin">131ff01.nc</span> would be <b>ferry</b> flight 1 from project 131.<br>
+<span class="runin">PREDICTtf01.nc</span> would be low-rate data from <b>test</b> flight 1 from the PREDICT project.<br>
+<span class="runin">131ff01.nc</span> would be low-rate data <b>ferry</b> flight 1 from project 131.<br>
 <span class="runin">803rf17h.nc</span> would be high-rate data from <b>research</b> flight 17 of project 803.<br>
 </div>
 <p>
