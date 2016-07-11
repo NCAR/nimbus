@@ -586,6 +586,7 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
 {
   int		tap, i;	/* Indecies for coef and input data arrays.	*/
   filterType	result;	/* Temporary accumulator for output calc.	*/
+  NR_TYPE	sumTap; /* accumulator for taps used (non nan).		*/
 
   /* Input was just requested; here it is.	*/
   if (thisMRF->task == GET_INPUT)
@@ -615,6 +616,7 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
 
       /* Filter. */
       result = 0.0;
+      sumTap = 0.0;
 
       if (thisMRF->modulo)
         {
@@ -642,24 +644,36 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
             if ((value=getBuff(i, thisMRF->inBuff)) < thisMRF->modulo->bound[0])
               value += thisMRF->modulo->diff;
 
-            result += thisMRF->filter->aCoef[tap] * (double)value;
+            if ( !isnan(value) )
+              {
+              result += thisMRF->filter->aCoef[tap] * (double)value;
+              sumTap += thisMRF->filter->aCoef[tap];
+              }
             }
           }
         else
           {
           for(i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
-            result += thisMRF->filter->aCoef[tap] *
+            if ( !isnan((double)getBuff(i, thisMRF->inBuff)) )
+              {
+              result += thisMRF->filter->aCoef[tap] *
                     (double)getBuff(i, thisMRF->inBuff);
+              sumTap += thisMRF->filter->aCoef[tap];
+              }
           }
         }
       else
         {
         for(i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
-          result += thisMRF->filter->aCoef[tap] *
+          if ( !isnan((double)getBuff(i, thisMRF->inBuff)) )
+            {
+            result += thisMRF->filter->aCoef[tap] *
                     (double)getBuff(i, thisMRF->inBuff);
+            sumTap += thisMRF->filter->aCoef[tap];
+            }
         }
 
-      *output = result;
+      *output = result / sumTap;
 
       /*  Advance time.   */
       thisMRF->inTime++;
