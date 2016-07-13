@@ -183,15 +183,15 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
       {
         x[goodPoints] = (ri * 1000) + (gap_size * i) + dynLag;
         y[goodPoints] = curPtr[i];
-        if (goodPoints > 0 && x[goodPoints] == x[goodPoints-1])
+        if (goodPoints > 0 && x[goodPoints] <= x[goodPoints-1])
         {
 /*
           LogThisRecordMsg(this_rec, "!! Duplicate timestamp from nidas !!");
           printf(" Duplicate timestamp from nidas! %s: ri=%zu i=%zu, sr=%zu:\n", vp->name, ri, i, vp->SampleRate);
           printf("    x=%f y=%f\n", x[goodPoints-1], y[goodPoints-1]);
           printf("    x=%f y=%f\n", x[goodPoints], y[goodPoints]);
-*/
           x[goodPoints] += 1;
+*/
         }
         else
           ++goodPoints;
