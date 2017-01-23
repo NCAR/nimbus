@@ -114,10 +114,12 @@ int main(int argc, char *argv[])
       strcpy(constructor, strrchr(constructor, ')')+1);
 
     if (strcmp(constructor, "NULL"))
+      {
       if (strcmp(sFun, "NULL") == 0)
         fprintf(proto, "\t%s(var_base *),\n", constructor);
       else
         fprintf(proto, "\t%s(var_base *),\n", constructor);
+      }
 
     if (strcmp(xlateFn, "NULL") && strncmp(xlateFn, "(void*)", 7))
       fprintf(proto, "\t%s(RAWTBL *, void *, NR_TYPE *),\n", xlateFn);
