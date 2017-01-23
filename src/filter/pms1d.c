@@ -321,11 +321,19 @@ void PMS1D_SetupForADS3()
     else
       setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
   }
+  else
   if (cfg.ProjectName().compare("ARISTO2016") == 0)
   {
     setSerialNumberAndProbeType("AUHSAS_LWI", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
     setSerialNumberAndProbeType("AUHSAS_CAB", "UHSAS011", PROBE_PMS1D | PROBE_PCASP);	// Univ Wyoming
     setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+    setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+  }
+  else
+  if (cfg.ProjectName().compare("ARISTO2017") == 0)
+  {
+    setSerialNumberAndProbeType("ACDP_RWIO", "CDP016", PROBE_PMS1D | PROBE_CDP);
+    setSerialNumberAndProbeType("ACDP_RWII", "CDP058", PROBE_PMS1D | PROBE_CDP);
     setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
   }
 }
