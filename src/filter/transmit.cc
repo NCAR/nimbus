@@ -54,7 +54,7 @@ void sqlTransmit::sendString(const std::string& str)
   sprintf(fName, "%s/%s_nimbus_start_%s.gz", dir, _aircraft.c_str(), timeStamp);
   }
 
-  gzFile gzfd = gzopen(fName, "w+");
+  gzFile gzfd = gzopen(fName, "wb");
 
   gzwrite(gzfd, str.c_str(), str.length());
   gzclose(gzfd);

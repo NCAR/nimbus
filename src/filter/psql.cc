@@ -849,7 +849,7 @@ PostgreSQL::escape_string(const std::string & target) const
 }
 
 /* -------------------------------------------------------------------- */
-static const std::string PGHOST = "ac-server";
+static const std::string PGHOST = "acserver";
 static const std::string PGDATABASE = "real-time";
 static const std::string PGUSER = "ads";
 
@@ -897,7 +897,7 @@ PostgreSQL::outputGroundDBInitPacket()
   strftime(timeStamp, sizeof(timeStamp), ISO8601_T, gmtime(&t));
   sprintf(fName, "%s/%s_nimbus_start_%s.gz", dir, cfg.AircraftString().c_str(), timeStamp);
 
-  gzFile gzfd = gzopen(fName, "wxh");
+  gzFile gzfd = gzopen(fName, "wbx");
   gzwrite(gzfd, _groundDBinitString.str().c_str(), _groundDBinitString.str().length());
   gzclose(gzfd);
 
