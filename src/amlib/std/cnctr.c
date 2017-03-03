@@ -59,12 +59,21 @@ void sconcn(DERTBL *varp)
   /* Convert to ambient.  This is new as of 12/2007, older projects would
    * need DependTable upgrade.
    */
-  if (varp->ndep > 2)
+  if (varp->ndep > 5)
   {
     NR_TYPE pcn = GetSample(varp, 2);
     NR_TYPE cntmp = GetSample(varp, 3);
     NR_TYPE psx = GetSample(varp, 4);
     NR_TYPE atx = GetSample(varp, 5);
+
+    /* Use for WaterCN.  Used in TORERO and DC3.
+     */
+    if (varp->ndep == 7)	// Use for WaterCN.
+    {
+      NR_TYPE ltcn = GetSample(varp, 6);
+      concn /= ltcn;
+    }
+
     concn *= (psx / pcn) * (cntmp + Kelvin) / (atx + Kelvin);
   }
 
