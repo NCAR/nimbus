@@ -588,6 +588,10 @@
 	"GGVEW",	NULL,           xlggvew,	NULL,
 	"GGVNS",	NULL,           xlggvns,	NULL,
 #
+# Novatel GGVSPD geo-loop.
+#
+	"WPG",		NULL,		NULL,		swpg,
+#
 #	C Midgets
 #
 	"CLAT",		NULL,		xlclat,		NULL,
