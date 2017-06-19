@@ -24,6 +24,7 @@ conccn.c
 cvi.c
 efield.c
 flux.c
+fo3.c
 geopot.c
 gerber.c
 harp.c

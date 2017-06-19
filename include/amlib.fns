@@ -660,6 +660,7 @@
 #	Chemstry vars.
 #
 	"CO2C",		NULL,		NULL,		sco2c,
+	"FO3C",		NULL,		NULL,		sfo3c,
 	"XCO2C",	(void(*)(void*))LICORinit,	NULL,		sxco2c,
 	"XLH2OC",	NULL,		NULL,		sxlh2oc,
 	"XMRLI",	NULL,		NULL,		sxmrli,
