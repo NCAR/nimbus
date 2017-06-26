@@ -4,8 +4,6 @@ OBJECT NAME:    atf.c
 
 FULL NAME:      Ambient Temperature Fast/Unheated
 
-ENTRY POINTS:   satb()
-
 DESCRIPTION:    Ambient Temperature for Rosemount 102 Unheated:
 
 COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2015
@@ -40,8 +38,9 @@ void satf(DERTBL * varp)
   if (rt < -Kelvin)
     rt  = -Kelvin;
 
-  /* New calculation using mach-dependent recovery factor */
-  PutSample(varp, AMBIENT(rt, recovery, mach*mach));
+  NR_TYPE atf = AMBIENT(rt, recovery, mach*mach);
+
+  PutSample(varp, atf);
 }
 
 /* END ATF.C */

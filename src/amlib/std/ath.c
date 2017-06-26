@@ -4,10 +4,6 @@ OBJECT NAME:    ath.c
 
 FULL NAME:      Ambient Temperature for Heated Sensors
 
-ENTRY POINTS:   sath()
-
-STATIC FNS:     none
-
 DESCRIPTION:    Ambient Temperature for Harco and Rosemont anti-iced sensor
 
 COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2015
