@@ -22,7 +22,7 @@ void atfInit(var_base *varp)
   float *tmp;
 
   if ( (tmp = GetDefaultsValue("UNHEATED_RF", varp->name)) )
-    RF_C0 = (int)tmp[0];
+    RF_C0 = tmp[0];
 
   sprintf(buffer, "%.4f + 0.0283 log10(mach) + 0.0374 (log10(mach))^2 + 0.0762 (log10(mach))^3", RF_C0);
   AddToAttributes(varp->name, "RecoveryFactor", buffer);
