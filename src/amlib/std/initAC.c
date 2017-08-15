@@ -38,6 +38,10 @@ NR_TYPE	(*pcorPSFv2)(NR_TYPE, NR_TYPE, NR_TYPE), (*pcorQCFv2)(NR_TYPE, NR_TYPE, 
 	(*pcorPSFDv2)(NR_TYPE, NR_TYPE, NR_TYPE), (*pcorQCRv2)(NR_TYPE, NR_TYPE, NR_TYPE),
 	(*pcorQCFRv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
+// Above functions, but for new pitot-static mounted in the bird strike zone on the GV.
+NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE), 
+        (*pcorQCTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
+
 
 // Aircraft specific pcor (pressure correction).
 //  Letter designation is for location; w=wing, b=boom, r=radome, f=fuselage.
@@ -53,7 +57,7 @@ NR_TYPE	pcorw8(NR_TYPE), pcorf8(NR_TYPE),
 // GV
 	pcorr5(NR_TYPE),pcorf5(NR_TYPE), pcorq5(NR_TYPE), pcorr5_2(NR_TYPE, NR_TYPE, NR_TYPE),
 	pcorf5_2(NR_TYPE, NR_TYPE, NR_TYPE), pcorq5_2(NR_TYPE, NR_TYPE, NR_TYPE),
-	pcorf5v2(NR_TYPE, NR_TYPE, NR_TYPE);
+	pcorf5v2(NR_TYPE, NR_TYPE, NR_TYPE), pcortf5(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
 
 /* reference airspeed on J-W liquid water content converted from MPH
  * to m/s
@@ -221,6 +225,8 @@ void InitAircraftDependencies()
         pcorQCFv2 = pcorf5v2;
         pcorQCRv2 = pcorf5v2;
         pcorPSFv2 = pcorf5v2;
+        pcorPSTF = pcortf5;
+        pcorQCTF = pcortf5;
 /*
       }
       else
@@ -390,6 +396,25 @@ NR_TYPE pcorf5v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)
   return deltaP;
 }
 
+// --- Friesen August 2016, for new pitot-static on GV
+NR_TYPE pcortf5(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack, NR_TYPE SSlip)
+{
+  static double a[] = { -0.0178842, 0.0724505, -0.17956, 0.00287264, 0.000997074 };
+
+  NR_TYPE M, deltaP;
+  if (Qm < 0.01) Qm = 0.01;
+
+  // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
+  if (isnan(Attack)) Attack = 3.0;
+
+  M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * M*M*M + a[3] * Attack + a[4] * SSlip);
+
+  // Taper if Qm is too small (take-off / landing).
+  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+
+  return deltaP;
+}
 
 /* C130 --------------------------------------------------------------- */
 /*

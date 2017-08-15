@@ -51,11 +51,13 @@ pms2d.c
 psbc.c
 psfc.c
 psfdc.c
+pstfc.c
 psurf.c
 pswc.c
 qcbc.c
 qcfc.c
 qcfrc.c
+qctfc.c
 qcrc.c
 qcwc.c
 radc.c
