@@ -399,7 +399,7 @@ NR_TYPE pcorf5v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)
 // --- Friesen August 2016, for new pitot-static on GV
 NR_TYPE pcortf5(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack, NR_TYPE SSlip)
 {
-  static double a[] = { -0.0178842, 0.0724505, -0.17956, 0.00287264, 0.000997074 };
+  static double a[] = { 0.0178842, -0.0724505, 0.17956, -0.00287264, 0.000997074 };
 
   NR_TYPE M, deltaP;
   if (Qm < 0.01) Qm = 0.01;

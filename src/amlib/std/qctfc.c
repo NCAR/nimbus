@@ -21,8 +21,8 @@ void sqctfc(DERTBL *varp)
   NR_TYPE pstf = GetSample(varp, 0);
   NR_TYPE qctf = GetSample(varp, 1);
 
-//  if (qctf < 0.01)
-//    qctf = 0.01;
+  if (qctf < 0.01)
+    qctf = 0.01;
 
   if (cfg.Aircraft() == Config::HIAPER)
   {
@@ -32,11 +32,11 @@ void sqctfc(DERTBL *varp)
     qctfc = qctf - (*pcorQCTF)(qctf, pstf, attack, sslip);
   }
 
-//  if (qctfc < 10.0)
-//    qctfc = qctf;
+  if (qctfc < 10.0)
+    qctfc = qctf;
 
-//  if (qctfc < 0.001)
-//    qctfc =  0.001;
+  if (qctfc < 0.001)
+    qctfc =  0.001;
 
   PutSample(varp, qctfc);
 }

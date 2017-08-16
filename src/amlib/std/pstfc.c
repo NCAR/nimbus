@@ -30,8 +30,8 @@ void spstfc(DERTBL *varp)
     pstfc = pstf + (*pcorPSTF)(qctf, pstf, attack, sslip);
   }
 
-//  if (pstfc < 50.0)
-//    pstfc = 50.0;
+  if (pstfc < 50.0)
+    pstfc = 50.0;
 
   PutSample(varp, pstfc);
 
