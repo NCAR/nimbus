@@ -12,7 +12,7 @@
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
+extern NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
 
 /* -------------------------------------------------------------------- */
 void spstfc(DERTBL *varp)
@@ -26,8 +26,9 @@ void spstfc(DERTBL *varp)
   {
     NR_TYPE attack = GetSample(varp, 2);
     NR_TYPE sslip = GetSample(varp, 3);
+    NR_TYPE mach = GetSample(varp, 4);
 
-    pstfc = pstf + (*pcorPSTF)(qctf, pstf, attack, sslip);
+    pstfc = pstf - (*pcorPSTF)(qctf, pstf, attack, sslip, mach);
   }
 
   if (pstfc < 50.0)

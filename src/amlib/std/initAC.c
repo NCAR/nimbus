@@ -39,8 +39,8 @@ NR_TYPE	(*pcorPSFv2)(NR_TYPE, NR_TYPE, NR_TYPE), (*pcorQCFv2)(NR_TYPE, NR_TYPE, 
 	(*pcorQCFRv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
 // Above functions, but for new pitot-static mounted in the bird strike zone on the GV.
-NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE), 
-        (*pcorQCTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
+NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE), 
+        (*pcorQCTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
 
 
 // Aircraft specific pcor (pressure correction).
@@ -57,7 +57,8 @@ NR_TYPE	pcorw8(NR_TYPE), pcorf8(NR_TYPE),
 // GV
 	pcorr5(NR_TYPE),pcorf5(NR_TYPE), pcorq5(NR_TYPE), pcorr5_2(NR_TYPE, NR_TYPE, NR_TYPE),
 	pcorf5_2(NR_TYPE, NR_TYPE, NR_TYPE), pcorq5_2(NR_TYPE, NR_TYPE, NR_TYPE),
-	pcorf5v2(NR_TYPE, NR_TYPE, NR_TYPE), pcortf5(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
+	pcorf5v2(NR_TYPE, NR_TYPE, NR_TYPE), 
+	pcortf5(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
 
 /* reference airspeed on J-W liquid water content converted from MPH
  * to m/s
@@ -397,16 +398,24 @@ NR_TYPE pcorf5v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)
 }
 
 // --- Friesen August 2016, for new pitot-static on GV
-NR_TYPE pcortf5(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack, NR_TYPE SSlip)
+// Working to determine if want to use Mach # calculated from raw Pm/Qm from new 
+// pitot (calculated as M below), or Mach # calculated from corrected Pm/Qm from 
+// old pitot (MACHF). Consequently, this function can do either. It pulls in 
+// MACHF as M (assuming MACHF is defined in DependsTable), and will overwrite it
+// with M from new pitot if M is uncommented below.
+NR_TYPE pcortf5(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack, NR_TYPE SSlip, NR_TYPE M)
 {
   static double a[] = { 0.0178842, -0.0724505, 0.17956, -0.00287264, 0.000997074 };
 
-  NR_TYPE M, deltaP;
+  //NR_TYPE M;
+  NR_TYPE deltaP;
   if (Qm < 0.01) Qm = 0.01;
 
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
   if (isnan(Attack)) Attack = 3.0;
 
+  // Uncomment this M calculation to overwrite MACH being dragged with MACH calculated
+  // from Pm/Qm being dragged in.
   M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * M*M*M + a[3] * Attack + a[4] * SSlip);
 
