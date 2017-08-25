@@ -5,14 +5,17 @@ import eol_scons
 env = Environment(platform = 'posix',ENV= os.environ)
 env['JLOCAL'] = os.environ['JLOCAL']
 
-env.Append(CXXFLAGS='-g -Werror')
-env.Append(CPPPATH = '/opt/local/include')
-env.Append(LIBPATH = '/opt/local/lib')
+def MTP(env):
+    env.Append(CXXFLAGS='-g -Werror -std=c++11')
+    env.Append(CPPPATH = '/opt/local/include')
+    env.Append(LIBPATH = '/opt/local/lib')
+
+    return env
 
 tools = Split("""
 boost_filesystem
 """)
-env = Environment (tools = ['default', 'boost_filesystem'])
+env = Environment (tools = ['default', 'boost_filesystem','boost_system',MTP])
 
 # To get netcdf libraries on the link command line with static linking,
 # they need to be added to the end of the link command.  Adding them to

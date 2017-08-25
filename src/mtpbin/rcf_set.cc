@@ -74,7 +74,7 @@ bool RetrievalCoefficientFileSet::setFlightLevelsKm(float FlightLevels[],
 }
 
 RC_Set_4Retrieval RetrievalCoefficientFileSet::getBestWeightedRCSet
-                                  (float ScanBrightnessTemps[],float PAltKm,
+                                  (std::vector<float> ScanBrightnessTemps,float PAltKm,
                                    float BTBias)
 {
 

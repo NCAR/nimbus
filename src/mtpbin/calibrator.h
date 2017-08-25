@@ -1,7 +1,7 @@
-/*
- *************************************************************************** 
- ** calib.h
+/*! \file calibrator.h
+ *  \brief This class encapsulates the calibration of the MTP scans.  
  ** 
+ **
  ** The Microwave Temperature Profiler (MTP) instrument build by JPL for
  ** NCAR as part of the set of instruments known as HAIS (build specifically
  ** in support of the Haiper GV aircraft) came with processing software 
@@ -10,7 +10,7 @@
  ** Copyright 2015-2016 University Corporation for Atmospheric Research
  **  - VB6 and Algorithm Copyright MJ Mahoney, NASA Jet Propulsion Laboratory
  **
-*/
+ */
 #ifndef _CALIB_h
 #define _CALIB_h
 
@@ -19,7 +19,8 @@
 #include <string> 
 
 
-/**
+/*! \class Calibrator
+ *
  * This class encapsulates the calibration of the MTP scans.  It makes use of 
  * constants that are written into the .REF file for the flight in question.
  * I am unclear as to when that file gets written.
@@ -43,7 +44,7 @@ public:
    * I believe that these are an offset for the temperature of the mixer, one
    * for each channel.  Comments in the code say they are Gain Equation Offsets
    * but their use belies that.
-   * @param std::vector<flaot> is teh 'GEC(chan,1)' vector from the REF file
+   * @param std::vector<float> is teh 'GEC(chan,1)' vector from the REF file
    * called Gain Equation Coefficients, they do seem to be used in that way
    * There is one value per channel, this one is the offset coefficient.
    * @param std::vector<float> is the 'GEC(chan,2)' vector from the REF file
@@ -68,18 +69,18 @@ public:
 
 private: 
 
-  // For storing the rolling gain value - one value per channel
+  ///< For storing the rolling gain value - one value per channel
   std::vector<float> _Gain;
 
-  // Constants for platinum wire gain equation for temperature of target
+  ///< Constants for platinum wire gain equation for temperature of target
   float _AA;
   float _Bb;
   float _cC;
   float _DD;
   float _Wtg;
 
-  // Elements that are pulled from the flight's REF file.  
-  // e.g. "c:\MTP\Data\NGV\HIPPO-5\20110822\NG20110822.REF"
+  ///< Elements that are pulled from the flight's REF file.  
+  ///< e.g. "c:\MTP\Data\NGV\HIPPO-5\20110822\NG20110822.REF"
   std::vector<float> _CND0;
   std::vector<float> _GOF;
   std::vector<float> _GEC1;

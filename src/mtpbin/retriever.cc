@@ -7,7 +7,7 @@
 
 using namespace std;
 
-AtmosphericTemperatureProfile Retriever::Retrieve(float ScanBTs[], 
+AtmosphericTemperatureProfile Retriever::Retrieve(std::vector<float> ScanBTs, 
                                                   float ACAltKm)
 {
   float Temperature;

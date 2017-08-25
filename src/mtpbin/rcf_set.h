@@ -1,6 +1,8 @@
-/*
- *************************************************************************** 
- ** rcf_set.h
+/*! \file rcf_set.h
+ * \brief This class encapsulates the whole set of RCFs for a project and
+ * provides a method for determining which of the RCFs is the best match of a 
+ * given set of brightness temperatures (scan) taken at a particular elevation.
+ *
  ** 
  ** The Microwave Temperature Profiler (MTP) instrument build by JPL for
  ** NCAR as part of the set of instruments known as HAIS (build specifically
@@ -18,7 +20,8 @@
 #include <string> 
 #include "rcf.h"
 
-/**
+/*! \class RetrievalCoefficientFileSet
+ *
  * This class encapsulates the whole set of RCFs for a project and provides
  * a method for determining which of the RCFs is the best match of a given
  * set of brightness temperatures (scan) taken at a particular elevation.
@@ -83,7 +86,7 @@ public:
    *  matches the input Scan Brightness Temperatures as observed from 
    *  the input flight altitude. 
    */
-  RC_Set_4Retrieval getBestWeightedRCSet(float*, float, float);
+  RC_Set_4Retrieval getBestWeightedRCSet(std::vector<float>, float, float);
 
 private: 
 

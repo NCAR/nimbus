@@ -1,6 +1,7 @@
-/*
- ******************************************************************************
- ** retriever.h
+/*! \file retriever.h
+ * \brief This class encapsulates the retrieval method which performs the
+ * inverse calculation of the radiative transfer model to take a set of brightness 
+ * temperatures and generate the physical temperature profile.
  **
  ** The Microwave Temperature Profiler (MTP) instrument build by JPL for
  ** NCAR as part of the set of instruments known as HAIS (build specifically
@@ -25,8 +26,9 @@ typedef struct
   std::vector<float> Altitudes;
 } AtmosphericTemperatureProfile;
 
-/**
- * This class encapsulates the retrieval method which perdforms the inverse
+/*! \class Retriever
+ *
+ * This class encapsulates the retrieval method which performs the inverse
  * calculation of the radiative transfer model to take a set of brightness 
  * temperatures and generate the physical temperature profile.  It does so by
  * using the RetrievalCoefficientFileSet class to obtain the weighted averaged
@@ -68,7 +70,7 @@ public:
    * @param[in] is the floating point altitude of the aircraft in km
    *
    */
-  AtmosphericTemperatureProfile Retrieve(float[], float) ;
+  AtmosphericTemperatureProfile Retrieve(std::vector<float>, float) ;
 
 private:
   RetrievalCoefficientFileSet _Rcf_Set;

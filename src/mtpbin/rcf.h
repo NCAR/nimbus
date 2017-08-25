@@ -1,6 +1,6 @@
-/*
- *************************************************************************** 
- ** rcf.h
+/*! \file rcf.h
+ *  \brief This class provides for reading in an RCF, storing and providing
+ *  access to its data.
  ** 
  ** The Microwave Temperature Profiler (MTP) instrument build by JPL for
  ** NCAR as part of the set of instruments known as HAIS (build specifically
@@ -18,7 +18,8 @@
 #include <string> 
 #include "rcf_structs.h"
 
-/**
+/*! \class RetrievalCoefficientFile
+ *
  * This class provides for reading in an RCF, storing and providing access to
  * its data.
  *
@@ -44,8 +45,8 @@ public:
 
   std::string getId()        {return _RCFId;}
   std::string getFileName()  {return _RCFFileName;}
-  // When using getRCF_HDR, be advised that char arrays have no endstring!
   RCF_HDR     getRCF_HDR()   {return _RCFHdr;}
+  ///< When using getRCF_HDR, be advised that char arrays have no endstring!
   std::vector<RC_Set_1FL> 
               getFL_RC_Vec() {return _FlRcSetVec;}
   bool isValid();
