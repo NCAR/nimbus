@@ -28,7 +28,7 @@ main () {
   float flightLevelsKm[]={14.5,13.0,12.0,11.0,10.0,9.0,8.0,7.0,6.0,5.0,4.0,3.0,2.0,1.0,0.0};
   int numFlightLevels=15;
 
-  RetrievalCoefficientFileSet RCF_Set(std::string("/home/local/raf/instruments/mtp/src/mtpbin/RCF/"));
+  RetrievalCoefficientFileSet RCF_Set(std::string("../RCF/"));
 
   RCF_Set.setFlightLevelsKm(flightLevelsKm, numFlightLevels);
 

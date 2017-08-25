@@ -29,7 +29,7 @@ main () {
   std::vector<RC_Set_1FL>::const_iterator rit;
 
   /* Validate that a file initializes correctly */
-  RetrievalCoefficientFile RCF(std::string("/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKA189.RCF"));
+  RetrievalCoefficientFile RCF(std::string("../RCF/NRCKA189.RCF"));
 
   RCF_HDR Rcf_Hdr = RCF.getRCF_HDR();
 
@@ -91,7 +91,7 @@ main () {
 
   /* Now do all the same testing on a second file
    * Validate that a file initializes correctly */
-  RetrievalCoefficientFile RCF2(std::string("/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKB189.RCF"));
+  RetrievalCoefficientFile RCF2(std::string("../RCF/NRCKB189.RCF"));
 
   Rcf_Hdr = RCF2.getRCF_HDR();
   std::cout << "Raobcount :" << Rcf_Hdr.RAOBcount << "\n";
@@ -143,7 +143,7 @@ main () {
   
   /* Now do all the similar testing on a third file
    * Validate that a file initializes correctly */
-  RetrievalCoefficientFile RCF3(std::string("/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKH189.RCF"));
+  RetrievalCoefficientFile RCF3(std::string("../RCF/NRCKH189.RCF"));
 
   /* Validate that flight levels initialize properly */
   if (!RCF3.setFlightLevelsKm(flightLevelsKm,numFlightLevels))
