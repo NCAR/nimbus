@@ -19,7 +19,7 @@ class TestMTPbin(unittest.TestCase):
 	os.system("rm rcf_set_test.new.s")
 	os.system("rm rcf_set_test.new")
 	#os.system("rm rcf_test.new")
-	os.system("rm calibrator.new")
+	os.system("rm calibrator_test.new")
 
     def test_retriever(self):
 	# Compare the newly-generated retriever_test.new output file with the "control"
@@ -58,9 +58,9 @@ class TestMTPbin(unittest.TestCase):
     def test_calibrator(self):
 	# Compare the newly-generated rcf_test.new output file with the "control"
 	# file calibrator.out, which has been vetted to assure that it is correct.
-	os.system("calibrator_test > calibrator.new")
-	f = open("calibrator.new","r")
-	c = open("calibrator.out","r")
+	os.system("calibrator_test > calibrator_test.new")
+	f = open("calibrator_test.new","r")
+	c = open("calibrator_test.out","r")
         for line in f:
             cline = c.readline()
             self.assertEqual(cline,line)
