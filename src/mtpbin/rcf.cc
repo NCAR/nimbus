@@ -167,8 +167,8 @@ RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(float PAltKm)
   RC_Set_1FL RcSetAvWt;
 
   // First check to see if PAltKm is outside the range of Flight Level PAltKms
-  //  - if so then the weighted average observalbe will be the average
-  //    observable associated with the flight level whose PAltKm is closest 
+  //  - if so then the weighted average observable will be the average
+  //    observable associated with the flight level whose PAltKm is closest.
   //    Assumption is that the Flight Level Retrieval Coefficient Set vector
   //    is stored in increasing Palt (decreasing aircraft altitude).
 std::vector<int>::size_type sz = _FlRcSetVec.size();
