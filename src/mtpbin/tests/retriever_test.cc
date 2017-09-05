@@ -21,58 +21,33 @@ using namespace std;
  * investigated and resolved.
  */
 
+void retriever_test(float *, int, std::vector<float>, float);
+
 main () {
 
-  /* Put together a functioning retrieval_coefficient_fileset */
+  float ACAltKm; /// Aircraft Altitude (km)
+  std::vector<float> scanBTs; /// Brightness Temperatures from MTP scan
 
   float flightLevelsKm[]={14.5,13.0,12.0,11.0,10.0,9.0,8.0,7.0,6.0,5.0,4.0,3.0,2.0,1.0,0.0};
-  int numFlightLevels=15;
+  int numFlightLevels=(sizeof(flightLevelsKm)/sizeof(float));
 
-  RetrievalCoefficientFileSet RCF_Set(std::string("../RCF/"));
-
-  RCF_Set.setFlightLevelsKm(flightLevelsKm, numFlightLevels);
-
-  Retriever Rtr(RCF_Set);
-
-  // Validate that the function for selecting an RCF (template) from the
-  // set is still functioning properly.  Provide a couple of scan values 
-  // and verify that the correct RCF is selected.
-  //
   // Values were determined by running the VB program MTPBin in the debugger
   // and checking input and output values there.  
   //
   // ob(1)-ob(30) values for scan at 152700 HIPPPO-5 flight date 20110809
-  //
-  std::vector<float> scanBTs = {210.9473, 213.5502, 215.0358, 216.6606, 217.8942,
-                     219.3694, 219.8724, 221.0873, 223.0352, 225.3323,
-                     214.6268, 214.9759, 216.3311, 217.3704, 218.7520, 
-                     219.3694, 219.3790, 219.9641, 220.7292, 222.0580,
-                     216.1557, 216.8213, 217.1181, 217.9902, 218.5839,
-                     219.3694, 219.3111, 219.1711, 219.6915, 220.3420};
+  ACAltKm = 12.49947;
+  scanBTs = {210.9473, 213.5502, 215.0358, 216.6606, 217.8942,
+             219.3694, 219.8724, 221.0873, 223.0352, 225.3323,
+             214.6268, 214.9759, 216.3311, 217.3704, 218.7520, 
+             219.3694, 219.3790, 219.9641, 220.7292, 222.0580,
+             216.1557, 216.8213, 217.1181, 217.9902, 218.5839,
+             219.3694, 219.3111, 219.1711, 219.6915, 220.3420};
+
+  retriever_test(flightLevelsKm,numFlightLevels,scanBTs,ACAltKm);
 
 
-  cout<<"About to call Retrieve\n";
-  AtmosphericTemperatureProfile ATP;
-  ATP = Rtr.Retrieve(scanBTs, 12.49947);
-
-  cout<<"Profile Temperatures:\n";
-  for (int i=0; i<NUM_RETR_LVLS; i++) 
-  {
-    cout << "[" << i << "]:" << ATP.Temperatures[i];
-    if (i%5 == 0) cout << "\n";
-  }
-  cout<<"\n\n";
-
-  cout<<"Profile Altitudes:\n";
-  for (int i=0; i<NUM_RETR_LVLS; i++)
-  {
-    cout << "[" << i << "]:" << ATP.Altitudes[i];
-    if (i%5 == 0) cout << "\n";
-  } 
-  cout<<"\n\n";
-
-
-// Now a low level leg of the flight to assure altitudes turn out ok
+  // Now a low level leg of the flight to assure altitudes turn out ok
+  ACAltKm = 2.205186;
   scanBTs = {295.9447, 294.9844, 295.2653, 295.7357, 295.5644,
              293.9797, 292.0251, 292.5367, 293.3295, 293.7696,
              297.2932, 297.3831, 296.7744, 296.6493, 295.8458,
@@ -80,8 +55,24 @@ main () {
              296.9786, 296.3578, 296.4440, 296.1351, 295.6343,
              293.9797, 292.0367, 292.6659, 293.1209, 293.1770};
 
-  cout<<"About to call Retrieve for low leg\n";
-  ATP = Rtr.Retrieve(scanBTs, 2.205186);
+  retriever_test(flightLevelsKm,numFlightLevels,scanBTs,ACAltKm);
+
+}
+
+void retriever_test(float *flightLevelsKm, int numFlightLevels, 
+	std::vector<float> scanBTs,float ACAltKm) {
+
+  /* Put together a functioning retrieval_coefficient_fileset */
+  RetrievalCoefficientFileSet RCF_Set(std::string("../RCF/"));
+  RCF_Set.setFlightLevelsKm(flightLevelsKm, numFlightLevels);
+  Retriever Rtr(RCF_Set);
+
+  // Validate that the function for selecting an RCF (template) from the
+  // set is still functioning properly.  Provide a couple of scan values 
+  // and verify that the correct RCF is selected.
+  cout<<"About to call Retrieve\n";
+  AtmosphericTemperatureProfile ATP;
+  ATP = Rtr.Retrieve(scanBTs, ACAltKm);
 
   cout<<"Profile Temperatures:\n";
   for (int i=0; i<NUM_RETR_LVLS; i++) 
@@ -98,6 +89,10 @@ main () {
     if (i%5 == 0) cout << "\n";
   } 
   cout<<"\n\n";
+
+}
+/******************************************************************************/
+
 /*
   RC_Set_4Retrieval BestWtdRCSet = RCF_Set.getBestWeightedRCSet(scanBTs, 
                                                                 12.49947, 0.0);
@@ -181,4 +176,3 @@ main () {
       <<"SumLnProb:"<<BestWtdRCSet.SumLnProb<<"\n";
 
 */
-}
