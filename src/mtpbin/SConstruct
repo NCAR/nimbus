@@ -87,7 +87,7 @@ env.Program(['tests/calibrator_test.cc', 'calibrator.cc'])
 
 # Create Doxygen documentation
 doxref = env.Apidocs(sources + headers, DOXYFILE_DICT={'PROJECT_NAME':"MTP",'PROJECT_NUMBER':1.0})
-Default(doxref)
+#Default(doxref)
 
 # Deploy Doxygen documentation
 variables = env.GlobalVariables()
@@ -100,6 +100,6 @@ deploydox = env.Install(env.Dir("${DOCUMENTATION_DIRECTORY}"),
                         env.Dir('#/apidocs'))
 
 # Rather than making deployment a default target, meaning the build fails
-# # anywhere deploydir does not exist, give it an alias so it can be built
-# # easily as 'scons deploydox'.
+# anywhere deploydir does not exist, give it an alias so it can be built
+# easily as 'scons deploydox'.
 env.Alias('deploydox', deploydox)

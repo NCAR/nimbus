@@ -28,7 +28,7 @@
  * what that RAOB profile would look like to the MTP instrument if the 
  * instrument was used to measure the atmosphere described by the profile. 
  *
- * Since the profile would appear differerntly to the MTP depending upon 
+ * Since the profile would appear differently to the MTP depending upon 
  * the altitude at which the instrument was performing the measurement, the
  * RCF files have multiple flight levels containing expected brightness 
  * temperatures (observables), assocciated rms values and the retrieval

@@ -28,14 +28,12 @@ void rcf_test(std::string);
 main () {
 
   rcf_test(std::string("../RCF/NRCKA189.RCF"));
-
   rcf_test(std::string("../RCF/NRCKB189.RCF"));
-
   rcf_test(std::string("../RCF/NRCKH189.RCF"));
 
 }
 
-void test_file(std::string file)
+void rcf_test(std::string file)
 {
   char SURCplus[5];  // Account for end of string
   std::vector<RC_Set_1FL> FL_RC_Vec;
