@@ -18,7 +18,7 @@ class TestMTPbin(unittest.TestCase):
 	os.system("rm rcf_set_test.out.s")
 	os.system("rm rcf_set_test.new.s")
 	os.system("rm rcf_set_test.new")
-	#os.system("rm rcf_test.new")
+	os.system("rm rcf_test.new")
 	os.system("rm calibrator_test.new")
 
     def test_retriever(self):
@@ -27,9 +27,9 @@ class TestMTPbin(unittest.TestCase):
 	os.system("retriever_test > retriever_test.new")
 	f = open("retriever_test.new","r")
 	c = open("retriever_test.out","r")
-        for line in f:
-            cline = c.readline()
-            self.assertEqual(cline,line)
+        for line in c:
+            fline = f.readline()
+            self.assertEqual(line,fline)
 
     def test_rcf_set(self):
 	# Compare the newly-generated rcf_set_test.new output file with the "control"
@@ -39,10 +39,10 @@ class TestMTPbin(unittest.TestCase):
 	os.system("sort rcf_set_test.new > rcf_set_test.new.s")
 	f = open("rcf_set_test.new.s","r")
 	c = open("rcf_set_test.out.s","r")
-        for line in f:
-            cline = c.readline()
-	    cline = re.sub(r'/home/local/raf/instruments/mtp/src/mtpbin','..',cline)
-            self.assertEqual(cline,line)
+        for line in c:
+            fline = f.readline()
+	    line = re.sub(r'/home/local/raf/instruments/mtp/src/mtpbin','..',line)
+            self.assertEqual(line,fline)
 
     def test_rcf(self):
 	# Compare the newly-generated rcf_test.new output file with the "control"
@@ -50,10 +50,10 @@ class TestMTPbin(unittest.TestCase):
 	os.system("rcf_test > rcf_test.new")
 	f = open("rcf_test.new","r")
 	c = open("rcf_test.out","r")
-        for line in f:
-            cline = c.readline()
-	    cline = re.sub(r'/home/local/raf/instruments/mtp/src/mtpbin','..',cline)
-            self.assertEqual(cline,line)
+        for line in c:
+            fline = f.readline()
+	    line = re.sub(r'/home/local/raf/instruments/mtp/src/mtpbin','..',line)
+            self.assertEqual(line,fline)
 
     def test_calibrator(self):
 	# Compare the newly-generated rcf_test.new output file with the "control"
@@ -61,9 +61,9 @@ class TestMTPbin(unittest.TestCase):
 	os.system("calibrator_test > calibrator_test.new")
 	f = open("calibrator_test.new","r")
 	c = open("calibrator_test.out","r")
-        for line in f:
-            cline = c.readline()
-            self.assertEqual(cline,line)
+        for line in c:
+            fline = f.readline()
+            self.assertEqual(line,fline)
 
 
 if __name__ == '__main__':
