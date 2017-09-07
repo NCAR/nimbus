@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "../rcf.h"
+#include "test.h"
 
 /*
  *  This program is designed to test the RetrievalCoefficientFile class
@@ -23,24 +24,27 @@
 
 using namespace std;
 
-void rcf_test(std::string);
+void rcf_test(std::string, float *flightLevelsKm, int numFlightLevels);
 
 main () {
 
-  rcf_test(std::string("../RCF/NRCKA189.RCF"));
-  rcf_test(std::string("../RCF/NRCKB189.RCF"));
-  rcf_test(std::string("../RCF/NRCKH189.RCF"));
+  // HIPPO-5
+  rcf_test(std::string("../RCF/NRCKA189.RCF"),flightLevelsKmH,numFlightLevelsH);
+  rcf_test(std::string("../RCF/NRCKB189.RCF"),flightLevelsKmH,numFlightLevelsH);
+  rcf_test(std::string("../RCF/NRCKH189.RCF"),flightLevelsKmH,numFlightLevelsH);
+
+  // DEEPWAVE
+  //rcf_test(std::string("../DEEPWAVE/RCF/NRCEA057.RCF"),flightLevelsKmD,numFlightLevelsD);
+
 
 }
 
-void rcf_test(std::string file)
+void rcf_test(std::string file,float *flightLevelsKm, int numFlightLevels)
 {
   char SURCplus[5];  // Account for end of string
   std::vector<RC_Set_1FL> FL_RC_Vec;
   std::vector<RC_Set_1FL>::const_iterator rit;
 
-  float flightLevelsKm[]={14.5,13.0,12.0,11.0,10.0,9.0,8.0,7.0,6.0,5.0,4.0,3.0,2.0,1.0,0.0};
-  int numFlightLevels=15;
 
    /* Validate that a file initializes correctly */
   RetrievalCoefficientFile RCF(file);

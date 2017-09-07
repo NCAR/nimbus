@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "../retriever.h"
+#include "test.h"
 
 using namespace std;
 
@@ -21,49 +22,24 @@ using namespace std;
  * investigated and resolved.
  */
 
-void retriever_test(float *, int, std::vector<float>, float);
+void retriever_test(float *, int, std::vector<float>, double, std::string);
 
 main () {
+  // First HIPPO test
+  retriever_test(flightLevelsKmH,numFlightLevelsH,scanBTsH1,ACAltKmH1,RCFdirH);
 
-  float ACAltKm; /// Aircraft Altitude (km)
-  std::vector<float> scanBTs; /// Brightness Temperatures from MTP scan
+  // Second HIPPO test
+  retriever_test(flightLevelsKmH,numFlightLevelsH,scanBTsH2,ACAltKmH2,RCFdirH);
 
-  float flightLevelsKm[]={14.5,13.0,12.0,11.0,10.0,9.0,8.0,7.0,6.0,5.0,4.0,3.0,2.0,1.0,0.0};
-  int numFlightLevels=(sizeof(flightLevelsKm)/sizeof(float));
-
-  // Values were determined by running the VB program MTPBin in the debugger
-  // and checking input and output values there.  
-  //
-  // ob(1)-ob(30) values for scan at 152700 HIPPPO-5 flight date 20110809
-  ACAltKm = 12.49947;
-  scanBTs = {210.9473, 213.5502, 215.0358, 216.6606, 217.8942,
-             219.3694, 219.8724, 221.0873, 223.0352, 225.3323,
-             214.6268, 214.9759, 216.3311, 217.3704, 218.7520, 
-             219.3694, 219.3790, 219.9641, 220.7292, 222.0580,
-             216.1557, 216.8213, 217.1181, 217.9902, 218.5839,
-             219.3694, 219.3111, 219.1711, 219.6915, 220.3420};
-
-  retriever_test(flightLevelsKm,numFlightLevels,scanBTs,ACAltKm);
-
-
-  // Now a low level leg of the flight to assure altitudes turn out ok
-  ACAltKm = 2.205186;
-  scanBTs = {295.9447, 294.9844, 295.2653, 295.7357, 295.5644,
-             293.9797, 292.0251, 292.5367, 293.3295, 293.7696,
-             297.2932, 297.3831, 296.7744, 296.6493, 295.8458,
-             293.9797, 292.5577, 294.1493, 295.0679, 295.0130,
-             296.9786, 296.3578, 296.4440, 296.1351, 295.6343,
-             293.9797, 292.0367, 292.6659, 293.1209, 293.1770};
-
-  retriever_test(flightLevelsKm,numFlightLevels,scanBTs,ACAltKm);
-
+  // First DEEPWAVE test
+  //retriever_test(flightLevelsKmD,numFlightLevelsD,scanBTsD1,ACAltKmD1,RCFdirD);
 }
 
 void retriever_test(float *flightLevelsKm, int numFlightLevels, 
-	std::vector<float> scanBTs,float ACAltKm) {
+	std::vector<float> scanBTs,double ACAltKm,std::string RCFdir) {
 
   /* Put together a functioning retrieval_coefficient_fileset */
-  RetrievalCoefficientFileSet RCF_Set(std::string("../RCF/"));
+  RetrievalCoefficientFileSet RCF_Set(RCFdir);
   RCF_Set.setFlightLevelsKm(flightLevelsKm, numFlightLevels);
   Retriever Rtr(RCF_Set);
 
