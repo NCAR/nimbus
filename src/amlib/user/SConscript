@@ -22,6 +22,7 @@ climet.c
 co2c.c
 conccn.c
 cvi.c
+cvi2.c
 efield.c
 flux.c
 fo3.c
