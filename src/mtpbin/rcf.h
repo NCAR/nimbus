@@ -63,9 +63,10 @@ public:
 
   /**
    * Set the Flight Levels in KM.  
-   * @param is a vector of floating point values indicating the km
+   * @param FlightLevels is a vector of floating point values indicating the km
    * above sea level of each flight level in the retrieval coefficient file.
    * Flight levels should be ordered in decreasing altitude.
+   * @param Len is the length of the FlightLevels vector
    * @returns true if levels successfully set, false if not.
    */
   bool setFlightLevelsKm(float[], int);

@@ -36,18 +36,18 @@ public:
 
   /**
    * Constructor
-   * @param std::vector<float> is the 'Cnd0' values from the REF file.  
+   * @param cnd0 std::vector<float> is the 'Cnd0' values from the REF file.  
    * I believe that these are the "temperatures" of the target in each channel
    * in degrees C when the noise diode is on.  Comments in the VB code call
    * it the Noise Diode Temperature Fit Offset value.
-   * @param std::vector<float> is the 'GOF' values from the REF file.
+   * @param gof std::vector<float> is the 'GOF' values from the REF file.
    * I believe that these are an offset for the temperature of the mixer, one
    * for each channel.  Comments in the code say they are Gain Equation Offsets
    * but their use belies that.
-   * @param std::vector<float> is teh 'GEC(chan,1)' vector from the REF file
+   * @param gec1 std::vector<float> is the 'GEC(chan,1)' vector from the REF file
    * called Gain Equation Coefficients, they do seem to be used in that way
    * There is one value per channel, this one is the offset coefficient.
-   * @param std::vector<float> is the 'GEC(chan,2)' vector from the REF file
+   * @param gec2 std::vector<float> is the 'GEC(chan,2)' vector from the REF file
    * called Gain Equation Coefficients, this one is the linear coefficient
    * applied to the difference of the Mixer temperature minus the GOF above.
    */
@@ -55,10 +55,11 @@ public:
 
   /**
    * Calibrate method
-   * @param std::vector<int> is the vector of counts produced by the MTP
+   * @param ScanCounts std::vector<int> is the vector of counts produced by the MTP
    * instrument for this scan. This vector should be of length 36 - three
    * points for each angle (one per channel) and six points for the target -
    * three per channel for the noise diode turned on and for it turned off.
+   * @param PltWireCnts is ???
    *
    * @returns a std::vector<float> of Brightness Temperatures for the scan. 
    * There are 30 elements to the vector, 3 values at each of the 10 angles

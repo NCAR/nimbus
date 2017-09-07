@@ -53,8 +53,8 @@ class Retriever
 public:
 
   /**
-   * Construcctor
-   * @param std::string is directory name containing the RCF files to be
+   * Constructor
+   * @param rcfs std::string is directory name containing the RCF files to be
    * used.
    */
   Retriever(RetrievalCoefficientFileSet rcfs): _Rcf_Set(rcfs) { };
@@ -62,12 +62,12 @@ public:
   /**
    * Retrieve function.  Obtain the Physical temperature profile from a scan.
    *
-   * @param[in] is an array fo floating point values indicating the brightness
+   * @param[in] ScanBTs is an array fo floating point values indicating the brightness
    * temperature values in Degrees Kelvin from the scan.  The first 10 values 
    * are for channel 1 at each of the scan angles (highest angle to lowest 
    * angle), the second 10 are for channel 2 and the third 10 are for channel 3.
    *
-   * @param[in] is the floating point altitude of the aircraft in km
+   * @param[in] ACAltKm is the floating point altitude of the aircraft in km
    *
    */
   AtmosphericTemperatureProfile Retrieve(std::vector<float>, float) ;

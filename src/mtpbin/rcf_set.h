@@ -45,7 +45,7 @@ public:
 
   /**
    * Constructor
-   * @param std::string is directory name containing the RCF files to be 
+   * @param Directory std::string is directory name containing the RCF files to be 
    * pulled into the set.
    */
   RetrievalCoefficientFileSet(const std::string);
@@ -59,9 +59,9 @@ public:
 
   /**
    * Set the Flight Levels in KM.  
-   * @param[in] is an array of floating point values indicating the km
+   * @param[in] FlightLevels is an array of floating point values indicating the km
    * above sea level of each flight level in each retrieval coefficient file.
-   * @param[in] is the size fo the vector
+   * @param[in] NumFlightLevels is the size fo the vector
    * Flight levels should be ordered in decreasing altitude.
    * @returns true if levels successfully set, false if not.
    * Assumes that all RCFs in the set have the same flight levels - 
@@ -73,14 +73,14 @@ public:
    * Get the Retrieval Coefficient Set from the "best" template
    * weighted according to the flight level of the aircraft and given
    * a set of Scan Brightness Temperatures
-   * @param[in] is an array of Scan Brightness Temperatures and is expected
+   * @param[in] ScanBrightnessTemps is an array of Scan Brightness Temperatures and is expected
    *  to be NUM_OBSVBLSs in length.  It is also expected that channel 1 will be
    *  in array elements 0-9 with element 0 being the highest scan angle and 
    *  element 9 is the lowest scan angle.  Similarly, channel 2 will be found 
    *  in elements 10-19 and channel 3 will be in elements 20-29.
-   * @param[in] is the altitude of the aircraft in km at the time that the 
+   * @param[in] PAltKm is the altitude of the aircraft in km at the time that the 
    *  Scan was taken.
-   * @pram [in] is an Brightness Temperature Bias provided by user
+   * @param [in] BTBias is an Brightness Temperature Bias provided by user
    * @return is the weighted average set of Model Brightness Temperatures, 
    *  RMS values, and Retrieval Coefficients from the template that best 
    *  matches the input Scan Brightness Temperatures as observed from 

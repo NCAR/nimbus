@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Calibrator::Calibrator(vector<float> cnd0, vector<float> gof, vector<float> gec1, vector<float> gec2) 
+Calibrator::Calibrator(std::vector<float> cnd0, std::vector<float> gof, std::vector<float> gec1, std::vector<float> gec2) 
 {
   _CND0 = cnd0;
   _GOF = gof;

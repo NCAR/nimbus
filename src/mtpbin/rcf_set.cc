@@ -10,7 +10,7 @@
 
 using namespace std;
 
-RetrievalCoefficientFileSet::RetrievalCoefficientFileSet(const string Directory) 
+RetrievalCoefficientFileSet::RetrievalCoefficientFileSet(const std::string Directory) 
 {
 
   _RCFDir = Directory;

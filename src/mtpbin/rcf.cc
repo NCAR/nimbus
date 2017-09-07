@@ -7,7 +7,7 @@
 
 using namespace std;
 
-RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename) 
+RetrievalCoefficientFile::RetrievalCoefficientFile(std::string Filename) 
 {
 
   _RCFFileName = Filename;
