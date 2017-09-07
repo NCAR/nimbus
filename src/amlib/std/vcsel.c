@@ -38,56 +38,57 @@ static void readDefs(const char varName[], const char line[],
 	double P_COEFF[], double T_COEFF[], double LI_COEFF[][nCoeffs], double ABS_COEFF[])
 {
   float *tmp;
+  char name[256];
 
-  sprintf(buffer, "VXL_T_%s", line);
-  if ((tmp = GetDefaultsValue(buffer, varName)) == NULL)
+  sprintf(name, "VXL_T_%s", line);
+  if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
     sprintf(buffer, "%s value defaulting to %f in AMLIB function vcselInit.\n",
-		buffer, T_COEFF[0]);
+		name, T_COEFF[0]);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
       T_COEFF[i] = tmp[i];
 
-  sprintf(buffer, "VXL_P_%s", line);
-  if ((tmp = GetDefaultsValue(buffer, varName)) == NULL)
+  sprintf(name, "VXL_P_%s", line);
+  if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
     sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		buffer, P_COEFF[0], P_COEFF[1], P_COEFF[2]);
+		name, P_COEFF[0], P_COEFF[1], P_COEFF[2]);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
       P_COEFF[i] = tmp[i];
 
-  sprintf(buffer, "VXL_LI_%s", line);
-  if ((tmp = GetDefaultsValue(buffer, varName)) == NULL)
+  sprintf(name, "VXL_LI_%s", line);
+  if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
     sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		buffer, LI_COEFF[0][0], LI_COEFF[0][1], LI_COEFF[0][2]);
+		name, LI_COEFF[0][0], LI_COEFF[0][1], LI_COEFF[0][2]);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
       LI_COEFF[0][i] = tmp[i];
 
-  sprintf(buffer, "VXL_LILO_%s", line);
-  if ((tmp = GetDefaultsValue(buffer, varName)) == NULL)
+  sprintf(name, "VXL_LILO_%s", line);
+  if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
     sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		buffer, LI_COEFF[1][0], LI_COEFF[1][1], LI_COEFF[1][2]);
+		name, LI_COEFF[1][0], LI_COEFF[1][1], LI_COEFF[1][2]);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
       LI_COEFF[1][i] = tmp[i];
 
-  sprintf(buffer, "VXL_ABS_%s", line);
-  if ((tmp = GetDefaultsValue(buffer, varName)) == NULL)
+  sprintf(name, "VXL_ABS_%s", line);
+  if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
     sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		buffer, ABS_COEFF[0], ABS_COEFF[1], ABS_COEFF[2]);
+		name, ABS_COEFF[0], ABS_COEFF[1], ABS_COEFF[2]);
     LogMessage(buffer);
   }
   else
