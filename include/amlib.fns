@@ -1000,7 +1000,7 @@
 	"XFLOWC",	NULL,		NULL,		scFlow,
 # Second generation CVI, 2006 and later.
 	"CVRHO",	(void(*)(void*))cvi2Init,	NULL,		scvrho,
-	"CVCWC",	NULL,		NULL,		scvcwc,
+	"CVCWCC",	NULL,		NULL,		scvcwc,
 #
 #	PMS 2d Probes
 #

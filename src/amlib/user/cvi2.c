@@ -22,7 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2017
 
 /*  Values from /home/local/proj/defaults/Defaults */
 
-static NR_TYPE	TAS_MIN = 80.0;	// Good value for C130.  GV should be double that.
+static NR_TYPE	TAS_MIN = 85.0;	// Good value for C130.  GV should be about 115.
 static NR_TYPE  TDL_Offset = 0.0;
 
 static NR_TYPE	C0_P[3] = { 0.0, 1.0, 0.0 };
@@ -40,23 +40,23 @@ static const NR_TYPE concud_fudge_factor = 1.2;
 void cvi2Init(var_base *varp)
 {
   float *tmp;
-  if ((tmp = GetDefaultsValue("TAS_MIN", varp->name)) == NULL)
+  if ((tmp = GetDefaultsValue("CVI_TAS_MIN", varp->name)) == NULL)
   {
-    sprintf(buffer, "cvi2Init:TAS_MIN value defaulting to %f.\n", TAS_MIN);
+    sprintf(buffer, "cvi2Init:CVI_TAS_MIN value defaulting to %f.\n", TAS_MIN);
     LogMessage(buffer);
   }
   else
     TAS_MIN = tmp[0];
 
-  if ((tmp = GetDefaultsValue("TDL_Offset", varp->name)) == NULL)
+  if ((tmp = GetDefaultsValue("CVI_TDL_Offset", varp->name)) == NULL)
   {
-    sprintf(buffer, "cvi2Init:TDL_Offset value defaulting to %f.\n", TDL_Offset);
+    sprintf(buffer, "cvi2Init:CVI_TDL_Offset value defaulting to %f.\n", TDL_Offset);
     LogMessage(buffer);
   }
   else
     TDL_Offset = tmp[0];
 
-  if ((tmp = GetDefaultsValue("C0_P", varp->name)) == NULL)
+  if ((tmp = GetDefaultsValue("CVI_C0_P", varp->name)) == NULL)
   {
     sprintf(buffer, "cvi2Init:C0_P values defaulting to 0.0, 1.0, 0.0.\n");
     LogMessage(buffer);
@@ -65,7 +65,7 @@ void cvi2Init(var_base *varp)
     for (int i = 0; i < 3; ++i)
       C0_P[i] = tmp[i];
 
-  if ((tmp = GetDefaultsValue("C1_P", varp->name)) == NULL)
+  if ((tmp = GetDefaultsValue("CVI_C1_P", varp->name)) == NULL)
   {
     sprintf(buffer, "cvi2Init:C1_P values defaulting to 0.0, 1.0, 0.0.\n");
     LogMessage(buffer);
@@ -74,7 +74,7 @@ void cvi2Init(var_base *varp)
     for (int i = 0; i < 3; ++i)
       C1_P[i] = tmp[i];
 
-  if ((tmp = GetDefaultsValue("C2_P", varp->name)) == NULL)
+  if ((tmp = GetDefaultsValue("CVI_C2_P", varp->name)) == NULL)
   {
     sprintf(buffer, "cvi2Init:C2_P values defaulting to 0.0, 1.0, 0.0.\n");
     LogMessage(buffer);
