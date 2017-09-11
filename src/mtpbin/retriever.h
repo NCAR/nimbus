@@ -62,7 +62,7 @@ public:
   /**
    * Retrieve function.  Obtain the Physical temperature profile from a scan.
    *
-   * @param[in] ScanBTs is an array fo floating point values indicating the brightness
+   * @param[in] ScanBTs is an array of floating point values indicating the brightness
    * temperature values in Degrees Kelvin from the scan.  The first 10 values 
    * are for channel 1 at each of the scan angles (highest angle to lowest 
    * angle), the second 10 are for channel 2 and the third 10 are for channel 3.

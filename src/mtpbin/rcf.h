@@ -23,7 +23,7 @@
  * This class provides for reading in an RCF, storing and providing access to
  * its data.
  *
- * Retrieval Coeeficient Files (RCFs) are currently written by the VB program
+ * Retrieval Coefficient Files (RCFs) are currently written by the VB program
  * RCCalc which takes RAOB data and converts it into Templates that describe
  * what that RAOB profile would look like to the MTP instrument if the 
  * instrument was used to measure the atmosphere described by the profile. 
