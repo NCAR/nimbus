@@ -284,8 +284,8 @@ Raobcount :192
 NFL:15
 First Smatrix2:-0.00170313
 About to call getBestWeightedRCSet
-1st BestWeightedRCSet is from file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKF189.RCF
-PAltKm:12.49947  1st level:130.32  last level:0  -1:898.74
+BestWeightedRCSet is from file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKF189.RCF
+PAltKm:12.4995 1st level:130.32  last level:0  -1:898.74
 Num,   Avg,  Rms
 0, 211.607, 0.3
 1, 213.617, 0.29
@@ -523,8 +523,8 @@ Best Retrieval Coef for HIPPO-5 flt on 8/9/2011 at 152700 hours:
   Filename:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCKF189.RCF
   SumLnProb:0.222794
 About to call getBestWeightedRCSet
-2nd BestWeightedRCSet is from file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLR189.RCF
-PAltKm:2.050817  1st level:130.32  last level:0  -1:898.74
+BestWeightedRCSet is from file:/home/local/raf/instruments/mtp/src/mtpbin/RCF/NRCLR189.RCF
+PAltKm:2.05082 1st level:130.32  last level:0  -1:898.74
 Num,   Avg,  Rms
 0, 259.802, 0.3
 1, 260.482, 0.29

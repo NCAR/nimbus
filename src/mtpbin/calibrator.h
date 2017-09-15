@@ -59,13 +59,15 @@ public:
    * instrument for this scan. This vector should be of length 36 - three
    * points for each angle (one per channel) and six points for the target -
    * three per channel for the noise diode turned on and for it turned off.
-   * @param PltWireCnts is ???
+   * @param PltWireCnts is the platinum wire counts.
+   * @param TargetCnts is the counts from the target. First 3 are with ND on, next 3
+   * off.
    *
    * @returns a std::vector<float> of Brightness Temperatures for the scan. 
    * There are 30 elements to the vector, 3 values at each of the 10 angles
    * of the MTP's scan.
    */
-  std::vector<float> Calibrate(std::vector<int>, std::vector<int>);
+  std::vector<float> Calibrate(std::vector<int>, std::vector<int>, std::vector<int>);
   
 
 private: 

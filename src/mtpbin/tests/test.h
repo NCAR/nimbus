@@ -49,4 +49,12 @@ std::vector<float> scanBTsH3 = {262.1815, 262.0143, 262.2418, 263.3536, 264.2274
 float flightLevelsKmD[]={14.5,13.5,13.0,12.5,12.0,11.0,9.0,7.0,5.0,3.5,2.0,1.0,0.01};
 std::string RCFdirD = "../DEEPWAVE/RCF/"; /// Directory where RCF files can be found.
 int numFlightLevelsD=(sizeof(flightLevelsKmD)/sizeof(float));
+
 double ACAltKmD1 = 9.305;
+// calculated from counts using calibrator.cc
+std::vector<float> scanBTsD1 = { 214.913, 216.166, 217.068, 218.671, 220.526,
+	           222.53, 224.033, 225.537, 227.942, 229.896,
+	           216.405, 216.88, 217.699, 219.338, 220.891,
+	           222.53, 223.048, 224.169, 225.204, 226.412,
+	           219.086, 219.584, 219.928, 220.77, 221.688,
+	           222.53, 223.525, 224.328, 225.438, 226.433};
