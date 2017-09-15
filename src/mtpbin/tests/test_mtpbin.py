@@ -13,13 +13,13 @@ import unittest
 
 class TestMTPbin(unittest.TestCase):
 
-    def tearDown(self):
-	os.system("rm retriever_test.new")
-	os.system("rm rcf_set_test.out.s")
-	os.system("rm rcf_set_test.new.s")
-	os.system("rm rcf_set_test.new")
-	os.system("rm rcf_test.new")
-	os.system("rm calibrator_test.new")
+    #def tearDown(self):
+#	os.system("rm retriever_test.new")
+#	os.system("rm rcf_set_test.out.s")
+#	os.system("rm rcf_set_test.new.s")
+#	os.system("rm rcf_set_test.new")
+#	os.system("rm rcf_test.new")
+#	os.system("rm calibrator_test.new")
 
     def test_retriever(self):
 	# Compare the newly-generated retriever_test.new output file with the "control"

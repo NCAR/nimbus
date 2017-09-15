@@ -13,18 +13,24 @@ Calibrator::Calibrator(std::vector<float> cnd0, std::vector<float> gof, std::vec
   // Create a gain vector with all elements set to zero.
   for (int i=0; i<NUM_CHANNELS; i++) _Gain.push_back(0.0);
 
-  // Set constants for platinum wire gain equation for temperature of target.
+  // Set constants for platinum wire gain equation for temperature of target. 
+  // These should remain constant as long as physical target doesn't change.
+  // If target is replaced, these may change.
   _AA = -244.3364635;
   _Bb = 0.462418;
   _cC = 0.0000588;
   _DD = -0.000000013;
   _Wtg = 0.1;
 
+  // the angle associated with the horizontal scan
+  _LocHor = 5; 
+
   return;
 }
 
-std::vector<float> Calibrator::Calibrate(std::vector<int> ScanCounts, std::vector<int> PltWireCnts, std::vector<int> TargetCnts)
+std::vector<float> Calibrator::Calibrate(std::vector<int> ScanCounts, std::vector<int> PltWireCnts, std::vector<int> TargetCnts, float OAT)
 {
+  // The equations in this routine come from MTPGainEquation.docx (in svn)
   std::vector<float> ScanBTs;
 
   std::vector<float> Gnd;
@@ -41,11 +47,9 @@ std::vector<float> Calibrator::Calibrate(std::vector<int> ScanCounts, std::vecto
   }
 
   // Counts for TMix
-  // float TMC = PltWireCnts[4];
   float r = 350.0+(250.0*(PltWireCnts[4]-PltWireCnts[0])/(PltWireCnts[7]-PltWireCnts[0])); 
   
   // Temperature of the mixer (TMix, also known as Tifa)
-  //float TMix = _AA +_Bb*TMC + _cC*TMC*TMC + _DD*TMC*TMC*TMC;
   float TMix = _AA +_Bb*r + _cC*r*r + _DD*r*r*r;
 
   // g() is initialized to a value at the beginning of a flight and then is adjusted on
@@ -54,7 +58,6 @@ std::vector<float> Calibrator::Calibrate(std::vector<int> ScanCounts, std::vecto
   {
     if (_Gain[i] == 0.0) {
       // Initialize the gain
-      //_Gain[i] = TMix*_GEC2[i];
       _Gain[i] = (TMix-_GOF[0])*_GEC2[i] + _GEC1[i];
     } else {
       _Gain[i] = (_Gain[i] + Gnd[i] * _Wtg)/ (1+_Wtg);
@@ -64,23 +67,13 @@ std::vector<float> Calibrator::Calibrate(std::vector<int> ScanCounts, std::vecto
 
   cout << "Calculate Tb...\n";
   // Calculate Brightness Temperatures
-  float OAT = 222.53; // Kelvin
-  int LocHor = 5; // the angle associated with the horizontal scan
-  for (int j=0;j<NUM_SCAN_ANGLES;j++)
-  {
-    for (int i=0; i<NUM_CHANNELS;i++)
-    {
-        ScanBTs.push_back(OAT + (ScanCounts[i+j*3] - ScanCounts[i+LocHor*3]) / _Gain[i]); // Target 1
-    }
-  }
   for (int i=0; i<NUM_CHANNELS;i++)
   {
     for (int j=0;j<NUM_SCAN_ANGLES;j++)
     {
-	cout << "Tb="<<OAT + (ScanCounts[i+j*3] - ScanCounts[i+LocHor*3])/_Gain[i]<<"\n";
+        ScanBTs.push_back(OAT + (ScanCounts[i*10+j] - ScanCounts[i*10+_LocHor]) / _Gain[i]);
     }
   }
-  cout << "Done\n\n";
 
   return ScanBTs;
 }

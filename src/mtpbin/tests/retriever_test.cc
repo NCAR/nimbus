@@ -31,8 +31,11 @@ main () {
   // Second HIPPO test
   retriever_test(flightLevelsKmH,numFlightLevelsH,scanBTsH2,ACAltKmH2,RCFdirH);
 
-  // First DEEPWAVE test
-  //retriever_test(flightLevelsKmD,numFlightLevelsD,scanBTsD1,ACAltKmD1,RCFdirD);
+  // DEEPWAVE test
+  retriever_test(flightLevelsKmD,numFlightLevelsD,scanBTsD1,ACAltKmD1,RCFdirD);
+
+  // CSET test
+  //retriever_test(flightLevelsKmC,numFlightLevelsC,scanBTsC1,ACAltKmC1,RCFdirC);
 }
 
 void retriever_test(float *flightLevelsKm, int numFlightLevels, 

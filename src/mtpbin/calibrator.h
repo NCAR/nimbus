@@ -62,12 +62,13 @@ public:
    * @param PltWireCnts is the platinum wire counts.
    * @param TargetCnts is the counts from the target. First 3 are with ND on, next 3
    * off.
+   * @param OAT is outside air temperature from the A line of the RAW MTP file (Kelvin).
    *
    * @returns a std::vector<float> of Brightness Temperatures for the scan. 
    * There are 30 elements to the vector, 3 values at each of the 10 angles
    * of the MTP's scan.
    */
-  std::vector<float> Calibrate(std::vector<int>, std::vector<int>, std::vector<int>);
+  std::vector<float> Calibrate(std::vector<int>, std::vector<int>, std::vector<int>,float);
   
 
 private: 
@@ -81,6 +82,9 @@ private:
   float _cC;
   float _DD;
   float _Wtg;
+
+  ///< The scan angle associated with the horizontal scan.
+  int _LocHor;
 
   ///< Elements that are pulled from the flight's REF file.  
   ///< e.g. "c:\MTP\Data\NGV\HIPPO-5\20110822\NG20110822.REF"
