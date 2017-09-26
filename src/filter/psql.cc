@@ -233,9 +233,6 @@ PostgreSQL::dropAllTables()
     submitCommand(_sqlString.str(), true);
   }
 
-  // Clear the lightning table.
-  submitCommand("TRUNCATE TABLE lightning;");
-
   /*
    * Database seems to slow down after a number of runs without VACUUMing.
    * It's not sufficient to just DROP all tables.
