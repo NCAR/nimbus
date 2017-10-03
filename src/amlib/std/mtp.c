@@ -109,13 +109,12 @@ void scal(DERTBL *varp)
       for (size_t j=0;j<NUM_SCAN_ANGLES;j++)
       {
          scanbt[i*10+j]=saat+(scnt_inv[i*10+j]-scnt_inv[i*10+_LocHor])/_Gain[i];
-	 sprintf(buffer,"scanbt[%lu,%lu]=%f",i,j,scanbt[i*10+j]);
-	 LogMessage(buffer);
       }
   }
 
-  PutSample(varp, *scanbt);
-}	/* END scal */
+
+  PutVector(varp, &scanbt);
+}      /* END scal */
 
 /* -------------------------------------------------------------------- */
 
