@@ -114,7 +114,7 @@ void scal(DERTBL *varp)
       }
   }
 
-  PutSample(varp, scanbt[NUM_CHANNELS*NUM_SCAN_ANGLES]);
+  PutSample(varp, *scanbt);
 }	/* END scal */
 
 /* -------------------------------------------------------------------- */
