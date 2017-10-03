@@ -43,6 +43,7 @@ lwcc.c
 mach.c
 mr.c
 mrla.c
+mtp.c
 nevzorov.c
 palt.c
 plwcc.c

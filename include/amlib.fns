@@ -13,6 +13,7 @@
 #
 	"CNFLOW",	NULL,           NULL,		scFlowDW,
 	"CNCONC",	NULL,           NULL,		sconcnDW,
+	"SCANBT",	NULL,	        NULL,		scal,
 #
 # NOMADSS
 #

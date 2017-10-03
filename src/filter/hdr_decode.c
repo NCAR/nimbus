@@ -107,6 +107,7 @@ static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
 
 
 static RAWTBL	*initSDI_ADS3(nidas::dynld::raf::SyncRecordVariable* var);
+static void     initMTP();
 static RAWTBL	*add_name_to_RAWTBL(const char []);
 static DERTBL	*add_name_to_DERTBL(const char []);
 
@@ -467,6 +468,11 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
       // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
         rp->OutputRate = rp->SampleRate;
+    }
+
+    if (!strcmp(rp->name,"SCNT_MTP"))
+    {
+	initMTP();
     }
 
     add_derived_names(name_sans_location);
@@ -1318,6 +1324,15 @@ static void initOphir3(char vn[])
 
 }	/* END IN_OPHIR3 */
 
+/* -------------------------------------------------------------------- */
+static void initMTP()
+{
+  int		nbins = 30; // 3 channels x 10 scan angles
+  DERTBL	*dp;
+
+  dp = add_name_to_DERTBL("SCANBT");
+  dp->Length = nbins;
+}
 /* -------------------------------------------------------------------- */
 static void initMASP(char vn[])
 {
