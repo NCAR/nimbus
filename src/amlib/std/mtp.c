@@ -30,16 +30,46 @@ static float _Wtg = 0.1;
 // the angle associated with the horizontal scan
 static int _LocHor = 5;
 
-// These are per-flight constants from the flights MTP .CAL file. They need
-// to be read in per-flight from a cal file in
-// $PROJ_DIR/<project>/<platform>/mtp, and eventually derived from the raw
-// data and first principles. They are here for testing.
-// These cals apply to DEEPWAVE RF01.
-static float cnd0[3] = {86.926,76.711,80.198};
-static float gof[3]  = {40.6,0.0,0.0};
-static float gec1[3] = {19.87,23.10,26.05};
-static float gec2[3] = {-0.1,-0.1,-0.1};
+// per-flight constants from the Defaults.<flight> files
+static const int nCoeffs = 3;
+static float CND0[nCoeffs] = {1.0,1.0,1.0}, GOF[nCoeffs] = {1.0,1.0,1.0}, 
+             GEC1[nCoeffs] = {1.0,1.0,1.0}, GEC2[nCoeffs] = {1.0,1.0,1.0};
 
+/* -------------------------------------------------------------------- */
+static void readDefs(const char name[],float var[nCoeffs])
+{
+
+    float *tmp;
+
+    if ((tmp = GetDefaultsValue(name, name)) == NULL)
+    {
+	sprintf(buffer, "%s value defaulting to %f %f %f in AMLIB function mtpInit.\n",
+                name, var[0], var[1], var[2]);
+        LogMessage(buffer);
+    }
+    else
+    {
+      for (int i = 0; i < nCoeffs; ++i)
+        var[i] = tmp[i];
+      sprintf(buffer,"mtp.c: %s set to %f %f %f from Defaults file.\n", name,
+	      var[0], var[1], var[2]);
+	LogMessage(buffer);
+    }    
+}
+/* -------------------------------------------------------------------- */
+void mtpInit(var_base *varp)
+{
+    char name[256];
+
+    strcpy(name,"CND0");
+    readDefs(name,CND0);
+    strcpy(name,"GOF");
+    readDefs(name,GOF);
+    strcpy(name,"GEC1");
+    readDefs(name,GEC1);
+    strcpy(name,"GEC2");
+    readDefs(name,GEC2);
+}
 /* -------------------------------------------------------------------- */
 /* The equations in this routine come from MTPGainEquation.docx (in svn) */
 void scal(DERTBL *varp)
@@ -80,7 +110,7 @@ void scal(DERTBL *varp)
   int TargNDIndx = 0;   // Index into tcnt for the target w/ ND off
   for (size_t i=0; i<NUM_CHANNELS; i++)
   {
-      Gnd[i] = (tcnt[TargIndx]-tcnt[TargNDIndx])/cnd0[i];
+      Gnd[i] = (tcnt[TargIndx]-tcnt[TargNDIndx])/CND0[i];
       TargIndx = TargIndx+1;
       TargNDIndx = TargNDIndx+1;
   }
@@ -97,7 +127,7 @@ void scal(DERTBL *varp)
   {
       if (_Gain[i] == 0.0) {
          // Initialize the gain
-         _Gain[i] = (TMix-gof[0])*gec2[i] + gec1[i];
+         _Gain[i] = (TMix-GOF[0])*GEC2[i] + GEC1[i];
       } else {
          _Gain[i] = (_Gain[i] + Gnd[i] * _Wtg)/ (1+_Wtg);
       }

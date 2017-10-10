@@ -13,7 +13,8 @@
 #
 	"CNFLOW",	NULL,           NULL,		scFlowDW,
 	"CNCONC",	NULL,           NULL,		sconcnDW,
-	"SCANBT",	NULL,	        NULL,		scal,
+	"SCANBT",	(void(*)(void*))mtpInit,	NULL,	scal,
+
 #
 # NOMADSS
 #
