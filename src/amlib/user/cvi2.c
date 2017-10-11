@@ -132,7 +132,29 @@ void scvrho(DERTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
-void scvcwc(DERTBL *varp)
+void scvcfacttdl(DERTBL *varp)
+{
+  NR_TYPE cvcfact= GetSample(varp, 0);
+  NR_TYPE cvpcn	= GetSample(varp, 1);
+  NR_TYPE cvtcn = GetSample(varp, 2);
+  NR_TYPE ptdlr = GetSample(varp, 3);
+  NR_TYPE ttdlr = GetSample(varp, 4);
+
+  if (cfg.ProjectName().compare("ARISTO2017") == 0 &&
+     (cfg.FlightNumber().compare("rf01") == 0 ||
+      cfg.FlightNumber().compare("rf02") == 0))
+    cvtcn = 294.0;  // Subsitute for missing data.
+
+  if (varp->depends[2]->Units.compare("C") == 0)
+    cvtcn += Kelvin;
+
+  cvcfact = cvcfact * (cvpcn / ptdlr) * (ttdlr+Kelvin) / (cvtcn);
+
+  PutSample(varp, cvcfact);
+}
+
+/* -------------------------------------------------------------------- */
+void scvcwcc(DERTBL *varp)
 {
   static int		counter = 0;
   static NR_TYPE	prevInlet = 0.0;
