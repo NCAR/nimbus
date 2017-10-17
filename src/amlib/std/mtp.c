@@ -5,10 +5,17 @@ OBJECT NAME:	mtp.c
 FULL NAME:	MTP
 
 ENTRY POINTS:	scal()		Convert counts to brightness temperature
+                sretrieve()     Obtain the physical temperature profile from 
+		                a scan. 
 
-DESCRIPTION:	Derived calculations for the MTP.
+DESCRIPTION:	Derived calculations for the Microwave Temperature Profiler 
+                (MTP) instrument. The MTP build by JPL for NCAR as part of 
+		the set of instruments known as HAIS (build specifically in 
+		support of the Haiper GV aircraft) came with processing 
+		software written in Visual Basic 6.0.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 2017
+ - VB6 and Algorithm Copyright MJ Mahoney, NASA Jet Propulsion Laboratory
 -------------------------------------------------------------------------
 */
 
@@ -17,6 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2017
 
 static const int NUM_CHANNELS = 3;     // number of frequencies used by the MTP
 static const int NUM_SCAN_ANGLES = 10; // number of scan angles
+
 
 // Set constants for platinum wire gain equation for temperature of target. 
 // These should remain constant as long as physical target doesn't change.
@@ -27,15 +35,30 @@ static float _cC = 0.0000588;
 static float _DD = -0.000000013;
 static float _Wtg = 0.1;
 
-// the angle associated with the horizontal scan
+// The scan angle associated with the horizontal scan
 static int _LocHor = 5;
 
 // per-flight constants from the Defaults.<flight> files
+// @param CND0 float[] are the 'Cnd0' values from the REF file.  
+// I believe that these are the "temperatures" of the target in each channel
+// in degrees C when the noise diode is on.  Comments in the VB code call
+// it the Noise Diode Temperature Fit Offset value.
+// @param GOF float[] are the 'GOF' values from the REF file.
+// I believe that these are an offset for the temperature of the mixer, one
+// for each channel.  Comments in the VB code say they are Gain Equation Offsets
+// but their use belies that.
+// @param GEC1 float[] is the 'GEC(chan,1)' vector from the REF file
+// called Gain Equation Coefficients, they do seem to be used in that way
+// There is one value per channel, this one is the offset coefficient.
+// @param gec2 float[] is the 'GEC(chan,2)' vector from the REF file
+// called Gain Equation Coefficients, this one is the linear coefficient
+// applied to the difference of the Mixer temperature minus the GOF above.
 static const int nCoeffs = 3;
 static float CND0[nCoeffs] = {1.0,1.0,1.0}, GOF[nCoeffs] = {1.0,1.0,1.0}, 
              GEC1[nCoeffs] = {1.0,1.0,1.0}, GEC2[nCoeffs] = {1.0,1.0,1.0};
 
 /* -------------------------------------------------------------------- */
+/* Read in constants from the defaults file.                            */
 static void readDefs(const char name[],float var[nCoeffs])
 {
 
@@ -71,10 +94,15 @@ void mtpInit(var_base *varp)
     readDefs(name,GEC2);
 }
 /* -------------------------------------------------------------------- */
-/* The equations in this routine come from MTPGainEquation.docx (in svn) */
+/* Calibrate the MTP scans using constants that are written to the .CAL */
+/* file by the VB code for the flight in question.                      */
+/* The equations in this routine come from MTPGainEquation.docx (in svn)*/
+/* When the MTP instrument completes a scan of the atmosphere the scan  */
+/* counts are converted to Brightness Temperatures using this routine.  */
 void scal(DERTBL *varp)
 {  
   float Gnd[NUM_CHANNELS];
+  // For storing the rolling gain value - one value per channel
   float _Gain[NUM_CHANNELS];
   NR_TYPE scanbt[NUM_CHANNELS*NUM_SCAN_ANGLES];
   NR_TYPE scnt_inv[NUM_CHANNELS*NUM_SCAN_ANGLES];
@@ -82,11 +110,16 @@ void scal(DERTBL *varp)
   /* These 'GetSample()'s must match the same order as the variables
    * are listed in the DependTable.
    */
-  NR_TYPE *scnt = GetVector(varp, 0);
-  NR_TYPE *tcnt = GetVector(varp, 1);
-  NR_TYPE  saat = GetSample(varp, 2);//Scan Avg Ambient Air Temp (OAT)
+  NR_TYPE *scnt = GetVector(varp, 0); // The vector of counts produced by the 
+                  // MTP instrument for this scan. This vector should be of 
+		  // length 30 - three points for each angle (one per channel)
+  NR_TYPE *tcnt = GetVector(varp, 1); // The vector of counts produced by the
+                  // MTP target. This vector should be of length 6 - three per
+		  // channel for the noise diode turned on and three for it 
+		  // turned off.
+  NR_TYPE saat = GetSample(varp, 2);  //Scan Avg Ambient Air Temp (OAT)
   NR_TYPE tr350cntp=GetSample(varp,3);//Platinum Multiplxr R350 Counts
-  NR_TYPE tmixcntp=GetSample(varp,4);//Platinum Multiplxr Mixer Temperature Cnts
+  NR_TYPE tmixcntp=GetSample(varp,4); //Platinum Multiplxr Mixer Temperature Cnts
   NR_TYPE tr600cntp=GetSample(varp,5);//Platinum Multiplxr R600 Counts
 
   // Create a gain vector with all elements set to zero.
@@ -143,9 +176,11 @@ void scal(DERTBL *varp)
   }
 
 
+  // @returns a vector of Brightness Temperatures for the scan. 
+  // There are 30 elements to the vector, 3 values at each of the 10 angles
+  // of the MTP's scan.
   PutVector(varp, &scanbt);
 }      /* END scal */
 
 /* -------------------------------------------------------------------- */
-
 /* END MTP.C */
