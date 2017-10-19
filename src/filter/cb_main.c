@@ -1327,7 +1327,6 @@ static void EngageSignals()
 {
   ILOG(("EngageSignals"));
   signal(SIGINT, sighandler);
-  signal(SIGKILL, sighandler);
   signal(SIGFPE, sighandler);
   signal(SIGTERM, sighandler);
   signal(SIGSEGV, sighandler);
