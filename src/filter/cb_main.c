@@ -70,8 +70,6 @@ static time_t	startWALL, finishWALL;
 static clock_t	startCPU, finishCPU;
 
 extern Widget	Shell001;
-extern size_t	nDefaults;
-extern DEFAULT	*Defaults[];
 extern pid_t	syncPID;
 
 
@@ -132,6 +130,7 @@ void ShutdownSyncServer()
 void CancelSetup(Widget w, XtPointer client, XtPointer call)
 {
   size_t	i;
+  void FreeDefaults();
 
   CloseADSfile();
 
@@ -141,8 +140,7 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
   for (i = 0; i < derived.size(); ++i)
     delete derived[i];
 
-  for (i = 0; i < nDefaults; ++i)
-    delete Defaults[i];
+  FreeDefaults();
 
   FreeDataArrays();
   ReleaseFlightHeader();
@@ -787,7 +785,7 @@ void Quit(Widget w, XtPointer client, XtPointer call)
     psql->closeSQL();
 
   CloseRemoveLogFile();
-  ShutdownSyncServer();
+  CancelSetup(NULL, NULL, NULL);
 
   if (strlen(sync_server_pipe))
     unlink(sync_server_pipe);
@@ -1043,6 +1041,9 @@ void FillListWidget()
 void PrintSetup(Widget w, XtPointer client, XtPointer call)
 {
   FILE	*fp;
+
+  extern size_t	nDefaults;
+  extern DEFAULT	*Defaults[];
 
   if ((fp = popen("lpr", "w")) == NULL)
     {
