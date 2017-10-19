@@ -140,15 +140,11 @@ void scvcfacttdl(DERTBL *varp)
   NR_TYPE ptdlr = GetSample(varp, 3);
   NR_TYPE ttdlr = GetSample(varp, 4);
 
-  if (cfg.ProjectName().compare("ARISTO2017") == 0 &&
-     (cfg.FlightNumber().compare("rf01") == 0 ||
-      cfg.FlightNumber().compare("rf02") == 0))
-    cvtcn = 294.0;  // Subsitute for missing data.
-
-  if (varp->depends[2]->Units.compare("C") == 0)
+  // Convert to Kelvin, if not already.
+  if (varp->depends[2]->Units.find('C') == 0)
     cvtcn += Kelvin;
 
-  cvcfact = cvcfact * (cvpcn / ptdlr) * (ttdlr+Kelvin) / (cvtcn);
+  cvcfact = cvcfact * (ptdlr / cvpcn) * (cvtcn) / (ttdlr+Kelvin);
 
   PutSample(varp, cvcfact);
 }
