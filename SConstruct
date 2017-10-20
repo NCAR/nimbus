@@ -35,6 +35,10 @@ env['CCFLAGS'] = Split("""
     -Wall -g -Wno-write-strings -Wstrict-aliasing
 """)
 
+env['CXXFLAGS'] = Split("""
+    -std=c++11
+""")
+
 Export('env')
 
 

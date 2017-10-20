@@ -35,6 +35,7 @@ licor.c
 licor_wyo.c
 masp.c
 mtp.c
+mtp_rcf.cc
 ndvi.c
 ophir3.c
 prcltrk1.c
@@ -52,6 +53,6 @@ ultrafine.c
 uvhyg.c
 """)
 
-nclho = env.StaticObject('nclh.c', CCFLAGS=env['CCFLAGS']+['-Wno-missing-braces'])
+nclho = env.StaticObject('nclh.c', CCFLAGS=env['CCFLAGS']+env['CXXFLAGS']+['-Wno-missing-braces'])
 user = env.StaticLibrary('user' , sources + [nclho])
 env.Default(env.Install('#/lib/', user))

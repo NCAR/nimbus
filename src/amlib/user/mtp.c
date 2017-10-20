@@ -21,10 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2017
 
 #include "nimbus.h"
 #include "amlib.h"
-
-static const int NUM_CHANNELS = 3;     // number of frequencies used by the MTP
-static const int NUM_SCAN_ANGLES = 10; // number of scan angles
-
+#include "mtp.h"
 
 // Set constants for platinum wire gain equation for temperature of target. 
 // These should remain constant as long as physical target doesn't change.
@@ -56,6 +53,9 @@ static int _LocHor = 5;
 static const int nCoeffs = 3;
 static float CND0[nCoeffs] = {1.0,1.0,1.0}, GOF[nCoeffs] = {1.0,1.0,1.0}, 
              GEC1[nCoeffs] = {1.0,1.0,1.0}, GEC2[nCoeffs] = {1.0,1.0,1.0};
+char file[256]="/net/work/dev/jaa/raf/instruments/mtp/src/mtpbin/CSET/RCF/";
+static const int numFlightLevels = 13;
+float flightLevelsKm[numFlightLevels] = {13.0,12.0,9.5,8.0,6.0,5.0,3.5,2.5,2.0,1.5,1.0,0.5,0.0};
 
 /* -------------------------------------------------------------------- */
 /* Read in constants from the defaults file.                            */
@@ -183,4 +183,31 @@ void scal(DERTBL *varp)
 }      /* END scal */
 
 /* -------------------------------------------------------------------- */
+/* Convert brightness temperatures to atmospheric temperature profiles 
+ * by performing an inverse calculation of the radiative transfer model.
+ * Requires as input Retrieval Coefficient Files (RCFs) written by the MTP 
+ * Visual Basic program. RCF files are templates that describe what a 
+ * given RAOB profile would look like to the MTP instrument if the instrument
+ * was used to measer the atmosphere described by the profile. The
+ * weighted averaged retrieval coefficients from the RCF that best matches our
+ * scan at our flight altitude are calculated.
+ *
+ * When the MTP instrument completes a scan of the atmosphere the scan counts
+ * are converted to Brightness Temperatures (in scal above), using these the
+ * "best match" RCF is found and it's corresponding Retrieval Coefficients are 
+ * used to determine the atmospheric temperature profile.
+ */
+void sretriever(DERTBL *varp)
+{
+
+  NR_TYPE *scanbt = GetVector(varp, 0); // The vector of brightness temperatures
+                  // calculated in scal (above) for this scan. This vector should
+		  // be of length 30 - three points for each angle (one per 
+		  // channel)
+  NR_TYPE ggalt = GetSample(varp, 1);  //Aircraft altitude (MSL) meters
+  NR_TYPE tempc[NUM_RETR_LVLS]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33};
+
+  PutVector(varp, &tempc);
+
+}      /* End sretriever */
 /* END MTP.C */

@@ -38,6 +38,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
 #include <raf/ctape.h>	// ADS header API
 #include <raf/vardb.hh>	// Variable DataBase
 #include "amlib.h"
+#include "mtp.h"
 
 #include <nidas/core/Socket.h>
 #include <nidas/dynld/raf/SyncRecordReader.h>
@@ -1327,11 +1328,18 @@ static void initOphir3(char vn[])
 /* -------------------------------------------------------------------- */
 static void initMTP()
 {
-  int		nbins = 30; // 3 channels x 10 scan angles
+  int indx;
+  int		nbins = NUM_CHANNELS*NUM_SCAN_ANGLES; // Constant set in mtp.h
+  int		nbinsl = NUM_RETR_LVLS; // Constant set in mtp.h
   DERTBL	*dp;
 
+  // Initialize brightness temperature
   dp = add_name_to_DERTBL("SCANBT");
   dp->Length = nbins;
+
+  // Initialize physical temperature profile
+  dp = add_name_to_DERTBL("TEMPC");
+  dp->Length = nbinsl;
 }
 /* -------------------------------------------------------------------- */
 static void initMASP(char vn[])
