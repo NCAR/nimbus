@@ -167,6 +167,8 @@ static void putGlobalAttribute(const char attrName[], const std::string value)
 /* -------------------------------------------------------------------- */
 void CreateNetCDF(const char fileName[])
 {
+  int status;
+
   ILOG(("CreatingNetCDF, file = %s", fileName));
 
   ncopts = NC_VERBOSE;
@@ -482,8 +484,13 @@ void CreateNetCDF(const char fileName[])
       dims[2] = _vectorDimIDs[dp->Length];
     }
 
-//printf("DER: %s\n", dp->name); fflush(stdout);
-    nc_def_var(fd, dp->name, NC_FLOAT, ndims, dims, &dp->varid);
+    status = nc_def_var(fd, dp->name, NC_FLOAT, ndims, dims, &dp->varid);
+    if (status != NC_NOERR)
+    {
+      fprintf(stderr,"CreateNetCDF: error, derived variable %s status = %d\n", dp->name,status);
+      fprintf(stderr, "%s\n", nc_strerror(status));
+    }
+
 
     addCommonVariableAttributes(dp);
 
