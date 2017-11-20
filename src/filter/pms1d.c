@@ -336,6 +336,12 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("ACDP_RWII", "CDP058", PROBE_PMS1D | PROBE_CDP);
     setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
   }
+  else
+  if (cfg.ProjectName().compare("SOCRATES") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+  }
 }
 
 /* -------------------------------------------------------------------- */
