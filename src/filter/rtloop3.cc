@@ -187,17 +187,17 @@ void RealTimeLoop3()
 
     bcast->BroadcastData(tt);
 
-    if (cfg.TransmitToGround())
-      grnd_feed->BroadcastData(tt);
-
-    if (cfg.OutputNetCDF())
-      WriteNetCDF();
-
     UpdateTime(SampledData);
     if (mcStat) {
       strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", &tm);
       mcStat->sendStatus(timeStamp);
     }
+
+    if (cfg.TransmitToGround())
+      grnd_feed->BroadcastData(tt);
+
+    if (cfg.OutputNetCDF())
+      WriteNetCDF();
 
     // This typically produces HRT netCDF in real-time.  Not used at this time.
     if (cfg.OutputNetCDF())
