@@ -405,7 +405,9 @@ NR_TYPE pcorf5v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)
 // with M from new pitot if M is uncommented below.
 NR_TYPE pcortf5(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack, NR_TYPE SSlip, NR_TYPE M)
 {
-  static double a[] = { 0.0178842, -0.0724505, 0.17956, -0.00287264, 0.000997074 };
+  //static double a[] = { 0.0178842, -0.0724505, 0.17956, -0.00287264, 0.000997074 }; // Aug 2016
+  //static double a[] = { 0.0271177, -0.0323388, -0.0328141, 0.335708, -0.00357207, 0.00128762 }; // Oct 20, 2017
+  static double a[] = { 0.0305835, 0.0340565, -0.0610611, 0.286168, -0.00359514}; // Dec 27, 2017
 
   //NR_TYPE M;
   NR_TYPE deltaP;
@@ -414,10 +416,12 @@ NR_TYPE pcortf5(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack, NR_TYPE SSlip, NR_TYPE M
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
   if (isnan(Attack)) Attack = 3.0;
 
-  // Uncomment this M calculation to overwrite MACH being dragged with MACH calculated
-  // from Pm/Qm being dragged in.
-  M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
-  deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * M*M*M + a[3] * Attack + a[4] * SSlip);
+  // Uncomment this M calculation to overwrite MACH being dragged in and replace
+  // it with MACH calculated from Pm/Qm being dragged in.
+  //M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  //deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * M*M*M + a[3] * Attack + a[4] * SSlip); // Aug 2016
+  //deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * pow(Qm/Pm,0.5) + a[3] * pow(Qm/Pm,1.5) + a[4] * Attack + a[5] * SSlip); // Oct 20, 2017
+  deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * pow(Qm/Pm,0.5) + a[3] * pow(Qm/Pm,1.5) + a[4] * Attack); // Dec 27, 2017
 
   // Taper if Qm is too small (take-off / landing).
   if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
