@@ -141,7 +141,7 @@ void scvcfacttdl(DERTBL *varp)
   NR_TYPE ttdlr = GetSample(varp, 4);
 
   // Convert to Kelvin, if not already.
-  if (varp->depends[2]->Units.find('C') == 0)
+  if (varp->depends[2]->Units.find('C') ==  std::string::npos)
     cvtcn += Kelvin;
 
   cvcfact = cvcfact * (ptdlr / cvpcn) * (cvtcn) / (ttdlr+Kelvin);
