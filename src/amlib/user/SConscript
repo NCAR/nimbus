@@ -11,6 +11,7 @@ DYCOMS.c
 NOMADSS.c
 PASE.c
 RICO.c
+SOCRATES.c
 VOCALS.c
 
 atc.c

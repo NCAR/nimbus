@@ -6,6 +6,8 @@
 #
 #	Name		Constructor	xlate fn	compute fn
 # ----------------------------------------------------------------------------
+# SOCRATES
+	"CONC_PHIPS",	NULL,		NULL,		sphips,
 # CSET
 	"GGALTF",	NULL,		NULL,		sggaltf,
 #
