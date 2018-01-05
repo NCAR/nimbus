@@ -13,7 +13,7 @@ void sphips(DERTBL *varp)
   pps = GetSample(varp, 0);
   tas = GetSample(varp, 1);
 
-  out = pps / (tas * 100.0) / area;
+  out = (pps-1.43) * 1000.0 / (tas * 100.0) / area;
 
   PutSample(varp, out);
 
