@@ -145,8 +145,8 @@ void scvcfacttdl(DERTBL *varp)
   if (varp->depends[2]->Units.find('C') != std::string::npos)
     cvtcn += Kelvin;
 
-  // Cheezy despike.  Keep cvtcn between 15C and 35C.
-  if (cvtcn < 288.0 || cvtcn > 308)
+  // Replicate previous samle if out of bounds (15C and 35C).
+  if (isnan(cvtcn) || cvtcn < 288.0 || cvtcn > 308.0)
     cvtcn = previousTCN;
   else
     previousTCN = cvtcn;
