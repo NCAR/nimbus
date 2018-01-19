@@ -605,7 +605,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
   }
 
 
-  if (rp->ProbeType & PROBE_260X || strstr(rp->name, "2D"))
+  if (rp->ProbeType & PROBE_260X || strstr(rp->name, "2D") || strstr(rp->name, "PIP"))
     nBins = 64;
   else
   if (rp->ProbeType & PROBE_HVPS)

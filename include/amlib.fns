@@ -245,6 +245,7 @@
 	"CONC2DP",	NULL,		NULL,		sconc2,
 	"CONC1DC",	NULL,		NULL,		sconc2,
 	"CONC1DP",	NULL,		NULL,		sconc2,
+	"CONCPIP",	NULL,		NULL,		sconc2,
 	"CONCHV",	NULL,		NULL,		sconc2,
 
 # PMS DBAR
@@ -261,6 +262,7 @@
 	"DBAR2DP",	NULL,		NULL,		sdbar2,
 	"DBAR1DC",	NULL,		NULL,		sdbar2,
 	"DBAR1DP",	NULL,		NULL,		sdbar2,
+	"DBARPIP",	NULL,		NULL,		sdbar2,
 	"DBARHV",	NULL,		NULL,		sdbar2,
 
 # PMS DISP
@@ -276,6 +278,7 @@
 	"DISP2DP",	NULL,		NULL,		sdisp2,
 	"DISP1DC",	NULL,		NULL,		sdisp2,
 	"DISP1DP",	NULL,		NULL,		sdisp2,
+	"DISPPIP",	NULL,		NULL,		sdisp2,
 	"DISPHV",	NULL,		NULL,		sdisp2,
 
 # PMS Liquid Water Content
@@ -288,6 +291,7 @@
 	"PLWC2DP",	NULL,		NULL,		splwc2,
 	"PLWC1DC",	NULL,		NULL,		splwc2,
 	"PLWC1DP",	NULL,		NULL,		splwc2,
+	"PLWCPIP",	NULL,		NULL,		splwc2,
 	"PLWCHV",	NULL,		NULL,		splwc2,
 
 # PMS Effective Radius
@@ -327,8 +331,9 @@
 	"DBZD",		NULL,		NULL,		sdbzd,
 	"DBZF",		NULL,		NULL,		sdbzf,
 	"DBZ6",		NULL,		NULL,		sdbz6,
-	"DBZ1DP",	NULL,		NULL,		sdbz2,
 	"DBZ1DC",	NULL,		NULL,		sdbz2,
+	"DBZ1DP",	NULL,		NULL,		sdbz2,
+	"DBZPIP",	NULL,		NULL,		sdbz2,
 	"DBZHV",	NULL,		NULL,		sdbz2,
 	"DBZ2DP",	NULL,		NULL,		sdbz2,
 	"DBZ2DC",	NULL,		NULL,		sdbz2,
@@ -1021,6 +1026,7 @@
 	"CHVPS",	(void(*)(void*))sTwodInitH,	NULL,		sHVPS,
 	"C2DC",		(void(*)(void*))sTwodInit,	NULL,		sTwoD,
 	"C2DP",		(void(*)(void*))sTwodInit,	NULL,		sTwoD,
+	"CPIP",		(void(*)(void*))sTwodInit,	NULL,		sTwoD,
 #	"C2DG",		NULL,		NULL,		sTwoDG,
 	"2D-C",		NULL,		xlAsync,	NULL,
 	"2D-P",		NULL,		xlAsync,	NULL,
