@@ -343,6 +343,7 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("A2DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("AUHSAS_LWII", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
     setSerialNumberAndProbeType("AUHSAS_CVIU", "UHSAS015", PROBE_PMS1D | PROBE_PCASP);
+    setSerialNumberAndProbeType("APIP_RWII", "PIP011", PROBE_PMS2D | PROBE_2DP);
   }
 }
 
