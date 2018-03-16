@@ -665,15 +665,20 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
       else
         {
         for(i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
+          {
           if ( !isnan((double)getBuff(i, thisMRF->inBuff)) )
             {
             result += thisMRF->filter->aCoef[tap] *
                     (double)getBuff(i, thisMRF->inBuff);
             sumTap += thisMRF->filter->aCoef[tap];
             }
+          }
         }
 
-      *output = result / sumTap;
+      if ( isnan((double)getBuff(thisMRF->filter->order / 2, thisMRF->inBuff)) )
+        *output = floatNAN;
+      else
+        *output = result / sumTap;
 
       /*  Advance time.   */
       thisMRF->inTime++;
