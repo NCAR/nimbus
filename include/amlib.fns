@@ -911,6 +911,7 @@
 	"PALT",		NULL,		NULL,		spalt,
 	"PALTF",	NULL,		NULL,		meters2feet,
 	"GALTF",	NULL,		NULL,		meters2feet,
+	"GEOPTH",	NULL,		NULL,		sGeopot2,
 	"PSBC",		NULL,		NULL,		spsbc,
 	"PSFC",		NULL,		NULL,		spsfc,
 	"PSFD",		NULL,		xlpsfd,		NULL,
