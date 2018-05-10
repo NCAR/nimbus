@@ -967,6 +967,7 @@
 #
 	"TASB",		NULL,		NULL,		stas,
 	"TASF",		NULL,		NULL,		stas,
+	"TASTF",	NULL,		NULL,		stas,
 	"TASR",		NULL,		NULL,		stas,
 	"TASFR",	NULL,		NULL,		stas,
 	"TASW",		NULL,		NULL,		stas,
@@ -977,6 +978,7 @@
 	"CAS",		NULL,		NULL,		sias,
 	"MACHB",	NULL,		NULL,		smach,
 	"MACHF",	NULL,		NULL,		smach,
+	"MACHTF",	NULL,		NULL,		smach,
 	"MACHR",	NULL,		NULL,		smach,
 	"MACHW",	NULL,		NULL,		smach,
 	"MACHFR",	NULL,		NULL,		smach,
