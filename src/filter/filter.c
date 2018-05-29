@@ -24,6 +24,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 #include "filters.h"
 #include "circbuff.h"
 
+
+static const int MAX_NAN = 4;
+
+
 extern NR_TYPE	*SampledData, *HighRateData;
 
 static std::vector<mRFilterPtr> rawFilters;
@@ -584,9 +588,7 @@ static int disposMultiRateFilter(mRFilterPtr aMRFPtr)
 */
 static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
 {
-  int		tap, i;	/* Indecies for coef and input data arrays.	*/
-  filterType	result;	/* Temporary accumulator for output calc.	*/
-  NR_TYPE	sumTap; /* accumulator for taps used (non nan).		*/
+  int	i;
 
   /* Input was just requested; here it is.	*/
   if (thisMRF->task == GET_INPUT)
@@ -611,12 +613,14 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
     /* Time to calc output sample? 	*/
     if (thisMRF->outTime >= thisMRF->M)
       {
-      thisMRF->outTime = 0;
-      tap = thisMRF->coefPhase;
-
       /* Filter. */
-      result = 0.0;
-      sumTap = 0.0;
+      NR_TYPE result = 0.0;	/* Temporary accumulator for output calc.	*/
+      NR_TYPE sumTap = 0.0;	/* accumulator for taps used (non nan).		*/
+
+      int tap = thisMRF->coefPhase;
+      int nanCount = 0;
+
+      thisMRF->outTime = 0;
 
       if (thisMRF->modulo)
         {
@@ -624,7 +628,7 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
         bool	low_value = false,
 		high_value = false;
 
-        for(i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
+        for (i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
           {
           value = getBuff(i, thisMRF->inBuff);
 
@@ -649,22 +653,26 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
               result += thisMRF->filter->aCoef[tap] * (double)value;
               sumTap += thisMRF->filter->aCoef[tap];
               }
+            else
+              nanCount++;
             }
           }
         else
           {
-          for(i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
+          for (i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
             if ( !isnan((double)getBuff(i, thisMRF->inBuff)) )
               {
               result += thisMRF->filter->aCoef[tap] *
                     (double)getBuff(i, thisMRF->inBuff);
               sumTap += thisMRF->filter->aCoef[tap];
               }
+            else
+              nanCount++;
           }
         }
       else
         {
-        for(i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
+        for (i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
           {
           if ( !isnan((double)getBuff(i, thisMRF->inBuff)) )
             {
@@ -672,13 +680,24 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
                     (double)getBuff(i, thisMRF->inBuff);
             sumTap += thisMRF->filter->aCoef[tap];
             }
+          else
+            nanCount++;
           }
         }
 
-      if ( isnan((double)getBuff(thisMRF->filter->order / 2, thisMRF->inBuff)) )
+      *output = result / sumTap;
+
+      /* Check for nan in the center lobe of filter, or if too many nan's.
+       * set output to nan in either case.
+       */
+      int halfOrder = thisMRF->filter->order / 2 - 1;
+      for (i = 0; i < 3; ++i)	// center lobe is 3 points.
+        if ( isnan((double)getBuff(halfOrder + i, thisMRF->inBuff)) )
+          *output = floatNAN;
+
+      if (nanCount > MAX_NAN)
         *output = floatNAN;
-      else
-        *output = result / sumTap;
+
 
       /*  Advance time.   */
       thisMRF->inTime++;
