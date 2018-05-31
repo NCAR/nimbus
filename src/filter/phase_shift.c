@@ -103,7 +103,7 @@ void PhaseShift(
 
     // Don't time-shift if lag is less than 33% of sample spacing.
     size_t gap_size = 1000 / rp->SampleRate;
-    if (rp->StaticLag == 0 && abs(lag) < gap_size / 3)
+    if (rp->StaticLag == 0 && (size_t)abs(lag) < gap_size / 3)
       lag = 0;
 
     // Only resample data if we have a lag.

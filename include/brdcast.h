@@ -51,7 +51,7 @@ protected:
   int NOCAL_ALT_INDX;
   int NOREC_ALT_INDX;
 
-  std::string DataNet, DisplayNet;
+  std::string DataNet;
 };
 
 #endif

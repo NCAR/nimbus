@@ -53,7 +53,7 @@ private:
 };
 
 // Can we use loopback on the gv server?
-const std::string MultiCastStatus::DATA_NETWORK = "192.168.184";
+const std::string MultiCastStatus::DATA_NETWORK = "192.168.84";
 
 MultiCastStatus::MultiCastStatus()
 {
