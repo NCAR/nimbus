@@ -101,7 +101,7 @@ void ProcessArgv(int argc, char **argv)
   std::vector<std::string> args(argv+1, argv+argc);
   NidasApp& napp = *NidasApp::getApplicationInstance();
 
-  napp.parseArguments(args);
+  napp.parseArgs(args);
 
   for (i = 0; i < (int)args.size(); ++i)
   {
