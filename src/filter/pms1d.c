@@ -345,6 +345,12 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("AUHSAS_CVIU", "UHSAS015", PROBE_PMS1D | PROBE_PCASP);
     setSerialNumberAndProbeType("APIP_RWII", "PIP011", PROBE_PMS2D | PROBE_2DP);
   }
+  else
+  if (cfg.ProjectName().compare("WECAN") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC_LPO", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+  }
 }
 
 /* -------------------------------------------------------------------- */
