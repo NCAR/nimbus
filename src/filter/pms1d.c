@@ -349,7 +349,7 @@ void PMS1D_SetupForADS3()
   if (cfg.ProjectName().compare("WECAN") == 0)
   {
     setSerialNumberAndProbeType("A1DC_LPO", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
   }
 }
 
