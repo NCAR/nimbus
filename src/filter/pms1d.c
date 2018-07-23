@@ -350,7 +350,7 @@ void PMS1D_SetupForADS3()
   {
     setSerialNumberAndProbeType("A1DC_LPO", "F2DC003", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A1DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("AUHSAS_RWO", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
+    setSerialNumberAndProbeType("AUHSAS_RPO", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
     setSerialNumberAndProbeType("AUHSAS_CVIU", "UHSAS015", PROBE_PMS1D | PROBE_PCASP);
   }
 }
