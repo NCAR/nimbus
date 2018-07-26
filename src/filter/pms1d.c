@@ -476,7 +476,7 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
     ncattput(ncid, cvarid, "HistogramNote", NC_CHAR, 48, "Zeroth data bin is an unused legacy placeholder.");
     }
 
-    if (varp->ProbeType & PROBE_PMS2D)
+    if ((varp->ProbeType & PROBE_PMS2D))
     {
       if (varp->Length < 64)
       {
