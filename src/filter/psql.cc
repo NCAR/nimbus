@@ -129,9 +129,10 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
        */
       size_t start = raw[i]->LRstart;
       size_t len = raw[i]->Length;
+#ifdef ZERO_BIN
       if ((raw[i]->ProbeType & PROBE_PMS1D) || (raw[i]->ProbeType & PROBE_PMS2D))
         { ++start; --len; }
-
+#endif
       addVectorToAllStreams(&AveragedData[start], len);
     }
     else
@@ -148,9 +149,10 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
        */
       size_t start = derived[i]->LRstart;
       size_t len = derived[i]->Length;
+#ifdef ZERO_BIN
       if ((derived[i]->ProbeType & PROBE_PMS1D) || (derived[i]->ProbeType & PROBE_PMS2D))
         { ++start; --len; }
-
+#endif
       addVectorToAllStreams(&AveragedData[start], len);
     }
     else
@@ -408,11 +410,13 @@ PostgreSQL::initializeVariableList()
     {
       nDims = 2;
       dims[1] = rp->Length;
+#ifdef ZERO_BIN
       // Subtract 1, since we don't put 0th bin into SQL database.
       // See addVectorToAllStreams() & pms1d.c:GetPMS1DAttrsForSQL()
       // Remove the '-1' when we compensate for in FIRST_BIN/LAST_BIN.
       if ((rp->ProbeType & PROBE_PMS1D) || (rp->ProbeType & PROBE_PMS2D))
         dims[1] = rp->Length - 1;
+#endif
     }
     else
       nDims = 1;
@@ -445,11 +449,13 @@ PostgreSQL::initializeVariableList()
     {
       nDims = 2;
       dims[1] = dp->Length;
+#ifdef ZERO_BIN
       // Subtract 1, since we don't put 0th bin into SQL database.
       // See addVectorToAllStreams() & pms1d.c:GetPMS1DAttrsForSQL()
       // Remove the '-1' when we compensate for in FIRST_BIN/LAST_BIN.
       if ((dp->ProbeType & PROBE_PMS1D) || (dp->ProbeType & PROBE_PMS2D))
         dims[1] = dp->Length - 1;
+#endif
     }
     else
       nDims = 1;
