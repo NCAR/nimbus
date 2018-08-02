@@ -50,8 +50,10 @@ void initSSRD(var_base *varp)
         }
         else
         {
-          coeff.push_back(1.545);	// Coopers latest memo 11/26/2014
-          coeff.push_back(12.852);
+          //coeff.push_back(1.545);	// Coopers latest memo 11/26/2014
+          //coeff.push_back(12.852);
+          coeff.push_back(1.5478);	// Coopers 15 SEpt 2016 memo
+          coeff.push_back(12.3612);
         }
       }
       break;
