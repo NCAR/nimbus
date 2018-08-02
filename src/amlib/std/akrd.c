@@ -148,7 +148,7 @@ void sakrd(DERTBL *varp)
     {
       case Config::C130:
         //akrd = akrd_coeff[0] + akrd_coeff[1] * ratio;
-        akrd = akrd_coeff[0] + akrd_coeff[1] * ratio + akrd_coeff[2] * mach; // 15 Sept 2016 memo
+        akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach); // 15 Sept 2016 memo
         break;
 
       case Config::ELECTRA:
