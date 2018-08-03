@@ -509,7 +509,7 @@ NR_TYPE pcorr1v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFRD
 // projects since IDEAS-4-C130 in 2011, where a different correction is needed.
 NR_TYPE pcorf1v3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFD post IDEAS-4-C130
 {
-  static double a[] = { -0.004389, -0.02966, -6.831 *10E-5, 0.02672, 0.002447 }; // per Cooper 15 Sept 2016 memo
+  static double a[] = { -0.004389, -0.02966, -0.00006831, 0.02672, 0.002447 }; // per Cooper 15 Sept 2016 memo
 
   NR_TYPE M, deltaP;
   if (Qm < 0.01) Qm = 0.01;
@@ -528,7 +528,7 @@ NR_TYPE pcorf1v3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFD post IDEAS-4-C1
 
 NR_TYPE pcorr1v3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFRD post IDEAS-4-C130
 {
-  static double a[] = { 0.007372, 0.12774, -6.8776 * 10E-4, 0.02994, 0.00163 }; // per Cooper 15 Sept 2016 memo
+  static double a[] = { 0.007372, 0.12774, -0.00068776, -0.02994, 0.00163 }; // per Cooper 15 Sept 2016 memo
 
   NR_TYPE M, deltaP;
   if (Qm < 0.01) Qm = 0.01;
