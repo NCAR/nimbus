@@ -12,7 +12,7 @@ STATIC FNS:	TempCorrection()
 
 DESCRIPTION:  	Second generation CVI, 2006 and later.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2017
+COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2018
 -------------------------------------------------------------------------
 */
 
@@ -33,8 +33,10 @@ static NR_TYPE	C2_P[3] = { 0.0, 1.0, 0.0 };
  * and ICE-T) that have the pressure gauge that Darrin Toohey installed should
  * pass in two more variables and perform the correction that does not use this
  * value (see below).  cjw, Aug 2011
+ * SOCRATES, WECAN, and forward will not use the fudge_factor.  Set to 1.0 here.
+ * See cvi2init() for VOCALS set to 1.2.
  */
-static const NR_TYPE concud_fudge_factor = 1.2;
+static NR_TYPE concud_fudge_factor = 1.0;
 
 /* -------------------------------------------------------------------- */
 void cvi2Init(var_base *varp)
@@ -83,6 +85,8 @@ void cvi2Init(var_base *varp)
     for (int i = 0; i < 3; ++i)
       C2_P[i] = tmp[i];
 
+  if (cfg.ProjectName().compare("VOCALS") == 0)
+    concud_fudge_factor = 1.2;
 
 }  /* END CVIINIT */
 
