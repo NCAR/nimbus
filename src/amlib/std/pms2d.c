@@ -35,7 +35,8 @@ static const NR_TYPE shadowLevel = 0.55;
 static const size_t maxBins = 130;
 
 
-static size_t	FIRST_BIN[MAX_PMS2D], LAST_BIN[MAX_PMS2D];
+static size_t	FIRST_BIN[MAX_PMS2D], LAST_BIN[MAX_PMS2D], conc50idx[MAX_PMS2D],
+		conc100idx[MAX_PMS2D], conc150idx[MAX_PMS2D];
 static NR_TYPE  responseTime[MAX_PMS2D], armDistance[MAX_PMS2D],
 		DENS[MAX_PMS2D], SampleRate[MAX_PMS2D];
 static double   PLWFAC[MAX_PMS2D], DBZFAC[MAX_PMS2D];
@@ -169,6 +170,7 @@ void sTwodInit(var_base *varp)
 
   ReleasePMSspecs();
 
+
   /* 1DC/P has length 32, 2DC/P has length 64.
    */
   length = varp->Length;
@@ -196,6 +198,10 @@ void sTwodInit(var_base *varp)
   addDOFtoAttrs(varp, eaw, dof);
   for (i = 0; i < length; ++i)
     sampleArea[probeNum][i] = eaw[i] * dof[i];
+
+  conc50idx[probeNum] = 50 / (int)resolution;
+  conc100idx[probeNum] = 100 / (int)resolution;
+  conc150idx[probeNum] = 150 / (int)resolution;
 
 }	/* END STWODINIT */
 
@@ -342,7 +348,7 @@ void sconc2dc050(DERTBL *varp)
     n = 64;
     
   // 50 micron and bigger.
-  for (size_t i = 2; i < n; ++i)
+  for (size_t i = conc50idx[varp->ProbeCount]; i < n; ++i)
     conc += concentration[i];
 
   PutSample(varp, conc);
@@ -359,7 +365,7 @@ void sconc2dc100(DERTBL *varp)
     n = 64;
 
   // 100 micron and bigger.
-  for (size_t i = 4; i < n; ++i)
+  for (size_t i = conc100idx[varp->ProbeCount]; i < n; ++i)
     conc += concentration[i];
 
   PutSample(varp, conc);
@@ -376,7 +382,7 @@ void sconc2dc150(DERTBL *varp)
     n = 64;
 
   // 150 micron and bigger.
-  for (size_t i = 6; i < n; ++i)
+  for (size_t i = conc150idx[varp->ProbeCount]; i < n; ++i)
     conc += concentration[i];
 
   PutSample(varp, conc);
