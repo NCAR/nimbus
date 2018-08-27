@@ -93,13 +93,27 @@ void cvi2Init(var_base *varp)
 /* -------------------------------------------------------------------- */
 void sconcud(DERTBL *varp)
 {
-  // Routine for VOCALS and subsequent projects.
+  static int	counter = 0;
+  static int	prevInlet = 0;
 
   NR_TYPE cnts = GetSample(varp, 0);
   NR_TYPE cvcfact = GetSample(varp, 1);
   NR_TYPE flow = GetSample(varp, 2);
+  int	cvinlet = (int)GetSample(varp, 3);
 
   NR_TYPE concud = cnts / (flow * cvcfact);
+
+  // If we have come out of cloud.  Output nan for 20 seconds.
+  if (prevInlet != 0 && cvinlet == 0)
+    counter = 20;
+
+  // Avoid take-off & landing, and when CVINLET is 1 (no counterflow).
+  if (cvinlet > 0 || counter > 0)
+  {
+    --counter;
+    concud = floatNAN;
+  }
+
 
   if (varp->ndep == 5)
   {
@@ -113,6 +127,7 @@ void sconcud(DERTBL *varp)
   
   PutSample(varp, concud);
 
+  prevInlet = cvinlet;
 }  /* END SCONCUD */
 
 
@@ -163,20 +178,21 @@ void scvcfacttdl(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void scvcwcc(DERTBL *varp)
 {
-  static int		counter = 0;
-  static NR_TYPE	prevInlet = 0.0;
+  static int	counter = 0;
+  static int	prevInlet = 0;
   NR_TYPE	cvcwc;
-  NR_TYPE	cvrho, cvcfact, cvinlet, tasx;
+  NR_TYPE	cvrho, cvcfact, tasx;
+  int		cvinlet;
 
-  cvinlet	= GetSample(varp, 2);
+  cvinlet	= (int)GetSample(varp, 2);
   tasx		= GetSample(varp, 3);
 
   // If we have come out of cloud.  Output nan for 20 seconds.
-  if (prevInlet == 1 && (int)cvinlet == 0)
+  if (prevInlet != 0 && cvinlet == 0)
     counter = 20;
 
   // Avoid take-off & landing, and when CVINLET is 1 (no counterflow).
-  if (tasx < TAS_MIN || cvinlet > 0.0 || counter > 0)
+  if (tasx < TAS_MIN || cvinlet > 0 || counter > 0)
   {
     --counter;
     cvcwc = floatNAN;
@@ -189,7 +205,6 @@ void scvcwcc(DERTBL *varp)
   }
   
   PutSample(varp, cvcwc);
-
   prevInlet = cvinlet;
 }
 
