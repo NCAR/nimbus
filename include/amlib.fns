@@ -803,7 +803,7 @@
 	"AKDF",		NULL,		NULL,		sakdf,
 	"AKRD",		(void(*)(void*))initAKRD,	NULL,		sakrd,
 	"AQRATIO",	NULL,		NULL,		saqratio,
-	"ATTACK",	NULL,		NULL,		sRefer,
+	"ATTACK",	NULL,		NULL,		sReferAttack,
 	"ALTX",		NULL,		NULL,		sRefer,
 	"CMRCR",	NULL,		NULL,		scmrcr,
 	"CONCCN",	NULL,		NULL,		sconccn,
