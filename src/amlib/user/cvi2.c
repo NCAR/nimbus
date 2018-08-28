@@ -180,7 +180,7 @@ void scvcwcc(DERTBL *varp)
 {
   static int	counter = 0;
   static int	prevInlet = 0;
-  NR_TYPE	cvcwc;
+  NR_TYPE	cvcwcc;
   NR_TYPE	cvrho, cvcfact, tasx;
   int		cvinlet;
 
@@ -195,16 +195,16 @@ void scvcwcc(DERTBL *varp)
   if (tasx < TAS_MIN || cvinlet > 0 || counter > 0)
   {
     --counter;
-    cvcwc = floatNAN;
+    cvcwcc	= floatNAN;
   }
   else
   {
     cvrho	= GetSample(varp, 0);
     cvcfact	= GetSample(varp, 1);
-    cvcwc = cvrho / cvcfact;
+    cvcwcc	= cvrho / cvcfact;
   }
   
-  PutSample(varp, cvcwc);
+  PutSample(varp, cvcwcc);
   prevInlet = cvinlet;
 }
 
