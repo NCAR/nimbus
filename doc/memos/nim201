@@ -1,0 +1,9 @@
+We seem to have most/all the bugs wrinkled out of nimbus 2.0.0.  This release
+also has two AMLIB modifications affecting the C130 only:
+
+PLWCC - TAS reduced by 10% to compensate for location of probe.
+
+WP3 - The computed counterpart to the IRS produced VSPD now works, since VSPD
+	doesn't work on the C130, this gives us "good" wind calculations.
+
+--Chris

@@ -1,0 +1,40 @@
+Nimbus 2.0.0 has been released.  Features include:
+
+- Averaging of Analog/Digital channels during real-time has been modified to
+  happen before conversion to floating point.  This has the affect of not
+  introducing resolution that's not there.  This does not affect post
+  processing, and was added mostly to benifit instrumentation in debugging.
+
+- New menu item Toggle Rate (^R) has been added to provide quick method for
+  toggling Output rates.  This works in the same manner as the Toggle Output
+  (^O) menu item.
+
+- Overhauled AMLIBs access to data, which allowed a smoother flow of data
+  for high-rate.  This will/should speed up high-rate runs by 10%-15%.
+
+- Despike module added.  See me for directions (it's not part of the GUI yet).
+  This will only detect and remove single-point spikes, new points are generated
+  using the LaGrange quadratic interpolation.  It does not remove spikes
+  gratuitously, you must turn the module on.
+
+- Sample-rate computation of PMS1D derived data now available.  If you choose
+  a high-rate run, PMS1D will be computed at whatever rate it was sampled.
+  Low-rate unaffected.  Two caveats: 1) The first 10 out of 25 samples for
+  TASX are used (i.e. I'm distributing the first 1/2 second of TASX over the
+  whole second for the PMS1D derived computations).  2)  You can't use any
+  of the PMS1D raw or derived as inputs to another derived variable via the
+  DependTable.
+
+- Converted to ANSI C.
+
+- Several minor bug fixes in the GUI, and anything else I forgot.
+
+------- AMLIB modifications ---------
+
+- CN Counter, fix for high-rate CONCN.
+
+- Replaced out of date PSURF calculation.
+
+- Calculations for Licor 6262, XCO2C & XMRLI updated.
+
+--Chris

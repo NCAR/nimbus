@@ -1,0 +1,35 @@
+Nimbus 2.1.2 has been released.  Changes are as follows:
+
+AMLIB:
+
+- TASHC has been added.  This Humidity Corrected True AirpSpeed.
+
+- Fixed bug in corrected winds, when being run at high-rate.  This affected
+  the corrected winds when they were output at low rate during a high rate
+  nimbus run.
+
+- Corrected Winds have been renamed, an X has been placed in front
+  of the variables names (i.e. LATC -> XLATC, etc...).  This summer we're
+  hoping to replace the code for the corrected winds with a true Kalman
+  filter.
+
+
+Bug fixes:
+
+- Fixed a bug in the 'Toggle Rate' menu item.
+
+- 'Toggle Probe' menu appears to be working correctly.  It has also been turned
+  into a "tear off menu" (see below for description and directions).
+
+
+Code for the Sailplane has been added.
+
+Tear Off Menus
+----------------------------------------------------
+Tear Off Menus are Motif's version of the Push Pin in XView.  A tear off menu
+is identifiable when the first item in a menu is a dashed line.  Selecting
+the dashed line places the menu it's own window that can then be moved around.
+To remove the torn off menu, just press 'Esc' in the window with the menu.
+
+
+--Chris

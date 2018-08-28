@@ -1,0 +1,63 @@
+!
+*defaultFontList:		-adobe-courier-bold-r-*-*-14-140-75-75-*-*-*-*
+!  QC GUI stuff:
+!
+!
+!
+! Change these colors for the MainScreen:
+*foreground: black
+*background: grey
+!
+!
+!  The text widgets
+!
+!*text.scrollHorizontal: False
+*text.fontList:			-adobe-Courier-Bold-R-*-*-16--*-*-*-*-ISO8859-1
+*text.editable: False
+*text.rows: 7
+*text*columns: 50
+*text.editMode: XmMULTI_LINE_EDIT
+*text.wordWrap: False
+*text.blinkRate: 0
+*text.autoShowCursorPosition: true
+*text.cursorPositionVisible: False
+*text.window.scrollBarDisplayPolicy: AS_NEEDED
+*text.window.scrollingPolicy: AUTOMATIC
+!
+!  The Frame widgets
+!
+*frame.rows: 10
+*frame.topOffset: 25
+*frame.bottomOffset: 10
+*frame.rightOffset: 10
+*frame.leftOffset: 10
+!
+!  The Warning window
+!
+*Warning.width:  750
+*Warning.height: 200
+*Warning.deleteResponse: DO_NOTHING
+! Change these colors for the WarningBox:
+*Warning*background: red
+*Warning*foreground: yellow
+!
+!  The buttonbar 
+!
+*button.topOffset: 10
+*button.bottomOffset: 10
+*button.leftOffset: 10
+*button.rightOffset: 10
+*button*height: 32
+*button.navigationType: TAB_GROUP
+*button.traversalOn: True
+*button.separatorOn: False
+*button.paneMinimum: 40
+*form2.paneMinimum: 40
+!
+!  The Label Widget
+!
+*label.topAttachment:   XmATTACH_FORM
+*label.rightAttachment:   XmATTACH_FORM
+*label.leftAttachment:   XmATTACH_FORM
+*label.fontList:	-*-Courier-Bold-R-*-*-*-180-75-75-*-*-ISO8859-1
+

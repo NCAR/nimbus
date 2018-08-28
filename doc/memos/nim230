@@ -1,0 +1,26 @@
+I released a new version of nimbus.  Here are the changes/additions:
+
+Nimbus:
+	- Fixed bug in SumCounter(), which was truncating.  Only affected
+	  Counters with Cal coes other than 0,1,0.
+
+	- When nimbus asked for Flight Number, it failed to record it in
+	  the netCDF file.  Fixed.  This is a production-only feature.
+
+	- Filled time gaps had HOUR:MINUTE:SECOND = -32767:-32767:-32767.
+	  Fixed to have actual time.
+
+	- Support for GIV.
+
+	- Added Dismiss & Reset buttons to the 'Edit Time Slice' window.
+
+	- Added a new 'Edit' menu item.  'Edit Flight Info', allows you
+	  to edit the flight number, flight date, and aircraft tailnumber.
+
+
+AMLIB:
+	- Added XFCN for ACE-1.
+
+	- Support for GIV.
+
+--Chris

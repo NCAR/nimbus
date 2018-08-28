@@ -1,0 +1,59 @@
+# -*- python -*-
+
+Import('env')
+
+sources = Split("""
+IDEAS2.c
+ACEASIA.c
+CSET.c
+DEEPWAVE.c
+DYCOMS.c
+NOMADSS.c
+PASE.c
+RICO.c
+SOCRATES.c
+VOCALS.c
+
+atc.c
+ttc.c
+bits.c
+chemcal.c
+circles.c
+climet.c
+co2c.c
+conccn.c
+cvi.c
+cvi2.c
+efield.c
+flux.c
+fo3.c
+geopot.c
+gerber.c
+harp.c
+itr.c
+lams.c
+licor.c
+licor_wyo.c
+masp.c
+mtp.c
+mtp_rcf.cc
+ndvi.c
+ophir3.c
+prcltrk1.c
+prcltrk2.c
+raz.c
+rdma.c
+rlwp.c
+sail.c
+spefm.c
+turbulence.c
+xpsfdc.c
+cloudbase.c
+icing.c
+ultrafine.c
+uvhyg.c
+""")
+
+nclho = env.StaticObject('nclh.c', CCFLAGS=env['CCFLAGS']+env['CXXFLAGS']+['-Wno-missing-braces'])
+user = env.StaticLibrary('user' , sources + [nclho])
+env.Default(env.Install('#/lib/', user))

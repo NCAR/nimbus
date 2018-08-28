@@ -1,0 +1,97 @@
+This is a real broad overview of the module structure of nimbus.  There is
+a '.exrc' file to ":set tabstop=4" in this directory.
+
+
+globals.c			Global variables.
+nimbus.c			Main
+	Xwin.c			Create Motif GUI widgets.
+	init.c			Miscellanous initializations.
+
+	cb_main.c		Call backs for main windows.
+	cb_edit.c		Call backs for Edit window.
+	cb_time.c		Call backs for Time Interval window.
+	cb_defs.c		Call backs for Edit Defaults.
+	cb_flight.c		Call backs for Edit Flight Info.
+	cb_pause.c		Call backs for Pause button.
+	error.c			Error/Warning handler routines.
+	
+	hdr_decode.c		Decode ADS header & init internal tables.
+		rd_defs.c	Read Defaults File.
+		amlibfn.c	Search for deriveftns[].
+		fake1d.c
+		sort.c		Sort sdi, raw & derived tables.
+		rd_ddor.c	Look up default derived LR for HR.
+		rd_mod.c	Look up modulo variables.
+		rd_sum.c	Look up Vars that are summed & not averaged.
+		rd_lag.c	Look up lags.
+		rd_spike.c	Look up spike slopes.
+		depend.c	Initialize dependancies.
+
+	memalloc.c		Allocate space for global data arrays.
+	order.c			Order 'derived' into 'ComputeOrder'
+
+	[lr|hr]loop.c		Main control loops.
+		adsIO.c		Read ADS record.
+		timeseg.c	Check for time gap.
+		rec_decode.c	Decode SDI & RAW variables.
+		calco.c		Apply Calibration coeffs to SDITBL.
+		despike.c	Perfrom any despiking.
+		circbuff.c	Place in buffer.
+		phase_shift.c	Perform any time shifting.
+			interp.c  Interpolation functions for phase_shift.c
+		average.c	Create averaged data.
+		filter.c (hrloop.c only)	Multi-rate filter.
+		compute.c	Compute derived variables.
+		netcdf.c	Write output record.
+		async.c		Write async data to async file (if enabled).
+
+	pms1d.c		Used by winput.c for real time update for WINDS.
+
+-------------------------------------------------------------------------
+There are 3 main header files:
+	nimbus.h		(Describes main structures).
+	decode.h
+	gui.h
+
+	amlib.fns	Contains the variable name to AMLIB function table.
+
+Some major variables:
+
+There are 3 tables containing variable information.
+	- SDI variables, these carry Cal Coeffs.
+	- Raw variables, these are raw from block probes.  Use libxlate.a.
+		Some are SDI vars requiring special processing.
+	- Derived variables, these are purily derived from other variables
+		and have no stored value on ADS tapes.  Use libstd.a & libuser.a
+		for computations.
+
+SDITBL	*sdi[] is the alpha sorted list of SDI variables.
+
+RAWTBL	*raw[] is the alpha sorted list of Raw variables from block probes.
+	These (typically) come from *.names files that are read in when a
+	block probe is encountered in hdr_decode.c.  (i.e. irs.names).
+
+DERTBL	*derived[] is the alpha sorted list of purily derived variables,
+	these are extracted from the the 'derived.names' file during header
+	decode.
+
+'ComputeOrder' is the 'derived' table sorted into Compute Order based
+	on dependancies from the DependTable file.
+
+'nsdi'	= Number items in 'sdi'.
+'nraw'	= Number items in 'raw'.
+'nderive' = Number items in 'derived' & 'ComputeOrder'
+
+struct _dnfn	derivftns[], associates all valid raw & derived variables
+	with the appropriate amlib function (xlate or std/user) see amlibfn.c.
+
+nFloats = Total # of floats occupied by all variables at SampleRate.
+	(e.g. SampledData = malloc(sizeof(float) * nFloats)).  Phasing this out.
+
+Data Records:
+
+	ADSrecord[p->ADSstart]
+	SampledData[p->SRstart]		for (i = 0; i < p->SampleRate; ++i)
+	AveragedData[p->LRstart]	for (i = 0; i < 1; ++i)
+	HighRateData[p->HRstart]	for (i = 0; i < 25; ++i)
+

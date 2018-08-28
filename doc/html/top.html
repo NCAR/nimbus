@@ -1,0 +1,220 @@
+<HTML>
+<title>RAF DP Software</title>
+<hr>
+<h1>RAF Data Processing Software Overview</h1>
+<hr>
+
+<h2>Table of Contents:</h2>
+<p>
+<ul>
+<li><a href="#2">Nimbus Overview</a>
+<li><a href="/home/local/nimbus/doc/html/NimbusUsersMan.html">Nimbus Users Manual</a>
+<li><a href="#1">ADS Utilities</a>
+<li><a href="#3">netCDF Utilities</a>
+<li><a href="#4">Data Converters</a>
+<p>
+<li>Appendices:
+<ul>
+<li><a href="/home/local/nimbus/doc/netCDF"><i>NCAR-RAF/nimbus</i> netCDF Format</a>
+<li><a href="#6">VarDB Overview and Utilities</a>
+<li><a href="#7">PMS library</a>
+<li><a href="#8">Skeleton Program</a>
+<li><a href="/home/local/nimbus/doc/ProductionProcedures">Production Procedures Cheat Sheet</a>
+</ul>
+</ul>
+
+
+<hr>
+<a name="1"><h2>ADS Utilities</h2></a>
+<p>
+The <b>ADS</b> (Aircraft Data System) records data to
+exabyte tape in binary refered to as the "ADS format".
+<p>
+<dl>
+<dt><b>xbuild</b>
+<dd><b>xbuild</b> is used for generating new, and editing old, headers for the
+<b>ADS</b>.  Headers contain information on analog/digital channels to sample as well
+as information regarding Inertial Systems and PMS1D probes.  The header also
+describes how and where the information will be layed out on tape.
+<p>
+<dt><b>hdrdump</b>
+<dd><b>hdrdump</b> is used to produce ASCII dumps of selected information
+from <b>ADS</b> headers.
+<p>
+<dt><b>xtv</b>
+<dd><b>xtv</b> is an X window program for looking at raw <b>ADS</b> data.  You
+may select physical records, logical records, or blocks of data.  <b>xtv</b>
+displays data in hex and ASCII.  There is a <b>man</b> page available for
+<b>xtv</b>.
+<p>
+<dt><b>dnload</b>
+<dd><b>dnload</b> is used to copy an <b>ADS</b> exabyte image to disk.  <b>dnload</b>
+has the advantage over <b>dd(1)</b> in that it strips all asynchronous data
+from the <b>ADS</b> image (currently this only means PMS2D data).
+<p>
+<dt><b>libhdr_api.a</b>
+<dd>This is a library of functions which provide programmers access to
+information from the header.  <b>xbuild</b>, <b>hdrdump</b>, and <b>nimbus</b>
+all use the <b>hdr_api</b> to decode the header.
+</dl>
+
+
+<hr>
+<a name="2"><h2>Nimbus Overview</h2></a>
+<p>
+<h3>Overview of what <b>nimbus</b> does</h3>
+<p>
+<b>Nimbus</b> is the main aircraft data processor, it reads <b>ADS</b> files,
+and produces <b>netCDF</b> files which conform to the <i>NCAR-RAF/nimbus</i>
+conventions.  <b>Nimbus</b> provides a Motif GUI for interaction with the user.
+<b>Nimbus</b> is used as our quick look and final production processor.
+<p>
+<b>Nimbus</b> starts by reading the header from the <b>ADS</b> image, and
+decoding it.  From there the user is presented with a list of all the raw and
+derived variables that are available.  The user may change data associated with
+a given variable such as, calibrations, output rate, dependencies, time lags,
+or wether the variable should even be in the output file.  The user may also
+select whether a Low Rate file or High Rate file is desired.
+<dl>
+<dt>Low Rate (LRT)
+<dd>For Low Rate, all variables are averaged down to one sample per second, then
+derived variables are computed for that second.
+<p>
+<dt>High Rate (HRT)
+<dd>For High Rate, all sampled raw variables are run through a multi-rate
+FIR filter, which outputs 25 samples per second regardless of input rate.
+From there derived variables are computed at 25 samples per second.
+</dl>
+When the user is done customizing there output file, they press the "Go"
+button, and nimbus starts processing the <b>ADS</b> data.
+<h3>Overview of how <b>nimbus</b> works</h3>
+
+<p>
+
+
+<hr>
+<a name="3"><h2>netCDF Utilities</h2></a>
+<p>
+<a href="http://www.unidata.ucar.edu/packages/netcdf/index.html">netCDF</a>
+was written, and is maintained by
+<a href="http://www.unidata.ucar.edu">Unidata</a>.
+A number of utilities have been written to help manipulate <b>netCDF</b> files.
+Many of them will only work with <b>netCDF</b> files that conform to the
+<i>NCAR-RAF/nimbus</i> conventions.
+<p>
+<dl>
+<dt><b>ncdump</b>
+<dd><b>ncdump</b> is for producing ASCII dumps of <b>netCDF</b> header and/or
+data.  It is not very useful for dumping more than one variable worth of data,
+because the data are not in columnar format.  <b>ncdump</b> was written by
+<b>Unidata</b>, and has a <b>man</b> page for further information.
+<p>
+<dt><b>ncmerge</b>
+<dd><b>ncmerge</b> will merge two <b>netCDF</b> files together, providing both files
+meet the <i>NCAR-RAF/nimbus</i> conventions, and they have some overlapping
+time.  There is <b>man</b> page available for further information.
+<p>
+<dt><b>n2asc</b>
+<dd><b>n2asc</b> is program for producing columnar ASCII output of <b>netCDF</b>
+files which conform to <i>NCAR-RAF/nimbus</i> conventions.  <b>n2asc</b>
+provides a Motif GUI for selecting files and variables to convert.  See the
+<b>man</b> page for directions on changing the output format.
+<p>
+<dt><b>ncav</b>
+<dd><b>ncav</b> averages Low Rate nimbus/netCDF files to even lower rates.
+The output goes to a new <b>netCDF</b> file.  <b>ncav</b> defaults to averaging 10
+seconds down to one sample.  See the <b>man</b> page for details on changing
+this.
+<p>
+<dt><b>nstat</b>
+<dd><b>nstat</b> provides statistical information over a period of time
+for given variables (mean, sigma, min, max).  <b>nstat</b> provides a Motif
+GUI, and for the same low price we've even included a <b>man</b> page.
+<p>
+<dt><b>ncplot</b>
+<dd><b>ncplot</b> is a Motif/Xlib program to provide simple time-series plots
+of nimbus/netCDF files.  It will plot variables of differing rates on the same
+plot.  Currently this is the only program RAF supplies for viewing Multi-rate
+data.
+<p>
+<dt><b>ncxy</b>
+<dd><b>ncxy</b> is a Motif/Xlib program to provide simple XY plotting of
+nimbus/netCDF files.  It will plot variables of differing rates on the same
+plot.  <b>ncxy</b> is similar to <b>ncplot</b>, but only does X vs. Y plots.
+</dl>
+
+
+<hr>
+<a name="4"><h2>Data Converters</h2></a>
+<p>
+We provide several converters to convert older format data to present.
+<dl>
+<dt><b>ADScvt</b>
+<dd><b>ADScvt</b> converts old HP ADS data to the modern <b>ADS</b> format, from
+there <b>nimbus</b> may be run to produce <b>netCDF</b> files.  This
+program should not be used without consulting <a href="/~chris/">
+Chris Webster</a>, as a project directory will need to be created.
+<p>
+<dt><b>dap2cdf</b>
+<dd><b>dap2cdf</b> converts DAP files to the nimbus/netCDF format.
+<p>
+<dt><b>g2n</b>
+<dd><b>g2n</b> converts GENPRO files to the nimbus/netCDF format.
+</dl>
+
+<hr>
+<p>
+<h1>Appendices</h1>
+<p>
+
+
+<hr>
+<a name="6"><h2>Variable Database (VarDB)</h2></a>
+<p>
+The <b>VarDB</b> stores information about each variable produced
+from <b>nimbus</b>.  Information includes titles, units, valid ranges, and
+information for <b>WINDS</b>.  The <b>VarDB</b> files are binary and not
+editable with a text editor.  There is a master <b>VarDB</b> file located
+in /home/local/proj/defaults, this file is copied into each project directory
+at the creation of the project.  Project Manager's and users should edit/add
+variables to the <b>VarDB</b> in the project directory.  Currently
+<a href="/~ron/">Ron Ruth</a> maintains the master <b>VarDB</b>.
+<p>
+<dl>
+<dt><b>vdbdump</b>
+<dd><b>vdbdump</b> is used to produce ASCII dumps of selected information
+from a VarDB file.
+<p>
+<dt><b>vared</b>
+<dd><b>vared</b> is a Motif GUI program used for editing <b>VarDB</b> files.
+It's not particularly robust at this time.
+<p>
+<dt><b>libVarDB.a</b>
+<dd>There is an API available for the <b>VarDB</b>, anyone writing their own
+programs can interface to this library.  For further information see the man
+page for vardb.
+</dl>
+
+
+<hr>
+<a name="7"><h2>PMS library</h2></a>
+<p>
+The <b>libPMS</b> has not been brought on line yet.
+<p>
+
+
+<hr>
+<a name="8"><h2>Skeleton Program</h2></a>
+<p>
+The <b>skeleton</b> program provides users with the ability to write there
+own code to perform further processing on data.  The <b>skeleton</b> provides
+a Motif GUI and the framework for processing a whole file/flight.  The user
+only needs to program in the calculations for new or old variables.  Use of
+the skeleton is accomplished by copying all the files from
+$LOCAL/nimbus/src/skel into a new directory.  Read the file
+<a href="/home/local/nimbus/src/skel/README">README</a>
+for further directions.
+
+
+<hr>
+</HTML>

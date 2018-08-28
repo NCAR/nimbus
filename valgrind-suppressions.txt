@@ -1,0 +1,35 @@
+# ==16925== Use of uninitialised value of size 8
+# ==16925==    at 0x4C3981: InitPMSspecs (init.c:94)
+# ==16925==    by 0x458083: AddPMS1dAttrs(int, var_base const*) (pms1d.c:370)
+# ==16925==    by 0x44F2DB: CreateNetCDF(char const*) (netcdf.c:435)
+# ==16925==    by 0x423637: StartProcessing(_WidgetRec*, void*, void*) (cb_main.c:369)
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:InitPMSspecs
+}
+# Ignore anything that Motif or XToolkit allocates
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   fun:malloc
+   fun:XtMalloc
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_GLOBAL__sub_I_XmlRpcServerConnection.cpp
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_GLOBAL__sub_I_XmlRpcValue.cpp
+}
