@@ -37,6 +37,8 @@ licor_wyo.c
 masp.c
 mtp.c
 mtp_rcf.cc
+mtp_rcf_set.cc
+mtp_retriever.cc
 ndvi.c
 ophir3.c
 prcltrk1.c

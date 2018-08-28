@@ -22,6 +22,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2017
 #include "nimbus.h"
 #include "amlib.h"
 #include "mtp.h"
+#include "mtp_rcf.h"
+#include "mtp_rcf_set.h"
+#include "mtp_retriever.h"
 
 // Set constants for platinum wire gain equation for temperature of target. 
 // These should remain constant as long as physical target doesn't change.
@@ -53,10 +56,47 @@ static int _LocHor = 5;
 static const int nCoeffs = 3;
 static float CND0[nCoeffs] = {1.0,1.0,1.0}, GOF[nCoeffs] = {1.0,1.0,1.0}, 
              GEC1[nCoeffs] = {1.0,1.0,1.0}, GEC2[nCoeffs] = {1.0,1.0,1.0};
-char file[256]="/net/work/dev/jaa/raf/instruments/mtp/src/mtpbin/CSET/RCF/";
-static const int numFlightLevels = 13;
-float flightLevelsKm[numFlightLevels] = {13.0,12.0,9.5,8.0,6.0,5.0,3.5,2.5,2.0,1.5,1.0,0.5,0.0};
 
+char RCFdir[256];
+const std::string RCFDIR = "%s/%s/MTP/RCF";
+
+int numFlightLevels = 13;
+float defaultLevels[] = {13.0,12.0,9.5,8.0,6.0,5.0,3.5,2.5,2.0,1.5,1.0,0.5,0.0};
+std::vector<float> FLIGHTLEVELSKM;
+//float* FLIGHTLEVELSKM = (float *) &defaultLevels[0];
+
+/* -------------------------------------------------------------------- */
+/* Read in flight levels from the defaults file.                            */
+static void readLevels(const char name[],std::vector<float> *var)
+{
+
+    float *tmp;
+
+    for (int i = 0; i < numFlightLevels; ++i) {
+        var->push_back(defaultLevels[i]);
+    }
+
+    if ((tmp = GetDefaultsValue(name, name)) == NULL)
+    {
+	sprintf(buffer, "%s value defaulting to ", name);
+	for (int i = 0; i < numFlightLevels; ++i) {
+	  sprintf(buffer+strlen(buffer),"%f ", var[0][i]);
+	}
+	sprintf(buffer+strlen(buffer),"in AMLIB function mtpInit.\n");
+        LogMessage(buffer);
+    }
+    else
+    {
+	numFlightLevels = var->size();
+	sprintf(buffer, "mtp.c: %s set to ", name);
+        for (int i = 0; i < numFlightLevels; ++i) {
+          var->push_back(tmp[i]);
+	  sprintf(buffer+strlen(buffer),"%f ", var[0][i]);
+	}
+        sprintf(buffer+strlen(buffer),"from Defaults file.\n");
+	LogMessage(buffer);
+    }    
+}
 /* -------------------------------------------------------------------- */
 /* Read in constants from the defaults file.                            */
 static void readDefs(const char name[],float var[nCoeffs])
@@ -72,9 +112,8 @@ static void readDefs(const char name[],float var[nCoeffs])
     }
     else
     {
-      for (int i = 0; i < nCoeffs; ++i)
-        var[i] = tmp[i];
-      sprintf(buffer,"mtp.c: %s set to %f %f %f from Defaults file.\n", name,
+        for (int i = 0; i < nCoeffs; ++i) var[i] = tmp[i];
+        sprintf(buffer,"mtp.c: %s set to %f %f %f from Defaults file.\n", name,
 	      var[0], var[1], var[2]);
 	LogMessage(buffer);
     }    
@@ -92,6 +131,9 @@ void mtpInit(var_base *varp)
     readDefs(name,GEC1);
     strcpy(name,"GEC2");
     readDefs(name,GEC2);
+
+    strcpy(name,"FLIGHTLEVELSKM");
+    readLevels(name,&FLIGHTLEVELSKM);
 }
 /* -------------------------------------------------------------------- */
 /* Calibrate the MTP scans using constants that are written to the .CAL */
@@ -200,12 +242,45 @@ void scal(DERTBL *varp)
 void sretriever(DERTBL *varp)
 {
 
+  char *raw_data_dir;
+
+  /* Get the dir where the RCF files are located */
+  if ((raw_data_dir = (char *)getenv("RAW_DATA_DIR")) == NULL)
+    HandleFatalError("Environment variable RAW_DATA_DIR not defined, this is fatal.");
+
+    (void)sprintf(RCFdir, RCFDIR.c_str(), raw_data_dir, cfg.ProjectNumber().c_str());
+
   NR_TYPE *scanbt = GetVector(varp, 0); // The vector of brightness temperatures
                   // calculated in scal (above) for this scan. This vector should
 		  // be of length 30 - three points for each angle (one per 
 		  // channel)
   NR_TYPE ggalt = GetSample(varp, 1);  //Aircraft altitude (MSL) meters
   NR_TYPE tempc[NUM_RETR_LVLS]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33};
+
+  /* If GGALT is missing, return missing for tempc */
+  if (isnan(ggalt))
+  {
+    memset(tempc,floatNAN,NUM_RETR_LVLS);
+    //for (size_t i=0; i<NUM_RETR_LVLS;i++)
+    //{
+    //  tempc[i]=floatNAN;
+    //}
+  } else {
+
+    /* Put together a functioning retrieval_coefficient_fileset */
+    RetrievalCoefficientFileSet RCF_Set(RCFdir);
+    RCF_Set.setFlightLevelsKm((float *)&FLIGHTLEVELSKM[0], numFlightLevels);
+    Retriever Rtr(RCF_Set);
+  
+    AtmosphericTemperatureProfile ATP;
+    ATP = Rtr.Retrieve(scanbt, ggalt/1000.0); // convert m to km
+
+    for (size_t i=0; i<NUM_RETR_LVLS;i++)
+    {
+      tempc[i]=ATP.Temperatures[i];
+    }
+
+  }
 
   PutVector(varp, &tempc);
 

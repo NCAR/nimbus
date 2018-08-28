@@ -16,6 +16,7 @@
 
 #include <vector>
 #include <string> 
+#include "nimbus.h"
 #include "mtp_rcf_structs.h"
 
 /*! \class RetrievalCoefficientFile
@@ -59,7 +60,7 @@ public:
    * averaged with a weight factor based on nearness of PAltkm to the 
    * pressure altitude of the flight level as described in the RCF header.
    */
-  RC_Set_1FL getRCAvgWt(float);
+  RC_Set_1FL getRCAvgWt(NR_TYPE);
 
   /**
    * Set the Flight Levels in KM.  

@@ -19,7 +19,8 @@ if os.path.exists('/usr/lib/openmotif'):
 env['LIBS'] = Split("""
   std user xlate
   hdr_api
-  VarDB domx logx log4cpp boost_regex
+  VarDB domx logx log4cpp 
+  boost_regex boost_filesystem boost_system
   raf
   ncaru netcdf hdf5_hl hdf5 pq
   Xm Xt X11
