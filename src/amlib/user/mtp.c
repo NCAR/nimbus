@@ -25,6 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2017
 #include "mtp_rcf.h"
 #include "mtp_rcf_set.h"
 #include "mtp_retriever.h"
+#include <sys/stat.h>
 
 // Set constants for platinum wire gain equation for temperature of target. 
 // These should remain constant as long as physical target doesn't change.
@@ -122,6 +123,7 @@ static void readDefs(const char name[],float var[nCoeffs])
 void mtpInit(var_base *varp)
 {
     char name[256];
+    char *raw_data_dir;
 
     strcpy(name,"CND0");
     readDefs(name,CND0);
@@ -134,6 +136,21 @@ void mtpInit(var_base *varp)
 
     strcpy(name,"FLIGHTLEVELSKM");
     readLevels(name,&FLIGHTLEVELSKM);
+
+
+    /* Get the dir where the RCF files are located */
+    if ((raw_data_dir = (char *)getenv("RAW_DATA_DIR")) == NULL)
+      HandleFatalError("Environment variable RAW_DATA_DIR not defined, this is fatal.");
+
+    (void)sprintf(RCFdir, RCFDIR.c_str(), raw_data_dir, cfg.ProjectNumber().c_str());
+
+    /* Check if RCFdir exists. If not, exit gracefully. */
+    struct stat stDirInfo;
+    if (stat(RCFdir, &stDirInfo) !=0) {
+	fprintf(stderr, "MTP RCF dir %s does not exist\n", RCFdir);
+	HandleFatalError("Fix path or turn off MTP processing - this is fatal.");
+    }
+
 }
 /* -------------------------------------------------------------------- */
 /* Calibrate the MTP scans using constants that are written to the .CAL */
@@ -165,7 +182,8 @@ void scal(DERTBL *varp)
   NR_TYPE tr600cntp=GetSample(varp,5);//Platinum Multiplxr R600 Counts
 
   // Create a gain vector with all elements set to zero.
-  for (size_t i=0; i<NUM_CHANNELS; i++) _Gain[i]=0.0;
+  memset(_Gain,0.0,NUM_CHANNELS);
+  //for (size_t i=0; i<NUM_CHANNELS; i++) _Gain[i]=0.0;
 
   /* The scan counts are stored in the ads file as cnts[angle,channel], i.e.
    * {a1c1,a1c2,a1c3,a2c1,...}. Processing requires, and the final data are 
@@ -241,14 +259,6 @@ void scal(DERTBL *varp)
  */
 void sretriever(DERTBL *varp)
 {
-
-  char *raw_data_dir;
-
-  /* Get the dir where the RCF files are located */
-  if ((raw_data_dir = (char *)getenv("RAW_DATA_DIR")) == NULL)
-    HandleFatalError("Environment variable RAW_DATA_DIR not defined, this is fatal.");
-
-    (void)sprintf(RCFdir, RCFDIR.c_str(), raw_data_dir, cfg.ProjectNumber().c_str());
 
   NR_TYPE *scanbt = GetVector(varp, 0); // The vector of brightness temperatures
                   // calculated in scal (above) for this scan. This vector should
