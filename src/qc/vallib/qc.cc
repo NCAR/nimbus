@@ -417,9 +417,9 @@ void qc_rt_cleanup(void)
 #endif
 
     // dispose of socket
-#ifdef VAL_USEGUI
-    delete val_socket;
-#endif
+//#ifdef VAL_USEGUI
+//    delete val_socket; // flushQ does the delete automatically
+//#endif
 
 #ifdef VAL_DISKLOG
     time(&current_time);
