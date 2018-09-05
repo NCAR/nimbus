@@ -66,6 +66,8 @@ float defaultLevels[] = {13.0,12.0,9.5,8.0,6.0,5.0,3.5,2.5,2.0,1.5,1.0,0.5,0.0};
 std::vector<float> FLIGHTLEVELSKM;
 //float* FLIGHTLEVELSKM = (float *) &defaultLevels[0];
 
+static Retriever *Rtr;
+
 /* -------------------------------------------------------------------- */
 /* Read in flight levels from the defaults file.                            */
 static void readLevels(const char name[],std::vector<float> *var)
@@ -151,6 +153,11 @@ void mtpInit(var_base *varp)
 	HandleFatalError("Fix path or turn off MTP processing - this is fatal.");
     }
 
+    /* Put together a functioning retrieval_coefficient_fileset */
+    RetrievalCoefficientFileSet RCF_Set(RCFdir);
+    RCF_Set.setFlightLevelsKm((float *)&FLIGHTLEVELSKM[0], numFlightLevels);
+    Rtr = new Retriever(RCF_Set);
+
 }
 /* -------------------------------------------------------------------- */
 /* Calibrate the MTP scans using constants that are written to the .CAL */
@@ -182,8 +189,7 @@ void scal(DERTBL *varp)
   NR_TYPE tr600cntp=GetSample(varp,5);//Platinum Multiplxr R600 Counts
 
   // Create a gain vector with all elements set to zero.
-  memset(_Gain,0.0,NUM_CHANNELS);
-  //for (size_t i=0; i<NUM_CHANNELS; i++) _Gain[i]=0.0;
+  for (size_t i=0; i<NUM_CHANNELS; i++) _Gain[i]=0.0;
 
   /* The scan counts are stored in the ads file as cnts[angle,channel], i.e.
    * {a1c1,a1c2,a1c3,a2c1,...}. Processing requires, and the final data are 
@@ -277,13 +283,8 @@ void sretriever(DERTBL *varp)
     //}
   } else {
 
-    /* Put together a functioning retrieval_coefficient_fileset */
-    RetrievalCoefficientFileSet RCF_Set(RCFdir);
-    RCF_Set.setFlightLevelsKm((float *)&FLIGHTLEVELSKM[0], numFlightLevels);
-    Retriever Rtr(RCF_Set);
-  
     AtmosphericTemperatureProfile ATP;
-    ATP = Rtr.Retrieve(scanbt, ggalt/1000.0); // convert m to km
+    ATP = Rtr->Retrieve(scanbt, ggalt/1000.0); // convert m to km
 
     for (size_t i=0; i<NUM_RETR_LVLS;i++)
     {
