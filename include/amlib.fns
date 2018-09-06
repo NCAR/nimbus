@@ -1014,6 +1014,8 @@
 # Second generation CVI, 2006 and later.
 	"CVRHO",	(void(*)(void*))cvi2Init,	NULL,		scvrho,
 	"CVCWCC",	NULL,		NULL,		scvcwcc,
+	"CVCFACTC",	NULL,		NULL,		scvcfactc,
+	"CVIFLAG",	NULL,		NULL,		scviflag,
 	"CVCFACTTDL",	NULL,		NULL,		scvcfacttdl,
 #
 #	PMS 2d Probes

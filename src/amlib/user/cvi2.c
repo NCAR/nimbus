@@ -208,4 +208,45 @@ void scvcwcc(DERTBL *varp)
   prevInlet = cvinlet;
 }
 
+/* The below was added for SOCRATES to mark icing conditions.
+ * Add CVIFLAG CVCFACTC to UserNames.
+ * Add to DependTable
+ * CVCFACTC        CVCFACT CVCWC ATX
+ * CVIFLAG         CVCFACTC
+ * and replace CVCFACT with CVCFACTC in CONCUD and CVCFACTTDL.
+ */
+
+static int cviflag = 0;
+/* -------------------------------------------------------------------- */
+void scviflag(DERTBL *varp)
+{
+  PutSample(varp, (NR_TYPE)cviflag);
+}
+
+/* -------------------------------------------------------------------- */
+void scvcfactc(DERTBL *varp)
+{
+  NR_TYPE cvcfactc = GetSample(varp, 0);
+  NR_TYPE cvcwc = GetSample(varp, 1);
+  NR_TYPE atx	= GetSample(varp, 2);
+  static size_t elapsed_time = 0;
+
+  // if icing conditions...
+  if (cvcwc > 0.003 && atx < -7.0 && atx > -20.0)
+  {
+    // We just arrived, start elapsed time counter and flag data.
+    if (cviflag == 0)
+    {
+      cviflag = 1;
+      elapsed_time = 1;
+    }
+
+    cvcfactc *= (0.968 - 0.0015934 * elapsed_time);
+  }
+  else
+    cviflag = 0;
+
+  PutSample(varp, cvcfactc);
+}
+
 /* END CVI2.C */
