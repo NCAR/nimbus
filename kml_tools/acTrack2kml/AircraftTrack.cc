@@ -9,7 +9,7 @@
 using std::vector;
 using std::stringstream;
 
-const float AircraftTrack::missing_value;
+const float AircraftTrack::missing_value = -32767.0;
 
 bool
 AircraftTrack::

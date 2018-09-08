@@ -112,7 +112,7 @@ def kml_emitter(source, target, env):
 env['BUILDERS']['NetcdfKML'] = Builder(action=NetcdfKML, emitter=kml_emitter)
 
 
-hippopath = env.DownloadDataFile('HIPPO/prod_data/HIPPO-2rf06.nc')
+hippopath = env.DownloadDataFile('HIPPO/HIPPO-2rf06.nc')
 ekml = 'expected/HIPPO-2rf06.kml'
 ejson = 'expected/HIPPO-2rf06.json'
 akml = 'kml/HIPPO-2rf06.kml'
@@ -219,7 +219,7 @@ def RenderNetcdf(env, ncpath, bounds):
     return kmls + png
 
 kmldir += RenderNetcdf(env, hippopath, "172.236,-66.0481,187.508,-43.4905")
-kmldir += RenderNetcdf(env, 'HIPPO/prod_data/HIPPO-5rf13.nc',
+kmldir += RenderNetcdf(env, 'HIPPO/HIPPO-5rf13.nc',
                        "-150.438,60.1847,-145.201,87.0433")
 
 kmldir += RenderNetcdf(env, 'WINTER/WINTERrf01.nc',

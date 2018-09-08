@@ -1,0 +1,14 @@
+# PROMGEN: Xilinx Prom Generator P.15xf
+# Copyright (c) 1995-2012 Xilinx, Inc.  All rights reserved.
+
+SOFTWARE_VERSION P.15xf
+DATE            10/13/2017 - 15:40
+SOURCE          C:\Users\jcarnes\Desktop\lams_extendedDataPath_20170214_2_0.mcs
+DEVICE          XCF32P
+DATA_WIDTH      8
+FILL_DATA       0xFF
+SIGNATURE       0x01420398
+BLOCK 0 VERSION 0 0x04C8F8BA
+BLOCK 1 VERSION 0 0x04C8F8BA
+BLOCK 2 VERSION 0 0x04C8F8BA
+BLOCK 3 VERSION 0 0x04C8F8BA

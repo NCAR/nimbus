@@ -2,20 +2,10 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	getlr.c
 
-FULL NAME:	Get Logical Record *
-
 ENTRY POINTS:	GetLRLength()
 		GetLRPPR()
 
-DESCRIPTION:	
-
-INPUT:		char *var, long *result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routines to return logical record information.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------

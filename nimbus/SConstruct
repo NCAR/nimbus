@@ -19,6 +19,10 @@ env = Environment(platform='posix', tools=['default', 'svninfo', nimbusbase])
 
 env.SvnInfo('include/svnInfo.h', '.')
 
+env['CXXFLAGS'] = Split("""
+    -std=c++11
+""")
+
 Export('env')
 
 ##

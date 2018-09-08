@@ -2,17 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	getintf.c
 
-ENTRY POINTS:	GetInterface*()
-
-DESCRIPTION:	
-
-INPUT:		char *var, long *result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routines to return PMS interface channel numbers
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------

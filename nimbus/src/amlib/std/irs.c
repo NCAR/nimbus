@@ -6,13 +6,7 @@ FULL NAME:	Compute derived winds variables for Honeywell Intertial
 
 ENTRY POINTS:	swp3(), shi3()
 
-STATIC FNS:	none
-
 DESCRIPTION:	
-
-INPUT:		Variables from the decoded Honeywell IRS block.
-
-OUTPUT:		WP3, HI3
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2008
 -------------------------------------------------------------------------
@@ -22,7 +16,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2008
 #include "amlib.h"
 
 /* Honeywell Manual Time constants.  126 second time constants */
-static NR_TYPE	C[3] = { 0.15, 0.0075, 0.000125 };
+static NR_TYPE	wp3_C[3] = { 0.15, 0.0075, 0.000125 };
 
 static NR_TYPE	hi3[nFeedBackTypes] = { 0.0, 0.0 };
 
@@ -34,12 +28,12 @@ void initWP3(var_base *varp)
 
   if ((tmp = GetDefaultsValue("WP3_TIME_CONSTS", varp->name)) != NULL)
   {
-    C[0] = tmp[0];
-    C[1] = tmp[1];
-    C[2] = tmp[2];
+    wp3_C[0] = tmp[0];
+    wp3_C[1] = tmp[1];
+    wp3_C[2] = tmp[2];
     sprintf(buffer,
 	"initWP3: WP3_TIME_CONSTS set to %f, %f, %f from Defaults file.\n",
-	C[0], C[1], C[2]);
+	wp3_C[0], wp3_C[1], wp3_C[2]);
     LogMessage(buffer);
   }
 }
@@ -97,14 +91,14 @@ void swp3(DERTBL *varp)
 
   acz		= acins + (GRAVITY - gfact) + vcorac;
   wp3[FeedBack]	= wp3[FeedBack] +
-		(acz - C[1] * hx[FeedBack] - C[2] * hxx[FeedBack]) *
+		(acz - wp3_C[1] * hx[FeedBack] - wp3_C[2] * hxx[FeedBack]) *
 		deltaT[FeedBack];
 
   WP3 += wp3[FeedBack];
 
   /* 3rd order vertical velocity damping using PALT as reference
    */
-  hi3[FeedBack]	= hi3[FeedBack] + (wp3[FeedBack] - C[0] * hx[FeedBack])
+  hi3[FeedBack]	= hi3[FeedBack] + (wp3[FeedBack] - wp3_C[0] * hx[FeedBack])
 			* deltaT[FeedBack];
   hx[FeedBack]	= hi3[FeedBack] - palt;
   hxx[FeedBack]	= hxx[FeedBack] + hx[FeedBack] * deltaT[FeedBack];
@@ -121,5 +115,54 @@ void shi3(DERTBL *varp)
 {
   PutSample(varp, hi3[FeedBack]);
 }
+
+/* -------------------------------------------------------------------- */
+
+static NR_TYPE	wpg_C[3] = { 0.3, 0.03, 0.001 };
+
+void swpg(DERTBL *varp)
+{
+  NR_TYPE	ggvspd, ggalt, acins, WPG;
+
+  static bool		firstTime[nFeedBackTypes] = { TRUE, TRUE };
+  static NR_TYPE	hx[nFeedBackTypes], hxx[nFeedBackTypes],
+			wpg[nFeedBackTypes] = { 0.0, 0.0 },
+			hi3[nFeedBackTypes] = { 0.0, 0.0 },
+			deltaT[nFeedBackTypes];
+
+  ggvspd= GetSample(varp, 0);
+  ggalt	= GetSample(varp, 1);
+  acins	= GetSample(varp, 2);
+
+  if (isnan(ggalt) || isnan(ggvspd) || isnan(acins))
+  {
+    return;
+  }
+
+  if (firstTime[FeedBack])
+  {
+    if (FeedBack == LOW_RATE_FEEDBACK)
+      deltaT[FeedBack] = 1.0;
+    else
+      deltaT[FeedBack] = 1.0 / (float)cfg.ProcessingRate();
+
+    hx[FeedBack]  = hxx[FeedBack] = 0.0;
+    wpg[FeedBack] = ggvspd;
+    hi3[FeedBack] = ggalt;
+
+    firstTime[FeedBack] = FALSE;
+  }
+
+  WPG = wpg[FeedBack];
+  wpg[FeedBack] = wpg[FeedBack] + (acins - wpg_C[1] * hx[FeedBack] - wpg_C[2] * hxx[FeedBack]) * deltaT[FeedBack];
+  WPG += wpg[FeedBack];
+
+  hi3[FeedBack] = hi3[FeedBack] + (wpg[FeedBack] - wpg_C[0] * hx[FeedBack]) * deltaT[FeedBack];
+  hx[FeedBack] = hi3[FeedBack] - ggalt;
+  hxx[FeedBack] = hxx[FeedBack] + hx[FeedBack] * deltaT[FeedBack];
+
+  PutSample(varp, WPG / 2.0);
+}
+
 
 /* END IRS.C */

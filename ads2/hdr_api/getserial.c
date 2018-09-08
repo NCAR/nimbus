@@ -2,8 +2,6 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	getserial.c
 
-FULL NAME:	Get values for Serial block
-
 ENTRY POINTS:	GetBaudRate()
 		GetParity()
 		GetNumberDataBits()
@@ -14,13 +12,7 @@ ENTRY POINTS:	GetBaudRate()
 		GetTerminationString()
 		GetAlignmentString()
 
-INPUT:		char *var, long *result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	HAPI_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routine to return values for Serial block
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------

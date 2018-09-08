@@ -4,10 +4,8 @@ OBJECT NAME:	f_wrap.c
 
 FULL NAME:	Fortran Wrappers
 
-ENTRY POINTS:	All
-
-DESCRIPTION:	This module contains all the C wrapper procedures for
-		Fortran 77 support.
+DESCRIPTION:	This hdr_api module contains all the C wrapper procedures
+		for Fortran 77 support.
 
 REFERENCES:	All C modules of same name.
 

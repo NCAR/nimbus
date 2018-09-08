@@ -6,7 +6,7 @@ BINDIR=		${DESTDIR}/bin
 MANDIR=		${DESTDIR}/man/manl
 INCDIR=		${DESTDIR}/include/raf
 
-LIBS=		-L${JLOCAL}/lib -lraf++ -lz
+LIBS=		-L${JLOCAL}/lib -lraf -lz
 INCLUDES=	-I$(INCDIR)
 
 CC=		g++
@@ -18,7 +18,7 @@ PROG=	dmptime
 .c.o:
 	${CC} ${CFLAGS} -c $*.c
 
-${PROG}: dmptime.cc ${JLOCAL}/lib/libraf++.a
+${PROG}: dmptime.cc ${JLOCAL}/lib/libraf.a
 	${CC} ${CFLAGS} dmptime.cc ${LIBS} -o $@
 
 install: ${PROG}

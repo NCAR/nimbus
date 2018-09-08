@@ -2,18 +2,9 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	getaddr.c
 
-ENTRY POINTS:	GetPrimaryAddr()
-		GetSecondaryAddr()
-
-DESCRIPTION:	
-
-INPUT:		
-
-OUTPUT:		OK/ERR
+DESCRIPTION:	hdr_api routine to obtain variable or probae channel numbers.
 
 REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Application Programs
 
 NOTE:		Both procedures are assuming that the addresses are
 		located in the same place for all variable structures

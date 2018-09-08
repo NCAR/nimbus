@@ -5,8 +5,11 @@ OBJECT NAME:	rd_defs.c
 FULL NAME:	Read Defaults Object
 
 ENTRY POINTS:	ReadDefaultsFile()
+		AddToDefaults()
+		AddToAttributes()
 		GetDefaultsValue()
 		CheckAndAddAttrs()
+		FreeDefaults()
 
 STATIC FNS:	process_line()
 
@@ -17,7 +20,7 @@ REFERENCES:	OpenProjectFile()
 
 REFERENCED BY:	cb_main.c, cb_defs.c various AMLIB fn's.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2017
 -------------------------------------------------------------------------
 */
 
@@ -36,6 +39,15 @@ extern DEFAULT	*Defaults[];
 static void  process_line(char *line_p, FILE *fp);
 
 
+/* -------------------------------------------------------------------- */
+void FreeDefaults()
+{
+  for (size_t i = 0; i < nDefaults; ++i)
+  {
+    delete Defaults[i]->Name;
+    delete Defaults[i];
+  }
+}
 /* -------------------------------------------------------------------- */
 void readDefaultsFile(const std::string file)
 {

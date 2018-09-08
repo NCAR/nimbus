@@ -394,10 +394,10 @@ static void uhsasBinConsolidation(NR_TYPE *actual)
     uhsas_raw[dst] += actual[src++];
   ++dst;
 
-  while (src < 74)
+  while (src < 73)
     uhsas_raw[dst++] = actual[src++];
 
-  while (src < 82)
+  while (src < 81)
     uhsas_raw[dst] += actual[src++];
   ++dst;
 
@@ -407,7 +407,7 @@ static void uhsasBinConsolidation(NR_TYPE *actual)
   while (dst < 100)
     uhsas_raw[dst++] = 0.0;
 
-  memcpy(actual, uhsas_raw, 100 * 4);
+  memcpy(actual, uhsas_raw, 100 * sizeof(NR_TYPE));
 }
 
 /* END ASAS.C */

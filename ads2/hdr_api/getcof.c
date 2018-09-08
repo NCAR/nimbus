@@ -2,17 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	getcof.c
 
-ENTRY POINTS:	GetCalCoeff()
-
-DESCRIPTION:	
-
-INPUT:		char *var, float **result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routine to obtain analog calibration coefficients.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------

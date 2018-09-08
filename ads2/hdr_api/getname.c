@@ -4,15 +4,7 @@ OBJECT NAME:	getname.c
 
 ENTRY POINTS:	GetName()
 
-DESCRIPTION:	
-
-INPUT:		char *var, char **result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routine to return block/instrument name.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------

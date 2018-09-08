@@ -7,7 +7,7 @@
 
 using namespace std;
 
-RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename) 
+RetrievalCoefficientFile::RetrievalCoefficientFile(std::string Filename) 
 {
 
   _RCFFileName = Filename;
@@ -147,18 +147,31 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(string Filename)
   return;
 }
 
+/*
+ *  Null Constructor
+ */
+RetrievalCoefficientFile::RetrievalCoefficientFile() 
+{
+  _RCFFileName = std::string();
+  _RCFId = std::string();
+}
+
+bool RetrievalCoefficientFile::isValid()
+{
+  if (_RCFFileName.size() == 0) return false;
+  return true;
+}
+
 RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(float PAltKm)
 {
   RC_Set_1FL RcSetAvWt;
 
   // First check to see if PAltKm is outside the range of Flight Level PAltKms
-  //  - if so then the weighted average observalbe will be the average
-  //    observable associated with the flight level whose PAltKm is closest 
+  //  - if so then the weighted average observable will be the average
+  //    observable associated with the flight level whose PAltKm is closest.
   //    Assumption is that the Flight Level Retrieval Coefficient Set vector
   //    is stored in increasing Palt (decreasing aircraft altitude).
 std::vector<int>::size_type sz = _FlRcSetVec.size();
-cout<<"FileName:"<<_RCFFileName.c_str()<<"\n";
-cout<<"In get avg: PAltKm:"<<PAltKm<<"  1st level:"<<_FlRcSetVec.begin()->Palt<<"  last level:"<<_FlRcSetVec.end()->Palt<<"  -1:"<<_FlRcSetVec[sz-2].Palt<<"\n";
   if (PAltKm >= _RCFHdr.Zr[0]) 
   {
     for (int i = 0; i< NUM_BRT_TEMPS; i++) 
@@ -198,38 +211,29 @@ cout<<"In get avg: PAltKm:"<<PAltKm<<"  1st level:"<<_FlRcSetVec.begin()->Palt<<
       BotWt = 1-((PAltKm-_RCFHdr.Zr[i+1])/(_RCFHdr.Zr[i]-_RCFHdr.Zr[i+1]));
       Topit = it;
       Botit = it+1;
-cout<< "TopAlt:"<<_RCFHdr.Zr[i]<<"  BotAlt:"<<_RCFHdr.Zr[i+1]<<"  BotWt:"<<BotWt<<"\n";
-    } else {
-cout<< "i:"<<i<<"  iAlt:"<<_RCFHdr.Zr[i]<<"  i++Alt:"<<_RCFHdr.Zr[i+1]<<"  ChkAlt:"<<BotWt<<"\n";
-    }
+    } 
     i++;
   }
   TopWt = 1-BotWt;
 
 
-cout<<"Num, Avg, Bot, Top, Rms, Bot, Top\n";
   // Calculate the Weighted averages 
+  RcSetAvWt.Palt = Botit->Palt*BotWt + Topit->Palt*TopWt;
   for (int i = 0; i < NUM_BRT_TEMPS; i++)
   {
-    RcSetAvWt.Palt = Botit->Palt*BotWt + Topit->Palt*TopWt;
-    RcSetAvWt.MBTAvg[i] = Botit->MBTAvg[i]*BotWt + Topit->MBTAvg[i]*TopWt;
     RcSetAvWt.MBTRms[i] = Botit->MBTRms[i]*BotWt + Topit->MBTRms[i]*TopWt;
-cout<<i<<","<<RcSetAvWt.MBTAvg[i]<<","<<Botit->MBTAvg[i]<<","<<Topit->MBTAvg[i]
- <<","<<RcSetAvWt.MBTRms[i]<<","<<Botit->MBTRms[i]<<","<<Topit->MBTRms[i]<<"\n";
+    RcSetAvWt.MBTAvg[i] = Botit->MBTAvg[i]*BotWt + Topit->MBTAvg[i]*TopWt;
     for (int j = 0; j < NUM_RETR_LVLS; j++)
     {
+      RcSetAvWt.PAltRl[j] = Botit->PAltRl[j]*BotWt + Topit->PAltRl[j]*TopWt;
+      RcSetAvWt.TAvgRl[j] = Botit->TAvgRl[j]*BotWt + Topit->TAvgRl[j]*TopWt;
+      RcSetAvWt.TVarRl[j] = Botit->TVarRl[j]*BotWt + Topit->TVarRl[j]*TopWt;
+      RcSetAvWt.TRmsRl[j] = Botit->TRmsRl[j]*BotWt + Topit->TRmsRl[j]*TopWt;
+
       RcSetAvWt.RC[j][i] = Botit->RC[j][i]*BotWt + Topit->RC[j][i]*(1-BotWt);
     }
   }
 
-cout<<" RCwt:\n";
-for (int j = 0; j < NUM_RETR_LVLS; j++) {
-  for (int i = 0; i < NUM_BRT_TEMPS; i++) {
-    if (i%5 != 0) cout<<"["<<j<<"]["<<i<<"]:"<<RcSetAvWt.RC[j][i];
-    else cout<<"["<<j<<"]["<<i<<"]:"<<RcSetAvWt.RC[j][i]<<'\n';
-  }
-}
-cout <<"\n\n";
 
   return RcSetAvWt;
 

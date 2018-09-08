@@ -1,0 +1,63 @@
+************************************************
+2016-04-11
+
+OEM628 / FlexPak6 receivers
+Receiver NCK...18 updated to FW 6.700 (GV)
+Receiver NCK...35 updated to FW6.700 (2016-05-25, C-130)
+
+Changes to factory configuration:
+General changes:
+	antennapower off	# Shut off antenna power - power supplied by splitter.
+	sbascontrol enable	# Turn on sbas (WAAS) corrections.
+	assignlbandbeam auto	# Allow TerraStar satellite tracking
+
+Serial ports, change com1 and com2 to 115200 bps
+	serialconfig com1 115200
+	serialconfig com2 115200
+	
+Output logs:
+	log com1 gpgga ontime 0.1
+	log com1 bestposa ontime 0.1
+	log com1 bestvela ontime 0.1
+	log com1 gprmc ontime 0.1
+	log icom1 gpgga ontime 0.1
+	log icom1 bestposa ontime 0.1
+	log icom1 bestvela ontime 0.1
+	log icom1 gprmc ontime 0.1
+	log icom2 rawephem onchanged
+	log icom2 rangecmpb ontime 0.1
+
+Ethernet setup:
+	ethconfig etha auto auto auto normal	# Powerup ethernet port.
+	ipconfig etha static "192.168.184.11" "255.255.255.0" "192.168.184.1"	# Assign static IP address.
+	icomconfig icom1 udp 192.168.184.255:30116 All	# Broadcast on port 30116 the ASCII logs.
+	icomconfig icom2 udp 192.168.184.1:30118 All	# Broadcast on port 30118 the RAW logs.
+	icomconfig icom3 TCP :30116 All	# TCP on icom3, port 30116 for command/control interface.
+
+View icom1 data with nc -ul 192.168.184.255 30116
+	icom2 data with nc -ul 30118
+
+************************************************
+
+2015-09-24
+
+Note when looking at sample rate nimbus-processed data, nimbus currently interpolates through missing data, such as when checksum fails.
+Use nimbus -r to get raw data, without interpolation, etc.
+
+************************************************
+
+2013-08-01
+
+When using the non-NMEA logs, like BESTPOSA (best position), use the full ascii command rather than the abbreviated version to avoid getting a command prompt after each response and to have the response in all one line with no newline after the header. I.e., use BESTPOSA rather than BESTPOS, BESTVELA rather than BESTVEL, etc.
+
+Example output from BESTPOSA:
+#BESTPOSA,COM1,0,90.0,UNKNOWN,0,217.000,004c4020,7145,11526;INSUFFICIENT_OBS,NONE,0.00000000000,0.00000000000,0.0000,0.0000,WGS84,0.0000,0.0000,0.0000,"",0.000,0.000,0,0,0,0,0,00,00,00*f9da050d
+#BESTPOSA,COM1,0,90.0,UNKNOWN,0,218.000,004c4020,7145,11526;INSUFFICIENT_OBS,NONE,0.00000000000,0.00000000000,0.0000,0.0000,WGS84,0.0000,0.0000,0.0000,"",0.000,0.000,0,0,0,0,0,00,00,00*6f25b39a
+
+and from BESTPOS:
+<BESTPOS COM1 0 92.5 UNKNOWN 0 199.000 004c4020 7145 11526
+<     INSUFFICIENT_OBS NONE 0.00000000000 0.00000000000 0.0000 0.0000 WGS84 0.0000 0.0000 0.0000 "" 0.000 0.000 0 0 0 0 0 00 00 00
+[COM1]<BESTPOS COM1 0 92.5 UNKNOWN 0 200.000 004c4020 7145 11526
+<     INSUFFICIENT_OBS NONE 0.00000000000 0.00000000000 0.0000 0.0000 WGS84 0.0000 0.0000 0.0000 "" 0.000 0.000 0 0 0 0 0 00 00 00
+
+

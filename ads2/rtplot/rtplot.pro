@@ -20,4 +20,4 @@ SOURCES += amlibfn.cc \
            rtplot.cc
 INCLUDEPATH += $(JLOCAL)/include ../nimbus/include $${QWT_DIR}/include
 OBJECTS += ../nimbus/src/filter/calco.o ../nimbus/src/filter/search.o ../nimbus/src/filter/textfile.o ../nimbus/src/filter/popen.o ../nimbus/src/filter/log.o ../nimbus/src/filter/config.o ../nimbus/src/filter/rd_defs.o
-LIBS += -L$(JLOCAL)/lib -lraf++ -L../nimbus/lib -lxlate -lraf -L$${QWT_DIR}/lib -lqwt -lnetcdf
+LIBS += -L$(JLOCAL)/lib -L../nimbus/lib -lxlate -lraf -L$${QWT_DIR}/lib -lqwt -lnetcdf

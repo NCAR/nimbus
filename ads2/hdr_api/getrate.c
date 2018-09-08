@@ -2,17 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	getrate.c
 
-ENTRY POINTS:	GetRate()
-
-DESCRIPTION:	
-
-INPUT:		char *var, long *result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routint to return sample rate.
 
 NOTE:		This proc is assuming that all rate fields are located
 		in the same position in all structs.  If this assumption

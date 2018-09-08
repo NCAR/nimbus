@@ -2,7 +2,7 @@
 
 # This could all be one big for loop, but I broke it down for readability.
 
-foreach file ( a2d_cals lib* ncplot ncpp/src xpms2d/src nimbus/src/qc ads_utils/edADShdr )
+foreach file ( a2d_cals nimbus/src/qc ads_utils/edADShdr )
   (cd $file; echo $file; make clean)
 end
 
@@ -16,21 +16,9 @@ cd instruments
 foreach file ( mcr/display/src mcr/processor/src rdma hvps/hvpsdiag pms2d/usb2d/usb2diag )
   (cd $file; echo $file; make clean)
 end
-foreach file ( pms2d/process2d pms2d/oapinfo cip/padsinfo )
-  (cd $file; echo $file; scons -c)
-end
 cd ..
 
-cd nc_utils
-foreach file ( asc2cdf flt_time n2asc nc_compare nc_sane ncav ncextr ncfillvar ncmerge nc2iwg1 )
-  (cd $file; echo $file; make clean)
-end
-foreach file ( ncvarlist nc_gap mkcdf ncReorder nc_gap )
-  (cd $file; echo $file; scons -c)
-end
-cd ..
-
-foreach file ( nimbus kml_tools/acTrack2kml kml_tools/avaps2kml caledit vardb )
+foreach file ( nimbus kml_tools/acTrack2kml kml_tools/avaps2kml caledit )
   (cd $file; echo $file; scons -c)
 end
 

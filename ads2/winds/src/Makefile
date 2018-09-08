@@ -43,7 +43,7 @@ LIB_PATH=       -L${JLOCAL}/lib -L/usr/openwin/lib -L/usr/X11R6/lib
 # libraries
 #
 UNIXLIBS=     	-lxview -lolgx -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lX11 -lXp -lXext -lm
-RAFLIBS=     	-lhdr_api -lVarDB -lraf -lpms 
+RAFLIBS=     	-lhdr_api -lVarDB -lraf 
 #
 WLIBS=     	$(UNIXLIBS) $(RAFLIBS)
 #
@@ -413,7 +413,7 @@ WINPUT.O = $(OBJ)winputops.o $(OBJ)netcdf.o $(OBJ)netconfig.o \
 
 LIBEXEC = $(NIMBUS)/lib/
 
-LINKLIBS = -lstd -luser -lxlate -lval -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lhdr_api -lVarDB -lraf++ -lraf -lpms -lgsl -lgslcblas -lm -lDsm -lisa -lXmlRpc -lxerces-c -lpq
+LINKLIBS = -lstd -luser -lxlate -lval -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lhdr_api -lVarDB -lraf -lgsl -lgslcblas -lm -lDsm -lisa -lXmlRpc -lxerces-c -lpq
 
 winput: $(EXEC)winput
 
@@ -454,7 +454,7 @@ WINDCOMM.O = $(SRC)windComm.cc $(OBJ)shmem.o
 WINDCOMM.H = $(INC)eth_shm.h $(INC)shmem.h
 
 $(EXEC)windComm: $(WINDCOMM.O) $(WINDCOMM.H)
-	g++ -g -O $(WINDCOMM.O) $(WINDS_INCL) -I$(LOCAL_INCL) -L$(JLOCAL)/lib -o $(EXEC)windComm -lraf -lraf++ -lz
+	g++ -g -O $(WINDCOMM.O) $(WINDS_INCL) -I$(LOCAL_INCL) -L$(JLOCAL)/lib -o $(EXEC)windComm -lraf -lz
 
 ##########################  HELP MODULES  ####################################
 ##############################################################################

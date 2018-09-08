@@ -261,8 +261,8 @@ int main(int argc, const char* argv[])
 	In this case, ValveAdvance will try to move the valve manually to re-activate it. */
 	CurrPos = Valve_GetPosition( BASE_PROM_DAQ );
 	
-	/* ---- Initialize and prepare for UDP broadcast --- */
- 	UdpSocket _socket(31222, "192.168.184.1");
+	/* ---- Initialize and prepare for UDP packet to acserver --- */
+ 	UdpSocket _socket(31222, "192.168.84.2");
 	_socket.openSock(UDP_UNBOUND);
 			
 	// Write data to UDP

@@ -2,17 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	getnbins.c
 
-ENTRY POINTS:	GetNumberBins()
-
-DESCRIPTION:	
-
-INPUT:		char *var, long *result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routine to return PMS number of bins or channels.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 -------------------------------------------------------------------------

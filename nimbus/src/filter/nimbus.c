@@ -156,6 +156,7 @@ int main(int argc, char *argv[])
   else
   {
     Proceed(NULL, NULL, NULL);
+    quit();
   }
 
   return(0);

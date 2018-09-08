@@ -27,7 +27,7 @@ Broadcast::Broadcast() :
   RADAR_ALT_INDX(5),
   NOCAL_ALT_INDX(-1),
   NOREC_ALT_INDX(-1),
-  InterfacePrefix("192.168")
+  DataNet("192.168.84")
 {
   readFile(BROADCAST);
 
@@ -35,9 +35,9 @@ Broadcast::Broadcast() :
   const char* debug_interface = 0;
   if ((debug_interface = getenv("NIMBUS_DEBUG_BROADCAST_INTERFACE")) != 0)
   {
-    InterfacePrefix = debug_interface;
+    DataNet = debug_interface;
     std::cerr << "WARNING: switching iwg broadcast interface to "
-	      << InterfacePrefix << std::endl;
+	      << DataNet << std::endl;
   }
 
   _socket = new MulticastSocket;
@@ -50,7 +50,7 @@ Broadcast::Broadcast() :
   std::list<Inet4NetworkInterface>::iterator it;
   for (it = if_list.begin(); it != if_list.end(); ++it)
   {
-    if ((*it).getAddress().getHostAddress().compare(0, InterfacePrefix.length(), InterfacePrefix) == 0)
+    if ((*it).getAddress().getHostAddress().compare(0, DataNet.length(), DataNet) == 0)
     {
       _toList.push_back(new
 	Inet4SocketAddress(Inet4Address((*it).getBroadcastAddress().getInAddrPtr()), UDP_PORT));

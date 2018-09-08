@@ -64,6 +64,13 @@ NR_TYPE GetSample(DERTBL *dp, int di);
 	else \
 		HighRateData[dp->HRstart + SampleOffset] = (NR_TYPE)y
 
+#define PutVector(dp, y)	\
+	if (FeedBack == LOW_RATE_FEEDBACK) \
+		memcpy (&AveragedData[dp->LRstart], (NR_TYPE *)y, sizeof(NR_TYPE) * dp->Length); \
+	else \
+		memcpy (&HighRateData[dp->HRstart + (SampleOffset * dp->Length)], \
+		(NR_TYPE *)y, sizeof(NR_TYPE) * dp->Length);
+
 #define PutStaticSample(dp, y)	\
 	if (FeedBack == LOW_RATE_FEEDBACK) \
 		AveragedData[dp->LRstart] = (NR_TYPE)y[HIGH_RATE]; \

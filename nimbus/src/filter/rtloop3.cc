@@ -52,7 +52,7 @@ private:
 };
 
 // Can we use loopback on the gv server?
-const std::string MultiCastStatus::DATA_NETWORK = "192.168.184";
+const std::string MultiCastStatus::DATA_NETWORK = "192.168.84";
 
 MultiCastStatus::MultiCastStatus()
 {
@@ -186,17 +186,17 @@ void RealTimeLoop3()
     if (cfg.EnableBroadcast())
       bcast->BroadcastData(tt);
 
-    if (cfg.TransmitToGround())
-      grnd_feed->BroadcastData(tt);
-
-    if (cfg.OutputNetCDF())
-      WriteNetCDF();
-
     UpdateTime(SampledData);
     if (mcStat) {
       strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", &tm);
       mcStat->sendStatus(timeStamp);
     }
+
+    if (cfg.TransmitToGround())
+      grnd_feed->BroadcastData(tt);
+
+    if (cfg.OutputNetCDF())
+      WriteNetCDF();
 
     // This typically produces HRT netCDF in real-time.  Not used at this time.
     if (cfg.OutputNetCDF())

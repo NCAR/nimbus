@@ -13,17 +13,15 @@ INCLUDES=	-I${INCLUDEDIR}
 DEFINES=	
 CFLAGS=		-Wall -g ${INCLUDES} ${DEFINES}
 
-OBJS=	init.o lookup.o getnext.o getvarlist.o gettype.o getitemlen.o	\
-	getstartlen.o getlocn.o getrate.o gethdr.o getaddr.o getname.o	\
-	getoffset.o getres.o getxvert.o getorder.o getcof.o getlr.o	\
-	getdmeaddr.o getitemtype.o getpointer.o getps.o getintf.o	\
-	getsn.o getserial.o gethskp.o getgain.o getnbins.o
+OBJS=	init.o getvarlist.o getsdi.o getstartlen.o getlocn.o\
+	getrate.o gethdr.o getaddr.o getname.o getres.o getcof.o getlr.o\
+	getdmeaddr.o getblkinfo.o getps.o getintf.o getsn.o getserial.o\
+	gethskp.o getnbins.o
 
-SRCS=	init.c lookup.c getnext.c getvarlist.c gettype.c getitemlen.c	\
-	getstartlen.c getlocn.c getrate.c gethdr.c getaddr.c getname.c	\
-	getoffset.c getres.c getxvert.c getorder.c getcof.c getlr.c	\
-	getdmeaddr.c getitemtype.c getpointer.c getps.c getintf.c	\
-	getsn.c getserial.c gethskp.c getgain.c getnbins.c
+SRCS=	init.c getvarlist.c getsdi.c getstartlen.c getlocn.c\
+	getrate.c gethdr.c getaddr.c getname.c getres.c getcof.c getlr.c\
+	getdmeaddr.c getblkinfo.c getps.c getintf.c getsn.c getserial.c\
+	gethskp.c getnbins.c
 
 HDRS=	ctape.h hdr_api.h ${INCLUDEDIR}/raf/header.h
 

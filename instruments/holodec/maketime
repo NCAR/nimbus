@@ -1,0 +1,129 @@
+#!/usr/bin/env python
+
+###
+# This script takes the holodec seq files and creates a new cfg file
+# with updated start/end times.
+# written by Soo Park 2015
+###
+"""
+{
+    directory: /export/archive/data/bamex/aircraft/lear/flight_line_data
+    filename: (\Y\Y\Y\Y\M\M\y\y).s[\H\H]\d\d\d\d.e{\H\H}\d\d\d\d.asc
+    startdate: YYYY-MM-yy HH:00:00
+    enddate: YYYY-MM-yy HH:23:59
+    format: 43
+}
+"""
+import sys, os, re, argparse
+from subprocess import Popen, PIPE
+
+def main():
+
+    parser = argparse.ArgumentParser(description="inserts holodecs")
+    parser.add_argument('flight', metavar='flt')
+    args = parser.parse_args()
+    fltno = sys.argv[1]
+    
+    #fileDir = "/scr/raf/holodec/"
+    fileDirHPSS = "/EOL/2015/cset/aircraft/gv_n677f/holodec/"
+    
+    #fileList = []
+    #fileList = next(os.walk(fileDir + fltno))[2]
+    #for file in os.listdir(fileDir + fltno + "/"):
+    #    if file.endswith(".seq"):
+    #        fileList.append(file)
+    #print fileList
+
+    name = "log.txt"
+    fileOpen = open(name)
+    fileString = fileOpen.read()
+    fileList = re.findall("(TF.+)", fileString)
+
+    cfgDir = "/net/work/cfg-files/CSET_487/cfg-487.001"
+    #cfgDir = "/net/work/cfg-files/CSET_487/cfg-486.005"
+
+       #cfgArray[1] = cfgArray[1].replace(dir, "")
+    print "YES"
+    for i in range(0, len(fileList)):
+        
+        print "==============================================================="
+        print "current file: " + fileList[i]
+        
+        cfgFile = open(cfgDir)
+        cfgString = cfgFile.read()
+        cfgFile.close()
+     
+        cfgItems = []
+        cfgItems.append(re.findall("directory:\s(.+)\n", cfgString)[0])
+        cfgItems.append(re.findall("filename:\s(.+)\n", cfgString)[0])
+        cfgItems.append(re.findall("(startdate:\s.+)\n", cfgString)[0])
+        cfgItems.append(re.findall("(enddate:\s.+)\n", cfgString)[0])
+
+        foo = fileList[i].split(".")
+        projTime = foo[1]
+        bar = projTime.split("_")
+        date = bar[0]
+        time = bar[1]
+
+        
+        Y1, Y2, Y3, Y4, M1, M2, D1, D2 = date
+        year = Y1+Y2+Y3+Y4
+        month = M1+M2
+        day = D1+D2
+        cfgDate = year + "-" + month + "-" + day
+            
+        H1, H2, N1, N2, S1, S2 = time
+        hour = H1+H2
+        min = N1+N2
+        sec = S1 + S2
+        cfgTime = hour + ":" + min + ":" + sec
+
+        startTime = "startdate: " + cfgDate + " " + cfgTime
+        
+        if i+1 == len(fileList):
+            print "DONE"
+        else:
+            
+            print "next file: " + fileList[i+1]
+            foo1 = fileList[i+1].split(".")
+            projTime1 = foo1[1]
+            bar1 = projTime1.split("_")
+            date1 = bar1[0]
+            time1 = bar1[1]
+            
+            
+            y1, y2, y3, y4, m1, m2, d1, d2 = date1
+            year1 = y1+y2+y3+y4
+            month1 = m1+m2
+            day1 = d1+d2
+            cfgDate1 = year1 + "-" + month1 + "-" + day1
+            
+            h1, h2, n1, n2, s1, s2 = time1
+            hour1 = h1+h2
+            min1 = n1+n2
+            sec1 = s1+s2
+            cfgTime1 = hour1 + ":" + min1 + ":" + sec1
+
+            endTime = "enddate: " + cfgDate1 + " " + cfgTime1
+
+            fileName = fileList[i].replace(fltno, "(\E\E\E\E)")
+
+            newCfg = open(cfgDir, 'w')
+            #cfgString = cfgString.replace(cfgItems[0], fileDir + fltno)
+            cfgString = cfgString.replace(cfgItems[0], fileDirHPSS + fltno)
+            cfgString = cfgString.replace(cfgItems[1], fileName)
+            cfgString = cfgString.replace(cfgItems[2], startTime)
+            cfgString = cfgString.replace(cfgItems[3], endTime)
+
+            newCfg.write(cfgString)
+            newCfg.close()
+            new = open(cfgDir)
+            print new.read()
+    
+            #os.system("echo 'hello'")
+            #process = Popen("/net/work/dev/jaa/insert_proj_dataset/src/insert_multiple_files /net/work/cfg-files/CSET_487/cfg-486.005", shell=True, stdin=PIPE)
+            process = Popen("/net/work/bin/scripts/insert/insert_multiple_files /net/work/cfg-files/CSET_487/cfg-487.001", shell=True, stdin=PIPE)
+            cmd = process.communicate("\n")[0] 
+            #os.system("/net/work/dev/jaa/insert_proj_dataset/src/insert_multiple_files /net/work/cfg-files/CSET_487/cfg-486.004")
+            #os.system("/net/work/bin/scripts/insert/insert_multiple_files /net/work/cfg-files/CSET_487/cfg-487.001")
+main()

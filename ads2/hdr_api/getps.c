@@ -4,15 +4,7 @@ OBJECT NAME:	getps.c
 
 ENTRY POINTS:	GetParticleSpacing*()
 
-DESCRIPTION:	
-
-INPUT:		char *var, long *result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routine to return PMS particle spacing information.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------

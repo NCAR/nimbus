@@ -51,7 +51,7 @@ protected:
   int NOCAL_ALT_INDX;
   int NOREC_ALT_INDX;
 
-  std::string InterfacePrefix;
+  std::string DataNet;
 };
 
 #endif

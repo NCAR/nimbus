@@ -68,13 +68,13 @@ Email to
     <a href="ncpp_dnld.html">Download</a>
   </dt>
   <dd>Display program for PMS1D Histogram data. Building from source requires
-    <b>netCDF 3.0</b> or later, and <b>libraf++</b>.
+    <b>netCDF 3.0</b> or later, and <b>libraf</b>.
     <p></p>
   </dd>
   <dt><b>xpms2d</b> - <a href="xpms2d.html">User's Manual</a> -
     <a href="xpms2d_dnld.html">Download</a>
   </dt>
-  <dd>Display program for PMS2D data. PMS2D data are NOT contained in the netCDF file but must be requested from RAF separately. Building from source requires <b>libraf++</b>.
+  <dd>Display program for PMS2D data. PMS2D data are NOT contained in the netCDF file but must be requested from RAF separately. Building from source requires <b>libraf</b>.
     <p></p>
   </dd>
   <dt><b>asc2cdf</b> - <a href="asc2cdf.html">User's Manual</a> -
@@ -121,12 +121,7 @@ The programs described below will require that you install the files
   </dd>
   <dt><b>libraf.tar.Z</b>
   </dt>
-  <dd>Contains various routines used across many of our programs.  Requires <b>include.tar.Z</b> to compile. This library should be installed in some directory where your compiler will find it.  Our Makefiles do NOT have a -Ldir flag to locate this file.
-    <p></p>
-  </dd>
-  <dt><b>libraf++.tar.Z</b>
-  </dt>
-  <dd>C++ version of libraf. <b>ncpp</b> and <b>xpms2d</b> are currently the only two C++ programs. May require <b>include.tar.Z</b> to compile. This library should be installed in some directory where your compiler will find it.  Our Makefiles do NOT have a -Ldir flag to locate this file.
+  <dd>Contains various C and C++ routines used across many of our programs.  Requires <b>include.tar.Z</b> to compile. This library should be installed in some directory where your compiler will find it.  Our Makefiles do NOT have a -Ldir flag to locate this file.
     <p></p>
   </dd>
   <dt><a href="g2n.html"><b>g2n</b></a>
@@ -221,11 +216,11 @@ is now available for free. It comes bundled with RHEL4 and RHEL5, but is not ava
 <h4>Making life easier (for those building from source)</h4>
 <dd>The simpliest way to set things up, especially if you have to build the libraries, is to create a <b>/home/local/raf</b> (or something/raf).  Then under this, create directories called <b>include</b> and <b>lib</b>, then untar the source here. e.g.
   <blockquote>
-    <pre class="CDL">cd /home/local/<br>mkdir raf<br>setenv LOCAL /home/local/raf<br>setenv JLOCAL /home/local/raf<br>cd raf<br>mkdir lib include<br>uncompress ncplot.tar.Z<br>uncompress ncpp.tar.Z<br>uncompress xpms2d.tar.Z<br>uncompress libraf++.tar.Z<br>tar xf libraf++.tar<br>tar xf ncplot.tar<br>tar xf ncpp.tar<br>tar xf xpms2d.tar<br></pre>
+    <pre class="CDL">cd /home/local/<br>mkdir raf<br>setenv LOCAL /home/local/raf<br>setenv JLOCAL /home/local/raf<br>cd raf<br>mkdir lib include<br>uncompress ncplot.tar.Z<br>uncompress ncpp.tar.Z<br>uncompress xpms2d.tar.Z<br>uncompress libraf.tar.Z<br>tar xf libraf.tar<br>tar xf ncplot.tar<br>tar xf ncpp.tar<br>tar xf xpms2d.tar<br></pre>
   </blockquote>
 At this point you will need to edit Makefiles, and make sure they are correct for your installation (Solaris or Linux) by commenting/uncommenting the correct section near the top.
   <blockquote>
-    <pre class="CDL">cd libraf++<br>make install<br>cd ../ncplot<br>make<br>cd ../ncpp/src<br>make<br>cd ../../xpms2d/src<br>make<br></pre>
+    <pre class="CDL">cd libraf<br>make install<br>cd ../ncplot<br>make<br>cd ../ncpp/src<br>make<br>cd ../../xpms2d/src<br>make<br></pre>
   </blockquote>
   <p>
 Make sure <b>Makefile</b>s are edited appropriatly.

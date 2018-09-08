@@ -1,0 +1,17 @@
+PROMGEN: Xilinx Prom Generator P.15xf
+Copyright (c) 1995-2012 Xilinx, Inc.  All rights reserved.
+
+promgen -w -p mcs -c FF -o C:\Users\jcarnes\Desktop//lams_extendedDataPath_20170214_2 -x xcf32p xcf32p xcf08p -ver 0 "C:/Users/jcarnes/Documents/Projects/Instruments/LAMS/FPGA Images/LAMS Laptop Saved Images/lams_extendedDataPath_20170214_2.bit" 
+
+PROM C:\Users\jcarnes\Desktop\lams_extendedDataPath_20170214_2_2.prm map: Fri Oct 13 15:40:08 2017
+
+Calculating PROM checksum with fill value ff
+
+Format        Mcs86 (32-bit)
+Size          1024K
+PROM start    0080:0000
+PROM end      008f:ffff
+PROM checksum 031cb99c
+
+        Addr1        Addr2                     Date File(s)
+    0080:0000    008c:e03b     Feb 14 12:40:46 2017 C:/Users/jcarnes/Documents/Projects/Instruments/LAMS/FPGA Images/LAMS Laptop Saved Images/lams_extendedDataPath_20170214_2.bit

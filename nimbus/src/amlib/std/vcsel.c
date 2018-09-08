@@ -38,56 +38,57 @@ static void readDefs(const char varName[], const char line[],
 	double P_COEFF[], double T_COEFF[], double LI_COEFF[][nCoeffs], double ABS_COEFF[])
 {
   float *tmp;
+  char name[256];
 
-  sprintf(buffer, "VXL_T_%s", line);
-  if ((tmp = GetDefaultsValue(buffer, varName)) == NULL)
+  sprintf(name, "VXL_T_%s", line);
+  if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
     sprintf(buffer, "%s value defaulting to %f in AMLIB function vcselInit.\n",
-		buffer, T_COEFF[0]);
+		name, T_COEFF[0]);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
       T_COEFF[i] = tmp[i];
 
-  sprintf(buffer, "VXL_P_%s", line);
-  if ((tmp = GetDefaultsValue(buffer, varName)) == NULL)
+  sprintf(name, "VXL_P_%s", line);
+  if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
     sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		buffer, P_COEFF[0], P_COEFF[1], P_COEFF[2]);
+		name, P_COEFF[0], P_COEFF[1], P_COEFF[2]);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
       P_COEFF[i] = tmp[i];
 
-  sprintf(buffer, "VXL_LI_%s", line);
-  if ((tmp = GetDefaultsValue(buffer, varName)) == NULL)
+  sprintf(name, "VXL_LI_%s", line);
+  if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
     sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		buffer, LI_COEFF[0][0], LI_COEFF[0][1], LI_COEFF[0][2]);
+		name, LI_COEFF[0][0], LI_COEFF[0][1], LI_COEFF[0][2]);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
       LI_COEFF[0][i] = tmp[i];
 
-  sprintf(buffer, "VXL_LILO_%s", line);
-  if ((tmp = GetDefaultsValue(buffer, varName)) == NULL)
+  sprintf(name, "VXL_LILO_%s", line);
+  if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
     sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		buffer, LI_COEFF[1][0], LI_COEFF[1][1], LI_COEFF[1][2]);
+		name, LI_COEFF[1][0], LI_COEFF[1][1], LI_COEFF[1][2]);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
       LI_COEFF[1][i] = tmp[i];
 
-  sprintf(buffer, "VXL_ABS_%s", line);
-  if ((tmp = GetDefaultsValue(buffer, varName)) == NULL)
+  sprintf(name, "VXL_ABS_%s", line);
+  if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
     sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		buffer, ABS_COEFF[0], ABS_COEFF[1], ABS_COEFF[2]);
+		name, ABS_COEFF[0], ABS_COEFF[1], ABS_COEFF[2]);
     LogMessage(buffer);
   }
   else
@@ -168,7 +169,10 @@ void sconcv(DERTBL *varp)
   }
 
 
-  if (strcmp(flightDateString, "201204") > 0)   // DC3 (May/June 2012) and later.
+  // Original new processing and co-efficients only went back to DC3.
+  // Now extending back to HIPPO-2.
+//  if (strcmp(flightDateString, "201204") > 0)   // DC3 (May/June 2012) and later.
+  if (strcmp(flightDateString, "200908") > 0)   // HIPPO-2 (Sep 2009) and later.
   {
     p_coeff = pCoeffs[1] * pow(PS_vxl, pCoeffs[2]) + pCoeffs[0];
     t_coeff = tCoeffs[1] * pow(AT_vxl, tCoeffs[2]) + tCoeffs[0];

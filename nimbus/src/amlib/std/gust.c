@@ -70,6 +70,10 @@ getBoomLengthParameter(var_base* varp, float* boomlength)
 void initGust(var_base *varp)
 {
   NR_TYPE	GetBoomLength();
+  bool		gustPod = false;
+
+  if (strstr(varp->name, "_GP"))
+    gustPod = true;
 
   DELT[LOW_RATE_FEEDBACK] = 1.0;
   DELT[HIGH_RATE_FEEDBACK] = 1.0/(float)cfg.ProcessingRate();
@@ -92,7 +96,7 @@ void initGust(var_base *varp)
    */
   bool blfound = getBoomLengthParameter(varp, &boomln[varp->ProbeCount]);
 
-  if (strstr(varp->name, "_GP") && !blfound)
+  if (gustPod && !blfound)
   {
     boomln[varp->ProbeCount] = 0.67;
     ELOG(("Gust pod variable %s missing BOOMLENGTH parameter.\n"

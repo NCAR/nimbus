@@ -42,39 +42,19 @@ struct angle_units
 };
 
 
-template <typename T>
-struct radians : public angle_units< radians, T >
-{
-  static const T circle = 2*M_PI;
-  static const T origin = 0;
-};
+#define ANGLE_CIRCLE_ORIGIN(NAME, CIRCLE, ORIGIN)	\
+template <typename T> \
+struct NAME : public angle_units< NAME, T > { \
+  static const T circle; \
+  static const T origin; \
+}; \
+template <typename T> const T NAME<T>::circle = CIRCLE; \
+template <typename T> const T NAME<T>::origin = ORIGIN
 
-template <typename T>
-struct heading_degrees : public angle_units< heading_degrees, T >
-{
-  typedef T value_type;
-  static const T circle = 360;
-  static const T origin = 0;
-};
-
-template <typename T>
-struct longitude_degrees : public angle_units< longitude_degrees, T >
-{
-  typedef T value_type;
-  static const T circle = 360;
-  static const T origin = -180;
-};
-
-
-template <typename T>
-struct longitude_positive_degrees : 
-  public angle_units< longitude_positive_degrees, T >
-{
-  typedef T value_type;
-  static const T circle = 360;
-  static const T origin = 0;
-};
-
+ANGLE_CIRCLE_ORIGIN(radians, 2*M_PI, 0);
+ANGLE_CIRCLE_ORIGIN(heading_degrees, 360, 0);
+ANGLE_CIRCLE_ORIGIN(longitude_degrees, 360, -180);
+ANGLE_CIRCLE_ORIGIN(longitude_positive_degrees, 360, 0);
 
 
 template <typename T, typename UNITS=heading_degrees<T> >

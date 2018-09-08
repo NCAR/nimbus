@@ -1,0 +1,2 @@
+- This project was compiled using Keil uVision 4 v4.14.4.0
+- The project name is based on a reference project but is, in fact, the correct project for LAMS4

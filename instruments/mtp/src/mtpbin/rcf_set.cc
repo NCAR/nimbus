@@ -10,7 +10,7 @@
 
 using namespace std;
 
-RetrievalCoefficientFileSet::RetrievalCoefficientFileSet(const string Directory) 
+RetrievalCoefficientFileSet::RetrievalCoefficientFileSet(const std::string Directory) 
 {
 
   _RCFDir = Directory;
@@ -34,6 +34,19 @@ RetrievalCoefficientFileSet::RetrievalCoefficientFileSet(const string Directory)
   }
 
   return;
+}
+
+RetrievalCoefficientFile RetrievalCoefficientFileSet::getRCFbyId(std::string RCFId)
+{
+  for (std::vector<RetrievalCoefficientFile>::iterator
+       it = _RCFs.begin(); it != _RCFs.end(); ++it)
+  { 
+    if (it->getId() == RCFId) return *it;
+  }
+
+  cout<<"RetrievalCoefficientFile::getRCFbyId: ERROR: \n";
+  cout<<"  Could not find RCF with ID: "<<RCFId.c_str()<<"\n";
+  return RetrievalCoefficientFile();
 }
 
 bool RetrievalCoefficientFileSet::setFlightLevelsKm(float FlightLevels[], 
@@ -61,7 +74,7 @@ bool RetrievalCoefficientFileSet::setFlightLevelsKm(float FlightLevels[],
 }
 
 RC_Set_1FL RetrievalCoefficientFileSet::getBestWeightedRCSet
-                                  (float ScanBrightnessTemps[],float PAltKm,
+                                  (std::vector<float> ScanBrightnessTemps,float PAltKm,
                                    float BTBias)
 {
 

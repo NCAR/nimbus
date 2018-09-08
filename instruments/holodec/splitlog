@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+import re
+
+name = "log.txt"
+fileOpen = open(name)
+fileString = fileOpen.read()
+
+newString = re.findall("(RF.+)", fileString)
+
+for file in newString:
+    print file
+print len(newString)

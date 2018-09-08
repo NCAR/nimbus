@@ -2,7 +2,7 @@ OBJECTS = main.o getIMG.o parseFile.o writejpeg.o writepng.o pgFuncs.o multicast
 CFLAGS = -Wall -Wextra -g  -pg #-DDEBUG
 CXXFLAGS = -Wall -Wextra -g -pg
 DCLIB = -ldc1394
-LIBS = $(DCLIB) -ljpeg -lpng -lpq -lexiv2
+LIBS =$(DCLIB) -lpthread -ljpeg -lpng -lpq -lexiv2
 
 all: capture capture_reset_bus
 
@@ -20,6 +20,13 @@ multicast.o: multicast.h
 
 capture_reset_bus: reset_bus.c
 	$(CC) reset_bus.c -o capture_reset_bus $(DCLIB)
-
+install:
+	cp capture.sh /etc/init.d
+	cp capture /usr/bin
+	cp capture_monitor.sh /usr/sbin
+uninstall:
+	rm -f /etc/init.d/capture.sh
+	rm -f /usr/bin/capture
+	rm -f /usr/sbin/capture_monitor.sh
 clean:
 	rm -f $(OBJECTS) capture capture_reset_bus

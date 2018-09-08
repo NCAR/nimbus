@@ -15,14 +15,12 @@ ENTRY POINTS:	scvl()
 		scvs4()
 		scvs7()
 		srhcv()
-		sconcud()	// 2006 and later CVI.
 
 STATIC FNS:	TempCorrection()
 
-DESCRIPTION:  	Most of these functions are for the original CVI.  concud
-		variable is derived for the new CVI, flown VOCALS and forward.
+DESCRIPTION:  	Most of these functions are for the original CVI, pre-2006.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2011
+COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2017
 -------------------------------------------------------------------------
 */
 
@@ -45,12 +43,6 @@ static NR_TYPE  CVTBL = 7.62,
                 CVOFF = 0.0,
                 CVDIV = 1.0;
 
-/* This constant was 1.2 for the VOCALS project.  Subsequent projects (PREDICT
- * and ICE-T) that have the pressure gauge that Darrin Toohey installed should
- * pass in two more variables and perform the correction that does not use this
- * value (see below).  cjw, Aug 2011
- */
-static const NR_TYPE concud_fudge_factor = 1.2;
 
 /* -------------------------------------------------------------------- */
 void cviInit(var_base *varp)
@@ -89,31 +81,6 @@ void cviInit(var_base *varp)
     CVDIV = tmp[0];
 
 }  /* END CVIINIT */
-
-/* -------------------------------------------------------------------- */
-void sconcud(DERTBL *varp)
-{
-  // Routine for VOCALS and subsequent projects.
-
-  NR_TYPE cnts = GetSample(varp, 0);
-  NR_TYPE cvcfact = GetSample(varp, 1);
-  NR_TYPE flow = GetSample(varp, 2);
-
-  NR_TYPE concud = cnts / (flow * cvcfact);
-
-  if (varp->ndep == 5)
-  {
-    NR_TYPE cvpcn = GetSample(varp, 3);
-    NR_TYPE upress = GetSample(varp, 4);
-
-    concud *= (cvpcn / upress);
-  }
-  else
-    concud *= concud_fudge_factor;	// VOCALS. cjw, Aug2011
-  
-  PutSample(varp, concud);
-
-}  /* END SCONCUD */
 
 /* -------------------------------------------------------------------- */
 void scvl(DERTBL *varp)

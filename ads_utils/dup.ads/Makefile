@@ -6,7 +6,7 @@ BINDIR=		${JLOCAL}/bin
 INCLUDES=	-I${JLOCAL}/include
 CXXFLAGS=	${INCLUDES}
 
-LIBS=		-L${JLOCAL}/lib -lraf++ -lz
+LIBS=		-L${JLOCAL}/lib -lraf -lz
 
 SRCS=	dup.ads.cc
 OBJS=	dup.ads.o

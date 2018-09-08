@@ -4,15 +4,7 @@ OBJECT NAME:	getsn.c
 
 ENTRY POINTS:	GetSerialNumber()
 
-DESCRIPTION:	
-
-INPUT:		char *var, char *result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	HAPI_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routine to return probe/instrument serial number.
 
 NOTE:		This proc is assuming that all rate fields are located
 		in the same position in all structs.  If this assumption

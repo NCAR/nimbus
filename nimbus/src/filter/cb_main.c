@@ -68,8 +68,6 @@ extern VDBFile  *vardb;
 static time_t	startWALL, finishWALL;
 static clock_t	startCPU, finishCPU;
 
-extern size_t	nDefaults;
-extern DEFAULT	*Defaults[];
 
 
 void	CloseSQL(), ProcessFlightDate();
@@ -90,18 +88,25 @@ void	InitAsyncModule(char fileName[]), RealTimeLoop(),
 /* -------------------------------------------------------------------- */
 void CancelSetup(Widget w, XtPointer client, XtPointer call)
 {
-  size_t	i;
+  void FreeDefaults();
 
   CloseADSfile();
-
-  for (i = 0; i < raw.size(); ++i)
+/*
+ * Causes a "double free or corruption" error that I have not been able to
+ * trace.
+  for (int i = 0; i < raw.size(); ++i)
+  {
     delete raw[i];
+    raw[i] = 0;
+  }
 
-  for (i = 0; i < derived.size(); ++i)
+  for (int i = 0; i < derived.size(); ++i)
+  {
     delete derived[i];
-
-  for (i = 0; i < nDefaults; ++i)
-    delete Defaults[i];
+    derived[i] = 0;
+  }
+*/
+  FreeDefaults();
 
   FreeDataArrays();
   ReleaseFlightHeader();
@@ -119,6 +124,7 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
   XtSetSensitive(outputFileText, true);
 
   delete vardb;
+  vardb = 0;
   ResetProbeList();
   Initialize();
 
@@ -744,7 +750,7 @@ void Quit(Widget w, XtPointer client, XtPointer call)
     psql->closeSQL();
 
   CloseRemoveLogFile();
-  ShutdownSyncServer();
+  CancelSetup(NULL, NULL, NULL);
   exit(0);
 }
 
@@ -997,6 +1003,9 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 {
   FILE	*fp;
 
+  extern size_t	nDefaults;
+  extern DEFAULT	*Defaults[];
+
   if ((fp = popen("lpr", "w")) == NULL)
     {
     HandleError("PrintList: can't open pipe to 'lpr'");
@@ -1204,7 +1213,7 @@ void QueryOutputFile(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void sighandler(int s)
 {
-  printf("SigHandler: signal=%s cleaning up netCDF file.\n",strsignal(s));
+  fprintf(stderr, "SigHandler: signal=%s cleaning up netCDF file.\n",strsignal(s));
   Quit(NULL, NULL, NULL);
 
 }	/* END SIGHANDLER */

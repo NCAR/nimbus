@@ -1,6 +1,0 @@
-if=/home/data/135rf01.nc
-of=/home/data/cjw.asc
-ti=18:00:00-19:30:00
-var=WS
-var=BDIFR
-var=ADIFR

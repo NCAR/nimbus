@@ -38,6 +38,10 @@ NR_TYPE	(*pcorPSFv2)(NR_TYPE, NR_TYPE, NR_TYPE), (*pcorQCFv2)(NR_TYPE, NR_TYPE, 
 	(*pcorPSFDv2)(NR_TYPE, NR_TYPE, NR_TYPE), (*pcorQCRv2)(NR_TYPE, NR_TYPE, NR_TYPE),
 	(*pcorQCFRv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
+// Above functions, but for new pitot-static mounted in the bird strike zone on the GV.
+NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE), 
+        (*pcorQCTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
+
 
 // Aircraft specific pcor (pressure correction).
 //  Letter designation is for location; w=wing, b=boom, r=radome, f=fuselage.
@@ -53,7 +57,8 @@ NR_TYPE	pcorw8(NR_TYPE), pcorf8(NR_TYPE),
 // GV
 	pcorr5(NR_TYPE),pcorf5(NR_TYPE), pcorq5(NR_TYPE), pcorr5_2(NR_TYPE, NR_TYPE, NR_TYPE),
 	pcorf5_2(NR_TYPE, NR_TYPE, NR_TYPE), pcorq5_2(NR_TYPE, NR_TYPE, NR_TYPE),
-	pcorf5v2(NR_TYPE, NR_TYPE, NR_TYPE);
+	pcorf5v2(NR_TYPE, NR_TYPE, NR_TYPE), 
+	pcortf5(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
 
 /* reference airspeed on J-W liquid water content converted from MPH
  * to m/s
@@ -221,6 +226,8 @@ void InitAircraftDependencies()
         pcorQCFv2 = pcorf5v2;
         pcorQCRv2 = pcorf5v2;
         pcorPSFv2 = pcorf5v2;
+        pcorPSTF = pcortf5;
+        pcorQCTF = pcortf5;
 /*
       }
       else
@@ -390,6 +397,37 @@ NR_TYPE pcorf5v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)
   return deltaP;
 }
 
+// --- Friesen August 2016, for new pitot-static on GV
+// Working to determine if want to use Mach # calculated from raw Pm/Qm from new 
+// pitot (calculated as M below), or Mach # calculated from corrected Pm/Qm from 
+// old pitot (MACHF). Consequently, this function can do either. It pulls in 
+// MACHF as M (assuming MACHF is defined in DependsTable), and will overwrite it
+// with M from new pitot if M is uncommented below.
+NR_TYPE pcortf5(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack, NR_TYPE SSlip, NR_TYPE M)
+{
+  //static double a[] = { 0.0178842, -0.0724505, 0.17956, -0.00287264, 0.000997074 }; // Aug 2016
+  //static double a[] = { 0.0271177, -0.0323388, -0.0328141, 0.335708, -0.00357207, 0.00128762 }; // Oct 20, 2017
+  static double a[] = { 0.0305835, 0.0340565, -0.0610611, 0.286168, -0.00359514}; // Dec 27, 2017
+
+  //NR_TYPE M;
+  NR_TYPE deltaP;
+  if (Qm < 0.01) Qm = 0.01;
+
+  // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
+  if (isnan(Attack)) Attack = 3.0;
+
+  // Uncomment this M calculation to overwrite MACH being dragged in and replace
+  // it with MACH calculated from Pm/Qm being dragged in.
+  //M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  //deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * M*M*M + a[3] * Attack + a[4] * SSlip); // Aug 2016
+  //deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * pow(Qm/Pm,0.5) + a[3] * pow(Qm/Pm,1.5) + a[4] * Attack + a[5] * SSlip); // Oct 20, 2017
+  deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * pow(Qm/Pm,0.5) + a[3] * pow(Qm/Pm,1.5) + a[4] * Attack); // Dec 27, 2017
+
+  // Taper if Qm is too small (take-off / landing).
+  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+
+  return deltaP;
+}
 
 /* C130 --------------------------------------------------------------- */
 /*

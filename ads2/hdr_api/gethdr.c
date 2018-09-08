@@ -2,23 +2,11 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	gethdr.c
 
-ENTRY POINTS:	GetHeaderString()
-		GetHeaderLong()
-		GetADStype()
-		
-
-DESCRIPTION:	These two procedures are called by the macros:
+DESCRIPTION:	hdr_api routines to return project level information.
+		These two procedures are called by the macros:
 		GetVersion()
 		GetProjectNumber()
 		etc. for all (struct Fl) values.
-
-INPUT:		char **result, value
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	none
-
-REFERENCED BY:	Macros in tape.h
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------

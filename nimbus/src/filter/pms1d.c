@@ -73,7 +73,7 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
     if (strstr(raw[i]->name, location))
     {
       raw[i]->SerialNumber	= raw[raw_indx]->SerialNumber;
-      raw[i]->ProbeType	= raw[raw_indx]->ProbeType;
+      raw[i]->ProbeType		= raw[raw_indx]->ProbeType;
     }
   for (size_t i = 0; i < derived.size(); ++i)
     if (strstr(derived[i]->name, location))
@@ -271,7 +271,8 @@ void PMS1D_SetupForADS3()
   }
   else
   if (cfg.ProjectName().compare("HIPPO-3") == 0 ||
-      cfg.ProjectName().compare("HIPPO-4") == 0)
+      cfg.ProjectName().compare("HIPPO-4") == 0 ||
+      cfg.ProjectName().compare("HIPPO-5") == 0)
   {
     setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
@@ -388,8 +389,45 @@ void PMS1D_SetupForADS3()
   else
   if (cfg.ProjectName().compare("ORCAS") == 0)
   {
-    setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+    if (cfg.FlightNumber().compare(0, 4, "ff01") == 0 ||
+        cfg.FlightNumber().compare(0, 4, "ff02") == 0 ||
+        cfg.FlightNumber().compare(0, 2, "tf") == 0)
+      setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    else
+      setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+  }
+  else
+  if (cfg.ProjectName().compare("ARISTO2016") == 0)
+  {
+    setSerialNumberAndProbeType("AUHSAS_LWI", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
+    setSerialNumberAndProbeType("AUHSAS_CAB", "UHSAS011", PROBE_PMS1D | PROBE_PCASP);	// Univ Wyoming
+    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+    setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+  }
+  else
+  if (cfg.ProjectName().compare("ARISTO2017") == 0)
+  {
+    setSerialNumberAndProbeType("ACDP_RWIO", "CDP016", PROBE_PMS1D | PROBE_CDP);
+    setSerialNumberAndProbeType("ACDP_RWII", "CDP058", PROBE_PMS1D | PROBE_CDP);
+    setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+  }
+  else
+  if (cfg.ProjectName().compare("SOCRATES") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("AUHSAS_LWII", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
+    setSerialNumberAndProbeType("AUHSAS_CVIU", "UHSAS015", PROBE_PMS1D | PROBE_PCASP);
+    setSerialNumberAndProbeType("APIP_RWII", "PIP011", PROBE_PMS2D | PROBE_2DP);
+  }
+  else
+  if (cfg.ProjectName().compare("WECAN") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC_LPO", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("AUHSAS_RPO", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
+    setSerialNumberAndProbeType("AUHSAS_CVIU", "UHSAS015", PROBE_PMS1D | PROBE_PCASP);
   }
 #endif
 }
@@ -515,7 +553,7 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
     ncattput(ncid, cvarid, "HistogramNote", NC_CHAR, 48, "Zeroth data bin is an unused legacy placeholder.");
     }
 
-    if (varp->ProbeType & PROBE_PMS2D)
+    if ((varp->ProbeType & PROBE_PMS2D))
     {
       if (varp->Length < 64)
       {
@@ -652,7 +690,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
   }
 
 
-  if (rp->ProbeType & PROBE_260X || strstr(rp->name, "2D"))
+  if (rp->ProbeType & PROBE_260X || strstr(rp->name, "2D") || strstr(rp->name, "PIP"))
     nBins = 64;
   else
   if (rp->ProbeType & PROBE_HVPS)
@@ -689,15 +727,36 @@ static int getCellSizes(const var_base * rp, float cellSize[])
 }	/* GETCELLSIZES */
 
 /* -------------------------------------------------------------------- */
-void setProbeCount(const char * loc, int probeNum)
+void setProbeCount(const char *loc, int probeNum)
 {
+  const char *underscore = strchr(loc, '_');
+  char target1[64];	// location
+  char target2[64];	// optional, used for 1DC vs 2DC in same location.
+
+  strcpy(target1, loc);
+  memset(target2, 0, 64);
+  if (underscore)
+    strcpy(target1, underscore);	// grab just location
+
+  if (underscore && loc[0] != '_')	// we have more than just location (1DC/2DC)
+  {
+    strcpy(target2, loc);
+    *(strchr(target2, '_')) = 0;
+  }
+
   for (size_t i = 0; i < raw.size(); ++i)
-    if (strstr(raw[i]->name, loc))
-      raw[i]->ProbeCount = probeNum;
+    if (strstr(raw[i]->name, target1))
+    {
+      if (strlen(target2) == 0 || (strlen(target2) && strstr(raw[i]->name, target2)))
+        raw[i]->ProbeCount = probeNum;
+    }
 
   for (size_t i = 0; i < derived.size(); ++i)
-    if (strstr(derived[i]->name, loc))
-      derived[i]->ProbeCount = probeNum;
+    if (strstr(derived[i]->name, target1))
+    {
+      if (strlen(target2) == 0 || (strlen(target2) && strstr(derived[i]->name, target2)))
+        derived[i]->ProbeCount = probeNum;
+    }
 }
 
 /* -------------------------------------------------------------------- */

@@ -1,0 +1,43 @@
+[C]=read_applanix_vnav2('DWAVrf26_vnav_Mission.out','RF26_ASCII.txt');
+[onehertztest]=applanix_frequncyconvert(C);
+ncid = netcdf.open('DEEPWAVErf26.nc','NC_WRITE');
+time_dim_ID=netcdf.inqDimID(ncid,'Time');
+[dummy, time_dim_len] = netcdf.inqDim(ncid, time_dim_ID);
+netcdf.reDef(ncid);
+%Latitude
+LAT_APP_ID=netcdf.defVar(ncid,'LAT_APP','float',time_dim_ID);
+%netcdf.putAtt(ncid,RSTBC_ID,'_FillValue',-32767.0);
+netcdf.putAtt(ncid,LAT_APP_ID,'units','deg');
+netcdf.putAtt(ncid,LAT_APP_ID,'long_name','Latitude - Applanix');
+netcdf.putAtt(ncid, LAT_APP_ID,'SampledRate',10);
+%longitude
+LON_APP_ID=netcdf.defVar(ncid,'LON_APP','float',time_dim_ID);
+%netcdf.putAtt(ncid,RSTBC_ID,'_FillValue',-32767.0);
+netcdf.putAtt(ncid,LON_APP_ID,'units','deg');
+netcdf.putAtt(ncid,LON_APP_ID,'long_name','Longitude - Applanix');
+netcdf.putAtt(ncid, LON_APP_ID,'SampledRate',10);
+%ellipsoid height
+HT_APP_ID=netcdf.defVar(ncid,'HT_APP','float',time_dim_ID);
+%netcdf.putAtt(ncid,RSTBC_ID,'_FillValue',-32767.0);
+netcdf.putAtt(ncid,HT_APP_ID,'units','meters_WGS84');
+netcdf.putAtt(ncid,HT_APP_ID,'long_name','Ellipsoid Height - Applanix');
+netcdf.putAtt(ncid, HT_APP_ID,'SampledRate',10);
+netcdf.endDef(ncid);
+%x velocity
+XVEL_APP_ID=netcdf.defVar(ncid,'XVEL_APP','float',time_dim_ID);
+%netcdf.putAtt(ncid,RSTBC_ID,'_FillValue',-32767.0);
+netcdf.putAtt(ncid,XVEL_APP_ID,'units','m/sec');
+netcdf.putAtt(ncid,XVEL_APP_ID,'long_name','X velocity - Applanix');
+netcdf.putAtt(ncid, XVEL_APP_ID,'SampledRate',10);
+%y velocity
+YVEL_APP_ID=netcdf.defVar(ncid,'YVEL_APP','float',time_dim_ID);
+%netcdf.putAtt(ncid,RSTBC_ID,'_FillValue',-32767.0);
+netcdf.putAtt(ncid,YVEL_APP_ID,'units','m/sec');
+netcdf.putAtt(ncid,YVEL_APP_ID,'long_name','Y Velocity - Applanix');
+netcdf.putAtt(ncid, YVEL_APP_ID,'SampledRate',10);
+%z velocity
+ZVEL_APP_ID=netcdf.defVar(ncid,'ZVEL_APP','float',time_dim_ID);
+%netcdf.putAtt(ncid,RSTBC_ID,'_FillValue',-32767.0);
+netcdf.putAtt(ncid,ZVEL_APP_ID,'units','m/sec');
+netcdf.putAtt(ncid,ZVEL_APP_ID,'long_name','Z Velocity - Applanix');
+netcdf.putAtt(ncid, ZVEL_APP_ID,'SampledRate',10);

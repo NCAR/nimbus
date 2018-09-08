@@ -4,15 +4,7 @@ OBJECT NAME:	getres.c
 
 ENTRY POINTS:	GetResolution()
 
-DESCRIPTION:	
-
-INPUT:		char *var, short *result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routine to return PMS2D probe resolution.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------

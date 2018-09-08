@@ -2,17 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	gethskp.c
 
-ENTRY POINTS:	GetHouseKeepingNames()
-
-DESCRIPTION:	
-
-INPUT:		char *var, char **result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routine to return PMS houskeeping variable names.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------

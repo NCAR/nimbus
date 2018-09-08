@@ -44,7 +44,7 @@ class AircraftTrack : public AircraftTrackT<double>
 public:
   typedef std::string string;
 
-  static const float missing_value = -32767.0;
+  static const float missing_value;
 
   static
   std::string

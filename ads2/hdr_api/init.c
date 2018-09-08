@@ -7,13 +7,7 @@ FULL NAME:	Initialize a tape/file
 ENTRY POINTS:	InitFlightHeader()
 		ReleaseFlightHeader()
 
-TYPE:		User API
-
-DESCRIPTION:	
-
-REFERENCES:	none outside this module.
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api intialization rouintes.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
@@ -413,5 +407,68 @@ static int set_var_name(char *p, int i, int type)
   return(OK);
 
 }	/* END SETVARNAME */
+
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:	lookup.c
+
+ENTRY POINTS:	_lookupvar()
+
+DESCRIPTION:	hdr_api internal routine for variable name lookup.
+
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+-------------------------------------------------------------------------
+*/
+
+#include "hdr_api.h"
+
+
+/* -------------------------------------------------------------------- */
+int HAPI_lookupvar(const char vn[], const int32_t valid_vars)
+{
+  int	i;
+
+  if (!HAPI_HeaderInitialized)
+    {
+    fprintf(stderr, "hdr_api: not initialized.\n");
+    taperr = NOINIT;
+    return(ERR);
+    }
+
+
+  /* If it is not the current var then do a linear search
+  */
+  if (HAPI_var_name[HAPI_name_ptr] == NULL ||
+      strcmp(vn, HAPI_var_name[HAPI_name_ptr]) != 0)
+    {
+    for (i = 0; HAPI_var_name[i]; ++i)
+      if (strcmp(HAPI_var_name[i], vn) == 0)
+        break;
+    }
+  else
+    i = HAPI_name_ptr;
+
+
+  /* If we have a match && it is of a desired type, then
+  * return the var, else error
+  */
+  if (HAPI_var_name[i])
+    {
+    if (HAPI_var[i].type & valid_vars)
+      return(i);
+    else
+      {
+      taperr = BADTYPE;
+      return(ERR);
+      }
+    }
+  else
+    {
+/*    fprintf(stderr, "hdr_api: %s not found.\n", vn); */
+    taperr = BADVAR;
+    return(ERR);
+    }
+
+}	/* END LOOKUPVAR */
 
 /* END INIT.C */

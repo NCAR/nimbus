@@ -6,6 +6,8 @@
 #
 #	Name		Constructor	xlate fn	compute fn
 # ----------------------------------------------------------------------------
+# SOCRATES
+	"CONC_PHIPS",	NULL,		NULL,		sphips,
 # CSET
 	"GGALTF",	NULL,		NULL,		sggaltf,
 #
@@ -13,6 +15,9 @@
 #
 	"CNFLOW",	NULL,           NULL,		scFlowDW,
 	"CNCONC",	NULL,           NULL,		sconcnDW,
+	"SCANBT",	(void(*)(void*))mtpInit,	NULL,	scal,
+        "TEMPC",	NULL,		NULL,		sretriever,
+
 #
 # NOMADSS
 #
@@ -240,6 +245,7 @@
 	"CONC2DP",	NULL,		NULL,		sconc2,
 	"CONC1DC",	NULL,		NULL,		sconc2,
 	"CONC1DP",	NULL,		NULL,		sconc2,
+	"CONCPIP",	NULL,		NULL,		sconc2,
 	"CONCHV",	NULL,		NULL,		sconc2,
 
 # PMS DBAR
@@ -256,6 +262,7 @@
 	"DBAR2DP",	NULL,		NULL,		sdbar2,
 	"DBAR1DC",	NULL,		NULL,		sdbar2,
 	"DBAR1DP",	NULL,		NULL,		sdbar2,
+	"DBARPIP",	NULL,		NULL,		sdbar2,
 	"DBARHV",	NULL,		NULL,		sdbar2,
 
 # PMS DISP
@@ -271,6 +278,7 @@
 	"DISP2DP",	NULL,		NULL,		sdisp2,
 	"DISP1DC",	NULL,		NULL,		sdisp2,
 	"DISP1DP",	NULL,		NULL,		sdisp2,
+	"DISPPIP",	NULL,		NULL,		sdisp2,
 	"DISPHV",	NULL,		NULL,		sdisp2,
 
 # PMS Liquid Water Content
@@ -283,6 +291,7 @@
 	"PLWC2DP",	NULL,		NULL,		splwc2,
 	"PLWC1DC",	NULL,		NULL,		splwc2,
 	"PLWC1DP",	NULL,		NULL,		splwc2,
+	"PLWCPIP",	NULL,		NULL,		splwc2,
 	"PLWCHV",	NULL,		NULL,		splwc2,
 
 # PMS Effective Radius
@@ -322,8 +331,9 @@
 	"DBZD",		NULL,		NULL,		sdbzd,
 	"DBZF",		NULL,		NULL,		sdbzf,
 	"DBZ6",		NULL,		NULL,		sdbz6,
-	"DBZ1DP",	NULL,		NULL,		sdbz2,
 	"DBZ1DC",	NULL,		NULL,		sdbz2,
+	"DBZ1DP",	NULL,		NULL,		sdbz2,
+	"DBZPIP",	NULL,		NULL,		sdbz2,
 	"DBZHV",	NULL,		NULL,		sdbz2,
 	"DBZ2DP",	NULL,		NULL,		sdbz2,
 	"DBZ2DC",	NULL,		NULL,		sdbz2,
@@ -588,6 +598,10 @@
 	"GGVEW",	NULL,           xlggvew,	NULL,
 	"GGVNS",	NULL,           xlggvns,	NULL,
 #
+# Novatel GGVSPD geo-loop.
+#
+	"WPG",		NULL,		NULL,		swpg,
+#
 #	C Midgets
 #
 	"CLAT",		NULL,		xlclat,		NULL,
@@ -656,6 +670,7 @@
 #	Chemstry vars.
 #
 	"CO2C",		NULL,		NULL,		sco2c,
+	"FO3C",		NULL,		NULL,		sfo3c,
 	"XCO2C",	(void(*)(void*))LICORinit,	NULL,		sxco2c,
 	"XLH2OC",	NULL,		NULL,		sxlh2oc,
 	"XMRLI",	NULL,		NULL,		sxmrli,
@@ -788,7 +803,7 @@
 	"AKDF",		NULL,		NULL,		sakdf,
 	"AKRD",		(void(*)(void*))initAKRD,	NULL,		sakrd,
 	"AQRATIO",	NULL,		NULL,		saqratio,
-	"ATTACK",	NULL,		NULL,		sRefer,
+	"ATTACK",	NULL,		NULL,		sReferAttack,
 	"ALTX",		NULL,		NULL,		sRefer,
 	"CMRCR",	NULL,		NULL,		scmrcr,
 	"CONCCN",	NULL,		NULL,		sconccn,
@@ -896,12 +911,14 @@
 	"PALT",		NULL,		NULL,		spalt,
 	"PALTF",	NULL,		NULL,		meters2feet,
 	"GALTF",	NULL,		NULL,		meters2feet,
+	"GEOPTH",	NULL,		NULL,		sGeopot2,
 	"PSBC",		NULL,		NULL,		spsbc,
 	"PSFC",		NULL,		NULL,		spsfc,
 	"PSFD",		NULL,		xlpsfd,		NULL,
 	"PSFD1",	NULL,		xlpsfd_ADS2,	NULL,
 	"PSFRD",	NULL,		xlxpsfd,	NULL,
 	"PSFDC",	NULL,		NULL,		spsfdc,
+	"PSTFC",	NULL,		NULL,		spstfc,
 	"XPSFDC",	NULL,		NULL,		sxpsfdc,
 	"PSURF",	(void(*)(void*))initPsurf,	NULL,		spsurf,
 	"TSURF",	(void(*)(void*))initTsurf,	NULL,		stsurf,
@@ -912,6 +929,7 @@
 	"QCFC",		NULL,		NULL,		sqcfc,
 	"QCRC",		NULL,		NULL,		sqcrc,
 	"QCFRC",	NULL,		NULL,		sqcfrc,
+	"QCTFC",	NULL,		NULL,		sqctfc,
 	"QCWC",		NULL,		NULL,		sqcwc,
 	"QCX",		NULL,		NULL,		sRefer,
 	"QCXC",		NULL,		NULL,		sRefer,
@@ -949,6 +967,7 @@
 #
 	"TASB",		NULL,		NULL,		stas,
 	"TASF",		NULL,		NULL,		stas,
+	"TASTF",	NULL,		NULL,		stas,
 	"TASR",		NULL,		NULL,		stas,
 	"TASFR",	NULL,		NULL,		stas,
 	"TASW",		NULL,		NULL,		stas,
@@ -959,6 +978,7 @@
 	"CAS",		NULL,		NULL,		sias,
 	"MACHB",	NULL,		NULL,		smach,
 	"MACHF",	NULL,		NULL,		smach,
+	"MACHTF",	NULL,		NULL,		smach,
 	"MACHR",	NULL,		NULL,		smach,
 	"MACHW",	NULL,		NULL,		smach,
 	"MACHFR",	NULL,		NULL,		smach,
@@ -991,6 +1011,12 @@
 	"XCVS7",	NULL,		NULL,		scvs7,
 	"XRHCV",	NULL,		NULL,		srhcv,
 	"XFLOWC",	NULL,		NULL,		scFlow,
+# Second generation CVI, 2006 and later.
+	"CVRHO",	(void(*)(void*))cvi2Init,	NULL,		scvrho,
+	"CVCWCC",	NULL,		NULL,		scvcwcc,
+	"CVCFACTC",	NULL,		NULL,		scvcfactc,
+	"CVIFLAG",	NULL,		NULL,		scviflag,
+	"CVCFACTTDL",	NULL,		NULL,		scvcfacttdl,
 #
 #	PMS 2d Probes
 #
@@ -1005,6 +1031,7 @@
 	"CHVPS",	(void(*)(void*))sTwodInitH,	NULL,		sHVPS,
 	"C2DC",		(void(*)(void*))sTwodInit,	NULL,		sTwoD,
 	"C2DP",		(void(*)(void*))sTwodInit,	NULL,		sTwoD,
+	"CPIP",		(void(*)(void*))sTwodInit,	NULL,		sTwoD,
 #	"C2DG",		NULL,		NULL,		sTwoDG,
 	"2D-C",		NULL,		xlAsync,	NULL,
 	"2D-P",		NULL,		xlAsync,	NULL,

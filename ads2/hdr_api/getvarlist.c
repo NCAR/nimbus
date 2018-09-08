@@ -2,19 +2,8 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	getvarlist.c
 
-FULL NAME:	Get Variable List
-
-ENTRY POINTS:	GetVariableList()
-
-DESCRIPTION:	
-
-INPUT:		none
-
-OUTPUT:		char	**to list of var names
-
-REFERENCES:	none
-
-REFERENCED BY:	User Application Program
+DESCRIPTION:	hdr_api routine to return list of variables in the header.
+		hdr_api rountes for looping through block/instrument list.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
@@ -35,5 +24,34 @@ char **GetVariableList()
   return(HAPI_var_name);
 
 }	/* END GETVARIABLELIST */
+
+/* -------------------------------------------------------------------- */
+char *GetFirst()
+{
+  if (!HAPI_HeaderInitialized)
+    {
+    taperr = NOINIT;
+    return((char *)NULL);
+    }
+
+  return(HAPI_var_name[(HAPI_name_ptr = 0)]);
+
+}	/* END GETFIRST */
+
+/* -------------------------------------------------------------------- */
+char *GetNext()
+{
+  if (!HAPI_HeaderInitialized)
+    {
+    taperr = NOINIT;
+    return((char *)NULL);
+    }
+
+  if (HAPI_var_name[HAPI_name_ptr])
+    return(HAPI_var_name[++HAPI_name_ptr]);
+  else
+    return((char *)NULL);
+
+}	/* END GETNEXT */
 
 /* END GETVARLIST.C */

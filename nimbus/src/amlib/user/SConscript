@@ -11,6 +11,7 @@ DYCOMS.c
 NOMADSS.c
 PASE.c
 RICO.c
+SOCRATES.c
 VOCALS.c
 
 atc.c
@@ -22,8 +23,10 @@ climet.c
 co2c.c
 conccn.c
 cvi.c
+cvi2.c
 efield.c
 flux.c
+fo3.c
 geopot.c
 gerber.c
 harp.c
@@ -32,6 +35,8 @@ lams.c
 licor.c
 licor_wyo.c
 masp.c
+mtp.c
+mtp_rcf.cc
 ndvi.c
 ophir3.c
 prcltrk1.c
@@ -49,7 +54,7 @@ ultrafine.c
 uvhyg.c
 """)
 
-nclho = env.StaticObject('nclh.c', CCFLAGS=env['CCFLAGS']+['-Wno-missing-braces'])
+nclho = env.StaticObject('nclh.c', CCFLAGS=env['CCFLAGS']+env['CXXFLAGS']+['-Wno-missing-braces'])
 user = env.StaticLibrary('user' , sources + [nclho])
 
 def libuser(env):

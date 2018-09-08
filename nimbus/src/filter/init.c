@@ -25,8 +25,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 #include <nidas/core/NidasApp.h>
 
 using nidas::core::NidasApp;
-
-static void ReadBatchFile(const char *filename), usage();
+static void ReadBatchFile(const char *filename, Config::processingRate * rate);
+static void usage();
 
 void	Set_SetupFileName(char s[]);
 
@@ -36,7 +36,7 @@ void	RTinit_ADS2(), RTinit_ADS3();
 void Initialize()
 {
   int	pos;
-  char    *proj_dir;
+  char	*proj_dir;
 
   if ((proj_dir = (char *)getenv("PROJ_DIR")) == NULL)
     HandleFatalError("Environment variable PROJ_DIR not defined, this is fatal.");
@@ -94,6 +94,8 @@ void ProcessArgv(int argc, char **argv)
 {
   int	i;
   int length;
+  char	*p = 0;
+  Config::processingRate rate = Config::LowRate;
 
   cfg.SetInteractive(true);
   cfg.SetLoadProductionSetup(true);
@@ -120,9 +122,10 @@ void ProcessArgv(int argc, char **argv)
       case 'h':
         usage();
         break;
-      case 'b':
+
+      case 'b':	// Load batch file.
         cfg.SetInteractive(false);
-        ReadBatchFile(args[++i].c_str());
+        ReadBatchFile(args[++i].c_str(), &rate);
         break;
       case 'l':
 	length = atoi(args[++i].c_str());
@@ -136,14 +139,14 @@ void ProcessArgv(int argc, char **argv)
 	  exit(1);
 	}
         break;
-      case 'r':
+      case 'r':	// -r is for raw data, -rt is for real-time mode.
         if (nimbusIsAlreadyRunning())
 	{
 	  fprintf(stderr, "nimbus is already running in real-time mode, exiting.\n");
 	  sleep(5);
           exit(1);
 	}
-        cfg.SetProcessingRate(Config::SampleRate);
+        rate = Config::SampleRate;
         cfg.SetTimeShifting(false);
         cfg.SetDespiking(false);
         cfg.SetBlankoutVariables(false);
@@ -160,7 +163,8 @@ void ProcessArgv(int argc, char **argv)
           cfg.SetInertialShift(false);	// We want this in real-time.
         }
         break;
-      case 'x':
+
+      case 'x':	// Transmit UDP to ground, with optional interval.
         if (cfg.ProcessingMode() == Config::RealTime)
           cfg.SetTransmitToGround(true);
         else
@@ -169,6 +173,7 @@ void ProcessArgv(int argc, char **argv)
         if (i+1 < (int)args.size() && isdigit(args[i+1][0]))
           cfg.SetGroundFeedDataRate(atoi(args[++i].c_str()));
         break;
+
       case 'y':
 	cfg.SetEnableBroadcast(false);
 	cfg.SetWarnTimeLags(false);
@@ -176,16 +181,46 @@ void ProcessArgv(int argc, char **argv)
 	cfg.SetAnalyzeInterval(0);
 	cfg.SetVacuumInterval(0);
 	break;
+
       case 'n':
         cfg.SetLoadProductionSetup(false);
         break;
+
+      case 'p':	// Processing-rate.
+        if ( strncmp(args[i], "-pr", 3) )
+          usage();
+
+        // Support '=' or white-space between arg and value.
+        if ((p = strchr(args[i], '=')) != 0)
+          ++p;
+        else
+          if (i+1 < argc)
+            p = args[++i];
+
+        if (p == 0)
+          usage();
+
+        // Support 0/1/25 or s/l/h, sample-rate, low-rate, and high-rate respectively.
+        if (p[0] == '0' || p[0] == 's')
+          rate = Config::SampleRate;
+        else
+        if ((p[0] == '2' && p[1] == '5') || p[0] == 'h')
+          rate = Config::HighRate;
+
+        break;
+
       case 'q':
         cfg.SetQCenabled(true);
         break;
+
       default:
         fprintf(stderr, "Invalid option %s, ignoring.\n", arg.c_str());
     }
   }
+
+  // Set the rate here, so that command line option will over-ride batch file.
+  cfg.SetProcessingRate(rate);
+
 }	/* END PROCESSARGV */
 
 /* -------------------------------------------------------------------- */
@@ -213,7 +248,7 @@ static char *processFileName(const char *in, char *out, size_t out_len)
 }
 
 /* -------------------------------------------------------------------- */
-static void ReadBatchFile(const char *fileName)
+static void ReadBatchFile(const char *fileName, Config::processingRate *rate)
 {
   FILE	*fp;
   char	*p;
@@ -260,14 +295,14 @@ static void ReadBatchFile(const char *fileName)
       switch (value)
       {
         case Config::SampleRate:
-          cfg.SetProcessingRate(Config::SampleRate);
+          *rate = Config::SampleRate;
           break;
         case Config::LowRate:
-          cfg.SetProcessingRate(Config::LowRate);
+          *rate = Config::LowRate;
           break;
         case 25:
         case 50:
-          cfg.SetProcessingRate(Config::HighRate);
+          *rate = Config::HighRate;
           cfg.SetHRTRate((Config::hrtRate)value);
           break;
         default:
@@ -313,7 +348,7 @@ void GetDataDirectory(char buff[])
 /* -------------------------------------------------------------------- */
 static void usage()
 {
-  fprintf(stderr, "Usage: nimbus [-b batch_file] [[-r[t[3]] -x [rate]] [-n]\n\n\
+  fprintf(stderr, "Usage: nimbus [-b batch_file] [-r] [-rt3 [-x [rate]]] [-pr s|l|h] [-n]\n\n\
   -b:	Loads a batch_file instead of going interactive.  File options\n\
 	are (last 3 are optional):\n\
 	if=input_file.ads\n\
@@ -330,6 +365,8 @@ static void usage()
   -y:   When running real-time on old data: do not broadcast IWG1 packets,\n\
         do not warn about time lags, and disable periodic ANALYZE and VACUUM\n\
         on the database.\n\
+  -pr:	Set processing rate, options 0,1,25 or s,l,h for sample-rate, low-rate, or\n\
+        high-rate respectively.  Default is low-rate.\n\
   -n:	Do NOT load any existing production setup files.\n\
 \n\
 NIDAS-related options:\n");

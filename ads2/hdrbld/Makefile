@@ -10,16 +10,16 @@ MANDIR=		${JLOCAL}/man/manl
 DEFINES= -DSVR4
 INCLUDES= ${JLOCAL}/include -I/usr/openwin/include -I/usr/dt/include
 LIB_DIRS= -L${JLOCAL}/lib
-LIBS= -R /usr/dt/lib -lVarDB -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lpms -lraf -lhdr_api -lXm -lXt -lX11
+LIBS= -R /usr/dt/lib -lVarDB -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lraf -lhdr_api -lXm -lXt -lX11
 
 # Linux
 #
 INCLUDES= ${JLOCAL}/include -I/usr/X11R6/include
 DEFINES = 
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
-LIBS    = -lVarDB -lnetcdf -lhdf5 -lhdf5_hl -lpms -lraf -lhdr_api -lXm -lXp -lXt -lXext -lX11
+LIBS    = -lVarDB -lnetcdf -lhdf5 -lhdf5_hl -lraf -lhdr_api -lXm -lXp -lXt -lXext -lX11
 
-CFLAGS=		-g ${DEFINES} -I${INCLUDES}
+CFLAGS=		-g -Wno-write-strings ${DEFINES} -I${INCLUDES}
 
 SRCS=	Xwin.cc cb_ac.cc cb_file.cc cb_edit.cc cb_proj.cc dsm.cc\
 	fork.cc globals.cc hardwire.cc hdrbld.cc init.cc\

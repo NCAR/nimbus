@@ -1,0 +1,49 @@
+************************************************
+2018-06-13
+
+OEM628 / FlexPak6 receivers
+Receiver NKC14340018 (GV) update to firmware 6.730 pending
+Receiver NKC13250035 (C-130) updated to firmware 6.730
+Receiver NKC17060021 (spare) updated to firmware 6.730
+
+Changes to factory configuration:
+General changes:
+	antennapower off	# Shut off antenna power - power supplied by splitter.
+	sbascontrol enable	# Turn on sbas (WAAS) corrections.
+	assignlbandbeam auto	# Allow TerraStar satellite tracking
+
+Serial ports, change com1 and com2 to 115200 bps (no changes since previous notes)
+	serialconfig com1 115200
+	serialconfig com2 115200
+	
+Output logs:
+	(added undulation, datum, and setutcleapseconds so that changes in these will be reflected in the logs)
+	log com1 gpgga ontime 0.1
+	log com1 bestposa ontime 0.1
+	log com1 bestvela ontime 0.1
+	log com1 gprmc ontime 0.1
+	log icom1 gpgga ontime 0.1
+	log icom1 bestposa ontime 0.1
+	log icom1 bestvela ontime 0.1
+`	log icom1 gprmc ontime 0.1
+	log icom1 datuma onchanged
+	log icom1 undulationa onchanged
+	log icom1 setutcleapsecondsa onchanged
+	log icom2 rawephem onchanged
+	log icom2 rangecmpb ontime 0.1
+	log icom1 undulationa 3600
+	log icom2 datuma ontime 3600
+	log icom2 setutcleapseconds ontime 3600
+
+Ethernet setup: (Dropped .184. network, sending all UDP to acserver at .84.2)
+	ethconfig etha auto auto auto normal	# Powerup ethernet port.
+	ipconfig etha static "192.168.84.11" "255.255.255.0" "192.168.84.1"	# Assign static IP address.
+	icomconfig icom1 udp 192.168.84.2:30116 All	# Broadcast on port 30116 the ASCII logs.
+	icomconfig icom2 udp 192.168.84.2:30118 All	# Broadcast on port 30118 the RAW logs.
+	icomconfig icom3 TCP :30116 All	# TCP on icom3, port 30116 for command/control interface.
+
+View icom1 ascii data with nc -ul 192.168.84.2 30116
+
+************************************************
+
+

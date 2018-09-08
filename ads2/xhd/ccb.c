@@ -152,8 +152,8 @@ void HeaderDump(Widget w, XtPointer client, XtPointer call)
   int	i;
   char	*cvar;		/* Pointer to current variable	*/
   char	*cp[4];		/* Some generic Char Pointers	*/
-  long	l[8];		/* Long result storage			*/
-  short	s;		/* Short result storage			*/
+  int32_t l[8];		/* Long result storage			*/
+  int16_t s;		/* Short result storage			*/
   float	f, *fp;		/* Float result storage			*/
   bool	pinOut = FALSE;
   bool	pms1d = FALSE, pms2d = FALSE, async = FALSE;
@@ -205,16 +205,16 @@ void HeaderDump(Widget w, XtPointer client, XtPointer call)
 
     if (pinOut)
       {
-      sprintf(buffer, "%4ld %4lx %3ld  %4ld      ", l[0], l[1], l[2], l[3]);
+      sprintf(buffer, "%4d %4x %3d  %4d      ", l[0], l[1], l[2], l[3]);
       XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
       if (strcmp(cp[1], "A") == 0)
-        sprintf(buffer, "A%ld %ld-%ld\t%s\n",
+        sprintf(buffer, "A%d %d-%d\t%s\n",
                 (l[1] / 16) + 1,	((l[1] / 8) * 8) + 1,
                 ((l[1] / 8) * 8) + 8,	pin[l[1] % 8]);
       else
         if (strcmp(cp[1], "D") == 0)
-          sprintf(buffer, "D%ld\n", (l[1] / 8) + 1);
+          sprintf(buffer, "D%d\n", (l[1] / 8) + 1);
         else
           strcpy(buffer, "\n");
 
@@ -222,7 +222,7 @@ void HeaderDump(Widget w, XtPointer client, XtPointer call)
       continue;
       }
     else
-      sprintf(buffer, "%4ld %4lx %3ld  %4ld   %5ld %4ld %6ld %10.6f    ", l[0], l[1], l[2], l[3], l[4], l[5], l[6], f);
+      sprintf(buffer, "%4d %4x %3d  %4d   %5d %4d %6d %10.6f    ", l[0], l[1], l[2], l[3], l[4], l[5], l[6], f);
 
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
@@ -261,11 +261,11 @@ void HeaderDump(Widget w, XtPointer client, XtPointer call)
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetStart(cvar, &l[0]);
-    sprintf(buffer, "%8ld ", l[0]);
+    sprintf(buffer, "%8d ", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetLength(cvar, &l[0]);
-    sprintf(buffer, "\t%8ld\n", l[0]);
+    sprintf(buffer, "\t%8d\n", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
     }
   while ((cvar = GetNext()));
@@ -292,19 +292,19 @@ void HeaderDump(Widget w, XtPointer client, XtPointer call)
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetRate(cvar, &l[0]);
-    sprintf(buffer, "%4ld ", l[0]);
+    sprintf(buffer, "%4d ", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetStart(cvar, &l[0]);
-    sprintf(buffer, "%8ld ", l[0]);
+    sprintf(buffer, "%8d ", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetLength(cvar, &l[0]);
-    sprintf(buffer, "%7ld", l[0]);
+    sprintf(buffer, "%7d", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetInterfaceNumber(cvar, &l[0]);
-    sprintf(buffer, "%9ld", l[0]);
+    sprintf(buffer, "%9d", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     if (strncmp(cp[0], "PMS1V", 5) == 0)
@@ -312,7 +312,7 @@ void HeaderDump(Widget w, XtPointer client, XtPointer call)
     else
       l[0] = 0;
 
-    sprintf(buffer, "%10ld", l[0]);
+    sprintf(buffer, "%10d", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetSerialNumber(cvar, &cp[1]);
@@ -322,7 +322,7 @@ void HeaderDump(Widget w, XtPointer client, XtPointer call)
     if (strcmp(cp[0], "PMS1V3") == 0)
     {
       GetNumberBins(cvar, &l[0]);
-      sprintf(buffer, "  %ld", l[0]);
+      sprintf(buffer, "  %d", l[0]);
       XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
     }
 
@@ -356,11 +356,11 @@ void HeaderDump(Widget w, XtPointer client, XtPointer call)
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetLRLength(cvar, &l[0]);
-    sprintf(buffer, "%7ld ", l[0]);
+    sprintf(buffer, "%7d ", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetLRPPR(cvar, &l[0]);
-    sprintf(buffer, "%6ld ", l[0]);
+    sprintf(buffer, "%6d ", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetResolution(cvar, &s);
@@ -368,7 +368,7 @@ void HeaderDump(Widget w, XtPointer client, XtPointer call)
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetInterfaceChannel(cvar, &l[0]);
-    sprintf(buffer, "%10ld\n", l[0]);
+    sprintf(buffer, "%10d\n", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
     }
   while ((cvar = GetNext()));
@@ -396,11 +396,11 @@ void HeaderDump(Widget w, XtPointer client, XtPointer call)
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetLRLength(cvar, &l[0]);
-    sprintf(buffer, "%7ld ", l[0]);
+    sprintf(buffer, "%7d ", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
     GetLRPPR(cvar, &l[0]);
-    sprintf(buffer, "%6ld\n", l[0]);
+    sprintf(buffer, "%6d\n", l[0]);
     XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
     }
   while ((cvar = GetNext()));
@@ -471,7 +471,7 @@ void DumpPMS(Widget w, XtPointer client, XtPointer call)
 static void StartUp()
 {
   char	*cp[4];		/* Some generic Char Pointers	*/
-  long	l[8];		/* Long result storage			*/
+  int32_t l[8];		/* Long result storage			*/
   float	version;	/* Header Version #			*/
 
 
@@ -498,13 +498,13 @@ static void StartUp()
   XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
   GetNumberItems(&l[0]);
-  sprintf(buffer, " Number of data items: %6ld,", l[0]);
+  sprintf(buffer, " Number of data items: %6d,", l[0]);
   XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
   get_lrlen(&l[0]);
-  sprintf(buffer, " Logical record length: %6ld,", l[0]);
+  sprintf(buffer, " Logical record length: %6d,", l[0]);
   XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
   get_lrppr(&l[0]);
-  sprintf(buffer, " LR/PR: %6ld\n", l[0]);
+  sprintf(buffer, " LR/PR: %6d\n", l[0]);
   XmTextInsert(hdText, XmTextGetLastPosition(hdText), buffer);
 
 }	/* END STARTUP */

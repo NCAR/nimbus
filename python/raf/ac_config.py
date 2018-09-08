@@ -17,7 +17,7 @@ import sys
 # PostGreSQL
 import psycopg2
 
-instrument_path_base = '/mnt/r1/'
+instrument_path_base = '/var/r1/'
 www_path_base = '/var/www/html'
 
 ac_config_dict = {

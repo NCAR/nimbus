@@ -3,23 +3,41 @@
 #include <stdlib.h>
 
 #include "../rcf_set.h"
+#include "test.h"
 
 using namespace std;
 
-main () {
-  RetrievalCoefficientFileSet Bad_RCF_Set(std::string("/home/local/raf/instruments/mtp/src/mtpbin/"));
+/*
+ * This program is designed to test the RetrievalCoefficientFileSet class
+ * to assure that it's performing as expected.  The current output file:
+ * rcf_set_test.out has been vetted to assure that it has correct information
+ * resulting from the tests this program peforms.
+ *
+ * Usage:
+ * rcf_set_test > rcf_set_test.new
+ * diff rcf_set_test.out rcf_set_test.new
+ *
+ * There should be no differences found.  If differences are found then 
+ * something has affected the functionality of the class and should be 
+ * investigated and resolved.
+ */
 
-  float flightLevelsKm[]={14.5,13.0,12.0,11.0,10.0,9.0,8.0,7.0,6.0,5.0,4.0,3.0,2.0,1.0,0.0};
-  int numFlightLevels=15;
+void rcf_set_test(std::vector<float>,double,std::string,RetrievalCoefficientFileSet);
+
+main () {
+
+  /* Test initialization with a bogus directory */
+  RetrievalCoefficientFileSet Bad_RCF_Set(std::string("../"));
 
   // Test error handling for setting of flight levels
   cout << "Check that setting flight levels on uninitialized set fails. \n";
-  Bad_RCF_Set.setFlightLevelsKm(flightLevelsKm, numFlightLevels);
+  Bad_RCF_Set.setFlightLevelsKm(flightLevelsKmH, numFlightLevelsH);
 
-
-  RetrievalCoefficientFileSet RCF_Set(std::string("/home/local/raf/instruments/mtp/src/mtpbin/RCF/"));
+  /* Now initialize with a valid RCF directory */
+  RetrievalCoefficientFileSet RCF_Set(RCFdirH);
 
   std::vector<RetrievalCoefficientFile> RCFs = RCF_Set.getRCFVector();
+
   RCF_HDR Rcf_Hdr;
 
   for (std::vector<RetrievalCoefficientFile>::iterator
@@ -33,16 +51,61 @@ main () {
     cout << "First Smatrix2:"<<Rcf_Hdr.SmatrixN2[0][0][0]<<"\n";
   }
 
-  RCF_Set.setFlightLevelsKm(flightLevelsKm, numFlightLevels);
+  /* Set flight levels */
+  RCF_Set.setFlightLevelsKm(flightLevelsKmH, numFlightLevelsH);
 
-  // ob(1)-ob(30) values for scan at 152700 HIPPPO-5 flight date 20110809
-  float scanBTs[] = {210.9473, 213.5502, 215.0358, 216.6606, 217.8942,
-                     219.3694, 219.8724, 221.0873, 223.0352, 225.3323,
-                     214.6268, 214.9759, 216.3311, 217.3704, 218.7520, 
-                     219.3694, 219.3790, 219.9641, 220.7292, 222.0580,
-                     216.1557, 216.8213, 217.1181, 217.9902, 218.5839,
-                     219.3694, 219.3111, 219.1711, 219.6915, 220.3420};
+  /* Validate the function for selecting an RCF (template) from the set */
+  rcf_set_test(scanBTsH1,ACAltKmH1,FlightDescH1,RCF_Set);
 
+  rcf_set_test(scanBTsH3,ACAltKmH3,FlightDescH3,RCF_Set);
+}
+
+
+
+void rcf_set_test(std::vector<float> scanBTs,double ACAltKm,std::string FlightDesc,
+	RetrievalCoefficientFileSet RCF_Set) {
+
+  RC_Set_4Retrieval BestWtdRCSet;
+  std::vector<RC_Set_1FL> FlRcSetVec;
+  std::vector<int>::size_type sz;
+  RC_Set_1FL AvgWtSet;
+
+  // Validate that the function for selecting an RCF (template) from the
+  // set is still functioning properly.  Provide a couple of scan values 
+  // and verify that the correct RCF is selected.
   cout<<"About to call getBestWeightedRCSet\n";
-  RC_Set_1FL BestWtdRCSet = RCF_Set.getBestWeightedRCSet(scanBTs, 12.49947, 0.0);
+  BestWtdRCSet = RCF_Set.getBestWeightedRCSet(scanBTs, ACAltKm, 0.0);
+  RetrievalCoefficientFile TempRCF(RCF_Set.getRCFbyId(BestWtdRCSet.RCFId));
+
+  // Provide some verification that math going into RCF selection is correct
+  // by looking at the avg weighted flight level data.
+  if (TempRCF.isValid()) 
+  {
+    cout<<"BestWeightedRCSet is from file:"
+        <<BestWtdRCSet.RCFFileName.c_str()<<"\n";
+    FlRcSetVec = TempRCF.getFL_RC_Vec();
+    sz = FlRcSetVec.size();
+    std::cout <<"PAltKm:"<<ACAltKm<<" 1st level:"<<FlRcSetVec.begin()->Palt
+              <<"  last level:"<<FlRcSetVec.end()->Palt<<"  -1:"
+              <<FlRcSetVec[sz-2].Palt<<"\n";
+    AvgWtSet = TempRCF.getRCAvgWt(ACAltKm);
+    std::cout<<"Num,   Avg,  Rms\n";
+    for (int i = 0; i < NUM_BRT_TEMPS; i++) 
+    {
+      std::cout<<i<<", "<<AvgWtSet.MBTAvg[i]<<", "<<AvgWtSet.MBTRms[i]<<"\n";
+    }
+    cout<<" RCwt:\n";
+    for (int j = 0; j < NUM_RETR_LVLS; j++) {
+      for (int i = 0; i < NUM_BRT_TEMPS; i++) {
+        if (i%5 != 0) cout<<"["<<j<<"]["<<i<<"]:"<<AvgWtSet.RC[j][i];
+        else cout<<"["<<j<<"]["<<i<<"]:"<<AvgWtSet.RC[j][i]<<'\n';
+      }
+    }
+    cout <<"\n\n";
+  }
+
+  cout<<"Best Retrieval Coef for "<<FlightDesc<<":\n"
+      <<"  ID:"<<BestWtdRCSet.RCFId.c_str()<<"\n  "
+      <<"Filename:"<<BestWtdRCSet.RCFFileName.c_str()<<"\n  "
+      <<"SumLnProb:"<<BestWtdRCSet.SumLnProb<<"\n";
 }

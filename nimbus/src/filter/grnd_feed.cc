@@ -106,7 +106,7 @@ void GroundFeed::BroadcastData(nidas::core::dsm_time_t tt)
   // Only send data if ground connection is verified
   struct stat stFileInfo;
   std::string noconnFile("");
-  if ( !valid_ground_conn  ) {
+  if ( !valid_ground_conn ) {
     noconnFile += getenv("XMIT_DIR");
     noconnFile += "/noconn";
     valid_ground_conn = stat(noconnFile.c_str(), &stFileInfo) != 0;

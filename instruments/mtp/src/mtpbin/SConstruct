@@ -5,14 +5,17 @@ import eol_scons
 env = Environment(platform = 'posix',ENV= os.environ)
 env['JLOCAL'] = os.environ['JLOCAL']
 
-env.Append(CXXFLAGS='-g -Werror')
-env.Append(CPPPATH = '/opt/local/include')
-env.Append(LIBPATH = '/opt/local/lib')
+def MTP(env):
+    env.Append(CXXFLAGS='-g -Werror -std=c++11')
+    env.Append(CPPPATH = '/opt/local/include')
+    env.Append(LIBPATH = '/opt/local/lib')
+
+    return env
 
 tools = Split("""
 boost_filesystem
 """)
-env = Environment (tools = ['default', 'boost_filesystem'])
+env = Environment (tools = ['default', 'boost_filesystem','boost_system','doxygen',MTP])
 
 # To get netcdf libraries on the link command line with static linking,
 # they need to be added to the end of the link command.  Adding them to
@@ -58,8 +61,45 @@ if not conf.CheckLibWithHeader('netcdf_c++', 'netcdfcpp.h', 'C++'):
 
 # print env.Dump()
 
-env.Program(['tests/rcf_test.cc','rcf.cc'])
+sources = Split("""
+ calibrator.cc
+ rcf.cc
+ rcf_set.cc
+ retriever.cc
+""")
 
+headers = Split("""
+ calibrator.h
+ mtp.h
+ overview.h
+ rcf.h
+ rcf_set.h
+ rcf_structs.h
+ retriever.h
+""")
+
+env.Program(['tests/rcf_test.cc','rcf.cc'])
 env.Program(['tests/rcf_set_test.cc','rcf_set.cc','rcf.cc'])
+env.Program(['tests/retriever_test.cc','retriever.cc','rcf_set.cc','rcf.cc'])
+env.Program(['tests/calibrator_test.cc', 'calibrator.cc'])
 
 #Alias('install', env.Install('$JLOCAL/bin', 'nc_gap'))
+
+# Create Doxygen documentation
+doxref = env.Apidocs(sources + headers, DOXYFILE_DICT={'PROJECT_NAME':"MTP",'PROJECT_NUMBER':1.0})
+#Default(doxref)
+
+# Deploy Doxygen documentation
+variables = env.GlobalVariables()
+variables.Add('DOCUMENTATION_DIRECTORY',
+              "Installation path for doxygen-generated apidocs.",
+              '/net/www/raf/instruments/MTP')
+variables.Update(env)
+
+deploydox = env.Install(env.Dir("${DOCUMENTATION_DIRECTORY}"),
+                        env.Dir('#/apidocs'))
+
+# Rather than making deployment a default target, meaning the build fails
+# anywhere deploydir does not exist, give it an alias so it can be built
+# easily as 'scons deploydox'.
+env.Alias('deploydox', deploydox)

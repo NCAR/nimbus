@@ -5,15 +5,7 @@ OBJECT NAME:	getlocn.c
 ENTRY POINTS:	GetLocation()
 		GetDSMlocation()
 
-DESCRIPTION:	
-
-INPUT:		char *var, char **result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routines to return DSM or probe location.
 
 NOTE:		This proc is assuming that all rate fields are located
 		in the same position in all structs.  If this assumption

@@ -6,15 +6,7 @@ ENTRY POINTS:	GetReadAddr1()
 		GetReadAddr2()
 		GetWriteAddr()
 
-DESCRIPTION:	
-
-INPUT:		char *var, long *result
-
-OUTPUT:		OK/ERR
-
-REFERENCES:	_lookupvar()
-
-REFERENCED BY:	User Level Applications
+DESCRIPTION:	hdr_api routine to obtain address for DME.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
