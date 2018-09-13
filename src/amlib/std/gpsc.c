@@ -519,16 +519,16 @@ static NR_TYPE filter(double x, double zf[])
     firstTime[FeedBack] = false;
     }
 
-  xf =  (bfb[0] * x + bfb[1] * zf[1] + bfb[2]*zf[2] + bfb[3]*zf[3] 
-        - (bfa[1]*zf[4] + bfa[2]*zf[5] + bfa[3]*zf[6]));
+  xf =  (bfb[0] * x + bfb[1] * zf[0] + bfb[2]*zf[1] + bfb[3]*zf[2] 
+        - (bfa[1]*zf[3] + bfa[2]*zf[4] + bfa[3]*zf[5]));
 
   /* Store terms for the next call. */
-  zf[3] = zf[2];
   zf[2] = zf[1];
-  zf[1] = x;
-  zf[6] = zf[5];
+  zf[1] = zf[0];
+  zf[0] = x;
   zf[5] = zf[4];
-  zf[4] = xf;
+  zf[4] = zf[3];
+  zf[3] = xf;
 
   return(xf);
 
