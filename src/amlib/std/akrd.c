@@ -22,6 +22,8 @@ static int      c130_radome_ssn = 1;      // default to first radome.
 static std::vector<float> akrd_coeff;
 static std::vector<float> low, mid, high;	// Altitude specific coef's.
 
+static double filter(double, double *);
+static double zf[nFeedBackTypes][4][6];
 
 /* -------------------------------------------------------------------- */
 static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
@@ -50,6 +52,8 @@ static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
 void initAKRD(var_base *varp)
 {
   float *tmp;
+
+  memset((void *)zf, 0, sizeof(zf));
 
   if (strstr(varp->name, "_GP"))	// Don't do anything yet for GP.
     return;
@@ -183,5 +187,94 @@ void sakrd(DERTBL *varp)
   PutSample(varp, akrd);
 
 }    /* END SAKRD */
+
+/* -------------------------------------------------------------------- */
+void saky(DERTBL *varp)
+{
+  NR_TYPE qc, adif, AKY = 0.0;
+
+  adif	= GetSample(varp, 0);
+  qc	= GetSample(varp, 1);
+
+  static const double c1 = 21.481, d0 = 4.5253, d1 = 19.9332, d2 = -0.00196;
+
+  if (isnan(adif) || isnan(qc))
+  {
+    AKY = floatNAN;
+    qc = 0.1;
+  }
+
+  if (qc > 5.5)	// Avoid blow-ups on the ground.
+  {
+    double ratio = adif / qc;
+    double AQS = filter(ratio, zf[FeedBack][0]);
+    double QCFS = filter(qc, zf[FeedBack][1]);
+    double AQF = ratio - AQS;
+
+    AKY = d0 + d1 * AQS + d2 * QCFS + c1 * AQF;
+  }
+
+  PutSample(varp, AKY);
+}
+
+/* -------------------------------------------------------------------- */
+static double filter(double x, double zf[])
+{
+  double xf;
+  static double bfb[4];
+  static double bfa[4];
+  static bool   firstTime[nFeedBackTypes] = { true, true };
+
+  if (firstTime[FeedBack])
+    {
+    /* double   b1, b2, c, e, f; */
+    sprintf(buffer,"Processing rate = %d\n",cfg.ProcessingRate());
+    LogMessage(buffer);
+
+    if (FeedBack == HIGH_RATE_FEEDBACK)
+    {
+      /* TAU *= (float)cfg.ProcessingRate(); */
+      /* These constants were calculated with tau = 25sps*300 */
+      if (cfg.ProcessingRate() == 25) {
+        bfb[0] = 9.1831978905817848e-12;
+        bfb[1] = 2.7549593671745355e-11;
+        bfb[2] = 2.7549593671745355e-11;
+        bfb[3] = 9.1831978905817848e-12;
+        bfa[0] = 1.0;
+        bfa[1] = -2.99916224196516756;
+        bfa[2] =  2.99832483481284928;
+        bfa[3] = -0.99916259277421626;
+      } else {
+          sprintf(buffer,"Butterworth filter not implemented for processing rate %d. Edit gpsc.c and follow instructions for generating coefficients for this rate.\n",cfg.ProcessingRate());
+          LogMessage(buffer);
+      }
+    } else {
+      bfb[0] = 1.4205608170642102e-07;
+      bfb[1] = 4.2616824511926303e-07;
+      bfb[2] = 4.2616824511926303e-07;
+      bfb[3] = 1.4205608170642102e-07;
+      bfa[0] = 1.0;
+      bfa[1] = -2.97905614466460555;
+      bfa[2] =  2.95833103772366979;
+      bfa[3] = -0.97927375661041016;
+    }
+
+    firstTime[FeedBack] = false;
+    }
+
+  xf =  (bfb[0] * x + bfb[1] * zf[0] + bfb[2]*zf[1] + bfb[3]*zf[2]
+        - (bfa[1]*zf[3] + bfa[2]*zf[4] + bfa[3]*zf[5]));
+
+  /* Store terms for the next call. */
+  zf[2] = zf[1];
+  zf[1] = zf[0];
+  zf[0] = x;
+  zf[5] = zf[4];
+  zf[4] = zf[3];
+  zf[3] = xf;
+
+  return(xf);
+
+}       /* END FILTER */
 
 /* END AKRD.C */

@@ -801,6 +801,7 @@
 #	Others
 #
 	"AKDF",		NULL,		NULL,		sakdf,
+	"AKY",		NULL,		NULL,		saky,
 	"AKRD",		(void(*)(void*))initAKRD,	NULL,		sakrd,
 	"AQRATIO",	NULL,		NULL,		saqratio,
 	"ATTACK",	NULL,		NULL,		sReferAttack,
@@ -1017,6 +1018,7 @@
 	"CVCFACTC",	NULL,		NULL,		scvcfactc,
 	"CVIFLAG",	NULL,		NULL,		scviflag,
 	"CVCFACTTDL",	NULL,		NULL,		scvcfacttdl,
+	"UFLAG_CVIU",	NULL,		NULL,		scviuflag,
 #
 #	PMS 2d Probes
 #

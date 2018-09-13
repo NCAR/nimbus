@@ -24,6 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2018
 
 static NR_TYPE	TAS_MIN = 85.0;	// Good value for C130.  GV should be about 115.
 static NR_TYPE  TDL_Offset = 0.0;
+static NR_TYPE  CVCFACT_COEF[2] = { 0.968, 0.0015934 };
 
 static NR_TYPE	C0_P[3] = { 0.0, 1.0, 0.0 };
 static NR_TYPE	C1_P[3] = { 0.0, 1.0, 0.0 };
@@ -85,10 +86,21 @@ void cvi2Init(var_base *varp)
     for (int i = 0; i < 3; ++i)
       C2_P[i] = tmp[i];
 
+  if ((tmp = GetDefaultsValue("CVI_CVCFACTC", varp->name)) == NULL)
+  {
+    sprintf(buffer,
+		"cvi2Init:CVCFACT_COEF values defaulting to %f, %f.\n",
+		CVCFACT_COEF[0], CVCFACT_COEF[1]);
+    LogMessage(buffer);
+  }
+  else
+    for (int i = 0; i < 2; ++i)
+      CVCFACT_COEF[i] = tmp[i];
+
   if (cfg.ProjectName().compare("VOCALS") == 0)
     concud_fudge_factor = 1.2;
 
-}  /* END CVIINIT */
+}
 
 /* -------------------------------------------------------------------- */
 void sconcud(DERTBL *varp)
@@ -128,8 +140,7 @@ void sconcud(DERTBL *varp)
   PutSample(varp, concud);
 
   prevInlet = cvinlet;
-}  /* END SCONCUD */
-
+}
 
 /* -------------------------------------------------------------------- */
 void scvrho(DERTBL *varp)
@@ -208,6 +219,15 @@ void scvcwcc(DERTBL *varp)
   prevInlet = cvinlet;
 }
 
+/* -------------------------------------------------------------------- */
+// UHSAS data flag.
+void scviuflag(DERTBL *varp)
+{
+  NR_TYPE tact = GetSample(varp, 0);
+
+  PutSample(varp, (NR_TYPE)(tact > 6000 ? 0 : 1));
+}
+
 /* The below was added for SOCRATES to mark icing conditions.
  * Add CVIFLAG CVCFACTC to UserNames.
  * Add to DependTable
@@ -216,7 +236,7 @@ void scvcwcc(DERTBL *varp)
  * and replace CVCFACT with CVCFACTC in CONCUD and CVCFACTTDL.
  */
 
-static int cviflag = 0;
+static int cviflag = 1;
 /* -------------------------------------------------------------------- */
 void scviflag(DERTBL *varp)
 {
@@ -227,24 +247,30 @@ void scviflag(DERTBL *varp)
 void scvcfactc(DERTBL *varp)
 {
   NR_TYPE cvcfactc = GetSample(varp, 0);
-  NR_TYPE cvcwc = GetSample(varp, 1);
-  NR_TYPE atx	= GetSample(varp, 2);
+  NR_TYPE cvinlet = GetSample(varp, 1);
+  NR_TYPE cvcwc = GetSample(varp, 2);
+  NR_TYPE atx	= GetSample(varp, 3);
   static size_t elapsed_time = 0;
 
   // if icing conditions...
-  if (cvcwc > 0.003 && atx < -7.0 && atx > -20.0)
+  if (cvinlet == 0 && cvcwc > 0.003 && atx < -7.0 && atx > -20.0)
   {
     // We just arrived, start elapsed time counter and flag data.
-    if (cviflag == 0)
+    if (cviflag == 1)
     {
-      cviflag = 1;
-      elapsed_time = 1;
+      cviflag = 0;
     }
 
-    cvcfactc *= (0.968 - 0.0015934 * elapsed_time);
+    cvcfactc *= (CVCFACT_COEF[0] - CVCFACT_COEF[1] * elapsed_time++);
   }
   else
-    cviflag = 0;
+    cviflag = 1;
+
+  if (cvcwc < 0.006)
+    elapsed_time = 1;
+
+  if (cvcfactc < 3.0)
+    cvcfactc = 3.0;
 
   PutSample(varp, cvcfactc);
 }
