@@ -253,7 +253,7 @@ void scvcfactc(DERTBL *varp)
   static size_t elapsed_time = 0;
 
   // if icing conditions...
-  if (cvinlet == 0 && cvcwc > 0.003 && atx < -7.0 && atx > -20.0)
+  if (cvinlet == 0 && cvcwc > 0.006 && atx < -7.0 && atx > -20.0)
   {
     // We just arrived, start elapsed time counter and flag data.
     if (cviflag == 1)
@@ -266,7 +266,7 @@ void scvcfactc(DERTBL *varp)
   else
     cviflag = 1;
 
-  if (cvcwc < 0.006)
+  if (cvcwc < 0.003)
     elapsed_time = 1;
 
   if (cvcfactc < 3.0)
