@@ -196,7 +196,7 @@ void saky(DERTBL *varp)
   adif	= GetSample(varp, 0);
   qc	= GetSample(varp, 1);
 
-  static const double c1 = 21.481, d0 = 4.5253, d1 = 19.9332, d2 = -0.00196;
+  static const double c1 = 21.481, d0 = 4.51107, d1 = 19.84095, d2 = -0.0018806;
 
   if (isnan(adif) || isnan(qc))
   {
