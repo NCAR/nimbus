@@ -488,6 +488,7 @@
 	"VIC",		NULL,				NULL,		svi,
 	"UIC",		NULL,				NULL,		sui,
 	"WIC",		(void(*)(void*))initGust,	NULL,		swi,
+	"WIY",		(void(*)(void*))initGust,	NULL,		swi,
 	"VYC",		NULL,				NULL,		svy,
 	"UXC",		NULL,				NULL,		sux,
 	"WSC",		NULL,				NULL,		sws,
@@ -801,6 +802,7 @@
 #	Others
 #
 	"AKDF",		NULL,		NULL,		sakdf,
+	"AKY",		NULL,		NULL,		saky,
 	"AKRD",		(void(*)(void*))initAKRD,	NULL,		sakrd,
 	"AQRATIO",	NULL,		NULL,		saqratio,
 	"ATTACK",	NULL,		NULL,		sReferAttack,
@@ -1014,7 +1016,10 @@
 # Second generation CVI, 2006 and later.
 	"CVRHO",	(void(*)(void*))cvi2Init,	NULL,		scvrho,
 	"CVCWCC",	NULL,		NULL,		scvcwcc,
+	"CVCFACTC",	NULL,		NULL,		scvcfactc,
+	"CVIFLAG",	NULL,		NULL,		scviflag,
 	"CVCFACTTDL",	NULL,		NULL,		scvcfacttdl,
+	"UFLAG_CVIU",	NULL,		NULL,		scviuflag,
 #
 #	PMS 2d Probes
 #
