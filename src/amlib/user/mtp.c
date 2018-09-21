@@ -61,13 +61,14 @@ static float CND0[nCoeffs] = {1.0,1.0,1.0}, GOF[nCoeffs] = {1.0,1.0,1.0},
 char RCFdir[256];
 const std::string RCFDIR = "%s/%s/MTP/RCF";
 
-int numFlightLevels = 13;
+int numFlightLevels = 13;  // never changes - every project will have 13 levels
+// If no flight levels given in Defaults file, default to these levels.
 float defaultLevels[] = {13.0,12.0,9.5,8.0,6.0,5.0,3.5,2.5,2.0,1.5,1.0,0.5,0.0};
-std::vector<float> FLIGHTLEVELSKM;
-//float* FLIGHTLEVELSKM = (float *) &defaultLevels[0];
+std::vector<float> FLIGHTLEVELSKM; // flight levels from Defaults file
 
 static Retriever *Rtr;
 
+static bool processMTP = true; // turn on or off MTP processing
 /* -------------------------------------------------------------------- */
 /* Read in flight levels from the defaults file.                            */
 static void readLevels(const char name[],std::vector<float> *var)
@@ -139,24 +140,27 @@ void mtpInit(var_base *varp)
     strcpy(name,"FLIGHTLEVELSKM");
     readLevels(name,&FLIGHTLEVELSKM);
 
-
     /* Get the dir where the RCF files are located */
-    if ((raw_data_dir = (char *)getenv("RAW_DATA_DIR")) == NULL)
-      HandleFatalError("Environment variable RAW_DATA_DIR not defined, this is fatal.");
-
+    raw_data_dir = (char *)getenv("RAW_DATA_DIR");
     (void)sprintf(RCFdir, RCFDIR.c_str(), raw_data_dir, cfg.ProjectNumber().c_str());
 
-    /* Check if RCFdir exists. If not, exit gracefully. */
+    /* Check if RCFdir exists. If not, turn off MTP processing but let nimbus continue. */
     struct stat stDirInfo;
     if (stat(RCFdir, &stDirInfo) !=0) {
-	fprintf(stderr, "MTP RCF dir %s does not exist\n", RCFdir);
-	HandleFatalError("Fix path or turn off MTP processing - this is fatal.");
+	sprintf(buffer,"MTP RCF dir %s does not exist - turning off MTP processing\n", RCFdir);
+	LogMessage(buffer);
+	varp->Output = false;
+	((DERTBL*)varp)->compute = 0;
+	processMTP = false;
+	return;
+    } else {
+
+      /* Put together a functioning retrieval_coefficient_fileset */
+      RetrievalCoefficientFileSet RCF_Set(RCFdir);
+      RCF_Set.setFlightLevelsKm((float *)&FLIGHTLEVELSKM[0], numFlightLevels);
+      Rtr = new Retriever(RCF_Set);
     }
 
-    /* Put together a functioning retrieval_coefficient_fileset */
-    RetrievalCoefficientFileSet RCF_Set(RCFdir);
-    RCF_Set.setFlightLevelsKm((float *)&FLIGHTLEVELSKM[0], numFlightLevels);
-    Rtr = new Retriever(RCF_Set);
 
 }
 /* -------------------------------------------------------------------- */
@@ -265,6 +269,14 @@ void scal(DERTBL *varp)
  */
 void sretriever(DERTBL *varp)
 {
+
+  // If we turned off computing brightness temps above, then turn off computing 
+  // atmos temps here.
+  if (processMTP == false) {
+    varp->Output = false;
+    ((DERTBL*)varp)->compute = 0;
+    return;
+  }
 
   NR_TYPE *scanbt = GetVector(varp, 0); // The vector of brightness temperatures
                   // calculated in scal (above) for this scan. This vector should
