@@ -35,6 +35,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2012
 #include <sys/stat.h>
 #include <cerrno>
 #include <map>
+#include <queue>
 #include <sstream>
 
 #include "nimbus.h"
@@ -42,7 +43,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2012
 #include "gui.h"
 #include <raf/ctape.h>
 #include <netcdf.h>
-#include <raf/raf_queue.h>
 #include <raf/vardb.hh>
 #include "svnInfo.h"
 
@@ -77,7 +77,7 @@ static int	baseTimeID;
 static float	TimeOffset = 0.0;
 
 
-static Queue	*missingRecords;
+static std::queue<struct missDat *> missingRecords;
 static void	WriteMissingRecords();
 
 extern NR_TYPE	*SampledData, *AveragedData, *HighRateData;
@@ -554,7 +554,7 @@ void WriteNetCDF()
     firstWrite = false;
   }
 
-  if ( (dp = (struct missDat *)FrontQueue(missingRecords)) )
+  if ( (dp = missingRecords.front()) )
   {
     int hour, min, sec;
 
@@ -679,14 +679,7 @@ void WriteNetCDF()
 void QueueMissingData(int h, int m, int s, int nRecords)
 {
   struct missDat	*dp;
-  static int		firstTime = true;
-
-  if (firstTime)
-  {
-    missingRecords = CreateQueue();
-    firstTime = false;
-  }
-
+printf("!!!!! Queue Missing Data !!!!!\n");
   dp = new struct missDat;
 
   dp->hour = h;
@@ -694,7 +687,7 @@ void QueueMissingData(int h, int m, int s, int nRecords)
   dp->second = s;
   dp->nRecords = nRecords;
 
-  EnQueue(missingRecords, (void *)dp);
+  missingRecords.push(dp);
 
   if (cfg.ProcessingMode() == Config::RealTime)
     WriteMissingRecords();
@@ -709,7 +702,7 @@ static void WriteMissingRecords()
   void		*ldp[MAX_VARIABLES];
   struct missDat	*dp;
 
-  dp = (struct missDat *)FrontQueue(missingRecords);
+  dp = missingRecords.front();
   d = new float[5000];
   /* 5000 is fastest sampling rate */
 
@@ -771,7 +764,8 @@ static void WriteMissingRecords()
     ++recordNumber;
     }
 
-  DeQueue(missingRecords);
+  missingRecords.pop();
+  delete dp;
   delete [] d;
 
 }	/* END WRITEMISSINGRECORDS */
