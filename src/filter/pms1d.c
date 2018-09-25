@@ -450,30 +450,30 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
     {
       if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "RANGE_STEP")) ) {
         int value = atoi(p);
-        ncattput(ncid, cvarid, "Resolution", NC_INT, 1, &value);
+        nc_put_att_int(ncid, cvarid, "Resolution", NC_INT, 1, &value);
       }
 
       if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "NDIODES")) ) {
         int value = atoi(p);
-        ncattput(ncid, cvarid, "nDiodes", NC_INT, 1, &value);
+        nc_put_att_int(ncid, cvarid, "nDiodes", NC_INT, 1, &value);
       }
 
       if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "MAG")) ) {
         float value = atof(p);
-        ncattput(ncid, cvarid, "Magnification", NC_FLOAT, 1, &value);
+        nc_put_att_float(ncid, cvarid, "Magnification", NC_FLOAT, 1, &value);
       }
 
       if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "RESPONSE_TIME")) ) {
         float value = atof(p);
-        ncattput(ncid, cvarid, "ResponseTime", NC_FLOAT, 1, &value);
+        nc_put_att_float(ncid, cvarid, "ResponseTime", NC_FLOAT, 1, &value);
       }
 
       if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "ARM_DISTANCE")) ) {
         float value = atof(p);
-        ncattput(ncid, cvarid, "ArmDistance", NC_FLOAT, 1, &value);
+        nc_put_att_float(ncid, cvarid, "ArmDistance", NC_FLOAT, 1, &value);
       }
 
-    ncattput(ncid, cvarid, "HistogramNote", NC_CHAR, 48, "Zeroth data bin is an unused legacy placeholder.");
+    nc_put_att_text(ncid, cvarid, "HistogramNote", 48, "Zeroth data bin is an unused legacy placeholder.");
     }
 
     if ((varp->ProbeType & PROBE_PMS2D))
@@ -481,13 +481,13 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
       if (varp->Length < 64)
       {
         strcpy(buffer, "2D buffers with more than 8 seconds elapsed time or fewer than 20 particles.");
-        ncattput(ncid, cvarid, "Rejected", NC_CHAR, strlen(buffer), buffer);
+        nc_put_att_text(ncid, cvarid, "Rejected", strlen(buffer), buffer);
       }
 
       if (strstr(varp->name, "1D"))
       {
         const char * s = "Entire In";
-        ncattput(ncid, cvarid, "ParticleAcceptMethod", NC_CHAR, strlen(s), s);
+        nc_put_att_text(ncid, cvarid, "ParticleAcceptMethod", strlen(s), s);
       }
 
       if (strstr(varp->name, "2D"))
@@ -499,10 +499,10 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
           s = "Center In";
         if (cfg.TwoDProcessingMethod() == Config::Reconstruction)
           s = "Reconstruction";
-        ncattput(ncid, cvarid, "ParticleAcceptMethod", NC_CHAR, strlen(s), s);
+        nc_put_att_text(ncid, cvarid, "ParticleAcceptMethod", strlen(s), s);
 
         f = cfg.TwoDAreaRejectRatio();
-        ncattput(ncid, cvarid, "ParticleAreaRejectionRatio", NC_FLOAT, 1, &f);
+        nc_put_att_float(ncid, cvarid, "ParticleAreaRejectionRatio", NC_FLOAT, 1, &f);
       }
     }
   }
@@ -510,7 +510,7 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
   {
     if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "FIRST_BIN")) ) {
       int	value = atoi(p);
-      ncattput(ncid, cvarid, "FirstBin", NC_INT, 1, &value);
+      nc_put_att_int(ncid, cvarid, "FirstBin", NC_INT, 1, &value);
     }
 
     if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "LAST_BIN")) ) {
@@ -519,46 +519,46 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
       if (strstr(varp->name, "2D"))	/* 2D's use 63 bins, instead of 1DC */
         value += (varp->Length >> 1);
 
-      ncattput(ncid, cvarid, "LastBin", NC_INT, 1, &value);
+      nc_put_att_int(ncid, cvarid, "LastBin", NC_INT, 1, &value);
     }
 
     nBins = getCellSizes(varp, cellSize);
-    ncattput(ncid, cvarid, "CellSizes", NC_FLOAT, nBins, cellSize);
-    ncattput(ncid, cvarid, "CellSizeUnits", NC_CHAR, 11, "micrometers");
-    ncattput(ncid, cvarid, "CellSizeNote", NC_CHAR, 43, "CellSizes are upper bin limits as diameter.");
-    ncattput(ncid, cvarid, "HistogramNote", NC_CHAR, 48, "Zeroth data bin is an unused legacy placeholder.");
+    nc_put_att_float(ncid, cvarid, "CellSizes", NC_FLOAT, nBins, cellSize);
+    nc_put_att_text(ncid, cvarid, "CellSizeUnits", 11, "micrometers");
+    nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are upper bin limits as diameter.");
+    nc_put_att_text(ncid, cvarid, "HistogramNote", 48, "Zeroth data bin is an unused legacy placeholder.");
 
   if (cellSize[0] == 0.0)
     warnMidPoints = true;
 
     if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "DOF")) ) {
       float value = atof(p);
-      ncattput(ncid, cvarid, "DepthOfField", NC_FLOAT, 1, &value);
+      nc_put_att_float(ncid, cvarid, "DepthOfField", NC_FLOAT, 1, &value);
     }
 
     if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "BEAM_DIAM")) ) {
       float value = atof(p);
-      ncattput(ncid, cvarid, "BeamDiameter", NC_FLOAT, 1, &value);
+      nc_put_att_float(ncid, cvarid, "BeamDiameter", NC_FLOAT, 1, &value);
     }
 
     if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "DENS")) ) {
       float value = atof(p);
-      ncattput(ncid, cvarid, "Density", NC_FLOAT, 1, &value);
+      nc_put_att_float(ncid, cvarid, "Density", NC_FLOAT, 1, &value);
     }
 
     if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "PLWFAC")) ) {
       float value = atof(p);
-      ncattput(ncid, cvarid, "PLWfactor", NC_FLOAT, 1, &value);
+      nc_put_att_float(ncid, cvarid, "PLWfactor", NC_FLOAT, 1, &value);
     }
 
     if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "DBZFAC")) ) {
       float value = atof(p);
-      ncattput(ncid, cvarid, "DBZfactor", NC_FLOAT, 1, &value);
+      nc_put_att_float(ncid, cvarid, "DBZfactor", NC_FLOAT, 1, &value);
     }
 
     if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "SAMPLE_AREA")) ) {
       float value = atof(p);
-      ncattput(ncid, cvarid, "SampleArea", NC_FLOAT, 1, &value);
+      nc_put_att_float(ncid, cvarid, "SampleArea", NC_FLOAT, 1, &value);
     }
   }
 

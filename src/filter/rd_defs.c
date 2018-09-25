@@ -149,11 +149,11 @@ void CheckAndAddAttrs(int fd, int varid, char name[])
     if (strcmp(name, Defaults[i]->var) == 0)
     {
       if (Defaults[i]->Values.size() > 0)
-        ncattput(fd, varid, Defaults[i]->Name, NC_FLOAT,
+        nc_put_att_float(fd, varid, Defaults[i]->Name, NC_FLOAT,
 		Defaults[i]->Values.size(), &Defaults[i]->Values[0]);
       else
       if (Defaults[i]->text.length() > 0)
-        ncattput(fd, varid, Defaults[i]->Name, NC_CHAR,
+        nc_put_att_text(fd, varid, Defaults[i]->Name,
 		Defaults[i]->text.length()+1, Defaults[i]->text.c_str());
     }
   }
