@@ -904,7 +904,8 @@ void NetCDF::BlankOutBadData()
 /* -------------------------------------------------------------------- */
 int NetCDF::writeBlank(int varid, size_t start[], size_t count[], int OutputRate)
 {
-  long	nValues;
+  int rc;
+  long nValues;
   float	*p;
 
   count[1] = OutputRate;
@@ -916,7 +917,9 @@ int NetCDF::writeBlank(int varid, size_t start[], size_t count[], int OutputRate
   for (int i = 0; i < nValues; ++i)
     p[i] = (float)MISSING_VALUE;
 
-  return(nc_put_vara_float(_ncid, varid, start, count, p));
+  rc = nc_put_vara_float(_ncid, varid, start, count, p);
+  delete [] p;
+  return(rc);
 }
 
 /* -------------------------------------------------------------------- */
