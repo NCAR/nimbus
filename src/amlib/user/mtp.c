@@ -60,6 +60,8 @@ static float CND0[nCoeffs] = {1.0,1.0,1.0}, GOF[nCoeffs] = {1.0,1.0,1.0},
 
 char RCFdir[256];
 const std::string RCFDIR = "%s/%s/MTP/RCF";
+char CALdir[256];
+const std::string CALDIR = "%s/%s/MTP/raw/%s";
 
 int numFlightLevels = 13;  // never changes - every project will have 13 levels
 // If no flight levels given in Defaults file, default to these levels.
@@ -68,7 +70,6 @@ std::vector<float> FLIGHTLEVELSKM; // flight levels from Defaults file
 
 static Retriever *Rtr;
 
-static bool processMTP = true; // turn on or off MTP processing
 /* -------------------------------------------------------------------- */
 /* Read in flight levels from the defaults file.                            */
 static void readLevels(const char name[],std::vector<float> *var)
@@ -127,22 +128,12 @@ void mtpInit(var_base *varp)
 {
     char name[256];
     char *raw_data_dir;
+    int indx;
 
-    strcpy(name,"CND0");
-    readDefs(name,CND0);
-    strcpy(name,"GOF");
-    readDefs(name,GOF);
-    strcpy(name,"GEC1");
-    readDefs(name,GEC1);
-    strcpy(name,"GEC2");
-    readDefs(name,GEC2);
-
-    strcpy(name,"FLIGHTLEVELSKM");
-    readLevels(name,&FLIGHTLEVELSKM);
-
-    /* Get the dir where the RCF files are located */
+    /* Get the dir where the RCF and CAL files are located */
     raw_data_dir = (char *)getenv("RAW_DATA_DIR");
     (void)sprintf(RCFdir, RCFDIR.c_str(), raw_data_dir, cfg.ProjectNumber().c_str());
+    (void)sprintf(CALdir, CALDIR.c_str(), raw_data_dir, cfg.ProjectNumber().c_str(), cfg.FlightDate().c_str());
 
     /* Check if RCFdir exists. If not, turn off MTP processing but let nimbus continue. */
     struct stat stDirInfo;
@@ -151,9 +142,27 @@ void mtpInit(var_base *varp)
 	LogMessage(buffer);
 	varp->Output = false;
 	((DERTBL*)varp)->compute = 0;
-	processMTP = false;
+
+	// SCANBT is used to calculate TEMPC, so turn that off as well.
+	if ((indx = SearchTable(derived, "TEMPC_MTP")) != ERR) {
+          derived[indx]->Output = false;
+          ((DERTBL*)derived[indx])->compute = 0;
+	}
 	return;
     } else {
+
+      strcpy(name,"CND0");
+      readDefs(name,CND0);
+      strcpy(name,"GOF");
+      readDefs(name,GOF);
+      strcpy(name,"GEC1");
+      readDefs(name,GEC1);
+      strcpy(name,"GEC2");
+      readDefs(name,GEC2);
+
+      strcpy(name,"FLIGHTLEVELSKM");
+      readLevels(name,&FLIGHTLEVELSKM);
+
 
       /* Put together a functioning retrieval_coefficient_fileset */
       RetrievalCoefficientFileSet RCF_Set(RCFdir);
@@ -269,14 +278,6 @@ void scal(DERTBL *varp)
  */
 void sretriever(DERTBL *varp)
 {
-
-  // If we turned off computing brightness temps above, then turn off computing 
-  // atmos temps here.
-  if (processMTP == false) {
-    varp->Output = false;
-    ((DERTBL*)varp)->compute = 0;
-    return;
-  }
 
   NR_TYPE *scanbt = GetVector(varp, 0); // The vector of brightness temperatures
                   // calculated in scal (above) for this scan. This vector should
