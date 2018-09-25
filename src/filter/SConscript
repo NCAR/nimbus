@@ -32,7 +32,6 @@ Xwin.c
 adsIO.c
 ads3IO.cc
 amlibfn.c
-async.c
 average.c
 calco.c
 cb_defs.c

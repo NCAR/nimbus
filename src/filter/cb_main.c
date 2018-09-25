@@ -83,9 +83,10 @@ static void	checkForProductionSetup(), displaySetupWindow(),
 		LogLagErrors();
 
 
-void	InitAsyncModule(char fileName[]), RealTimeLoop(),
+//void	InitAsyncModule(char fileName[]);
+void	RealTimeLoop(), RealTimeLoop3(),
 	CloseLogFile(), LogDespikeInfo(), InitAircraftDependencies(),
-	CloseRemoveLogFile(), LogIRSerrors(), RealTimeLoop3();
+	CloseRemoveLogFile(), LogIRSerrors();
 
 
 /* -------------------------------------------------------------------- */
@@ -375,7 +376,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   RunAMLIBinitializers();
   SetConfigGlobalAttributeVariables();
   CreateNetCDF(OutputFileName);
-  InitAsyncModule(OutputFileName);
+//  InitAsyncModule(OutputFileName);
   ConfigurationDump();
 
 
