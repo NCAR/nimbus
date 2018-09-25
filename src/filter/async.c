@@ -164,7 +164,7 @@ static void flush2dQueue(int indx, int syncTime)
   static long		start[] = {0, 0, 0};	/* for netCDF ncvarput/get */
   static long		count[] = {1, 1, 3};
 
-  SyncNetCDF();
+//  SyncNetCDF();
   ncdiminq(ncid, recDim, (char *)NULL, &nRecords);
 
   startPos = ftell(AsyncFP);

@@ -58,7 +58,7 @@ logfile.c
 lrloop.c
 memalloc.cc
 minmax.cc
-netcdf.c
+NetCDF.cc
 nimbus.c
 order.c
 phase_shift.c
