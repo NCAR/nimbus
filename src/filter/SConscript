@@ -33,7 +33,6 @@ Xwin.c
 adsIO.c
 ads3IO.cc
 amlibfn.c
-async.c
 average.c
 calco.c
 cb_defs.c
@@ -60,7 +59,7 @@ logfile.c
 lrloop.c
 memalloc.cc
 minmax.cc
-netcdf.c
+NetCDF.cc
 nimbus.c
 order.c
 phase_shift.c

@@ -22,6 +22,7 @@ class Broadcast : public UDP_Base
 {
 public:
   Broadcast();
+  ~Broadcast();
 
   void
   BroadcastData(nidas::core::dsm_time_t tt);

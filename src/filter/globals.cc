@@ -16,6 +16,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include <injectsd.h>
 
 class PostgreSQL;
+class NetCDF;
 
 namespace dsm
 {
@@ -121,6 +122,7 @@ int32_t (*FindFirstLogicalRecord)(char lr[], time_t starttime);
 int32_t (*FindNextLogicalRecord)(char lr[], time_t endtime);
 
 PostgreSQL *psql = 0;
+NetCDF *ncFile = 0;
 
 
 //***************************synthetic data varables*************************//

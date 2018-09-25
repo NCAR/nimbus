@@ -82,6 +82,14 @@ Broadcast::Broadcast() :
 }
 
 /* -------------------------------------------------------------------- */
+Broadcast::~Broadcast()
+{
+  size_t i;
+  for (i = 0; i < _toList.size(); ++i)
+    delete _toList[i];
+}
+
+/* -------------------------------------------------------------------- */
 void Broadcast::BroadcastData(nidas::core::dsm_time_t tt) 
 {
   std::string timeStamp = formatTimestamp(tt);
