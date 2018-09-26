@@ -28,6 +28,8 @@ using nidas::core::NidasApp;
 static void ReadBatchFile(const char *filename, Config::processingRate * rate);
 static void usage();
 
+using std::string;
+
 void	Set_SetupFileName(char s[]);
 
 void	RTinit_ADS2(), RTinit_ADS3();
@@ -94,7 +96,7 @@ void ProcessArgv(int argc, char **argv)
 {
   int	i;
   int length;
-  char	*p = 0;
+  string p;
   Config::processingRate rate = Config::LowRate;
 
   cfg.SetInteractive(true);
@@ -187,17 +189,17 @@ void ProcessArgv(int argc, char **argv)
         break;
 
       case 'p':	// Processing-rate.
-        if ( strncmp(args[i], "-pr", 3) )
+        if (arg.substr(0, 3) == "-pr")
           usage();
 
         // Support '=' or white-space between arg and value.
-        if ((p = strchr(args[i], '=')) != 0)
-          ++p;
+        if (arg.find('=') != string::npos)
+          p = arg.substr(arg.find('=') + 1);
         else
-          if (i+1 < argc)
+          if (i+1 < (int)args.size())
             p = args[++i];
 
-        if (p == 0)
+        if (p.empty())
           usage();
 
         // Support 0/1/25 or s/l/h, sample-rate, low-rate, and high-rate respectively.
