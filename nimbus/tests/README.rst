@@ -383,8 +383,7 @@ only the 'local' profiles:
 
       barolo|139|% echo $PROJ_DIR
       /net/jlocal/projects
-      barolo|140|% ./pnimbus.py --flights CSET/local
-CSET/local/ff01 CSET/local/rf01 CSET/local/rf02 CSET/local/rf03 CSET/local/rf04 CSET/local/rf05 CSET/local/rf06 CSET/local/rf07 CSET/local/rf08 CSET/local/rf09 CSET/local/rf10 CSET/local/rf11 CSET/local/rf12 CSET/local/rf13 CSET/local/rf14 CSET/local/rf15 CSET/local/rf16
+      barolo|140|% ./pnimbus.py --flights CSET/local CSET/local/ff01 CSET/local/rf01 CSET/local/rf02 CSET/local/rf03 CSET/local/rf04 CSET/local/rf05 CSET/local/rf06 CSET/local/rf07 CSET/local/rf08 CSET/local/rf09 CSET/local/rf10 CSET/local/rf11 CSET/local/rf12 CSET/local/rf13 CSET/local/rf14 CSET/local/rf15 CSET/local/rf16
 
 When no flight specifiers are given, the script uses a hardcoded list of
 default projects.  You can see the list of available default projects using
