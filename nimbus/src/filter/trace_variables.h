@@ -5,6 +5,8 @@
 #include "sync_reader.hh"
 #include "timeseg.h"
 
+#include <cmath>
+
 template <typename T, typename V>
 inline
 void
