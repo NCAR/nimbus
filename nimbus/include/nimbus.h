@@ -23,6 +23,9 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #include <raf/constants.h>
 #include "config.h"
 
+using std::isnan;
+using std::isinf;
+
 #include <nidas/util/Logger.h>
 
 #define NAMELEN		32
