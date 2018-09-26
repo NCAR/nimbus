@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 
 #include "Interpolator.h"
-#include <math.h>
+#include <cmath>
 
 namespace
 {

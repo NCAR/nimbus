@@ -74,7 +74,7 @@ static int	GetNext2Dfile();
 static void	checkForDayErrors(Hdr_blk * hdr);
 
 char	*ExtractHeaderIntoFile(char *);
-void	WriteAsyncData(char record[]);
+//void	WriteAsyncData(char record[]);
 time_t	HdrBlkTimeToSeconds(Hdr_blk * hdr);
 
 #ifdef __cplusplus
@@ -486,8 +486,8 @@ static int32_t FindNextDataRecord(char buff[])
         nbytes =  crayread(&infd, buff, &nWords, &iconv);
       }
 
-    if (cfg.AsyncFileEnabled() && IsThisAnAsyncRecord((short *)buff))
-      WriteAsyncData(buff);
+//    if (cfg.AsyncFileEnabled() && IsThisAnAsyncRecord((short *)buff))
+//      WriteAsyncData(buff);
     }
   while (nbytes > 0 && ntohs(*((ushort *)buff)) != SDI_WORD);
 

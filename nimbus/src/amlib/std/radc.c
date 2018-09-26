@@ -26,11 +26,11 @@ ORIG. AUTHOR:   Ron Ruth
 -------------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <math.h>
 #include "nimbus.h"
 #include "amlib.h"
 #include "decode.h"
+#include <cstdio>
+#include <cmath>
 
 static NR_TYPE  PMAX =  6.0;  /* radiation corr. pitch max threshold (deg) */
 static NR_TYPE  PMIN = -6.0;  /* radiation corr. pitch min threshold (deg) */

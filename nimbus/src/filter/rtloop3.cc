@@ -17,6 +17,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 #include "decode.h"
 #include "gui.h"
 #include "psql.h"
+#include "NetCDF.h"
 #include "brdcast.h"
 #include "grnd_feed.h"
 #include "timeseg.h"
@@ -31,6 +32,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 #include <iomanip>
 
 extern PostgreSQL *psql;
+extern NetCDF *ncFile;
 
 extern NR_TYPE	*SampledData, *AveragedData;
 
@@ -196,11 +198,11 @@ void RealTimeLoop3()
       grnd_feed->BroadcastData(tt);
 
     if (cfg.OutputNetCDF())
-      WriteNetCDF();
+      ncFile->WriteNetCDF();
 
-    // This typically produces HRT netCDF in real-time.  Not used at this time.
+    // This typically produces SRT netCDF in real-time.  Not used at this time.
     if (cfg.OutputNetCDF())
-      SyncNetCDF();
+      ncFile->Sync();
 
     /* Check every 20 seconds to see if we are lagging more than 10 seconds
      * behind the system clock.

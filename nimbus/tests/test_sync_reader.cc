@@ -3,7 +3,7 @@
 // results.
 
 #include "gtest/gtest.h"
-#include <stdlib.h>
+#include <cstdlib>
 #include <unistd.h>
 #include <iostream>
 #include <fstream>

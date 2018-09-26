@@ -28,6 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "gui.h"
 #include "circbuff.h"
 #include "amlib.h"
+#include "NetCDF.h"
 #include "injectsd.h"
 
 #include "trace_variables.h"
@@ -36,6 +37,7 @@ extern SyntheticData sd;
 
 extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
+extern NetCDF	*ncFile;
 
 bool	LocateFirstRecord(time_t starttime, time_t endtime, int nBuffers);
 void	DespikeData(CircularBuffer *LRCB, int index), FindMinMax(),
@@ -97,7 +99,7 @@ int LowRateLoop(time_t startTime, time_t endTime)
         (startTime == BEG_OF_TAPE || thisTime >= startTime))
       {
       FindMinMax();
-      WriteNetCDF();
+      ncFile->WriteNetCDF();
       UpdateTime(SampledData);
       }
 

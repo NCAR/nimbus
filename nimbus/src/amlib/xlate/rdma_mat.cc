@@ -28,12 +28,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2002
 */
 
 #include <iostream.h>
-#include <math.h>
+#include <cmath>
 #include <fstream.h>
 #include <iomanip.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include "nrutil.h"

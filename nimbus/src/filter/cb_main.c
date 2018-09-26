@@ -53,6 +53,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 #include <raf/ctape.h>
 #include "gui.h"
 #include <raf/vardb.hh>
+#include "NetCDF.h"
 #include "psql.h"
 #include "svnInfo.h"
 #include "sync_reader.hh"
@@ -68,6 +69,7 @@ extern VDBFile  *vardb;
 static time_t	startWALL, finishWALL;
 static clock_t	startCPU, finishCPU;
 
+extern NetCDF	*ncFile;
 
 
 void	CloseSQL(), ProcessFlightDate();
@@ -80,9 +82,10 @@ static void	checkForProductionSetup(), displaySetupWindow(),
 		LogLagErrors();
 
 
-void	InitAsyncModule(char fileName[]), RealTimeLoop(),
+//void	InitAsyncModule(char fileName[]);
+void	RealTimeLoop(), RealTimeLoop3(),
 	CloseLogFile(), LogDespikeInfo(), InitAircraftDependencies(),
-	CloseRemoveLogFile(), LogIRSerrors(), RealTimeLoop3();
+	CloseRemoveLogFile(), LogIRSerrors();
 
 
 /* -------------------------------------------------------------------- */
@@ -328,13 +331,14 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   /* RunAMLIBinits before creating netCDF to setup defaults into
    * netCDF attributes.
    */
-  ProcessFlightDate();
+  ncFile = new NetCDF();
+  ncFile->ProcessFlightDate();	// This needs to be called before CreateFile at this time.
   SetupDependencies();
   InitAircraftDependencies();
   RunAMLIBinitializers();
   SetConfigGlobalAttributeVariables();
-  CreateNetCDF(OutputFileName);
-  InitAsyncModule(OutputFileName);
+  ncFile->CreateFile(OutputFileName, 0);
+//  InitAsyncModule(OutputFileName);
   ConfigurationDump();
 
 
@@ -399,8 +403,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     FindNextLogicalRecord = 0;
   }
 
-  void SwitchNetCDFtoDataMode();
-  SwitchNetCDFtoDataMode();
+  ncFile->SwitchToDataMode();
 
   if (cfg.ProcessingMode() == Config::RealTime)
     {
@@ -450,7 +453,7 @@ void stopProcessing()
   Arg		args[1];
   float		x;
 
-  CloseNetCDF();
+  ncFile->Close();
 
   LogDespikeInfo();
   LogIRSerrors();
@@ -743,7 +746,7 @@ void quit()
 /* -------------------------------------------------------------------- */
 void Quit(Widget w, XtPointer client, XtPointer call)
 {
-  CloseNetCDF();
+  ncFile->Close();
 
   extern PostgreSQL *psql;
   if (psql)

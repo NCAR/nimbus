@@ -14,9 +14,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 -------------------------------------------------------------------------
 */
 
-#include <math.h>
 #include "nimbus.h"
 #include "amlib.h"
+#include <cmath>
 
 #define MAX_PTDR	5
 #define CRADEG		0.017453  /* convert to radians from degrees */

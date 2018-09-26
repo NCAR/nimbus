@@ -2,7 +2,7 @@
 //  This file contains the functions provided by the Text class.
 
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <X11/Intrinsic.h>
 #include <X11/IntrinsicP.h>
 #include <Xm/Xm.h>

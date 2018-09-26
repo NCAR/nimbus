@@ -20,11 +20,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 /* -------------------------------------------------------------------- */
 UDP_Base::
 UDP_Base(int port) : 
+  _socket(0),
+  _to(0),
   _default_latch_seconds(0),
   UDP_PORT(port)
 {
 }
 
+/* -------------------------------------------------------------------- */
+UDP_Base::~UDP_Base()
+{
+  delete _socket;
+  delete _to;
+}
 
 /* -------------------------------------------------------------------- */
 bool

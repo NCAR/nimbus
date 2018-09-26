@@ -10,8 +10,8 @@
          and should be verified with Paul Lawson.
 */
 
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 
 #include "nimbus.h"
 #include "amlib.h"

@@ -28,7 +28,7 @@ public:
   UDP_Base(int port);
 
   virtual
-  ~UDP_Base() { }
+  ~UDP_Base();
 
   /** 
    * Generate broadcast string and send.

@@ -2,7 +2,7 @@
 
 #include "Interpolator.h"
 
-#include <math.h>
+#include <cmath>
 #include <gsl/gsl_spline.h>
 #include <sstream>
 

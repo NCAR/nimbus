@@ -2,7 +2,7 @@
 #ifndef _timeseg_h_
 #define _timeseg_h_
 
-#include <time.h>
+#include <ctime>
 
 #define GAP_FOUND	true	/* For CheckForTimeGap()	*/
 
