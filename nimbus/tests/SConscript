@@ -10,6 +10,8 @@ import shutil
 
 def jsoncpp(env):
   env.Append(CPPDEFINES="SYNC_RECORD_JSON_OUTPUT")
+  if os.path.exists("/usr/include/jsoncpp"):
+    env.Append(CPPPATH="/usr/include/jsoncpp")
   env.Append(LIBS=['jsoncpp'])
   env.Append(CPPFLAGS='-Wno-effc++')
 
