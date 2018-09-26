@@ -563,6 +563,7 @@ static void initMultiRateFilter(mRFilterPtr aMRFPtr)
 
 }
 
+#ifdef unused
 /*--------------------------------------------------------------------------
 -   disposMultiRateFilter
 -       delete MultiFilt Struct with filter data and instance vars.
@@ -578,6 +579,7 @@ static int disposMultiRateFilter(mRFilterPtr aMRFPtr)
 
   return(true);
 }
+#endif
 
 /*--------------------------------------------------------------------------
 -   iterateMultiRateFilter
