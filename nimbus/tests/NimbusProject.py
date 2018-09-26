@@ -5,11 +5,12 @@ Module for the :py:class:`NimbusProject` class.
 import os
 import glob
 import logging
-from NimbusSetup import NimbusSetup
 import shutil
 import tempfile
 import fnmatch
 import subprocess as sp
+
+from NimbusSetup import NimbusSetup
 
 logger = logging.getLogger(__name__)
 
@@ -800,4 +801,4 @@ def test_aircraftFromProject():
     ac = np.aircraftFromProject(os.path.join(pdir, "WINTER"))
     assert(ac == "C130_N130AR")
     ac = np.aircraftFromProject(os.path.join(pdir, "IDEAS-4"))
-    assert(ac == None)
+    assert(ac is None)

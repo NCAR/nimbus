@@ -183,7 +183,8 @@ env.Alias('html',
 import sys
 env.PythonLint('pylint', 
                Split("NimbusSetup.py NimbusProject.py nimbus.py pnimbus.py"),
-               PYLINTPYTHONPATH=":".join(sys.path))
+               PYLINTPYTHONPATH=":".join(sys.path),
+               PYLINT="pylint-2")
 
 # Create a simple environment just for generating documentation.
 
