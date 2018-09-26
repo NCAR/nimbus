@@ -49,9 +49,10 @@ Alias('install', env.subst("${JLOCAL}/bin"))
 
 SConscript('tests/SConscript')
 
-variables = env.GlobalVariables()
-variables.Update(env)
-Help(variables.GenerateHelpText(env))
-
 ninja = Environment(tools = ['default', 'ninja'])
 ninja.NinjaCheck()
+
+variables = env.GlobalVariables()
+variables.Update(env)
+
+env.SetHelp()
