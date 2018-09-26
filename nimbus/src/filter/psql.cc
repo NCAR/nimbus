@@ -583,7 +583,7 @@ PostgreSQL::addValue(std::stringstream& sql, NR_TYPE value, bool addComma)
   if (addComma)
     sql << ',';
 
-  if (isnan(value) || isinf(value))
+  if (std::isnan(value) || std::isinf(value))
     sql << MISSING_VALUE;
   else
     sql << value;
@@ -603,7 +603,7 @@ PostgreSQL::addValueToAllStreams(NR_TYPE value, bool addComma)
   if (!addComma)
     format = normalFormat;
 
-  if (isnan(value) || isinf(value))
+  if (std::isnan(value) || std::isinf(value))
     value = MISSING_VALUE;
 
   sprintf(value_ascii, format, value);

@@ -648,7 +648,7 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
             if ((value=getBuff(i, thisMRF->inBuff)) < thisMRF->modulo->bound[0])
               value += thisMRF->modulo->diff;
 
-            if ( !isnan(value) )
+            if ( !std::isnan(value) )
               {
               result += thisMRF->filter->aCoef[tap] * (double)value;
               sumTap += thisMRF->filter->aCoef[tap];
@@ -660,7 +660,7 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
         else
           {
           for (i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
-            if ( !isnan((double)getBuff(i, thisMRF->inBuff)) )
+            if ( !std::isnan((double)getBuff(i, thisMRF->inBuff)) )
               {
               result += thisMRF->filter->aCoef[tap] *
                     (double)getBuff(i, thisMRF->inBuff);
@@ -674,7 +674,7 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
         {
         for (i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
           {
-          if ( !isnan((double)getBuff(i, thisMRF->inBuff)) )
+          if ( !std::isnan((double)getBuff(i, thisMRF->inBuff)) )
             {
             result += thisMRF->filter->aCoef[tap] *
                     (double)getBuff(i, thisMRF->inBuff);
@@ -692,7 +692,7 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
        */
       int halfOrder = thisMRF->filter->order / 2 - 1;
       for (i = 0; i < 3; ++i)	// center lobe is 3 points.
-        if ( isnan((double)getBuff(halfOrder + i, thisMRF->inBuff)) )
+        if ( std::isnan((double)getBuff(halfOrder + i, thisMRF->inBuff)) )
           *output = floatNAN;
 
       if (nanCount > MAX_NAN)

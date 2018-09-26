@@ -139,7 +139,7 @@ updateData(nidas::core::dsm_time_t tt)
 #endif
       const NR_TYPE& current = AveragedData[start];
       const NR_TYPE& last = AveragedData[vp->LRstart + vp->Length - 1];
-      if (!isnan(last))
+      if (!std::isnan(last))
       {
 	std::copy(&current, &last + 1, _lastGoodData[i].begin());
 	_lastGoodTime[i] = tt;
@@ -169,7 +169,7 @@ formatVariable(int i)
     {
       if (!first)
 	text << ",";
-      if (isnan(*iv))
+      if (std::isnan(*iv))
 	text << -32767;
       else
 	text << *iv;
@@ -178,7 +178,7 @@ formatVariable(int i)
   }
   else
   {
-    if (isnan(_lastGoodData[i][0]))
+    if (std::isnan(_lastGoodData[i][0]))
       text << -32767;
     else
       text << _lastGoodData[i][0];

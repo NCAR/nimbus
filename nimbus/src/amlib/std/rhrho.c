@@ -42,7 +42,7 @@ void srhrho(DERTBL *varp)
   psxc = GetSample(varp, 2);
 
 /*  If RHO, ATX and/or PSXC are missing, so is RHRHO  */
-  if ( isnan(rho) || isnan(atx) || isnan(psxc) )
+  if ( std::isnan(rho) || std::isnan(atx) || std::isnan(psxc) )
     {
     rhrho = floatNAN;
     }

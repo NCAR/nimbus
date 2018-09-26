@@ -619,7 +619,7 @@ void WriteNetCDF()
     }
 
     for (size_t j = 0; j < N; ++j)
-      if (isnan(data[j]))
+      if (std::isnan(data[j]))
         data[j] = (float)MISSING_VALUE;
 
     status = nc_put_vara_float(fd, rp->varid, start, count, data);
@@ -659,7 +659,7 @@ void WriteNetCDF()
     }
 
     for (size_t j = 0; j < N; ++j)
-      if (isnan(data[j]))
+      if (std::isnan(data[j]))
         data[j] = (float)MISSING_VALUE;
 
     status = nc_put_vara_float(fd, dp->varid, start, count, data);

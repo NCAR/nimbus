@@ -158,20 +158,20 @@ formatVariable(int i)
     if (i == RADAR_ALT_INDX)
     {
       // Our radar alt is in m, convert to ft as required by IWG1
-      if (!isnan(current))
+      if (!std::isnan(current))
 	bcast << current * 3.2808;
     }
     else if (i == NOCAL_ALT_INDX || // Do Not Calibrate flag
 	     i == NOREC_ALT_INDX)   // Do Not Record flag
     {
-      if (isnan(current))
+      if (std::isnan(current))
 	bcast << 0;
       else
 	bcast << current;
     }
     else
     {
-      if (!isnan(current))
+      if (!std::isnan(current))
 	bcast << current;
     }
   }

@@ -614,12 +614,12 @@ TEST_P(SyncReaderTest, CompareHeaderAndRecords)
       {
 	double xf = strtod(vdata["values"][j].asCString(), NULL);
 	double gotf = record[offset+j];
-	if (isnan(xf))
+	if (std::isnan(xf))
 	{
-	  nfail += !isnan(gotf);
+	  nfail += !std::isnan(gotf);
 	  if (nfail <= maxfails)
 	  {
-	    EXPECT_TRUE(isnan(gotf))
+	    EXPECT_TRUE(std::isnan(gotf))
 	      << "variable " << var->getName()
 	      << "[" << j << "] @ time " << tt;
 	  }

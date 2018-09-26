@@ -545,7 +545,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 	dynamic_cast<nidas::core::Linear*>(converter);
       if (linear)
       {
-	if (isnan(linear->getIntercept()) || isnan(linear->getSlope()))
+	if (std::isnan(linear->getIntercept()) || std::isnan(linear->getSlope()))
 	{
 	  converter = 0;
 	  //	  var->setConverter(0);
@@ -554,7 +554,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
       else if (poly)
       {
 	const std::vector<float>& dcoefs = poly->getCoefficients();
-	if (dcoefs.size() == 0 || isnan(dcoefs[0]))
+	if (dcoefs.size() == 0 || std::isnan(dcoefs[0]))
 	{
 	  converter = 0;
 	  //	  var->setConverter(0);
@@ -1434,7 +1434,6 @@ static void initOphir3(char vn[])
 /* -------------------------------------------------------------------- */
 static void initMTP()
 {
-  int indx;
   int		nbins = NUM_CHANNELS*NUM_SCAN_ANGLES; // Constant set in mtp.h
   int		nbinsl = NUM_RETR_LVLS; // Constant set in mtp.h
   DERTBL	*dp;

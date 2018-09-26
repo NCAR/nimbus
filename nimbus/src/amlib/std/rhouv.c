@@ -51,7 +51,7 @@ void srhouv(DERTBL *varp)
   static NR_TYPE uv_buffer[nSeconds], uv_sum;
 
   rhouv = xuvi;
-  if (dpxc < atx && !isnan(xuvi) && !isnan(rhodt))
+  if (dpxc < atx && !std::isnan(xuvi) && !std::isnan(rhodt))
   {
     if (++buffIndex >= nSeconds)
       buffIndex = 0;

@@ -181,7 +181,7 @@ void sakrd(DERTBL *varp)
       }
     }
   else
-  if (isnan(adifr) || isnan(qc))
+  if (std::isnan(adifr) || std::isnan(qc))
     akrd = floatNAN;
 
   PutSample(varp, akrd);

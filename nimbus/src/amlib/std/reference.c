@@ -20,7 +20,7 @@ void sRefer(DERTBL *varp)
   NR_TYPE x = GetSample(varp, 0);
 
   // If we have a secondary, use it if primary is nan.
-  if (isnan(x) && varp->ndep > 1)
+  if (std::isnan(x) && varp->ndep > 1)
     x = GetSample(varp, 1);
 
   PutSample(varp, x);
@@ -43,7 +43,7 @@ void sReferAttack(DERTBL *varp)
 
   NR_TYPE x = GetSample(varp, 0);
 
-  if (isnan(x))
+  if (std::isnan(x))
   {   
     // Repeat prev attack up to two samples if missing, otherwise set to 3.0.
     if (++attack_miss_cnt[FeedBack] > ATTACK_MISS_MAX[FeedBack])

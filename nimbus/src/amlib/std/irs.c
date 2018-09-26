@@ -55,7 +55,7 @@ void swp3(DERTBL *varp)
   palt	= GetSample(varp, 3);
   acins	= GetSample(varp, 4);
 
-  if (isnan(lat) || isnan(palt) || isnan(acins) || isnan(vew))
+  if (std::isnan(lat) || std::isnan(palt) || std::isnan(acins) || std::isnan(vew))
   {
     return;
   }
@@ -134,7 +134,7 @@ void swpg(DERTBL *varp)
   ggalt	= GetSample(varp, 1);
   acins	= GetSample(varp, 2);
 
-  if (isnan(ggalt) || isnan(ggvspd) || isnan(acins))
+  if (std::isnan(ggalt) || std::isnan(ggvspd) || std::isnan(acins))
   {
     return;
   }

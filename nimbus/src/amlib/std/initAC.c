@@ -386,7 +386,7 @@ NR_TYPE pcorf5v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)
   if (Qm < 0.01) Qm = 0.01;
 
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
-  if (isnan(Attack)) Attack = 3.0;
+  if (std::isnan(Attack)) Attack = 3.0;
 
   M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * M*M*M + a[3] * Attack);
@@ -414,7 +414,7 @@ NR_TYPE pcortf5(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack, NR_TYPE SSlip, NR_TYPE M
   if (Qm < 0.01) Qm = 0.01;
 
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
-  if (isnan(Attack)) Attack = 3.0;
+  if (std::isnan(Attack)) Attack = 3.0;
 
   // Uncomment this M calculation to overwrite MACH being dragged in and replace
   // it with MACH calculated from Pm/Qm being dragged in.
@@ -460,7 +460,7 @@ NR_TYPE pcorf1v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFD
   if (Qm < 0.01) Qm = 0.01;
 
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
-  if (isnan(Attack)) Attack = 3.0;
+  if (std::isnan(Attack)) Attack = 3.0;
 
   M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * Attack + a[2] * M);
@@ -479,7 +479,7 @@ NR_TYPE pcorr1v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFRD
   if (Qm < 0.01) Qm = 0.01;
 
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
-  if (isnan(Attack)) Attack = 3.0;
+  if (std::isnan(Attack)) Attack = 3.0;
 
   M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * Attack + a[2] * M);

@@ -129,7 +129,7 @@ void swi(DERTBL *varp)
   sslip	= GetSample(varp, 7) * DEG_RAD;
   vspd	= GetSample(varp, 8);
 
-  if (isnan(pitch) || isnan(thdg) || isnan(tas) || isnan(vspd))
+  if (std::isnan(pitch) || std::isnan(thdg) || std::isnan(tas) || std::isnan(vspd))
   {
     ui[probeCnt] = floatNAN;
     vi[probeCnt] = floatNAN;
@@ -142,9 +142,9 @@ void swi(DERTBL *varp)
 
   if (firstTime[probeCnt][FeedBack])
   {
-    if (!isnan(pitch))
+    if (!std::isnan(pitch))
       pitch0[probeCnt][FeedBack] = pitch;
-    if (!isnan(thdg))
+    if (!std::isnan(thdg))
       thdg0[probeCnt][FeedBack] = thdg;
 
     firstTime[probeCnt][FeedBack] = FALSE;

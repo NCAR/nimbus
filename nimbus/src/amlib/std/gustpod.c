@@ -95,7 +95,7 @@ void spsc_gp(DERTBL *varp)	// Static Pressure
   NR_TYPE qc = GetSample(varp, 1);
   NR_TYPE tas = GetSample(varp, 2);
 
-  if (FeedBack == LOW_RATE_FEEDBACK && !isnan(tas))
+  if (FeedBack == LOW_RATE_FEEDBACK && !std::isnan(tas))
     if (tas < 50.0)	// 50 is random, just looking for takeoff.
       timeCount = 0;
 

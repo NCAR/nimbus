@@ -23,10 +23,6 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #include <raf/constants.h>
 #include "config.h"
 
-// Used by Fedora 27
-//using std::isnan;
-//using std::isinf;
-
 #include <nidas/util/Logger.h>
 
 #define NAMELEN		32

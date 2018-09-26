@@ -18,7 +18,7 @@ stream_variable(T& out, V* values, unsigned int nvalues)
       out << ".";
       zeros = true;
     }
-    else if (isnan(values[i]))
+    else if (std::isnan(values[i]))
     {
       out << "x";
     }

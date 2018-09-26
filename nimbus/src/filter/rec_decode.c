@@ -73,7 +73,7 @@ static void setNIDASDynamicLags(short lr[])
     if (raw[i]->LAGstart > 0)
     {
       NR_TYPE lag = rec_p[raw[i]->LAGstart];
-      if (!isnan(lag))
+      if (!std::isnan(lag))
         raw[i]->DynamicLag = (int)(lag / 1000.0);
       else
         raw[i]->badLagCntr++;

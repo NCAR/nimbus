@@ -153,7 +153,7 @@ void sradc(DERTBL *varp)
   NR_TYPE rad;  /* Uncorrected radiation value */
 
 /* Output a corrected value only of radcf is valid. */
-  if (!isnan(radcf))
+  if (!std::isnan(radcf))
   {
     rad = GetSample(varp, 0);
     PutSample(varp, (rad*SWDIFF + rad*SWDIRF*radcf));
