@@ -4,28 +4,6 @@ import sharedlibrary
 
 Import('env')
 
-env.Append(LIBPATH=['#/lib'])
-env.Append(LIBPATH=['$JLOCAL/lib'])
-if os.path.exists('/usr/lib/openmotif'):
-  env.Append(LIBPATH=['/usr/lib/openmotif'])
-
-# In order:
-#  AMLIB (Atmospheric Mathmatical Library) calculations.
-#  raf 'building blocks'.
-#  File access stuff.
-#  X windows/GUI.
-#  General math libraries.
-#  ADS3 real-time libraries.  Moved lower to 'if env.realtime'
-env['LIBS'] = Split("""
-  std user xlate
-  hdr_api
-  VarDB domx logx log4cpp boost_regex
-  raf
-  ncaru netcdf hdf5_hl hdf5 pq
-  Xm Xt X11
-  gsl gslcblas m
-""")
-
 sources = Split("""
 UDP_Base.cc
 Xwin.c
