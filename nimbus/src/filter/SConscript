@@ -89,9 +89,9 @@ def libnimbus(env):
   #  ADS3 real-time libraries.
   env.Require(['libncaru', 'libxlate', 'libstd', 'libuser', 'netcdf'])
   deplibs = Split("""
-    hdr_api pms 
+    hdr_api
     VarDB domx logx log4cpp boost_regex
-    raf raf++
+    raf
     pq
     Xm Xt X11
     gsl gslcblas m bz2 z
