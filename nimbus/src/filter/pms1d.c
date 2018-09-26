@@ -605,8 +605,8 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
     ncattput(ncid, cvarid, "CellSizeNote", NC_CHAR, 43, "CellSizes are upper bin limits as diameter.");
     ncattput(ncid, cvarid, "HistogramNote", NC_CHAR, 48, "Zeroth data bin is an unused legacy placeholder.");
 
-  if (cellSize[0] == 0.0)
-    warnMidPoints = true;
+    if (cellSize[0] == 0.0)
+      warnMidPoints = true;
 
     if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "DOF")) ) {
       float value = atof(p);
