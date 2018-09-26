@@ -198,7 +198,7 @@ void saky(DERTBL *varp)
 
   static const double c1 = 21.481, d0 = 4.51107, d1 = 19.84095, d2 = -0.0018806;
 
-  if (isnan(adif) || isnan(qc))
+  if (std::isnan(adif) || std::isnan(qc))
   {
     AKY = floatNAN;
     qc = 0.1;
