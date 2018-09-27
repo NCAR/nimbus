@@ -129,9 +129,10 @@ public:
    * Public entry point to log a single variable, after first testing that
    * the variable is being trace.
    **/
+  template <typename T>
   inline void
   trace_variable(const std::string& flag, const std::string& vname,
-		 time_t ttime, double* values, int nvalues)
+		 time_t ttime, T* values, int nvalues)
   {
     if (active() &&
 	std::find(_vnames.begin(), _vnames.end(), vname) != _vnames.end())
@@ -163,9 +164,10 @@ public:
 
 private:
   
+  template <typename T>
   inline void
   log_variable(const std::string& flag, const std::string& vname,
-	       time_t ttime, double* values, int nvalues)
+	       time_t ttime, T* values, int nvalues)
   {
     _msg << "@" << format_time(ttime) << ", ";
     _msg << flag << ": " << vname << "=";
