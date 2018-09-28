@@ -485,7 +485,6 @@ void NetCDF::WriteNetCDF()
   float *data;
   int status;
 
-  struct missDat	*dp;
   static bool		firstWrite = true;
 
   if (firstWrite)
@@ -494,8 +493,9 @@ void NetCDF::WriteNetCDF()
     firstWrite = false;
   }
 
-  if ( (dp = _missingRecords.front()) )
+  if ( !_missingRecords.empty() )
   {
+    struct missDat *dp = _missingRecords.front();
     int hour, min, sec;
 
     hour = (int)SampledData[raw[SearchTable(raw, "HOUR")]->SRstart];
