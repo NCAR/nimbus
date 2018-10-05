@@ -58,7 +58,7 @@ Config::Config() : _adsFileExtension(".ads")
   SetTwoDProcessingMethod(_defaultPMS2DProcessingMethod);
   SetTwoDAreaRejectRatio(_defaultPMS2DAreaRatioReject);
 
-  SetSorterLength(60);
+  SetSorterLength(900);
 }
 
 std::string
