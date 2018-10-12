@@ -18,7 +18,7 @@ void svocalt(DERTBL *varp)
 
   diff = ralt - ggalt;
 
-  if ( isnan(ralt) || (fabs(diff) > 100.))
+  if ( std::isnan(ralt) || (fabs(diff) > 100.))
     ralt = ggalt;
 
   PutSample(varp, ralt);

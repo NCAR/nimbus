@@ -16,7 +16,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2002
 -------------------------------------------------------------------------
 */
 
-#include <math.h>
+#include <cmath>
 
 #include "nimbus.h"
 #include "amlib.h"

@@ -35,6 +35,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2012
 #include <sys/stat.h>
 #include <cerrno>
 #include <map>
+#include <queue>
 #include <sstream>
 
 #include "nimbus.h"
@@ -42,9 +43,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2012
 #include "gui.h"
 #include <raf/ctape.h>
 #include <netcdf.h>
-#include <raf/raf_queue.h>
 #include <raf/vardb.hh>
 #include "svnInfo.h"
+
+#include "trace_variables.h"
 
 static const std::string Source = "NCAR Research Aviation Facility";
 static const std::string Address = "P.O. Box 3000, Boulder, CO 80307-3000";
@@ -77,7 +79,7 @@ static int	baseTimeID;
 static float	TimeOffset = 0.0;
 
 
-static Queue	*missingRecords;
+static std::queue<struct missDat *> missingRecords;
 static void	WriteMissingRecords();
 
 extern NR_TYPE	*SampledData, *AveragedData, *HighRateData;
@@ -202,7 +204,7 @@ void CreateNetCDF(const char fileName[])
   putGlobalAttribute("Metadata_Conventions", "Unidata Dataset Discovery v1.0"); 
   putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION.c_str());
   putGlobalAttribute("standard_name_vocabulary", "CF-1.0");
-  putGlobalAttribute("ProcessorRevision", &SVNREVISION[10]);
+  putGlobalAttribute("ProcessorRevision", SVNREVISION);
   putGlobalAttribute("NIDASrevision", cfg.NIDASrevision().c_str());
 
   if (strstr(SVNURL, "http"))
@@ -554,7 +556,7 @@ void WriteNetCDF()
     firstWrite = false;
   }
 
-  if ( (dp = (struct missDat *)FrontQueue(missingRecords)) )
+  if ( (dp = missingRecords.front()) )
   {
     int hour, min, sec;
 
@@ -570,11 +572,15 @@ void WriteNetCDF()
   start[0] = recordNumber; start[1] = start[2] = 0;
   count[0] = 1;
 
+  time_t stime = SampledDataTimeToSeconds(SampledData);
+
   // Output Time variable as seconds since midnight (UTSeconds).
   long ut_seconds = UTSeconds(SampledData);
   nc_put_var1_long(fd, timeVarID, start, &ut_seconds);
   if (cfg.isADS2())
     nc_put_var1_float(fd, timeOffsetID, start, &TimeOffset);
+
+  static TraceVariables tv;
 
   for (size_t i = 0; i < raw.size(); ++i)
   {
@@ -590,6 +596,11 @@ void WriteNetCDF()
 
     if (rp->OutputRate == Config::LowRate)
     {
+      if (tv.active())
+      {
+	tv.trace_variable("write netcdf lowrate", rp->name, stime,
+			  &(AveragedData[rp->LRstart]), N);
+      }
       for (size_t j = 0; j < N; ++j) {
         data[j] = (float)AveragedData[rp->LRstart + j];
         //rp->AveragedData.push_back(data[j]); // save data in memory
@@ -614,7 +625,7 @@ void WriteNetCDF()
     }
 
     for (size_t j = 0; j < N; ++j)
-      if (isnan(data[j]))
+      if (std::isnan(data[j]))
         data[j] = (float)MISSING_VALUE;
 
     status = nc_put_vara_float(fd, rp->varid, start, count, data);
@@ -658,7 +669,7 @@ void WriteNetCDF()
     }
 
     for (size_t j = 0; j < N; ++j)
-      if (isnan(data[j]))
+      if (std::isnan(data[j]))
         data[j] = (float)MISSING_VALUE;
 
     status = nc_put_vara_float(fd, dp->varid, start, count, data);
@@ -689,14 +700,7 @@ void WriteNetCDF()
 void QueueMissingData(int h, int m, int s, int nRecords)
 {
   struct missDat	*dp;
-  static int		firstTime = true;
-
-  if (firstTime)
-  {
-    missingRecords = CreateQueue();
-    firstTime = false;
-  }
-
+printf("!!!!! Queue Missing Data !!!!!\n");
   dp = new struct missDat;
 
   dp->hour = h;
@@ -704,7 +708,7 @@ void QueueMissingData(int h, int m, int s, int nRecords)
   dp->second = s;
   dp->nRecords = nRecords;
 
-  EnQueue(missingRecords, (void *)dp);
+  missingRecords.push(dp);
 
   if (cfg.ProcessingMode() == Config::RealTime)
     WriteMissingRecords();
@@ -715,16 +719,13 @@ void QueueMissingData(int h, int m, int s, int nRecords)
 static void WriteMissingRecords()
 {
   size_t	i;
-  float		*d, hour, minute, second;
+  float		hour, minute, second = -1;
+  /* 5000 is fastest sampling rate */
+  std::vector<float> d(5000, MISSING_VALUE);
   void		*ldp[MAX_VARIABLES];
   struct missDat	*dp;
 
-  dp = (struct missDat *)FrontQueue(missingRecords);
-  d = new float[5000];
-  /* 5000 is fastest sampling rate */
-
-  for (i = 0; i < 5000; ++i)
-    d[i] = (float)MISSING_VALUE;
+  dp = missingRecords.front();
 
   int indx = 0;
   ldp[indx++] = (void *)&TimeVar;
@@ -754,12 +755,28 @@ static void WriteMissingRecords()
       second = dp->second;
       }
     else
-      ldp[indx++] = (void *)d;
+      ldp[indx++] = (void *)&d[0];
     }
+
+  hour = dp->hour;
+  minute = dp->minute;
+  second = dp->second;
+
+  if (second < 0)
+  {
+    ELOG(("Somehow second for missing record not set. "
+	  "Time from queue is %02d:%02d:%02d, initialized time "
+	  "is %02d:%02d:%02d.  Raw table size=%d, derived size=%d, "
+	  "num missing records=%d",
+	  int(dp->hour), int(dp->minute), int(dp->second),
+	  int(hour), int(minute), int(second),
+	  int(raw.size()), int(derived.size()), int(dp->nRecords)));
+    second = dp->second;
+  }
 
   for (i = 0; i < derived.size(); ++i)
     if (derived[i]->Output)
-      ldp[indx++] = (void *)d;
+      ldp[indx++] = (void *)&d[0];
 
   for (i = 0; i < dp->nRecords; ++i)
     {
@@ -781,8 +798,9 @@ static void WriteMissingRecords()
     ++recordNumber;
     }
 
-  DeQueue(missingRecords);
-  delete [] d;
+  missingRecords.pop();
+  delete dp;
+  delete dp;
 
 }	/* END WRITEMISSINGRECORDS */
 

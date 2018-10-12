@@ -42,4 +42,9 @@ AceAsia.c
 """)
 
 xlate = env.StaticLibrary('xlate' , sources)
-env.Default(env.Install('#/lib/' , xlate)) 
+
+def libxlate(env):
+    env.Append(LIBS=xlate)
+
+Export('libxlate')
+

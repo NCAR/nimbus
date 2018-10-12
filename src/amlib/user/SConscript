@@ -58,4 +58,9 @@ uvhyg.c
 
 nclho = env.StaticObject('nclh.c', CCFLAGS=env['CCFLAGS']+env['CXXFLAGS']+['-Wno-missing-braces'])
 user = env.StaticLibrary('user' , sources + [nclho])
-env.Default(env.Install('#/lib/', user))
+
+def libuser(env):
+    env.Append(LIBS=user)
+
+Export('libuser')
+

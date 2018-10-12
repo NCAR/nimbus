@@ -11,4 +11,8 @@ sources = Split("""
 """)
 
 ncaru = thisEnv.StaticLibrary('ncaru' , sources)
-thisEnv.Default(thisEnv.Install('#/lib/' , ncaru))
+
+def libncaru(env):
+    env.Append(LIBS = ncaru)
+
+Export('libncaru')

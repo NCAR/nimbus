@@ -44,7 +44,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 #include "decode.h"
 #include "gui.h"
 #include "injectsd.h"
-
+#include "sync_reader.hh"
 
 static Widget   EditShell = 0, EditWindow = 0;
 
@@ -229,6 +229,8 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
         rp->cof.insert(rp->cof.begin(), f);
         }
 
+      SetCalibration(rp);
+
       newAttr = CreateListLineItem(rp, RAW);
       break;
 
@@ -409,8 +411,6 @@ void CreateEditWindow()
   Widget        evRC[2];
   Widget        slPD, slButts[15],funcPD,funcButts[19];
   XmString      name;
-
-  extern Widget AppShell, Shell001;
 
   //**************Definition of FuncPD******************//
   func[0]="none";

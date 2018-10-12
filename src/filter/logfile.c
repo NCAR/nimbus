@@ -43,12 +43,10 @@ void OpenLogFile()
 }	/* END OPENLOGFILE */
 
 /* -------------------------------------------------------------------- */
-void LogMessage(const char msg[])
+void LogMessage(std::string msg)
 {
-  std::string messg(msg);
-
-  if (messg[messg.length()-1] != '\n')
-    messg.append("\n");
+  if (msg[msg.length()-1] != '\n')
+    msg.append("\n");
 
   if (cfg.Interactive())
   {
@@ -56,17 +54,17 @@ void LogMessage(const char msg[])
     extern Widget       logText;
 
     position = XmTextGetLastPosition(logText);
-    XmTextInsert(logText, position, (char*)messg.c_str());
+    XmTextInsert(logText, position, (char*)msg.c_str());
 
-    position += messg.length();
+    position += msg.length();
     XmTextShowPosition(logText, position);
     XmTextSetInsertionPosition(logText, position);
   }
   else
-    fprintf(stderr, messg.c_str());
+    fprintf(stderr, msg.c_str());
 
   if (LogFile)
-    fprintf(LogFile, messg.c_str());
+    fprintf(LogFile, msg.c_str());
 
 }       /* END LOGMESSAGE */
 

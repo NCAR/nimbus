@@ -50,7 +50,7 @@ void stas_flag(DERTBL *varp)
 
   ews = WaterVaporPressure(dry_at+Kelvin);
 //printf("at=%f : mach=%f : ewx=%f : ews = %f\n", dry_at, dry_mach, ewx, ews);
-  if (!isnan(ewx) && ewx < 1.05 * ews)
+  if (!std::isnan(ewx) && ewx < 1.05 * ews)
   {
     ewt = ewx;
     retval = 0.0;
@@ -61,7 +61,7 @@ void stas_flag(DERTBL *varp)
     retval = 1.0;
   }
 
-  if (!isnan(p) && p > 0.0)
+  if (!std::isnan(p) && p > 0.0)
     setEOP(ewt/p);
 
   PutSample(varp, retval);

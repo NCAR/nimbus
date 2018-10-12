@@ -93,4 +93,9 @@ ws.c
 """)
 
 std = env.StaticLibrary('std' , sources)
-env.Default(env.Install('#/lib/', std))
+
+def libstd(env):
+    env.Append(LIBS=std)
+
+Export('libstd')
+

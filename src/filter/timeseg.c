@@ -31,6 +31,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 #include "NetCDF.h"
 #include <raf/header.h>
 
+#include "timeseg.h"
+
 #include <sstream>
 using std::ostringstream;
 
@@ -58,6 +60,7 @@ void GetUserTimeIntervals() /* From TimeSliceWindow	*/
   char	*bp, *ep;
   struct tm ft;
 
+  memset(&ft, 0, sizeof(struct tm));
   nTimeIntervals = 0;
   currentTimeSegment = (-1);
 
@@ -144,6 +147,22 @@ int NextTimeInterval(time_t *start, time_t *end)
   return true;
 
 }	/* END NEXTTIMEINTERVAL */
+
+
+// Get the largest time window within which data will be processed.
+// Everything outside this window will be ignored.
+void
+GetTimeWindow(time_t* start, time_t* end)
+{
+  *start = BEG_OF_TAPE;
+  *end = END_OF_TAPE;
+  if (nTimeIntervals > 0)
+  {
+    *start = UserBtim[0];
+    *end = UserEtim[nTimeIntervals-1];
+  }
+}
+
 
 /* -------------------------------------------------------------------- */
 void ResetTimeGapper()

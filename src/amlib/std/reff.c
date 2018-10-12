@@ -52,11 +52,11 @@ void srefff2(DERTBL *varp)	// 2DC + FSSP
 
   reff_num = reff_denom = 0.0;
 
-  if (!isnan(refff3[0])) reff_num += refff3[0];
-  if (!isnan(refff2[0])) reff_denom += refff2[0];
+  if (!std::isnan(refff3[0])) reff_num += refff3[0];
+  if (!std::isnan(refff2[0])) reff_denom += refff2[0];
 
-  if (!isnan(reff23[0])) reff_num += reff23[0] / 1000.0;
-  if (!isnan(reff22[0])) reff_denom += reff22[0] / 1000.0;
+  if (!std::isnan(reff23[0])) reff_num += reff23[0] / 1000.0;
+  if (!std::isnan(reff22[0])) reff_denom += reff22[0] / 1000.0;
 
   if (reff_denom > 0.0)
     reff = 0.5 * (reff_num / reff_denom);
@@ -73,11 +73,11 @@ void sreffd2(DERTBL *varp)	// 2DC + CDP
 
   reff_num = reff_denom = 0.0;
 
-  if (!isnan(reffd3[0])) reff_num += reffd3[0];
-  if (!isnan(reffd2[0])) reff_denom += reffd2[0];
+  if (!std::isnan(reffd3[0])) reff_num += reffd3[0];
+  if (!std::isnan(reffd2[0])) reff_denom += reffd2[0];
 
-  if (!isnan(reff23[0])) reff_num += reff23[0] / 1000.0;
-  if (!isnan(reff22[0])) reff_denom += reff22[0] / 1000.0;
+  if (!std::isnan(reff23[0])) reff_num += reff23[0] / 1000.0;
+  if (!std::isnan(reff22[0])) reff_denom += reff22[0] / 1000.0;
 
   if (reff_denom > 0.0)
     reff = 0.5 * (reff_num / reff_denom);

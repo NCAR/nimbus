@@ -842,7 +842,7 @@ void snclh_s(DERTBL *varp)	// Interpolates Hmatrix for volume mixing ratio
   Tair = (double)GetSample(varp, 6);
   Pair = (double)GetSample(varp, 7);
 
-  if (isnan(pp2f_lhs) || isnan(Pair) || isnan(Tair))  // Reality check.
+  if (std::isnan(pp2f_lhs) || std::isnan(Pair) || std::isnan(Tair))  // Reality check.
   {
     H2O_vmr_s = H2O_vmr_h = floatNAN;
     PutSample(varp, H2O_vmr_s);

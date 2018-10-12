@@ -19,17 +19,14 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2008
 #include "fbr.h"
 #include "svnInfo.h"
 
+#include <nidas/core/NidasApp.h>
+
+using nidas::util::Logger;
+using nidas::util::LogConfig;
+
 #include <csignal>
 
 #define APP_CLASS	"XmNimbus"
-
-
-Widget	AppShell;		/* The Main Application Shell */
-Widget	Shell000, MainWindow;
-Widget	Shell001, SetupWindow;
-
-XtAppContext context;
-
 
 Widget	CreateMainWindow(Widget parent);
 Widget	CreateSetupWindow(Widget parent);
@@ -52,10 +49,18 @@ void	CreateErrorBox(Widget parent),
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
+  nidas::core::NidasApp napp("nimbus");
+  napp.setApplicationInstance();
+  napp.enableArguments(napp.XmlHeaderFile | napp.loggingArgs() |
+		       napp.StartTime | napp.EndTime);
+  // Require long flags to avoid confusion with nimbus flags like -x.
+  napp.requireLongFlag(napp.XmlHeaderFile | napp.loggingArgs() |
+		       napp.StartTime | napp.EndTime);
+
   Arg		args[8];
   Cardinal	n;
 
-  printf("%s\n", SVNREVISION);
+  printf("Revision: %s\n", SVNREVISION);
   printf("%s\n", SVNLASTCHANGEDDATE);
   printf("%s\n\n", SVNURL);
 
@@ -86,14 +91,44 @@ int main(int argc, char *argv[])
   CreateFileSelectionBox(AppShell);
 
   Initialize();
-  ProcessArgv(argc, argv);
 
   signal(SIGUSR2, (void (*) (int))Quit);
 
-  nidas::util::LogConfig lc;
-  logger = nidas::util::Logger::createInstance("nimbus", LOG_CONS, LOG_LOCAL5);
-  lc.level = nidas::util::LOGGER_INFO;
-  logger->setScheme(nidas::util::LogScheme().addConfig (lc));
+  // For now, always log to the console.  Previous to the sync_server
+  // merge, NIDAS messages from the separate sync_server process were
+  // interleaved with the NIMBUS output.  To keep that behavior, which
+  // probably users will still expect, nimbus must send all NIDAS log
+  // messages to the console.  If we really need to see NIDAS messages on
+  // syslog instead, such as in real-time mode on the plane, then maybe
+  // that becomes a command-line option.
+  logger = Logger::createInstance(&std::cerr);
+  // logger = Logger::createInstance("nimbus", LOG_CONS, LOG_LOCAL5);
+
+  // Setup a default log scheme which can be overridden when log options
+  // are parsed in ProcessArgv() below.
+  nidas::util::LogScheme ls = logger->getScheme();
+  if (cfg.ProcessingMode() == Config::PostProcessing)
+  {
+    // We do not need to see logging timestamps when post-processing.
+    ls.setShowFields("message");
+  }
+
+  if (false)
+  {
+    ls.setParameter("trace_variables", "A1DC_LWOO,A1DC_LWO");
+    ls.setParameter("trace_samples", "46,600-602");
+    ls.setParameter("sync_warn_times_interval", "1");
+    ls.addConfig(LogConfig("verbose,function=TraceVariables"));
+    ls.addConfig(LogConfig("verbose,file=TwoD"));
+    ls.addConfig(LogConfig("verbose,file=SamplePipeline"));
+    ls.addConfig(LogConfig("verbose"));
+  }
+
+  // We still want at least info messages from everything else.
+  ls.addConfig(LogConfig("level=info"));
+  logger->setScheme(ls);
+
+  ProcessArgv(argc, argv);
 
   if (cfg.Interactive())
   {

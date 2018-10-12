@@ -233,10 +233,10 @@ void sTwoD(DERTBL *varp)
   // nidas::TwoD_USB only putting out histograms when there is data.
   {
   for (i = 0; i < varp->Length; ++i)
-    if (isnan(actual[i]))
+    if (std::isnan(actual[i]))
       actual[i] = 0;
 
-  if (isnan(deadTime))
+  if (std::isnan(deadTime))
     deadTime = 0;
   }
 

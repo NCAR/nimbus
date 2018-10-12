@@ -27,8 +27,8 @@ enum dqenum { PRELIMINARY=0, GOOD, BAD, SYNTHETIC };
 // Used by probe.c, cb_main.c, and Xwin.c for Toggle Probe menus.
 struct probelist
 {
-  char *label;
-  char *suffix;
+  char label[64];
+  char suffix[64];
 };
 
 extern bool	Interactive;
@@ -43,6 +43,9 @@ extern Widget	varNameLabel;
 extern Widget	outputVarYes, outputVarNo;
 extern Widget	outputLRbutton, outputSRbutton, outputHRbutton;
 extern Widget	lagText, spikeText, synthConstText, ev_text[], ts_text[];
+
+extern Widget AppShell, Shell000, Shell001, MainWindow;
+extern XtAppContext	context;
 
 extern const char *dataQuality[];
 

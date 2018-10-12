@@ -44,7 +44,7 @@ void FreeDefaults()
 {
   for (size_t i = 0; i < nDefaults; ++i)
   {
-    delete Defaults[i]->Name;
+    delete [] Defaults[i]->Name;
     delete Defaults[i];
   }
 }

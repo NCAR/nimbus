@@ -2,7 +2,7 @@
 // This file contains the functions provided by the Motif_Window class.
 
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cmath>
 #include <Xm/Xm.h>
 #include <Xm/XmP.h>

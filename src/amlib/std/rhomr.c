@@ -55,7 +55,7 @@ void srhomr(DERTBL *varp)
   psxc = GetSample(varp, 2);
 
 /*  If MR, ATX and/or PSXC are missing, so is RHOMR  */
-  if ( isnan(mr) || isnan(atx) || isnan(psxc) )
+  if ( std::isnan(mr) || std::isnan(atx) || std::isnan(psxc) )
     {
     rhomr = floatNAN;
     }

@@ -22,8 +22,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 #include "gui.h"
 
 #include <nidas/util/Process.h>
+#include <nidas/core/NidasApp.h>
 
-static void ReadBatchFile(char *filename, Config::processingRate * rate), usage();
+using nidas::core::NidasApp;
+static void ReadBatchFile(const char *filename, Config::processingRate * rate);
+static void usage();
+
+using std::string;
 
 void	Set_SetupFileName(char s[]);
 
@@ -47,7 +52,6 @@ void Initialize()
   PauseFlag		= false;
   PauseWhatToDo		= P_CONTINUE;
   FeedBack		= LOW_RATE_FEEDBACK;
-  sync_server_pipe[0]	= '\0';
 
   pos = XmTextFieldGetLastPosition(aDSdataText);
   XmTextFieldSetInsertionPosition(aDSdataText, pos);
@@ -91,24 +95,31 @@ bool nimbusIsAlreadyRunning()
 void ProcessArgv(int argc, char **argv)
 {
   int	i;
-  char	*p = 0;
+  int length;
+  string p;
   Config::processingRate rate = Config::LowRate;
 
   cfg.SetInteractive(true);
   cfg.SetLoadProductionSetup(true);
 
-  for (i = 1; i < argc; ++i)
+  std::vector<std::string> args(argv+1, argv+argc);
+  NidasApp& napp = *NidasApp::getApplicationInstance();
+
+  napp.parseArgs(args);
+
+  for (i = 0; i < (int)args.size(); ++i)
   {
-    if (strstr(argv[i], "help"))
+    std::string arg = args[i];
+    if (strstr(arg.c_str(), "help"))
       usage();
 
-    if (argv[i][0] != '-')
+    if (arg.length() < 2 || arg[0] != '-')
     {
-      fprintf(stderr, "Invalid option %s, ignoring.\n", argv[i]);
+      fprintf(stderr, "Invalid option '%s', ignoring.\n", arg.c_str());
       continue;
     }
 
-    switch (argv[i][1])
+    switch (arg[1])
     {
       case 'h':
         usage();
@@ -116,11 +127,22 @@ void ProcessArgv(int argc, char **argv)
 
       case 'b':	// Load batch file.
         cfg.SetInteractive(false);
-        ReadBatchFile(argv[++i], &rate);
+        ReadBatchFile(args[++i].c_str(), &rate);
         break;
-
+      case 'l':
+	length = atoi(args[++i].c_str());
+	if (length > 0)
+	{
+	  cfg.SetSorterLength(length);
+	}
+	else
+	{
+	  fprintf(stderr, "invalid sorter length: %s\n", args[i].c_str());
+	  exit(1);
+	}
+        break;
       case 'r':	// -r is for raw data, -rt is for real-time mode.
-        if (nimbusIsAlreadyRunning())
+        if (arg.substr(1, 2) == "rt" && nimbusIsAlreadyRunning())
 	{
 	  fprintf(stderr, "nimbus is already running in real-time mode, exiting.\n");
 	  sleep(5);
@@ -131,10 +153,10 @@ void ProcessArgv(int argc, char **argv)
         cfg.SetDespiking(false);
         cfg.SetBlankoutVariables(false);
         cfg.SetOutputSQL(true);
-        if (strcmp(argv[i], "-rt") == 0)	/* RealTime ADS2 */
+        if (arg == "-rt")	/* RealTime ADS2 */
           RTinit_ADS2();
         else
-        if (strcmp(argv[i], "-rt3") == 0)	/* RealTime ADS3 */
+        if (arg == "-rt3")	/* RealTime ADS3 */
           RTinit_ADS3();
         else
         {
@@ -150,26 +172,34 @@ void ProcessArgv(int argc, char **argv)
         else
           fprintf(stderr, "Must be in RealTime mode to TransmitToGround, ignoring -x.\n");
 
-        if (i+1 < argc && isdigit(argv[i+1][0]))
-          cfg.SetGroundFeedDataRate(atoi(argv[++i]));
+        if (i+1 < (int)args.size() && isdigit(args[i+1][0]))
+          cfg.SetGroundFeedDataRate(atoi(args[++i].c_str()));
         break;
+
+      case 'y':
+	cfg.SetEnableBroadcast(false);
+	cfg.SetWarnTimeLags(false);
+	/* Disable ANALYZE and VACUUM when loading a raw file. */
+	cfg.SetAnalyzeInterval(0);
+	cfg.SetVacuumInterval(0);
+	break;
 
       case 'n':
         cfg.SetLoadProductionSetup(false);
         break;
 
       case 'p':	// Processing-rate.
-        if ( strncmp(argv[i], "-pr", 3) )
+        if (arg.substr(0, 3) == "-pr")
           usage();
 
         // Support '=' or white-space between arg and value.
-        if ((p = strchr(argv[i], '=')) != 0)
-          ++p;
+        if (arg.find('=') != string::npos)
+          p = arg.substr(arg.find('=') + 1);
         else
-          if (i+1 < argc)
-            p = argv[++i];
+          if (i+1 < (int)args.size())
+            p = args[++i];
 
-        if (p == 0)
+        if (p.empty())
           usage();
 
         // Support 0/1/25 or s/l/h, sample-rate, low-rate, and high-rate respectively.
@@ -186,7 +216,7 @@ void ProcessArgv(int argc, char **argv)
         break;
 
       default:
-        fprintf(stderr, "Invalid option %s, ignoring.\n", argv[i]);
+        fprintf(stderr, "Invalid option %s, ignoring.\n", arg.c_str());
     }
   }
 
@@ -220,7 +250,7 @@ static char *processFileName(const char *in, char *out, size_t out_len)
 }
 
 /* -------------------------------------------------------------------- */
-static void ReadBatchFile(char *fileName, Config::processingRate *rate)
+static void ReadBatchFile(const char *fileName, Config::processingRate *rate)
 {
   FILE	*fp;
   char	*p;
@@ -334,10 +364,17 @@ static void usage()
   -rt3:	Real-time for ADS3.\n\
   -x:	Produce and transmit SQL statements to ground (see groundvars file), add an\n\
         optional frequency which to transmit the data.  Default is every 5 seconds.\n\
+  -y:   When running real-time on old data: do not broadcast IWG1 packets,\n\
+        do not warn about time lags, and disable periodic ANALYZE and VACUUM\n\
+        on the database.\n\
   -pr:	Set processing rate, options 0,1,25 or s,l,h for sample-rate, low-rate, or\n\
         high-rate respectively.  Default is low-rate.\n\
-  -n:	Do NOT load any existing production setup files.\n");
-
+  -n:	Do NOT load any existing production setup files.\n\
+\n\
+NIDAS-related options:\n");
+  
+  NidasApp& napp = *NidasApp::getApplicationInstance();
+  fprintf(stderr, "%s", napp.usage().c_str());
   exit(0);
 }
 

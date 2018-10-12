@@ -1,31 +1,8 @@
 # -*- python -*-
 import os
-import platform
+import sharedlibrary
 
 Import('env')
-
-env.Append(LIBPATH=['#/lib'])
-env.Append(LIBPATH=['$JLOCAL/lib'])
-if os.path.exists('/usr/lib/openmotif'):
-  env.Append(LIBPATH=['/usr/lib/openmotif'])
-
-# In order:
-#  AMLIB (Atmospheric Mathmatical Library) calculations.
-#  raf 'building blocks'.
-#  File access stuff.
-#  X windows/GUI.
-#  General math libraries.
-#  ADS3 real-time libraries.  Moved lower to 'if env.realtime'
-env['LIBS'] = Split("""
-  std user xlate
-  hdr_api
-  VarDB domx logx log4cpp 
-  boost_regex boost_filesystem boost_system
-  raf
-  ncaru netcdf hdf5_hl hdf5 pq
-  Xm Xt X11
-  gsl gslcblas m
-""")
 
 sources = Split("""
 UDP_Base.cc
@@ -60,7 +37,6 @@ lrloop.c
 memalloc.cc
 minmax.cc
 NetCDF.cc
-nimbus.c
 order.c
 phase_shift.c
 pms1d.c
@@ -83,47 +59,49 @@ search.c
 setup.c
 textfile.c
 timeseg.c
-""")
-# interp.c
-
-objects = env.StaticObject(Split("""
+rtloop3.cc
 Interpolator.cc
-"""))
-
+sync_reader.cc
+""")
 
 md5o = env.StaticObject('md5.cc', CCFLAGS=env['CCFLAGS']+['-Wno-parentheses'])
+sources = sources + [md5o]
 
-if int(env.realtime):
-  env.Append(CPPPATH=[os.path.join(env['NIDAS_PATH'],'include')])
-  sources = [sources, 'rtloop3.cc', md5o]
-  env.Append(LIBS=['nidas', 'nidas_dynld', 'nidas_util', 'XmlRpcpp', 'xerces-c', 'bz2', 'z', 'pthread'])
-  if (platform.machine() == 'x86_64'):
-    nlibpath = os.path.join(env['NIDAS_PATH'],'lib64')
-  else:
-    nlibpath = os.path.join(env['NIDAS_PATH'],'lib')
-  env.Append(LIBPATH=[nlibpath])
-  # This may be unnecessary and even undesirable with the introduction of
-  # the ld.so.conf file.  However, leave it in for now, especially for the
-  # case of building nimbus against the buildbot nidas.
-  env.Append(_LIBFLAGS=['-Wl,-R', nlibpath])
+# This may be unnecessary and even undesirable with the introduction of
+# the ld.so.conf file.  However, leave it in for now, especially for the
+# case of building nimbus against the buildbot nidas.
+if env.get('NIDAS_LD_RUN_PATH'):
+  env.Append(_LIBFLAGS=['-Wl,-R', "${NIDAS_LD_RUN_PATH}"])
 
+libn = env.StaticLibrary('nimbus', sources)
 
-nimbus = env.Program('nimbus', sources + objects)
+def libnimbus(env):
+  if os.path.exists('/usr/lib/openmotif'):
+    env.Append(LIBPATH=['/usr/lib/openmotif'])
+  env.Append(LIBS=libn)
+  # In order:
+  #  AMLIB (Atmospheric Mathmatical Library) calculations.
+  #  raf 'building blocks'.
+  #  File access stuff.
+  #  X windows/GUI.
+  #  General math libraries.
+  #  ADS3 real-time libraries.
+  env.Require(['libncaru', 'libxlate', 'libstd', 'libuser', 'netcdf'])
+  deplibs = Split("""
+    hdr_api
+    VarDB domx logx log4cpp boost_regex
+    raf
+    pq
+    Xm Xt X11
+    gsl gslcblas m bz2 z
+  """)
+  env.Append(LIBS=deplibs)
 
-env.Install('$JLOCAL/bin', nimbus)
+Export('libnimbus')
 
+env.Tool(libnimbus)
+
+nimbus = env.Program('nimbus', ['nimbus.c'])
 env.Default(nimbus)
-
-
-
-test_sources = Split("""
-tests/test_Interpolator.cc
-tests/test_parseInt.cc
-""")
-
-nt = env.Program('nimbus_tests', test_sources + objects, 
-                 LIBS=env['LIBS']+['gtest_main', 'gtest'])
-env.Alias('nimbus_tests', nt)
-
-env.Alias('test', env.Command('xtest', nt, nt[0].abspath))
+Alias('install', env.Install('$JLOCAL/bin', nimbus))
 

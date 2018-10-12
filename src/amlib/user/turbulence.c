@@ -30,7 +30,7 @@ void stke(DERTBL *varp)
   wi = GetSample(varp, 2);
   ws = GetSample(varp, 3);
 
-  if (isnan(ui) || isnan(vi) || isnan(wi))
+  if (std::isnan(ui) || std::isnan(vi) || std::isnan(wi))
     TKE = MISSING_VALUE;
   else
   {
@@ -55,7 +55,7 @@ void sacvar(DERTBL *varp)
 
   acins = GetSample(varp, 0);
 
-  if (isnan(acins))
+  if (std::isnan(acins))
     ACVAR = floatNAN;
   else
   {
