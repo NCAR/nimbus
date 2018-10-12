@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 
 #include "Interpolator.h"
-#include <math.h>
+#include <cmath>
 
 namespace
 {
@@ -39,8 +39,8 @@ TEST_F (InterpolatorTest, InterpolatorSetup)
 TEST_F (InterpolatorTest, InterpolatorEval)
 {
   EXPECT_EQ (interp.eval(1.5), 1.5);
-  EXPECT_TRUE (isnan(interp.eval(-1)));
-  EXPECT_TRUE (isnan(interp.eval(7)));
+  EXPECT_TRUE (std::isnan(interp.eval(-1)));
+  EXPECT_TRUE (std::isnan(interp.eval(7)));
 }
 
 TEST_F (InterpolatorTest, Extrapolate)

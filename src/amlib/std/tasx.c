@@ -24,7 +24,7 @@ void stasx(DERTBL *varp)
   NR_TYPE	tas = GetSample(varp, 0);
 
   // If we have a secondary tas, use it if primary is nan.
-  if (isnan(tas) && varp->ndep > 1)
+  if (std::isnan(tas) && varp->ndep > 1)
     tas = GetSample(varp, 1);
 
   if (tas <= 0.0)

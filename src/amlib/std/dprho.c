@@ -39,7 +39,7 @@ void sdprho(DERTBL *varp)
     atx = GetSample(varp, 1);
 
 /*  If RHO and/or ATX are missing, so is DPRHO  */
-    if ( isnan(rho) || isnan(atx) )
+    if ( std::isnan(rho) || std::isnan(atx) )
       {
       dprho = floatNAN;
       }

@@ -23,6 +23,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2005
 #include "NetCDF.h"
 #include "brdcast.h"
 #include "grnd_feed.h"
+#include "timeseg.h"
 
 #include <Xm/TextF.h>
 

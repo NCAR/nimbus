@@ -21,6 +21,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2018
 #include <raf/vardb.hh>
 #include "svnInfo.h"
 
+#include "trace_variables.h"
+
 const std::string NetCDF::Source = "NCAR Research Aviation Facility";
 const std::string NetCDF::Address = "P.O. Box 3000, Boulder, CO 80307-3000";
 const std::string NetCDF::Phone = "(303) 497-1030";
@@ -143,7 +145,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("Metadata_Conventions", "Unidata Dataset Discovery v1.0"); 
   putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION.c_str());
   putGlobalAttribute("standard_name_vocabulary", "CF-1.0");
-  putGlobalAttribute("ProcessorRevision", &SVNREVISION[10]);
+  putGlobalAttribute("ProcessorRevision", SVNREVISION);
   putGlobalAttribute("NIDASrevision", cfg.NIDASrevision().c_str());
 
   if (strstr(SVNURL, "http"))
@@ -510,11 +512,15 @@ void NetCDF::WriteNetCDF()
   start[0] = _recordNumber; start[1] = start[2] = 0;
   count[0] = 1;
 
+  time_t stime = SampledDataTimeToSeconds(SampledData);
+
   // Output Time variable as seconds since midnight (UTSeconds).
   long ut_seconds = UTSeconds(SampledData);
   nc_put_var1_long(_ncid, _timeVarID, start, &ut_seconds);
   if (cfg.isADS2())
     nc_put_var1_float(_ncid, _timeOffsetID, start, &_timeOffset);
+
+  static TraceVariables tv;
 
   for (size_t i = 0; i < raw.size(); ++i)
   {
@@ -530,6 +536,11 @@ void NetCDF::WriteNetCDF()
 
     if (rp->OutputRate == Config::LowRate)
     {
+      if (tv.active())
+      {
+        tv.trace_variable("write netcdf lowrate", rp->name, stime,
+                          &(AveragedData[rp->LRstart]), N);
+      }
       for (size_t j = 0; j < N; ++j)
         data[j] = (float)AveragedData[rp->LRstart + j];
     }
@@ -548,7 +559,7 @@ void NetCDF::WriteNetCDF()
     }
 
     for (size_t j = 0; j < N; ++j)
-      if (isnan(data[j]))
+      if (std::isnan(data[j]))
         data[j] = (float)MISSING_VALUE;
 
     status = nc_put_vara_float(_ncid, rp->varid, start, count, data);
@@ -588,7 +599,7 @@ void NetCDF::WriteNetCDF()
     }
 
     for (size_t j = 0; j < N; ++j)
-      if (isnan(data[j]))
+      if (std::isnan(data[j]))
         data[j] = (float)MISSING_VALUE;
 
     status = nc_put_vara_float(_ncid, dp->varid, start, count, data);
@@ -638,16 +649,13 @@ void NetCDF::QueueMissingData(int h, int m, int s, int nRecords)
 void NetCDF::WriteMissingRecords()
 {
   size_t	i;
-  float		*d, hour, minute, second;
+  float		hour, minute, second;
+  // 5000 is fastest sampling rate
+  std::vector<float> d(5000, MISSING_VALUE);
   void		*ldp[MAX_VARIABLES];
   struct missDat	*dp;
 
   dp = _missingRecords.front();
-  d = new float[5000];
-  /* 5000 is fastest sampling rate */
-
-  for (i = 0; i < 5000; ++i)
-    d[i] = (float)MISSING_VALUE;
 
   int indx = 0;
   ldp[indx++] = (void *)&_timeVar;
@@ -677,12 +685,24 @@ void NetCDF::WriteMissingRecords()
       second = dp->second;
       }
     else
-      ldp[indx++] = (void *)d;
+      ldp[indx++] = (void *)&d[0];
     }
+
+  if (second < 0)
+  {
+    ELOG(("Somehow second for missing record not set. "
+          "Time from queue is %02d:%02d:%02d, initialized time "
+          "is %02d:%02d:%02d.  Raw table size=%d, derived size=%d, "
+          "num missing records=%d",
+          int(dp->hour), int(dp->minute), int(dp->second),
+          int(hour), int(minute), int(second),
+          int(raw.size()), int(derived.size()), int(dp->nRecords)));
+    second = dp->second;
+  }
 
   for (i = 0; i < derived.size(); ++i)
     if (derived[i]->Output)
-      ldp[indx++] = (void *)d;
+      ldp[indx++] = (void *)&d[0];
 
   for (i = 0; i < dp->nRecords; ++i)
     {
@@ -706,7 +726,6 @@ void NetCDF::WriteMissingRecords()
 
   _missingRecords.pop();
   delete dp;
-  delete [] d;
 
 }	/* END WRITEMISSINGRECORDS */
 

@@ -99,12 +99,12 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
   if (!ProductionSetup)
   {
-    int value = atoi(strchr(buffer, '=')+1);
+    long value = atoi(strchr(buffer, '=')+1);
     switch (value)
     {
       case 25:
       case 50:
-        SetHighRate(NULL, (void *)value, NULL);
+        SetHighRate(NULL, (void*)value, NULL);
         break;
       case Config::SampleRate:
         SetSampleRate(NULL, NULL, NULL);

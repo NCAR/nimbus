@@ -75,7 +75,7 @@ void sttc(DERTBL *varp)
   vns	= GetSample(varp, 0);	// IRS NS ground speed
   gvns	= GetSample(varp, 1);	// GPS NS ground speed
 
-  if ( isnan(vns) || isnan(gvns) )
+  if ( std::isnan(vns) || std::isnan(gvns) )
     {
     returnMissingValue = true;
     PutSample(varp, floatNAN);

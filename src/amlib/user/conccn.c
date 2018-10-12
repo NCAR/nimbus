@@ -1,8 +1,8 @@
 /*  University of Wyoming CCN	Wispit (3-278) Jeffco February, 1993	*/
 
-#include <math.h>
 #include "nimbus.h"
 #include "amlib.h"
+#include <cmath>
 
 /* -------------------------------------------------------------------- */
 void sconccn(DERTBL *varp)

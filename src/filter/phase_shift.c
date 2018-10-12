@@ -165,9 +165,9 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
     {
       dynLag = recPtrs[ri][vp->LAGstart] / 1000.0;
 
-      if (isnan(dynLag))
+      if (std::isnan(dynLag))
       {
-        if (ri >= 2 && !isnan(recPtrs[ri-2][vp->LAGstart]))
+        if (ri >= 2 && !std::isnan(recPtrs[ri-2][vp->LAGstart]))
         {
           recPtrs[ri][vp->LAGstart] = recPtrs[ri-2][vp->LAGstart];
           dynLag = recPtrs[ri][vp->LAGstart] / 1000.0;
@@ -179,7 +179,7 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 
     for (size_t i = 0; i < vp->SampleRate; ++i)
     {
-//      if (!isnan(curPtr[i]))
+//      if (!std::isnan(curPtr[i]))
       {
         x[goodPoints] = (ri * 1000) + (gap_size * i) + dynLag;
         y[goodPoints] = curPtr[i];

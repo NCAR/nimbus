@@ -176,7 +176,7 @@ void scvcfacttdl(DERTBL *varp)
     cvtcn += Kelvin;
 
   // Replicate previous samle if out of bounds (15C and 35C).
-  if (isnan(cvtcn) || cvtcn < 288.0 || cvtcn > 308.0)
+  if (std::isnan(cvtcn) || cvtcn < 288.0 || cvtcn > 308.0)
     cvtcn = previousTCN;
   else
     previousTCN = cvtcn;

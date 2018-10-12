@@ -15,6 +15,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2010
 #include "nimbus.h"
 #include "amlib.h"
 
+#include "sync_reader.hh"
+#include <nidas/core/Project.h>
+
 static const int MAX_PROBES = 4;
 
 static const NR_TYPE	THDG_TEST	= 180.0 * M_PI / 180.0;
@@ -28,6 +31,40 @@ static NR_TYPE		pitch0[MAX_PROBES][nFeedBackTypes],
 			thdg0[MAX_PROBES][nFeedBackTypes],
 			DELT[nFeedBackTypes];
 static bool		firstTime[MAX_PROBES][nFeedBackTypes];
+
+
+
+bool
+getBoomLengthParameter(var_base* varp, float* boomlength)
+{
+  nidas::core::Project* project = nidas::core::Project::getInstance();
+  
+  varlist_t variables;
+  variables = selectVariablesFromProject(project);
+  
+  nidas::core::Variable* var = lookup_variable(variables, varp->name);
+  if (! var)
+  {
+    WLOG(("get boomlength: variable name not found: %s", varp->name));
+    return false;
+  }
+
+  const std::list<const nidas::core::Parameter *> parms = var->getParameters();
+  std::list<const nidas::core::Parameter *>::const_iterator it;
+  for (it = parms.begin(); it != parms.end(); ++it)
+  {
+    if ((*it)->getName() == "BOOMLENGTH")
+    {
+      *boomlength = (*it)->getNumericValue(0);
+      DLOG(("variable %s has boomlength=%g", varp->name, *boomlength));
+      return true;
+    }
+  }
+  ILOG(("variable %s does not have BOOMLENGTH parameter", varp->name));
+  return false;
+}
+
+
 
 /* -------------------------------------------------------------------- */
 void initGust(var_base *varp)
@@ -57,8 +94,16 @@ void initGust(var_base *varp)
    * time being.
    * @todo  This could be fetched from the nidas XML file after the sync_server/nimbus merge.
    */
-  if (gustPod)
+  bool blfound = getBoomLengthParameter(varp, &boomln[varp->ProbeCount]);
+
+  if (gustPod && !blfound)
+  {
     boomln[varp->ProbeCount] = 0.67;
+    ELOG(("Gust pod variable %s missing BOOMLENGTH parameter.\n"
+	  "Resorting to the hardcoded default: %g.\n"
+	  "Add BOOMLENGTH to the GustPodPPT sensor ID in the NIDAS XML file.",
+	  varp->name, boomln[varp->ProbeCount]));
+  }
 
   std::vector<float> bl;
   bl.push_back(boomln[varp->ProbeCount]);
@@ -84,7 +129,7 @@ void swi(DERTBL *varp)
   sslip	= GetSample(varp, 7) * DEG_RAD;
   vspd	= GetSample(varp, 8);
 
-  if (isnan(pitch) || isnan(thdg) || isnan(tas) || isnan(vspd))
+  if (std::isnan(pitch) || std::isnan(thdg) || std::isnan(tas) || std::isnan(vspd))
   {
     ui[probeCnt] = floatNAN;
     vi[probeCnt] = floatNAN;
@@ -97,9 +142,9 @@ void swi(DERTBL *varp)
 
   if (firstTime[probeCnt][FeedBack])
   {
-    if (!isnan(pitch))
+    if (!std::isnan(pitch))
       pitch0[probeCnt][FeedBack] = pitch;
-    if (!isnan(thdg))
+    if (!std::isnan(thdg))
       thdg0[probeCnt][FeedBack] = thdg;
 
     firstTime[probeCnt][FeedBack] = FALSE;

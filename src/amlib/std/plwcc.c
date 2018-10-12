@@ -147,7 +147,7 @@ void splwcc(DERTBL *varp)
   /* This cut-off is about a broken wire or some other issue with probe.
    * Still under investigation if 10.0 is the best value.
    */
-  if (plwc < 10.0 || isnan(plwc))
+  if (plwc < 10.0 || std::isnan(plwc))
   {
     PutSample(varp, floatNAN);
     return;
@@ -190,11 +190,11 @@ NR_TYPE CooperLWC_GV(const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE atx,
   NR_TYPE dens = 100.0 * psxc / (Rd * (tm + Kelvin));	// air density
   NR_TYPE Re = dens * tasx * dWire[indx] / visc;	// Reynolds number
 
-  if (isnan(Re))
+  if (std::isnan(Re))
     return floatNAN;
 
   // Update Nusselt-number coefficients
-  if (concf < cloud_conc_threshold && !isnan(concf))
+  if (concf < cloud_conc_threshold && !std::isnan(concf))
   {
     Nu = plwc / (M_PI * lWire[indx] * cond * (tWire[indx] - atx));
     if (tasx < 150.0)
@@ -262,11 +262,11 @@ NR_TYPE CooperLWC_C130(	const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE at
   NR_TYPE dens = 100.0 * psxc / (Rd * (tm + Kelvin));	// air density
   NR_TYPE Re = dens * tasx * dWire[indx] / visc;	// Reynolds number
 
-  if (isnan(Re))
+  if (std::isnan(Re))
     return floatNAN;
 
   // Update Nusselt-number coefficients
-  if (concf < cloud_conc_threshold && !isnan(concf))
+  if (concf < cloud_conc_threshold && !std::isnan(concf))
   {
     Nu = plwc / (M_PI * lWire[indx] * cond * (tWire[indx] - atx));
     Nu_a0 += (Nu / pow(Re, Nu_a1) - Nu_a0) / tau_Nu[indx];

@@ -35,7 +35,7 @@ void sraltm(DERTBL *varp)
   ralt = GetSample(varp, 0);
 
 /*  If RALT is missing, so is RALTM  */
-  if (isnan(ralt))
+  if (std::isnan(ralt))
     {
     raltm = floatNAN;
     }

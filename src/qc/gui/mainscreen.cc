@@ -1,7 +1,7 @@
 //  mainscreen.cc:  A. Bokinsky  QC project Spring 1995
 //  This file contains the functions provided by the MainScreen class.
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <Xm/MessageB.h>

@@ -7,7 +7,7 @@
 ** Define the linked list functions available.
 */
 
-#include <stdlib.h>
+#include <cstdlib>
 #include "sigdata.h"
 
 #ifndef _VALKLIST_H_

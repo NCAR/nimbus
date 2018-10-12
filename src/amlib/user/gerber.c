@@ -86,10 +86,10 @@ void splwcg(DERTBL *varp)
  
   /* Baseline to a another cloud instrument to remove drift.
    */
-  if (!isnan(concf))
+  if (!std::isnan(concf))
     add_sample(&concg, concf);
 
-  if (concg.average[FeedBack] < cloud_conc_threshold && !isnan(plwc))
+  if (concg.average[FeedBack] < cloud_conc_threshold && !std::isnan(plwc))
     add_sample(&lwcg, -plwc);
 
   plwc += lwcg.average[FeedBack];

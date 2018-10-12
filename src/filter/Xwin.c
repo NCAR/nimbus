@@ -47,6 +47,12 @@ Widget	outputLRbutton, outputSRbutton, outputHRbutton;
 Widget	lagText, spikeText, synthConstText;
 Widget	ev_text[16], slOpMenu,funcOpMenu;
 
+Widget	AppShell;		/* The Main Application Shell */
+Widget	Shell000, MainWindow;
+Widget	Shell001, SetupWindow;
+
+XtAppContext context;
+
 extern void LoadSynthetic(Widget w, XtPointer client, XtPointer call);  //this may belong somewhere else
 extern char *func[19];
 

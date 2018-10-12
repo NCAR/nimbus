@@ -42,6 +42,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 
 #include "nimbus.h"
 #include "decode.h"
+#include "timeseg.h"
 #include <raf/ctape.h>
 #include <raf/raf.h>
 #include <raf/portable.h>
@@ -596,6 +597,13 @@ bool Next2dRecord(P2d_rec *record, int probeCnt, ushort id)
   int	nbytes, size;
   char	buff[32000];
   ushort *rec_id = (ushort *)buff;
+
+  if (twoDfd[probeCnt] < 0)
+  {
+    WLOG(("Next2dRecord(probeCnt=%d): ", probeCnt)
+	 << "invalid file descriptor, ignoring.");
+    return false;
+  }
 
   do
     {
