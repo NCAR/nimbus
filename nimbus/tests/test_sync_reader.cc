@@ -10,7 +10,7 @@
 
 #include "sync_reader.hh"
 #include <nidas/util/EOFException.h>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 #include <nidas/core/NidasApp.h>
 #include <nidas/core/Project.h>
@@ -627,8 +627,12 @@ TEST_P(SyncReaderTest, CompareHeaderAndRecords)
 	else if (!AlmostEqual2sComplement(xf, gotf))
 	{
 	  // NIDAS sensor fixed GGREFID, so accept it here until the good
-	  // test data are regenerated.
-	  if (var->getName() != "GGREFID" || gotf != 1008)
+	  // test data are regenerated.  Also, as of the latest trunk
+	  // merge, there is just one point where SHDORC differs, so chalk
+	  // it up to something unimportant for now...
+	  if ((var->getName() != "GGREFID" || gotf != 1008)
+	      // && (var->getName() != "SHDORC_LWIO" || tt != 1380222001000000ul)
+	      )
 	  {
 	    ++nfail;
 	    if (nfail <= maxfails)
