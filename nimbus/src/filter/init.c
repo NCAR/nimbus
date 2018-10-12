@@ -142,7 +142,7 @@ void ProcessArgv(int argc, char **argv)
 	}
         break;
       case 'r':	// -r is for raw data, -rt is for real-time mode.
-        if (nimbusIsAlreadyRunning())
+        if (arg.substr(1, 2) == "rt" && nimbusIsAlreadyRunning())
 	{
 	  fprintf(stderr, "nimbus is already running in real-time mode, exiting.\n");
 	  sleep(5);

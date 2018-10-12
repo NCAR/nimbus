@@ -23,7 +23,7 @@ namespace dsm
   class SyncRecordReader;
 }
 
-const NR_TYPE floatNAN = nanf("");
+const NR_TYPE floatNAN = nan("");
 const NR_TYPE MISSING_VALUE = -32767.0;
 const int MaxLag = 2000;
 const int MAX_COF = 6;
