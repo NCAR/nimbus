@@ -379,17 +379,22 @@ those in turn can be discovered by looking up the project name under the
 PROJ_DIR environment setting.  The examples below use the 'flights'
 operation to just verify that the configuration loads correctly.  We don't
 need to list all the profiles for each project, so the specifier matches
-only the 'local' profiles:
+only the 'local' profiles::
 
-      barolo|139|% echo $PROJ_DIR
-      /net/jlocal/projects
-      barolo|140|% ./pnimbus.py --flights CSET/local CSET/local/ff01 CSET/local/rf01 CSET/local/rf02 CSET/local/rf03 CSET/local/rf04 CSET/local/rf05 CSET/local/rf06 CSET/local/rf07 CSET/local/rf08 CSET/local/rf09 CSET/local/rf10 CSET/local/rf11 CSET/local/rf12 CSET/local/rf13 CSET/local/rf14 CSET/local/rf15 CSET/local/rf16
+     barolo|139|% echo $PROJ_DIR
+     /net/jlocal/projects
+     barolo|140|% ./pnimbus.py --flights CSET/local
+     CSET/local/ff01 CSET/local/rf01 CSET/local/rf02 CSET/local/rf03
+     CSET/local/rf04 CSET/local/rf05 CSET/local/rf06 CSET/local/rf07
+     CSET/local/rf08 CSET/local/rf09 CSET/local/rf10 CSET/local/rf11
+     CSET/local/rf12 CSET/local/rf13 CSET/local/rf14 CSET/local/rf15
+     CSET/local/rf16
 
 When no flight specifiers are given, the script uses a hardcoded list of
 default projects.  You can see the list of available default projects using
-the `--flights` option and matching a single flight:
+the `--flights` option and matching a single flight::
 
-      ./pnimbus.py --flights nimbus '//rf01'
+     ./pnimbus.py --flights nimbus '//rf01'
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Generating output for a project
