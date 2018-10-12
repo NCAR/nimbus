@@ -130,12 +130,6 @@ class NimbusProject(object):
         self.compare_dir = None
         self.projects = os.environ.get('PROJ_DIR')
         self.prodpath = None
-        # Custom executable path includes the locally built nc_compare.
-        nccmp = os.path.join(os.path.dirname(__file__),
-                             '../../nc_utils/nc_compare')
-        ncreo = os.path.join(os.path.dirname(__file__),
-                             '../../nc_utils/ncReorder')
-        self.xpath = [nccmp, ncreo]
         # A dictionary of setup files for this project keyed by flight.
         self.setups = {}
         self.dryrun = False
@@ -431,7 +425,10 @@ class NimbusProject(object):
         spenv = {}
         spenv.update(os.environ)
         xpath = spenv.get('PATH', '').split(":")
-        xpath = self.xpath + xpath
+        # This would be the place to extend the path to find tools like
+        # ncReorder and nc_compare, but since those are now built from a
+        # separate repository at an unknown location, instead they are
+        # expected to be on the existing PATH.
         spenv['PATH'] = os.pathsep.join(xpath)
         if self.projects:
             spenv['PROJ_DIR'] = self.projects
