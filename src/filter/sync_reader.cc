@@ -208,10 +208,10 @@ StartSyncServerProcess(const std::set<std::string>& headerfiles,
     args.push_back("--loglevel");
     args.push_back("debug");
   }
-#ifdef notdef
   args.push_back("-l");
-  args.push_back("60");	// 60 second time-sorter.
-#endif
+  std::ostringstream sortlen;
+  sortlen << cfg.GetSorterLength();  // Match post-processing default.
+  args.push_back(sortlen.str());
   args.push_back("-p");
   args.push_back(sync_server_pipe);
   if (xml_path.length() > 0)
