@@ -89,7 +89,8 @@ def libnimbus(env):
   env.Require(['libncaru', 'libxlate', 'libstd', 'libuser', 'netcdf'])
   deplibs = Split("""
     hdr_api
-    VarDB domx logx log4cpp boost_regex
+    VarDB domx logx log4cpp
+    boost_regex boost_filesystem boost_system
     raf
     pq
     Xm Xt X11
