@@ -26,6 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2017
 #include "mtp_rcf_set.h"
 #include "mtp_retriever.h"
 #include <sys/stat.h>
+#include <algorithm> // std::fill()
 
 // Set constants for platinum wire gain equation for temperature of target. 
 // These should remain constant as long as physical target doesn't change.
@@ -287,14 +288,11 @@ void sretriever(DERTBL *varp)
   NR_TYPE tempc[NUM_RETR_LVLS]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33};
 
   /* If GGALT is missing, return missing for tempc */
-  if (isnan(ggalt))
+  if (std::isnan(ggalt))
   {
-    memset(tempc,floatNAN,NUM_RETR_LVLS);
-    //for (size_t i=0; i<NUM_RETR_LVLS;i++)
-    //{
-    //  tempc[i]=floatNAN;
-    //}
-  } else {
+    std::fill(tempc, tempc+NUM_RETR_LVLS, floatNAN);
+  }
+  else {
 
     AtmosphericTemperatureProfile ATP;
     ATP = Rtr->Retrieve(scanbt, ggalt/1000.0); // convert m to km
