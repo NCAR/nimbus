@@ -34,7 +34,7 @@ using nidas::dynld::raf::SyncRecordVariable;
 
 namespace 
 {
-  char sync_server_pipe[80] = "";
+  char sync_server_pipe[128] = "";
   pid_t syncPID = -1;
   nidas::dynld::raf::SyncRecordReader* syncRecReader = 0;
   nidas::dynld::raf::SyncServer* syncServer = 0;
@@ -87,7 +87,12 @@ ShutdownSyncServer()
   }
 
   if (strlen(sync_server_pipe))
+  {
     unlink(sync_server_pipe);
+    char* slash = strrchr(sync_server_pipe, '/');
+    *slash = '\0';
+    rmdir(sync_server_pipe);
+  }
 
   if (syncServer)
   {
@@ -180,8 +185,12 @@ StartSyncServerProcess(const std::set<std::string>& headerfiles,
   ILOG(("StartSyncServerProcess: header_file=%s", (*headerfiles.begin()).c_str()));
 
   strcpy(sync_server_pipe, "/tmp/sync_server_XXXXXX");
-  mktemp(sync_server_pipe);
-
+  // sync_server wants to create the pipe socket itself, so we cannot just use
+  // mkstemp here.  Instead, create a temporary directory and then provide a
+  // path inside that directory to sync_server.
+  mkdtemp(sync_server_pipe);
+  strcat(sync_server_pipe, "/sync_server.pipe");
+    
   std::vector<std::string> args;
   if (getenv("NIMBUS_SYNC_SERVER_VALGRIND"))
   {
