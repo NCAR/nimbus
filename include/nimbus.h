@@ -100,9 +100,9 @@ public:
 
   std::vector<std::pair<int, int> > blank_out;
 
-//  std::vector<float> SampledData;	// vector to hold sampled data for this var
-//  std::vector<float> AveragedData;	// vector to hold averaged data for this var
-//  std::vector<float> HighRateData;	// vector to hold high rate data for this var
+  std::vector<float> SampledData;	// vector to hold sampled data for this var
+  std::vector<float> AveragedData;	// vector to hold averaged data for this var
+  std::vector<float> HighRateData;	// vector to hold high rate data for this var
 
   float min, max;	// Min and max for this variable over course run.
 

@@ -541,20 +541,26 @@ void NetCDF::WriteNetCDF()
         tv.trace_variable("write netcdf lowrate", rp->name, stime,
                           &(AveragedData[rp->LRstart]), N);
       }
-      for (size_t j = 0; j < N; ++j)
+      for (size_t j = 0; j < N; ++j) {
         data[j] = (float)AveragedData[rp->LRstart + j];
+        rp->AveragedData.push_back(data[j]); // save data in memory
+      }
     }
     else
     {
       if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
       {
-        for (size_t j = 0; j < N; ++j)
+        for (size_t j = 0; j < N; ++j) {
           data[j] = (float)SampledData[rp->SRstart + j];
+	  rp->SampledData.push_back(data[j]); // save data in memory
+	}
       }
       else
       {
-        for (size_t j = 0; j < N; ++j)
+        for (size_t j = 0; j < N; ++j) {
           data[j] = (float)HighRateData[rp->HRstart + j];
+	  rp->HighRateData.push_back(data[j]); // save data in memory
+	}
       }
     }
 
@@ -589,13 +595,17 @@ void NetCDF::WriteNetCDF()
 
     if (dp->OutputRate == Config::LowRate)
     {
-      for (size_t j = 0; j < N; ++j)
+      for (size_t j = 0; j < N; ++j) {
         data[j] = (float)AveragedData[dp->LRstart + j];
+        dp->AveragedData.push_back(data[j]); // save data in memory
+      }
     }
     else
     {
-      for (size_t j = 0; j < N; ++j)
+      for (size_t j = 0; j < N; ++j) {
         data[j] = (float)HighRateData[dp->HRstart + j];
+        dp->HighRateData.push_back(data[j]); // save data in memory
+      }
     }
 
     for (size_t j = 0; j < N; ++j)
