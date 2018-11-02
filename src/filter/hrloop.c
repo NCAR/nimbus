@@ -11,7 +11,7 @@ STATIC FNS:	none
 DESCRIPTION:	
 
 REFERENCES:	circbuff.c, adsIO.c, rec_decode.c, phase_shift.c, compute.c,
-		filter.c, timeseg.c, netcdf.c
+		filter.c, timeseg.c, NetCDF.cc
 
 REFERENCED BY:	StartProcessing()
 

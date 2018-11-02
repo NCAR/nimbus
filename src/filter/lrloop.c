@@ -12,7 +12,7 @@ STATIC FNS:	displayTime()
 DESCRIPTION:	
 
 REFERENCES:	circbuff.c, adsIO.c, rec_decode.c, phase_shift.c average.c
-		compute.c netcdf.c, timeseg.c
+		compute.c NetCDF.cc, timeseg.c
 
 REFERENCED BY:	StartProcessing()
 

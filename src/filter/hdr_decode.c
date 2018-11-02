@@ -48,7 +48,7 @@ using nidas::dynld::raf::Aircraft;
 using nidas::core::NidasApp;
 using nidas::core::Project;
 
-VDBFile *vardb = 0; // Exports to cb_main.c and netcdf.c
+VDBFile *vardb = 0; // Exports to cb_main.c and NetCDF.cc
 
 typedef struct
   {
