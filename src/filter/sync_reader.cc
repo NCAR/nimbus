@@ -438,6 +438,23 @@ getSerialNumber(const nidas::core::Variable* variable)
 }
 
 
+int
+getLag(const nidas::core::Variable* variable)
+{
+  int lag = 0;
+  const nidas::core::SampleTag* tag = variable->getSampleTag();
+  const nidas::core::DSMSensor* sensor = 0;
+  const nidas::core::Parameter* parm = 0;
+  if (tag)
+    sensor = tag->getDSMSensor();
+  if (sensor)
+    parm = sensor->getParameter("lag");
+  if (parm)
+    lag = parm->getNumericValue(0);
+  return lag * 1000;	// convert to milliseconds
+}
+
+
 void
 SetCalibration(RAWTBL* rp)
 {
