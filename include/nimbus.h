@@ -132,8 +132,9 @@ public:
   float	convertFactor;	// A/D slope
   std::vector<NR_TYPE> cof;
 
+  int nidasLag;		// Static lag from nidas.  Here as metadata to go in netCDF
   int StaticLag;	// Static lag in ms to shift data
-  int DynamicLag;	// Dynamic lag
+  int DynamicLag;	// Dynamic lag in ms
   float SpikeSlope;	// Slope for spike detection
 
   SYNTHTYPE synthtype;

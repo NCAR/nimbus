@@ -606,7 +606,9 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     }
 
     location[0] = '\0';
-    addSerialNumber(var, rp);
+//    addSerialNumber(var, rp);
+    rp->nidasLag = getLag(var);
+    rp->SerialNumber = getSerialNumber(var);
   }
 
   if (cfg.ProjectName().compare("RAF_Lab") && (cfg.Aircraft() != Config::TADS) )
