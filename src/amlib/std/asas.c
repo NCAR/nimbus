@@ -244,6 +244,9 @@ void spflwc(DERTBL *varp)
   psxc	= GetSample(varp, 1);
   atx	= GetSample(varp, 2);
 
+  if (flow < 0.0)	// basic check.
+    flow = 0.0;
+
   // Changed from 294.15 C to 298.15 C on 9/13/01 per DCRogers.
   flowc = flow * (StdPress / psxc) * (atx + Kelvin) / 298.15;
 
@@ -259,6 +262,9 @@ void suflwc(DERTBL *varp)
   ups	= GetSample(varp, 1);	// kPa; factor of 10 in calculations converts to hPa
   psxc	= GetSample(varp, 2);
   atx	= GetSample(varp, 3);
+
+  if (flow < 0.0)	// basic check.
+    flow = 0.0;
 
   /* The UHSAS sample flow readout will periodically saturate the A/2 to
    * about 1.5 even though the flow was actually correct.  Hold flow to

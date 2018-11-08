@@ -113,6 +113,9 @@ void sconcud(DERTBL *varp)
   NR_TYPE flow = GetSample(varp, 2);
   int	cvinlet = (int)GetSample(varp, 3);
 
+  if (flow < 0.0)	// basic check.
+    flow = 0.0;
+
   NR_TYPE concud = cnts / (flow * cvcfact);
 
   // If we have come out of cloud.  Output nan for 20 seconds.
