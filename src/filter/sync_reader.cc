@@ -259,12 +259,6 @@ StartSyncServerProcess(const std::set<std::string>& headerfiles,
   {
     std::cerr << "sync_server socket exists!" << std::endl;
   }
-#ifdef notdef
-  nidas::util::UnixSocketAddress usa(sync_server_pipe);
-  sock = new nidas::util::Socket(usa);
-  nidas::core::IOChannel * iochan = new nidas::core::Socket(sock);
-  syncRecReader = new nidas::dynld::raf::SyncRecordReader(iochan);
-#endif
 }
 
 

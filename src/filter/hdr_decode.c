@@ -414,14 +414,6 @@ int DecodeHeader3(const char header_file[])
     cfg.SetFlightNumber("uncle");
   cfg.SetNIDASrevision(nidas::core::Version::getSoftwareVersion());
 
-#ifdef notdef
-  cfg.SetProjectNumber(syncRecReader->getProjectName());
-  cfg.SetTailNumber(syncRecReader->getTailNumber());
-  if (cfg.FlightNumber().length() == 0)
-    cfg.SetFlightNumber(syncRecReader->getFlightName());
-  cfg.SetNIDASrevision(syncRecReader->getSoftwareVersion());
-#endif
-
   if (0)
   {
     // Using the VarDBConverter to open either a binary or xml vardb makes
