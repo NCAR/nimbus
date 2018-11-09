@@ -30,13 +30,12 @@ static int getCellSizes(const var_base * rp, float cellSizes[]);
 
 
 /* -------------------------------------------------------------------- */
-static void setSerialNumberAndProbeType(const char * name, const char * serialNum, int probeType)
+static void setSerialNumberAndProbeType(const char * name, int probeType)
 {
   int raw_indx, der_indx;
   char cname[64], *location;
 
-  DLOG(("probe for variable '") << std::string(name)
-       << "' getting serial number '" << std::string(serialNum) << "'");
+  DLOG(("probe for variable '") << std::string(name) << "'");
 
   strcpy(cname, name); 
 
@@ -63,7 +62,6 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
   if (raw_indx == ERR)
     return;
 
-  raw[raw_indx]->SerialNumber	= serialNum;
   raw[raw_indx]->ProbeType	= probeType;
 
   if ((location = strstr(raw[raw_indx]->name, "_")) == 0)
@@ -72,17 +70,15 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
   for (size_t i = 0; i < raw.size(); ++i)
     if (strstr(raw[i]->name, location))
     {
-      raw[i]->SerialNumber	= raw[raw_indx]->SerialNumber;
       raw[i]->ProbeType		= raw[raw_indx]->ProbeType;
     }
   for (size_t i = 0; i < derived.size(); ++i)
     if (strstr(derived[i]->name, location))
     {
-      derived[i]->SerialNumber	= raw[raw_indx]->SerialNumber;
       derived[i]->ProbeType	= raw[raw_indx]->ProbeType;
       derived[i]->Default_HR_OR	= raw[raw_indx]->SampleRate;
-	// This is needed by amlib initializers, since they are called
-	// via derived variables, not raw.
+      // This is needed by amlib initializers, since they are called
+      // via derived variables, not raw.
       derived[i]->SampleRate	= raw[raw_indx]->SampleRate;
     }
 
@@ -105,14 +101,12 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
     for (size_t i = 0; i < raw.size(); ++i)
       if (strstr(raw[i]->name, target))
       {
-        raw[i]->SerialNumber = serialNum;
         raw[i]->ProbeType = probeType;
       }
 
     for (size_t i = 0; i < derived.size(); ++i)
       if (strstr(derived[i]->name, target))
       {
-        derived[i]->SerialNumber = serialNum;
         derived[i]->ProbeType = probeType;
       }
   }
@@ -121,10 +115,10 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
 
 
 static void
-setVariableProbeType(const std::string& aname, int probeType)
+setProbeType(const std::string& aname, int probeType)
 {
   // Look for all instances of this accumulation variable name, and use it
-  // to pull the serial number for it's particle probe from the XML.
+  // to set the probeType for all variables associated with this probe.
   nidas::core::Project* project = nidas::core::Project::getInstance();
   
   varlist_t variables;
@@ -138,17 +132,13 @@ setVariableProbeType(const std::string& aname, int probeType)
     if (vname == aname || vname.find(aname + "_") == 0)
     {
       DLOG(("matched ") << aname << " with " << vname);
-      //const nidas::core::SampleTag* tag = var->getSampleTag();
-      //const nidas::core::DSMSensor* sensor = project->findSensor(tag);
-      std::string snumber = getSerialNumber(var);
-      setSerialNumberAndProbeType(vname.c_str(), snumber.c_str(), probeType);
+      setSerialNumberAndProbeType(vname.c_str(), probeType);
     }
   }
 }
 
 
-
-// Temporary hack, until I finish consolidating suport files into VarDB.ncml.
+/* -------------------------------------------------------------------- */
 void PMS1D_SetupForADS3()
 {
   // Grab the Project configuration and traverse it looking for particle
@@ -157,280 +147,19 @@ void PMS1D_SetupForADS3()
   // parameter from the Sensor and propagate it to all the variables
   // related to that sensor.
 
-  // Really this should be extended to all variables, so that all sensor
-  // serial numbers are associated with their variables, at least their
-  // "raw" variables.
-
-
   // Step through all the known particle probe accumulation variables,
-  // looking them up, finding the serial number and propagating it.
-  setVariableProbeType("AS100", PROBE_PMS1D | PROBE_FSSP);
-  setVariableProbeType("AS200", PROBE_PMS1D | PROBE_PCASP);
-  setVariableProbeType("AS300", PROBE_PMS1D | PROBE_F300);
-  setVariableProbeType("A260X", PROBE_PMS1D | PROBE_260X);
-  setVariableProbeType("ACDP", PROBE_PMS1D | PROBE_CDP);
-  setVariableProbeType("AUHSAS", PROBE_PMS1D | PROBE_PCASP);
-  setVariableProbeType("A1DC", PROBE_PMS2D | PROBE_2DC);
-  setVariableProbeType("A2DC", PROBE_PMS2D | PROBE_2DC);
-  setVariableProbeType("A1DP", PROBE_PMS2D | PROBE_2DP);
-  setVariableProbeType("A2DP", PROBE_PMS2D | PROBE_2DP);
-  setVariableProbeType("APIP", PROBE_PMS2D | PROBE_2DP);
-
-#ifdef notdef
-  // Remove this section once the sync-server branch is merged and the
-  // above is confirmed to work.
-
-  // Start with these serial numbers as defaults.
-  setSerialNumberAndProbeType("AS100", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
-  setSerialNumberAndProbeType("AS200", "PCAS108", PROBE_PMS1D | PROBE_PCASP);
-  setSerialNumberAndProbeType("AS300", "FSSP305", PROBE_PMS1D | PROBE_F300);
-  setSerialNumberAndProbeType("A260X", "260X06", PROBE_PMS1D | PROBE_260X);
-  setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
-  setSerialNumberAndProbeType("AUHSAS", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
-  setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-  setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-  setSerialNumberAndProbeType("A1DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
-  setSerialNumberAndProbeType("A2DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
-
-  if (cfg.ProjectName().compare("SAANGRIA-TEST") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("TEST-C130") == 0)
-  {
-    setSerialNumberAndProbeType("AS100_old", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
-    setSerialNumberAndProbeType("AS100_new", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
-    setSerialNumberAndProbeType("ACDP_16RWO", "CDP016", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("ACDP_58RWI", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("A1DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DC_LPI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_LPI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("PASE") == 0)
-  {
-    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("PASE") == 0)
-    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
-  else
-  if (cfg.ProjectName().compare("DC3") == 0)
-  {
-    setSerialNumberAndProbeType("ACDP_LWII", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("A1DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("DC3-TEST") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC_LWOO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_LWOO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DC_RWOO", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_RWOO", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("VOCALS") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC_RPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_RPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    if (cfg.FlightNumber().compare("rf11") >= 0)
-      setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
-//    setSerialNumberAndProbeType("AUHSAS", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
-  }
-  else
-  if (cfg.ProjectName().compare("ADELE/SPRITES") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("PLOWS") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC_RPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_RPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
-    setSerialNumberAndProbeType("A2DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
-    setSerialNumberAndProbeType("AS100_LWI", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
-    setSerialNumberAndProbeType("AS100_LWO", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
-  }
-  else
-  if (cfg.ProjectName().compare("HIPPO-2") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-  }
-  else
-  if (cfg.ProjectName().compare("HIPPO-3") == 0 ||
-      cfg.ProjectName().compare("HIPPO-4") == 0 ||
-      cfg.ProjectName().compare("HIPPO-5") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("PREDICT") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("AS200", "OPC001", PROBE_PMS1D | PROBE_PCASP);
-    setSerialNumberAndProbeType("AUHSAS_LMO", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
-    setSerialNumberAndProbeType("AUHSAS_CVI", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
-  }
-  else
-  if (cfg.ProjectName().compare("WAMO") == 0)
-  {
-    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-  }
-  else
-  if (cfg.ProjectName().compare("IDEAS-4") == 0 && cfg.Aircraft() == Config::C130)
-  {
-    setSerialNumberAndProbeType("A1DC_LPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_LPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DC_LPI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_LPI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("IDEAS-4") == 0 && cfg.Aircraft() == Config::HIAPER)
-  {
-    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
-    setSerialNumberAndProbeType("AUHSAS", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
-
-    if (cfg.FlightNumber().compare("rf08") <= 0) 
-    {
-      setSerialNumberAndProbeType("A1DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-      setSerialNumberAndProbeType("A2DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    }
-
-    if (cfg.FlightNumber().compare("rf03") >= 0 && cfg.FlightNumber().compare("rf05") <= 0) 
-    {
-      setSerialNumberAndProbeType("A1DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-      setSerialNumberAndProbeType("A2DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    }
-    else
-    {
-      setSerialNumberAndProbeType("A1DC_RWOI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-      setSerialNumberAndProbeType("A2DC_RWOI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    }
-
-    if (cfg.FlightNumber().compare("rf05") >= 0) 
-      setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-
-    if (cfg.FlightDate().compare("10/18/2013") >= 0) 
-    {
-      setSerialNumberAndProbeType("ACDP_RWOI", "CDP016", PROBE_PMS1D | PROBE_CDP);
-      setSerialNumberAndProbeType("ACDP_LWIO", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    }
-  }
-  else
-  if (cfg.ProjectName().compare("ICE-T") == 0)
-  {
-    if (cfg.FlightNumber().compare("ff01") >= 0) 
-      setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    if (cfg.FlightNumber().compare("ff03") >= 0) 
-      setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
-    if (cfg.FlightNumber().compare("rf01") >= 0) 
-      setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    if (cfg.FlightNumber().compare("rf06") >= 0) 
-      setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
-    if (cfg.FlightNumber().compare("tf01") >= 0) 
-      setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
-    setSerialNumberAndProbeType("AS200", "PCAS108", PROBE_PMS1D | PROBE_PCASP);
-    setSerialNumberAndProbeType("AS300", "FSSP305", PROBE_PMS1D | PROBE_F300);
-    setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
-    setSerialNumberAndProbeType("A2DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
-    setSerialNumberAndProbeType("AUHSAS_CVI", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
-    setSerialNumberAndProbeType("AUHSAS_GH", "UHSAS003", PROBE_PMS1D | PROBE_PCASP);
-  }
-  else
-  if (cfg.ProjectName().compare("NOMADSS") == 0)
-  {
-    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
-  }
-  else
-  if (cfg.ProjectName().compare("CONTRAST") == 0)
-  {
-    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-  }
-  else
-  if (cfg.ProjectName().compare("HCRTEST") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC_RWIO", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
-  }
-  else
-  if (cfg.ProjectName().compare("WINTER") == 0)
-  {
-    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("ARISTO2015") == 0)
-  {
-    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("A1DC_LPB", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DC_RPB", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
-  }
-  else
-  if (cfg.ProjectName().compare("ORCAS") == 0)
-  {
-    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    if (cfg.FlightNumber().compare(0, 4, "ff01") == 0 ||
-        cfg.FlightNumber().compare(0, 4, "ff02") == 0 ||
-        cfg.FlightNumber().compare(0, 2, "tf") == 0)
-      setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    else
-      setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("ARISTO2016") == 0)
-  {
-    setSerialNumberAndProbeType("AUHSAS_LWI", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
-    setSerialNumberAndProbeType("AUHSAS_CAB", "UHSAS011", PROBE_PMS1D | PROBE_PCASP);	// Univ Wyoming
-    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("ARISTO2017") == 0)
-  {
-    setSerialNumberAndProbeType("ACDP_RWIO", "CDP016", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("ACDP_RWII", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("SOCRATES") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_RWOI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("AUHSAS_LWII", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
-    setSerialNumberAndProbeType("AUHSAS_CVIU", "UHSAS015", PROBE_PMS1D | PROBE_PCASP);
-    setSerialNumberAndProbeType("APIP_RWII", "PIP011", PROBE_PMS2D | PROBE_2DP);
-  }
-  else
-  if (cfg.ProjectName().compare("WECAN") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC_LPO", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("AUHSAS_RPO", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
-    setSerialNumberAndProbeType("AUHSAS_CVIU", "UHSAS015", PROBE_PMS1D | PROBE_PCASP);
-  }
-#endif
+  // looking them up, and setting the probe type.
+  setProbeType("AS100", PROBE_PMS1D | PROBE_FSSP);
+  setProbeType("AS200", PROBE_PMS1D | PROBE_PCASP);
+  setProbeType("AS300", PROBE_PMS1D | PROBE_F300);
+  setProbeType("A260X", PROBE_PMS1D | PROBE_260X);
+  setProbeType("ACDP", PROBE_PMS1D | PROBE_CDP);
+  setProbeType("AUHSAS", PROBE_PMS1D | PROBE_PCASP);
+  setProbeType("A1DC", PROBE_PMS2D | PROBE_2DC);
+  setProbeType("A2DC", PROBE_PMS2D | PROBE_2DC);
+  setProbeType("A1DP", PROBE_PMS2D | PROBE_2DP);
+  setProbeType("A2DP", PROBE_PMS2D | PROBE_2DP);
+  setProbeType("APIP", PROBE_PMS2D | PROBE_2DP);
 }
 
 /* -------------------------------------------------------------------- */

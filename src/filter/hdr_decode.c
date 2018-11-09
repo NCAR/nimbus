@@ -493,6 +493,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     }
 
     length = var->getLength();
+    serialNumber = getSerialNumber(var);
 
 //printf("DecodeHeader3: adding %s, converter = %d, rate = %d\n",
 //  var->getName().c_str(), (int)var->getConverter(), (int)ceil(var->getSampleRate()));
@@ -591,6 +592,8 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 	initMTP();
     }
 
+    rp->nidasLag = getLag(var);
+    rp->SerialNumber = serialNumber;
     add_derived_names(name_sans_location);
 
     if (rp->Units.compare("count") == 0)
@@ -607,8 +610,6 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
     location[0] = '\0';
 //    addSerialNumber(var, rp);
-    rp->nidasLag = getLag(var);
-    rp->SerialNumber = getSerialNumber(var);
   }
 
   if (cfg.ProjectName().compare("RAF_Lab") && (cfg.Aircraft() != Config::TADS) )
