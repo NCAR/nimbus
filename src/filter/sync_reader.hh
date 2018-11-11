@@ -61,6 +61,9 @@ selectVariablesFromProject(nidas::core::Project* project);
 std::string
 getSerialNumber(const nidas::core::Variable* variable);
 
+int
+getLag(const nidas::core::Variable* variable);
+
 
 template <typename T>
 struct match_variable_name

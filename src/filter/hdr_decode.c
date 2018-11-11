@@ -414,14 +414,6 @@ int DecodeHeader3(const char header_file[])
     cfg.SetFlightNumber("uncle");
   cfg.SetNIDASrevision(nidas::core::Version::getSoftwareVersion());
 
-#ifdef notdef
-  cfg.SetProjectNumber(syncRecReader->getProjectName());
-  cfg.SetTailNumber(syncRecReader->getTailNumber());
-  if (cfg.FlightNumber().length() == 0)
-    cfg.SetFlightNumber(syncRecReader->getFlightName());
-  cfg.SetNIDASrevision(syncRecReader->getSoftwareVersion());
-#endif
-
   if (0)
   {
     // Using the VarDBConverter to open either a binary or xml vardb makes
@@ -493,6 +485,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     }
 
     length = var->getLength();
+    serialNumber = getSerialNumber(var);
 
 //printf("DecodeHeader3: adding %s, converter = %d, rate = %d\n",
 //  var->getName().c_str(), (int)var->getConverter(), (int)ceil(var->getSampleRate()));
@@ -591,6 +584,8 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 	initMTP();
     }
 
+    rp->nidasLag = getLag(var);
+    rp->SerialNumber = serialNumber;
     add_derived_names(name_sans_location);
 
     if (rp->Units.compare("count") == 0)
@@ -606,7 +601,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     }
 
     location[0] = '\0';
-    addSerialNumber(var, rp);
+//    addSerialNumber(var, rp);
   }
 
   if (cfg.ProjectName().compare("RAF_Lab") && (cfg.Aircraft() != Config::TADS) )

@@ -340,9 +340,13 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     nc_put_att_long(_ncid, rp->varid, "SampledRate", NC_LONG, 1, (long *)&rp->SampleRate);
 
+    int lag = rp->nidasLag;
     if (cfg.TimeShifting() && rp->StaticLag != 0)
+      lag += rp->StaticLag;
+
+    if (lag != 0)
     {
-      nc_put_att_int(_ncid, rp->varid, "TimeLag", NC_INT, 1, &rp->StaticLag);
+      nc_put_att_int(_ncid, rp->varid, "TimeLag", NC_INT, 1, &lag);
       nc_put_att_text(_ncid, rp->varid, "TimeLagUnits", 13, "milliseconds");
     }
 

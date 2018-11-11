@@ -33,11 +33,12 @@ static const float bp[4] = { 0.03366503,1.34236135,-0.33479451,0.03519342 };
 static const double Lv0 = 2.501e6;
 
 //  Values that can be over-ridden from Defaults file.
-static NR_TYPE	tWire[nLWC] = {130.0, 130.0};	// Wire temperature (C)
-static NR_TYPE	dWire[nLWC] = {0.1805e-2, 0.1805e-2}; // Wire Diameter
-static NR_TYPE	lWire[nLWC] = {2.1e-2, 2.1e-2};	// Wire length (mm)
+static NR_TYPE	tWire[nLWC] = {130.0, 130.0};		// Wire temperature (C)
+static NR_TYPE	dWire[nLWC] = {0.1805e-2, 0.1805e-2};	// Wire Diameter
+static NR_TYPE	lWire[nLWC] = {2.1e-2, 2.1e-2};		// Wire length (mm)
 static int	tau_Nu[nLWC] = {120, 120};		// Nusselt-number time constant.
 static NR_TYPE	cloud_conc_threshold = 1.0;		// Cloud Concentration Baseline Threshold
+static NR_TYPE	min_watt_threshold = 10.0;		// Minimum Wattage from PLWC
 
 static NR_TYPE Pdry[nLWC];
 
@@ -125,6 +126,16 @@ void plwccInit(var_base *varp)
   else
     cloud_conc_threshold = tmp[0];
 
+  sprintf(defaultName, "KING_MIN_WATT_THRESHOLD");
+  if ((tmp = GetDefaultsValue(defaultName, varp->name)) == NULL)
+  {
+    std::vector<float> values;
+    values.push_back(min_watt_threshold);
+    AddToDefaults(varp->name, defaultName, values);
+  }
+  else
+    min_watt_threshold = tmp[0];
+
 }	/* END PLWCCINIT */
 
 /* -------------------------------------------------------------------- */
@@ -147,7 +158,7 @@ void splwcc(DERTBL *varp)
   /* This cut-off is about a broken wire or some other issue with probe.
    * Still under investigation if 10.0 is the best value.
    */
-  if (plwc < 10.0 || std::isnan(plwc))
+  if (plwc < min_watt_threshold || std::isnan(plwc))
   {
     PutSample(varp, floatNAN);
     return;

@@ -34,7 +34,7 @@ using nidas::dynld::raf::SyncRecordVariable;
 
 namespace 
 {
-  char sync_server_pipe[80] = "";
+  char sync_server_pipe[128] = "";
   pid_t syncPID = -1;
   nidas::dynld::raf::SyncRecordReader* syncRecReader = 0;
   nidas::dynld::raf::SyncServer* syncServer = 0;
@@ -87,7 +87,12 @@ ShutdownSyncServer()
   }
 
   if (strlen(sync_server_pipe))
+  {
     unlink(sync_server_pipe);
+    char* slash = strrchr(sync_server_pipe, '/');
+    *slash = '\0';
+    rmdir(sync_server_pipe);
+  }
 
   if (syncServer)
   {
@@ -180,8 +185,12 @@ StartSyncServerProcess(const std::set<std::string>& headerfiles,
   ILOG(("StartSyncServerProcess: header_file=%s", (*headerfiles.begin()).c_str()));
 
   strcpy(sync_server_pipe, "/tmp/sync_server_XXXXXX");
-  mktemp(sync_server_pipe);
-
+  // sync_server wants to create the pipe socket itself, so we cannot just use
+  // mkstemp here.  Instead, create a temporary directory and then provide a
+  // path inside that directory to sync_server.
+  mkdtemp(sync_server_pipe);
+  strcat(sync_server_pipe, "/sync_server.pipe");
+    
   std::vector<std::string> args;
   if (getenv("NIMBUS_SYNC_SERVER_VALGRIND"))
   {
@@ -199,10 +208,10 @@ StartSyncServerProcess(const std::set<std::string>& headerfiles,
     args.push_back("--loglevel");
     args.push_back("debug");
   }
-#ifdef notdef
   args.push_back("-l");
-  args.push_back("60");	// 60 second time-sorter.
-#endif
+  std::ostringstream sortlen;
+  sortlen << cfg.GetSorterLength();  // Match post-processing default.
+  args.push_back(sortlen.str());
   args.push_back("-p");
   args.push_back(sync_server_pipe);
   if (xml_path.length() > 0)
@@ -250,12 +259,6 @@ StartSyncServerProcess(const std::set<std::string>& headerfiles,
   {
     std::cerr << "sync_server socket exists!" << std::endl;
   }
-#ifdef notdef
-  nidas::util::UnixSocketAddress usa(sync_server_pipe);
-  sock = new nidas::util::Socket(usa);
-  nidas::core::IOChannel * iochan = new nidas::core::Socket(sock);
-  syncRecReader = new nidas::dynld::raf::SyncRecordReader(iochan);
-#endif
 }
 
 
@@ -426,6 +429,23 @@ getSerialNumber(const nidas::core::Variable* variable)
   if (parm)
     sn = parm->getStringValue(0);
   return sn;
+}
+
+
+int
+getLag(const nidas::core::Variable* variable)
+{
+  int lag = 0;
+  const nidas::core::SampleTag* tag = variable->getSampleTag();
+  const nidas::core::DSMSensor* sensor = 0;
+  const nidas::core::Parameter* parm = 0;
+  if (tag)
+    sensor = tag->getDSMSensor();
+  if (sensor)
+    parm = sensor->getParameter("lag");
+  if (parm)
+    lag = parm->getNumericValue(0);
+  return lag * 1000;	// convert to milliseconds
 }
 
 
