@@ -23,8 +23,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include <bzlib.h>
 #include <sys/stat.h>
 
-// eol-rt-data.fl-ext.ucar.edu
-const std::string GroundFeed::DEST_HOST_ADDR = "128.117.188.122";
+// eol-rt-data.eol.ucar.edu
+const std::string GroundFeed::DEST_HOST_ADDR = "128.117.43.122";
 
 using namespace nidas::util;
 
