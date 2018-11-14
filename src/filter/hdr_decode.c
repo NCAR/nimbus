@@ -113,7 +113,6 @@ static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
 
 static RAWTBL	*initSDI_ADS3(nidas::core::Variable* var,
 			      time_t startTime);
-static void     initMTP();
 static RAWTBL	*add_name_to_RAWTBL(const char []);
 static DERTBL	*add_name_to_DERTBL(const char []);
 
@@ -577,11 +576,6 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
       // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
         rp->OutputRate = rp->SampleRate;
-    }
-
-    if (!strcmp(rp->name,"SCNT_MTP"))
-    {
-	initMTP();
     }
 
     rp->nidasLag = getLag(var);
@@ -1426,21 +1420,6 @@ static void initOphir3(char vn[])
 
 }	/* END IN_OPHIR3 */
 
-/* -------------------------------------------------------------------- */
-static void initMTP()
-{
-  int		nbins = NUM_CHANNELS*NUM_SCAN_ANGLES; // Constant set in mtp.h
-  int		nbinsl = NUM_RETR_LVLS; // Constant set in mtp.h
-  DERTBL	*dp;
-
-  // Initialize brightness temperature
-  dp = add_name_to_DERTBL("SCANBT");
-  dp->Length = nbins;
-
-  // Initialize physical temperature profile
-  dp = add_name_to_DERTBL("TEMPC");
-  dp->Length = nbinsl;
-}
 /* -------------------------------------------------------------------- */
 static void initMASP(char vn[])
 {
