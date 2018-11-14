@@ -53,6 +53,7 @@ NetCDF::NetCDF() :
   _timeOffset(0.0), _errCnt(0)
 {
   memset(&_startFlight, 0, sizeof(_startFlight));
+  _timeLength = 0; //initialize
 
 }
 
@@ -130,7 +131,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   /* Dimensions.
    */
   int TimeDim;
-  nc_def_dim(_ncid, "Time", NC_UNLIMITED, &TimeDim);
+  nc_def_dim(_ncid, "Time", _timeLength, &TimeDim);
   nc_def_dim(_ncid, "sps1", 1, &_rateDimIDs[1]);
 
   /* Global Attributes.
@@ -486,10 +487,65 @@ void NetCDF::SwitchToDataMode()
 }	/* END SWITCHNETCDFTODATAMODE */
 
 /* -------------------------------------------------------------------- */
+void NetCDF::WriteNetCDFfromMemory()
+{
+  int status;
+
+  size_t start[3], count[3];
+  start[0] = start[1] = start[2] = 0;
+  count[0] = _timeLength;
+
+  // Write Time variable to output file
+  status = nc_put_vara_int(_ncid, _timeVarID, start, count, &_TimeSamples[0]);
+
+  for (size_t i =0; i < raw.size(); ++i)
+  {
+    RAWTBL *rp;
+    if ((rp = raw[i])->Output == false)
+      continue;
+
+    count[1] = rp->OutputRate;
+    count[2] = rp->Length;
+
+    status = nc_put_vara_float(_ncid, rp->varid, start, count, &rp->OutputData[0]);
+    
+    if (status != NC_NOERR)
+    {
+      fprintf(stderr, "WriteNetCDFfromMemory: write failure, variable %s, status = %d\n",
+                      rp->name, status);
+      fprintf(stderr, "%s\n", nc_strerror(status));
+      _errCnt++;
+    }
+  }
+  for (size_t i = 0; i < derived.size(); ++i)
+  {
+    DERTBL *dp;
+    if ((dp = derived[i])->Output == false)
+      continue;
+
+    count[1] = dp->OutputRate;
+    count[2] = dp->Length;
+
+    status = nc_put_vara_float(_ncid, dp->varid, start, count, &dp->OutputData[0]);
+    if (status != NC_NOERR)
+    {
+      fprintf(stderr, "WriteNetCDFfromMemory: write failure, variable %s, status = %d\n",
+                       dp->name, status);
+      fprintf(stderr, "%s\n", nc_strerror(status));
+      _errCnt++;
+    }
+  }
+
+  if (_errCnt > 10)
+  {
+    fprintf(stderr, "Too many write errors, closing file and exiting...\n");
+    quit();
+  }
+}
+/* -------------------------------------------------------------------- */
 void NetCDF::WriteNetCDF()
 {
   float *data;
-  int status;
 
   static bool		firstWrite = true;
 
@@ -512,17 +568,17 @@ void NetCDF::WriteNetCDF()
       WriteMissingRecords();
   }
 
-  size_t start[3], count[3];
+  size_t start[3];
   start[0] = _recordNumber; start[1] = start[2] = 0;
-  count[0] = 1;
 
   time_t stime = SampledDataTimeToSeconds(SampledData);
 
   // Output Time variable as seconds since midnight (UTSeconds).
-  long ut_seconds = UTSeconds(SampledData);
-  nc_put_var1_long(_ncid, _timeVarID, start, &ut_seconds);
+  int ut_seconds = UTSeconds(SampledData);
+  _TimeSamples.push_back(ut_seconds); // save Time in memory
+  _timeLength+=1;
   if (cfg.isADS2())
-    nc_put_var1_float(_ncid, _timeOffsetID, start, &_timeOffset);
+    _TimeOffsets.push_back(_timeOffset); // save Time in memory
 
   static TraceVariables tv;
 
@@ -533,8 +589,6 @@ void NetCDF::WriteNetCDF()
       continue;
 
     size_t N = rp->Length * rp->OutputRate;
-    count[1] = rp->OutputRate;
-    count[2] = rp->Length;
 
     data = new float[N];
 
@@ -545,36 +599,33 @@ void NetCDF::WriteNetCDF()
         tv.trace_variable("write netcdf lowrate", rp->name, stime,
                           &(AveragedData[rp->LRstart]), N);
       }
-      for (size_t j = 0; j < N; ++j)
+      for (size_t j = 0; j < N; ++j) {
         data[j] = (float)AveragedData[rp->LRstart + j];
+        if (std::isnan(data[j])) data[j] = (float)MISSING_VALUE;
+        rp->OutputData.push_back(data[j]); // save data to memory
+      }
     }
     else
     {
       if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
       {
-        for (size_t j = 0; j < N; ++j)
+        for (size_t j = 0; j < N; ++j) {
           data[j] = (float)SampledData[rp->SRstart + j];
+          if (std::isnan(data[j])) data[j] = (float)MISSING_VALUE;
+          rp->OutputData.push_back(data[j]); // save data to memory
+	}
       }
       else
       {
-        for (size_t j = 0; j < N; ++j)
+        for (size_t j = 0; j < N; ++j) {
           data[j] = (float)HighRateData[rp->HRstart + j];
+          if (std::isnan(data[j])) data[j] = (float)MISSING_VALUE;
+          rp->OutputData.push_back(data[j]); // save data to memory
+	}
       }
     }
+    rp->TimeLength +=1;
 
-    for (size_t j = 0; j < N; ++j)
-      if (std::isnan(data[j]))
-        data[j] = (float)MISSING_VALUE;
-
-    status = nc_put_vara_float(_ncid, rp->varid, start, count, data);
-    if (status != NC_NOERR)
-    {
-      fprintf(stderr,
-            "WriteNetCDF: write failure, variable %s, RecordNumber = %ld, status = %d\n",
-            rp->name, _recordNumber, status);
-      fprintf(stderr, "%s\n", nc_strerror(status));
-      _errCnt++;
-    }
     delete [] data;
   }
 
@@ -586,43 +637,30 @@ void NetCDF::WriteNetCDF()
       continue;
 
     size_t N = dp->Length * dp->OutputRate;
-    count[1] = dp->OutputRate;
-    count[2] = dp->Length;
 
     data = new float[N];
 
     if (dp->OutputRate == Config::LowRate)
     {
-      for (size_t j = 0; j < N; ++j)
+      for (size_t j = 0; j < N; ++j) {
         data[j] = (float)AveragedData[dp->LRstart + j];
+        if (std::isnan(data[j])) data[j] = (float)MISSING_VALUE;
+        dp->OutputData.push_back(data[j]); // save data in memory
+      }
     }
     else
     {
-      for (size_t j = 0; j < N; ++j)
+      for (size_t j = 0; j < N; ++j) {
         data[j] = (float)HighRateData[dp->HRstart + j];
+        if (std::isnan(data[j])) data[j] = (float)MISSING_VALUE;
+        dp->OutputData.push_back(data[j]); // save data in memory
+      }
     }
+    dp->TimeLength +=1;
 
-    for (size_t j = 0; j < N; ++j)
-      if (std::isnan(data[j]))
-        data[j] = (float)MISSING_VALUE;
-
-    status = nc_put_vara_float(_ncid, dp->varid, start, count, data);
-    if (status != NC_NOERR)
-    {
-      fprintf(stderr,
-            "WriteNetCDF: write failure, variable %s, RecordNumber = %ld, status = %d\n",
-            dp->name, _recordNumber, status);
-      fprintf(stderr, "%s\n", nc_strerror(status));
-      _errCnt++;
-    }
     delete [] data;
   }
 
-  if (_errCnt > 10)
-  {
-    fprintf(stderr, "Too many write errors, closing file and exiting...\n");
-    quit();
-  }
 
   _timeOffset += 1.0;
   ++_timeVar;
@@ -652,44 +690,51 @@ void NetCDF::QueueMissingData(int h, int m, int s, int nRecords)
 /* -------------------------------------------------------------------- */
 void NetCDF::WriteMissingRecords()
 {
-  size_t	i;
+  size_t	i,d;
   float		hour, minute, second;
-  // 5000 is fastest sampling rate
-  std::vector<float> d(5000, MISSING_VALUE);
-  void		*ldp[MAX_VARIABLES];
-  struct missDat	*dp;
+  struct missDat	*mdp;
 
-  dp = _missingRecords.front();
+  mdp = _missingRecords.front();
 
-  int indx = 0;
-  ldp[indx++] = (void *)&_timeVar;
+  for (d = 0; d < mdp->nRecords; ++d) 
+  {
+  _TimeSamples.push_back((int)_timeVar);
+  _timeLength+=1;
+  //printf("Found missing record at time %d\n",_timeVar);
   if (cfg.isADS2())
-    ldp[indx++] = (void *)&_timeOffset;
+    _TimeOffsets.push_back((int)_timeOffset);
 
   for (i = 0; i < raw.size(); ++i)
     {
-    if (raw[i]->Output == false)
+    RAWTBL *rp;
+    if ((rp = raw[i])->Output == false)
       continue;
 
+    size_t N = rp->Length * rp->OutputRate;
+
+    // populate variables containing time (don't set to missing)
+    // set all other vars to missing at this time.
     if (strcmp("HOUR", raw[i]->name) == 0)
       {
-      ldp[indx++] = &hour;
-      hour = dp->hour;
+      rp->OutputData.push_back(hour);
+      hour = mdp->hour;
       }
     else
     if (strcmp("MINUTE", raw[i]->name) == 0)
       {
-      ldp[indx++] = &minute;
-      minute = dp->minute;
+      rp->OutputData.push_back(minute);
+      minute = mdp->minute;
       }
     else
     if (strcmp("SECOND", raw[i]->name) == 0)
       {
-      ldp[indx++] = &second;
-      second = dp->second;
+      rp->OutputData.push_back(second);
+      second = mdp->second;
       }
     else
-      ldp[indx++] = (void *)&d[0];
+      for (size_t j = 0; j < N; ++j) { 
+        rp->OutputData.push_back((float)MISSING_VALUE);
+      }
     }
 
   if (second < 0)
@@ -698,38 +743,45 @@ void NetCDF::WriteMissingRecords()
           "Time from queue is %02d:%02d:%02d, initialized time "
           "is %02d:%02d:%02d.  Raw table size=%d, derived size=%d, "
           "num missing records=%d",
-          int(dp->hour), int(dp->minute), int(dp->second),
+          int(mdp->hour), int(mdp->minute), int(mdp->second),
           int(hour), int(minute), int(second),
-          int(raw.size()), int(derived.size()), int(dp->nRecords)));
-    second = dp->second;
+          int(raw.size()), int(derived.size()), int(mdp->nRecords)));
+    second = mdp->second;
   }
 
-  for (i = 0; i < derived.size(); ++i)
-    if (derived[i]->Output)
-      ldp[indx++] = (void *)&d[0];
-
-  for (i = 0; i < dp->nRecords; ++i)
+  for (i = 0; i < derived.size(); ++i) // loop through raw vars in order
+  {
+    DERTBL *dp;
+    if ((dp = derived[i])->Output)
     {
-    if (++second > 59.0)
-      {
-      second = 0.0;
-      if (++minute > 59.0)
-        {
-        minute = 0.0;
-        if (++hour > 23.0)
-          hour = 0.0;
-        }
+      size_t N = dp->Length * dp->OutputRate;
+      //ldp[indx++] = (void *)&d[0]; // assign missing (no times in derived var list)
+      for (size_t j = 0; j < N; ++j) { 
+        dp->OutputData.push_back((float)MISSING_VALUE);
       }
+    }
+  }
 
-    ncrecput(_ncid, _recordNumber, ldp);
+  // increment time by one second for next missing record
+  if (++second > 59.0)
+    {
+    second = 0.0;
+    if (++minute > 59.0)
+      {
+      minute = 0.0;
+      if (++hour > 23.0)
+        hour = 0.0;
+      }
+    }
 
     _timeOffset += 1.0;
     ++_timeVar;
     ++_recordNumber;
-    }
+
+  }
 
   _missingRecords.pop();
-  delete dp;
+  delete mdp;
 
 }	/* END WRITEMISSINGRECORDS */
 
