@@ -545,7 +545,8 @@ void NetCDF::WriteNetCDFfromMemory()
 /* -------------------------------------------------------------------- */
 void NetCDF::WriteNetCDF()
 {
-  float *data;
+  //float *data;
+  float data;
 
   static bool		firstWrite = true;
 
@@ -590,7 +591,7 @@ void NetCDF::WriteNetCDF()
 
     size_t N = rp->Length * rp->OutputRate;
 
-    data = new float[N];
+    //data = new float[N];
 
     if (rp->OutputRate == Config::LowRate)
     {
@@ -600,9 +601,9 @@ void NetCDF::WriteNetCDF()
                           &(AveragedData[rp->LRstart]), N);
       }
       for (size_t j = 0; j < N; ++j) {
-        data[j] = (float)AveragedData[rp->LRstart + j];
-        if (std::isnan(data[j])) data[j] = (float)MISSING_VALUE;
-        rp->OutputData.push_back(data[j]); // save data to memory
+        data = (float)AveragedData[rp->LRstart + j];
+        if (std::isnan(data)) data = (float)MISSING_VALUE;
+        rp->OutputData.push_back(data); // save data to memory
       }
     }
     else
@@ -610,23 +611,23 @@ void NetCDF::WriteNetCDF()
       if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
       {
         for (size_t j = 0; j < N; ++j) {
-          data[j] = (float)SampledData[rp->SRstart + j];
-          if (std::isnan(data[j])) data[j] = (float)MISSING_VALUE;
-          rp->OutputData.push_back(data[j]); // save data to memory
+          data = (float)SampledData[rp->SRstart + j];
+          if (std::isnan(data)) data = (float)MISSING_VALUE;
+          rp->OutputData.push_back(data); // save data to memory
 	}
       }
       else
       {
         for (size_t j = 0; j < N; ++j) {
-          data[j] = (float)HighRateData[rp->HRstart + j];
-          if (std::isnan(data[j])) data[j] = (float)MISSING_VALUE;
-          rp->OutputData.push_back(data[j]); // save data to memory
+          data = (float)HighRateData[rp->HRstart + j];
+          if (std::isnan(data)) data = (float)MISSING_VALUE;
+          rp->OutputData.push_back(data); // save data to memory
 	}
       }
     }
     rp->TimeLength +=1;
 
-    delete [] data;
+    //delete [] data;
   }
 
 
@@ -638,27 +639,27 @@ void NetCDF::WriteNetCDF()
 
     size_t N = dp->Length * dp->OutputRate;
 
-    data = new float[N];
+   // data = new float[N];
 
     if (dp->OutputRate == Config::LowRate)
     {
       for (size_t j = 0; j < N; ++j) {
-        data[j] = (float)AveragedData[dp->LRstart + j];
-        if (std::isnan(data[j])) data[j] = (float)MISSING_VALUE;
-        dp->OutputData.push_back(data[j]); // save data in memory
+        data = (float)AveragedData[dp->LRstart + j];
+        if (std::isnan(data)) data = (float)MISSING_VALUE;
+        dp->OutputData.push_back(data); // save data in memory
       }
     }
     else
     {
       for (size_t j = 0; j < N; ++j) {
-        data[j] = (float)HighRateData[dp->HRstart + j];
-        if (std::isnan(data[j])) data[j] = (float)MISSING_VALUE;
-        dp->OutputData.push_back(data[j]); // save data in memory
+        data = (float)HighRateData[dp->HRstart + j];
+        if (std::isnan(data)) data = (float)MISSING_VALUE;
+        dp->OutputData.push_back(data); // save data in memory
       }
     }
     dp->TimeLength +=1;
 
-    delete [] data;
+    //delete [] data;
   }
 
 
