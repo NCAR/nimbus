@@ -1,0 +1,3 @@
+[submodule "tests/projects"]
+	path = tests/projects
+	url = https://github.com/NCAR/RAF_field_projects

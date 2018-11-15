@@ -113,7 +113,6 @@ static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
 
 static RAWTBL	*initSDI_ADS3(nidas::core::Variable* var,
 			      time_t startTime);
-static void     initMTP();
 static RAWTBL	*add_name_to_RAWTBL(const char []);
 static DERTBL	*add_name_to_DERTBL(const char []);
 
@@ -577,11 +576,6 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
       // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
         rp->OutputRate = rp->SampleRate;
-    }
-
-    if (!strcmp(rp->name,"SCNT_MTP"))
-    {
-	initMTP();
     }
 
     rp->nidasLag = getLag(var);
@@ -1427,21 +1421,6 @@ static void initOphir3(char vn[])
 }	/* END IN_OPHIR3 */
 
 /* -------------------------------------------------------------------- */
-static void initMTP()
-{
-  int		nbins = NUM_CHANNELS*NUM_SCAN_ANGLES; // Constant set in mtp.h
-  int		nbinsl = NUM_RETR_LVLS; // Constant set in mtp.h
-  DERTBL	*dp;
-
-  // Initialize brightness temperature
-  dp = add_name_to_DERTBL("SCANBT");
-  dp->Length = nbins;
-
-  // Initialize physical temperature profile
-  dp = add_name_to_DERTBL("TEMPC");
-  dp->Length = nbinsl;
-}
-/* -------------------------------------------------------------------- */
 static void initMASP(char vn[])
 {
   int		indx, nbins = 1;
@@ -2150,6 +2129,7 @@ static void add_derived_names(const char name[])
 {
   char	*p;
   char	buff[512];
+  DERTBL	*dp;
 
   /* Find variable in derived list and add ALL associated names to
    * derived table.
@@ -2160,7 +2140,7 @@ static void add_derived_names(const char name[])
     p = strtok(buff, " \t");
 
     while ( (p = strtok((char *)NULL, " \t")) )
-      add_name_to_DERTBL(p);
+      dp = add_name_to_DERTBL(p);
     }
 
 }	/* END ADD_DERIVED_NAMES */
@@ -2169,12 +2149,13 @@ static void add_derived_names(const char name[])
 static void add_file_to_DERTBL(const std::string& filename)
 {
   FILE	*fp;
+  DERTBL *dp;
 
   fp = OpenProjectFile(filename, "r", EXIT);
 
   while (fscanf(fp, "%s", buffer) != EOF)
     if (buffer[0] != COMMENT)
-      add_name_to_DERTBL(buffer);
+      dp = add_name_to_DERTBL(buffer);
 
   fclose(fp);
 

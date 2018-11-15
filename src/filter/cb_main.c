@@ -337,7 +337,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   InitAircraftDependencies();
   RunAMLIBinitializers();
   SetConfigGlobalAttributeVariables();
-  ncFile->CreateFile(OutputFileName, 0);
+  //ncFile->CreateFile(OutputFileName, 0);
 //  InitAsyncModule(OutputFileName);
   ConfigurationDump();
 
@@ -345,6 +345,8 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   // Do some clean-up/preperation.
   for (size_t i = 0; i < raw.size(); ++i)
   {
+    raw[i]->TimeLength=0;
+
     if (!cfg.TimeShifting())
       raw[i]->StaticLag = raw[i]->DynamicLag = 0;
 
@@ -363,6 +365,8 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
   for (size_t i = 0; i < derived.size(); ++i)
   {
+    derived[i]->TimeLength=0;
+
     if (derived[i]->Output && vardb->search_var(derived[i]->name) == 0 && LogFile)
       fprintf(LogFile,"%s has no entry in the VarDB.\n", derived[i]->name);
   }
@@ -403,7 +407,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     FindNextLogicalRecord = 0;
   }
 
-  ncFile->SwitchToDataMode();
+  //ncFile->SwitchToDataMode();
 
   if (cfg.ProcessingMode() == Config::RealTime)
     {
@@ -453,6 +457,9 @@ void stopProcessing()
   Arg		args[1];
   float		x;
 
+  ncFile->CreateFile(OutputFileName, 0);
+  ncFile->SwitchToDataMode();
+  ncFile->WriteNetCDFfromMemory();
   ncFile->Close();
 
   LogDespikeInfo();

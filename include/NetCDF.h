@@ -27,6 +27,7 @@ public:
   void	CreateFile(const char fileName[], size_t nRecords);
   void	SwitchToDataMode();
   void	WriteNetCDF();
+  void	WriteNetCDFfromMemory();
   void	ProcessFlightDate();
   void	QueueMissingData(int h, int m, int s, int nRecords);
   void	Sync();
@@ -61,6 +62,7 @@ protected:
   long	_recordNumber;
   long	_timeVar;
   int	_timeOffsetID, _timeVarID;
+  int   _timeLength; // length of time var - used when saving entire file in memory
 
   // To be deprecated.  Used in old ADS2 netCDF format.
   int	_baseTimeID;
@@ -73,6 +75,11 @@ protected:
 
   // Count of netcCDF write errors.
   size_t _errCnt;
+
+  // vector to hold entire Time variable in memory
+  std::vector<int> _TimeSamples;
+  // ADS2
+  std::vector<int> _TimeOffsets;
 
 struct missDat  /* (Time gap) / (missing data) information */
   {

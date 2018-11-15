@@ -82,6 +82,7 @@ public:
   int HRstart;		// Start indx into HighRateData
   int LAGstart;		// ads3 only, @see dsm::SyncRecordVariable
 
+  size_t TimeLength;	// number of measurements in Time dimension
   size_t SampleRate;	// Sampled rate
   size_t Length;	// Histogram length, if histogram
 
@@ -100,9 +101,7 @@ public:
 
   std::vector<std::pair<int, int> > blank_out;
 
-  std::vector<float> SampledData;	// vector to hold sampled data for this var
-  std::vector<float> AveragedData;	// vector to hold averaged data for this var
-  std::vector<float> HighRateData;	// vector to hold high rate data for this var
+  std::vector<float> OutputData;      // vector to hold output data for this var
 
   float min, max;	// Min and max for this variable over course run.
 
