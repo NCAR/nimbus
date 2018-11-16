@@ -337,7 +337,6 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   InitAircraftDependencies();
   RunAMLIBinitializers();
   SetConfigGlobalAttributeVariables();
-  //ncFile->CreateFile(OutputFileName, 0);
 //  InitAsyncModule(OutputFileName);
   ConfigurationDump();
 
@@ -406,8 +405,6 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     FindFirstLogicalRecord = 0;
     FindNextLogicalRecord = 0;
   }
-
-  //ncFile->SwitchToDataMode();
 
   if (cfg.ProcessingMode() == Config::RealTime)
     {

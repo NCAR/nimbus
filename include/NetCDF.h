@@ -39,7 +39,7 @@ public:
 protected:
 
   int	writeBlank(int varid, size_t start[], size_t count[], int OutputRate);
-  void	markDependedByList(const char target[]), writeTimeUnits();
+  void	markDependedByList(const char target[]), writeTimeUnits(int varid, int offsetid);
   void	clearDependedByList(), printDependedByList(), writeMinMax();
   void	addCommonVariableAttributes(const var_base *var), addLandmarks();
 
@@ -80,6 +80,12 @@ protected:
   std::vector<int> _TimeSamples;
   // ADS2
   std::vector<int> _TimeOffsets;
+
+  /* MTP-specific variables */
+  // vector to hold entire MTPTime variable in memory
+  std::vector<int> _MTPTimeSamples;
+  int   _firstMTPvar, _MTPtimeVarID;
+  int   _MTPtimeLength; // length of MTP time var
 
 struct missDat  /* (Time gap) / (missing data) information */
   {

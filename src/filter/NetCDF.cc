@@ -54,6 +54,7 @@ NetCDF::NetCDF() :
 {
   memset(&_startFlight, 0, sizeof(_startFlight));
   _timeLength = 0; //initialize
+  _MTPtimeLength = 0; //initialize
 
 }
 
@@ -133,6 +134,9 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   int TimeDim;
   nc_def_dim(_ncid, "Time", _timeLength, &TimeDim);
   nc_def_dim(_ncid, "sps1", 1, &_rateDimIDs[1]);
+  int MTPTimeDim;
+  _firstMTPvar=1; //initialize
+
 
   /* Global Attributes.
    */
@@ -276,7 +280,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
 
   // Write units for both Time & time_offset.
-  writeTimeUnits();
+  writeTimeUnits(_timeVarID,_timeOffsetID);
 
 
   /* SDI variables.
@@ -334,8 +338,49 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       dims[2] = _vectorDimIDs[rp->Length];
     }
 
-//printf("RAW: %s\n", rp->name);
-    nc_def_var(_ncid, rp->name, NC_FLOAT, ndims, dims, &rp->varid);
+    // If we are processing MTP data, need to add a special time dimension for 
+    // it since the data report once every 17 seconds rather than at 1hz.
+    if (strstr(rp->name,"_MTP"))
+    {
+      printf("RAW: %s %lu\n", rp->name,rp->TimeLength); // TESTING for _MTP vars
+      printf("RAW: %s %lu %lu %lu\n", rp->name,rp->TimeLength,rp->OutputRate, rp->Length); // TESTING for _MTP vars
+
+      if (_firstMTPvar) // only set MTPTime dimension once
+      {
+        status = nc_def_dim(_ncid,"MTPTime", rp->TimeLength, &MTPTimeDim);
+        if (status != NC_NOERR)
+        {
+          fprintf(stderr,"CreateNetCDF: error defining MTPTime dimension status = %d\n", status);
+          fprintf(stderr, "%s\n", nc_strerror(status));
+        }
+        dims[0]=MTPTimeDim;
+        status = nc_def_var(_ncid, "MTPTime", NC_LONG, 1, dims, &_MTPtimeVarID);
+        if (status != NC_NOERR)
+        {
+          fprintf(stderr,"CreateNetCDF: error, raw variable %s status = %d\n", rp->name,status);
+          fprintf(stderr, "%s\n", nc_strerror(status));
+        }
+        strcpy(buffer, "time of MTP measurement");
+        nc_put_att_text(_ncid, _MTPtimeVarID, "long_name", strlen(buffer)+1, buffer);
+        strcpy(buffer, "time");
+        nc_put_att_text(_ncid, _MTPtimeVarID, "standard_name", strlen(buffer)+1, buffer);
+        writeTimeUnits(_MTPtimeVarID,-1);
+
+        _firstMTPvar=0;
+      }
+      dims[0]=MTPTimeDim;
+      status = nc_def_var(_ncid, rp->name, NC_FLOAT, ndims, dims, &rp->varid);
+      dims[0]=TimeDim;
+    }
+    else
+    {
+      status = nc_def_var(_ncid, rp->name, NC_FLOAT, ndims, dims, &rp->varid);
+    }
+    if (status != NC_NOERR)
+    {
+      fprintf(stderr,"CreateNetCDF: error, raw variable %s status = %d\n", rp->name,status);
+      fprintf(stderr, "%s\n", nc_strerror(status));
+    }
 
     addCommonVariableAttributes(rp);
 
@@ -432,7 +477,17 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       dims[2] = _vectorDimIDs[dp->Length];
     }
 
-    status = nc_def_var(_ncid, dp->name, NC_FLOAT, ndims, dims, &dp->varid);
+    if (strstr(dp->name,"_MTP"))
+    {
+      printf("DERIVED: %s %lu %lu %lu\n", dp->name,dp->TimeLength,dp->OutputRate, dp->Length); // TESTING for _MTP vars
+      dims[0]=MTPTimeDim;
+      status = nc_def_var(_ncid, dp->name, NC_FLOAT, ndims, dims, &dp->varid);
+      dims[0]=TimeDim;
+    }
+    else
+    {
+      status = nc_def_var(_ncid, dp->name, NC_FLOAT, ndims, dims, &dp->varid);
+    }
     if (status != NC_NOERR)
     {
       fprintf(stderr,"CreateNetCDF: error, derived variable %s status = %d\n", dp->name,status);
@@ -498,6 +553,12 @@ void NetCDF::WriteNetCDFfromMemory()
   // Write Time variable to output file
   status = nc_put_vara_int(_ncid, _timeVarID, start, count, &_TimeSamples[0]);
 
+  // Write MTPTime Variable to output file
+  count[0]=_MTPtimeLength;
+  printf("WriteNetCDFfromMemory: MTPTime %d\n",_MTPtimeLength);
+  status = nc_put_vara_int(_ncid, _MTPtimeVarID, start, count, &_MTPTimeSamples[0]);
+  count[0] = _timeLength;
+
   for (size_t i =0; i < raw.size(); ++i)
   {
     RAWTBL *rp;
@@ -507,8 +568,17 @@ void NetCDF::WriteNetCDFfromMemory()
     count[1] = rp->OutputRate;
     count[2] = rp->Length;
 
-    status = nc_put_vara_float(_ncid, rp->varid, start, count, &rp->OutputData[0]);
-    
+    if (strstr(rp->name,"_MTP"))
+    {
+      count[0]=rp->TimeLength;
+      status = nc_put_vara_float(_ncid, rp->varid, start, count, &rp->OutputData[0]);
+      count[0] = _timeLength;
+    }
+    else
+    {
+      status = nc_put_vara_float(_ncid, rp->varid, start, count, &rp->OutputData[0]);
+    }
+
     if (status != NC_NOERR)
     {
       fprintf(stderr, "WriteNetCDFfromMemory: write failure, variable %s, status = %d\n",
@@ -526,11 +596,21 @@ void NetCDF::WriteNetCDFfromMemory()
     count[1] = dp->OutputRate;
     count[2] = dp->Length;
 
-    status = nc_put_vara_float(_ncid, dp->varid, start, count, &dp->OutputData[0]);
+    if (strstr(dp->name,"_MTP"))
+    {
+      count[0]=dp->TimeLength;
+      status = nc_put_vara_float(_ncid, dp->varid, start, count, &dp->OutputData[0]);
+      count[0] = _timeLength;
+    }
+    else
+    {
+      status = nc_put_vara_float(_ncid, dp->varid, start, count, &dp->OutputData[0]);
+    }
+
     if (status != NC_NOERR)
     {
       fprintf(stderr, "WriteNetCDFfromMemory: write failure, variable %s, status = %d\n",
-                       dp->name, status);
+                      dp->name, status);
       fprintf(stderr, "%s\n", nc_strerror(status));
       _errCnt++;
     }
@@ -541,14 +621,16 @@ void NetCDF::WriteNetCDFfromMemory()
     fprintf(stderr, "Too many write errors, closing file and exiting...\n");
     quit();
   }
-}
+}	/* END WRITENETCDFFROMMEMORY */
 /* -------------------------------------------------------------------- */
 void NetCDF::WriteNetCDF()
 {
-  //float *data;
   float data;
+  size_t nMissMTP; // count missing vals to determine missing rec
 
   static bool		firstWrite = true;
+
+  _firstMTPvar = 1; //initialize
 
   if (firstWrite)
   {
@@ -578,6 +660,8 @@ void NetCDF::WriteNetCDF()
   int ut_seconds = UTSeconds(SampledData);
   _TimeSamples.push_back(ut_seconds); // save Time in memory
   _timeLength+=1;
+  _MTPTimeSamples.push_back(ut_seconds); // save MTPTime in memory
+  _MTPtimeLength+=1;
   if (cfg.isADS2())
     _TimeOffsets.push_back(_timeOffset); // save Time in memory
 
@@ -591,8 +675,6 @@ void NetCDF::WriteNetCDF()
 
     size_t N = rp->Length * rp->OutputRate;
 
-    //data = new float[N];
-
     if (rp->OutputRate == Config::LowRate)
     {
       if (tv.active())
@@ -600,10 +682,23 @@ void NetCDF::WriteNetCDF()
         tv.trace_variable("write netcdf lowrate", rp->name, stime,
                           &(AveragedData[rp->LRstart]), N);
       }
-      for (size_t j = 0; j < N; ++j) {
+      for (size_t j = 0; j < N; ++j) 
+      {
         data = (float)AveragedData[rp->LRstart + j];
         if (std::isnan(data)) data = (float)MISSING_VALUE;
         rp->OutputData.push_back(data); // save data to memory
+        if (strstr(rp->name,"_MTP") && (data == (float)MISSING_VALUE))
+	{
+	  rp->OutputData.pop_back();
+	  if (j==0) rp->TimeLength -=1;
+	  if ((_firstMTPvar) && // only pop time once
+	    (!(strcmp(rp->name,"BTCH1_MTP")))) // only set MTPTime dimension once, key off BTCH1
+	  {
+	    _MTPTimeSamples.pop_back();
+            _firstMTPvar=0;
+            _MTPtimeLength-=1;
+          }
+        }
       }
     }
     else
@@ -627,7 +722,6 @@ void NetCDF::WriteNetCDF()
     }
     rp->TimeLength +=1;
 
-    //delete [] data;
   }
 
 
@@ -639,15 +733,32 @@ void NetCDF::WriteNetCDF()
 
     size_t N = dp->Length * dp->OutputRate;
 
-   // data = new float[N];
-
     if (dp->OutputRate == Config::LowRate)
     {
+      nMissMTP=0;
       for (size_t j = 0; j < N; ++j) {
         data = (float)AveragedData[dp->LRstart + j];
         if (std::isnan(data)) data = (float)MISSING_VALUE;
         dp->OutputData.push_back(data); // save data in memory
+	// Get rid of entirely missing recs - need more complex logic
+	if (strstr(dp->name,"_MTP") && (data == (float)MISSING_VALUE)) 
+        {
+	  nMissMTP++;
+        }
       }
+      if (nMissMTP == N) { //Found an entirely missing rec
+	for  (size_t j = 0; j < N; ++j) {
+          dp->OutputData.pop_back();
+	  if (j==0) dp->TimeLength -=1;
+	}
+      }
+// TEMPC_MTP - do for rp too!
+//   _, _, _, _, _, _, _, 298.7556, 303.6365, 304.7576, 303.7633, 304.3086, 
+//   305.0511, 304.0732, 302.5855, 300.4357, 299.6722, 301.7025, 302.0096, 
+//   301.5493, 299.2976, 296.5545, 293.4816, 289.3903, 284.2715, 276.3909, 
+//   267.9584, 257.0803, 243.5771, 227.1208, 210.2335, 202.6427, 209.8236,
+// Need to keep missing vals but still differentiate between this good rec
+// and the 16 recs that are all missing between each good rec
     }
     else
     {
@@ -659,7 +770,6 @@ void NetCDF::WriteNetCDF()
     }
     dp->TimeLength +=1;
 
-    //delete [] data;
   }
 
 
@@ -807,7 +917,7 @@ void NetCDF::Close()
 
   nc_redef(_ncid);
   writeMinMax();
-  writeTimeUnits();
+  writeTimeUnits(_timeVarID,_timeOffsetID);
   nc_enddef(_ncid);
 
   Sync();
@@ -1050,7 +1160,7 @@ void NetCDF::writeMinMax()
 }
 
 /* -------------------------------------------------------------------- */
-void NetCDF::writeTimeUnits()
+void NetCDF::writeTimeUnits(int varid, int offsetid)
 {
   const char *format = "seconds since %F %T %z";
   struct tm tmp;
@@ -1060,10 +1170,10 @@ void NetCDF::writeTimeUnits()
 printf("%s\n", asctime(&_startFlight));
   tmp.tm_hour = tmp.tm_min = tmp.tm_sec = 0;
   strftime(buffer, 256, format, &tmp);
-  nc_put_att_text(_ncid, _timeVarID, "units", strlen(buffer)+1, buffer);
-  nc_put_att_text(_ncid, _timeVarID, "strptime_format", strlen(format)+1, format);
-  if (cfg.isADS2())
-    nc_put_att_text(_ncid, _timeOffsetID, "units", strlen(buffer)+1, buffer);
+  nc_put_att_text(_ncid, varid, "units", strlen(buffer)+1, buffer);
+  nc_put_att_text(_ncid, varid, "strptime_format", strlen(format)+1, format);
+  if (cfg.isADS2() && offsetid != -1)
+    nc_put_att_text(_ncid, offsetid, "units", strlen(buffer)+1, buffer);
 
 
   strftime(buffer, 256, ISO8601_Z, &_startFlight);
