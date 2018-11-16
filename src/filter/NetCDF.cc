@@ -692,7 +692,7 @@ void NetCDF::WriteNetCDF()
 	  rp->OutputData.pop_back();
 	  if (j==0) rp->TimeLength -=1;
 	  if ((_firstMTPvar) && // only pop time once
-	    (!(strcmp(rp->name,"BTCH1_MTP")))) // only set MTPTime dimension once, key off BTCH1
+	    (!(strcmp(rp->name,"SCNT_MTP")))) // only set MTPTime dimension once, key off the raw data
 	  {
 	    _MTPTimeSamples.pop_back();
             _firstMTPvar=0;
