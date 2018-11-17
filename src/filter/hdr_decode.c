@@ -2150,7 +2150,6 @@ static void add_derived_names(const char name[])
 {
   char	*p;
   char	buff[512];
-  DERTBL	*dp;
 
   /* Find variable in derived list and add ALL associated names to
    * derived table.
@@ -2161,7 +2160,7 @@ static void add_derived_names(const char name[])
     p = strtok(buff, " \t");
 
     while ( (p = strtok((char *)NULL, " \t")) )
-      dp = add_name_to_DERTBL(p);
+      (void)add_name_to_DERTBL(p);
     }
 
 }	/* END ADD_DERIVED_NAMES */
@@ -2170,13 +2169,12 @@ static void add_derived_names(const char name[])
 static void add_file_to_DERTBL(const std::string& filename)
 {
   FILE	*fp;
-  DERTBL *dp;
 
   fp = OpenProjectFile(filename, "r", EXIT);
 
   while (fscanf(fp, "%s", buffer) != EOF)
     if (buffer[0] != COMMENT)
-      dp = add_name_to_DERTBL(buffer);
+      (void)add_name_to_DERTBL(buffer);
 
   fclose(fp);
 
