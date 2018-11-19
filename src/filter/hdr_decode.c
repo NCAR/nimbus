@@ -1050,7 +1050,7 @@ int DecodeHeader(const char header_file[])
       }
     else
     if (!strcmp(item_type, SER_STR))
-      add_name_to_RAWTBL("SERIAL");
+      (void)add_name_to_RAWTBL("SERIAL");
     else
     if (!strcmp(item_type, PMS2D_STR))
       {
@@ -1383,7 +1383,7 @@ static void initLitton51(char vn[])
   for (int i = 0; names[i]; ++i)
     {
     sscanf(names[i], "%s %d", name, &rate);
-    add_name_to_RAWTBL(name);
+    (void)add_name_to_RAWTBL(name);
     }
 
   FreeTextFile(names);
@@ -1896,10 +1896,10 @@ static void initPMS1Dv3(char vn[])
 
   if (strncmp(temp, "AS100", 5) == 0)
     {
-    add_name_to_RAWTBL("FRNG");
-    add_name_to_RAWTBL("REJDOF");
-    add_name_to_RAWTBL("REJAT");
-    add_name_to_RAWTBL("OVFLW");
+    (void)add_name_to_RAWTBL("FRNG");
+    (void)add_name_to_RAWTBL("REJDOF");
+    (void)add_name_to_RAWTBL("REJAT");
+    (void)add_name_to_RAWTBL("OVFLW");
     }
 
   SetLookupSuffix((char *)0);
@@ -2140,7 +2140,7 @@ static void add_raw_names(const char name[])
     p = strtok(buff, " \t");
 
     while ( (p = strtok((char *)NULL, " \t")) )
-      add_name_to_RAWTBL(p);
+      (void)add_name_to_RAWTBL(p);
     }
 
 }       /* END ADD_RAW_NAMES */
@@ -2190,7 +2190,7 @@ static void add_file_to_RAWTBL(const std::string& filename)
 
   while (fscanf(fp, "%s", buffer) != EOF)
     if (buffer[0] != COMMENT)
-      add_name_to_RAWTBL(buffer);
+      (void)add_name_to_RAWTBL(buffer);
 
   fclose(fp);
 
