@@ -342,8 +342,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     // it since the data report once every 17 seconds rather than at 1hz.
     if (strstr(rp->name,"_MTP"))
     {
-      printf("RAW: %s %lu\n", rp->name,rp->TimeLength); // TESTING for _MTP vars
-      printf("RAW: %s %lu %lu %lu\n", rp->name,rp->TimeLength,rp->OutputRate, rp->Length); // TESTING for _MTP vars
+      printf("RAW: %s %lu\n", rp->name,rp->TimeLength);
 
       if (_firstMTPvar) // only set MTPTime dimension once
       {
@@ -479,7 +478,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     if (strstr(dp->name,"_MTP"))
     {
-      printf("DERIVED: %s %lu %lu %lu\n", dp->name,dp->TimeLength,dp->OutputRate, dp->Length); // TESTING for _MTP vars
+      printf("DERIVED: %s %lu\n", dp->name,dp->TimeLength);
       dims[0]=MTPTimeDim;
       status = nc_def_var(_ncid, dp->name, NC_FLOAT, ndims, dims, &dp->varid);
       dims[0]=TimeDim;
