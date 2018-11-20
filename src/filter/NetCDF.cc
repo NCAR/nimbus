@@ -676,6 +676,7 @@ void NetCDF::WriteNetCDF()
 
     if (rp->OutputRate == Config::LowRate)
     {
+      nMissMTP=0;
       if (tv.active())
       {
         tv.trace_variable("write netcdf lowrate", rp->name, stime,
@@ -688,6 +689,11 @@ void NetCDF::WriteNetCDF()
         rp->OutputData.push_back(data); // save data to memory
         if (strstr(rp->name,"_MTP") && (data == (float)MISSING_VALUE))
 	{
+	  nMissMTP++;
+	}
+      }
+      if (nMissMTP == N) { //Found an entirely missing rec
+	for  (size_t j = 0; j < N; ++j) {
 	  rp->OutputData.pop_back();
 	  if (j==0) rp->TimeLength -=1;
 	  if ((_firstMTPvar) && // only pop time once
@@ -739,7 +745,7 @@ void NetCDF::WriteNetCDF()
         data = (float)AveragedData[dp->LRstart + j];
         if (std::isnan(data)) data = (float)MISSING_VALUE;
         dp->OutputData.push_back(data); // save data in memory
-	// Get rid of entirely missing recs - need more complex logic
+	// Get rid of entirely missing recs
 	if (strstr(dp->name,"_MTP") && (data == (float)MISSING_VALUE)) 
         {
 	  nMissMTP++;
@@ -751,13 +757,6 @@ void NetCDF::WriteNetCDF()
 	  if (j==0) dp->TimeLength -=1;
 	}
       }
-// TEMPC_MTP - do for rp too!
-//   _, _, _, _, _, _, _, 298.7556, 303.6365, 304.7576, 303.7633, 304.3086, 
-//   305.0511, 304.0732, 302.5855, 300.4357, 299.6722, 301.7025, 302.0096, 
-//   301.5493, 299.2976, 296.5545, 293.4816, 289.3903, 284.2715, 276.3909, 
-//   267.9584, 257.0803, 243.5771, 227.1208, 210.2335, 202.6427, 209.8236,
-// Need to keep missing vals but still differentiate between this good rec
-// and the 16 recs that are all missing between each good rec
     }
     else
     {
