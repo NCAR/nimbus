@@ -7,6 +7,7 @@
 
 using namespace std;
 
+/* -------------------------------------------------------------------- */
 RetrievalCoefficientFile::RetrievalCoefficientFile(std::string Filename) 
 {
 
@@ -147,7 +148,7 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(std::string Filename)
   else cout << "Unable to open file";
   return;
 }
-
+/* -------------------------------------------------------------------- */
 /*
  *  Null Constructor
  */
@@ -157,12 +158,14 @@ RetrievalCoefficientFile::RetrievalCoefficientFile()
   _RCFId = std::string();
 }
 
+/* -------------------------------------------------------------------- */
 bool RetrievalCoefficientFile::isValid()
 {
   if (_RCFFileName.size() == 0) return false;
   return true;
 }
 
+/* -------------------------------------------------------------------- */
 RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(NR_TYPE PAltKm)
 {
   RC_Set_1FL RcSetAvWt;
@@ -240,6 +243,7 @@ RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(NR_TYPE PAltKm)
 
 }
 
+/* -------------------------------------------------------------------- */
 bool RetrievalCoefficientFile::setFlightLevelsKm(float FlightLevels[], int Len)
 {
   if (Len != _RCFHdr.NFL) 
@@ -266,6 +270,7 @@ bool RetrievalCoefficientFile::setFlightLevelsKm(float FlightLevels[], int Len)
   return true;
 }
 
+/* -------------------------------------------------------------------- */
 void RetrievalCoefficientFile::FlUn2FlRcSet(My_RC_FL_Un RcUn, RC_Set_1FL *RcSet)
 {
   RcSet->Palt = RcUn.RC_read.sBP;
