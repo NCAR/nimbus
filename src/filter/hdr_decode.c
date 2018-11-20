@@ -409,7 +409,7 @@ int DecodeHeader3(const char header_file[])
   cfg.SetProjectNumber(aircraft->getProject()->getName());
   cfg.SetTailNumber(aircraft->getTailNumber());
   if (cfg.FlightNumber().length() == 0)
-    cfg.SetFlightNumber(aircraft->getProject()->getFlightName());
+    cfg.SetFlightNumber(syncRecReader->getFlightName());
   if (cfg.FlightNumber().length() == 0)
     cfg.SetFlightNumber("uncle");
   cfg.SetNIDASrevision(nidas::core::Version::getSoftwareVersion());
