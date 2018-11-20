@@ -69,6 +69,8 @@ int numFlightLevels = 13;  // never changes - every project will have 13 levels
 float defaultLevels[] = {13.0,12.0,9.5,8.0,6.0,5.0,3.5,2.5,2.0,1.5,1.0,0.5,0.0};
 std::vector<float> FLIGHTLEVELSKM; // flight levels from Defaults file
 
+NR_TYPE altc[NUM_RETR_LVLS]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33};
+
 static Retriever *Rtr;
 
 /* -------------------------------------------------------------------- */
@@ -286,11 +288,11 @@ void sretriever(DERTBL *varp)
 		  // channel)
   NR_TYPE ggalt = GetSample(varp, 1);  //Aircraft altitude (MSL) meters
   NR_TYPE tempc[NUM_RETR_LVLS]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33};
-
-  /* If GGALT is missing, return missing for tempc */
+  /* If GGALT is missing, return missing for altc and tempc */
   if (std::isnan(ggalt))
   {
     std::fill(tempc, tempc+NUM_RETR_LVLS, floatNAN);
+    std::fill(altc, altc+NUM_RETR_LVLS, floatNAN);
   }
   else {
 
@@ -300,6 +302,7 @@ void sretriever(DERTBL *varp)
     for (size_t i=0; i<NUM_RETR_LVLS;i++)
     {
       tempc[i]=ATP.Temperatures[i];
+      altc[i]=ATP.Altitudes[i];
     }
 
   }
@@ -307,4 +310,12 @@ void sretriever(DERTBL *varp)
   PutVector(varp, &tempc);
 
 }      /* End sretriever */
+
+/* -------------------------------------------------------------------- */
+void sretrievealt(DERTBL *varp)
+{
+  PutVector(varp, &altc);
+
+}	/* End sretrievealt */
+
 /* END MTP.C */

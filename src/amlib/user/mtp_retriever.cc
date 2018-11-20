@@ -26,12 +26,15 @@ AtmosphericTemperatureProfile Retriever::Retrieve(NR_TYPE* ScanBTs, NR_TYPE ACAl
     ATP.Temperatures.push_back(Temperature);
   }
 
-  ATP.Altitudes = Pressure2Km(PressureAlts);
 
-  // Any Temperature with Altitude <= 0 is not valid (nor is altitude)
+  ATP.Altitudes = Pressure2Km(PressureAlts); // Copy all elements from the returned std::vector to ATP.Altitudes
+
   for (int L = 0; L < NUM_RETR_LVLS; L++)
   {
-    if (ATP.Altitudes[L] <= 0) 
+    // Any Temperature with Altitude <= 0 is not valid (nor is altitude)
+    // If Temperature is NAN (regardless of Alt, set Alt to NAN. Do this
+    // so code will output same number of Temperature and Altitude records.
+    if ((ATP.Altitudes[L] <= 0) || std::isnan(ATP.Temperatures[L]))
     {
       ATP.Altitudes[L] = NAN;
       ATP.Temperatures[L] = NAN;
