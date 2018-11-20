@@ -1440,6 +1440,10 @@ static void initMTP()
   // Initialize physical temperature profile
   dp = add_name_to_DERTBL("TEMPC");	
   dp->Length = nbinsl;	
+ 
+  // Initialize altitude for physical temperature profile
+  dp = add_name_to_DERTBL("ALTC");	
+  dp->Length = nbinsl;	
 }
 /* -------------------------------------------------------------------- */
 static void initMASP(char vn[])

@@ -17,6 +17,7 @@
 	"CNCONC",	NULL,           NULL,		sconcnDW,
 	"SCANBT",	(void(*)(void*))mtpInit,	NULL,	scal,
         "TEMPC",	NULL,		NULL,		sretriever,
+        "ALTC",		NULL,		NULL,		sretrievealt,
 
 #
 # NOMADSS
