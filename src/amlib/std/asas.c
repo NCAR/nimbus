@@ -219,7 +219,7 @@ void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
 
 
   // Check for valid USCAT (high USCAT indicates laser instability); if not, nan everything.
-  if (varp->ndep > 2 && strncmp(varp->depend[2], "USCAT", 5) == 0)
+  if (varp->nDependencies > 2 && strncmp(varp->depend[2], "USCAT", 5) == 0)
   {
     NR_TYPE uscat = GetSample(varp, 2);
 

@@ -108,7 +108,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
     case DERIVED:
       set_edit_window_data(dp, ERR, 0.0);
 
-      for (i = 0; i < dp->ndep; ++i)
+      for (i = 0; i < dp->nDependencies; ++i)
         {
         XmTextFieldSetString(ev_text[i], dp->depend[i]);
         XtSetSensitive(ev_text[i], true);
@@ -245,7 +245,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
       if ((dp->ProbeType & PROBE_PMS1D) && outputRate == Config::HighRate)
         dp->OutputRate = dp->Default_HR_OR;
 
-      for (size_t i = 0; i < dp->ndep; ++i)
+      for (size_t i = 0; i < dp->nDependencies; ++i)
         {
         p = XmTextFieldGetString(ev_text[i]);
         strcpy(dp->depend[i], p);

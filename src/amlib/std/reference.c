@@ -20,7 +20,7 @@ void sRefer(DERTBL *varp)
   NR_TYPE x = GetSample(varp, 0);
 
   // If we have a secondary, use it if primary is nan.
-  if (std::isnan(x) && varp->ndep > 1)
+  if (std::isnan(x) && varp->nDependencies > 1)
     x = GetSample(varp, 1);
 
   PutSample(varp, x);

@@ -2564,7 +2564,7 @@ DERTBL::DERTBL(const char s[]) : var_base(s)
 {
   Initializer = 0;
   compute = 0;
-  ndep = 0;
+  nDependencies = 0;
 }
 
 /* END HDR_DECODE.C */

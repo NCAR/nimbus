@@ -218,7 +218,7 @@ void sTwoD(DERTBL *varp)
 
   actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
-  if (varp->ndep > 2)
+  if (varp->nDependencies > 2)
     deadTime = GetSample(varp, 2);
 
   probeNum	= varp->ProbeCount;

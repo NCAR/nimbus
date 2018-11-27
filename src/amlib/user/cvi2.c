@@ -129,7 +129,7 @@ void sconcud(DERTBL *varp)
   }
 
 
-  if (varp->ndep == 5)
+  if (varp->nDependencies == 5)
   {
     NR_TYPE cvpcn = GetSample(varp, 3);
     NR_TYPE upress = GetSample(varp, 4);

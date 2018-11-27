@@ -954,7 +954,7 @@ XmString CreateListLineItem(var_base *pp, int var_type)
       buffer[33] = 'N'; buffer[34] = 'A';
       memcpy(&buffer[40], "NA    ", 5);
 
-      for (size_t i = 0; i < dp->ndep; ++i)
+      for (size_t i = 0; i < dp->nDependencies; ++i)
         {
         if (i > 0)
           strcat(buffer, ",");
@@ -1057,7 +1057,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
     buffer[33] = 'N'; buffer[34] = 'A';
     fprintf(fp, buffer);
 
-    for (size_t j = 0; j < dp->ndep; ++j)
+    for (size_t j = 0; j < dp->nDependencies; ++j)
       {
       if (j > 0)
         {

@@ -26,7 +26,7 @@ void srhum(DERTBL *varp)
   NR_TYPE atx, e, esa, rhum = 0.0;
 
   atx = GetSample(varp, 0);
-  if (varp->ndep == 3)	// Old method for computing RHUM via ESUBT.
+  if (varp->nDependencies == 3)	// Old method for computing RHUM via ESUBT.
   {
     double esubt(double, double);
     NR_TYPE psxc = GetSample(varp, 1);

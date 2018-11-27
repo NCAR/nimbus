@@ -444,8 +444,8 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     nc_put_att_text(_ncid, dp->varid, "DataQuality", strlen(dp->DataQuality)+1,
 		dp->DataQuality);
 
-    sprintf(buffer, "%zu", dp->ndep);
-    for (size_t j = 0; j < dp->ndep; ++j)
+    sprintf(buffer, "%zu", dp->nDependencies);
+    for (size_t j = 0; j < dp->nDependencies; ++j)
     {
       strcat(buffer, " ");
       strcat(buffer, dp->depend[j]);
@@ -1039,7 +1039,7 @@ void NetCDF::markDependedByList(const char target[])
   {
     DERTBL *dp = derived[i];
 
-    for (size_t j = 0; j < dp->ndep; ++j)
+    for (size_t j = 0; j < dp->nDependencies; ++j)
       if (strcmp(target, dp->depend[j]) == 0)
       {
         dp->DependedUpon |= 0xf0;

@@ -158,7 +158,7 @@ void sakrd(DERTBL *varp)
       case Config::HIAPER:
         psf = GetSample(varp, 2);	// PSF
         mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
-        if (varp->ndep == 4)
+        if (varp->nDependencies == 4)
         {
           NR_TYPE alt = GetSample(varp, 3);
           if (alt < 6500) akrd_coeff = low; else
