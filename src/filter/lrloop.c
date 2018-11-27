@@ -50,7 +50,7 @@ int LowRateLoop(time_t startTime, time_t endTime)
 {
   int32_t		nBytes, thisTime, cntr = 0;
   NR_TYPE		*BuffPtr;
-  CircularBuffer	*LRCB;	/* Logical Record Circular Buffers	*/
+  CircularBuffer	*LRCB = NULL;	// Logical Record Circular Buffers
 
   TraceVariables tv;
 
