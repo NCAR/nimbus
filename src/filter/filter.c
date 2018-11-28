@@ -43,11 +43,11 @@ static circBuffPtr	newCircBuff(int);
 static filterPtr readAfilter(const char file[]);
 static const void* BadFilter = (void*)1;
 
-static int	disposMultiRateFilter(mRFilterPtr aMRFPtr);
-
 static NR_TYPE	getBuff(int offset, circBuffPtr aCBPtr);
 static void	initCircBuff(circBuffPtr aCBPtr),
+#ifdef unused
 		disposCircBuff(circBuffPtr aCBPtr),
+#endif
 		putBuff(NR_TYPE datum, circBuffPtr aCBPtr),
 		ProcessVariable(CircularBuffer *, CircularBuffer *,
 				RAWTBL *vp, mRFilterPtr vpFilter),
@@ -63,12 +63,13 @@ void InitMRFilters()
   const MOD *mv_p;
   filterPtr fromOne, fromFive, fromEight, fromTen, fromThirteen, fromSixteen, 
     fromTwentyFive, fromFifty, fromOneHundred, fromTwoFifty, fromFiveHundred, 
-    fromOneThousand, vspd, acins, gsf;
+    fromOneThousand;
   char filterFileName[128];
 
-  vspd = readAfilter("VSPD");
-  gsf = readAfilter("GSF");
-  acins = readAfilter("ACINS");
+  // Custom filters for older Laseref III in the C130.
+  filterPtr acins = readAfilter("ACINS");
+  filterPtr vspd = readAfilter("VSPD");
+//  filterPtr gsf = readAfilter("GSF");
 
   int outRate = (int)cfg.HRTRate();
 
@@ -135,7 +136,7 @@ void InitMRFilters()
     /* Can't filter Vectors.  And we don't want to filter PMS1D scalars.
      * This data will just be memcpy() into HighRateData[].
      */
-    if (raw[i]->Length > 1 || raw[i]->ProbeType & PROBE_PMS1D)
+    if (raw[i]->Length > 1 || raw[i]->ProbeType & (PROBE_PMS1D | PROBE_PMS2D))
       continue;
 
     mv_p = raw[i]->Modulo;
@@ -156,6 +157,8 @@ void InitMRFilters()
          * performed, due to poor quantization from the instrument.  Filtering
          * introdouces ripple and a scalloping effect when the raw data is
          * "stair-stepping".  Webster/Lenschow May-2005
+         * Update 2018: In 2010 the C130 IRS was upgraded from Laseref III to
+         * Laseref IV.  Sample rate for the below variables moved to 13hz.
          */
         if (strncmp(raw[i]->name, "GSF", 3) == 0 ||
             strncmp(raw[i]->name, "VEW", 3) == 0 ||
@@ -166,10 +169,14 @@ void InitMRFilters()
           rawFilters[i] = createMRFilter(L, M, fromTen, mv_p);
         break;
       case 13:	// Really 12.5hz
+        /* This is LAT, LON, VEW, and VNS on the newer inertial systems;
+         * Laseref IV & V.  (All GV & C130 upgrade in 2010).  No filtering.
+         */
 //        rawFilters[i] = createMRFilter(L, M, fromThirteen, mv_p);
         rawFilters[i] = 0;
         break;
       case 16:
+        // Data from the Air Data Computer (ADC).
         rawFilters[i] = createMRFilter(L, M, fromSixteen, mv_p);
         break;
       case 25:		/* Just filter	*/
@@ -222,7 +229,7 @@ void Filter(	CircularBuffer *PSCB,	/* SampleRate data. */
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
-    if ((raw[i]->ProbeType & PROBE_PMS1D) || (raw[i]->ProbeType & PROBE_PMS2D))
+    if ( raw[i]->ProbeType & (PROBE_PMS1D | PROBE_PMS2D) )
       memcpy(	(char *)&HighRateData[raw[i]->HRstart],
 		(char *)&SampledData[raw[i]->SRstart],
 		sizeof(NR_TYPE) * raw[i]->SampleRate * raw[i]->Length);
@@ -487,6 +494,7 @@ static void initCircBuff(circBuffPtr aCBPtr)
 
 }
 
+#ifdef unused
 /*--------------------------------------------------------------
 -	void disposCircBuff(circBuffPtr aCBPtr)
 -		Free memory of circular buffer specified.
@@ -496,6 +504,7 @@ static void disposCircBuff(circBuffPtr aCBPtr)
   delete [] aCBPtr->value;
   delete aCBPtr;
 }
+#endif
 
 /*------------------------------------------------------------
 -	void putBuff(datum, aCBPtr)
