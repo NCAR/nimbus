@@ -198,20 +198,20 @@ static void CommonPostInitialization()
   rate = 1;
 
   if ( (cfg.ProjectName().compare("RAF_Lab") == 0) || (cfg.Aircraft() == Config::TADS) )
-    {
+  {
     add_derived_names("RAF_LAB");
-    }
+  }
   else
   if (cfg.Aircraft() != Config::SAILPLANE)
-    {
+  {
     add_derived_names("ALWAYS");
     add_derived_names("HUMIDITY");
     AddProbeToList("Fluxes", (size_t)PROBE_FLUX);
-    }
+  }
   else
-    {
+  {
     add_derived_names("SAIL");
-    }
+  }
 
   ReleasePMSspecs();
 
@@ -581,7 +581,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
     if (!strcmp(rp->name,"SCNT_MTP"))
     {
-	initMTP();
+      initMTP();
     }
 
     rp->nidasLag = getLag(var);
@@ -590,14 +590,14 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
     if (rp->Units.compare("count") == 0)
     {
-        printf("Treating %s as a counter\n", rp->name);
-        strcpy(rp->type, "C");
-        rp->Average = rp->Length > 1 ? (void (*) (...))SumVector : (void (*) (...))Sum;
+      printf("Treating %s as a counter\n", rp->name);
+      strcpy(rp->type, "C");
+      rp->Average = rp->Length > 1 ? (void (*) (...))SumVector : (void (*) (...))Sum;
     }
     else
     {
-        strcpy(rp->type, "A");
-        rp->Average = rp->Length > 1 ? (void (*) (...))AverageVector : (void (*) (...))Average;
+      strcpy(rp->type, "A");
+      rp->Average = rp->Length > 1 ? (void (*) (...))AverageVector : (void (*) (...))Average;
     }
 
     location[0] = '\0';
@@ -605,12 +605,12 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   }
 
   if (cfg.ProjectName().compare("RAF_Lab") && (cfg.Aircraft() != Config::TADS) )
-    {
+  {
     probeCnt = GustCnt++;
     add_derived_names("GUST");
     initGustCorrected();
     probeCnt = 0;
-    }
+  }
 
   CommonPostInitialization();
   GenerateProbeListADS3();
@@ -662,22 +662,22 @@ int DecodeHeader(const char header_file[])
   char	*loc, *p;
 
   for (probeCnt = 0; pms1_probes[probeCnt].name; ++probeCnt)
-    {
+  {
     pms1_probes[probeCnt].cnt = 0;
     pms1v2_probes[probeCnt].cnt = 0;
     if (probeCnt < 3)
       pms1v3_probes[probeCnt].cnt = 0;
-    }
+  }
 
   p = ExtractHeaderIntoFile(header_file);
   if (InitFlightHeader(p, CLOSE) == ERR)
-    {
+  {
     sprintf(buffer, "Header decode failed, taperr = %d.", taperr);
     HandleError(buffer);
     unlink(p);
     free(p);
     return(ERR);
-    }
+  }
 
   unlink(p);
 
@@ -707,18 +707,18 @@ int DecodeHeader(const char header_file[])
 
   sprintf(buffer, "%s/%s", cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str());
   if (access(buffer, R_OK) == ERR)
-    {
+  {
     sprintf(buffer, "No project directory for %s.", cfg.ProjectNumber().c_str());
     HandleError(buffer);
     return(ERR);
-    }
+  }
 
   /* Old tapes don't set Aircraft field, so fudge it with proj_num.
   */
   if (cfg.Aircraft() == 0)
-    {
+  {
     switch (cfg.ProjectNumber()[0])
-      {
+    {
       case '2':
         cfg.SetAircraft(Config::KINGAIR);
         break;
@@ -734,8 +734,8 @@ int DecodeHeader(const char header_file[])
       case '8':
         cfg.SetAircraft(Config::ELECTRA);
         break;
-      }
     }
+  }
 
   // Perform common (ADS2 & ADS3).
   CommonPreInitialization();
@@ -743,7 +743,7 @@ int DecodeHeader(const char header_file[])
   /* This is the main loop, loop through all variables in header
    */
   for (vn = GetFirst(); vn; vn = GetNext())
-    {
+  {
     GetItemType(vn, &item_type);
     GetStart(vn, &start);
 
@@ -766,11 +766,11 @@ int DecodeHeader(const char header_file[])
     if (!strcmp(item_type, SDI_STR) ||
         !strcmp(item_type, DIGOUT_STR) ||
         !strcmp(item_type, HSKP_STR))
-      {
+    {
       initSDI(vn); 
       add_derived_names(vn);
       continue;
-      }
+    }
 
 
     /* Ok, it's not an analog/digital channel, must be a probe.
@@ -779,78 +779,78 @@ int DecodeHeader(const char header_file[])
       initHDR(vn);
     else
     if (!strcmp(item_type, IRS_STR))
-      {
+    {
       probeCnt = InertialSystemCount;
       probeType = PROBE_IRS;
 
       if (GetLocation(vn, &loc) ==  OK)
-        {
+      {
         location[0] = '_';
         strcpy(&location[1], loc);
-        }
+      }
 
       strcpy(buffer, item_type);
       strcat(buffer, location);
       AddProbeToList(buffer, probeType | probeCnt);
 
       initHoneywell(vn);
-      }
+    }
     else
     if (!strcmp(item_type, PMS1D_STR))
-      {
+    {
       probeType = PROBE_PMS1D;
 
       if (GetLocation(vn, &loc) ==  OK)
-        {
+      {
         location[0] = '_';
         strcpy(&location[1], loc);
-        }
+      }
 
       initPMS1D(vn);
-      }
+    }
     else
     if (!strcmp(item_type, PMS1V2_STR))
-      {
+    {
       probeType = PROBE_PMS1D;
 
       if (GetLocation(vn, &loc) ==  OK)
-        {
+      {
         location[0] = '_';
         strcpy(&location[1], loc);
-        }
+      }
 
       initPMS1Dv2(vn);
-      }
+    }
     else
     if (!strcmp(item_type, PMS1V3_STR))
-      {
+    {
       probeType = PROBE_PMS1D;
 
       if (GetLocation(vn, &loc) ==  OK)
-        {
+      {
         location[0] = '_';
         strcpy(&location[1], loc);
-        }
+      }
 
       initPMS1Dv3(vn);
-      }
+    }
     else
     if (!strcmp(item_type, EVNT_STR))
-      {
+    {
       if (GetLocation(vn, &loc) ==  OK)
-        {
+      {
         location[0] = '_';
         strcpy(&location[1], loc);
-        }
+      }
 
       add_raw_names(item_type);
-      }
+    }
     else
     if (!strcmp(item_type, GPS_TRIM_STR) ||
         !strcmp(item_type, GPS_TANS2_STR) ||
         !strcmp(item_type, GPS_TANS3_STR) ||
         !strcmp(item_type, GPS_GARMIN_STR))
-      {
+    {
       probeCnt = GPScount;
       probeType = PROBE_GPS;
       AddProbeToList(item_type, probeType);
@@ -864,7 +864,7 @@ int DecodeHeader(const char header_file[])
        * we create GGVEW & GGVNS.
        */
       if (strcmp(item_type, GPS_GARMIN_STR) == 0)
-        {
+      {
         int indx;
 
         if ((indx = SearchTable(raw, "GGTRK")) != ERR)
@@ -875,40 +875,40 @@ int DecodeHeader(const char header_file[])
         cfg.SetCoordLAT("GGLAT");
         cfg.SetCoordLON("GGLON");
         cfg.SetCoordALT("GGALT");
-        }
+      }
 
       initGustCorrected();
       ++GPScount;
-      }
+    }
     else
     if (!strcmp(item_type, PMS2DH_STR))
-      {
+    {
       probeType = PROBE_PMS2D;
 
       if (GetLocation(vn, &loc) ==  OK)
-        {
+      {
         location[0] = '_';
         strcpy(&location[1], loc);
-        }
+      }
 
       initPMS2Dhouse(vn);
-      }
+    }
     else
     if (!strcmp(item_type, GREYVMEH_STR))
-      {
+    {
       probeType = PROBE_PMS2D;
 
       if (GetLocation(vn, &loc) ==  OK)
-        {
+      {
         location[0] = '_';
         strcpy(&location[1], loc);
-        }
+      }
 
       initGreyHouse(vn);
-      }
+    }
     else
     if (!strcmp(item_type, PPS_GPS_STR))
-      {
+    {
       probeCnt = GPScount;
       probeType = PROBE_GPS;
       AddProbeToList(item_type, probeType);
@@ -916,118 +916,118 @@ int DecodeHeader(const char header_file[])
       add_raw_names(item_type);
 
       ++GPScount;
-      }
+    }
     else
     if (!strcmp(item_type, HW_GPS_STR))
-      {
+    {
       probeCnt = GPScount;
       probeType = PROBE_GPS;
 
       if (GetLocation(vn, &loc) ==  OK)
-        {
+      {
         location[0] = '_';
         strcpy(&location[1], loc);
-        }
+      }
 
       AddProbeToList(item_type, probeType);
       add_raw_names(item_type);
 
       ++GPScount;
-      }
+    }
     else
     if (!strcmp(item_type, NEPH903_STR))
-      {
+    {
       sprintf(location, "_%zu", ++NephCnt);
       add_raw_names(item_type);
-      }
+    }
     else
     if (!strcmp(item_type, CMIGITS3_STR))
-      {
+    {
       rate = 10;
       add_raw_names(item_type);
-      }
+    }
     else
     if (!strcmp(item_type, DPRES_STR))
-      {
+    {
       rate = 5;
       add_raw_names(item_type);
       add_derived_names(item_type);
-      }
+    }
     else
     if (!strcmp(item_type, LHTDL_STR))
-      {
+    {
       rate = 4;
       add_raw_names(item_type);
-      }
+    }
     else
     if (!strcmp(item_type, MASP_STR))
-      {
+    {
       probeType = PROBE_PMS1D;
 
       if (GetLocation(vn, &loc) == OK)
-        {
+      {
         location[0] = '_';
         strcpy(&location[1], loc);
-        }
+      }
 
       initMASP(item_type);
-      }
+    }
     else
     if (!strcmp(item_type, OPHIR3_STR))
-      {
+    {
       probeType = PROBE_OPHIR3;
       AddProbeToList(item_type, probeType);
 
       initOphir3(vn);
-      }
+    }
     else
     if (!strcmp(item_type, UVHYG_STR))
-      {
+    {
       probeType = PROBE_UVHYG;
       AddProbeToList(item_type, probeType);
 
       rate = sizeof(struct Uv_blk) / sizeof(struct Uv_smp);
       add_raw_names(item_type);
       add_derived_names(item_type);
-      }
+    }
     else
     if (!strcmp(item_type, RDMA_STR))
-      {
+    {
       probeType = PROBE_RDMA;
       strcpy(location, "_FCR");
       initRDMA(vn);
-      }
+    }
     else
 
 
     /* Seldom used or retired instruments.
      */
     if (!strcmp(item_type, CLIMET_STR))
-      {
+    {
       probeType = PROBE_CLMT;
       strcpy(location, "_C1");
       initCLIMET(vn);
-      }
+    }
     else
     if (!strcmp(item_type, INS_STR))
-      {
+    {
       probeCnt = InertialSystemCount;
       probeType = PROBE_IRS;
 
       AddProbeToList(item_type, probeType);
 
       initLitton51(vn);
-      }
+    }
     else
     if (!strcmp(item_type, LRNC_STR) || !strcmp(item_type, DME_STR) ||
         !strcmp(item_type, NEPH_STR) || !strcmp(item_type, JPLTDL_STR))
-      {
+    {
       add_raw_names(item_type);
       add_derived_names(item_type);
-      }
+    }
     else
     if (!strcmp(item_type, GPS_MAG_STR))
-      {
+    {
       LogMessage("Support for Magnavox GPS has been dropped.\n");
 /*      probeCnt = GPScount;
       probeType = PROBE_GPS;
@@ -1037,7 +1037,7 @@ int DecodeHeader(const char header_file[])
       add_derived_names(item_type);
 
       ++GPScount;
-*/    }
+*/  }
     else
 
 
@@ -1045,18 +1045,18 @@ int DecodeHeader(const char header_file[])
      */
     if (!strcmp(item_type, AEROSOL_STR) ||  /* Ogren for INDOEX */
         !strcmp(item_type, MASSPEC_STR))    /* Mass-spectrometer for INDOEX */
-      {
+    {
       add_raw_names(item_type);
-      }
+    }
     else
     if (!strcmp(item_type, SER_STR))
       add_name_to_RAWTBL("SERIAL");
     else
     if (!strcmp(item_type, PMS2D_STR))
-      {
+    {
 //      if (Mode != REALTIME && Open2dFile(header_file, twoDcnt))
       if (Open2dFile(header_file, twoDcnt))
-        {
+      {
         start = 0;
         rate = 1;
 
@@ -1066,43 +1066,43 @@ int DecodeHeader(const char header_file[])
         strcat(location, "1");
 
         initPMS2D(vn, 0);
-        }
-      }
-    else
-    if (!strcmp(item_type, ASYNC_STR) && cfg.ProcessingMode() == Config::RealTime)
-      {
-      if (strcmp(vn, AVAPS_STR) == 0)
-        {
-        AVAPS = true;
-        for (size_t i = 0; i < 4; ++i)
-          {
-          sprintf(location, "_%02zu", i);
-          add_raw_names(item_type);
-          }
-        }
-      location[0] = '\0';
-      }
-    else
-      {
-      sprintf(buffer, "Unknown variable/probe %s encountered, ignoring & continuing.\n", item_type);
-      LogMessage(buffer);
       }
     }
+    else
+    if (!strcmp(item_type, ASYNC_STR) && cfg.ProcessingMode() == Config::RealTime)
+    {
+      if (strcmp(vn, AVAPS_STR) == 0)
+      {
+        AVAPS = true;
+        for (size_t i = 0; i < 4; ++i)
+        {
+          sprintf(location, "_%02zu", i);
+          add_raw_names(item_type);
+        }
+      }
+      location[0] = '\0';
+    }
+    else
+    {
+      sprintf(buffer, "Unknown variable/probe %s encountered, ignoring & continuing.\n", item_type);
+      LogMessage(buffer);
+    }
+  }
 
 
   probeType = 0;
   location[0] = '\0';
 
   if (cfg.ProcessingMode() == Config::RealTime)
-    {
+  {
     for (probeCnt = 0; probeCnt < 3; ++probeCnt)
-      {
+    {
       sprintf(location, "_%zu", probeCnt);
       add_derived_names("PRCLTRK");
-      }
+    }
 
     location[0] = '\0';
-    }
+  }
 
 
   CommonPostInitialization();
@@ -1175,8 +1175,8 @@ static void initHDR(char vn[])
 /* -------------------------------------------------------------------- */
 static void initSDI(char vn[])
 {
-  char		*type;
-  int		indx;
+  char	*type;
+  int	indx;
 
   if (strcmp(vn, "DUMMY") == 0)
     return;
@@ -1203,16 +1203,16 @@ static void initSDI(char vn[])
   /* Rename analog TEO3C to TEO3.  Naming mistake by ProjMgmt/Campos.
    */
   if (strcmp(vn, "TEO3C") == 0)
-    {
+  {
     LogMessage("Analog TEO3C being renamed to TEO3.\n");
     strcpy(vn, "TEO3");
-    }
+  }
 
   /* Certain analog's require special processing, locate them here and
    * give them their special xlate function.
    */
   if ((indx = SearchDERIVEFTNS(vn)) != ERR && deriveftns[indx].xlate)
-    {
+  {
     RAWTBL	*rp;
     int32_t	offset;
 
@@ -1222,11 +1222,11 @@ static void initSDI(char vn[])
  * were derived, became analog signals....
 
     if (rp->xlate == 0)
-      {
+    {
       fprintf(stderr, "DecodeHeader fatal error: A derived variable name has been entered into the Sample Table.\n");
       fprintf(stderr, "Please remove [%s] from the Sample Table.\n", rp->name);
       exit(1);
-      }
+    }
 */
 
     if (GetConversionOffset(vn, &(rp->convertOffset)) == ERR ||
@@ -1252,15 +1252,15 @@ static void initSDI(char vn[])
     if (strcmp(rp->name, "HGM232") == 0) {	/* Status bit for APN-232 */
       rp = add_name_to_RAWTBL("HGM232S");
       rp->ADSoffset = offset >> 1;
-      }
+    }
 
     if (strcmp(vn, "PSFD1") == 0) {
       rp->name[4] = '\0';
       add_derived_names("PSFD");
-      }
+    }
     else
       return;
-    }
+  }
 
 
   /* Ok, it's strictly nth order polynomial.
@@ -1313,7 +1313,7 @@ static void initHoneywell(char vn[])
   ReadTextFile(IRSNAMES, names);
 
   for (int i = 0; names[i]; ++i)
-    {
+  {
     sscanf(names[i], "%s %d", name, &rate);
 
     if ((rp = add_name_to_RAWTBL(name)) == (RAWTBL *)ERR)
@@ -1321,18 +1321,18 @@ static void initHoneywell(char vn[])
 
     if (strncmp(rp->name, "LAG", 3) != 0)
       rp->DynamicLag = 1;	/* StartProcessing() will add to lag List */
-    }
+  }
 
 
   FreeTextFile(names);
 
   if (InertialSystemCount++ == 0)
-    {
+  {
     add_derived_names(item_type);
     SetLookupSuffix((char *)0);
     add_derived_names("GUST");
     ++GustCnt;
-    }
+  }
   else
     SetLookupSuffix((char *)0);
 
@@ -1347,7 +1347,7 @@ static void initGustCorrected()
     return;
 
   if (cfg.Aircraft() != Config::SAILPLANE)
-    {
+  {
     probeType = PROBE_GUSTC;
     AddProbeToList("Corrected Winds", (size_t)PROBE_GUSTC);
 
@@ -1359,7 +1359,7 @@ static void initGustCorrected()
     add_derived_names("GUSTC");
     cfg.SetCoordLAT("LATC");
     cfg.SetCoordLON("LONC");
-    }
+  }
 
 }	/* END INITTANS */
 
@@ -1381,20 +1381,20 @@ static void initLitton51(char vn[])
   ReadTextFile(INSNAMES, names);
 
   for (int i = 0; names[i]; ++i)
-    {
+  {
     sscanf(names[i], "%s %d", name, &rate);
     add_name_to_RAWTBL(name);
-    }
+  }
 
   FreeTextFile(names);
 
   if (InertialSystemCount++ == 0)
-    {
+  {
     add_derived_names(item_type);
     SetLookupSuffix((char *)0);
     add_derived_names("GUST");
     ++GustCnt;
-    }
+  }
   else
     SetLookupSuffix((char *)0);
 
@@ -1409,7 +1409,7 @@ static void initOphir3(char vn[])
   ReadTextFile(OPHIR3NAMES, list);
 
   for (size_t i = 0; list[i]; ++i)
-    {
+  {
     if ((rp = add_name_to_RAWTBL(strtok(list[i], " \t"))) == (RAWTBL *)ERR)
       continue;
 
@@ -1419,7 +1419,7 @@ static void initOphir3(char vn[])
     size_t order = atoi(strtok((char *)NULL, " \t"));
     for (size_t j = 0; j < order; ++j)
       rp->cof.push_back((NR_TYPE)atof(strtok((char *)NULL, " \t")));
-    }
+  }
 
   FreeTextFile(list);
   add_derived_names(item_type);
@@ -1450,13 +1450,13 @@ static void initMASP(char vn[])
   char		temp[NAMELEN];
 
   if ((indx = locatePMS(vn, pms1v2_probes)) == ERR)
-    {
+  {
     char	msg[128];
 
     sprintf(msg, "Unknown MASP probe: %s, continuing\n", vn);
     LogMessage(msg);
     return;
-    }
+  }
 
   probeCnt	= pms1v2_probes[indx].cnt++;
   probeType	|= pms1v2_probes[indx].pType;
@@ -1494,12 +1494,12 @@ static void initMASP(char vn[])
   temp[0] = 'C';		/* Concentration	*/
 
   if ( (p = SearchList(derivedlist, vn)) )
-    {
+  {
     strcpy(buff, p);
     p = strtok(buff, " \t");
 
     while ( (p = strtok((char *)NULL, " \t")) )
-      {
+    {
       if ((dp = add_name_to_DERTBL(p)) == (DERTBL *)ERR)
         continue;
 
@@ -1509,8 +1509,8 @@ static void initMASP(char vn[])
        */
       if (strcmp(p, temp) == 0)
         dp->Length = BINS_32;
-      }
     }
+  }
 }
   probeCnt = 0;
 
@@ -1583,13 +1583,13 @@ static void initPMS1D(char vn[])
   GetName(vn, &probe);
 
   if ((indx = locatePMS(probe, pms1_probes)) == ERR)
-    {
+  {
     char	msg[128];
 
     sprintf(msg, "Unknown pms1d probe: %s, continuing\n", probe);
     LogMessage(msg);
     return;
-    }
+  }
 
   probeCnt	= pms1_probes[indx].cnt++ + pms1v2_probes[indx].cnt;
   probeType	|= pms1_probes[indx].pType;
@@ -1618,7 +1618,7 @@ static void initPMS1D(char vn[])
   serialNumber += "_DEF";
 
   if ( (p = SearchList(rawlist, probe)) )
-    {
+  {
     strcpy(buff, p);
     p = strtok(buff, " \t");
 
@@ -1628,12 +1628,12 @@ static void initPMS1D(char vn[])
         continue;
 
       if (strcmp(p, temp) == 0)
-        {
+      {
         rp->Length	= pms1_probes[indx].VecLen;
         rp->Average	= (void (*) (...))SumVector;
-        }
       }
     }
+  }
 
   SetLookupSuffix((char *)0);
 
@@ -1643,12 +1643,12 @@ static void initPMS1D(char vn[])
   temp[0] = 'C';		/* Concentration	*/
 
   if ( (p = SearchList(derivedlist, probe)) )
-    {
+  {
     strcpy(buff, p);
     p = strtok(buff, " \t");
 
     while ( (p = strtok((char *)NULL, " \t")) )
-      {
+    {
       if ((dp = add_name_to_DERTBL(p)) == (DERTBL *)ERR)
         continue;
 
@@ -1658,8 +1658,8 @@ static void initPMS1D(char vn[])
        */
       if (strcmp(p, temp) == 0)
         dp->Length = pms1_probes[indx].VecLen;
-      }
     }
+  }
 
   probeCnt = 0;
 
@@ -1679,13 +1679,13 @@ static void initPMS1Dv2(char vn[])
   GetName(vn, &probe);
 
   if ((indx = locatePMS(probe, pms1v2_probes)) == ERR)
-    {
+  {
     char	msg[128];
 
     sprintf(msg, "Unknown pms1d probe: %s, continuing\n", probe);
     LogMessage(msg);
     return;
-    }
+  }
 
   probeCnt   = pms1_probes[indx].cnt + pms1v2_probes[indx].cnt++;
   probeType |= pms1v2_probes[indx].pType;
@@ -1700,10 +1700,10 @@ static void initPMS1Dv2(char vn[])
   if (GetSerialNumber(vn, &p) != ERR)
     serialNumber = p;
   else
-    {
+  {
     serialNumber = probe;
     serialNumber += "_DEF";
-    }
+  }
 
   AddToPMS1DprobeList(probe, location, serialNumber.c_str(), pms1v2_probes[indx].type);
 
@@ -1714,7 +1714,7 @@ static void initPMS1Dv2(char vn[])
   GetCalCoeff(vn, &cals);
 
   for (size_t i = 0; i < P1DV2_AUX; ++i)
-    {
+  {
     if (strcmp(hsk_name[i], "DUMMY") == 0 || strcmp(hsk_name[i], "") == 0)
       continue;
 
@@ -1732,7 +1732,7 @@ static void initPMS1Dv2(char vn[])
 
     for (size_t j = 0; j < order; ++j)
       rp->cof.push_back(cals[i*P1DV2_COF+j]);
-    }
+  }
 
 
   /* Read raw variable names from *.names
@@ -1742,7 +1742,7 @@ static void initPMS1Dv2(char vn[])
     strcat(name, "V2");
 
   if ( (p = SearchList(rawlist, name)) )
-    {
+  {
     strcpy(temp, "A");	/* Actual	*/
     strcat(temp, probe);
 
@@ -1750,7 +1750,7 @@ static void initPMS1Dv2(char vn[])
     p = strtok(buff, " \t");
 
     while ( (p = strtok((char *)NULL, " \t")) )
-      {
+    {
       strcpy(name, p);
       if ((rp = add_name_to_RAWTBL(name)) == (RAWTBL *)ERR)
         continue;
@@ -1759,9 +1759,9 @@ static void initPMS1Dv2(char vn[])
         {
         rp->Length	= pms1v2_probes[indx].VecLen;
         rp->Average	= (void (*) (...))SumVector;
-        }
       }
     }
+  }
 
 
   /* Check for Particle Spacing and add.
@@ -1770,16 +1770,16 @@ static void initPMS1Dv2(char vn[])
   GetParticleSpacingLength(vn, &ps_length);
 
   if (ps_start > 0 && ps_length > 0)
-    {
+  {
     temp[0] = 'P';
 
     if ((rp = add_name_to_RAWTBL(temp)) != (RAWTBL *)ERR)
-      {
+    {
       rp->ADSstart	= ps_start >> 1;
       rp->Length	= (ps_length / rate) >> 1;
       rp->Average	= (void (*) (...))SumVector;
-      }
     }
+  }
 
 
   /* Read in derived names
@@ -1794,12 +1794,12 @@ static void initPMS1Dv2(char vn[])
   temp[0] = 'C';
 
   if ( (p = SearchList(derivedlist, name)) )
-    {
+  {
     strcpy(buff, p);
     p = strtok(buff, " \t");
 
     while ( (p = strtok((char *)NULL, " \t")) )
-      {
+    {
       if ((dp = add_name_to_DERTBL(p)) == (DERTBL *)ERR)
         continue;
 
@@ -1809,8 +1809,8 @@ static void initPMS1Dv2(char vn[])
        */
       if (strcmp(p, temp) == 0)
         dp->Length = pms1v2_probes[indx].VecLen;
-      }
     }
+  }
 
   probeCnt = 0;
 
@@ -1829,13 +1829,13 @@ static void initPMS1Dv3(char vn[])
   GetName(vn, &probe);
 
   if ((indx = locatePMS(probe, pms1v3_probes)) == ERR)
-    {
+  {
     char	msg[128];
 
     sprintf(msg, "Unknown pms1d probe: %s, continuing\n", probe);
     LogMessage(msg);
     return;
-    }
+  }
 
   probeCnt	= pms1_probes[indx].cnt++ + pms1v2_probes[indx].cnt +
 		pms1v3_probes[indx].cnt;
@@ -1847,10 +1847,10 @@ static void initPMS1Dv3(char vn[])
   if (GetSerialNumber(vn, &p) != ERR)
     serialNumber = p;
   else
-    {
+  {
     serialNumber = probe;
     serialNumber += "_DEF";
-    }
+  }
 
   AddProbeToList(buffer, pms1_probes[indx].pType | probeCnt);
 
@@ -1865,18 +1865,18 @@ static void initPMS1Dv3(char vn[])
   strcat(temp, probe);
 
   if ((rp = add_name_to_RAWTBL(temp)) != (RAWTBL *)ERR)
-    {
+  {
     GetNumberBins(vn, &nbins);
     ++nbins;		/* DMT uses bin 0, mimick old style by adding an extra bin. */
     rp->Length	= nbins;
     rp->Average	= (void (*) (...))SumVector;
-    }
+  }
 
   SetLookupSuffix("_V3");
 
   /* Housekeeping names and cals from PMSspecs */
   for (int i = 0; i < 8; ++i)
-    {
+  {
     int j;
 
     sprintf(buffer, "HSKP%d", i);
@@ -1892,15 +1892,15 @@ static void initPMS1Dv3(char vn[])
 
     for (j = 0; (p = strtok(NULL, " \t\n")); ++j)
       rp->cof.push_back(atof(p));
-    }
+  }
 
   if (strncmp(temp, "AS100", 5) == 0)
-    {
+  {
     add_name_to_RAWTBL("FRNG");
     add_name_to_RAWTBL("REJDOF");
     add_name_to_RAWTBL("REJAT");
     add_name_to_RAWTBL("OVFLW");
-    }
+  }
 
   SetLookupSuffix((char *)0);
 
@@ -1912,12 +1912,12 @@ static void initPMS1Dv3(char vn[])
   temp[0] = 'C';		/* Concentration	*/
 
   if ( (p = SearchList(derivedlist, probe)) )
-    {
+  {
     strcpy(buff, p);
     p = strtok(buff, " \t");
 
     while ( (p = strtok((char *)NULL, " \t")) )
-      {
+    {
       if ((dp = add_name_to_DERTBL(p)) == (DERTBL *)ERR)
         continue;
 
@@ -1927,8 +1927,8 @@ static void initPMS1Dv3(char vn[])
        */
       if (strcmp(p, temp) == 0)
         dp->Length = nbins;
-      }
     }
+  }
 }
   probeCnt = 0;
 
@@ -1948,7 +1948,7 @@ static void initGreyHouse(char vn[])
   GetCalCoeff(vn, &cals);
 
   for (int i = 0; i < GREY_HOUSE; ++i)
-    {
+  {
     if (strcmp(hsk_name[i], "DUMMY") == 0 || strcmp(hsk_name[i], "") == 0)
       continue;
 
@@ -1961,7 +1961,7 @@ static void initGreyHouse(char vn[])
       rp->cof.push_back(cals[i*P1DV2_COF+j]);
 
     add_derived_names(hsk_name[i]);
-    }
+  }
 
 }	/* END INITGREYHOUSE */
 
@@ -1980,15 +1980,15 @@ static void initPMS2Dhouse(char vn[])
   GetCalCoeff(vn, &cals);
 
   for (int i = 0; i < P2D_HOUSE; ++i)
-    {
+  {
     if (strcmp(hsk_name[i], "DUMMY") == 0 || strcmp(hsk_name[i], "") == 0)
       continue;
 
     if (isdigit(hsk_name[i][0]))
-      {
+    {
       name[0] = 'H';
       strcpy(&name[1], hsk_name[i]);
-      }
+    }
     else
       strcpy(name, hsk_name[i]);
 
@@ -2002,7 +2002,7 @@ static void initPMS2Dhouse(char vn[])
       rp->cof.push_back(cals[i*P1DV2_COF+j]);
 
     add_derived_names(name);
-    }
+  }
 
 }	/* END INITPMS2DHOUSE */
 
@@ -2015,13 +2015,13 @@ static void initPMS2D(char vn[], int order)
   DERTBL	*dp;
 
   if ((indx = locatePMS(vn, pms2d_probes)) == ERR)
-    {
+  {
     char	msg[128];
 
     sprintf(msg, "Unknown pms2d probe: %s, continuing\n", vn);
     LogMessage(msg);
     return;
-    }
+  }
 
   pms2d_probes[indx].cnt++;
 
@@ -2038,34 +2038,34 @@ static void initPMS2D(char vn[], int order)
   probeCnt = (twoDcnt << 1);
 
   for (order = 0; order < 2; ++order)
-    {
+  {
     if (order == 1 && strcmp(vn, "2D-H") == 0)
       break;
 
     probeCnt += order;
 
     if (order == 0)
-      {
+    {
       if (strcmp(vn, "2D-H") == 0)
-        {
+      {
         nBins = 256;
         strcpy(buffer, "AHVPS");
-        }
+      }
       else
-        {
+      {
         nBins = BINS_32;
         strcpy(buffer, "A1D");
-        }
       }
+    }
     else
-      {
+    {
       nBins = BINS_64;
       strcpy(buffer, "A2D");
-      }
+    }
 
     if (strcmp(vn, "2D-H")) {
       buffer[3] = vn[3]; buffer[4] = '\0';
-      }
+    }
 
     probeType = PROBE_PMS2D | pms2d_probes[indx].pType;
     AddProbeToList(buffer, pms2d_probes[indx].pType | probeCnt);
@@ -2074,10 +2074,10 @@ static void initPMS2D(char vn[], int order)
     if (GetSerialNumber(vn, &p) != ERR)
       serialNumber = p;
     else
-      {
+    {
       serialNumber = buffer;
       serialNumber += "_DEF";
-      }
+    }
 
     rp = add_name_to_RAWTBL(buffer);
     rp->Average	= (void (*) (...))SumVector;
@@ -2094,12 +2094,12 @@ static void initPMS2D(char vn[], int order)
     buffer[0] = 'C';
 
     if ( (p = SearchList(derivedlist, &buffer[1])) )
-      {
+    {
       strcpy(buff, p);
       p = strtok(buff, " \t");
 
       while ( (p = strtok((char *)NULL, " \t")) )
-        {
+      {
         if ((dp = add_name_to_DERTBL(p)) == (DERTBL *)ERR)
           continue;
 
@@ -2108,15 +2108,12 @@ static void initPMS2D(char vn[], int order)
         /* Make sure CFSSP, C200X, etc, get proper space alloc
          */
         if (strcmp(p, buffer) == 0)
-{
           dp->Length = nBins;
-//printf("initPMS2D: dp = %s %d\n", buffer, probeCnt);
-}
-        }
       }
+    }
 
     ++location[strlen(location)-1];
-    }
+  }
 
   probeCnt = 0;
   ++twoDcnt;
@@ -2135,13 +2132,13 @@ static void add_raw_names(const char name[])
   /* Find variable in raw list and add ALL associated names to raw table.
    */
   if ( (p = SearchList(rawlist, name)) )
-    {
+  {
     strcpy(buff, p);
     p = strtok(buff, " \t");
 
     while ( (p = strtok((char *)NULL, " \t")) )
       add_name_to_RAWTBL(p);
-    }
+  }
 
 }       /* END ADD_RAW_NAMES */
 
@@ -2155,13 +2152,13 @@ static void add_derived_names(const char name[])
    * derived table.
    */
   if ( (p = SearchList(derivedlist, name)) )
-    {
+  {
     strcpy(buff, p);
     p = strtok(buff, " \t");
 
     while ( (p = strtok((char *)NULL, " \t")) )
       add_name_to_DERTBL(p);
-    }
+  }
 
 }	/* END ADD_DERIVED_NAMES */
 
@@ -2235,15 +2232,15 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
    * float format, so decode fn's not required.
    */
   if (indx != ERR)
-    {
+  {
     rp->Initializer = deriveftns[indx].constructor;
     rp->xlate = deriveftns[indx].xlate;
-    }
+  }
   else
-    {
+  {
     rp->Initializer = 0;
     rp->xlate = 0;
-    }
+  }
 
   assert(length > 0);
 
@@ -2332,11 +2329,11 @@ static DERTBL *add_name_to_DERTBL(const char name_sans_location[])
   /* As a kludge, .xlate field used as ProbeCount for FLUX variables.
    */
   if (strncmp(name, "FLX", 3) == 0)
-    {
+  {
     dp->Output		= false;
     dp->ProbeCount	= (size_t)deriveftns[indx].xlate;
     dp->ProbeType	= PROBE_FLUX;
-    }
+  }
 
   return(dp);
 
@@ -2363,14 +2360,14 @@ static void ReadProjectName()
   /* Extract ProjectName
    */
   if ((fp = OpenProjectFile(PROJ_NAME, "r", RETURN)) != NULL)
-    {
+  {
     fgets(buffer, 512, fp);
     fclose(fp);
 
     if (buffer[strlen(buffer)-1] == '\n')
       buffer[strlen(buffer)-1] = '\0'; 
     cfg.SetProjectName(buffer);
-    }
+  }
 }
 
 /* -------------------------------------------------------------------- */
@@ -2380,9 +2377,9 @@ static int
 check_cal_coes(int order, float *coef)
 {
   do
-    {
+  {
     --order;
-    }
+  }
   while (order >= 0 && coef[order] == 0.0);
 
   return(order + 1);
