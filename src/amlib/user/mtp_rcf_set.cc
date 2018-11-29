@@ -131,6 +131,7 @@ RC_Set_4Retrieval RetrievalCoefficientFileSet::getBestWeightedRCSet
     thislnP = 8 * sqrt(RCFBTWeightedMean*RCFBTWeightedMean +
                        RCFBTStdDev*RCFBTStdDev) / NUM_BRT_TEMPS;
 
+    // What should BestlnP,BestRCIndex default to?
     if (RCFit == _RCFs.begin())
     {
       BestlnP = thislnP;

@@ -25,8 +25,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2017
 #include "mtp_rcf.h"
 #include "mtp_rcf_set.h"
 #include "mtp_retriever.h"
-#include <sys/stat.h>
 #include <algorithm> // std::fill()
+#include <boost/filesystem.hpp>
 
 // Set constants for platinum wire gain equation for temperature of target. 
 // These should remain constant as long as physical target doesn't change.
@@ -61,49 +61,45 @@ static float CND0[nCoeffs] = {1.0,1.0,1.0}, GOF[nCoeffs] = {1.0,1.0,1.0},
 
 char RCFdir[256];
 const std::string RCFDIR = "%s/%s/MTP/RCF";
-char CALdir[256];
-const std::string CALDIR = "%s/%s/MTP/raw/%s";
+//char CALdir[256];
+//const std::string CALDIR = "%s/%s/MTP/raw/%s";
 
-int numFlightLevels = 13;  // never changes - every project will have 13 levels
+static const int numFlightLevels = 13;  // never changes - every project will have 13 levels
 // If no flight levels given in Defaults file, default to these levels.
-float defaultLevels[] = {13.0,12.0,9.5,8.0,6.0,5.0,3.5,2.5,2.0,1.5,1.0,0.5,0.0};
-std::vector<float> FLIGHTLEVELSKM; // flight levels from Defaults file
+float defaultLevels[numFlightLevels] = {13.0,12.0,9.5,8.0,6.0,5.0,3.5,2.5,2.0,1.5,1.0,0.5,0.0};
+float FLIGHTLEVELSKM[numFlightLevels]; // flight levels from Defaults file
 
-NR_TYPE altc[NUM_RETR_LVLS]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33};
+NR_TYPE altc[NUM_RETR_LVLS];
 
 static Retriever *Rtr;
 
 /* -------------------------------------------------------------------- */
 /* Read in flight levels from the defaults file.                            */
-static void readLevels(const char name[],std::vector<float> *var)
+static void readLevels(const char name[],float var[numFlightLevels])
 {
 
     float *tmp;
-
-    for (int i = 0; i < numFlightLevels; ++i) {
-        var->push_back(defaultLevels[i]);
-    }
 
     if ((tmp = GetDefaultsValue(name, name)) == NULL)
     {
 	sprintf(buffer, "%s value defaulting to ", name);
 	for (int i = 0; i < numFlightLevels; ++i) {
-	  sprintf(buffer+strlen(buffer),"%f ", var[0][i]);
+          var[i]=defaultLevels[i];
+	  sprintf(buffer+strlen(buffer),"%f ", var[i]);
 	}
 	sprintf(buffer+strlen(buffer),"in AMLIB function mtpInit.\n");
         LogMessage(buffer);
     }
     else
     {
-	numFlightLevels = var->size();
 	sprintf(buffer, "mtp.c: %s set to ", name);
         for (int i = 0; i < numFlightLevels; ++i) {
-          var->push_back(tmp[i]);
-	  sprintf(buffer+strlen(buffer),"%f ", var[0][i]);
+          var[i] = tmp[i];
+	  sprintf(buffer+strlen(buffer),"%f ", var[i]);
 	}
         sprintf(buffer+strlen(buffer),"from Defaults file.\n");
 	LogMessage(buffer);
-    }    
+    }
 }
 /* -------------------------------------------------------------------- */
 /* Read in constants from the defaults file.                            */
@@ -134,25 +130,16 @@ void mtpInit(var_base *varp)
     int indx;
 
     /* Get the dir where the RCF and CAL files are located */
-    raw_data_dir = (char *)getenv("RAW_DATA_DIR");
-    (void)sprintf(RCFdir, RCFDIR.c_str(), raw_data_dir, cfg.ProjectNumber().c_str());
-    (void)sprintf(CALdir, CALDIR.c_str(), raw_data_dir, cfg.ProjectNumber().c_str(), cfg.FlightDate().c_str());
+    raw_data_dir = getenv("RAW_DATA_DIR");
+    sprintf(RCFdir, RCFDIR.c_str(), raw_data_dir, cfg.ProjectNumber().c_str());
+    // FlightDate is MM/DD/YYYY, we need YYYYMMDD. This line doesn't work, but not yet
+    // used. Right now cal values are in Defaults files. This line is in case later we
+    // want to get them directly from the VB-generated CAL files.
+    //sprintf(CALdir, CALDIR.c_str(), raw_data_dir, cfg.ProjectNumber().c_str(), cfg.FlightDate().c_str());
+    // LogMessage(CALdir);
 
     /* Check if RCFdir exists. If not, turn off MTP processing but let nimbus continue. */
-    struct stat stDirInfo;
-    if (stat(RCFdir, &stDirInfo) !=0) {
-	sprintf(buffer,"MTP RCF dir %s does not exist - turning off MTP processing\n", RCFdir);
-	LogMessage(buffer);
-	varp->Output = false;
-	((DERTBL*)varp)->compute = 0;
-
-	// SCANBT is used to calculate TEMPC, so turn that off as well.
-	if ((indx = SearchTable(derived, "TEMPC_MTP")) != ERR) {
-          derived[indx]->Output = false;
-          ((DERTBL*)derived[indx])->compute = 0;
-	}
-	return;
-    } else {
+    if (boost::filesystem::exists(RCFdir)) {
 
       strcpy(name,"CND0");
       readDefs(name,CND0);
@@ -164,15 +151,27 @@ void mtpInit(var_base *varp)
       readDefs(name,GEC2);
 
       strcpy(name,"FLIGHTLEVELSKM");
-      readLevels(name,&FLIGHTLEVELSKM);
+      readLevels(name,FLIGHTLEVELSKM);
 
 
       /* Put together a functioning retrieval_coefficient_fileset */
       RetrievalCoefficientFileSet RCF_Set(RCFdir);
-      RCF_Set.setFlightLevelsKm((float *)&FLIGHTLEVELSKM[0], numFlightLevels);
+      RCF_Set.setFlightLevelsKm(FLIGHTLEVELSKM, numFlightLevels);
       Rtr = new Retriever(RCF_Set);
-    }
+    } else {
+      sprintf(buffer,"MTP RCF dir %s does not exist - turning off MTP processing\n", RCFdir);
+      LogMessage(buffer);
+      varp->Output = false;
+      ((DERTBL*)varp)->compute = 0;
 
+      // SCANBT is used to calculate TEMPC, so turn that off as well.
+      if ((indx = SearchTable(derived, "TEMPC_MTP")) != ERR) {
+        derived[indx]->Output = false;
+        ((DERTBL*)derived[indx])->compute = 0;
+      }
+      return;
+
+    }
 
 }
 /* -------------------------------------------------------------------- */
@@ -287,7 +286,7 @@ void sretriever(DERTBL *varp)
 		  // be of length 30 - three points for each angle (one per 
 		  // channel)
   NR_TYPE ggalt = GetSample(varp, 1);  //Aircraft altitude (MSL) meters
-  NR_TYPE tempc[NUM_RETR_LVLS]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33};
+  NR_TYPE tempc[NUM_RETR_LVLS];
   /* If GGALT is missing, return missing for altc and tempc */
   if (std::isnan(ggalt))
   {

@@ -175,7 +175,7 @@ RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(NR_TYPE PAltKm)
   //    observable associated with the flight level whose PAltKm is closest.
   //    Assumption is that the Flight Level Retrieval Coefficient Set vector
   //    is stored in increasing Palt (decreasing aircraft altitude).
-  std::vector<int>::size_type sz = _FlRcSetVec.size();
+  //std::vector<int>::size_type sz = _FlRcSetVec.size();
   if (PAltKm >= _RCFHdr.Zr[0]) 
   {
     for (int i = 0; i< NUM_BRT_TEMPS; i++) 
@@ -206,7 +206,7 @@ RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(NR_TYPE PAltKm)
   // Find two Flight Level Sets that are above and below the PAltKm provided.
   // Calculate the weight for averaging and identify the RC sets.
   vector<RC_Set_1FL>::const_iterator it, Botit, Topit;
-  float BotWt,TopWt;
+  float BotWt,TopWt; // What should default BotWt be?
   int i = 0;
   for(it=_FlRcSetVec.begin(); it!=_FlRcSetVec.end(); it+=1)
   {
