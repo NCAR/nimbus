@@ -69,6 +69,7 @@ void InitMRFilters()
   // Custom filters for older Laseref III in the C130.
   filterPtr acins = readAfilter("ACINS");
   filterPtr vspd = readAfilter("VSPD");
+  filterPtr psff = readAfilter("PSFF");
 //  filterPtr gsf = readAfilter("GSF");
 
   int outRate = (int)cfg.HRTRate();
@@ -188,6 +189,9 @@ void InitMRFilters()
       case 50:		/* Decimate	*/
         if (cfg.Aircraft() == Config::C130 && strncmp(raw[i]->name, "ACINS", 5) == 0)
           rawFilters[i] = createMRFilter(L, M, acins, mv_p);
+        else
+        if (strcmp(raw[i]->name, "PSFF") == 0)
+          rawFilters[i] = createMRFilter(L, M, psff, mv_p);
         else
           rawFilters[i] = createMRFilter(L, M, fromFifty, mv_p);
         break;
