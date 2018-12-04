@@ -609,11 +609,13 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
     if (strcmp(rp->name, "PSF") == 0)
     {
-      RAWTBL *rp1 = new RAWTBL("PSFF");	// Create new RAWTBL entry.
+      const char *psff = "PSFF";
+      RAWTBL *rp1 = new RAWTBL(psff);	// Create new RAWTBL entry.
       *rp1 = *rp;			// Duplicate PSF
-      strcpy(rp1->name, "PSFF");	// Correct the name
+      strcpy(rp1->name, psff);		// Correct the name
       rp1->xlate = xlpsff;
       raw.push_back(rp1);
+      add_derived_names(psff);
     }
 
     location[0] = '\0';

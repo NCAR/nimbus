@@ -917,6 +917,7 @@
 	"PSBC",		NULL,		NULL,		spsbc,
 	"PSFC",		NULL,		NULL,		spsfc,
 	"PSFF",		NULL,		xlpsff,		NULL,
+	"PSFFC",	NULL,		NULL,		spsfc,
 	"PSFD",		NULL,		xlpsfd,		NULL,
 	"PSFD1",	NULL,		xlpsfd_ADS2,	NULL,
 	"PSFRD",	NULL,		xlxpsfd,	NULL,
