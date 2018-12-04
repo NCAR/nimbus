@@ -28,6 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 #include <netinet/in.h>
 
 extern ushort	*bits;
+extern variable_vector<RAWTBL> decode;
 
 static void setNIDASDynamicLags(short lr[]);
 static void BlankOutRawData(NR_TYPE nlr[]);
@@ -50,13 +51,15 @@ void DecodeADSrecord(
     // Set dynamic lags.
     if (cfg.TimeShifting())
       setNIDASDynamicLags(lr);
+
+    for (size_t i = 0; i < decode.size(); ++i)
+      (*decode[i]->xlate)(decode[i], (void *)nlr, &nlr[decode[i]->SRstart]);
   }
   else
   {
     // else ADS2.  Extract raw data into processed float/double.
-    for (size_t i = 0; i < raw.size(); ++i)
-      if (raw[i]->xlate != 0)
-        (*raw[i]->xlate)(raw[i], &lr[raw[i]->ADSstart], &nlr[raw[i]->SRstart]);
+    for (size_t i = 0; i < decode.size(); ++i)
+      (*decode[i]->xlate)(decode[i], &lr[decode[i]->ADSstart], &nlr[decode[i]->SRstart]);
   }
 
   BlankOutRawData(nlr);

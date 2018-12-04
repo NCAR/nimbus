@@ -193,6 +193,8 @@ void AddProbeToList(const char name[], size_t type)
 /* -------------------------------------------------------------------- */
 static void CommonPostInitialization()
 {
+  extern variable_vector<RAWTBL> decode; // raw variables where "xlate != 0" - for rec_decode.c
+
   /* Add the default derived variables.
    */
   rate = 1;
@@ -270,9 +272,14 @@ for (size_t i = 0; i < derived.size(); ++i)
   if (cfg.ProcessingMode() == Config::RealTime)
     ReadGroundVarsFile();
 
-  if (cfg.ProcessingRate() == Config::SampleRate)
-    for (size_t i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
+  {
+    if (raw[i]->xlate)
+      decode.push_back(raw[i]);
+
+    if (cfg.ProcessingRate() == Config::SampleRate)
       raw[i]->OutputRate = raw[i]->SampleRate;
+  }
 
   if (cfg.TimeShifting())
     ReadStaticLags();
@@ -598,6 +605,15 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     {
       strcpy(rp->type, "A");
       rp->Average = rp->Length > 1 ? (void (*) (...))AverageVector : (void (*) (...))Average;
+    }
+
+    if (strcmp(rp->name, "PSF") == 0)
+    {
+      RAWTBL *rp1 = new RAWTBL("PSFF");	// Create new RAWTBL entry.
+      *rp1 = *rp;			// Duplicate PSF
+      strcpy(rp1->name, "PSFF");	// Correct the name
+      rp1->xlate = xlpsff;
+      raw.push_back(rp1);
     }
 
     location[0] = '\0';
@@ -2213,6 +2229,9 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
     return((RAWTBL *)ERR);
   }
 
+  if (cfg.isADS3())
+    indx = ERR;
+
   if (SearchTable(derived, name) != ERR)
   {
     char	msg[128];
@@ -2235,11 +2254,6 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   {
     rp->Initializer = deriveftns[indx].constructor;
     rp->xlate = deriveftns[indx].xlate;
-  }
-  else
-  {
-    rp->Initializer = 0;
-    rp->xlate = 0;
   }
 
   assert(length > 0);

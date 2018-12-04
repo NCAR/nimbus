@@ -91,6 +91,7 @@ variable_vector<T>::~variable_vector()
 }
 
 variable_vector<RAWTBL> raw;		// Alphabeticly sorted pointers
+variable_vector<RAWTBL> decode;		// raw variables where "xlate != 0" - for rec_decode.c
 variable_vector<DERTBL> derived;	// Alphabeticly sorted pointers
 /*
  * The ComputeOrder vector does not own the pointers, so it is just a
