@@ -219,7 +219,11 @@ void sTwoD(DERTBL *varp)
   actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   if (varp->nDependencies > 2)
+  {
     deadTime = GetSample(varp, 2);
+    if (deadTime > 1000.0)
+      deadTime = 0.0;
+  }
 
   probeNum	= varp->ProbeCount;
   dia		= cell_size[probeNum];
