@@ -33,8 +33,8 @@ void sqctfc(DERTBL *varp)
   }
   else	// Cooper method
   {
-    NR_TYPE psfc = GetSample(varp, 2);
-    qctfc = qctf + pstf - psfc;	// LRT only.  Will need to befilteres/smoothed for HRT.
+    NR_TYPE psffc = GetSample(varp, 2);
+    qctfc = qctf + pstf - psffc;
   }
 
   if (qctfc < 10.0)
