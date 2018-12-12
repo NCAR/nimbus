@@ -1441,12 +1441,12 @@ static void initMTP()
   // Initialize physical temperature profile
   if ((indx = SearchTable(derived, "TEMPC_MTP")) == ERR)
     HandleFatalError("TEMPC not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
-  derived[indx]->Length = nbins;
+  derived[indx]->Length = nbinsl;
 
   // Initialize altitude for physical temperature profile
   if ((indx = SearchTable(derived, "ALTC_MTP")) == ERR)
     HandleFatalError("ALTC not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
-  derived[indx]->Length = nbins;
+  derived[indx]->Length = nbinsl;
 }
 /* -------------------------------------------------------------------- */
 static void initMASP(char vn[])
