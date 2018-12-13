@@ -916,6 +916,8 @@
 	"GEOPTH",	NULL,		NULL,		sGeopot2,
 	"PSBC",		NULL,		NULL,		spsbc,
 	"PSFC",		NULL,		NULL,		spsfc,
+	"ADIFF",        NULL,           xladiff,        NULL,
+	"AKFF",         NULL,           NULL,           sakrd,
 	"PSFF",		NULL,		xlpsff,		NULL,
 	"PSFFC",	NULL,		NULL,		spsfc,
 	"PSFD",		NULL,		xlpsfd,		NULL,

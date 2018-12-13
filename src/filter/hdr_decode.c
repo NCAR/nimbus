@@ -607,6 +607,17 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
       rp->Average = rp->Length > 1 ? (void (*) (...))AverageVector : (void (*) (...))Average;
     }
 
+    if (strcmp(rp->name, "ADIFR") == 0)
+    {
+      const char *adiff = "ADIFF";
+      RAWTBL *rp1 = new RAWTBL(adiff);	// Create new RAWTBL entry.
+      *rp1 = *rp;			// Duplicate PSF
+      strcpy(rp1->name, adiff);		// Correct the name
+      rp1->xlate = xladiff;
+      raw.push_back(rp1);
+      add_derived_names(adiff);
+    }
+
     if (strcmp(rp->name, "PSF") == 0)
     {
       const char *psff = "PSFF";

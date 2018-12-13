@@ -193,6 +193,9 @@ void InitMRFilters()
         if (strcmp(raw[i]->name, "PSFF") == 0)
           rawFilters[i] = createMRFilter(L, M, psff, mv_p);
         else
+        if (strcmp(raw[i]->name, "ADIFF") == 0)
+          rawFilters[i] = createMRFilter(L, M, psff, mv_p);
+        else
           rawFilters[i] = createMRFilter(L, M, fromFifty, mv_p);
         break;
       case 100:

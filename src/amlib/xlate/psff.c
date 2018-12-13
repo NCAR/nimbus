@@ -34,4 +34,21 @@ void xlpsff(RAWTBL *varp, void *p, NR_TYPE *output)
 
 }	/* END XLPSFF */
 
+/* -------------------------------------------------------------------- */
+void xladiff(RAWTBL *varp, void *p, NR_TYPE *output)
+{
+  static RAWTBL *adifr = 0;
+
+  if (adifr == 0)
+  {
+    adifr = raw[SearchTable(raw, "ADIFR")];
+  }
+
+  for (size_t i = 0; i < varp->SampleRate; ++i)
+  {
+    output[i] = ((NR_TYPE *)p)[adifr->SRstart+i];
+  }
+
+}	/* END XLPSFF */
+
 /* END PSFF.C */
