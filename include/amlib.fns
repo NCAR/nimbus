@@ -180,9 +180,9 @@
 	"FREF3_V3",	NULL,		xlS300cabin4,	NULL,
 	"FTMP3_V3",	NULL,		xlS300cabin7,	NULL,
 #
-	"CS100",	NULL,		NULL,		scs100,
+	"CS100",	(void(*)(void*))cfsspInit,	NULL,		scs100,
 	"CCDP",		(void(*)(void*))ccdpInit,	NULL,		scdp,
-	"CS200",	NULL,		NULL,		scs200,
+	"CS200",	(void(*)(void*))casasInit,	NULL,		scs200,
 	"CUHSAS",	(void(*)(void*))casasInit,	NULL,		scs200,
 	"CS300",	NULL,		NULL,		scf300,
 #
