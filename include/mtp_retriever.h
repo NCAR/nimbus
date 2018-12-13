@@ -24,6 +24,7 @@ typedef struct
 {
   std::vector<float> Temperatures;
   std::vector<float> Altitudes;
+  int RCFIndex; // Index of RCF file used in creating this profile
 } AtmosphericTemperatureProfile;
 
 /*! \class Retriever

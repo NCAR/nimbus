@@ -112,6 +112,7 @@ typedef struct {
 typedef struct {
   std::string RCFFileName;
   std::string RCFId;
+  int RCFIndex;
   float SumLnProb;
   RC_Set_1FL FL_RCs;
 } RC_Set_4Retrieval;

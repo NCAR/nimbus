@@ -28,6 +28,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2017
 #include <algorithm> // std::fill()
 #include <boost/filesystem.hpp>
 
+char    RCFfiles[8192];
+
 // Set constants for platinum wire gain equation for temperature of target. 
 // These should remain constant as long as physical target doesn't change.
 // If target is replaced, these may change.
@@ -70,6 +72,7 @@ float defaultLevels[numFlightLevels] = {13.0,12.0,9.5,8.0,6.0,5.0,3.5,2.5,2.0,1.
 float FLIGHTLEVELSKM[numFlightLevels]; // flight levels from Defaults file
 
 NR_TYPE altc[NUM_RETR_LVLS];
+NR_TYPE rcfidx;
 
 static Retriever *Rtr;
 
@@ -156,6 +159,15 @@ void mtpInit(var_base *varp)
 
       /* Put together a functioning retrieval_coefficient_fileset */
       RetrievalCoefficientFileSet RCF_Set(RCFdir);
+      std::vector<RetrievalCoefficientFile> _RCFs =  RCF_Set.getRCFVector();
+      // Save string of RCF filenames here. This string is added as an attribute
+      // to MTP vars in NetCDF.cc
+      for (size_t j = 0; j < _RCFs.size(); ++j)
+      {
+	  sprintf(RCFfiles+strlen(RCFfiles),"%s,",basename(_RCFs[j].getFileName().c_str()));
+      }
+      //LogMessage(RCFfiles);
+
       RCF_Set.setFlightLevelsKm(FLIGHTLEVELSKM, numFlightLevels);
       Rtr = new Retriever(RCF_Set);
     } else {
@@ -304,6 +316,12 @@ void sretriever(DERTBL *varp)
       altc[i]=ATP.Altitudes[i];
     }
 
+    if (std::isnan(tempc[15])) { //Kludge - should look for entirely missing rec
+	rcfidx = floatNAN;
+    } else {
+        rcfidx = ATP.RCFIndex;
+    }
+
   }
 
   PutVector(varp, &tempc);
@@ -316,5 +334,11 @@ void sretrievealt(DERTBL *varp)
   PutVector(varp, &altc);
 
 }	/* End sretrievealt */
+/* -------------------------------------------------------------------- */
+void sretrieveidx(DERTBL *varp)
+{
+  PutSample(varp, rcfidx);
+
+}	/* End sretrieveidx */
 
 /* END MTP.C */

@@ -20,6 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2018
 #include <netcdf.h>
 #include <raf/vardb.hh>
 #include "svnInfo.h"
+extern char	RCFfiles[];
 
 #include "trace_variables.h"
 
@@ -383,6 +384,13 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     addCommonVariableAttributes(rp);
 
+    // Add list of RCF files used in MTP calculations as an attribute to the relevant MTP
+    // variables.
+    if ((strstr(rp->name,"TPL")) && (strstr(rp->name,"_MTP")))
+    {
+	nc_put_att_text(_ncid, rp->varid, "RCFFiles", strlen(RCFfiles)+1, RCFfiles);
+    }
+
     nc_put_att_long(_ncid, rp->varid, "SampledRate", NC_LONG, 1, (long *)&rp->SampleRate);
 
     int lag = rp->nidasLag;
@@ -495,6 +503,13 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
 
     addCommonVariableAttributes(dp);
+
+    // Add list of RCF files used in MTP calculations as an attribute to the relevant MTP
+    // variables.
+    if ((strstr(dp->name,"RCF") ) && (strstr(dp->name,"_MTP")))
+    {
+	nc_put_att_text(_ncid, dp->varid, "RCFFiles", strlen(RCFfiles)+1, RCFfiles);
+    }
 
     nc_put_att_text(_ncid, dp->varid, "DataQuality", strlen(dp->DataQuality)+1,
 		dp->DataQuality);

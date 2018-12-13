@@ -1433,20 +1433,24 @@ static void initMTP()
   int		nbinsl = NUM_RETR_LVLS; // Constant set in mtp.h
   int		indx;
 
-  //Initialize brightness temperature
+  //Set length for brightness temperature (3rd dimension)
   if ((indx = SearchTable(derived, "SCANBT_MTP")) == ERR)
     HandleFatalError("SCANBT not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
   derived[indx]->Length = nbins;
 
-  // Initialize physical temperature profile
+  // Set length for physical temperature profile (3rd dimension)
   if ((indx = SearchTable(derived, "TEMPC_MTP")) == ERR)
     HandleFatalError("TEMPC not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
   derived[indx]->Length = nbinsl;
 
-  // Initialize altitude for physical temperature profile
+  // Set length for altitude (3rd dimension)
   if ((indx = SearchTable(derived, "ALTC_MTP")) == ERR)
     HandleFatalError("ALTC not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
   derived[indx]->Length = nbinsl;
+
+  if ((indx = SearchTable(derived, "RCFIDX_MTP")) == ERR)
+    HandleFatalError("RCFIDX not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
+  derived[indx]->Length = 1;
 }
 /* -------------------------------------------------------------------- */
 static void initMASP(char vn[])

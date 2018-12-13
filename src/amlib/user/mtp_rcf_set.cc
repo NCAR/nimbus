@@ -149,6 +149,7 @@ RC_Set_4Retrieval RetrievalCoefficientFileSet::getBestWeightedRCSet
   RC4R.SumLnProb = BestlnP;
   RC4R.RCFFileName = _RCFs[BestRCIndex].getFileName();
   RC4R.RCFId = _RCFs[BestRCIndex].getId();
+  RC4R.RCFIndex = BestRCIndex;
   RC4R.FL_RCs = _RCFs[BestRCIndex].getRCAvgWt(PAltKm);
   return RC4R;
 
