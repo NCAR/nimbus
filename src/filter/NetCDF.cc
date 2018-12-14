@@ -506,7 +506,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     // Add list of RCF files used in MTP calculations as an attribute to the relevant MTP
     // variables.
-    if ((strstr(dp->name,"RCF") ) && (strstr(dp->name,"_MTP")))
+    if ((strstr(dp->name,"RCFIDX") ) && (strstr(dp->name,"_MTP")))
     {
 	nc_put_att_text(_ncid, dp->varid, "RCFFiles", strlen(RCFfiles)+1, RCFfiles);
     }

@@ -21,6 +21,7 @@
         "RCFIDX",	NULL,		NULL,		sretrieveidx,
         "RCFALT1IDX",	NULL,		NULL,		sretrievealt1idx,
         "RCFALT2IDX",	NULL,		NULL,		sretrievealt2idx,
+	"RCFMRIDX",	NULL,		NULL,		sretrievemridx,
 
 #
 # NOMADSS

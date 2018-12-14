@@ -115,6 +115,6 @@ typedef struct {
   std::string RCFFileName;
   std::string RCFId;
   int RCFIndex; // Index of RCF file (aka template) used to create this profile
-  float SumLnProb;
+  float SumLnProb; // Quality of match between measured TB and TB from template
   RC_Set_1FL FL_RCs;
 } RC_Set_4Retrieval;

@@ -71,7 +71,8 @@ float defaultLevels[numFlightLevels] = {13.0,12.0,9.5,8.0,6.0,5.0,3.5,2.5,2.0,1.
 float FLIGHTLEVELSKM[numFlightLevels]; // flight levels from Defaults file
 
 NR_TYPE altc[NUM_RETR_LVLS];
-NR_TYPE rcfidx, rcfalt1idx, rcfalt2idx;
+// Indices encoding details of RCF file usage.
+NR_TYPE rcfidx, rcfalt1idx, rcfalt2idx, rcfmridx;
 
 static Retriever *Rtr;
 
@@ -324,10 +325,12 @@ void sretriever(DERTBL *varp)
 	rcfidx = floatNAN;
 	rcfalt1idx = floatNAN;
 	rcfalt2idx = floatNAN;
+	rcfmridx = floatNAN;
     } else {
         rcfidx = ATP.RCFIndex;
 	rcfalt1idx = ATP.RCFALT1Index;
 	rcfalt2idx = ATP.RCFALT2Index;
+	rcfmridx = ATP.RCFMRIndex;
     }
 
   }
@@ -360,5 +363,11 @@ void sretrievealt2idx(DERTBL *varp)
   PutSample(varp, rcfalt2idx);
 
 }	/* End sretrievealt2idx */
+/* -------------------------------------------------------------------- */
+void sretrievemridx(DERTBL *varp)
+{
+  PutSample(varp, rcfmridx);
+
+}	/* End sretrievemridx */
 
 /* END MTP.C */

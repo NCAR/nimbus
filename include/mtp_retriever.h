@@ -27,6 +27,8 @@ typedef struct
   int RCFIndex; // Index of RCF file (aka template) used to create this profile
   int RCFALT1Index;  // Flight level below aircraft from template file.
   int RCFALT2Index;  // Flight level above aircraft from template file.
+  float RCFMRIndex;  // Meridional Region Index: Quality of match between measured
+		     // Brightness Temperture (TB) and TB from template
 } AtmosphericTemperatureProfile;
 
 /*! \class Retriever
