@@ -1448,8 +1448,16 @@ static void initMTP()
     HandleFatalError("ALTC not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
   derived[indx]->Length = nbinsl;
 
+  // These indices are all 1-dimensional. They should default to 1, but they don't so set
+  // them here.
   if ((indx = SearchTable(derived, "RCFIDX_MTP")) == ERR)
     HandleFatalError("RCFIDX not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
+  derived[indx]->Length = 1;
+  if ((indx = SearchTable(derived, "RCFALT1IDX_MTP")) == ERR)
+    HandleFatalError("RCFALT1IDX not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
+  derived[indx]->Length = 1;
+  if ((indx = SearchTable(derived, "RCFALT2IDX_MTP")) == ERR)
+    HandleFatalError("RCFALT2IDX not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
   derived[indx]->Length = 1;
 }
 /* -------------------------------------------------------------------- */

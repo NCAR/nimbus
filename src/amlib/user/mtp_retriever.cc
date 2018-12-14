@@ -29,6 +29,8 @@ AtmosphericTemperatureProfile Retriever::Retrieve(NR_TYPE* ScanBTs, NR_TYPE ACAl
 
   ATP.Altitudes = Pressure2Km(PressureAlts); // Copy all elements from the returned std::vector to ATP.Altitudes
   ATP.RCFIndex = BestWtdRCSet.RCFIndex; // Save index of best RCF file for this profile
+  ATP.RCFALT1Index = BestWtdRCSet.FL_RCs.RCFALT1Index; //index of flight level below AC Alt
+  ATP.RCFALT2Index = BestWtdRCSet.FL_RCs.RCFALT2Index; //index of flight level above AC Alt
 
   for (int L = 0; L < NUM_RETR_LVLS; L++)
   {

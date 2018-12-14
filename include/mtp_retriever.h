@@ -24,7 +24,9 @@ typedef struct
 {
   std::vector<float> Temperatures;
   std::vector<float> Altitudes;
-  int RCFIndex; // Index of RCF file used in creating this profile
+  int RCFIndex; // Index of RCF file (aka template) used to create this profile
+  int RCFALT1Index;  // Flight level below aircraft from template file.
+  int RCFALT2Index;  // Flight level above aircraft from template file.
 } AtmosphericTemperatureProfile;
 
 /*! \class Retriever

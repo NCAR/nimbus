@@ -19,6 +19,8 @@
         "TEMPC",	NULL,		NULL,		sretriever,
         "ALTC",		NULL,		NULL,		sretrievealt,
         "RCFIDX",	NULL,		NULL,		sretrieveidx,
+        "RCFALT1IDX",	NULL,		NULL,		sretrievealt1idx,
+        "RCFALT2IDX",	NULL,		NULL,		sretrievealt2idx,
 
 #
 # NOMADSS

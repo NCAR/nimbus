@@ -221,6 +221,10 @@ RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(NR_TYPE PAltKm)
   TopWt = 1.0 - BotWt;
 
 
+  // Save the indices of the flight level sets used in averages
+  RcSetAvWt.RCFALT1Index = Botit - _FlRcSetVec.begin();
+  RcSetAvWt.RCFALT2Index = Topit - _FlRcSetVec.begin();
+
   // Calculate the Weighted averages 
   RcSetAvWt.Palt = Botit->Palt*BotWt + Topit->Palt*TopWt;
   for (int i = 0; i < NUM_BRT_TEMPS; i++)

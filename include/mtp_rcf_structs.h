@@ -97,6 +97,8 @@ typedef union{RC_FL_Read RC_read ; char Array[sizeof(RC_FL_Read)];} My_RC_FL_Un;
  */
 typedef struct {
   float Palt; 		         ///< Flight level pressure altitude (hPa)
+  int RCFALT1Index;  		 ///< index of Flight level below Palt
+  int RCFALT2Index;  		 ///< index of Flight level above Palt
   float MBTRms[NUM_BRT_TEMPS];   ///< 1-sigma apriori Model Brightness Temp err
   float MBTAvg[NUM_BRT_TEMPS];   ///< Model Brightness Temperature Averages
   float PAltRl[NUM_RETR_LVLS];   ///< Pressure at retrieval levels
@@ -112,7 +114,7 @@ typedef struct {
 typedef struct {
   std::string RCFFileName;
   std::string RCFId;
-  int RCFIndex;
+  int RCFIndex; // Index of RCF file (aka template) used to create this profile
   float SumLnProb;
   RC_Set_1FL FL_RCs;
 } RC_Set_4Retrieval;
