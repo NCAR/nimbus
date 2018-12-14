@@ -702,17 +702,18 @@ void NetCDF::WriteNetCDF()
         data = (float)AveragedData[rp->LRstart + j];
         if (std::isnan(data)) data = (float)MISSING_VALUE;
         rp->OutputData.push_back(data); // save data to memory
-        if (strstr(rp->name,"_MTP") && (data == (float)MISSING_VALUE))
-	{
-	  nMissMTP++;
-	}
+	// Identify entirely missing MTP recs - these are between scan (1hz) recs.
+        if (strstr(rp->name,"_MTP") && (data == (float)MISSING_VALUE)) nMissMTP++;
       }
-      if (nMissMTP == N) { //Found an entirely missing rec
-	for  (size_t j = 0; j < N; ++j) {
-	  rp->OutputData.pop_back();
-	  if (j==0) rp->TimeLength -=1;
-	  if ((_firstMTPvar) && // only pop time once
-	    (!(strcmp(rp->name,"SCNT_MTP")))) // only set MTPTime dimension once, key off the raw data
+      if (nMissMTP == N) { //Found an entirely missing MTP rec so remove
+	rp->TimeLength -=1; // One less time for this variable.
+	for  (size_t j = 0; j < N; ++j) { // loop over data points in record
+	  rp->OutputData.pop_back(); // pop the data point off the stack
+	  // If an MTP rec is entire missing, the assumption is that this is a
+	  // record that falls between MTP scans, so we need to remove this time
+	  // from the MTP Time array. But we only want to shorten the time once for all
+	  // MTP vars at this time. Use the raw data SCNT var as the key.
+	  if ((_firstMTPvar) && (!(strcmp(rp->name,"SCNT_MTP"))))
 	  {
 	    _MTPTimeSamples.pop_back();
             _firstMTPvar=0;
@@ -760,16 +761,13 @@ void NetCDF::WriteNetCDF()
         data = (float)AveragedData[dp->LRstart + j];
         if (std::isnan(data)) data = (float)MISSING_VALUE;
         dp->OutputData.push_back(data); // save data in memory
-	// Get rid of entirely missing recs
-	if (strstr(dp->name,"_MTP") && (data == (float)MISSING_VALUE)) 
-        {
-	  nMissMTP++;
-        }
+	// Identify entirely missing MTP recs - these are between scan (1hz) recs.
+	if (strstr(dp->name,"_MTP") && (data == (float)MISSING_VALUE)) nMissMTP++;
       }
-      if (nMissMTP == N) { //Found an entirely missing rec
+      if (nMissMTP == N) { //Found an entirely missing MTP rec so remove it
+	dp->TimeLength -=1;
 	for  (size_t j = 0; j < N; ++j) {
           dp->OutputData.pop_back();
-	  if (j==0) dp->TimeLength -=1;
 	}
       }
     }

@@ -28,8 +28,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2017
 #include <algorithm> // std::fill()
 #include <boost/filesystem.hpp>
 
-char    RCFfiles[8192];
-
 // Set constants for platinum wire gain equation for temperature of target. 
 // These should remain constant as long as physical target doesn't change.
 // If target is replaced, these may change.
@@ -61,6 +59,7 @@ static const int nCoeffs = 3;
 static float CND0[nCoeffs] = {1.0,1.0,1.0}, GOF[nCoeffs] = {1.0,1.0,1.0}, 
              GEC1[nCoeffs] = {1.0,1.0,1.0}, GEC2[nCoeffs] = {1.0,1.0,1.0};
 
+char RCFfiles[8192]; // comma-separated list of RCF file names found in RCFdir
 char RCFdir[256];
 const std::string RCFDIR = "%s/%s/MTP/RCF";
 //char CALdir[256];
@@ -299,6 +298,9 @@ void sretriever(DERTBL *varp)
 		  // channel)
   NR_TYPE ggalt = GetSample(varp, 1);  //Aircraft altitude (MSL) meters
   NR_TYPE tempc[NUM_RETR_LVLS];
+
+  size_t nMissMTP; // count missing vals to determine missing rec
+
   /* If GGALT is missing, return missing for altc and tempc */
   if (std::isnan(ggalt))
   {
@@ -310,13 +312,15 @@ void sretriever(DERTBL *varp)
     AtmosphericTemperatureProfile ATP;
     ATP = Rtr->Retrieve(scanbt, ggalt/1000.0); // convert m to km
 
+    nMissMTP=0; //Initialize
     for (size_t i=0; i<NUM_RETR_LVLS;i++)
     {
       tempc[i]=ATP.Temperatures[i];
       altc[i]=ATP.Altitudes[i];
+      if (std::isnan(tempc[i])) nMissMTP++;
     }
 
-    if (std::isnan(tempc[15])) { //Kludge - should look for entirely missing rec
+    if (nMissMTP == NUM_RETR_LVLS) {
 	rcfidx = floatNAN;
     } else {
         rcfidx = ATP.RCFIndex;

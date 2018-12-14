@@ -15,7 +15,7 @@ RetrievalCoefficientFile::RetrievalCoefficientFile(std::string Filename)
 
   My_Rcf_Hdr_Un RcfHdr;
   My_RC_FL_Un RcFlUn;
-  RC_Set_1FL FlRcSet;
+  RC_Set_1FL FlRcSet; // Flight Level Retrieval Coefficient File Set
 
   string temp = _RCFFileName;
   size_t last_slash = temp.find_last_of("/");
