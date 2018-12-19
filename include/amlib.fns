@@ -495,6 +495,13 @@
 	"WDC",		NULL,				NULL,		swd,
 	"ROC",		NULL,				NULL,		sroc,
 	"WIR",		(void(*)(void*))initGust,	NULL,		swi,
+	"VIC1",		NULL,				NULL,		svi,
+	"UIC1",		NULL,				NULL,		sui,
+	"WIC1",		(void(*)(void*))initGust,	NULL,		swi,
+	"VYC1",		NULL,				NULL,		svy,
+	"UXC1",		NULL,				NULL,		sux,
+	"WSC1",		NULL,				NULL,		sws,
+	"WDC1",		NULL,				NULL,		swd,
 #
 #	Fluxes
 #						ProbeCount field.

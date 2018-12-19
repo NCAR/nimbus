@@ -124,7 +124,7 @@ static void	add_file_to_RAWTBL(const std::string&);
 static void	add_file_to_DERTBL(const std::string&),
 	initHDR(char vn[]), initSDI(char vn[]), initHoneywell(char vn[]),
 	initOphir3(char vn[]), initPMS1D(char vn[]), initPMS1Dv2(char vn[]),
-	initGustCorrected(), initLitton51(char vn[]),
+	addGustVariables(const char s[]), initGustCorrected(), initLitton51(char vn[]),
 	add_derived_names(const char vn[]), initPMS2D(char vn[], int n),
 	initPMS2Dhouse(char vn[]), add_raw_names(const char vn[]),
 	initGreyHouse(char vn[]), initMASP(char vn[]), initPMS1Dv3(char vn[]),
@@ -155,7 +155,16 @@ bool VarCompareLT(const var_base *x, const var_base *y)
 /* -------------------------------------------------------------------- */
 static void CommonPreInitialization()
 {
-  InertialSystemCount = GPScount = twoDcnt = NephCnt = GustCnt = 0;
+  InertialSystemCount = GPScount = twoDcnt = NephCnt = 0;
+  /* This used to init to 0, but AKY/WIY are not added via a full "GUST"
+   * nameset.  So they need '0' in the swic() calc.  If they go away, then
+   * this can go back to starting at zero.  swic() can have up to eight
+   * wind/gust sets at once, so no worries if zero never used.
+   *
+   * Waiting to see how all the wind and angle of attack stuff shakes out on
+   * the GV.  cjw 12/2018
+   */
+  GustCnt = 1;
 
   ReadProjectName();
   cfg.SetCoordTime("Time");
@@ -500,9 +509,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     // Add Gust Pod derived (once).  This can be cleaned up after sync_server merge.
     if (!gustPodAdded && strcmp(location, "_GP") == 0)
     {
-      probeCnt = GustCnt++;
-      add_derived_names("GUSTPOD");
-      probeCnt = 0;
+      addGustVariables("GUSTPOD");
       gustPodAdded = true;
     }
 
@@ -623,6 +630,8 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
         rp1->xlate = xladiff;
         raw.push_back(rp1);
         add_derived_names(adiff);
+
+        addGustVariables("GUSTALT");
       }
 
       if (strcmp(rp->name, "PSF") == 0)
@@ -644,8 +653,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
   if (cfg.ProjectName().compare("RAF_Lab") && (cfg.Aircraft() != Config::TADS) )
   {
-    probeCnt = GustCnt++;
-    add_derived_names("GUST");
+    addGustVariables("GUST");
     initGustCorrected();
     probeCnt = 0;
   }
@@ -1377,6 +1385,15 @@ static void initHoneywell(char vn[])
 }	/* END INITHONEYWELL */
 
 /* -------------------------------------------------------------------- */
+static void addGustVariables(const char name[])
+{
+  probeCnt = GustCnt++;
+  add_derived_names(name);
+  probeCnt = 0;
+
+}
+
+/* -------------------------------------------------------------------- */
 static void initGustCorrected()
 {
   /* We can only have 1 corrected winds, bail if already initialized.
@@ -1392,14 +1409,13 @@ static void initGustCorrected()
     /* ProbeCnt here relies on the fact that hdrbld puts inertials before
      * GPSs.
      */
-    probeCnt = GustCnt++;
     add_derived_names("POSNC");
-    add_derived_names("GUSTC");
+    addGustVariables("GUSTC");
     cfg.SetCoordLAT("LATC");
     cfg.SetCoordLON("LONC");
   }
 
-}	/* END INITTANS */
+}	/* END INITGUSTCORRECTED */
 
 /* -------------------------------------------------------------------- */
 static void initLitton51(char vn[])
