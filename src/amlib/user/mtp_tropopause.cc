@@ -22,12 +22,14 @@ extern NR_TYPE tempc[NUM_RETR_LVLS];
  */
 
 /* -------------------------------------------------------------------- */
-/* The WMO definition of the first tropopause (i.e., the conventional
+/* Find the first linear lapse rate (between two consecutive measurements)
+ * that is -2K/km or less.
  * Inputs:
  *      start_index - the index into the profile to start looking at (if you 
  *      	don't want to start at the lowest measurement in the profile). 
  *      i - pointer to index of lowest level where lapse rate decreases to
  *       	2K/km or less. (i is the bottom of the layer)
+ *     also uses global referenceLapseRate
  * Output:
  *      lapseRate - the linear lapse rate for the layer we are working with
  */
@@ -49,8 +51,7 @@ float linearLapseRate(int start_index, int *i)
 }
 
 /* -------------------------------------------------------------------- */
-/* The WMO definition of the first tropopause (i.e., the conventional
- * Find the temperature at a given altitude by linear interpolation *
+/* Find the temperature at a given altitude by linear interpolation
  * Inputs: 
  *  	altInterp - altitude to interpolate temperature to
  *  	iStart 	-  index of the starting point to find the first measurement
@@ -79,10 +80,12 @@ float Tinterp(float altInterp, int iStart)
      return(tempBot+ ((tempTop-tempBot) * (altInterp-altBot)/(altc[i]-altBot)));
 }
 
-/*
+/* -------------------------------------------------------------------- */
+/* Find the average lapse rate from the bottom of this layer to the sub-layer
  * Input:
  *     startidx - Level to begin our search for the tropopause
  *     step - width of a step through our layer
+ *     baseLevel - the measurement just under 2KM above the startidx
  *     also uses global referenceLayerThickness
  * Output:
  *     LRavg - average lapse rate
@@ -94,7 +97,7 @@ float averageLapseRate(int startidx, float step, int baseLevel)
   float LRavg = floatNAN; // average lapse rate
 
   float altBot = altc[startidx];
-  for (int i=1; i<nlayers; i++)
+  for (int i=1; i<=nlayers; i++)
   {
     // Find alt at bottom and top of layer we are testing
     float altTop = altc[startidx] + step*i;
