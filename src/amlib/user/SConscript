@@ -39,6 +39,7 @@ mtp.c
 mtp_rcf.cc
 mtp_rcf_set.cc
 mtp_retriever.cc
+mtp_tropopause.cc
 ndvi.c
 ophir3.c
 prcltrk1.c
