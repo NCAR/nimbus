@@ -3,7 +3,6 @@
 #include "mtp_tropopause.h"
 
 // Constants used in tropopause calculations
-int referenceLapseRate = -2; // 2K/km decrease 
 float referenceLayerThickness = 2; //2km
 float minHt = 5.6; // Lowest altitude to look for tropopause (500mb = 5.6km)
 
@@ -19,34 +18,42 @@ extern NR_TYPE tempc[NUM_RETR_LVLS];
  *   next higher 2 km does not exceed 2 K/km.
  * The following functions determine the location in the profile where
  * these two components are met.
+ *
+ * (It appears that MJ's algorithm does NOT follow this reference, but instead
+ * follows the WMO defintion.)
+ * Reference: Roe, J. M., and W. H. Jasperson (1980), A new tropopause 
+ * definition from simultaneous ozone‐temperature profiles, Tech.Rep. 
+ * AFGL‐TR‐80–0289, Air Force Geophys. Lab., Hanscom Air Force Base, Mass.
+ * [Available from https://apps.dtic.mil/dtic/tr/fulltext/u2/a091718.pdf]
  */
 
 /* -------------------------------------------------------------------- */
 /* Find the first linear lapse rate (between two consecutive measurements)
- * that is -2K/km or less.
+ * that meets or crosses the reference lapse rate cutoff.
  * Inputs:
  *      start_index - the index into the profile to start looking at (if you 
  *      	don't want to start at the lowest measurement in the profile). 
  *      i - pointer to index of lowest level where lapse rate decreases to
- *       	2K/km or less. (i is the bottom of the layer)
- *     also uses global referenceLapseRate
+ *       	the reference lapse rate or less. (i is the bottom of the layer)
+ *      referenceLapseRate - the cutoff lapse rate that indicates a tropopause 
+ *     		has been found.
  * Output:
  *      lapseRate - the linear lapse rate for the layer we are working with
  */
-float linearLapseRate(int start_index, int *i)
+float linearLapseRate(int startidx, int *i, int referenceLapseRate)
 {
   float lapseRate;
-  for (*i=start_index; *i<NUM_RETR_LVLS-1; (*i)++) 
+  for (*i=startidx; *i<NUM_RETR_LVLS-1; (*i)++) 
   {
     if (altc[*i+1] != altc[*i]) 
     {
       lapseRate = (tempc[*i+1]-tempc[*i])/(altc[*i+1]-altc[*i]);
-      if (lapseRate >= referenceLapseRate) // 2K/km decrease or less
+      if (lapseRate >= referenceLapseRate)
 	return(lapseRate);
     }
   }
   // If no tropopause found, return nan
-  *i=0;
+  *i=NUM_RETR_LVLS;
   return(floatNAN);
 }
 
@@ -54,23 +61,25 @@ float linearLapseRate(int start_index, int *i)
 /* Find the temperature at a given altitude by linear interpolation
  * Inputs: 
  *  	altInterp - altitude to interpolate temperature to
- *  	iStart 	-  index of the starting point to find the first measurement
+ *  	startidx  - index of the starting point to find the first measurement
  *  		above the interpolation point.
  * Outputs: 
  * 	return temperature at the interpolation altitude
  */
-float Tinterp(float altInterp, int iStart)
+float Tinterp(float altInterp, int startidx)
 {
      int i;
 
      // Don’t interpolate between bottom two layers (Why?)
-     if (altInterp <= altc[1] + 0.01) return(0); 
+     if (altInterp <= altc[1] + 0.01) return(floatNAN); 
 
-     // starting at iStart, find first measurement above altInterp
-     for (i = iStart; i < NUM_RETR_LVLS; i++) 
+     // starting at startidx, find first measurement above altInterp
+     for (i = startidx; i < NUM_RETR_LVLS; i++) 
      {
         if (altc[i] >= altInterp) break;
      }
+
+     if (altc[i] < altInterp) return(floatNAN); // Ran out of RAOB
      
      // Interpolate temperature 
      float altBot = altc[i - 1];  // altitude at bottom of layer to interpolate
@@ -83,30 +92,30 @@ float Tinterp(float altInterp, int iStart)
 /* -------------------------------------------------------------------- */
 /* Find the average lapse rate from the bottom of this layer to the sub-layer
  * Input:
- *     startidx - Level to begin our search for the tropopause
- *     step - width of a step through our layer
- *     baseLevel - the measurement just under 2KM above the startidx
+ *     LT       - Level to begin our search for the tropopause
+ *     step     - width of a step through our layer
+ *     startidx - the measurement just under 2KM above the LT
  *     also uses global referenceLayerThickness
  * Output:
  *     LRavg - average lapse rate
  */
-float averageLapseRate(int startidx, float step, int baseLevel)
+float averageLapseRate(int LT, float step, int startidx)
 {
-  int nlayers = referenceLayerThickness/step; // number of sub-layers to divide layer into
   float deltaTsum = 0; // running total of temperature difference
   float LRavg = floatNAN; // average lapse rate
+  int nlayers = referenceLayerThickness/step; // number of sub-layers to divide layer into
 
-  float altBot = altc[startidx];
+  float altBot = altc[LT];
   for (int i=1; i<=nlayers; i++)
   {
     // Find alt at bottom and top of layer we are testing
-    float altTop = altc[startidx] + step*i;
+    float altTop = altc[LT] + step*i;
 
     // linear interpolation to find temperature at top and bottom altitudes (since
     // we may not have a scan there)
-    float tempBot = Tinterp(altBot, baseLevel);
-    float tempTop = Tinterp(altTop, baseLevel);
-    if (tempTop == 0) return(floatNAN);  //Ran out of RAOB; didn't find tropopause
+    float tempBot = Tinterp(altBot, startidx);
+    float tempTop = Tinterp(altTop, startidx);
+    if (std::isnan(tempTop)) return(floatNAN);  //Ran out of RAOB; didn't find tropopause
 
     // Calculate average lapse rate from the bottom of the layer to our current level
     deltaTsum = deltaTsum + (tempTop-tempBot);
@@ -118,25 +127,94 @@ float averageLapseRate(int startidx, float step, int baseLevel)
   return(LRavg); // average lapse rate 
 }
 
-/* Find a tropopause */
-float findTropopause(NR_TYPE *altctrop1,NR_TYPE *tempctrop1)
+/* -------------------------------------------------------------------- */
+/* Locate the first retrieval above the lowest altitude to look for tropopause
+ * Input:
+ *     minidx - the lowest altitude to look for the topopause
+ * Output:
+ *     startidx - the first retrieval above that minimum
+ */
+void findStart(int *startidx,int minidx)
 {
-  int startidx = 0;  // Level to begin our search for the tropopause
+  for (int i=*startidx+1; i<NUM_RETR_LVLS; i++) 
+  {
+    if (altc[i] > minidx) 
+    {
+      *startidx = i;
+      return;
+    }
+  }
+  // Ran out of RAOB
+  *startidx=-1;
+}
+/* -------------------------------------------------------------------- */
+/* Find a tropopause
+ * Input:
+ *     startidx - the lowest altitude to look for the tropopause
+ * Output:
+ *     altctrop  - the altitude of the found tropopause
+ *     tempctrop - the temperature of the found tropopause
+ *     LT        - the index of the found tropopause
+ */
+float findTropopause(NR_TYPE *altctrop,NR_TYPE *tempctrop, int *startidx)
+{
   int LT = 0;        // Level of best tropopause found so far
   int foundTrop = 0; // Boolean to indicate when tropopause has been located.
   float LRavg;	     // Average lapse rate over the reference layer
-  int baseLevel = 1; // index of level above LT to work with
+  int referenceLapseRate; // the cutoff lapse rate that indicates a transition 
+      			  // has been found.
+  float step = 0.02;
 
-  // Locate first retrieval above lowest altitude to look for tropopause
-  for (int i=1; i<NUM_RETR_LVLS; i++) 
+  // To start with, we don't know the tropopause location, so set to missing.
+  // (This simplifies returning from all cases where trop can't be found.
+  *altctrop = floatNAN;
+  *tempctrop = floatNAN;
+
+  // If have a tropopause from a previous call to this routine, need to find a
+  // break between tropopauses before can look for the next one. This break is
+  // defined as a region where the lapse rate is less than -3 K/km. MJ notes 
+  // that he decided to search in a 2KM layer (rather than 1 km - not sure where
+  // the initial definition comes from) as 1 km is too sensitive for RAOB data
+  // causing too many double (and not credible) tropopauses. At this point, 
+  // startidx will be the value set in the previous pass through.
+  if (*startidx != 0)
   {
-    if (altc[i] > minHt) 
+    referenceLapseRate = -3; // -3K/km; end of a tropopause
+    float altBot = altc[LT];
+    while (LRavg > referenceLapseRate) 
     {
-	startidx = i;
-        break;
+
+      // Find alt at bottom and top of layer we are testing
+      float altTop = altBot + referenceLayerThickness;
+
+      // linear interpolation to find temperature at top and bottom altitudes (since
+      // we may not have a scan there)
+      float tempBot = Tinterp(altBot, *startidx);
+      float tempTop = Tinterp(altTop, *startidx);
+      if (std::isnan(tempTop)) {
+	LRavg = floatNAN;  //Ran out of RAOB; didn't find tropopause
+      } else {
+        // Calculate average lapse rate from the bottom of the layer to our current level
+        LRavg = (tempTop-tempBot)/referenceLayerThickness;
+      }
+      if (std::isnan(LRavg)) return(floatNAN); // no tropopause found
+
+      altBot = altBot+step;
     }
+
+    // locate first retrieval above identified break (altZBot)
+    findStart(startidx,altBot);
+    if (*startidx == -1) return(floatNAN); // no tropopause found
+  } else {
+
+    // locate first retrieval above lowest altitude to look for tropopause.
+    findStart(startidx,minHt);
+    if (*startidx == -1) return(floatNAN); // no tropopause found
+ 
   }
 
+  // Find the next tropopause (could be the first)
+  referenceLapseRate = -2; // -2K/km; beginning of a tropopause
   while (!foundTrop) 
   {
 
@@ -144,8 +222,11 @@ float findTropopause(NR_TYPE *altctrop1,NR_TYPE *tempctrop1)
      * the lowest level at which the linear lapse rate (LRavg) decreases to 
      * 2K/km or less. This is the index of our possible tropopause that meets
      * the first part of the WMO criteria.*/
-    LRavg = linearLapseRate(startidx, &LT); 
-    if (std::isnan(LRavg)) {break;}
+    LRavg = linearLapseRate(*startidx, &LT, referenceLapseRate); 
+    if (std::isnan(LRavg)) { // no tropopause found
+	*startidx = LT;
+	return(floatNAN);
+    }
 
     /* For the second part of the WMO definition, confirm that the average
      * lapse rate from our possible tropopause (LT) to any level within the
@@ -161,38 +242,47 @@ float findTropopause(NR_TYPE *altctrop1,NR_TYPE *tempctrop1)
       // loop until find measurement that is 2km above possible tropopause or
       // more, and save the level just below that (so level is measurement just
       // below top of our 2km layer.
-      for (baseLevel=LT+1; baseLevel < NUM_RETR_LVLS-1; baseLevel++) 
+      for (*startidx=LT+1; *startidx < NUM_RETR_LVLS-1; (*startidx)++) 
       {
-        if ((altc[baseLevel+1] - altc[LT]) > referenceLayerThickness) break; 
+        if ((altc[*startidx+1] - altc[LT]) > referenceLayerThickness) break; 
       }
 
       // Interpolate to get value at exactly 2km and calc lapse rate to that level
-      float step = referenceLayerThickness;
-      LRavg = averageLapseRate(LT, step, baseLevel);
-      if (LRavg < referenceLapseRate) {startidx=baseLevel; continue;}
+      LRavg = averageLapseRate(LT, referenceLayerThickness, *startidx);
+      if (std::isnan(LRavg)) { // no tropopause found
+        *startidx = LT;
+        return(floatNAN);
+      } 
+      if (LRavg < referenceLapseRate) {continue;}
 
       // Now check that lapse rate is less than 2K/km from LT to *any* level within the
       // next 2KM. Do this by dividing the layer into 100 sub-layers and checking from
       // LT to each one.
-      step = 0.02;
-      LRavg = averageLapseRate(LT, step, baseLevel);
+      LRavg = averageLapseRate(LT, step, *startidx);
+      if (std::isnan(LRavg)) { // no tropopause found
+        *startidx = LT;
+        return(floatNAN);
+      } 
 
     }
 
-    // Check if average lapse rate over reference layer exceeds 2K/km. If so,
-    // failed WMO criteria and still haven't found tropopause.
-    if (LRavg < referenceLapseRate) 
+    // Check if average lapse rate over reference layer exceeds -2K/km. If so,
+    // found tropopause. If not, failed WMO criteria and still haven't found 
+    // tropopause. Try again with lowest possible tropopause ht set to current 
+    // level (startidx).
+    if (LRavg >= referenceLapseRate) 
     {
-	startidx = baseLevel;  // set lowest possible tropopause ht to current level and cont
-    } else {
 	foundTrop = 1;  // exit while loop
     }
   }
 
   // if we get here, we met all the criteria. Zt1 and TT1 are the altitude and
-  // temperature of the first tropopause
-  *altctrop1 = altc[LT];
-  *tempctrop1 = tempc[LT]; 
+  // temperature of the tropopause
+  *altctrop = altc[LT];
+  *tempctrop = tempc[LT]; 
+
+  // Set startidx to LT in prep for looking for additional tropopauses
+  *startidx = LT;
   
   // Return index to level of tropopause; zero indicated none found
   return(LT);

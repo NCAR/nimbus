@@ -74,9 +74,11 @@ float FLIGHTLEVELSKM[numFlightLevels]; // flight levels from Defaults file
 NR_TYPE altc[NUM_RETR_LVLS];
 NR_TYPE tempc[NUM_RETR_LVLS];
 // Indices encoding details of RCF file usage.
-NR_TYPE rcfidx, rcfalt1idx, rcfalt2idx, rcfmridx, trop1idx; 
+NR_TYPE rcfidx, rcfalt1idx, rcfalt2idx, rcfmridx, trop1idx, trop2idx; 
 NR_TYPE altctrop1; // Altitude of first tropopause
 NR_TYPE tempctrop1; // Temparature of first tropopause
+NR_TYPE altctrop2; // Altitude of first tropopause
+NR_TYPE tempctrop2; // Temparature of first tropopause
 
 static Retriever *Rtr;
 
@@ -304,6 +306,7 @@ void sretriever(DERTBL *varp)
   NR_TYPE ggalt = GetSample(varp, 1);  //Aircraft altitude (MSL) meters
 
   size_t nMissMTP; // count missing vals to determine missing rec
+  int startTropIndex = 0; // index of level to begin looking for tropopause
 
   /* If GGALT is missing, return missing for altc and tempc */
   if (std::isnan(ggalt))
@@ -330,13 +333,30 @@ void sretriever(DERTBL *varp)
 	rcfalt2idx = floatNAN;
 	rcfmridx = floatNAN;
 	trop1idx = floatNAN;
+	trop2idx = floatNAN;
 	altctrop1 = floatNAN;
+	altctrop2 = floatNAN;
+	tempctrop1 = floatNAN;
+	tempctrop2 = floatNAN;
     } else {
         rcfidx = ATP.RCFIndex;
 	rcfalt1idx = ATP.RCFALT1Index;
 	rcfalt2idx = ATP.RCFALT2Index;
 	rcfmridx = ATP.RCFMRIndex;
-	trop1idx = findTropopause(&altctrop1,&tempctrop1);
+	trop1idx = findTropopause(&altctrop1,&tempctrop1,&startTropIndex);
+	if (std::isnan(trop1idx)) {
+	    trop1idx = floatNAN;
+	    trop2idx = floatNAN;
+	    altctrop2 = 99999;
+	} else {
+	  // Above call will mondify startTropIndex to be index of level to start
+	  // looking for 2nd trop.
+	  trop2idx = findTropopause(&altctrop2,&tempctrop2,&startTropIndex);
+	  if (std::isnan(trop2idx)) {
+	      trop2idx = floatNAN;
+	      altctrop2 = 99999;
+	  }
+	}
     }
 
   }
@@ -381,5 +401,11 @@ void sretrievetrop1(DERTBL *varp)
   PutSample(varp, altctrop1);
 
 }	/* End sretrievetrop1 */
+/* -------------------------------------------------------------------- */
+void sretrievetrop2(DERTBL *varp)
+{
+  PutSample(varp, altctrop2);
+
+}	/* End sretrievetrop2 */
 
 /* END MTP.C */

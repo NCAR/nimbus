@@ -18,7 +18,7 @@
 //NR_TYPE altc[NUM_RETR_LVLS];
 //NR_TYPE tempc[NUM_RETR_LVLS];
 
-float findTropopause(NR_TYPE*,NR_TYPE*);
+float findTropopause(NR_TYPE*,NR_TYPE*,int*);
 
 #endif
 
