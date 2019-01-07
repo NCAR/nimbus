@@ -17,19 +17,15 @@ extern NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
 /* -------------------------------------------------------------------- */
 void spstfc(DERTBL *varp)
 {
-  NR_TYPE pstf, qctf, pstfc;
+  NR_TYPE pstfc;
 
-  pstf = GetSample(varp, 0);
-  qctf = GetSample(varp, 1);
+  NR_TYPE pstf = GetSample(varp, 0);
+  NR_TYPE qctf = GetSample(varp, 1);
+  NR_TYPE attack = GetSample(varp, 2);
+  NR_TYPE sslip = GetSample(varp, 3);
+  NR_TYPE mach = GetSample(varp, 4);
 
-  if (cfg.Aircraft() == Config::HIAPER)
-  {
-    NR_TYPE attack = GetSample(varp, 2);
-    NR_TYPE sslip = GetSample(varp, 3);
-    NR_TYPE mach = GetSample(varp, 4);
-
-    pstfc = pstf - (*pcorPSTF)(qctf, pstf, attack, sslip, mach);
-  }
+  pstfc = pstf - (*pcorPSTF)(qctf, pstf, attack, sslip, mach);
 
   if (pstfc < 50.0)
     pstfc = 50.0;

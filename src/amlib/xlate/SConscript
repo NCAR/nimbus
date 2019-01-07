@@ -30,6 +30,7 @@ pms1_ps.c
 pms2_data.c
 pms2_hskp.c
 psfd.c
+psff.c
 rdma.c
 serial.c
 time.c
@@ -42,4 +43,9 @@ AceAsia.c
 """)
 
 xlate = env.StaticLibrary('xlate' , sources)
-env.Default(env.Install('#/lib/' , xlate)) 
+
+def libxlate(env):
+    env.Append(LIBS=xlate)
+
+Export('libxlate')
+

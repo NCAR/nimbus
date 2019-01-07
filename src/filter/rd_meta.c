@@ -39,12 +39,12 @@ void ReadMetaData(int ncid)
     sscanf(meta[i], "%s %s %s", var, attr_name, attr_value);
 
     if ((index = SearchTable(raw, var)) != ERR)
-      ncattput(	ncid, raw[index]->varid, attr_name,
-		NC_CHAR, strlen(attr_value)+1, attr_value);
+      nc_put_att_text(	ncid, raw[index]->varid, attr_name,
+		strlen(attr_value)+1, attr_value);
 
     if ((index = SearchTable(derived, var)) != ERR)
-      ncattput(	ncid, derived[index]->varid, attr_name,
-		NC_CHAR, strlen(attr_value)+1, attr_value);
+      nc_put_att_text(	ncid, derived[index]->varid, attr_name,
+		strlen(attr_value)+1, attr_value);
   }
 
   FreeTextFile(meta);

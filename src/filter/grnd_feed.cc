@@ -23,8 +23,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include <bzlib.h>
 #include <sys/stat.h>
 
-// eol-rt-data.fl-ext.ucar.edu
-const std::string GroundFeed::DEST_HOST_ADDR = "128.117.188.122";
+// eol-rt-data.eol.ucar.edu
+const std::string GroundFeed::DEST_HOST_ADDR = "128.117.43.122";
 
 using namespace nidas::util;
 
@@ -106,7 +106,7 @@ void GroundFeed::BroadcastData(nidas::core::dsm_time_t tt)
   // Only send data if ground connection is verified
   struct stat stFileInfo;
   std::string noconnFile("");
-  if ( !valid_ground_conn  ) {
+  if ( !valid_ground_conn ) {
     noconnFile += getenv("XMIT_DIR");
     noconnFile += "/noconn";
     valid_ground_conn = stat(noconnFile.c_str(), &stFileInfo) != 0;

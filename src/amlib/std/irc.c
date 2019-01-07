@@ -45,7 +45,7 @@ void initPyrgeometer(var_base *varp)
    * sink tempearture and dome temperature.  The new CGR4 has just dome
    * temperature.
    */
-  if (dp->ndep > 2)	// If old Eppley processing, then leave.
+  if (dp->nDependencies > 2)	// If old Eppley processing, then leave.
     return;
 
   float	*tmp;
@@ -93,7 +93,7 @@ void sirc(DERTBL *varp)
 {
   NR_TYPE ir = GetSample(varp, 0);
 
-  if (varp->ndep == 2)	// New CGR4 Pyrgeometer (2011).
+  if (varp->nDependencies == 2)	// New CGR4 Pyrgeometer (2011).
   {
     NR_TYPE dt = GetSample(varp, 1);
 

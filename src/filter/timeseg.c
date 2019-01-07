@@ -28,7 +28,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
+#include "NetCDF.h"
 #include <raf/header.h>
+
+#include "timeseg.h"
 
 #include <sstream>
 using std::ostringstream;
@@ -47,7 +50,7 @@ static int	currentTimeSegment;
 static int	BtimeInt[MAX_TIME_SLICES*4][3],
 		EtimeInt[MAX_TIME_SLICES*4][3];
 
-void QueueMissingData(int h, int m, int s, int nRecords);
+extern NetCDF *ncFile;
 
 
 /* -------------------------------------------------------------------- */
@@ -57,6 +60,7 @@ void GetUserTimeIntervals() /* From TimeSliceWindow	*/
   char	*bp, *ep;
   struct tm ft;
 
+  memset(&ft, 0, sizeof(struct tm));
   nTimeIntervals = 0;
   currentTimeSegment = (-1);
 
@@ -143,6 +147,22 @@ int NextTimeInterval(time_t *start, time_t *end)
   return true;
 
 }	/* END NEXTTIMEINTERVAL */
+
+
+// Get the largest time window within which data will be processed.
+// Everything outside this window will be ignored.
+void
+GetTimeWindow(time_t* start, time_t* end)
+{
+  *start = BEG_OF_TAPE;
+  *end = END_OF_TAPE;
+  if (nTimeIntervals > 0)
+  {
+    *start = UserBtim[0];
+    *end = UserEtim[nTimeIntervals-1];
+  }
+}
+
 
 /* -------------------------------------------------------------------- */
 void ResetTimeGapper()
@@ -278,7 +298,7 @@ int CheckForTimeGap(const void *ADShdr, int initMode)
 	newTime - prevTime - 1, nft->tm_hour, nft->tm_min, nft->tm_sec);
     LogMessage(buffer);
 
-    QueueMissingData(pft->tm_hour, pft->tm_min, pft->tm_sec, newTime - prevTime - 1);
+    ncFile->QueueMissingData(pft->tm_hour, pft->tm_min, pft->tm_sec, newTime - prevTime - 1);
 
     prevTime = newTime;
     return false;
@@ -364,7 +384,7 @@ void UpdateTime(const NR_TYPE *record)
     FlushXEvents();
 
     if (minute == 0)
-      SyncNetCDF();
+      ncFile->Sync();
   }
 }	/* END UPDATETIME */
 

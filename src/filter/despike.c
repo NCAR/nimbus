@@ -151,7 +151,7 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
       }
 
       max = std::max(max, points[i]);	// Find max.
-      if (!isnan(points[i]))
+      if (!std::isnan(points[i]))
         v.push_back(points[i]);		// In case we want median instead of max.
     }
 
@@ -170,7 +170,7 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
     // Remove any point that is more than 300 feet from the max.
     for (size_t i = nPrevPts; i < nFirstHalfPoints; ++i)
     {
-      if (!isnan(points[i]) && fabs(test - points[i]) > threshold)
+      if (!std::isnan(points[i]) && fabs(test - points[i]) > threshold)
       {
         points[i] = floatNAN;
         ++spikeCount;

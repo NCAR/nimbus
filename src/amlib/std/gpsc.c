@@ -164,10 +164,10 @@ void slatc(DERTBL *varp)
   gstat	= (long)GetSample(varp, 9);	/* nSats for Tans & Garmin	*/
   gmode	= (long)GetSample(varp, 10);	/* GMODE or GGMODE		*/
 
-  if (isnan(gmode))
+  if (std::isnan(gmode))
     gmode = 0;
 
-  if (isnan(glat) || isnan(glon)|| isnan(gvns) || isnan(gvew))
+  if (std::isnan(glat) || std::isnan(glon)|| std::isnan(gvns) || std::isnan(gvew))
     {
 //    sprintf(buffer, "gpsc: GPS isnan(), nsats=%d, mode=%d, LRT=%d, SampleOffset=%d, goodGPS=%d", (int)gstat, (int)gmode, FeedBack == LOW_RATE_FEEDBACK, SampleOffset, goodGPS);
 //    LogStdMsg(buffer);
@@ -175,7 +175,7 @@ void slatc(DERTBL *varp)
     goodGPS = 0;
     }
 
-  if (isnan(alat) || isnan(alon) || isnan(vns) || isnan(vew))
+  if (std::isnan(alat) || std::isnan(alon) || std::isnan(vns) || std::isnan(vew))
     {
 //    LogStdMsg("gpsc: IRS isnan()");
     returnMissingValue = true;
@@ -363,10 +363,10 @@ void slatc(DERTBL *varp)
     {
     /* Good GPS comes here.
      */
-    assert(!isnan(glat));
-    assert(!isnan(glon));
-    assert(!isnan(gvew));
-    assert(!isnan(gvns));
+    assert(!std::isnan(glat));
+    assert(!std::isnan(glon));
+    assert(!std::isnan(gvew));
+    assert(!std::isnan(gvns));
 
     dvy[FeedBack]	+= (1.-fctrf[FeedBack])\
 	   *(filter((double)(gvns-vns),zf[FeedBack][0])-dvy[FeedBack]);
@@ -519,16 +519,16 @@ static NR_TYPE filter(double x, double zf[])
     firstTime[FeedBack] = false;
     }
 
-  xf =  (bfb[0] * x + bfb[1] * zf[1] + bfb[2]*zf[2] + bfb[3]*zf[3] 
-        - (bfa[1]*zf[4] + bfa[2]*zf[5] + bfa[3]*zf[6]));
+  xf =  (bfb[0] * x + bfb[1] * zf[0] + bfb[2]*zf[1] + bfb[3]*zf[2] 
+        - (bfa[1]*zf[3] + bfa[2]*zf[4] + bfa[3]*zf[5]));
 
   /* Store terms for the next call. */
-  zf[3] = zf[2];
   zf[2] = zf[1];
-  zf[1] = x;
-  zf[6] = zf[5];
+  zf[1] = zf[0];
+  zf[0] = x;
   zf[5] = zf[4];
-  zf[4] = xf;
+  zf[4] = zf[3];
+  zf[3] = xf;
 
   return(xf);
 

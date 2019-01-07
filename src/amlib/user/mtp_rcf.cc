@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include <string.h> 
+#include <cstdio>
+#include <cstring> 
 #include <iostream>
 #include <fstream>
 #include <arpa/inet.h>
@@ -203,19 +203,19 @@ std::vector<int>::size_type sz = _FlRcSetVec.size();
   // Find two Flight Level Sets that are above and below the PAltKm provided.
   // Calculate the weight for averaging and identify the RC sets.
   vector<RC_Set_1FL>::const_iterator it, Botit, Topit;
-  float BotWt,TopWt;
+  float BotWt = 0.0, TopWt;
   int i = 0;
   for(it=_FlRcSetVec.begin(); it!=_FlRcSetVec.end(); it+=1)
   {
     if (PAltKm <= _RCFHdr.Zr[i] and PAltKm >= _RCFHdr.Zr[i+1])
     {
-      BotWt = 1-((PAltKm-_RCFHdr.Zr[i+1])/(_RCFHdr.Zr[i]-_RCFHdr.Zr[i+1]));
+      BotWt = 1.0 - ((PAltKm-_RCFHdr.Zr[i+1])/(_RCFHdr.Zr[i]-_RCFHdr.Zr[i+1]));
       Topit = it;
       Botit = it+1;
     } 
     i++;
   }
-  TopWt = 1-BotWt;
+  TopWt = 1.0 - BotWt;
 
 
   // Calculate the Weighted averages 

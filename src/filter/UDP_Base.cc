@@ -11,6 +11,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include "UDP_Base.h"
 
 #include "nimbus.h"
+#include "decode.h"
 #include "parseInt.cc"
 #include <algorithm>
 
@@ -19,11 +20,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 /* -------------------------------------------------------------------- */
 UDP_Base::
 UDP_Base(int port) : 
+  _socket(0),
+  _to(0),
   _default_latch_seconds(0),
   UDP_PORT(port)
 {
 }
 
+/* -------------------------------------------------------------------- */
+UDP_Base::~UDP_Base()
+{
+  delete _socket;
+  delete _to;
+}
 
 /* -------------------------------------------------------------------- */
 bool
@@ -67,7 +76,12 @@ readFile(const std::string & fileName)
       {
         list.push_back(vp);
 	_latch_seconds.push_back(_default_latch_seconds);
-	_lastGoodData.push_back(std::vector<double>(vp->Length, nan("")));
+        size_t len = vp->Length;
+#ifdef ZERO_BIN
+        if (vp->Length > 1 && ((vp->ProbeType & PROBE_PMS1D) || (vp->ProbeType & PROBE_PMS2D)))
+          --len;
+#endif
+	_lastGoodData.push_back(std::vector<double>(len, nan("")));
 	_lastGoodTime.push_back(0);
 	std::ostringstream msg;
 	msg << "Added variable " << vp->name << " to IWG1 feed in slot " << list.size() << ".\n";
@@ -118,9 +132,14 @@ updateData(nidas::core::dsm_time_t tt)
       // sample is missing, it's enough to check if any of the bins are
       // missing, but check the last one to avoid any ambiguity from the
       // zero'th bin.
-      const NR_TYPE& current = AveragedData[vp->LRstart];
+      size_t start = vp->LRstart;
+#ifdef ZERO_BIN
+      if (vp->Length > 1 && ((vp->ProbeType & PROBE_PMS1D) || (vp->ProbeType & PROBE_PMS2D)))
+        ++start;
+#endif
+      const NR_TYPE& current = AveragedData[start];
       const NR_TYPE& last = AveragedData[vp->LRstart + vp->Length - 1];
-      if (!isnan(last))
+      if (!std::isnan(last))
       {
 	std::copy(&current, &last + 1, _lastGoodData[i].begin());
 	_lastGoodTime[i] = tt;
@@ -150,7 +169,7 @@ formatVariable(int i)
     {
       if (!first)
 	text << ",";
-      if (isnan(*iv))
+      if (std::isnan(*iv))
 	text << -32767;
       else
 	text << *iv;
@@ -159,7 +178,7 @@ formatVariable(int i)
   }
   else
   {
-    if (isnan(_lastGoodData[i][0]))
+    if (std::isnan(_lastGoodData[i][0]))
       text << -32767;
     else
       text << _lastGoodData[i][0];

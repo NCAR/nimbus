@@ -53,7 +53,7 @@ void sttwhc(DERTBL *varp)
   mach	= GetSample(varp, 1);
   psxc	= GetSample(varp, 2);
 
-  if (isnan(tth) || isnan(mach))
+  if (std::isnan(tth) || std::isnan(mach))
   {
     PutSample(varp, floatNAN);
     return;
@@ -68,12 +68,12 @@ void sttwhc(DERTBL *varp)
   if (tth < -Kelvin)
     tth = -Kelvin;
 
-  if (mach <= 0.0 || isnan(mach))
+  if (mach <= 0.0 || std::isnan(mach))
     mach = 0.0001;
 
   zee = 0.269589 * psxc * mach / (atfh[FeedBack] + Kelvin);
 
-  if (zee < 0.18 || isnan(zee))
+  if (zee < 0.18 || std::isnan(zee))
     zee = 0.18;
 
   tth -= (NR_TYPE)pow((double)10.0,

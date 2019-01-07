@@ -35,7 +35,8 @@ static const NR_TYPE shadowLevel = 0.55;
 static const size_t maxBins = 130;
 
 
-static size_t	FIRST_BIN[MAX_PMS2D], LAST_BIN[MAX_PMS2D];
+static size_t	FIRST_BIN[MAX_PMS2D], LAST_BIN[MAX_PMS2D], conc50idx[MAX_PMS2D],
+		conc100idx[MAX_PMS2D], conc150idx[MAX_PMS2D];
 static NR_TYPE  responseTime[MAX_PMS2D], armDistance[MAX_PMS2D],
 		DENS[MAX_PMS2D], SampleRate[MAX_PMS2D];
 static double   PLWFAC[MAX_PMS2D], DBZFAC[MAX_PMS2D];
@@ -169,6 +170,7 @@ void sTwodInit(var_base *varp)
 
   ReleasePMSspecs();
 
+
   /* 1DC/P has length 32, 2DC/P has length 64.
    */
   length = varp->Length;
@@ -197,6 +199,10 @@ void sTwodInit(var_base *varp)
   for (i = 0; i < length; ++i)
     sampleArea[probeNum][i] = eaw[i] * dof[i];
 
+  conc50idx[probeNum] = 50 / (int)resolution;
+  conc100idx[probeNum] = 100 / (int)resolution;
+  conc150idx[probeNum] = 150 / (int)resolution;
+
 }	/* END STWODINIT */
 
 /* -------------------------------------------------------------------- */
@@ -206,14 +212,18 @@ void sTwoD(DERTBL *varp)
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
   NR_TYPE	sampleVolume[maxBins];
-  NR_TYPE	deadTime;
+  NR_TYPE	deadTime = 0.0;
 
   assert(varp->Length > 1);
 
   actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
-  if (varp->ndep > 2)
+  if (varp->nDependencies > 2)
+  {
     deadTime = GetSample(varp, 2);
+    if (deadTime > 1000.0)
+      deadTime = 0.0;
+  }
 
   probeNum	= varp->ProbeCount;
   dia		= cell_size[probeNum];
@@ -227,10 +237,10 @@ void sTwoD(DERTBL *varp)
   // nidas::TwoD_USB only putting out histograms when there is data.
   {
   for (i = 0; i < varp->Length; ++i)
-    if (isnan(actual[i]))
+    if (std::isnan(actual[i]))
       actual[i] = 0;
 
-  if (isnan(deadTime))
+  if (std::isnan(deadTime))
     deadTime = 0;
   }
 
@@ -342,7 +352,7 @@ void sconc2dc050(DERTBL *varp)
     n = 64;
     
   // 50 micron and bigger.
-  for (size_t i = 2; i < n; ++i)
+  for (size_t i = conc50idx[varp->ProbeCount]; i < n; ++i)
     conc += concentration[i];
 
   PutSample(varp, conc);
@@ -359,7 +369,7 @@ void sconc2dc100(DERTBL *varp)
     n = 64;
 
   // 100 micron and bigger.
-  for (size_t i = 4; i < n; ++i)
+  for (size_t i = conc100idx[varp->ProbeCount]; i < n; ++i)
     conc += concentration[i];
 
   PutSample(varp, conc);
@@ -376,7 +386,7 @@ void sconc2dc150(DERTBL *varp)
     n = 64;
 
   // 150 micron and bigger.
-  for (size_t i = 6; i < n; ++i)
+  for (size_t i = conc150idx[varp->ProbeCount]; i < n; ++i)
     conc += concentration[i];
 
   PutSample(varp, conc);
@@ -477,7 +487,7 @@ void sHVPS(DERTBL *varp)
   NR_TYPE	*concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
   NR_TYPE	sampleVolume[256];
-  NR_TYPE	deadTime;
+  NR_TYPE	deadTime = 0.0;
 
   const NR_TYPE * actual = GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);

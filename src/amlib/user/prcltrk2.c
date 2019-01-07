@@ -14,9 +14,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 -------------------------------------------------------------------------
 */
 
-#include <math.h>
 #include "nimbus.h"
 #include "amlib.h"
+#include <cmath>
 
 #define NPARCEL 5    /* Number of parcels handled here  */
 

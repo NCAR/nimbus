@@ -20,8 +20,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1992-05
 #include "decode.h"
 #include <raf/ctape.h>
 
-#include <nidas/dynld/raf/SyncRecordReader.h>
-extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
+#include "sync_reader.hh"
 
 static bool	ArraysInitialized = false;
 
@@ -37,6 +36,7 @@ void AllocateDataArrays()
   int32_t lrlen;
 
   ILOG(("AllocateDataArrays"));
+  nidas::dynld::raf::SyncRecordReader* syncRecReader = GetSyncReader();
 
   if (AVAPS)
     for (int i = 0; i < MAX_AVAPS; ++i)
@@ -86,7 +86,7 @@ void AllocateDataArrays()
   /* Reset dependIndices.
    */
   for (size_t i = 0; i < derived.size(); ++i)
-    for (size_t j = 0; j < derived[i]->ndep; ++j)
+    for (size_t j = 0; j < derived[i]->nDependencies; ++j)
       DependIndexLookup(derived[i], j, false);
 
   int nVoltFloats = nSRfloats;

@@ -23,10 +23,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 
 #include "nimbus.h"
 #include "decode.h"
+#include "timeseg.h"
 
 #include <netinet/in.h>
 
 extern ushort	*bits;
+extern variable_vector<RAWTBL> decode;
 
 static void setNIDASDynamicLags(short lr[]);
 static void BlankOutRawData(NR_TYPE nlr[]);
@@ -37,27 +39,27 @@ void DecodeADSrecord(
 	short	lr[],	/* ADS Logical Record	*/
 	NR_TYPE	nlr[])	/* New Logical Record	*/
 {
+  VLOG(("enter DecodeADSrecord()"));
   if (cfg.isADS3())
   {
     // Forcing ADS3 into the ADS2 architecture.  FindNextRecord will
     // put it into ADSrecord, copy it out here.
-#ifdef DEBUG
-    std::cerr << "memcpy(" << (void*)nlr << "," << (void*)lr << "," 
-	      << nSRfloats * sizeof(NR_TYPE) << "(" << nSRfloats << " doubles))"
-	      << std::endl;
-#endif
+    VLOG(("memcpy(") << (void*)nlr << "," << (void*)lr << "," 
+	 << nSRfloats * sizeof(NR_TYPE) << "(" << nSRfloats << " doubles))");
     memcpy((void *)nlr, (void *)lr, nSRfloats * sizeof(NR_TYPE));
 
     // Set dynamic lags.
     if (cfg.TimeShifting())
       setNIDASDynamicLags(lr);
+
+    for (size_t i = 0; i < decode.size(); ++i)
+      (*decode[i]->xlate)(decode[i], (void *)nlr, &nlr[decode[i]->SRstart]);
   }
   else
   {
     // else ADS2.  Extract raw data into processed float/double.
-    for (size_t i = 0; i < raw.size(); ++i)
-      if (raw[i]->xlate != 0)
-        (*raw[i]->xlate)(raw[i], &lr[raw[i]->ADSstart], &nlr[raw[i]->SRstart]);
+    for (size_t i = 0; i < decode.size(); ++i)
+      (*decode[i]->xlate)(decode[i], &lr[decode[i]->ADSstart], &nlr[decode[i]->SRstart]);
   }
 
   BlankOutRawData(nlr);
@@ -74,7 +76,7 @@ static void setNIDASDynamicLags(short lr[])
     if (raw[i]->LAGstart > 0)
     {
       NR_TYPE lag = rec_p[raw[i]->LAGstart];
-      if (!isnan(lag))
+      if (!std::isnan(lag))
         raw[i]->DynamicLag = (int)(lag / 1000.0);
       else
         raw[i]->badLagCntr++;

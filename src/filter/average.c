@@ -90,7 +90,7 @@ void Average(
 
     for (size_t i = 0; i < n; ++i)
     {
-      if (!isnan(in_data[i]))
+      if (!std::isnan(in_data[i]))
       {
         if ((int)in_data[i] < mp->bound[0])
         {
@@ -108,7 +108,7 @@ void Average(
   }
 
   for (size_t i = 0; i < n; ++i)
-    if (!isnan(in_data[i]))
+    if (!std::isnan(in_data[i]))
     {
       sum += in_data[i];
       ++sampleCntr;
@@ -166,7 +166,7 @@ void AverageVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l)
     int cntr = 0;
 
     for (size_t j = 0; j < n; ++j)
-      if (!isnan(in_data[(j*l)+i]))
+      if (!std::isnan(in_data[(j*l)+i]))
       {
         sum += in_data[(j * l) + i];
         ++cntr;

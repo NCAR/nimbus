@@ -134,7 +134,7 @@ void sconcv(DERTBL *varp)
   if (FeedBack == LOW_RATE_FEEDBACK)
     mode = (int)GetSample(varp, 4);
 
-  if (varp->ndep > 5)
+  if (varp->nDependencies > 5)
   {
     pregain = (int)GetSample(varp, 5);
     if (pregain < 0) pregain = 0;

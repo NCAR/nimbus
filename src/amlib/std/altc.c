@@ -66,7 +66,7 @@ void sgaltc(DERTBL *varp)
   gmode		= (long)GetSample(varp, 3);
 
 /*  If ALT and/or GALT are missing, so is ALTC  */
-  if ( isnan(galt) || isnan(alt) )
+  if ( std::isnan(galt) || std::isnan(alt) )
     {
     altc = floatNAN;
     dalt = 0.;
@@ -219,7 +219,7 @@ void sggaltc(DERTBL *varp)
   ggstat	= (long)GetSample(varp, 3);
 
 /*  If ALT and/or GGALT are missing, so is ALTC  */
-  if ( isnan(ggalt) || isnan(alt) )
+  if ( std::isnan(ggalt) || std::isnan(alt) )
     {
     altc = floatNAN;
     dalt = 0.;

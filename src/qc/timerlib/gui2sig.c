@@ -10,9 +10,9 @@
 ** variable status as indicated by GUI messages.
 */
 
-#include <stdio.h>
+#include <cstdio>
 #include <signal.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <string.h>
 #include "gui2sig.h"
 #include "valksig.h"

@@ -34,6 +34,14 @@ Config::Config() : _adsFileExtension(".ads")
   SetHoneyWellCleanup(true);
   SetInertialShift(true);
 
+  // Enabled by default, even though they only take effect in real-time.
+  SetEnableBroadcast(true);
+  SetWarnTimeLags(true);
+
+  // These correspond to defaults originally from psql.cc.
+  SetAnalyzeInterval(1500);
+  SetVacuumInterval(1850);
+
   SetCreateKMLFile(true);
   SetCreateNavFile(false);
 
@@ -49,6 +57,8 @@ Config::Config() : _adsFileExtension(".ads")
   SetInterpolationType(_defaultInterp);
   SetTwoDProcessingMethod(_defaultPMS2DProcessingMethod);
   SetTwoDAreaRejectRatio(_defaultPMS2DAreaRatioReject);
+
+  SetSorterLength(900);
 }
 
 std::string

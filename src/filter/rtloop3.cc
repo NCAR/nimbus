@@ -17,14 +17,14 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 #include "decode.h"
 #include "gui.h"
 #include "psql.h"
+#include "NetCDF.h"
 #include "brdcast.h"
 #include "grnd_feed.h"
+#include "timeseg.h"
 
 #include <Xm/TextF.h>
 
-#include <nidas/dynld/raf/SyncRecordReader.h>
-#include <nidas/util/Socket.h>
-#include <nidas/core/SocketAddrs.h>
+#include "sync_reader.hh"
 
 #include <ctime>
 #include <unistd.h>
@@ -32,6 +32,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 #include <iomanip>
 
 extern PostgreSQL *psql;
+extern NetCDF *ncFile;
 
 extern NR_TYPE	*SampledData, *AveragedData;
 
@@ -128,7 +129,7 @@ void RealTimeLoop3()
   char timeStamp[32];
   size_t cntr = 0;
   Broadcast *bcast;
-  GroundFeed *grnd_feed;
+  GroundFeed *grnd_feed = 0;
   nidas::core::dsm_time_t tt;
 
   ILOG(("RealTimeLoop3 entered."));
@@ -144,8 +145,7 @@ void RealTimeLoop3()
     psql = new PostgreSQL(BuildPGspecString());
   }
 
-  extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
-
+  nidas::dynld::raf::SyncRecordReader* syncRecReader = GetSyncReader();
   int nExpected = syncRecReader->getNumValues();
 
   for (;;)
@@ -185,7 +185,8 @@ void RealTimeLoop3()
     if (cfg.OutputSQL())
       psql->WriteSQL(timeStamp);
 
-    bcast->BroadcastData(tt);
+    if (cfg.EnableBroadcast())
+      bcast->BroadcastData(tt);
 
     UpdateTime(SampledData);
     if (mcStat) {
@@ -197,16 +198,16 @@ void RealTimeLoop3()
       grnd_feed->BroadcastData(tt);
 
     if (cfg.OutputNetCDF())
-      WriteNetCDF();
+      ncFile->WriteNetCDF();
 
-    // This typically produces HRT netCDF in real-time.  Not used at this time.
+    // This typically produces SRT netCDF in real-time.  Not used at this time.
     if (cfg.OutputNetCDF())
-      SyncNetCDF();
+      ncFile->Sync();
 
     /* Check every 20 seconds to see if we are lagging more than 10 seconds
      * behind the system clock.
      */
-    if ((++cntr % 20) == 0)
+    if (cfg.WarnTimeLags() && (++cntr % 20) == 0)
     {
       time_t sys_time = time(0);
 

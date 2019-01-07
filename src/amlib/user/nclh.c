@@ -813,7 +813,7 @@ void nclhInit(var_base *varp)
 /* -------------------------------------------------------------------- */
 void snclh_s(DERTBL *varp)	// Interpolates Hmatrix for volume mixing ratio
 {
-  int indexP, indexT;		// Indices of closest grid points
+  int indexP = 0, indexT = 0;		// Indices of closest grid points
   int pleft, pright, tleft, tright; // Grid points for interpolation
   double pdiff, tdiff, TairK;
   double pcounts;			// Power zero level and mode purity
@@ -842,7 +842,7 @@ void snclh_s(DERTBL *varp)	// Interpolates Hmatrix for volume mixing ratio
   Tair = (double)GetSample(varp, 6);
   Pair = (double)GetSample(varp, 7);
 
-  if (isnan(pp2f_lhs) || isnan(Pair) || isnan(Tair))  // Reality check.
+  if (std::isnan(pp2f_lhs) || std::isnan(Pair) || std::isnan(Tair))  // Reality check.
   {
     H2O_vmr_s = H2O_vmr_h = floatNAN;
     PutSample(varp, H2O_vmr_s);
@@ -1014,7 +1014,7 @@ double BeersLawBilinearInterp(void)
   static const double H2Olower = 2500.0;
   static const double H2Oupper = 25000.0; 
 
-  int indexP, indexH2O, pleft, pright, H2Oleft, H2Oright; 
+  int indexP = 0, indexH2O = 0, pleft, pright, H2Oleft, H2Oright; 
   double stepP, stepH2O, t, u, y1, y2, y3, y4;
   double beerfactor, pdiffmin = 5.0e30F, H2Odiffmin = 5.0e30F;
   double H2Odiff, pdiff, Present_H2O;

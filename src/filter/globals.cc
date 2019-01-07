@@ -16,13 +16,14 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include <injectsd.h>
 
 class PostgreSQL;
+class NetCDF;
 
 namespace dsm
 {
   class SyncRecordReader;
 }
 
-const NR_TYPE floatNAN = nanf("");
+const NR_TYPE floatNAN = nan("");
 const NR_TYPE MISSING_VALUE = -32767.0;
 const int MaxLag = 2000;
 const int MAX_COF = 6;
@@ -50,7 +51,9 @@ const std::string LAGS          = "%s/%s/%s/Lags";
 const std::string BROADCAST     = "%s/%s/%s/ascii_parms";
 const std::string SPIKE         = "%s/%s/%s/Despike";
 const std::string DEFDEROR      = "%s/%s/%s/LowRateVars";
-const std::string VARDB         = "%s/%s/%s/vardb.xml";
+const std::string VARDB         = "%s/%s/%s/VarDB";
+// When the xml version is the master this will take effect instead:
+//const std::string VARDB         = "%s/%s/%s/vardb.xml";
 const std::string BROADCASTVARS = "%s/%s/%s/BcastVars";
 const std::string LANDMARKS     = "%s/%s/%s/landmarks";
 const std::string XMIT_VARS     = "%s/%s/%s/groundvars";
@@ -71,16 +74,31 @@ const std::string OPHIR3NAMES   = "%s/%s/%s/ophir3.names";
 
 
 char	buffer[8192];		// Generic, volatile string space
-char	sync_server_pipe[80];
 
 Config cfg;	// Global configuration.
 
 // Syslog.  Used for onboard / real-time.
 nidas::util::Logger * logger = 0;
 
-std::vector<RAWTBL *> raw;	// Alphabeticly sorted pointers
-std::vector<DERTBL *> derived;	// Alphabeticly sorted pointers
-std::vector<DERTBL *> ComputeOrder;	// Compute Order for derived
+template <typename T>
+variable_vector<T>::~variable_vector()
+{
+  for (size_t i = 0; i < this->size(); ++i)
+  {
+    delete (*this)[i];
+  }
+  this->clear();
+}
+
+variable_vector<RAWTBL> raw;		// Alphabeticly sorted pointers
+variable_vector<RAWTBL> decode;		// raw variables where "xlate != 0" - for rec_decode.c
+variable_vector<DERTBL> derived;	// Alphabeticly sorted pointers
+/*
+ * The ComputeOrder vector does not own the pointers, so it is just a
+ * regular vector and not a variable_table.
+ */
+std::vector<DERTBL*> ComputeOrder;	// Compute Order for derived
+
 
 size_t	nDefaults = 0;
 DEFAULT	*Defaults[MAX_DEFAULTS];	// Values from 'Defaults' file
@@ -96,8 +114,6 @@ size_t	ProcessingRate,
 RateFeedBack	FeedBack;
 
 int	PauseWhatToDo, FlightNumberInt;
-
-pid_t	syncPID = -1;
 
 /* Data record pointers
  */
@@ -115,12 +131,11 @@ size_t	nLRfloats = 0,
 	nHRfloats = 0;	// Contains number of floats used in HighRateData.
 size_t	LITTON51_start;	// hdr_decode.c & adsIO.c
 
-dsm::SyncRecordReader* syncRecReader = 0;
-
 int32_t (*FindFirstLogicalRecord)(char lr[], time_t starttime);
 int32_t (*FindNextLogicalRecord)(char lr[], time_t endtime);
 
 PostgreSQL *psql = 0;
+NetCDF *ncFile = 0;
 
 
 //***************************synthetic data varables*************************//

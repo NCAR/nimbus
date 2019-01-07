@@ -60,7 +60,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
   // Don't recreate database if this is the same flight.
   if (isSameFlight() == false)
   {
-    LogMessage("Not the same flight as previous startup, dropping databases.");
+    LogMessage("Not the same flight as previous startup, dropping database tables.");
     dropAllTables();	// Remove existing tables, this is a reset.
     createTables();
     sleep(3);
@@ -94,7 +94,7 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
   /* Set global attributes start and end time to the timeStamp of the
    * first record to arrive.
    */
-  if (cntr == 0)
+  if (cntr++ == 0)
   {
     _sqlString.str("");
     _sqlString << "INSERT INTO global_attributes VALUES ('StartTime', '"
@@ -118,23 +118,43 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
 
   extern NR_TYPE	*AveragedData;
 
-  /* Two loops again, raw and derived.  This is raw.
+  /* Two loops again, raw and derived.
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
     if (raw[i]->Length > 1)	// PMS/vector data.
-      addVectorToAllStreams(&AveragedData[raw[i]->LRstart], raw[i]->Length);
+    {
+      /* Start at 1 to eliminate unused 0th bin.  See also GetPMS1DAttrsForSQL().
+       * and intializeVariableList().  Change to '= 0' when we remove legacy 0th bin.
+       */
+      size_t start = raw[i]->LRstart;
+      size_t len = raw[i]->Length;
+#ifdef ZERO_BIN
+      if ((raw[i]->ProbeType & PROBE_PMS1D) || (raw[i]->ProbeType & PROBE_PMS2D))
+        { ++start; --len; }
+#endif
+      addVectorToAllStreams(&AveragedData[start], len);
+    }
     else
       addValueToAllStreams(AveragedData[raw[i]->LRstart]);
   }
 
 
-  /* Two loops again, raw and derived.  This is derived.
-   */
   for (size_t i = 0; i < derived.size(); ++i)
   {
     if (derived[i]->Length > 1)
-      addVectorToAllStreams(&AveragedData[derived[i]->LRstart], derived[i]->Length);
+    {
+      /* Start at 1 to eliminate unused 0th bin.  See also GetPMS1DAttrsForSQL().
+       * and intializeVariableList().  Change to '= 0' when we remove legacy 0th bin.
+       */
+      size_t start = derived[i]->LRstart;
+      size_t len = derived[i]->Length;
+#ifdef ZERO_BIN
+      if ((derived[i]->ProbeType & PROBE_PMS1D) || (derived[i]->ProbeType & PROBE_PMS2D))
+        { ++start; --len; }
+#endif
+      addVectorToAllStreams(&AveragedData[start], len);
+    }
     else
       addValueToAllStreams(AveragedData[derived[i]->LRstart]);
   }
@@ -147,8 +167,17 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
 
   submitCommand(updateEndTimeString(timeStamp, usec), false);
 
+  /*
+   * Should ANALYZE and VACUUM intervals be based on time or on number of
+   * records inserted?  When loading a database directly from a raw data
+   * file, the records are inserted as fast as possible, and so the ANALYZE
+   * and VACUUM will happen much more frequently, perhaps too frequently.
+   */
 
-  if (++cntr % 3000 == 0)     // every ~hour
+  // Defaults to 1500, which is supposed to be about every hour, but really
+  // is 25 minutes.
+  size_t interval = cfg.AnalyzeInterval();
+  if (interval && (cntr % interval == 0))
   {
     char msg[128];
     sprintf(msg, "psql.cc: Performing ANALYZE @ %s.", timeStamp.c_str());
@@ -162,7 +191,10 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
     submitCommand(_sqlString.str(), true);
   }
 
-  if (++cntr % 2000 == 0)     // every ~half-hour
+  // Defaults to 1000, which is supposed to be about every half-hour, but
+  // really is about 17 minutes.
+  interval = cfg.VacuumInterval();
+  if (interval && (cntr % interval == 0))
   {
     char msg[128];
     sprintf(msg, "psql.cc: Performing VACUUM @ %s.", timeStamp.c_str());
@@ -334,40 +366,36 @@ PostgreSQL::initializeVariableList()
   int	nDims, dims[3];
 
   rateTableMap		rateTableMap;
-  std::stringstream groundLrtTable;
+  std::stringstream	groundLrtTable;
+  std::vector<float>	noCals;
 
   nDims = 1;
   dims[0] = 1;
 
 
-  std::vector<float> noCals;
-
   /* 2 big loops here for raw and derived.  This is raw.
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
-    std::string        name;
+    RAWTBL	*rp = raw[i];
 
-    if (isdigit(raw[i]->name[0])) // Can't support vars starting with number.
+    if (isdigit(rp->name[0])) // Can't support vars starting with number.
     {
       fprintf(stderr,
 	"psql.cc: PostGreSQL does not support variables starting with a numeric [%s]\n",
-	raw[i]->name);
+	rp->name);
       exit(1);
     }
 
-    name = raw[i]->name;
-
     /* If PMS2D then add to the PMS2D table.
      */
-    if (strncmp(raw[i]->name, "A1D", 3) == 0)
+    if ((rp->ProbeType & PROBE_PMS2D) && rp->Length > 1)
     {
-      std::string name(raw[i]->name);
-      name = name.substr(0, name.length()-1);
+      std::string name(&rp->name[1]);
 
       _sqlString.str("");
       _sqlString << "INSERT INTO PMS2D_list VALUES ('" << name
-	<< "', '" << raw[i]->SerialNumber << "');";
+	<< "', '" << rp->SerialNumber << "');";
       _sqlString << "CREATE TABLE " << name
 	<< " (" << TIME_VARIABLE << " time (3) PRIMARY KEY, nSlices int, particle int[]);";
       submitCommand(_sqlString.str());
@@ -375,68 +403,77 @@ PostgreSQL::initializeVariableList()
 
     /* If PMS1D then add to the PMS1D table.
      */
-    if (raw[i]->Length > 1)
+    if ((rp->ProbeType & PROBE_PMS1D) && rp->Length > 1)
     {
-      std::string name(&raw[i]->name[1]);
+      std::string name(&rp->name[1]);
 
       _sqlString.str("");
       _sqlString << "INSERT INTO PMS1D_list VALUES ('" << name << "', '" <<
-	raw[i]->SerialNumber << "', '" << RATE_TABLE_PREFIX <<
-	raw[i]->SampleRate << '\'';
+	rp->SerialNumber << "', '" << RATE_TABLE_PREFIX <<
+	rp->SampleRate << '\'';
 
-      GetPMS1DAttrsForSQL(raw[i], buffer);
+      GetPMS1DAttrsForSQL(rp, buffer);
       _sqlString << buffer;
       _sqlString << ");";
       submitCommand(_sqlString.str(), true);
     }
 
-    if (raw[i]->Length > 1)
+    if (rp->Length > 1)
     {
       nDims = 2;
+      dims[1] = rp->Length;
+#ifdef ZERO_BIN
       // Subtract 1, since we don't put 0th bin into SQL database.
       // See addVectorToAllStreams() & pms1d.c:GetPMS1DAttrsForSQL()
       // Remove the '-1' when we compensate for in FIRST_BIN/LAST_BIN.
-      dims[1] = raw[i]->Length - 1;
+      if ((rp->ProbeType & PROBE_PMS1D) || (rp->ProbeType & PROBE_PMS2D))
+        dims[1] = rp->Length - 1;
+#endif
     }
     else
       nDims = 1;
 
-    addVariableToDataBase(raw[i], nDims, dims, noCals, MISSING_VALUE);
+    addVariableToDataBase(rp, nDims, dims, noCals, MISSING_VALUE);
 
     /* Don't add/duplicate rate 1. Don't add vectors for the time being.
      */
-    if (raw[i]->SampleRate > 1 && raw[i]->Length == 1)
-      addVariableToTables(rateTableMap, groundLrtTable, raw[i], true);
+    if (rp->SampleRate > 1 && rp->Length == 1)
+      addVariableToTables(rateTableMap, groundLrtTable, rp, true);
     else
-      addVariableToTables(rateTableMap, groundLrtTable, raw[i], false);
+      addVariableToTables(rateTableMap, groundLrtTable, rp, false);
   }
 
 
-  /* 3 big loops here for analog, raw and derived.  This is derived.
-   */
+
   for (size_t i = 0; i < derived.size(); ++i)
   {
-    if (isdigit(derived[i]->name[0])) // Can't support vars starting with number.
+    DERTBL *dp = derived[i];
+
+    if (isdigit(dp->name[0])) // Can't support vars starting with number.
     {
       fprintf(stderr,
 	"psql.cc: PostGreSQL does not support variables starting with a numeric [%s]\n",
-	derived[i]->name);
+	dp->name);
       exit(1);
     }
 
-    if (derived[i]->Length > 1)
+    if (dp->Length > 1)
     {
       nDims = 2;
+      dims[1] = dp->Length;
+#ifdef ZERO_BIN
       // Subtract 1, since we don't put 0th bin into SQL database.
       // See addVectorToAllStreams() & pms1d.c:GetPMS1DAttrsForSQL()
       // Remove the '-1' when we compensate for in FIRST_BIN/LAST_BIN.
-      dims[1] = derived[i]->Length - 1;
+      if ((dp->ProbeType & PROBE_PMS1D) || (dp->ProbeType & PROBE_PMS2D))
+        dims[1] = dp->Length - 1;
+#endif
     }
     else
       nDims = 1;
 
-    addVariableToDataBase(derived[i], nDims, dims, noCals, MISSING_VALUE);
-    addVariableToTables(rateTableMap, groundLrtTable, derived[i], false);
+    addVariableToDataBase(dp, nDims, dims, noCals, MISSING_VALUE);
+    addVariableToTables(rateTableMap, groundLrtTable, dp, false);
   }
 
   _groundDBinitString << groundLrtTable.str();
@@ -546,7 +583,7 @@ PostgreSQL::addValue(std::stringstream& sql, NR_TYPE value, bool addComma)
   if (addComma)
     sql << ',';
 
-  if (isnan(value) || isinf(value))
+  if (std::isnan(value) || std::isinf(value))
     sql << MISSING_VALUE;
   else
     sql << value;
@@ -566,7 +603,7 @@ PostgreSQL::addValueToAllStreams(NR_TYPE value, bool addComma)
   if (!addComma)
     format = normalFormat;
 
-  if (isnan(value) || isinf(value))
+  if (std::isnan(value) || std::isinf(value))
     value = MISSING_VALUE;
 
   sprintf(value_ascii, format, value);
@@ -581,10 +618,7 @@ PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, size_t nValues)
 {
   _sqlString << ",'{";
 
-  /* Start at 1 to eliminate unused 0th bin.  See also GetPMS1DAttrsForSQL().
-   * and intializeVariableList().  Change to '= 0' when we remove legacy 0th bin.
-   */
-  size_t start = 1;
+  size_t start = 0;
 
   for (size_t j = start; j < nValues; ++j)
   {

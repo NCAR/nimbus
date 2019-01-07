@@ -28,10 +28,10 @@ void sjno2(DERTBL *varp)
   cnts_n = GetSample(varp, 0);
   cnts_z = GetSample(varp, 1);
 
-  if (!isnan(cnts_n))
+  if (!std::isnan(cnts_n))
     yn = (cnts_n - uvn382_cals[0]) * uvn382_cals[1];
 
-  if (!isnan(cnts_z))
+  if (!std::isnan(cnts_z))
     yz = (cnts_z - uvz382_cals[0]) * uvz382_cals[1];
 
   PutSample(varp, yn+yz);
@@ -46,10 +46,10 @@ void sjbro(DERTBL *varp)
   cnts_n = GetSample(varp, 0);
   cnts_z = GetSample(varp, 1);
 
-  if (!isnan(cnts_n))
+  if (!std::isnan(cnts_n))
     yn = (cnts_n - uvn330_cals[0]) * uvn330_cals[1];
 
-  if (!isnan(cnts_z))
+  if (!std::isnan(cnts_z))
     yz = (cnts_z - uvz330_cals[0]) * uvz330_cals[1];
 
   PutSample(varp, yn+yz);

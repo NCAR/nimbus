@@ -17,7 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include "brdcast.h"
 
 #include <sstream>
-#include <stdlib.h>  // getenv()
+#include <cstdlib>  // getenv()
 
 using namespace nidas::util;
 
@@ -79,6 +79,14 @@ Broadcast::Broadcast() :
   }
   std::cerr << "NOCAL_ALT_INDX=" << NOCAL_ALT_INDX << ", " 
 	    << "NOREC_ALT_INDX=" << NOREC_ALT_INDX << "." << std::endl;
+}
+
+/* -------------------------------------------------------------------- */
+Broadcast::~Broadcast()
+{
+  size_t i;
+  for (i = 0; i < _toList.size(); ++i)
+    delete _toList[i];
 }
 
 /* -------------------------------------------------------------------- */
@@ -150,20 +158,20 @@ formatVariable(int i)
     if (i == RADAR_ALT_INDX)
     {
       // Our radar alt is in m, convert to ft as required by IWG1
-      if (!isnan(current))
+      if (!std::isnan(current))
 	bcast << current * 3.2808;
     }
     else if (i == NOCAL_ALT_INDX || // Do Not Calibrate flag
 	     i == NOREC_ALT_INDX)   // Do Not Record flag
     {
-      if (isnan(current))
+      if (std::isnan(current))
 	bcast << 0;
       else
 	bcast << current;
     }
     else
     {
-      if (!isnan(current))
+      if (!std::isnan(current))
 	bcast << current;
     }
   }

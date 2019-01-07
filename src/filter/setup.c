@@ -99,12 +99,12 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
   if (!ProductionSetup)
   {
-    int value = atoi(strchr(buffer, '=')+1);
+    long value = atoi(strchr(buffer, '=')+1);
     switch (value)
     {
       case 25:
       case 50:
-        SetHighRate(NULL, (void *)value, NULL);
+        SetHighRate(NULL, (void*)value, NULL);
         break;
       case Config::SampleRate:
         SetSampleRate(NULL, NULL, NULL);
@@ -228,9 +228,9 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
         if (strncmp(target, "nDEP=", 5) == 0)
         {
-          derived[indx]->ndep = atoi(strchr(target, '=')+1);
+          derived[indx]->nDependencies = atoi(strchr(target, '=')+1);
 
-          for (size_t i = 0; i < derived[indx]->ndep; ++i)
+          for (size_t i = 0; i < derived[indx]->nDependencies; ++i)
           {
             strcpy(derived[indx]->depend[i], strtok(NULL, " \t\n"));
             DependIndexLookup(derived[indx], i, false);
@@ -377,9 +377,9 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 				derived[i]->Output,
 				derived[i]->DataQuality,
 				derived[i]->OutputRate,
-				derived[i]->ndep);
+				derived[i]->nDependencies);
 
-      for (size_t j = 0; j < derived[i]->ndep; ++j)
+      for (size_t j = 0; j < derived[i]->nDependencies; ++j)
         fprintf(fp, " %s", derived[i]->depend[j]);
 
       fprintf(fp, "\n");

@@ -20,8 +20,10 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2005
 #include "decode.h"
 #include "gui.h"
 #include "psql.h"
+#include "NetCDF.h"
 #include "brdcast.h"
 #include "grnd_feed.h"
+#include "timeseg.h"
 
 #include <Xm/TextF.h>
 
@@ -31,6 +33,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2005
 #include <unistd.h>
 
 extern PostgreSQL *psql;
+extern NetCDF *ncFile;
 
 static Broadcast *bcast;
 static GroundFeed *grnd_feed;
@@ -142,12 +145,12 @@ pts = ts;
       grnd_feed->BroadcastData(microsecs);
 
     if (cfg.OutputNetCDF())
-      WriteNetCDF();
+      ncFile->WriteNetCDF();
 
     UpdateTime(SampledData);
 
     if (cfg.OutputNetCDF())
-      SyncNetCDF();
+      ncFile->Sync();
 
 //gettimeofday(&tv, NULL);
 //printf("%s  %d.%d\n", timeStamp, tv.tv_sec, tv.tv_usec); fflush(stdout);

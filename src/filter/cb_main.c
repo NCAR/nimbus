@@ -40,9 +40,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 #include <ctime>
 #include <unistd.h>
 #include <sys/param.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/wait.h>
 
 #include <Xm/List.h>
 #include <Xm/Text.h>
@@ -51,12 +49,14 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 
 #include "nimbus.h"
 #include "decode.h"
+#include "timeseg.h"
 #include <raf/ctape.h>
 #include "gui.h"
 #include <raf/vardb.hh>
+#include "NetCDF.h"
 #include "psql.h"
 #include "svnInfo.h"
-
+#include "sync_reader.hh"
 
 static char	ADSfileName[MAXPATHLEN];
 char		OutputFileName[MAXPATHLEN];  /* Export to xlate/rdma.c */
@@ -69,8 +69,7 @@ extern VDBFile  *vardb;
 static time_t	startWALL, finishWALL;
 static clock_t	startCPU, finishCPU;
 
-extern Widget	Shell001;
-extern pid_t	syncPID;
+extern NetCDF	*ncFile;
 
 
 void	CloseSQL(), ProcessFlightDate();
@@ -83,48 +82,11 @@ static void	checkForProductionSetup(), displaySetupWindow(),
 		LogLagErrors();
 
 
-void	InitAsyncModule(char fileName[]), RealTimeLoop(),
+//void	InitAsyncModule(char fileName[]);
+void	RealTimeLoop(), RealTimeLoop3(),
 	CloseLogFile(), LogDespikeInfo(), InitAircraftDependencies(),
-	CloseRemoveLogFile(), LogIRSerrors(), RealTimeLoop3();
+	CloseRemoveLogFile(), LogIRSerrors();
 
-
-/* -------------------------------------------------------------------- */
-/* Check if sync_server has exited or died, report status */
-void CheckSyncServer()
-{
-  extern pid_t syncPID;
-  if (syncPID > 0) {
-    int status;
-    int res = waitpid(syncPID,&status,WNOHANG);
-    if (res < 0) WLOG(("error waiting on sync_server, pid=%d: %m",syncPID));
-    else if (res > 0) {
-      if (WIFEXITED(status))
-        ILOG(("sync_server finished, status=%d",WEXITSTATUS(status)));
-      else if (WIFSIGNALED(status)) {
-        int sig = WTERMSIG(status);
-        PLOG(("sync_server terminated on signal %s(%d)",strsignal(sig),sig));
-      }
-      syncPID = -1;
-    }
-  }
-}
-
-void ShutdownSyncServer()
-{
-  extern pid_t syncPID;
-  CheckSyncServer();
-  // send SIGTERM to sync_server. If it doesn't shutdown send SIGKILL.
-  for (int i = 0; syncPID > 0 && i < 5; i++) {
-    kill(syncPID, SIGTERM);
-    sleep(1);
-    CheckSyncServer();
-  }
-  if (syncPID > 0) {
-    kill(syncPID, SIGKILL);
-    sleep(1);
-    CheckSyncServer();
-  }
-}
 
 /* -------------------------------------------------------------------- */
 void CancelSetup(Widget w, XtPointer client, XtPointer call)
@@ -229,7 +191,7 @@ static void readHeader()
   XtSetSensitive(outputFileText, false);
 
   XmUpdateDisplay(Shell001);
-  LogMessage(SVNREVISION);
+  LogMessage(std::string("Revision: ") + SVNREVISION);
 
   int rc = ERR;
 
@@ -369,13 +331,14 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   /* RunAMLIBinits before creating netCDF to setup defaults into
    * netCDF attributes.
    */
-  ProcessFlightDate();
+  ncFile = new NetCDF();
+  ncFile->ProcessFlightDate();	// This needs to be called before CreateFile at this time.
   SetupDependencies();
   InitAircraftDependencies();
   RunAMLIBinitializers();
   SetConfigGlobalAttributeVariables();
-  CreateNetCDF(OutputFileName);
-  InitAsyncModule(OutputFileName);
+  ncFile->CreateFile(OutputFileName, 0);
+//  InitAsyncModule(OutputFileName);
   ConfigurationDump();
 
 
@@ -440,8 +403,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     FindNextLogicalRecord = 0;
   }
 
-  void SwitchNetCDFtoDataMode();
-  SwitchNetCDFtoDataMode();
+  ncFile->SwitchToDataMode();
 
   if (cfg.ProcessingMode() == Config::RealTime)
     {
@@ -491,7 +453,7 @@ void stopProcessing()
   Arg		args[1];
   float		x;
 
-  CloseNetCDF();
+  ncFile->Close();
 
   LogDespikeInfo();
   LogIRSerrors();
@@ -515,9 +477,7 @@ void stopProcessing()
 */
 
   CloseLogFile();
-
-  extern void closeSyncRecordReader();
-  closeSyncRecordReader();
+  CloseSyncReader();
 
   /* Turn "Pause" button back into "Go" button.
    */
@@ -786,7 +746,7 @@ void quit()
 /* -------------------------------------------------------------------- */
 void Quit(Widget w, XtPointer client, XtPointer call)
 {
-  CloseNetCDF();
+  ncFile->Close();
 
   extern PostgreSQL *psql;
   if (psql)
@@ -794,10 +754,6 @@ void Quit(Widget w, XtPointer client, XtPointer call)
 
   CloseRemoveLogFile();
   CancelSetup(NULL, NULL, NULL);
-
-  if (strlen(sync_server_pipe))
-    unlink(sync_server_pipe);
-
   exit(0);
 }
 
@@ -998,7 +954,7 @@ XmString CreateListLineItem(var_base *pp, int var_type)
       buffer[33] = 'N'; buffer[34] = 'A';
       memcpy(&buffer[40], "NA    ", 5);
 
-      for (size_t i = 0; i < dp->ndep; ++i)
+      for (size_t i = 0; i < dp->nDependencies; ++i)
         {
         if (i > 0)
           strcat(buffer, ",");
@@ -1101,7 +1057,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
     buffer[33] = 'N'; buffer[34] = 'A';
     fprintf(fp, buffer);
 
-    for (size_t j = 0; j < dp->ndep; ++j)
+    for (size_t j = 0; j < dp->nDependencies; ++j)
       {
       if (j > 0)
         {

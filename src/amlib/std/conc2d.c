@@ -70,7 +70,7 @@ void sconc2d(DERTBL *varp)
   shador = GetSample(varp, 0);
   tasx = GetSample(varp, 1);
 
-  if (isnan(tasx))	/* Lab setting, for spinning disk */
+  if (std::isnan(tasx))	/* Lab setting, for spinning disk */
     tasx = 34.0;
 
   PutSample(varp, shador / (tasx * SampleArea[varp->SerialNumber]) * 1000.0);

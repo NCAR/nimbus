@@ -24,16 +24,20 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 
 #include "nimbus.h"
 #include "decode.h"
+#include "timeseg.h"
 #include "gui.h"
 #include "circbuff.h"
 #include "amlib.h"
+#include "NetCDF.h"
 #include "injectsd.h"
+
+#include "trace_variables.h"
 
 extern SyntheticData sd;
 
 extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
-extern XtAppContext	context;
+extern NetCDF	*ncFile;
 
 bool	LocateFirstRecord(time_t starttime, time_t endtime, int nBuffers);
 void	DespikeData(CircularBuffer *LRCB, int index), FindMinMax(),
@@ -46,7 +50,9 @@ int LowRateLoop(time_t startTime, time_t endTime)
 {
   int32_t		nBytes, thisTime, cntr = 0;
   NR_TYPE		*BuffPtr;
-  CircularBuffer	*LRCB;	/* Logical Record Circular Buffers	*/
+  CircularBuffer	*LRCB = NULL;	// Logical Record Circular Buffers
+
+  TraceVariables tv;
 
   /* Perform initialization before entering main loop.
    */
@@ -58,7 +64,6 @@ int LowRateLoop(time_t startTime, time_t endTime)
     goto exit;
     }
 
-
   /* This is the main loop.
    */
   do
@@ -68,15 +73,20 @@ int LowRateLoop(time_t startTime, time_t endTime)
 
     BuffPtr = (NR_TYPE *)AddToCircularBuffer(LRCB);
     DecodeADSrecord((short *)ADSrecord, BuffPtr);
+    tv.trace("after decoding", BuffPtr);
     ApplyCalCoes(BuffPtr);
+    tv.trace("after calcoes", BuffPtr);
 
     /* Despike 1 record ahead of what we will be working with (LRINDEX+1).
      */
     DespikeData(LRCB, LRINDEX+1);
+    tv.trace("after despike", BuffPtr);
     PhaseShift(LRCB, LRINDEX, SampledData, 0);
+    tv.trace("after phaseshift", BuffPtr);
 
     AverageSampledData();
-   
+    tv.trace("after average", AveragedData, true);
+
     thisTime = SampledDataTimeToSeconds(SampledData);
 
     if (SynthData == true)
@@ -89,7 +99,7 @@ int LowRateLoop(time_t startTime, time_t endTime)
         (startTime == BEG_OF_TAPE || thisTime >= startTime))
       {
       FindMinMax();
-      WriteNetCDF();
+      ncFile->WriteNetCDF();
       UpdateTime(SampledData);
       }
 

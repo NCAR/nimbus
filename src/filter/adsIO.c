@@ -42,6 +42,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 
 #include "nimbus.h"
 #include "decode.h"
+#include "timeseg.h"
 #include <raf/ctape.h>
 #include <raf/raf.h>
 #include <raf/portable.h>
@@ -73,7 +74,7 @@ static int	GetNext2Dfile();
 static void	checkForDayErrors(Hdr_blk * hdr);
 
 char	*ExtractHeaderIntoFile(char *);
-void	WriteAsyncData(char record[]);
+//void	WriteAsyncData(char record[]);
 time_t	HdrBlkTimeToSeconds(Hdr_blk * hdr);
 
 #ifdef __cplusplus
@@ -485,8 +486,8 @@ static int32_t FindNextDataRecord(char buff[])
         nbytes =  crayread(&infd, buff, &nWords, &iconv);
       }
 
-    if (cfg.AsyncFileEnabled() && IsThisAnAsyncRecord((short *)buff))
-      WriteAsyncData(buff);
+//    if (cfg.AsyncFileEnabled() && IsThisAnAsyncRecord((short *)buff))
+//      WriteAsyncData(buff);
     }
   while (nbytes > 0 && ntohs(*((ushort *)buff)) != SDI_WORD);
 
@@ -596,6 +597,13 @@ bool Next2dRecord(P2d_rec *record, int probeCnt, ushort id)
   int	nbytes, size;
   char	buff[32000];
   ushort *rec_id = (ushort *)buff;
+
+  if (twoDfd[probeCnt] < 0)
+  {
+    WLOG(("Next2dRecord(probeCnt=%d): ", probeCnt)
+	 << "invalid file descriptor, ignoring.");
+    return false;
+  }
 
   do
     {

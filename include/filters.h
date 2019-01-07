@@ -52,7 +52,7 @@ typedef struct
 
 static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, const MOD *modvar);
 static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output);
-static int disposMultiRateFilter(mRFilterPtr aMRFPtr);
+//static int disposMultiRateFilter(mRFilterPtr aMRFPtr);
 static void initMultiRateFilter(mRFilterPtr aMRFPtr);
 
 #endif

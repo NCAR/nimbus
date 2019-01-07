@@ -31,6 +31,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define MAXDEPEND	12
 #define MAX_TIME_SLICES	1
 
+#define ZERO_BIN	1
 
 /* Nimbus Record Info		*/
 typedef double NR_TYPE;
@@ -131,8 +132,9 @@ public:
   float	convertFactor;	// A/D slope
   std::vector<NR_TYPE> cof;
 
+  int nidasLag;		// Static lag from nidas.  Here as metadata to go in netCDF
   int StaticLag;	// Static lag in ms to shift data
-  int DynamicLag;	// Dynamic lag
+  int DynamicLag;	// Dynamic lag in ms
   float SpikeSlope;	// Slope for spike detection
 
   SYNTHTYPE synthtype;
@@ -152,23 +154,34 @@ public:
   void (*compute)(void *);	// Function to compute data
 
   std::vector<var_base *> depends;
-  size_t ndep;			// # dependencies
+  size_t nDependencies;			// # dependencies
   char depend[MAXDEPEND][NAMELEN];	// Dependencies
 };
 
 
 // Global Variables
-extern char sync_server_pipe[];
-
 extern const NR_TYPE MISSING_VALUE, floatNAN;
 extern const int MAX_COF;
 
 // Syslog.  Used for onboard / real-time.
 extern nidas::util::Logger * logger;
 
-extern std::vector<RAWTBL *> raw;
-extern std::vector<DERTBL *> derived;
-extern std::vector<DERTBL *> ComputeOrder;
+/**
+ * A vector subclass for variable pointers which deletes the pointers upon
+ * destruction.  It is a simple class to clean up memory.  A better
+ * alternative would be boost ptr_vector once someone wants to introduce a
+ * boost dependency in nimbus.  See the implementation in globals.cc.
+ **/
+template <typename T>
+class variable_vector : public std::vector<T*>
+{
+public:
+  ~variable_vector();
+};
+
+extern variable_vector<RAWTBL> raw;
+extern variable_vector<DERTBL> derived;
+extern std::vector<DERTBL*> ComputeOrder;
 
 extern bool	PauseFlag, SynthData;
 extern int	FlightNumberInt, PauseWhatToDo, Mode;
@@ -255,7 +268,7 @@ void	SortTable(char **table, int beg, int end),
 	ResetProbeList(),
 	MakeProjectFileName(char file[], const std::string& format),
 	ProcessArgv(int argc, char **argv),
-	LogMessage(const char msg[]),
+        LogMessage(std::string msg),
 	SetBaseTime(const NR_TYPE *record),
 	BlankOutBadData(),
 	GetDataDirectory(char buff[]),

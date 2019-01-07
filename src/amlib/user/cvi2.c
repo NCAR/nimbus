@@ -12,7 +12,7 @@ STATIC FNS:	TempCorrection()
 
 DESCRIPTION:  	Second generation CVI, 2006 and later.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2017
+COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2018
 -------------------------------------------------------------------------
 */
 
@@ -24,6 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2017
 
 static NR_TYPE	TAS_MIN = 85.0;	// Good value for C130.  GV should be about 115.
 static NR_TYPE  TDL_Offset = 0.0;
+static NR_TYPE  CVCFACT_COEF[2] = { 0.968, 0.0015934 };
 
 static NR_TYPE	C0_P[3] = { 0.0, 1.0, 0.0 };
 static NR_TYPE	C1_P[3] = { 0.0, 1.0, 0.0 };
@@ -33,8 +34,10 @@ static NR_TYPE	C2_P[3] = { 0.0, 1.0, 0.0 };
  * and ICE-T) that have the pressure gauge that Darrin Toohey installed should
  * pass in two more variables and perform the correction that does not use this
  * value (see below).  cjw, Aug 2011
+ * SOCRATES, WECAN, and forward will not use the fudge_factor.  Set to 1.0 here.
+ * See cvi2init() for VOCALS set to 1.2.
  */
-static const NR_TYPE concud_fudge_factor = 1.2;
+static NR_TYPE concud_fudge_factor = 1.0;
 
 /* -------------------------------------------------------------------- */
 void cvi2Init(var_base *varp)
@@ -83,21 +86,50 @@ void cvi2Init(var_base *varp)
     for (int i = 0; i < 3; ++i)
       C2_P[i] = tmp[i];
 
+  if ((tmp = GetDefaultsValue("CVI_CVCFACTC", varp->name)) == NULL)
+  {
+    sprintf(buffer,
+		"cvi2Init:CVCFACT_COEF values defaulting to %f, %f.\n",
+		CVCFACT_COEF[0], CVCFACT_COEF[1]);
+    LogMessage(buffer);
+  }
+  else
+    for (int i = 0; i < 2; ++i)
+      CVCFACT_COEF[i] = tmp[i];
 
-}  /* END CVIINIT */
+  if (cfg.ProjectName().compare("VOCALS") == 0)
+    concud_fudge_factor = 1.2;
+
+}
 
 /* -------------------------------------------------------------------- */
 void sconcud(DERTBL *varp)
 {
-  // Routine for VOCALS and subsequent projects.
+  static int	counter = 0;
+  static int	prevInlet = 0;
 
   NR_TYPE cnts = GetSample(varp, 0);
   NR_TYPE cvcfact = GetSample(varp, 1);
   NR_TYPE flow = GetSample(varp, 2);
+  int	cvinlet = (int)GetSample(varp, 3);
+  NR_TYPE concud = 0.0;
 
-  NR_TYPE concud = cnts / (flow * cvcfact);
+  if (flow > 0.0)	// basic check.
+    concud = cnts / (flow * cvcfact);
 
-  if (varp->ndep == 5)
+  // If we have come out of cloud.  Output nan for 20 seconds.
+  if (prevInlet != 0 && cvinlet == 0)
+    counter = 20;
+
+  // Avoid take-off & landing, and when CVINLET is 1 (no counterflow).
+  if (cvinlet > 0 || counter > 0)
+  {
+    --counter;
+    concud = floatNAN;
+  }
+
+
+  if (varp->nDependencies == 5)
   {
     NR_TYPE cvpcn = GetSample(varp, 3);
     NR_TYPE upress = GetSample(varp, 4);
@@ -109,8 +141,8 @@ void sconcud(DERTBL *varp)
   
   PutSample(varp, concud);
 
-}  /* END SCONCUD */
-
+  prevInlet = cvinlet;
+}
 
 /* -------------------------------------------------------------------- */
 void scvrho(DERTBL *varp)
@@ -146,7 +178,7 @@ void scvcfacttdl(DERTBL *varp)
     cvtcn += Kelvin;
 
   // Replicate previous samle if out of bounds (15C and 35C).
-  if (isnan(cvtcn) || cvtcn < 288.0 || cvtcn > 308.0)
+  if (std::isnan(cvtcn) || cvtcn < 288.0 || cvtcn > 308.0)
     cvtcn = previousTCN;
   else
     previousTCN = cvtcn;
@@ -159,34 +191,90 @@ void scvcfacttdl(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void scvcwcc(DERTBL *varp)
 {
-  static int		counter = 0;
-  static NR_TYPE	prevInlet = 0.0;
-  NR_TYPE	cvcwc;
-  NR_TYPE	cvrho, cvcfact, cvinlet, tasx;
+  static int	counter = 0;
+  static int	prevInlet = 0;
+  NR_TYPE	cvcwcc;
+  NR_TYPE	cvrho, cvcfact, tasx;
+  int		cvinlet;
 
-  cvinlet	= GetSample(varp, 2);
+  cvinlet	= (int)GetSample(varp, 2);
   tasx		= GetSample(varp, 3);
 
   // If we have come out of cloud.  Output nan for 20 seconds.
-  if (prevInlet == 1 && (int)cvinlet == 0)
+  if (prevInlet != 0 && cvinlet == 0)
     counter = 20;
 
   // Avoid take-off & landing, and when CVINLET is 1 (no counterflow).
-  if (tasx < TAS_MIN || cvinlet > 0.0 || counter > 0)
+  if (tasx < TAS_MIN || cvinlet > 0 || counter > 0)
   {
     --counter;
-    cvcwc = floatNAN;
+    cvcwcc	= floatNAN;
   }
   else
   {
     cvrho	= GetSample(varp, 0);
     cvcfact	= GetSample(varp, 1);
-    cvcwc = cvrho / cvcfact;
+    cvcwcc	= cvrho / cvcfact;
   }
   
-  PutSample(varp, cvcwc);
-
+  PutSample(varp, cvcwcc);
   prevInlet = cvinlet;
+}
+
+/* -------------------------------------------------------------------- */
+// UHSAS data flag.
+void scviuflag(DERTBL *varp)
+{
+  NR_TYPE tact = GetSample(varp, 0);
+
+  PutSample(varp, (NR_TYPE)(tact > 6000 ? 0 : 1));
+}
+
+/* The below was added for SOCRATES to mark icing conditions.
+ * Add CVIFLAG CVCFACTC to UserNames.
+ * Add to DependTable
+ * CVCFACTC        CVCFACT CVCWC ATX
+ * CVIFLAG         CVCFACTC
+ * and replace CVCFACT with CVCFACTC in CONCUD and CVCFACTTDL.
+ */
+
+static int cviflag = 1;
+/* -------------------------------------------------------------------- */
+void scviflag(DERTBL *varp)
+{
+  PutSample(varp, (NR_TYPE)cviflag);
+}
+
+/* -------------------------------------------------------------------- */
+void scvcfactc(DERTBL *varp)
+{
+  NR_TYPE cvcfactc = GetSample(varp, 0);
+  NR_TYPE cvinlet = GetSample(varp, 1);
+  NR_TYPE cvcwc = GetSample(varp, 2);
+  NR_TYPE atx	= GetSample(varp, 3);
+  static size_t elapsed_time = 0;
+
+  // if icing conditions...
+  if (cvinlet == 0 && cvcwc > 0.006 && atx < -7.0 && atx > -20.0)
+  {
+    // We just arrived, start elapsed time counter and flag data.
+    if (cviflag == 1)
+    {
+      cviflag = 0;
+    }
+
+    cvcfactc *= (CVCFACT_COEF[0] - CVCFACT_COEF[1] * elapsed_time++);
+  }
+  else
+    cviflag = 1;
+
+  if (cvcwc < 0.003)
+    elapsed_time = 1;
+
+  if (cvcfactc < 3.0)
+    cvcfactc = 3.0;
+
+  PutSample(varp, cvcfactc);
 }
 
 /* END CVI2.C */

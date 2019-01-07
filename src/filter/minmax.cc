@@ -26,7 +26,7 @@ static void _findMinMax(var_base * vp, const NR_TYPE * value, size_t n)
   double min = vp->min, max = vp->max;
 
   for (size_t i = 0; i < n; ++i) {
-    if (!isnan(value[i])) {
+    if (!std::isnan(value[i])) {
       min = std::min(min, value[i]);
       max = std::max(max, value[i]);
     }
