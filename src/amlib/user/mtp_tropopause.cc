@@ -128,6 +128,45 @@ float averageLapseRate(int LT, float step, int startidx)
 }
 
 /* -------------------------------------------------------------------- */
+/* If have a tropopause from a previous call to this routine, need to find a
+ * break between tropopauses before can look for the next one. This break is
+ * defined as a region where the lapse rate is less than -3 K/km. MJ notes 
+ * that he decided to search in a 2KM layer (rather than 1 km - not sure where
+ * the initial definition comes from) as 1 km is too sensitive for RAOB data
+ * causing too many double (and not credible) tropopauses. 
+ *
+ * Output:
+ * 	altBot - altitude of lowest layer to loop for next tropopause
+ */
+float findGap(int LT, float step, int startidx)
+{
+    float LRavg;
+    int referenceLapseRate = -3; // -3K/km; end of a tropopause
+    float altBot = altc[LT];
+
+    while (LRavg > referenceLapseRate) 
+    {
+
+      // Find alt at bottom and top of layer we are testing
+      float altTop = altBot + referenceLayerThickness;
+
+      // linear interpolation to find temperature at top and bottom altitudes 
+      // (since we may not have a scan there)
+      float tempBot = Tinterp(altBot, startidx);
+      float tempTop = Tinterp(altTop, startidx);
+      if (std::isnan(tempTop)) {
+	LRavg = floatNAN;  //Ran out of RAOB; didn't find tropopause
+      } else {
+        // Calculate average lapse rate from the bottom of the layer to our 
+	// current level
+        LRavg = (tempTop-tempBot)/referenceLayerThickness;
+      }
+      if (std::isnan(LRavg)) return(floatNAN); // no tropopause found
+
+      altBot = altBot+step;
+    }
+}
+/* -------------------------------------------------------------------- */
 /* Locate the first retrieval above the lowest altitude to look for tropopause
  * Input:
  *     minidx - the lowest altitude to look for the topopause
@@ -170,41 +209,19 @@ float findTropopause(NR_TYPE *altctrop,NR_TYPE *tempctrop, int *startidx)
   *altctrop = floatNAN;
   *tempctrop = floatNAN;
 
-  // If have a tropopause from a previous call to this routine, need to find a
-  // break between tropopauses before can look for the next one. This break is
-  // defined as a region where the lapse rate is less than -3 K/km. MJ notes 
-  // that he decided to search in a 2KM layer (rather than 1 km - not sure where
-  // the initial definition comes from) as 1 km is too sensitive for RAOB data
-  // causing too many double (and not credible) tropopauses. At this point, 
+  // At this point, 
   // startidx will be the value set in the previous pass through.
   if (*startidx != 0)
   {
-    referenceLapseRate = -3; // -3K/km; end of a tropopause
-    float altBot = altc[LT];
-    while (LRavg > referenceLapseRate) 
-    {
 
-      // Find alt at bottom and top of layer we are testing
-      float altTop = altBot + referenceLayerThickness;
+    // Locate lowest layer above gap between tropopauses.
+    float altBot = findGap(LT, step, *startidx);
+    if (std::isnan(altBot)) return(floatNAN); // no tropopause found
 
-      // linear interpolation to find temperature at top and bottom altitudes (since
-      // we may not have a scan there)
-      float tempBot = Tinterp(altBot, *startidx);
-      float tempTop = Tinterp(altTop, *startidx);
-      if (std::isnan(tempTop)) {
-	LRavg = floatNAN;  //Ran out of RAOB; didn't find tropopause
-      } else {
-        // Calculate average lapse rate from the bottom of the layer to our current level
-        LRavg = (tempTop-tempBot)/referenceLayerThickness;
-      }
-      if (std::isnan(LRavg)) return(floatNAN); // no tropopause found
-
-      altBot = altBot+step;
-    }
-
-    // locate first retrieval above identified break (altZBot)
+    // locate first retrieval above identified break (altBot)
     findStart(startidx,altBot);
     if (*startidx == -1) return(floatNAN); // no tropopause found
+
   } else {
 
     // locate first retrieval above lowest altitude to look for tropopause.
