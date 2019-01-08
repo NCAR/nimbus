@@ -341,9 +341,9 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     // If we are processing MTP data, need to add a special time dimension for 
     // it since the data report once every 17 seconds rather than at 1hz.
-    if (strstr(rp->name,"_MTP"))
+    if (rp->ProbeType & PROBE_MTP) 
     {
-      printf("RAW: %s %lu\n", rp->name,rp->TimeLength);
+      //printf("RAW: %s %lu\n", rp->name,rp->TimeLength);
 
       if (_firstMTPvar) // only set MTPTime dimension once
       {
@@ -386,7 +386,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     // Add list of RCF files used in MTP calculations as an attribute to the 
     // relevant MTP variables.
-    if ((strstr(rp->name,"TPL")) && (strstr(rp->name,"_MTP")))
+    if ((strstr(rp->name,"TPL")) && (rp->ProbeType & PROBE_MTP))
     {
 	nc_put_att_text(_ncid, rp->varid, "RCFFiles", strlen(RCFfiles)+1, RCFfiles);
     }
@@ -484,9 +484,9 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       dims[2] = _vectorDimIDs[dp->Length];
     }
 
-    if (strstr(dp->name,"_MTP"))
+    if (dp->ProbeType & PROBE_MTP)
     {
-      printf("DERIVED: %s %lu\n", dp->name,dp->TimeLength);
+      //printf("DERIVED: %s %lu\n", dp->name,dp->TimeLength);
       dims[0]=MTPTimeDim;
       status = nc_def_var(_ncid, dp->name, NC_FLOAT, ndims, dims, &dp->varid);
       dims[0]=TimeDim;
@@ -506,7 +506,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     // Add list of RCF files used in MTP calculations as an attribute to the 
     // relevant MTP variables.
-    if ((strstr(dp->name,"RCFIDX") ) && (strstr(dp->name,"_MTP")))
+    if ((strstr(dp->name,"RCFIDX") ) && (dp->ProbeType & PROBE_MTP))
     {
 	nc_put_att_text(_ncid, dp->varid, "RCFFiles", strlen(RCFfiles)+1, RCFfiles);
     }
@@ -569,7 +569,7 @@ void NetCDF::WriteNetCDFfromMemory()
 
   // Write MTPTime Variable to output file
   count[0]=_MTPtimeLength;
-  printf("WriteNetCDFfromMemory: MTPTime %d\n",_MTPtimeLength);
+  //printf("WriteNetCDFfromMemory: MTPTime %d\n",_MTPtimeLength);
   status = nc_put_vara_int(_ncid, _MTPtimeVarID, start, count, &_MTPTimeSamples[0]);
   count[0] = _timeLength;
 
@@ -582,7 +582,7 @@ void NetCDF::WriteNetCDFfromMemory()
     count[1] = rp->OutputRate;
     count[2] = rp->Length;
 
-    if (strstr(rp->name,"_MTP"))
+    if (rp->ProbeType & PROBE_MTP) 
     {
       count[0]=rp->TimeLength;
       status = nc_put_vara_float(_ncid, rp->varid, start, count, &rp->OutputData[0]);
@@ -610,7 +610,7 @@ void NetCDF::WriteNetCDFfromMemory()
     count[1] = dp->OutputRate;
     count[2] = dp->Length;
 
-    if (strstr(dp->name,"_MTP"))
+    if (dp->ProbeType & PROBE_MTP) 
     {
       count[0]=dp->TimeLength;
       status = nc_put_vara_float(_ncid, dp->varid, start, count, &dp->OutputData[0]);
@@ -643,8 +643,6 @@ void NetCDF::WriteNetCDF()
   size_t nMissMTP; // count missing vals to determine missing rec
 
   static bool		firstWrite = true;
-
-  _firstMTPvar = 1; //initialize
 
   if (firstWrite)
   {
@@ -681,6 +679,41 @@ void NetCDF::WriteNetCDF()
 
   static TraceVariables tv;
 
+  int recMissMTP=0; // flag to indicate if this MTP record is missing
+
+  if (cfg.MTP()) // MTP probe present (LowRate), do some pre-processing
+  {
+
+    for (size_t i = 0; i < raw.size(); ++i)
+    {
+      RAWTBL *rp;
+      if ((rp = raw[i])->Output == false)
+        continue;
+
+      // If the MTP variable SCNT is entire missing, the assumption is that this
+      // is a record that falls between MTP scans, so we need to remove this 
+      // time from the MTP Time array.
+      if (!(strcmp(rp->name,"SCNT_MTP")))
+      {
+        nMissMTP=0;
+
+        size_t N = rp->Length * rp->OutputRate;
+	for (size_t j = 0; j < N; ++j)
+	{
+	  data = (float)AveragedData[rp->LRstart + j];
+	  // Identify entirely missing rec - these are between scan (1hz) recs.
+	  if (std::isnan(data)) nMissMTP++;
+        }
+        if (nMissMTP == N) { //Found an entirely missing MTP rec so remove
+	  _MTPTimeSamples.pop_back();
+          _MTPtimeLength-=1;
+          // Set a flag so we know to remove all other MTP data at this time.
+	  recMissMTP=1;
+        }
+      }
+    }
+  }
+
   for (size_t i = 0; i < raw.size(); ++i)
   {
     RAWTBL *rp;
@@ -691,34 +724,21 @@ void NetCDF::WriteNetCDF()
 
     if (rp->OutputRate == Config::LowRate)
     {
-      nMissMTP=0;
       if (tv.active())
       {
         tv.trace_variable("write netcdf lowrate", rp->name, stime,
                           &(AveragedData[rp->LRstart]), N);
       }
-      for (size_t j = 0; j < N; ++j) 
-      {
+      for (size_t j = 0; j < N; ++j) {
         data = (float)AveragedData[rp->LRstart + j];
         if (std::isnan(data)) data = (float)MISSING_VALUE;
         rp->OutputData.push_back(data); // save data to memory
-	// Identify entirely missing MTP recs - these are between scan (1hz) recs.
-        if (strstr(rp->name,"_MTP") && (data == (float)MISSING_VALUE)) nMissMTP++;
       }
-      if (nMissMTP == N) { //Found an entirely missing MTP rec so remove
+      if ((rp->ProbeType & PROBE_MTP) && recMissMTP) { 
+	//Found an entirely missing MTP rec so remove
 	rp->TimeLength -=1; // One less time for this variable.
 	for  (size_t j = 0; j < N; ++j) { // loop over data points in record
 	  rp->OutputData.pop_back(); // pop the data point off the stack
-	  // If an MTP rec is entire missing, the assumption is that this is a
-	  // record that falls between MTP scans, so we need to remove this time
-	  // from the MTP Time array. But we only want to shorten the time once for all
-	  // MTP vars at this time. Use the raw data SCNT var as the key.
-	  if ((_firstMTPvar) && (!(strcmp(rp->name,"SCNT_MTP"))))
-	  {
-	    _MTPTimeSamples.pop_back();
-            _firstMTPvar=0;
-            _MTPtimeLength-=1;
-          }
         }
       }
     }
@@ -756,15 +776,13 @@ void NetCDF::WriteNetCDF()
 
     if (dp->OutputRate == Config::LowRate)
     {
-      nMissMTP=0;
       for (size_t j = 0; j < N; ++j) {
         data = (float)AveragedData[dp->LRstart + j];
         if (std::isnan(data)) data = (float)MISSING_VALUE;
         dp->OutputData.push_back(data); // save data in memory
-	// Identify entirely missing MTP recs - these are between scan (1hz) recs.
-	if (strstr(dp->name,"_MTP") && (data == (float)MISSING_VALUE)) nMissMTP++;
       }
-      if (nMissMTP == N) { //Found an entirely missing MTP rec so remove it
+      if ((dp->ProbeType & PROBE_MTP) && recMissMTP) { 
+	//Found an entirely missing MTP rec so remove it
 	dp->TimeLength -=1;
 	for  (size_t j = 0; j < N; ++j) {
           dp->OutputData.pop_back();

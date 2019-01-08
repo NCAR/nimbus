@@ -583,11 +583,6 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     rp->SerialNumber = serialNumber;
     add_derived_names(name_sans_location);
 
-    if (!strcmp(rp->name,"SCNT_MTP"))
-    {
-      initMTP();
-    }
-
     if (rp->Units.compare("count") == 0)
     {
         printf("Treating %s as a counter\n", rp->name);
@@ -603,6 +598,9 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     location[0] = '\0';
 //    addSerialNumber(var, rp);
   }
+
+  if (cfg.MTP()) initMTP();
+
 
   if (cfg.ProjectName().compare("RAF_Lab") && (cfg.Aircraft() != Config::TADS) )
     {
@@ -1432,6 +1430,20 @@ static void initMTP()
   int		nbins = NUM_CHANNELS*NUM_SCAN_ANGLES; // Constant set in mtp.h
   int		nbinsl = NUM_RETR_LVLS; // Constant set in mtp.h
   int		indx;
+
+  cfg.SetMTP(true);
+
+  for (size_t i=0; i<raw.size(); i++) {
+      if (strstr(raw[i]->name,"_MTP")) {
+	  raw[i]->ProbeType = PROBE_MTP;
+      }
+  }
+
+  for (size_t i=0; i<derived.size(); i++) {
+      if (strstr(derived[i]->name,"_MTP")) {
+	  derived[i]->ProbeType = PROBE_MTP;
+      }
+  }
 
   //Set length for brightness temperature (3rd dimension)
   if ((indx = SearchTable(derived, "SCANBT_MTP")) == ERR)

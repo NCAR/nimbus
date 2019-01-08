@@ -57,6 +57,8 @@ public:
   bool CreateKMLFile() const		{ return _googleEarth; }
   bool CreateNavFile() const		{ return _iwgadts; }
 
+  bool MTP() const			{ return _MTP; }
+
   bool DespikeReporting() const		{ return _despikeReporting; }
   bool LagReporting() const		{ return _lagReporting; }
 
@@ -97,6 +99,8 @@ public:
 
   void SetCreateKMLFile(bool state)	{ _googleEarth = state; }
   void SetCreateNavFile(bool state)	{ _iwgadts = state; }
+
+  void SetMTP(bool state)		{ _MTP = state; }
 
   void SetAircraft(aircraft ac)		{ _aircraft = ac; }
   void SetAircraft(int ac)		{ _aircraft = (aircraft)ac; }
@@ -182,6 +186,8 @@ private:
 
   bool _despikeReporting;
   bool _lagReporting;
+
+  bool _MTP; // true if MTP present
 
   int _transmitRate;
 

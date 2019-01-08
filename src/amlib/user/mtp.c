@@ -347,14 +347,14 @@ void sretriever(DERTBL *varp)
 	if (std::isnan(trop1idx)) {
 	    trop1idx = floatNAN;
 	    trop2idx = floatNAN;
-	    altctrop2 = 99999;
+	    altctrop2 = floatNAN;
 	} else {
 	  // Above call will mondify startTropIndex to be index of level to start
 	  // looking for 2nd trop.
 	  trop2idx = findTropopause(&altctrop2,&tempctrop2,&startTropIndex);
 	  if (std::isnan(trop2idx)) {
 	      trop2idx = floatNAN;
-	      altctrop2 = 99999;
+	      altctrop2 = floatNAN;
 	  }
 	}
     }

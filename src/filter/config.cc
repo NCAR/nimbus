@@ -59,6 +59,8 @@ Config::Config() : _adsFileExtension(".ads")
   SetTwoDAreaRejectRatio(_defaultPMS2DAreaRatioReject);
 
   SetSorterLength(900);
+
+  SetMTP(true);
 }
 
 std::string

@@ -42,6 +42,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define PROBE_RDMA	0x00080000
 #define PROBE_CLMT	0x00100000
 #define PROBE_CDP	0x00200000
+#define PROBE_MTP	0x00400000
 
 
 /* Input module config files
