@@ -19,7 +19,8 @@ static int	gv_radome_ssn = 1;	// default to first radome.
 // Serial number for C130 radome.  #2 was installed in May of 2013.
 static int      c130_radome_ssn = 1;      // default to first radome.
 
-static std::vector<float> akrd_coeff;
+static std::vector<float> akrd_coeff;		// New C130.  Three-coeff.
+static std::vector<float> akrd_coeff_old;	// Old C130.  Currently Pre-WECAN?  Two-coeff
 static std::vector<float> low, mid, high;	// Altitude specific coef's.
 
 static double filter(double, double *);
@@ -67,14 +68,14 @@ void initAKRD(var_base *varp)
 
       if (c130_radome_ssn == 1)
       {
-        akrd_coeff.push_back(5.7763);
-        akrd_coeff.push_back(15.0308);
+        akrd_coeff_old.push_back(5.7763);
+        akrd_coeff_old.push_back(15.0308);
       }
       else
       {
-        //akrd_coeff.push_back(4.852);	// Coopers latest memo 11/26/2014
-        //akrd_coeff.push_back(13.23);
-	akrd_coeff.push_back(4.7532); // Cooper 15 Sept 2016 memo
+        akrd_coeff_old.push_back(4.852);	// Cooper's memo 11/26/2014
+        akrd_coeff_old.push_back(13.23);
+	akrd_coeff.push_back(4.7532);		// Cooper's memo 09/15/2016
 	akrd_coeff.push_back(9.7908);
 	akrd_coeff.push_back(6.0781);
       }
@@ -139,9 +140,6 @@ void sakrd(DERTBL *varp)
 
   adifr	= GetSample(varp, 0);	// ADIFR
   qc	= GetSample(varp, 1);	// QCF
-  psf   = GetSample(varp, 2);	// PSF
-
-  mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
 
   /* Blow-up protection:  output zero while on ground (QCX < 5.5 mbar)
    * installed by Ron Ruth  18 October 2001
@@ -152,8 +150,14 @@ void sakrd(DERTBL *varp)
     switch (cfg.Aircraft())
     {
       case Config::C130:
-        //akrd = akrd_coeff[0] + akrd_coeff[1] * ratio;
-        akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach); // 15 Sept 2016 memo
+        if (varp->nDependencies == 3)  // Post IDEAS-4
+        {
+          psf   = GetSample(varp, 2);	// PSF
+          mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
+          akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach); // 15 Sept 2016 memo
+        }
+        else
+          akrd = akrd_coeff_old[0] + akrd_coeff_old[1] * ratio;
         break;
 
       case Config::ELECTRA:
