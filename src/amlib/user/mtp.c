@@ -83,7 +83,7 @@ NR_TYPE tempctrop2; // Temparature of first tropopause
 static Retriever *Rtr;
 
 /* -------------------------------------------------------------------- */
-/* Read in flight levels from the defaults file.                            */
+/* Read in flight levels from the defaults file.                        */
 static void readLevels(const char name[],float var[numFlightLevels])
 {
 
@@ -266,6 +266,10 @@ void scal(DERTBL *varp)
   }
 
   // Calculate Brightness Temperatures
+  // Brightness temperature is the temperature a hypothetical black body in 
+  // thermal equilibrium with its surroundings would have to be to emit an 
+  // identical amount of radiation at the same wavelength. The MTP measures
+  // at the wavelength of oxygen atoms in the atmosphere.
   for (size_t i=0; i<NUM_CHANNELS;i++)
   {
       for (size_t j=0;j<NUM_SCAN_ANGLES;j++)

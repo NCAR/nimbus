@@ -36,6 +36,7 @@ logfile.c
 lrloop.c
 memalloc.cc
 minmax.cc
+mtp.c
 NetCDF.cc
 order.c
 phase_shift.c

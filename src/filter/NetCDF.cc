@@ -18,6 +18,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2018
 #include "gui.h"
 #include <raf/ctape.h>
 #include <netcdf.h>
+#include <mtp.h>
 #include <raf/vardb.hh>
 #include "svnInfo.h"
 extern char	RCFfiles[];
@@ -47,6 +48,10 @@ char	dateProcessed[64];	// For export to psql.cc
 
 void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetaData(int fd),
 	CheckAndAddAttrs(int fd, int varid, char name[]);
+
+// MTP functions
+char*	Len2Name(size_t length);
+void	initMTPTimeDim(int _ncid, size_t TimeLength, int dims[], int *MTPTimeDim, int *MTPtimeVarID);
 
 /* -------------------------------------------------------------------- */
 NetCDF::NetCDF() :
@@ -136,7 +141,6 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   nc_def_dim(_ncid, "Time", _timeLength, &TimeDim);
   nc_def_dim(_ncid, "sps1", 1, &_rateDimIDs[1]);
   int MTPTimeDim;
-  _firstMTPvar=1; //initialize
 
 
   /* Global Attributes.
@@ -331,7 +335,12 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       if (_vectorDimIDs.find(rp->Length) == _vectorDimIDs.end())
       {
         char tmp[32];
-        sprintf(tmp, "Vector%zu", rp->Length);
+        if (rp->ProbeType & PROBE_MTP) 
+        {
+	    strcpy(tmp,Len2Name(rp->Length));
+	} else {
+            sprintf(tmp, "Vector%zu", rp->Length);
+	}
         nc_def_dim(_ncid, tmp, rp->Length, &_vectorDimIDs[rp->Length]);
       }
 
@@ -339,31 +348,16 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       dims[2] = _vectorDimIDs[rp->Length];
     }
 
-    // If we are processing MTP data, need to add a special time dimension for 
-    // it since the data report once every 17 seconds rather than at 1hz.
+    static int _firstMTPvar = 1;
     if (rp->ProbeType & PROBE_MTP) 
     {
       //printf("RAW: %s %lu\n", rp->name,rp->TimeLength);
 
+      // If we are processing MTP data, need to add a special time dimension for 
+      // it since the data report once every 17 seconds rather than at 1hz.
       if (_firstMTPvar) // only set MTPTime dimension once
       {
-        status = nc_def_dim(_ncid,"MTPTime", rp->TimeLength, &MTPTimeDim);
-        if (status != NC_NOERR)
-        {
-          fprintf(stderr,"CreateNetCDF: error defining MTPTime dimension status = %d\n", status);
-          fprintf(stderr, "%s\n", nc_strerror(status));
-        }
-        dims[0]=MTPTimeDim;
-        status = nc_def_var(_ncid, "MTPTime", NC_LONG, 1, dims, &_MTPtimeVarID);
-        if (status != NC_NOERR)
-        {
-          fprintf(stderr,"CreateNetCDF: error, raw variable %s status = %d\n", rp->name,status);
-          fprintf(stderr, "%s\n", nc_strerror(status));
-        }
-        strcpy(buffer, "time of MTP measurement");
-        nc_put_att_text(_ncid, _MTPtimeVarID, "long_name", strlen(buffer)+1, buffer);
-        strcpy(buffer, "time");
-        nc_put_att_text(_ncid, _MTPtimeVarID, "standard_name", strlen(buffer)+1, buffer);
+	initMTPTimeDim(_ncid, rp->TimeLength, dims, &MTPTimeDim, &_MTPtimeVarID);
         writeTimeUnits(_MTPtimeVarID,-1);
 
         _firstMTPvar=0;
@@ -383,13 +377,6 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     }
 
     addCommonVariableAttributes(rp);
-
-    // Add list of RCF files used in MTP calculations as an attribute to the 
-    // relevant MTP variables.
-    if ((strstr(rp->name,"TPL")) && (rp->ProbeType & PROBE_MTP))
-    {
-	nc_put_att_text(_ncid, rp->varid, "RCFFiles", strlen(RCFfiles)+1, RCFfiles);
-    }
 
     nc_put_att_long(_ncid, rp->varid, "SampledRate", NC_LONG, 1, (long *)&rp->SampleRate);
 
@@ -426,6 +413,16 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       mod[0] = (float)rp->Modulo->value[0];
       mod[1] = (float)rp->Modulo->value[1];
       ncattput(_ncid, rp->varid, "modulus_range", NC_FLOAT, 2, mod);
+    }
+
+    // Add list of RCF files used in MTP calculations as an attribute to the 
+    // relevant MTP variables.
+    if (rp->ProbeType & PROBE_MTP)
+    {
+      if (strstr(rp->name,"TPL"))
+      {
+	nc_put_att_text(_ncid, rp->varid, "RCFFiles", strlen(RCFfiles)+1, RCFfiles);
+      }
     }
 
 
@@ -476,6 +473,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       if (_vectorDimIDs.find(dp->Length) == _vectorDimIDs.end())
         {
         char tmp[32];
+	// Should add same MTP renaming here for completeness - put in fn
         sprintf(tmp, "Vector%zu", dp->Length);
         nc_def_dim(_ncid, tmp, dp->Length, &_vectorDimIDs[dp->Length]);
         }
@@ -506,9 +504,12 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     // Add list of RCF files used in MTP calculations as an attribute to the 
     // relevant MTP variables.
-    if ((strstr(dp->name,"RCFIDX") ) && (dp->ProbeType & PROBE_MTP))
+    if (dp->ProbeType & PROBE_MTP)
     {
+      if (strstr(dp->name,"RCFIDX"))
+      {
 	nc_put_att_text(_ncid, dp->varid, "RCFFiles", strlen(RCFfiles)+1, RCFfiles);
+      }
     }
 
     nc_put_att_text(_ncid, dp->varid, "DataQuality", strlen(dp->DataQuality)+1,
@@ -567,11 +568,15 @@ void NetCDF::WriteNetCDFfromMemory()
   // Write Time variable to output file
   status = nc_put_vara_int(_ncid, _timeVarID, start, count, &_TimeSamples[0]);
 
-  // Write MTPTime Variable to output file
-  count[0]=_MTPtimeLength;
-  //printf("WriteNetCDFfromMemory: MTPTime %d\n",_MTPtimeLength);
-  status = nc_put_vara_int(_ncid, _MTPtimeVarID, start, count, &_MTPTimeSamples[0]);
-  count[0] = _timeLength;
+  static int _firstMTPvar = 1;
+  if (cfg.MTP() && _firstMTPvar == 1) // MTP probe present
+  {
+    // Write MTPTime Variable to output file
+    count[0]=_MTPtimeLength;
+    status = nc_put_vara_int(_ncid, _MTPtimeVarID, start, count, &_MTPTimeSamples[0]);
+    count[0] = _timeLength;
+    _firstMTPvar = 0;
+  }
 
   for (size_t i =0; i < raw.size(); ++i)
   {
@@ -640,7 +645,6 @@ void NetCDF::WriteNetCDFfromMemory()
 void NetCDF::WriteNetCDF()
 {
   float data;
-  size_t nMissMTP; // count missing vals to determine missing rec
 
   static bool		firstWrite = true;
 
@@ -672,17 +676,19 @@ void NetCDF::WriteNetCDF()
   int ut_seconds = UTSeconds(SampledData);
   _TimeSamples.push_back(ut_seconds); // save Time in memory
   _timeLength+=1;
-  _MTPTimeSamples.push_back(ut_seconds); // save MTPTime in memory
-  _MTPtimeLength+=1;
   if (cfg.isADS2())
     _TimeOffsets.push_back(_timeOffset); // save Time in memory
 
   static TraceVariables tv;
 
+  size_t nMissMTP; // count missing vals to determine missing rec
   int recMissMTP=0; // flag to indicate if this MTP record is missing
 
   if (cfg.MTP()) // MTP probe present (LowRate), do some pre-processing
   {
+
+    _MTPTimeSamples.push_back(ut_seconds); // save MTPTime in memory
+    _MTPtimeLength+=1;
 
     for (size_t i = 0; i < raw.size(); ++i)
     {

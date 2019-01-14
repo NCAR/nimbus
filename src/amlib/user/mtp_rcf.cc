@@ -175,6 +175,7 @@ RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(NR_TYPE PAltKm)
   //    observable associated with the flight level whose PAltKm is closest.
   //    Assumption is that the Flight Level Retrieval Coefficient Set vector
   //    is stored in increasing Palt (decreasing aircraft altitude).
+  //    Zr contains the most common aircraft flight levels
   //std::vector<int>::size_type sz = _FlRcSetVec.size();
   if (PAltKm >= _RCFHdr.Zr[0]) 
   {

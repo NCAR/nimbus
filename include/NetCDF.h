@@ -84,7 +84,7 @@ protected:
   /* MTP-specific variables */
   // vector to hold entire MTPTime variable in memory
   std::vector<int> _MTPTimeSamples;
-  int   _firstMTPvar, _MTPtimeVarID;
+  int   _MTPtimeVarID;
   int   _MTPtimeLength; // length of MTP time var
 
 struct missDat  /* (Time gap) / (missing data) information */

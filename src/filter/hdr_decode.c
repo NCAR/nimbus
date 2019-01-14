@@ -1427,8 +1427,10 @@ static void initOphir3(char vn[])
 /* -------------------------------------------------------------------- */
 static void initMTP()
 {
-  int		nbins = NUM_CHANNELS*NUM_SCAN_ANGLES; // Constant set in mtp.h
-  int		nbinsl = NUM_RETR_LVLS; // Constant set in mtp.h
+  int		nchan = NUM_CHANNELS;	// Constant set in mtp.h
+  int           ntarg = NUM_TARGETS;    // Constant set in mtp.h
+  int		nangl = NUM_SCAN_ANGLES;// Constant set in mtp.h
+  int		nbins = NUM_RETR_LVLS;  // Constant set in mtp.h
   int		indx;
 
   cfg.SetMTP(true);
@@ -1445,20 +1447,31 @@ static void initMTP()
       }
   }
 
-  //Set length for brightness temperature (3rd dimension)
+  //Set length for target counts
+  if ((indx = SearchTable(raw, "TCNT_MTP")) == ERR)
+    HandleFatalError("TCNT not defined for MTP, fatal, update project defaults.xml");
+  raw[indx]->Length = nchan*ntarg;  // 3rd dimension is channel number
+
+  //Set length for scan counts
+  if ((indx = SearchTable(raw, "SCNT_MTP")) == ERR)
+    HandleFatalError("SCNT not defined for MTP, fatal, update project defaults.xml");
+  raw[indx]->Length = nchan*nangl;  // 3rd dimension is channel number
+
+  //Set length for brightness temperature. Note: When converting from scan 
+  //counts to brightness temperature, matrix is inverted.
   if ((indx = SearchTable(derived, "SCANBT_MTP")) == ERR)
     HandleFatalError("SCANBT not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
-  derived[indx]->Length = nbins;
+  derived[indx]->Length = nangl*nchan;  // 3th dimension is scan angle
 
   // Set length for physical temperature profile (3rd dimension)
   if ((indx = SearchTable(derived, "TEMPC_MTP")) == ERR)
     HandleFatalError("TEMPC not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
-  derived[indx]->Length = nbinsl;
+  derived[indx]->Length = nbins;
 
   // Set length for altitude (3rd dimension)
   if ((indx = SearchTable(derived, "ALTC_MTP")) == ERR)
     HandleFatalError("ALTC not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
-  derived[indx]->Length = nbinsl;
+  derived[indx]->Length = nbins;
 }
 /* -------------------------------------------------------------------- */
 static void initMASP(char vn[])
