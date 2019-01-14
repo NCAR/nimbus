@@ -473,8 +473,12 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       if (_vectorDimIDs.find(dp->Length) == _vectorDimIDs.end())
         {
         char tmp[32];
-	// Should add same MTP renaming here for completeness - put in fn
-        sprintf(tmp, "Vector%zu", dp->Length);
+	if (dp->ProbeType & PROBE_MTP)
+	{
+	    strcpy(tmp,Len2Name(dp->Length)); // in case a dimlen only occurs in derived vars
+	} else {
+            sprintf(tmp, "Vector%zu", dp->Length);
+	}
         nc_def_dim(_ncid, tmp, dp->Length, &_vectorDimIDs[dp->Length]);
         }
 
