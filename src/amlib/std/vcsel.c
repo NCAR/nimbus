@@ -172,7 +172,7 @@ void sconcv(DERTBL *varp)
   // Original new processing and co-efficients only went back to DC3.
   // Now extending back to PREDICT.
 //  if (strcmp(flightDateString, "201204") > 0)   // DC3 (May/June 2012) and later.
-  if (strcmp(flightDateString, "201006") > 0)   // PREDICT (Jul 2010) and later.
+  if (strcmp(flightDateString, "201002") > 0)   // HIPPO-3 (March 2010) and later.
   {
     p_coeff = pCoeffs[1] * pow(PS_vxl, pCoeffs[2]) + pCoeffs[0];
     t_coeff = tCoeffs[1] * pow(AT_vxl, tCoeffs[2]) + tCoeffs[0];
