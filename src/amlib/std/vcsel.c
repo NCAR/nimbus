@@ -134,7 +134,7 @@ void sconcv(DERTBL *varp)
   if (FeedBack == LOW_RATE_FEEDBACK)
     mode = (int)GetSample(varp, 4);
 
-  if (varp->nDependencies > 5)
+  if (varp->ndep > 5)
   {
     pregain = (int)GetSample(varp, 5);
     if (pregain < 0) pregain = 0;
@@ -170,9 +170,9 @@ void sconcv(DERTBL *varp)
 
 
   // Original new processing and co-efficients only went back to DC3.
-  // Now extending back to HIPPO-2.
+  // Now extending back to PREDICT.
 //  if (strcmp(flightDateString, "201204") > 0)   // DC3 (May/June 2012) and later.
-  if (strcmp(flightDateString, "200908") > 0)   // HIPPO-2 (Sep 2009) and later.
+  if (strcmp(flightDateString, "201006") > 0)   // PREDICT (Jul 2010) and later.
   {
     p_coeff = pCoeffs[1] * pow(PS_vxl, pCoeffs[2]) + pCoeffs[0];
     t_coeff = tCoeffs[1] * pow(AT_vxl, tCoeffs[2]) + tCoeffs[0];
