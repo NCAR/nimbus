@@ -10,6 +10,7 @@ DESCRIPTION:	Header File declaring amlib functions.
 #define AMLIB_H
 
 #include <raf/header.h>
+#include <raf/portable.h>
 #include <netinet/in.h>
 
 #include <vector>
@@ -106,12 +107,6 @@ void AddToDefaults(const char varName[], const char attrName[],
 	const std::vector<float>& values);
 void AddToAttributes(const char varName[], const char attrName[],
 	const std::string & text);
-
-#if defined(__LITTLE_ENDIAN) || defined(_LITTLE_ENDIAN) || defined(LITTLE_ENDIAN)
-float	ntohf(float);
-#else
-#define ntohf(x)        (x)
-#endif
 
 void decodeADS2analog(RAWTBL *varp, void *input, NR_TYPE *output);
 
