@@ -307,13 +307,13 @@ void sretriever(DERTBL *varp)
                   // calculated in scal (above) for this scan. This vector should
 		  // be of length 30 - three points for each angle (one per 
 		  // channel)
-  NR_TYPE ggalt = GetSample(varp, 1);  //Aircraft altitude (MSL) meters
+  NR_TYPE palt = GetSample(varp, 1);  //Aircraft altitude (MSL) meters
 
   size_t nMissMTP; // count missing vals to determine missing rec
   int startTropIndex = 0; // index of level to begin looking for tropopause
 
   /* If GGALT is missing, return missing for altc and tempc */
-  if (std::isnan(ggalt))
+  if (std::isnan(palt))
   {
     std::fill(tempc, tempc+NUM_RETR_LVLS, floatNAN);
     std::fill(altc, altc+NUM_RETR_LVLS, floatNAN);
@@ -321,7 +321,7 @@ void sretriever(DERTBL *varp)
   else {
 
     AtmosphericTemperatureProfile ATP;
-    ATP = Rtr->Retrieve(scanbt, ggalt/1000.0); // convert m to km
+    ATP = Rtr->Retrieve(scanbt, palt/1000.0); // convert m to km
 
     nMissMTP=0; //Initialize
     for (size_t i=0; i<NUM_RETR_LVLS;i++)
