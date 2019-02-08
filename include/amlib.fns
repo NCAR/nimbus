@@ -1090,7 +1090,7 @@
 #
 # MTP
 	"SCANBT",	(void(*)(void*))mtpInit,	NULL,	scal,
-	"MTPTIME2",	NULL,		NULL,		smtptime,
+	"MTPTIME",	NULL,		NULL,		smtptime,
         "TEMPC",	NULL,		NULL,		sretriever,
         "ALTC",		NULL,		NULL,		sretrievealt,
         "RCFIDX",	NULL,		NULL,		sretrieveidx,
