@@ -15,15 +15,6 @@
 #
 	"CNFLOW",	NULL,           NULL,		scFlowDW,
 	"CNCONC",	NULL,           NULL,		sconcnDW,
-	"SCANBT",	(void(*)(void*))mtpInit,	NULL,	scal,
-        "TEMPC",	NULL,		NULL,		sretriever,
-        "ALTC",		NULL,		NULL,		sretrievealt,
-        "RCFIDX",	NULL,		NULL,		sretrieveidx,
-        "RCFALT1IDX",	NULL,		NULL,		sretrievealt1idx,
-        "RCFALT2IDX",	NULL,		NULL,		sretrievealt2idx,
-	"RCFMRIDX",	NULL,		NULL,		sretrievemridx,
-	"RCFTROP1",	NULL,		NULL,		sretrievetrop1,
-	"RCFTROP2",	NULL,		NULL,		sretrievetrop2,
 
 #
 # NOMADSS
@@ -1096,3 +1087,15 @@
 	"RDMATEMP",	NULL,		xlrdmatemp,	NULL,
 	"RDMAVD",	NULL,		xlrdmavd,	NULL,
 	"RDMAVSH",	NULL,		xlrdmavsh,	NULL,
+#
+# MTP
+	"SCANBT",	(void(*)(void*))mtpInit,	NULL,	scal,
+	"MTPTIME2",	NULL,		NULL,		smtptime,
+        "TEMPC",	NULL,		NULL,		sretriever,
+        "ALTC",		NULL,		NULL,		sretrievealt,
+        "RCFIDX",	NULL,		NULL,		sretrieveidx,
+        "RCFALT1IDX",	NULL,		NULL,		sretrievealt1idx,
+        "RCFALT2IDX",	NULL,		NULL,		sretrievealt2idx,
+	"RCFMRIDX",	NULL,		NULL,		sretrievemridx,
+	"RCFTROP1",	NULL,		NULL,		sretrievetrop1,
+	"RCFTROP2",	NULL,		NULL,		sretrievetrop2,
