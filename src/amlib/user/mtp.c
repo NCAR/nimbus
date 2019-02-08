@@ -286,6 +286,20 @@ void scal(DERTBL *varp)
 }      /* END scal */
 
 /* -------------------------------------------------------------------- */
+/* Convert the record collection time recorded by the MTP as hh, mm, ss 
+ * to seconds.
+ */
+void smtptime(DERTBL *varp)
+{
+  NR_TYPE shour = GetSample(varp, 0);   // Sample collection time: Hour
+  NR_TYPE smin = GetSample(varp, 1);    // Sample collection time: Min
+  NR_TYPE ssec = GetSample(varp, 2);    // Sample collection time: Sec
+
+  NR_TYPE mtptime = shour*3600 + smin*60 + ssec;
+
+  PutVector(varp, &mtptime);
+} /* END smtptime */
+/* -------------------------------------------------------------------- */
 /* Convert brightness temperatures to atmospheric temperature profiles 
  * by performing an inverse calculation of the radiative transfer model.
  * Requires as input Retrieval Coefficient Files (RCFs) written by the MTP 
@@ -307,7 +321,7 @@ void sretriever(DERTBL *varp)
                   // calculated in scal (above) for this scan. This vector should
 		  // be of length 30 - three points for each angle (one per 
 		  // channel)
-  NR_TYPE palt = GetSample(varp, 1);  //Aircraft altitude (MSL) meters
+  NR_TYPE palt = GetSample(varp, 1);    // Aircraft altitude (MSL) meters
 
   size_t nMissMTP; // count missing vals to determine missing rec
   int startTropIndex = 0; // index of level to begin looking for tropopause
