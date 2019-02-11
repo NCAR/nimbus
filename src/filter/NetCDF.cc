@@ -685,14 +685,32 @@ void NetCDF::WriteNetCDF()
 
   static TraceVariables tv;
 
+  // MTP-specific processing
   size_t nMissMTP; // count missing vals to determine missing rec
   int recMissMTP=0; // flag to indicate if this MTP record is missing
 
   if (cfg.MTP()) // MTP probe present (LowRate), do some pre-processing
   {
 
-    _MTPTimeSamples.push_back(ut_seconds); // save MTPTime in memory
-    _MTPtimeLength+=1;
+    //_MTPTimeSamples.push_back(ut_seconds); // save MTPTime in memory
+    //_MTPtimeLength+=1;
+
+    // If we decide time returned by MTP is better than ads record time,
+    // use derived var MTPTIME as time pushed to MTPTimeSamples.
+    for (size_t i = 0; i < derived.size(); ++i)
+    {
+      DERTBL *dp;
+      if ((dp = derived[i])->Output == false)
+        continue;
+
+      if (!(strcmp(dp->name,"MTPTIME_MTP")))
+      {
+          data = (float)AveragedData[dp->LRstart];
+          if (std::isnan(data)) data = (float)MISSING_VALUE;
+          _MTPTimeSamples.push_back(data); // save MTPTime in memory
+          _MTPtimeLength+=1;
+      }
+    }
 
     for (size_t i = 0; i < raw.size(); ++i)
     {
@@ -723,6 +741,7 @@ void NetCDF::WriteNetCDF()
       }
     }
   }
+  // END MTP-specific processing
 
   for (size_t i = 0; i < raw.size(); ++i)
   {
