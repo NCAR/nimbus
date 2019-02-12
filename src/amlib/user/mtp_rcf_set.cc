@@ -10,7 +10,7 @@
 
 using namespace std;
 
-RetrievalCoefficientFileSet::RetrievalCoefficientFileSet(const std::string Directory) 
+RetrievalCoefficientFileSet::RetrievalCoefficientFileSet(const std::string Directory, vector <string> filelist)
 {
 
   _RCFDir = Directory;
@@ -22,14 +22,30 @@ RetrievalCoefficientFileSet::RetrievalCoefficientFileSet(const std::string Direc
   for (boost::filesystem::directory_iterator itr(RCFPath); itr != end_itr; 
        ++itr)
   {
+    int found = 0;
     // Ignore directories and files that don't have .RCF extension
     if (boost::filesystem::is_regular_file(itr->path()) && 
         itr->path().extension() == ".RCF") {
       string rcf_path = itr->path().string();
       _RCFs.push_back(RetrievalCoefficientFile(rcf_path));
-      //cout << "Found RCF file:"<<rcf_path<<"  with ID:"
-      //     <<_RCFs[i].getId()<<"\n";
-      i++;
+
+      // Only include files that are in the requested filelist
+      // If filelist is empty, then get everything.
+      if (filelist.size() == 0) {
+	  cout << "Found RCF file:"<<rcf_path<<"  with ID:"
+	       <<_RCFs[i].getId()<<"\n";
+	  i++;
+      } else {
+        for (unsigned int j=0; j < filelist.size(); j++) {
+	  if (filelist[j] == _RCFs[i].getId()) {
+              cout << "Found RCF file:"<<rcf_path<<"  with ID:"
+                   <<_RCFs[i].getId()<<"\n";
+	      found = 1;
+	  }
+        }
+        if (found) {i++;}
+        else { _RCFs.pop_back(); }
+      }
     }
   }
 

@@ -49,7 +49,7 @@ public:
    * @param Directory std::string is directory name containing the RCF files to be 
    * pulled into the set.
    */
-  RetrievalCoefficientFileSet(const std::string);
+  RetrievalCoefficientFileSet(const std::string,std::vector<std::string>);
 
   /** 
    * Get functions

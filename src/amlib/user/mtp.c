@@ -7,6 +7,8 @@ FULL NAME:	MTP
 ENTRY POINTS:	scal()		Convert counts to brightness temperature
                 sretrieve()     Obtain the physical temperature profile from 
 		                a scan. 
+		smtptime()	Get the record time returned by the MTP,
+				converted to seconds.
 
 DESCRIPTION:	Derived calculations for the Microwave Temperature Profiler 
                 (MTP) instrument. The MTP build by JPL for NCAR as part of 
@@ -137,10 +139,48 @@ void mtpInit(var_base *varp)
     char name[256];
     char *raw_data_dir;
     int indx;
+    int RCFsuccess = 0; // Successfully found the required RCF files
+    std::vector<std::string> filelist;
 
     /* Get the dir where the RCF and CAL files are located */
     raw_data_dir = getenv("RAW_DATA_DIR");
     sprintf(RCFdir, RCFDIR.c_str(), raw_data_dir, cfg.ProjectNumber().c_str());
+
+    /* Populate filelist with values from ??Defaults file?? for this flight, if extant.
+     * If not, filelist will remain empty, and constructor will get every available
+     * RCF file.
+     */
+
+    /* Hardcode DEEPWAVE limited RCF files here, just for testing. Defaults files
+     * can't currently handle string input, and I am still noodling over the best
+     * way forward. */
+    if (cfg.FlightNumber() == "rf01") {
+      filelist.push_back("NRCDE067");
+      filelist.push_back("NRCDF067");
+      filelist.push_back("NRCDG067");
+      filelist.push_back("NRCDK067");
+      filelist.push_back("NRCDL067");
+      filelist.push_back("NRCDU067");
+      filelist.push_back("NRCDV067");
+      filelist.push_back("NRCFY067");
+      filelist.push_back("NRCGD067");
+      filelist.push_back("NRCGF067");
+      filelist.push_back("NRCGJ067");
+    }
+    if (cfg.FlightNumber() == "rf02") {
+      filelist.push_back("NRCDE067");
+      filelist.push_back("NRCDF067");
+      filelist.push_back("NRCDG067");
+      filelist.push_back("NRCDL067");
+      filelist.push_back("NRCDV067");
+      filelist.push_back("NRCDY067");
+      filelist.push_back("NRCFR067");
+      filelist.push_back("NRCGA067");
+      filelist.push_back("NRCGD067");
+      filelist.push_back("NRCGI067");
+      filelist.push_back("NRCGJ067");
+    }
+
     // FlightDate is MM/DD/YYYY, we need YYYYMMDD. This line doesn't work, but not yet
     // used. Right now cal values are in Defaults files. This line is in case later we
     // want to get them directly from the VB-generated CAL files.
@@ -164,8 +204,12 @@ void mtpInit(var_base *varp)
 
 
       /* Put together a functioning retrieval_coefficient_fileset */
-      RetrievalCoefficientFileSet RCF_Set(RCFdir);
+      RetrievalCoefficientFileSet RCF_Set(RCFdir,filelist);
       std::vector<RetrievalCoefficientFile> _RCFs =  RCF_Set.getRCFVector();
+
+     if (_RCFs.size() == filelist.size()) {
+       RCFsuccess = 1;
+
       // Save string of RCF filenames here. This string is added as an attribute
       // to MTP vars in NetCDF.cc
       for (size_t j = 0; j < _RCFs.size(); ++j)
@@ -176,8 +220,14 @@ void mtpInit(var_base *varp)
 
       RCF_Set.setFlightLevelsKm(FLIGHTLEVELSKM, numFlightLevels);
       Rtr = new Retriever(RCF_Set);
-    } else {
-      sprintf(buffer,"MTP RCF dir %s does not exist - turning off MTP processing\n", RCFdir);
+     }
+    }
+
+    /* Didn't find required RCF files, so turn off MTP processing. */
+    if (not RCFsuccess) {
+      sprintf(buffer,"MTP RCF dir %s does not exist ", RCFdir);
+      sprintf(buffer+strlen(buffer),"or could not find all requested RCF files");
+      sprintf(buffer+strlen(buffer)," - turning off MTP processing\n");
       LogMessage(buffer);
       varp->Output = false;
       ((DERTBL*)varp)->compute = 0;
@@ -326,7 +376,7 @@ void sretriever(DERTBL *varp)
   size_t nMissMTP; // count missing vals to determine missing rec
   int startTropIndex = 0; // index of level to begin looking for tropopause
 
-  /* If GGALT is missing, return missing for altc and tempc */
+  /* If PALT is missing, return missing for altc and tempc */
   if (std::isnan(palt))
   {
     std::fill(tempc, tempc+NUM_RETR_LVLS, floatNAN);
