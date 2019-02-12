@@ -376,8 +376,8 @@ void sretriever(DERTBL *varp)
   size_t nMissMTP; // count missing vals to determine missing rec
   int startTropIndex = 0; // index of level to begin looking for tropopause
 
-  /* If PALT is missing, return missing for altc and tempc */
-  if (std::isnan(palt))
+  /* If PALT is missing or negative, return missing for altc and tempc */
+  if (std::isnan(palt) || palt < 0)
   {
     std::fill(tempc, tempc+NUM_RETR_LVLS, floatNAN);
     std::fill(altc, altc+NUM_RETR_LVLS, floatNAN);
