@@ -18,17 +18,17 @@ RetrievalCoefficientFileSet::RetrievalCoefficientFileSet(const std::string Direc
 
   boost::filesystem::directory_iterator end_itr;
 
+  int i = 0;
   for (boost::filesystem::directory_iterator itr(RCFPath); itr != end_itr; 
        ++itr)
   {
     // Ignore directories and files that don't have .RCF extension
-    int i = 0;
     if (boost::filesystem::is_regular_file(itr->path()) && 
         itr->path().extension() == ".RCF") {
       string rcf_path = itr->path().string();
       _RCFs.push_back(RetrievalCoefficientFile(rcf_path));
       //cout << "Found RCF file:"<<rcf_path<<"  with ID:"
-       //    <<_RCFs[i].getId()<<"\n";
+      //     <<_RCFs[i].getId()<<"\n";
       i++;
     }
   }
