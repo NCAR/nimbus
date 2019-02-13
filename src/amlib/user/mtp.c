@@ -264,8 +264,9 @@ void scal(DERTBL *varp)
 		  // length 30 - three points for each angle (one per channel)
   NR_TYPE *tcnt = GetVector(varp, 1); // The vector of counts produced by the
                   // MTP target. This vector should be of length 6 - three per
-		  // channel for the noise diode turned on and three for it 
-		  // turned off.
+		  // channel for the noise diode turned on (stored as the
+		  // first three values) and three for it turned off (the next
+		  // 3).
   NR_TYPE saat = GetSample(varp, 2);  //Scan Avg Ambient Air Temp (OAT)
   NR_TYPE tr350cntp=GetSample(varp,3);//Platinum Multiplxr R350 Counts
   NR_TYPE tmixcntp=GetSample(varp,4); //Platinum Multiplxr Mixer Temperature Cnts
@@ -289,12 +290,10 @@ void scal(DERTBL *varp)
 
   /* Create a Gnd vector */
   int TargIndx = 0;     // Index into tcnt for the target w/ ND on
-  int TargNDIndx = 0;   // Index into tcnt for the target w/ ND off
+  int TargNDIndx = 3;   // Index into tcnt for the target w/ ND off
   for (size_t i=0; i<NUM_CHANNELS; i++)
   {
-      Gnd[i] = (tcnt[TargIndx]-tcnt[TargNDIndx])/CND0[i];
-      TargIndx = TargIndx+1;
-      TargNDIndx = TargNDIndx+1;
+      Gnd[i] = (tcnt[TargIndx+i]-tcnt[TargNDIndx+i])/CND0[i];
   }
 
   // Counts for TMix
