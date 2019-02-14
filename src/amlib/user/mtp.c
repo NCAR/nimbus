@@ -61,6 +61,8 @@ static int _LocHor = 5;
 static const int nCoeffs = 3;
 static float CND0[nCoeffs] = {1.0,1.0,1.0}, GOF[nCoeffs] = {1.0,1.0,1.0}, 
              GEC1[nCoeffs] = {1.0,1.0,1.0}, GEC2[nCoeffs] = {1.0,1.0,1.0};
+// For storing the rolling gain value - one value per channel
+static float _Gain[NUM_CHANNELS] = {0.0,0.0,0.0};
 
 char RCFfiles[8192]; // comma-separated list of RCF file names found in RCFdir
 char RCFdir[256];
@@ -251,8 +253,6 @@ void mtpInit(var_base *varp)
 void scal(DERTBL *varp)
 {  
   float Gnd[NUM_CHANNELS];
-  // For storing the rolling gain value - one value per channel
-  float _Gain[NUM_CHANNELS];
   NR_TYPE scanbt[NUM_CHANNELS*NUM_SCAN_ANGLES];
   NR_TYPE scnt_inv[NUM_CHANNELS*NUM_SCAN_ANGLES];
 
@@ -272,8 +272,18 @@ void scal(DERTBL *varp)
   NR_TYPE tmixcntp=GetSample(varp,4); //Platinum Multiplxr Mixer Temperature Cnts
   NR_TYPE tr600cntp=GetSample(varp,5);//Platinum Multiplxr R600 Counts
 
-  // Create a gain vector with all elements set to zero.
-  for (size_t i=0; i<NUM_CHANNELS; i++) _Gain[i]=0.0;
+  // We only receive a good record abougt once every 17 seconds. For the
+  // in-between records, scnt and tcnt will be nan. Check for this here so we
+  // only process when have a good scan.
+  int bad_scan=0; // if we find a nan in the target scan, it's not good data
+  for (size_t i=0; i<NUM_CHANNELS; i++)
+  {
+    if (std::isnan(tcnt[i])) {bad_scan = 1;}
+  }
+  if (bad_scan) {
+    PutVector(varp, &scanbt);
+    return;
+  }
 
   /* The scan counts are stored in the ads file as cnts[angle,channel], i.e.
    * {a1c1,a1c2,a1c3,a2c1,...}. Processing requires, and the final data are 
@@ -290,7 +300,7 @@ void scal(DERTBL *varp)
 
   /* Create a Gnd vector */
   int TargIndx = 0;     // Index into tcnt for the target w/ ND on
-  int TargNDIndx = 3;   // Index into tcnt for the target w/ ND off
+  int TargNDIndx = NUM_CHANNELS;   // Index into tcnt for the target w/ ND off
   for (size_t i=0; i<NUM_CHANNELS; i++)
   {
       Gnd[i] = (tcnt[TargIndx+i]-tcnt[TargNDIndx+i])/CND0[i];
