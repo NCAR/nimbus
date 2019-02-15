@@ -239,6 +239,36 @@ void mtpInit(var_base *varp)
         derived[indx]->Output = false;
         ((DERTBL*)derived[indx])->compute = 0;
       }
+      // TEMPC is used to calculate ALTC, RCFIDX, RCFALT1IDX, RCFALT2IDX,
+      // RCFMRIDX, RCFTROP1, and RCFTROP2, so turn all those off too (Whew!)
+      if ((indx = SearchTable(derived, "ALTC_MTP")) != ERR) {
+        derived[indx]->Output = false;
+        ((DERTBL*)derived[indx])->compute = 0;
+      }
+      if ((indx = SearchTable(derived, "RCFIDX_MTP")) != ERR) {
+        derived[indx]->Output = false;
+        ((DERTBL*)derived[indx])->compute = 0;
+      }
+      if ((indx = SearchTable(derived, "RCFALT1IDX_MTP")) != ERR) {
+        derived[indx]->Output = false;
+        ((DERTBL*)derived[indx])->compute = 0;
+      }
+      if ((indx = SearchTable(derived, "RCFALT2IDX_MTP")) != ERR) {
+        derived[indx]->Output = false;
+        ((DERTBL*)derived[indx])->compute = 0;
+      }
+      if ((indx = SearchTable(derived, "RCFMRIDX_MTP")) != ERR) {
+        derived[indx]->Output = false;
+        ((DERTBL*)derived[indx])->compute = 0;
+      }
+      if ((indx = SearchTable(derived, "RCFTROP1_MTP")) != ERR) {
+        derived[indx]->Output = false;
+        ((DERTBL*)derived[indx])->compute = 0;
+      }
+      if ((indx = SearchTable(derived, "RCFTROP2_MTP")) != ERR) {
+        derived[indx]->Output = false;
+        ((DERTBL*)derived[indx])->compute = 0;
+      }
       return;
 
     }
