@@ -86,6 +86,8 @@ NR_TYPE tempctrop2; // Temparature of first tropopause
 
 static Retriever *Rtr;
 
+static NR_TYPE last_record_time = -1; // time of previous MTP scan
+
 /* -------------------------------------------------------------------- */
 /* Read in flight levels from the defaults file.                        */
 static void readLevels(const char name[],float var[numFlightLevels])
@@ -176,7 +178,7 @@ void mtpInit(var_base *varp)
       filelist.push_back("NRCDL067");
       filelist.push_back("NRCDV067");
       filelist.push_back("NRCDY067");
-      filelist.push_back("NRCFR067");
+      filelist.push_back("NRCFR057");
       filelist.push_back("NRCGA067");
       filelist.push_back("NRCGD067");
       filelist.push_back("NRCGI067");
@@ -209,7 +211,7 @@ void mtpInit(var_base *varp)
       RetrievalCoefficientFileSet RCF_Set(RCFdir,filelist);
       std::vector<RetrievalCoefficientFile> _RCFs =  RCF_Set.getRCFVector();
 
-     if (_RCFs.size() == filelist.size()) {
+     if (_RCFs.size() == filelist.size() || filelist.size() == 0) {
        RCFsuccess = 1;
 
       // Save string of RCF filenames here. This string is added as an attribute
@@ -234,6 +236,11 @@ void mtpInit(var_base *varp)
       varp->Output = false;
       ((DERTBL*)varp)->compute = 0;
 
+      // Turn off calculation of MTPTIME
+      if ((indx = SearchTable(derived, "MTPTIME_MTP")) != ERR) {
+        derived[indx]->Output = false;
+        ((DERTBL*)derived[indx])->compute = 0;
+      }
       // SCANBT is used to calculate TEMPC, so turn that off as well.
       if ((indx = SearchTable(derived, "TEMPC_MTP")) != ERR) {
         derived[indx]->Output = false;
@@ -297,7 +304,7 @@ void scal(DERTBL *varp)
 		  // channel for the noise diode turned on (stored as the
 		  // first three values) and three for it turned off (the next
 		  // 3).
-  NR_TYPE saat = GetSample(varp, 2);  //Scan Avg Ambient Air Temp (OAT)
+  NR_TYPE atx = GetSample(varp, 2);  //Ambient Air Temperature, Reference
   NR_TYPE tr350cntp=GetSample(varp,3);//Platinum Multiplxr R350 Counts
   NR_TYPE tmixcntp=GetSample(varp,4); //Platinum Multiplxr Mixer Temperature Cnts
   NR_TYPE tr600cntp=GetSample(varp,5);//Platinum Multiplxr R600 Counts
@@ -314,6 +321,9 @@ void scal(DERTBL *varp)
     PutVector(varp, &scanbt);
     return;
   }
+
+  // Convert atx to Kelvin
+  atx = atx+273.15;
 
   /* The scan counts are stored in the ads file as cnts[angle,channel], i.e.
    * {a1c1,a1c2,a1c3,a2c1,...}. Processing requires, and the final data are 
@@ -363,7 +373,7 @@ void scal(DERTBL *varp)
   {
       for (size_t j=0;j<NUM_SCAN_ANGLES;j++)
       {
-         scanbt[i*10+j]=saat+(scnt_inv[i*10+j]-scnt_inv[i*10+_LocHor])/_Gain[i];
+         scanbt[i*10+j]=atx+(scnt_inv[i*10+j]-scnt_inv[i*10+_LocHor])/_Gain[i];
       }
   }
 
@@ -380,11 +390,18 @@ void scal(DERTBL *varp)
  */
 void smtptime(DERTBL *varp)
 {
+  sprintf(buffer,"Last MTP record time: %f\n",last_record_time);
+  LogMessage(buffer);
+
   NR_TYPE shour = GetSample(varp, 0);   // Sample collection time: Hour
   NR_TYPE smin = GetSample(varp, 1);    // Sample collection time: Min
   NR_TYPE ssec = GetSample(varp, 2);    // Sample collection time: Sec
 
   NR_TYPE mtptime = shour*3600 + smin*60 + ssec;
+  // Handle midnight rollover
+  if (last_record_time > mtptime) {mtptime = mtptime+86400;} 
+
+  last_record_time = mtptime;
 
   PutVector(varp, &mtptime);
 } /* END smtptime */
