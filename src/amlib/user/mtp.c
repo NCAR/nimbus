@@ -390,18 +390,19 @@ void scal(DERTBL *varp)
  */
 void smtptime(DERTBL *varp)
 {
-  sprintf(buffer,"Last MTP record time: %f\n",last_record_time);
-  LogMessage(buffer);
-
   NR_TYPE shour = GetSample(varp, 0);   // Sample collection time: Hour
   NR_TYPE smin = GetSample(varp, 1);    // Sample collection time: Min
   NR_TYPE ssec = GetSample(varp, 2);    // Sample collection time: Sec
 
   NR_TYPE mtptime = shour*3600 + smin*60 + ssec;
-  // Handle midnight rollover
-  if (last_record_time > mtptime) {mtptime = mtptime+86400;} 
 
-  last_record_time = mtptime;
+  if (!(std::isnan(mtptime))) { 
+
+    // Handle midnight rollover
+    if (last_record_time > mtptime) {mtptime = mtptime+86400;} 
+
+    last_record_time = mtptime;
+  }
 
   PutVector(varp, &mtptime);
 } /* END smtptime */
