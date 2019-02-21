@@ -692,11 +692,11 @@ void NetCDF::WriteNetCDF()
   if (cfg.MTP()) // MTP probe present (LowRate), do some pre-processing
   {
 
+
+    // Time embedded in MTP record (MTPTIME derived from component times)
+    // is better than nimbus record timestamp, so use it as MTPTime.
     //_MTPTimeSamples.push_back(ut_seconds); // save MTPTime in memory
     //_MTPtimeLength+=1;
-
-    // If we decide time returned by MTP is better than ads record time,
-    // use derived var MTPTIME as time pushed to MTPTimeSamples.
     for (size_t i = 0; i < derived.size(); ++i)
     {
       DERTBL *dp;
