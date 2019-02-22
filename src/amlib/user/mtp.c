@@ -87,6 +87,11 @@ NR_TYPE tempctrop2; // Temparature of first tropopause
 static Retriever *Rtr;
 
 static NR_TYPE last_record_time = -1; // time of previous MTP scan
+size_t nMissMTP; // count missing vals to determine missing rec
+
+// Scan average values
+static float mtp_sapalt_sum = 0.0;
+static float mtp_sapalt_count = 0.0;
 
 /* -------------------------------------------------------------------- */
 /* Read in flight levels from the defaults file.                        */
@@ -144,6 +149,7 @@ void mtpInit(var_base *varp)
     char *raw_data_dir;
     int indx;
     int RCFsuccess = 0; // Successfully found the required RCF files
+
     std::vector<std::string> filelist;
 
     /* Get the dir where the RCF and CAL files are located */
@@ -428,20 +434,20 @@ void sretriever(DERTBL *varp)
                   // calculated in scal (above) for this scan. This vector should
 		  // be of length 30 - three points for each angle (one per 
 		  // channel)
-  NR_TYPE palt = GetSample(varp, 1);    // Aircraft altitude (MSL) meters
+  NR_TYPE palt = GetSample(varp, 1);    // Aircraft pressure altitude (MSL) meters
 
-  size_t nMissMTP; // count missing vals to determine missing rec
   int startTropIndex = 0; // index of level to begin looking for tropopause
+  AtmosphericTemperatureProfile ATP;
 
   /* If PALT is missing or negative, return missing for altc and tempc */
   if (std::isnan(palt) || palt < 0)
   {
     std::fill(tempc, tempc+NUM_RETR_LVLS, floatNAN);
     std::fill(altc, altc+NUM_RETR_LVLS, floatNAN);
+    nMissMTP = NUM_RETR_LVLS;
   }
   else {
 
-    AtmosphericTemperatureProfile ATP;
     ATP = Rtr->Retrieve(scanbt, palt/1000.0); // convert m to km
 
     nMissMTP=0; //Initialize
@@ -451,8 +457,9 @@ void sretriever(DERTBL *varp)
       altc[i]=ATP.Altitudes[i];
       if (std::isnan(tempc[i])) nMissMTP++;
     }
+  }
 
-    if (nMissMTP == NUM_RETR_LVLS) {
+  if (nMissMTP == NUM_RETR_LVLS) {
 	rcfidx = floatNAN;
 	rcfalt1idx = floatNAN;
 	rcfalt2idx = floatNAN;
@@ -463,7 +470,8 @@ void sretriever(DERTBL *varp)
 	altctrop2 = floatNAN;
 	tempctrop1 = floatNAN;
 	tempctrop2 = floatNAN;
-    } else {
+  } else {
+	// Found an MTP scan
         rcfidx = ATP.RCFIndex;
 	rcfalt1idx = ATP.RCFALT1Index;
 	rcfalt2idx = ATP.RCFALT2Index;
@@ -482,14 +490,38 @@ void sretriever(DERTBL *varp)
 	      altctrop2 = floatNAN;
 	  }
 	}
-    }
-
   }
+
 
   PutVector(varp, &tempc);
 
 }      /* End sretriever */
 
+/* -------------------------------------------------------------------- */
+void sscanavg(DERTBL *varp)
+{
+  NR_TYPE palt = GetSample(varp, 0);    // Aircraft pressure altitude (MSL) meters
+
+  NR_TYPE sapalt; // Scan average for aircraft pressure altitude (MSL) kilometers
+
+  if (not (std::isnan(palt))) {
+    palt = palt/1000.0; // convert m to km
+
+    mtp_sapalt_sum+=palt;
+    mtp_sapalt_count++;
+  }
+
+  // Calculate scan averaged values
+  if (nMissMTP == NUM_RETR_LVLS) {
+	sapalt = floatNAN;
+  } else {
+      sapalt = mtp_sapalt_sum/mtp_sapalt_count;
+      mtp_sapalt_sum=0;
+      mtp_sapalt_count=0;
+  }
+
+  PutSample(varp,sapalt);
+}
 /* -------------------------------------------------------------------- */
 void sretrievealt(DERTBL *varp)
 {
@@ -532,5 +564,6 @@ void sretrievetrop2(DERTBL *varp)
   PutSample(varp, altctrop2);
 
 }	/* End sretrievetrop2 */
+/* -------------------------------------------------------------------- */
 
 /* END MTP.C */
