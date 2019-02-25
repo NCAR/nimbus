@@ -23,6 +23,8 @@ static std::vector<float> akrd_coeff;		// New C130.  Three-coeff.
 static std::vector<float> akrd_coeff_old;	// Old C130.  Currently Pre-WECAN?  Two-coeff
 static std::vector<float> low, mid, high;	// Altitude specific coef's.
 
+// Coeff for aky filtering.
+static double c1 = 1.0, d0 = 1.0, d1 = 1.0, d2 = 1.0;
 static double filter(double, double *);
 static double zf[nFeedBackTypes][4][6];
 
@@ -63,6 +65,7 @@ void initAKRD(var_base *varp)
   switch (cfg.Aircraft())
   {
     case Config::C130:
+      c1 = 10.3512, d0 = 5.1531, d1 = 13.1655, d2 = 0.000252;
       if ( (tmp = GetDefaultsValue("C130_RADOME_SSN", varp->name)) )
         c130_radome_ssn = (int)tmp[0];
 
@@ -97,6 +100,7 @@ void initAKRD(var_base *varp)
       break;
 
     case Config::HIAPER:
+      c1 = 21.481; d0 = 4.51107; d1 = 19.84095; d2 = -0.0018806;
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
         gv_radome_ssn = (int)tmp[0];
 
@@ -206,8 +210,6 @@ void saky(DERTBL *varp)
 
   adif	= GetSample(varp, 0);
   qc	= GetSample(varp, 1);
-
-  static const double c1 = 21.481, d0 = 4.51107, d1 = 19.84095, d2 = -0.0018806;
 
   if (std::isnan(adif) || std::isnan(qc))
   {

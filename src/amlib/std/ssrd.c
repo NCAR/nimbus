@@ -52,7 +52,7 @@ void initSSRD(var_base *varp)
         {
           //coeff.push_back(1.545);	// Coopers memo 11/26/2014
           //coeff.push_back(12.852);
-          coeff.push_back(1.5478);	// Coopers 15 Sept 2016 memo
+          coeff.push_back(1.5478);	// Coopers memo 09/15/2016
           coeff.push_back(12.3612);
         }
       }
