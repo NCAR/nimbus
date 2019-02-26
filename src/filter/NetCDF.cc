@@ -506,10 +506,11 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     addCommonVariableAttributes(dp);
 
-    // Add list of RCF files used in MTP calculations as an attribute to the 
-    // relevant MTP variables.
+    // MTP-specific atts and initialization
     if (dp->ProbeType & PROBE_MTP)
     {
+      // Add list of RCF files used in MTP calculations as an attribute to the
+      // relevant MTP variables.
       if (strstr(dp->name,"RCFIDX"))
       {
 	nc_put_att_text(_ncid, dp->varid, "RCFFiles", strlen(RCFfiles)+1, RCFfiles);
