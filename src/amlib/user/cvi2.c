@@ -105,8 +105,8 @@ void cvi2Init(var_base *varp)
 /* -------------------------------------------------------------------- */
 void sconcud(DERTBL *varp)
 {
-  static int	counter = 0;
-  static int	prevInlet = 0;
+  static int	counter[nFeedBackTypes] = { 0, 0 };
+  static int	prevInlet[nFeedBackTypes] = { 0, 0 };
 
   NR_TYPE cnts = GetSample(varp, 0);
   NR_TYPE cvcfact = GetSample(varp, 1);
@@ -118,13 +118,17 @@ void sconcud(DERTBL *varp)
     concud = cnts / (flow * cvcfact);
 
   // If we have come out of cloud.  Output nan for 20 seconds.
-  if (prevInlet != 0 && cvinlet == 0)
-    counter = 20;
+  if (prevInlet[FeedBack] != 0 && cvinlet == 0)
+  {
+    counter[FeedBack] = 20;
+    if (FeedBack == HIGH_RATE_FEEDBACK)
+      counter[FeedBack] *= Config::HighRate;
+  }
 
   // Avoid take-off & landing, and when CVINLET is 1 (no counterflow).
-  if (cvinlet > 0 || counter > 0)
+  if (cvinlet > 0 || counter[FeedBack] > 0)
   {
-    --counter;
+    --counter[FeedBack];
     concud = floatNAN;
   }
 
@@ -141,7 +145,7 @@ void sconcud(DERTBL *varp)
 
   PutSample(varp, concud);
 
-  prevInlet = cvinlet;
+  prevInlet[FeedBack] = cvinlet;
 }
 
 /* -------------------------------------------------------------------- */
@@ -191,8 +195,8 @@ void scvcfacttdl(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void scvcwcc(DERTBL *varp)
 {
-  static int	counter = 0;
-  static int	prevInlet = 0;
+  static int	counter[nFeedBackTypes] = { 0, 0 };
+  static int	prevInlet[nFeedBackTypes] = { 0, 0 };
   NR_TYPE	cvcwcc;
   NR_TYPE	cvrho, cvcfact, tasx;
   int		cvinlet;
@@ -201,13 +205,17 @@ void scvcwcc(DERTBL *varp)
   tasx		= GetSample(varp, 3);
 
   // If we have come out of cloud.  Output nan for 20 seconds.
-  if (prevInlet != 0 && cvinlet == 0)
-    counter = 20;
+  if (prevInlet[FeedBack] != 0 && cvinlet == 0)
+  {
+    counter[FeedBack] = 20;
+    if (FeedBack == HIGH_RATE_FEEDBACK)
+      counter[FeedBack] *= Config::HighRate;
+  }
 
   // Avoid take-off & landing, and when CVINLET is 1 (no counterflow).
-  if (tasx < TAS_MIN || cvinlet > 0 || counter > 0)
+  if (tasx < TAS_MIN || cvinlet > 0 || counter[FeedBack] > 0)
   {
-    --counter;
+    --counter[FeedBack];
     cvcwcc	= floatNAN;
   }
   else
@@ -218,7 +226,7 @@ void scvcwcc(DERTBL *varp)
   }
 
   PutSample(varp, cvcwcc);
-  prevInlet = cvinlet;
+  prevInlet[FeedBack] = cvinlet;
 }
 
 /* -------------------------------------------------------------------- */
@@ -252,7 +260,7 @@ void scvcfactc(DERTBL *varp)
   NR_TYPE cvinlet = GetSample(varp, 1);
   NR_TYPE cvcwc = GetSample(varp, 2);
   NR_TYPE atx	= GetSample(varp, 3);
-  static size_t elapsed_time = 0;
+  static size_t elapsed_time[nFeedBackTypes] = { 0, 0 };
 
   // if icing conditions...
   if (cvinlet == 0 && cvcwc > 0.006 && atx < -7.0 && atx > -20.0)
@@ -263,13 +271,13 @@ void scvcfactc(DERTBL *varp)
       cviflag = 0;
     }
 
-    cvcfactc *= (CVCFACT_COEF[0] - CVCFACT_COEF[1] * elapsed_time++);
+    cvcfactc *= (CVCFACT_COEF[0] - CVCFACT_COEF[1] * elapsed_time[FeedBack]++);
   }
   else
     cviflag = 1;
 
   if (cvcwc < 0.003)
-    elapsed_time = 1;
+    elapsed_time[FeedBack] = 1;
 
   if (cvcfactc < 3.0)
     cvcfactc = 3.0;
