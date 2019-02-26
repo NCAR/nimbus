@@ -55,7 +55,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 #include <raf/vardb.hh>
 #include "NetCDF.h"
 #include "psql.h"
-#include "svnInfo.h"
+#include "gitInfo.h"
 #include "sync_reader.hh"
 
 static char	ADSfileName[MAXPATHLEN];
@@ -191,7 +191,7 @@ static void readHeader()
   XtSetSensitive(outputFileText, false);
 
   XmUpdateDisplay(Shell001);
-  LogMessage(std::string("Revision: ") + SVNREVISION);
+  LogMessage(std::string("Repo branch: ") + REPO_BRANCH);
 
   int rc = ERR;
 

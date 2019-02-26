@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2018
 #include <raf/ctape.h>
 #include <netcdf.h>
 #include <raf/vardb.hh>
-#include "svnInfo.h"
+#include "gitInfo.h"
 
 #include "trace_variables.h"
 
@@ -28,6 +28,7 @@ const std::string NetCDF::Address = "P.O. Box 3000, Boulder, CO 80307-3000";
 const std::string NetCDF::Phone = "(303) 497-1030";
 const std::string NetCDF::URL = "http://www.eol.ucar.edu";
 const std::string NetCDF::EMail = "codiac at ucar.edu";
+const std::string NetCDF::ProcessorURL = "https://github.com/NCAR/nimbus";
 const std::string NetCDF::Conventions = "NCAR-RAF/nimbus";
 const std::string NetCDF::ConventionsURL = "http://www.eol.ucar.edu/raf/Software/netCDF.html";
 const std::string NetCDF::NETCDF_FORMAT_VERSION = "1.3";
@@ -140,20 +141,17 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("Phone", Phone);
   putGlobalAttribute("creator_url", URL);
   putGlobalAttribute("creator_email", EMail);
+  putGlobalAttribute("RepositoryURL", ProcessorURL);
+  putGlobalAttribute("RepositoryBranch", REPO_BRANCH);
+  putGlobalAttribute("RepositoryDate", REPO_DATE);
+  putGlobalAttribute("RepositoryHASH", REPO_HASH);
+  putGlobalAttribute("RepositoryStatus", REPO_DIRTY);
   putGlobalAttribute("Conventions", Conventions);
   putGlobalAttribute("ConventionsURL", ConventionsURL);
   putGlobalAttribute("Metadata_Conventions", "Unidata Dataset Discovery v1.0"); 
-  putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION.c_str());
+  putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION);
   putGlobalAttribute("standard_name_vocabulary", "CF-1.0");
-  putGlobalAttribute("ProcessorRevision", SVNREVISION);
-  putGlobalAttribute("NIDASrevision", cfg.NIDASrevision().c_str());
-
-  if (strstr(SVNURL, "http"))
-    strcpy(buffer, strstr(SVNURL, "http"));
-  else
-    strcpy(buffer, SVNURL);
-
-  putGlobalAttribute("ProcessorURL", buffer);
+  putGlobalAttribute("NIDASrevision", cfg.NIDASrevision());
 
   if (!cfg.ProductionRun())
     putGlobalAttribute("WARNING",
