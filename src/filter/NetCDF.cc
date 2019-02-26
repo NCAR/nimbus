@@ -143,6 +143,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("creator_email", EMail);
   putGlobalAttribute("RepositoryURL", ProcessorURL);
   putGlobalAttribute("RepositoryBranch", REPO_BRANCH);
+  putGlobalAttribute("RepositoryRevision", REPO_REVISION);
   putGlobalAttribute("RepositoryDate", REPO_DATE);
   putGlobalAttribute("RepositoryHASH", REPO_HASH);
   putGlobalAttribute("RepositoryStatus", REPO_DIRTY);
