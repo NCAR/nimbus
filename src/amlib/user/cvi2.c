@@ -10,7 +10,7 @@ ENTRY POINTS:	scvrho()
 
 STATIC FNS:	TempCorrection()
 
-DESCRIPTION:  	Second generation CVI, 2006 and later.
+DESCRIPTION:	Second generation CVI, 2006 and later.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2018
 -------------------------------------------------------------------------
@@ -138,7 +138,7 @@ void sconcud(DERTBL *varp)
   }
   else
     concud *= concud_fudge_factor;	// VOCALS. cjw, Aug2011
-  
+
   PutSample(varp, concud);
 
   prevInlet = cvinlet;
@@ -216,7 +216,7 @@ void scvcwcc(DERTBL *varp)
     cvcfact	= GetSample(varp, 1);
     cvcwcc	= cvrho / cvcfact;
   }
-  
+
   PutSample(varp, cvcwcc);
   prevInlet = cvinlet;
 }

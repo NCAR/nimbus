@@ -252,7 +252,7 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
       LogThisRecordMsg(this_rec, buffer);
 //    for (size_t j = 0; j < goodPoints; ++j)
 //      printf("%d, %f\n", (int)x[j], y[j]);
-    return;
+      return;
     }
   }
 
