@@ -77,21 +77,32 @@ float FLIGHTLEVELSKM[numFlightLevels]; // flight levels from Defaults file
 
 NR_TYPE altc[NUM_RETR_LVLS];
 NR_TYPE tempc[NUM_RETR_LVLS];
+
 // Indices encoding details of RCF file usage.
 NR_TYPE rcfidx, rcfalt1idx, rcfalt2idx, rcfmridx, trop1idx, trop2idx; 
 NR_TYPE altctrop1; // Altitude of first tropopause
-NR_TYPE tempctrop1; // Temparature of first tropopause
+NR_TYPE tempctrop1;// Temparature of first tropopause
 NR_TYPE altctrop2; // Altitude of first tropopause
-NR_TYPE tempctrop2; // Temparature of first tropopause
+NR_TYPE tempctrop2;// Temparature of first tropopause
+
+// Scan average and RMS values
+NR_TYPE sapalt;	// Scan Average Pressure altitude
+NR_TYPE srpalt;	// Scan RMS Pressure altitude
+NR_TYPE saat;	// Scan Average Air Temperature
+NR_TYPE srat;	// Scan RMS Air Temperature
+NR_TYPE sapitch;// Scan Average Aircraft Pitch
+NR_TYPE srpitch;// Scan RMS Aircraft Pitch
+NR_TYPE saroll;	// Scan Average Aircraft Roll
+NR_TYPE srroll;	// Scan RMS Aircraft Roll
+NR_TYPE salat;	// Scan Average Latitude
+NR_TYPE srlat;	// Scan RMS Latitude
+NR_TYPE salon;	// Scan Average Longitude
+NR_TYPE srlon;	// Scan RMS Longitude
 
 static Retriever *Rtr;
 
 static NR_TYPE last_record_time = -1; // time of previous MTP scan
-size_t nMissMTP; // count missing vals to determine missing rec
-
-// Scan average values
-static float mtp_sapalt_sum = 0.0;
-static float mtp_sapalt_count = 0.0;
+static size_t nMissMTP; // count missing vals to determine missing rec
 
 /* -------------------------------------------------------------------- */
 /* Read in flight levels from the defaults file.                        */
@@ -288,11 +299,47 @@ void mtpInit(var_base *varp)
 
 }
 /* -------------------------------------------------------------------- */
+/* Calculate scan averages and RMS. NOTE: IF YOU WANT TO CALCULATE RMS, */
+/* YOU MUST CALL rmsData BEFORE averageData BECAUSE averageDATA resets  */
+/* the sums and counts.                                                 */
+
+NR_TYPE accumulateData(DERTBL *varp, int idx)
+{
+  NR_TYPE data = GetSample(varp, idx);
+  if (!(std::isnan(data))) // exclude missing values from the sum
+  {
+     varp->depends[idx]->sum +=data;
+     varp->depends[idx]->sumSquares +=pow(data,2.0);
+     varp->depends[idx]->count++;
+  }
+  return(data);
+}
+NR_TYPE rmsData(DERTBL *varp, int idx)
+{
+  // Calculate scan RMS values
+  NR_TYPE srdata = sqrt(varp->depends[idx]->sumSquares/varp->depends[idx]->count);
+
+  return(srdata); // scan RMS of data
+}
+NR_TYPE averageData(DERTBL *varp, int idx)
+{
+  // Calculate scan averaged values.
+  NR_TYPE sadata = varp->depends[idx]->sum/varp->depends[idx]->count;
+
+  // Reset accumulation
+  varp->depends[idx]->sum =0;
+  varp->depends[idx]->sumSquares =0;
+  varp->depends[idx]->count =0;
+
+  return(sadata); // scan average of data
+}
+/* -------------------------------------------------------------------- */
 /* Calibrate the MTP scans using constants that are written to the .CAL */
 /* file by the VB code for the flight in question.                      */
 /* The equations in this routine come from MTPGainEquation.docx (in svn)*/
 /* When the MTP instrument completes a scan of the atmosphere the scan  */
 /* counts are converted to Brightness Temperatures using this routine.  */
+/* Also calculate scan average and RMS nav and state vars.              */
 void scal(DERTBL *varp)
 {  
   float Gnd[NUM_CHANNELS];
@@ -310,26 +357,62 @@ void scal(DERTBL *varp)
 		  // channel for the noise diode turned on (stored as the
 		  // first three values) and three for it turned off (the next
 		  // 3).
-  NR_TYPE atx = GetSample(varp, 2);  //Ambient Air Temperature, Reference
+  int atxidx = 2;
+  NR_TYPE atx = accumulateData(varp,atxidx); // Ambient Air Temperature, Reference
   NR_TYPE tr350cntp=GetSample(varp,3);//Platinum Multiplxr R350 Counts
   NR_TYPE tmixcntp=GetSample(varp,4); //Platinum Multiplxr Mixer Temperature Cnts
   NR_TYPE tr600cntp=GetSample(varp,5);//Platinum Multiplxr R600 Counts
+  int paltidx = 6; accumulateData(varp,paltidx); // Pressure Altitude
+  int pitchidx = 7; accumulateData(varp,pitchidx); // Aircraft Pitch
+  int rollidx = 8; accumulateData(varp,rollidx); // Aircraft Roll
+  int latidx = 9; accumulateData(varp,latidx); // Aircraft Latitude
+  int lonidx = 10; accumulateData(varp,lonidx); // Aircraft Longitude
 
   // We only receive a good record abougt once every 17 seconds. For the
   // in-between records, scnt and tcnt will be nan. Check for this here so we
-  // only process when have a good scan.
+  // only process when have a good scan. THIS ASSUMES tcnt WILL ALWAYS BE
+  // GOOD DURING AN MTP SCAN.
   int bad_scan=0; // if we find a nan in the target scan, it's not good data
   for (size_t i=0; i<NUM_CHANNELS; i++)
   {
     if (std::isnan(tcnt[i])) {bad_scan = 1;}
   }
   if (bad_scan) {
+    // For completeness, go ahead and set scan averages to NAN here, even thought it
+    // shouldn't matter since we won't save them anywhere.
+    saat = floatNAN; srat = floatNAN; sapalt = floatNAN; srpalt = floatNAN;
+    sapitch = floatNAN; srpitch = floatNAN; saroll = floatNAN; srroll = floatNAN;
+    salat = floatNAN; srlat = floatNAN; salon = floatNAN; srlon = floatNAN;
+
+    for (size_t i=0; i<NUM_CHANNELS*NUM_SCAN_ANGLES;i++) { scanbt[i]=floatNAN; }
     PutVector(varp, &scanbt);
     return;
   }
+  // If get here, have a good scan
 
-  // Convert atx to Kelvin
-  atx = atx+273.15;
+  // Calculate scan averaged and RMS values
+  srat = rmsData(varp, atxidx); // Ambient Air Temperature
+  srat = srat+273.15; // convert C to Kelvin
+  saat = averageData(varp, atxidx);
+  saat = saat+273.15; // convert C to Kelvin
+
+  srpalt = rmsData(varp, paltidx); // Pressure Altitude
+  srpalt = srpalt/1000.0; // convert m to km
+  sapalt = averageData(varp, paltidx);
+  sapalt = sapalt/1000.0; // convert m to km
+
+  srpitch = rmsData(varp, pitchidx); // Aircraft Pitch
+  sapitch = averageData(varp, pitchidx);
+
+  srroll = rmsData(varp, rollidx); // Aircraft Roll
+  saroll = averageData(varp, rollidx);
+
+  srlat = rmsData(varp, latidx); // Latitude
+  salat = averageData(varp, latidx);
+
+  srlon = rmsData(varp, lonidx); // Longitude
+  salon = averageData(varp, lonidx);
+
 
   /* The scan counts are stored in the ads file as cnts[angle,channel], i.e.
    * {a1c1,a1c2,a1c3,a2c1,...}. Processing requires, and the final data are 
@@ -379,7 +462,7 @@ void scal(DERTBL *varp)
   {
       for (size_t j=0;j<NUM_SCAN_ANGLES;j++)
       {
-         scanbt[i*10+j]=atx+(scnt_inv[i*10+j]-scnt_inv[i*10+_LocHor])/_Gain[i];
+         scanbt[i*10+j]=saat+(scnt_inv[i*10+j]-scnt_inv[i*10+_LocHor])/_Gain[i];
       }
   }
 
@@ -410,7 +493,7 @@ void smtptime(DERTBL *varp)
     last_record_time = mtptime;
   }
 
-  PutVector(varp, &mtptime);
+  PutSample(varp, mtptime);
 } /* END smtptime */
 /* -------------------------------------------------------------------- */
 /* Convert brightness temperatures to atmospheric temperature profiles 
@@ -434,13 +517,12 @@ void sretriever(DERTBL *varp)
                   // calculated in scal (above) for this scan. This vector should
 		  // be of length 30 - three points for each angle (one per 
 		  // channel)
-  NR_TYPE palt = GetSample(varp, 1);    // Aircraft pressure altitude (MSL) meters
 
   int startTropIndex = 0; // index of level to begin looking for tropopause
   AtmosphericTemperatureProfile ATP;
 
   /* If PALT is missing or negative, return missing for altc and tempc */
-  if (std::isnan(palt) || palt < 0)
+  if (std::isnan(sapalt) || sapalt < 0)
   {
     std::fill(tempc, tempc+NUM_RETR_LVLS, floatNAN);
     std::fill(altc, altc+NUM_RETR_LVLS, floatNAN);
@@ -448,7 +530,7 @@ void sretriever(DERTBL *varp)
   }
   else {
 
-    ATP = Rtr->Retrieve(scanbt, palt/1000.0); // convert m to km
+    ATP = Rtr->Retrieve(scanbt, sapalt);
 
     nMissMTP=0; //Initialize
     for (size_t i=0; i<NUM_RETR_LVLS;i++)
@@ -490,38 +572,13 @@ void sretriever(DERTBL *varp)
 	      altctrop2 = floatNAN;
 	  }
 	}
-  }
 
+  }
 
   PutVector(varp, &tempc);
 
 }      /* End sretriever */
 
-/* -------------------------------------------------------------------- */
-void sscanavg(DERTBL *varp)
-{
-  NR_TYPE palt = GetSample(varp, 0);    // Aircraft pressure altitude (MSL) meters
-
-  NR_TYPE sapalt; // Scan average for aircraft pressure altitude (MSL) kilometers
-
-  if (not (std::isnan(palt))) {
-    palt = palt/1000.0; // convert m to km
-
-    mtp_sapalt_sum+=palt;
-    mtp_sapalt_count++;
-  }
-
-  // Calculate scan averaged values
-  if (nMissMTP == NUM_RETR_LVLS) {
-	sapalt = floatNAN;
-  } else {
-      sapalt = mtp_sapalt_sum/mtp_sapalt_count;
-      mtp_sapalt_sum=0;
-      mtp_sapalt_count=0;
-  }
-
-  PutSample(varp,sapalt);
-}
 /* -------------------------------------------------------------------- */
 void sretrievealt(DERTBL *varp)
 {
@@ -565,5 +622,76 @@ void sretrievetrop2(DERTBL *varp)
 
 }	/* End sretrievetrop2 */
 /* -------------------------------------------------------------------- */
+void ssapalt(DERTBL *varp)
+{
+  PutSample(varp, sapalt);
+
+}	/* End ssapalt */
+/* -------------------------------------------------------------------- */
+void ssrpalt(DERTBL *varp)
+{
+  PutSample(varp, srpalt);
+
+}	/* End ssrpalt */
+/* -------------------------------------------------------------------- */
+void ssaat(DERTBL *varp)
+{
+  PutSample(varp, saat);
+
+}	/* End ssaat */
+/* -------------------------------------------------------------------- */
+void ssrat(DERTBL *varp)
+{
+  PutSample(varp, srat);
+
+}	/* End ssrat */
+/* -------------------------------------------------------------------- */
+void ssapitch(DERTBL *varp)
+{
+  PutSample(varp, sapitch);
+
+}	/* End ssapitch */
+/* -------------------------------------------------------------------- */
+void ssrpitch(DERTBL *varp)
+{
+  PutSample(varp, srpitch);
+
+}	/* End ssrpitch */
+/* -------------------------------------------------------------------- */
+void ssaroll(DERTBL *varp)
+{
+  PutSample(varp, saroll);
+
+}	/* End ssaroll */
+/* -------------------------------------------------------------------- */
+void ssrroll(DERTBL *varp)
+{
+  PutSample(varp, srroll);
+
+}	/* End ssrroll */
+/* -------------------------------------------------------------------- */
+void ssalat(DERTBL *varp)
+{
+  PutSample(varp, salat);
+
+}	/* End ssalat */
+/* -------------------------------------------------------------------- */
+void ssrlat(DERTBL *varp)
+{
+  PutSample(varp, srlat);
+
+}	/* End ssrlat */
+/* -------------------------------------------------------------------- */
+void ssalon(DERTBL *varp)
+{
+  PutSample(varp, salon);
+
+}	/* End ssalon */
+/* -------------------------------------------------------------------- */
+void ssrlon(DERTBL *varp)
+{
+  PutSample(varp, srlon);
+
+}	/* End ssrlon */
 
 /* END MTP.C */
