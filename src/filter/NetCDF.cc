@@ -147,9 +147,10 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("RepositoryDate", REPO_DATE);
   putGlobalAttribute("RepositoryHASH", REPO_HASH);
   putGlobalAttribute("RepositoryStatus", REPO_DIRTY);
+  putGlobalAttribute("ProjectDirectoryRevision", cfg.ProjectDirectoryRevision());
   putGlobalAttribute("Conventions", Conventions);
   putGlobalAttribute("ConventionsURL", ConventionsURL);
-  putGlobalAttribute("Metadata_Conventions", "Unidata Dataset Discovery v1.0"); 
+  putGlobalAttribute("Metadata_Conventions", "Unidata Dataset Discovery v1.0");
   putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION);
   putGlobalAttribute("standard_name_vocabulary", "CF-1.0");
   putGlobalAttribute("NIDASrevision", cfg.NIDASrevision());
