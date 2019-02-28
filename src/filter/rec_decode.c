@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 #include <netinet/in.h>
 
 extern ushort	*bits;
-extern variable_vector<RAWTBL> decode;
+extern std::vector<RAWTBL *> decode;
 
 static void setNIDASDynamicLags(short lr[]);
 static void BlankOutRawData(NR_TYPE nlr[]);

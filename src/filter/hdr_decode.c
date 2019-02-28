@@ -202,7 +202,7 @@ void AddProbeToList(const char name[], size_t type)
 /* -------------------------------------------------------------------- */
 static void CommonPostInitialization()
 {
-  extern variable_vector<RAWTBL> decode; // raw variables where "xlate != 0" - for rec_decode.c
+  extern std::vector<RAWTBL *> decode; // raw variables where "xlate != 0" - for rec_decode.c
 
   /* Add the default derived variables.
    */
@@ -230,7 +230,7 @@ static void CommonPostInitialization()
     FreeTextFile(derivedlist);
 
   FreeTextFile(rawlist);
- 
+
   // Log any variables without units & titles.
   checkUnitsTitles();
 
@@ -415,7 +415,7 @@ int DecodeHeader3(const char header_file[])
 
   //  const std::list<Site*>& sites = project->getSites();
   //  const std::list<Site*>::iterator si;
-  
+
   Aircraft* aircraft = Aircraft::getAircraft(project);
   if (!aircraft)
   {
