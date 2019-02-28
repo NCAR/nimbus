@@ -94,23 +94,7 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
   void FreeDefaults();
 
   CloseADSfile();
-/*
- * Causes a "double free or corruption" error that I have not been able to
- * trace.
-  for (int i = 0; i < raw.size(); ++i)
-  {
-    delete raw[i];
-    raw[i] = 0;
-  }
-
-  for (int i = 0; i < derived.size(); ++i)
-  {
-    delete derived[i];
-    derived[i] = 0;
-  }
-*/
   FreeDefaults();
-
   FreeDataArrays();
   ReleaseFlightHeader();
 
