@@ -742,7 +742,7 @@ void Quit(Widget w, XtPointer client, XtPointer call)
 
   CloseRemoveLogFile();
   CancelSetup(NULL, NULL, NULL);
-  _exit(0);
+  exit(0);
 }
 
 /* -------------------------------------------------------------------- */
