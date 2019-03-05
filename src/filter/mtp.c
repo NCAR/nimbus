@@ -5,9 +5,12 @@ OBJECT NAME:    mtp.c
 FULL NAME: MTP related stuff
 
 ENTRY POINTS:	Len2Name()
+		initMTPTimeDim()
 
 DESCRIPTION:	Len2Name() converts NetCDF attributes of type Vector## where
 		## is a length, to a descriptive name.
+		initMTPTimeDim() created the MTP Time dimension with a record
+		approx. once every 17 seconds.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2018
 -------------------------------------------------------------------------
@@ -16,6 +19,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2018
 #include "nimbus.h"
 #include "NetCDF.h"
 #include <netcdf.h>
+
+#define BUFF_SIZE  256
 
 /* -------------------------------------------------------------------- */
 /* Convert netCDF dimension name from an integer length to a descriptive
@@ -83,6 +88,32 @@ void initMTPTimeDim(int _ncid, size_t TimeLength, int dims[], int *MTPTimeDim, i
   strcpy(buffer, "time");
   nc_put_att_text(_ncid, *MTPtimeVarID, "standard_name", strlen(buffer)+1, buffer);
   //writeTimeUnits(*MTPtimeVarID,-1)
-}
+}	/* END initMTPTimeDim */
+/* -------------------------------------------------------------------- */
+/* Read in the limited set list of RCF files to process with.
+ * Output:
+ * 	filelist - limited set list of RCF files to process with
+ */
+void readRCFlist(std::vector<std::string> &filelist)
+{
+
+    std::string file = "%s/%s/%s/RCFlist."+cfg.FlightNumber();
+
+    FILE *fp = OpenProjectFile(file, "r", RETURN);
+
+    if (fp == 0)
+    {
+	return;
+    }
+
+    while (fgets(buffer, BUFF_SIZE, fp) != NULL)
+    {
+	buffer[strlen(buffer)-1]=0; //remove the carriage return
+	filelist.push_back(buffer);
+    }
+
+    fclose(fp);
+
+}	/* END readRCFlist */
 
 /* MTP.C */

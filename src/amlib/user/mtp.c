@@ -20,7 +20,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2017
  - VB6 and Algorithm Copyright MJ Mahoney, NASA Jet Propulsion Laboratory
 -------------------------------------------------------------------------
 */
-
 #include "nimbus.h"
 #include "amlib.h"
 #include "mtp.h"
@@ -104,6 +103,8 @@ static Retriever *Rtr;
 static NR_TYPE last_record_time = -1; // time of previous MTP scan
 static size_t nMissMTP; // count missing vals to determine missing rec
 
+void readRCFlist(std::vector<std::string> &filelist);
+
 /* -------------------------------------------------------------------- */
 /* Read in flight levels from the defaults file.                        */
 static void readLevels(const char name[],float var[numFlightLevels])
@@ -171,36 +172,7 @@ void mtpInit(var_base *varp)
      * If not, filelist will remain empty, and constructor will get every available
      * RCF file.
      */
-
-    /* Hardcode DEEPWAVE limited RCF files here, just for testing. Defaults files
-     * can't currently handle string input, and I am still noodling over the best
-     * way forward. */
-    if (cfg.FlightNumber() == "rf01") {
-      filelist.push_back("NRCDE067");
-      filelist.push_back("NRCDF067");
-      filelist.push_back("NRCDG067");
-      filelist.push_back("NRCDK067");
-      filelist.push_back("NRCDL067");
-      filelist.push_back("NRCDU067");
-      filelist.push_back("NRCDV067");
-      filelist.push_back("NRCFY067");
-      filelist.push_back("NRCGD067");
-      filelist.push_back("NRCGF067");
-      filelist.push_back("NRCGJ067");
-    }
-    if (cfg.FlightNumber() == "rf02") {
-      filelist.push_back("NRCDE067");
-      filelist.push_back("NRCDF067");
-      filelist.push_back("NRCDG067");
-      filelist.push_back("NRCDL067");
-      filelist.push_back("NRCDV067");
-      filelist.push_back("NRCDY067");
-      filelist.push_back("NRCFR057");
-      filelist.push_back("NRCGA067");
-      filelist.push_back("NRCGD067");
-      filelist.push_back("NRCGI067");
-      filelist.push_back("NRCGJ067");
-    }
+    readRCFlist(filelist);
 
     // FlightDate is MM/DD/YYYY, we need YYYYMMDD. This line doesn't work, but not yet
     // used. Right now cal values are in Defaults files. This line is in case later we
@@ -358,7 +330,7 @@ void scal(DERTBL *varp)
 		  // first three values) and three for it turned off (the next
 		  // 3).
   int atxidx = 2;
-  NR_TYPE atx = accumulateData(varp,atxidx); // Ambient Air Temperature, Reference
+  (void) accumulateData(varp,atxidx); // Ambient Air Temperature, Reference
   NR_TYPE tr350cntp=GetSample(varp,3);//Platinum Multiplxr R350 Counts
   NR_TYPE tmixcntp=GetSample(varp,4); //Platinum Multiplxr Mixer Temperature Cnts
   NR_TYPE tr600cntp=GetSample(varp,5);//Platinum Multiplxr R600 Counts
