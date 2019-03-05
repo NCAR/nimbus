@@ -55,14 +55,14 @@ int HighRateLoop(time_t startTime, time_t endTime)
 
   /* Basic circ-buff of records going into despiking and resampler.
    */
-  CircularBuffer	*LRCB;	/* Logical Record Circular Buffers	*/
+  CircularBuffer	*LRCB = NULL;	// Logical Record Circular Buffers
 
   /* Records coming out of resampler.  2 circ buffs, one for SampleRate
    * Rate data and the other for HRT data.  PSCB will be FIR filtered
    * into HSCB.
    */
-  CircularBuffer	*PSCB;	/* Phase Shifted Circular Buffers	*/
-  CircularBuffer	*HSCB;	/* 25Hz resampled data (interped only).*/
+  CircularBuffer	*PSCB = NULL;	// Phase Shifted Circular Buffers
+  CircularBuffer	*HSCB = NULL;	// 25Hz resampled data (interped only).
 
   nBytes = nSRfloats * sizeof(NR_TYPE);
   if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nBytes)) == NULL ||

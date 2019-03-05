@@ -162,7 +162,7 @@ void soat(DERTBL *varp)
   sntem	= GetSample(varp, 5);
 
   // Older projects do not have this extra dependency.
-  if (varp->ndep == 7)
+  if (varp->nDependencies == 7)
     bntem = GetSample(varp, 6);
   else
     bntem = 0.0;

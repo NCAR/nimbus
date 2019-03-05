@@ -2,13 +2,13 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	asas.c
 
-FULL NAME:	Compute PMS1D ASAS/PCASP/UHSAS derived paramters
+FULL NAME:	Compute PMS1D ASAS/PCASP/SPP200/UHSAS derived paramters
 
 DESCRIPTION:	
 
 NOTES:		Calculations taken from Bulletin 24 dated 1/89.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2015
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2018
 -------------------------------------------------------------------------
 */
 
@@ -28,6 +28,7 @@ static NR_TYPE	aact[MAX_ASAS], pvol[MAX_ASAS], tact[MAX_ASAS];
 static NR_TYPE	cell_size[MAX_ASAS][MAX_BINS];
 static NR_TYPE	cell_size2[MAX_ASAS][MAX_BINS];
 static NR_TYPE	cell_size3[MAX_ASAS][MAX_BINS];
+static NR_TYPE	dt[MAX_ASAS];	// Average Particle Pulse Width - Coincidence corrrection
 
 static size_t concu100_start_bin = 1, concu500_start_bin = 1;
 
@@ -75,6 +76,14 @@ void casasInit(var_base *varp)
     }
   LAST_BIN[probeNum] = atoi(p);
 
+  /* Average Particle Pulse Width; For coincidence correction.
+   * Value of zero will disable coincidence correction.
+   */
+  if ((p = GetPMSparameter(serialNumber, "PULSE_WIDTH")) == NULL)
+    dt[probeNum] = 0.0;
+  else
+    dt[probeNum] = atof(p);
+printf("uhsas::asasInit: %s pn=%d dt=%f\n", varp->name, probeNum, dt[probeNum]);
   if ((p = GetPMSparameter(serialNumber, "CELL_SIZE")) == NULL)
     {
     /* ADS2 SPP probes mimiced old PMS1D interface and padded a useless
@@ -157,10 +166,10 @@ void scasas(DERTBL *varp)	// Original PMS ASAS/PCASP probes.
 
 #define VOLUME
 
-/*   Following dummy tas added to keep system from complaining about
-       the code added to "pms1d_cv"
-         Ron Ruth 19 October 2001  */
-    tas = 50.;
+  /* Following dummy tas added to keep system from complaining about
+   * the code added to "pms1d_cv".  Ron Ruth 19 October 2001 
+   */
+  tas = 50.0;
 
 #include "pms1d_cv"
 
@@ -194,13 +203,13 @@ void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
     uhsasBinConsolidation(actual);
 
   if (FeedBack == HIGH_RATE_FEEDBACK)
-    {
+  {
     if (SampleOffset >= SampleRate[probeNum])
       return;
 
     concentration = &HighRateData[varp->HRstart +(SampleOffset * varp->Length)];
     flow /= SampleRate[probeNum];
-    }
+  }
   else
     concentration = &AveragedData[varp->LRstart];
 
@@ -210,8 +219,8 @@ void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
 #define VOLUME
 #define TACT
 
-  /*   Following dummy tas added to keep system from complaining about
-   *   the code added to "pms1d_cv". Ron Ruth 19 October 2001.
+  /* Following dummy tas added to keep system from complaining about
+   * the code added to "pms1d_cv". Ron Ruth 19 October 2001.
    */
   tas = 50.0;
 
@@ -219,17 +228,38 @@ void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
 
 
   // Check for valid USCAT (high USCAT indicates laser instability); if not, nan everything.
-  if (varp->ndep > 2 && strncmp(varp->depend[2], "USCAT", 5) == 0)
+  if (varp->nDependencies > 2 && strncmp(varp->depend[2], "USCAT", 5) == 0)
   {
     NR_TYPE uscat = GetSample(varp, 2);
 
     if (uscat > USCAT_THRESHOLD)
     {
-    for (i = 0; i < varp->Length; ++i)
-      concentration[i] = floatNAN;
+      for (i = 0; i < varp->Length; ++i)
+        concentration[i] = floatNAN;
 
-    total_concen[probeNum] = disp[probeNum] = dbar[probeNum] = pvol[probeNum] = floatNAN;
-    return;
+      total_concen[probeNum] = disp[probeNum] = dbar[probeNum] = pvol[probeNum] = floatNAN;
+      return;
+    }
+  }
+
+  // Apply coincidence correction.
+  if (dt[probeNum] > 0.0)
+  {
+    NR_TYPE N = tact[probeNum];
+    if (FeedBack == HIGH_RATE_FEEDBACK)
+      N *= SampleRate[probeNum];
+
+    NR_TYPE ccf = 1.0 / (1.0 - (dt[probeNum] * N));
+
+    if (ccf > 0.0)
+    {
+      for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
+        concentration[i] *= ccf;
+
+      total_concen[probeNum] *= ccf;
+#ifdef VOLUME
+      pvol[probeNum] *= ccf;
+#endif
     }
   }
 

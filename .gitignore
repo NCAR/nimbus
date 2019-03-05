@@ -9,6 +9,6 @@
 /include/amlibProto.h
 /include/amlibfn.h
 /include/make_amlib
-/include/svnInfo.h
+/include/gitInfo.h
 /include/xlatefns.h
 /tests/*.pyc

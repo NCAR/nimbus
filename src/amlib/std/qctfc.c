@@ -18,16 +18,24 @@ void sqctfc(DERTBL *varp)
 {
   NR_TYPE qctfc;
 
-  NR_TYPE pstf = GetSample(varp, 0);
-  NR_TYPE qctf = GetSample(varp, 1);
-  NR_TYPE attack = GetSample(varp, 2);
-  NR_TYPE sslip = GetSample(varp, 3);
-  NR_TYPE mach = GetSample(varp, 4);
+  NR_TYPE qctf = GetSample(varp, 0);
+  NR_TYPE pstf = GetSample(varp, 1);
 
   if (qctf < 0.01)
     qctf = 0.01;
 
-  qctfc = qctf + (*pcorQCTF)(qctf, pstf, attack, sslip, mach);
+  if (varp->nDependencies > 3)	// Lenschow method
+  {
+    NR_TYPE attack = GetSample(varp, 2);
+    NR_TYPE sslip = GetSample(varp, 3);
+    NR_TYPE mach = GetSample(varp, 4);
+    qctfc = qctf + (*pcorQCTF)(qctf, pstf, attack, sslip, mach);
+  }
+  else	// Cooper method
+  {
+    NR_TYPE psffc = GetSample(varp, 2);
+    qctfc = qctf + pstf - psffc;
+  }
 
   if (qctfc < 10.0)
     qctfc = qctf;

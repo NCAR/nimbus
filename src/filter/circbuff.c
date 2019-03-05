@@ -96,6 +96,9 @@ char *GetBuffer(CircularBuffer *cb, int offset)
 /* -------------------------------------------------------------------- */
 void ReleaseCircularBuffer(CircularBuffer *cb)
 {
+  if (cb == NULL)
+    return;
+
   for (int i = 0; i < cb->nbuffers; ++i)
     delete [] cb->buffer[i];
 

@@ -164,7 +164,7 @@ public:
   void (*compute)(void *);	// Function to compute data
 
   std::vector<var_base *> depends;
-  size_t ndep;			// # dependencies
+  size_t nDependencies;			// # dependencies
   char depend[MAXDEPEND][NAMELEN];	// Dependencies
 };
 

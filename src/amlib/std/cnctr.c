@@ -59,7 +59,7 @@ void sconcn(DERTBL *varp)
   /* Convert to ambient.  This is new as of 12/2007, older projects would
    * need DependTable upgrade.
    */
-  if (varp->ndep > 5)
+  if (varp->nDependencies > 5)
   {
     NR_TYPE pcn = GetSample(varp, 2);
     NR_TYPE cntmp = GetSample(varp, 3);
@@ -68,7 +68,7 @@ void sconcn(DERTBL *varp)
 
     /* Use for WaterCN.  Used in TORERO and DC3.
      */
-    if (varp->ndep == 7)	// Use for WaterCN.
+    if (varp->nDependencies == 7)	// Use for WaterCN.
     {
       NR_TYPE ltcn = GetSample(varp, 6);
       concn /= ltcn;

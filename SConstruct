@@ -16,10 +16,10 @@ def nimbusbase(env):
     env.Append(CCFLAGS=Split("-Wno-write-strings -Wstrict-aliasing "
                              "-Wno-deprecated"))
 
-env = Environment(platform='posix', tools=['default', 'svninfo', nimbusbase])
+env = Environment(platform='posix', tools=['default', 'gitinfo', nimbusbase])
 #                 GLOBAL_TOOLS=['scanbuild'])
 
-env.SvnInfo('include/svnInfo.h', '.')
+env.GitInfo('include/gitInfo.h', '.')
 
 env['CXXFLAGS'] = Split("""
     -std=c++11

@@ -207,7 +207,7 @@ RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(NR_TYPE PAltKm)
   // Find two Flight Level Sets that are above and below the PAltKm provided.
   // Calculate the weight for averaging and identify the RC sets.
   vector<RC_Set_1FL>::const_iterator it, Botit, Topit;
-  float BotWt = 0.0,TopWt;
+  float BotWt = 0.0, TopWt;
   int i = 0;
   for(it=_FlRcSetVec.begin(); it!=_FlRcSetVec.end(); it+=1)
   {
@@ -220,7 +220,6 @@ RC_Set_1FL RetrievalCoefficientFile::getRCAvgWt(NR_TYPE PAltKm)
     i++;
   }
   TopWt = 1.0 - BotWt;
-
 
   // Save the indices of the flight level sets used in averages
   RcSetAvWt.RCFALT1Index = Botit - _FlRcSetVec.begin();

@@ -8,7 +8,7 @@ ENTRY POINTS:	swi(), sui(), svi(), sux(), svy()
 
 DESCRIPTION:	3D wind field calculations.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2010
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2018
 -------------------------------------------------------------------------
 */
 
@@ -18,7 +18,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2010
 #include "sync_reader.hh"
 #include <nidas/core/Project.h>
 
-static const int MAX_PROBES = 4;
+static const int MAX_PROBES = 8;
 
 static const NR_TYPE	THDG_TEST	= 180.0 * M_PI / 180.0;
 static const NR_TYPE	PITCH_TEST	= 22.5 * M_PI / 180.0;

@@ -140,7 +140,7 @@ void sew(DERTBL *varp)
     if (h2o_conc_vxl > 1.0)
       e = Boltzmann * (atx+Kelvin) * (h2o_conc_vxl * 1.0e6) * 1.0e-2;
 
-    if (varp->ndep == 4)	// Last two should be pressures.  UVH uses this, VCSEL does not.
+    if (varp->nDependencies == 4)	// Last two should be pressures.  UVH uses this, VCSEL does not.
     {
       e *= GetSample(varp, 2) / GetSample(varp, 3);	// (PSXC / XCELLPRES_UVH)
     }
@@ -154,7 +154,7 @@ void sew(DERTBL *varp)
  
     // fw() From Murphy and Koop, 2005.  Enhancement factor.  See esubt.c
     e = WaterVaporPressure(Tk) * fw(Tk, psxc);
-    if (varp->ndep > 2)
+    if (varp->nDependencies > 2)
     {
       NR_TYPE psdp = GetSample(varp, 2);	// DP Cavity Pressure.
       NR_TYPE Rx = psxc / psdp;

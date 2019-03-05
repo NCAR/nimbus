@@ -43,7 +43,7 @@ void GenerateComputeOrder()
   ComputeOrder.resize(derived.size());
 
   for (i = 0; i < derived.size(); ++i)
-    if (derived[i]->ndep == 0)
+    if (derived[i]->nDependencies == 0)
       ComputeOrder[bpos++] = derived[i];
     else
       ComputeOrder[epos--] = derived[i];
@@ -55,7 +55,7 @@ void GenerateComputeOrder()
     {
     bool found = true;
 
-    for (j = 0; j < ComputeOrder[i]->ndep; j++)
+    for (j = 0; j < ComputeOrder[i]->nDependencies; j++)
       {
       if (SearchTable(raw, ComputeOrder[i]->depend[j]) == ERR
           && SearchTable(ComputeOrder, i, ComputeOrder[i]->depend[j]) == ERR)

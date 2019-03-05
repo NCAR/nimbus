@@ -38,6 +38,9 @@ NR_TYPE	(*pcorPSFv2)(NR_TYPE, NR_TYPE, NR_TYPE), (*pcorQCFv2)(NR_TYPE, NR_TYPE, 
 	(*pcorPSFDv2)(NR_TYPE, NR_TYPE, NR_TYPE), (*pcorQCRv2)(NR_TYPE, NR_TYPE, NR_TYPE),
 	(*pcorQCFRv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
+// Version 3 of above functions, per Cooper 15 Sept 2016 memo
+
+
 // Above functions, but for new pitot-static mounted in the bird strike zone on the GV.
 NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE), 
         (*pcorQCTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
@@ -54,6 +57,7 @@ NR_TYPE	pcorw8(NR_TYPE), pcorf8(NR_TYPE),
 // C130
 	pcorr1(NR_TYPE), pcorf1(NR_TYPE), pcorf1_2(NR_TYPE), pcorf1_3(NR_TYPE),
 	pcorf1v2(NR_TYPE, NR_TYPE, NR_TYPE), pcorr1v2(NR_TYPE, NR_TYPE, NR_TYPE),
+	pcorf1v3(NR_TYPE, NR_TYPE, NR_TYPE), pcorr1v3(NR_TYPE, NR_TYPE, NR_TYPE),
 // GV
 	pcorr5(NR_TYPE),pcorf5(NR_TYPE), pcorq5(NR_TYPE), pcorr5_2(NR_TYPE, NR_TYPE, NR_TYPE),
 	pcorf5_2(NR_TYPE, NR_TYPE, NR_TYPE), pcorq5_2(NR_TYPE, NR_TYPE, NR_TYPE),
@@ -195,21 +199,31 @@ void InitAircraftDependencies()
 
       sprintf(buffer, "%04d%02d", FlightDate[2], FlightDate[0]);
 //printf("[%s] == [%s]\n", buffer, "200309");
-      if (strcmp(buffer, "200309") > 0)
+      if (strcmp(buffer, "201112") > 0)
+      { // SAS & Later (after IDEAS-4_C130)
+        LogMessage("PCORS:  SAS and later pcors().");
+        pcorPSFv2	= pcorr1v3;
+        pcorQCFRv2	= pcorr1v3;
+        pcorPSFDv2	= pcorf1v3;
+        pcorQCFv2	= pcorf1v3;
+      }
+      else if (strcmp(buffer, "200309") > 0)
       { // AIRS-II & Later
         LogMessage("PCORS:  AIRS-II and later pcors().");
         pcorPSFv2	= pcorr1v2;
         pcorQCFRv2	= pcorr1v2;
+        pcorPSFDv2	= pcorf1v2;
+        pcorQCFv2	= pcorf1v2;
       }
       else
       { // Pre-AIRS-II
         LogMessage("PCORS:  Pre-AIRS-II pcors().");
         pcorPSFv2	= pcorr1v2;
         pcorQCFRv2	= pcorr1v2;
+        pcorPSFDv2	= pcorf1v2;
+        pcorQCFv2	= pcorf1v2;
       }
 
-      pcorPSFDv2= pcorf1v2;
-      pcorQCFv2	= pcorf1v2;
       pcorQCRv2	= pcorf1v2;
       pcorQCW	= NULL;
       pcorPSW	= NULL;
@@ -483,6 +497,46 @@ NR_TYPE pcorr1v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFRD
 
   M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * Attack + a[2] * M);
+
+  // Taper if Qm is too small (take-off / landing).
+  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+
+  return deltaP;
+}
+
+// These v3 corrections provide a consistent offset from the avionics-provided pressure (PS_A) for recent C-130 
+// projects since IDEAS-4-C130 in 2011, where a different correction is needed.
+NR_TYPE pcorf1v3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFD post IDEAS-4-C130
+{
+  static double a[] = { -0.004389, -0.02966, -0.00006831, 0.02672, 0.002447 }; // per Cooper 15 Sept 2016 memo
+
+  NR_TYPE M, deltaP;
+  if (Qm < 0.01) Qm = 0.01;
+
+  // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
+  if (isnan(Attack)) Attack = 3.0;
+
+  M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  deltaP = Pm * (a[0] + a[1] * (Qm/Pm) + a[2] * Attack + a[3] * M + a[4] * (Qm/Pm) * Attack*Attack); // per Cooper 15 Sept 2016 memo
+
+  // Taper if Qm is too small (take-off / landing).
+  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+
+  return deltaP;
+}
+
+NR_TYPE pcorr1v3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFRD post IDEAS-4-C130
+{
+  static double a[] = { 0.007372, 0.12774, -0.00068776, -0.02994, 0.00163 }; // per Cooper 15 Sept 2016 memo
+
+  NR_TYPE M, deltaP;
+  if (Qm < 0.01) Qm = 0.01;
+
+  // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
+  if (isnan(Attack)) Attack = 3.0;
+
+  M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  deltaP = Pm * (a[0] + a[1] * (Qm/Pm) + a[2] * Attack + a[3] * M + a[4] * (Qm/Pm) * Attack*Attack); // per Cooper 15 Sept 2016 memo
 
   // Taper if Qm is too small (take-off / landing).
   if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);

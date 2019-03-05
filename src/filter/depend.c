@@ -84,7 +84,7 @@ void ReadDependencies()
     for (j = 0; (s = strtok((char *)NULL, tokens)); ++j)
       strcpy(dp->depend[j], s);
 
-    dp->ndep = j;
+    dp->nDependencies = j;
   }
 
   FreeTextFile(dependlist);
@@ -120,7 +120,7 @@ static void setupDependencies(bool set_depends)
     else
       location[0] = '\0';
 
-    for (j = 0; j < dp->ndep; ++j)
+    for (j = 0; j < dp->nDependencies; ++j)
     {
       /* We need to check both cases of whether dependency needs the
        * location tacked on.  (e.g. CFSSP depends on TASX, we do not
@@ -229,7 +229,7 @@ int DependIndexLookup(DERTBL *dp, int which_dep, bool init_depends)
 bool isDependedUpon(DERTBL *dp)
 {
   for (size_t i = 0; i < derived.size(); ++i)
-    for (size_t j = 0; j < derived[i]->ndep; ++j)
+    for (size_t j = 0; j < derived[i]->nDependencies; ++j)
       if (strcmp(dp->name, derived[i]->depend[j]) == 0)
         return true;
 
@@ -251,7 +251,7 @@ static void doubleCheck(DERTBL *dp)	/* This function is recursive	*/
     quit();
   }
 
-  for (size_t i = 0; i < dp->ndep; ++i)
+  for (size_t i = 0; i < dp->nDependencies; ++i)
   {
     if ((indx = SearchTable(raw, dp->depend[i])) != ERR)
       raw[indx]->DependedUpon = true;

@@ -170,7 +170,7 @@ void splwcc(DERTBL *varp)
     return;
   }
 
-  if (varp->ndep >= 5)
+  if (varp->nDependencies >= 5)
     concf = GetSample(varp, 4);	// FSSP (preferably) concentration
 
   plwcc = (*lwcFn)(plwc, tasx, atx, psxc, concf, varp->ProbeCount);

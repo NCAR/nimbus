@@ -212,14 +212,18 @@ void sTwoD(DERTBL *varp)
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
   NR_TYPE	sampleVolume[maxBins];
-  NR_TYPE	deadTime;
+  NR_TYPE	deadTime = 0.0;
 
   assert(varp->Length > 1);
 
   actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
-  if (varp->ndep > 2)
+  if (varp->nDependencies > 2)
+  {
     deadTime = GetSample(varp, 2);
+    if (deadTime > 1000.0)
+      deadTime = 0.0;
+  }
 
   probeNum	= varp->ProbeCount;
   dia		= cell_size[probeNum];
@@ -483,7 +487,7 @@ void sHVPS(DERTBL *varp)
   NR_TYPE	*concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
   NR_TYPE	sampleVolume[256];
-  NR_TYPE	deadTime;
+  NR_TYPE	deadTime = 0.0;
 
   const NR_TYPE * actual = GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
