@@ -109,6 +109,7 @@ public:
 
   // The next 3 vars are used to calculate variable average over some interval.
   // They were added to be able to calculate MTP scan average values.
+  std::vector<NR_TYPE> data; // hold a single scan of data
   NR_TYPE sum; // sum of data values
   NR_TYPE sumSquares; // sum of the squares of the data values
   NR_TYPE count; // count of data values included in sum

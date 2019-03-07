@@ -271,39 +271,86 @@ void mtpInit(var_base *varp)
 
 }
 /* -------------------------------------------------------------------- */
-/* Calculate scan averages and RMS. NOTE: IF YOU WANT TO CALCULATE RMS, */
-/* YOU MUST CALL rmsData BEFORE averageData BECAUSE averageDATA resets  */
-/* the sums and counts.                                                 */
+/* Calculate scan averages and RMS.                                     */
 
 NR_TYPE accumulateData(DERTBL *varp, int idx)
 {
   NR_TYPE data = GetSample(varp, idx);
   if (!(std::isnan(data))) // exclude missing values from the sum
   {
+     varp->depends[idx]->data.push_back(data);
      varp->depends[idx]->sum +=data;
      varp->depends[idx]->sumSquares +=pow(data,2.0);
      varp->depends[idx]->count++;
   }
   return(data);
 }
-NR_TYPE rmsData(DERTBL *varp, int idx)
-{
-  // Calculate scan RMS values
-  NR_TYPE srdata = sqrt(varp->depends[idx]->sumSquares/varp->depends[idx]->count);
 
-  return(srdata); // scan RMS of data
+void resetScanAccumulation(DERTBL *varp, int idx)
+{
+  // Reset accumulation
+  varp->depends[idx]->sum =0;
+  varp->depends[idx]->sumSquares =0;
+  varp->depends[idx]->count =0;
+  varp->depends[idx]->data.clear();
+
 }
+
 NR_TYPE averageData(DERTBL *varp, int idx)
 {
   // Calculate scan averaged values.
   NR_TYPE sadata = varp->depends[idx]->sum/varp->depends[idx]->count;
 
-  // Reset accumulation
-  varp->depends[idx]->sum =0;
-  varp->depends[idx]->sumSquares =0;
-  varp->depends[idx]->count =0;
-
   return(sadata); // scan average of data
+}
+
+NR_TYPE rmseData(DERTBL *varp, int idx)
+{
+  // Calculate scan RMS Error (RMSE)
+
+  // If the last_record_time is -1, then we have found the very first MTP scan.
+  // Since nidas received the scan when it is finished, we have no idea when
+  // that scan started, so assume 17 seconds.
+  if (last_record_time == -1)
+  {
+    // Erase all but the last 17 elements
+    varp->depends[idx]->data.erase(varp->depends[idx]->data.begin(),varp->depends[idx]->data.end()-17);
+    // Reset accumulation
+    varp->depends[idx]->sum =0;
+    varp->depends[idx]->sumSquares =0;
+    varp->depends[idx]->count =0;
+
+    // Recalculate the sum, sumSquares, and count for just this chunk of data.
+    for (size_t i=0; i< varp->depends[idx]->data.size(); i++)
+    {
+	if (!(std::isnan(varp->depends[idx]->data[i]))) // exclude missing values from the sum
+	{
+	    varp->depends[idx]->sum +=varp->depends[idx]->data[i];
+	    varp->depends[idx]->sumSquares +=pow(varp->depends[idx]->data[i],2.0);
+	    varp->depends[idx]->count++;
+	}
+    }
+  }
+
+  // Calculate the average
+  NR_TYPE avg = averageData(varp, idx);
+
+  // Loop over scan data and calc RMS error
+  NR_TYPE sumDiff = 0;
+  for (size_t i=0; i< varp->depends[idx]->data.size(); i++) {
+      sumDiff =  sumDiff + pow((avg - varp->depends[idx]->data[i]),2.0);
+  }
+
+  // In mtpbin, wherever MJ calculated RMS error, he divided by n-1 rather than n as
+  // is the usual definition. Julie feels that MJ was always very thorough in his
+  // reasoning for why he did each and every thing, so uspects this was intentional
+  // and has requested we carry that forward to the new code. I agree it was intentional
+  // since I see it in many places, but there is no way to know why. He did not leave
+  // documentation.
+  NR_TYPE srdata = sqrt(sumDiff/(varp->depends[idx]->data.size()-1));
+
+
+  return(srdata); // scan RMSE of data
 }
 /* -------------------------------------------------------------------- */
 /* Calibrate the MTP scans using constants that are written to the .CAL */
@@ -311,7 +358,7 @@ NR_TYPE averageData(DERTBL *varp, int idx)
 /* The equations in this routine come from MTPGainEquation.docx (in svn)*/
 /* When the MTP instrument completes a scan of the atmosphere the scan  */
 /* counts are converted to Brightness Temperatures using this routine.  */
-/* Also calculate scan average and RMS nav and state vars.              */
+/* Also calculate scan average and RMSE of nav and state vars.          */
 void scal(DERTBL *varp)
 {  
   float Gnd[NUM_CHANNELS];
@@ -340,7 +387,7 @@ void scal(DERTBL *varp)
   int latidx = 9; accumulateData(varp,latidx); // Aircraft Latitude
   int lonidx = 10; accumulateData(varp,lonidx); // Aircraft Longitude
 
-  // We only receive a good record abougt once every 17 seconds. For the
+  // We only receive a good record about once every 17 seconds. For the
   // in-between records, scnt and tcnt will be nan. Check for this here so we
   // only process when have a good scan. THIS ASSUMES tcnt WILL ALWAYS BE
   // GOOD DURING AN MTP SCAN.
@@ -361,29 +408,41 @@ void scal(DERTBL *varp)
     return;
   }
   // If get here, have a good scan
+  // Calculate scan averaged and RMSE values
 
-  // Calculate scan averaged and RMS values
-  srat = rmsData(varp, atxidx); // Ambient Air Temperature
-  srat = srat+273.15; // convert C to Kelvin
+  // Ambient Air Temperature
   saat = averageData(varp, atxidx);
   saat = saat+273.15; // convert C to Kelvin
+  srat = rmseData(varp, atxidx);
+  srat = srat; // C to K offset doesn't affect RMSE because it's based on a difference
+  resetScanAccumulation(varp, atxidx); // start fresh for next scan
 
-  srpalt = rmsData(varp, paltidx); // Pressure Altitude
-  srpalt = srpalt/1000.0; // convert m to km
+  // Aircraft Pitch
   sapalt = averageData(varp, paltidx);
   sapalt = sapalt/1000.0; // convert m to km
+  srpalt = rmseData(varp, paltidx);
+  srpalt = srpalt/1000.0; // convert m to km
+  resetScanAccumulation(varp, paltidx); // start fresh for next scan
 
-  srpitch = rmsData(varp, pitchidx); // Aircraft Pitch
+  // Aircraft Pitch
   sapitch = averageData(varp, pitchidx);
+  srpitch = rmseData(varp, pitchidx);
+  resetScanAccumulation(varp, pitchidx);
 
-  srroll = rmsData(varp, rollidx); // Aircraft Roll
+  // Aircraft Roll
   saroll = averageData(varp, rollidx);
+  srroll = rmseData(varp, rollidx);
+  resetScanAccumulation(varp, rollidx); // start fresh for next scan
 
-  srlat = rmsData(varp, latidx); // Latitude
+  // Latitude
   salat = averageData(varp, latidx);
+  srlat = rmseData(varp, latidx);
+  resetScanAccumulation(varp, latidx); // start fresh for next scan
 
-  srlon = rmsData(varp, lonidx); // Longitude
+  // Longitude
   salon = averageData(varp, lonidx);
+  srlon = rmseData(varp, lonidx);
+  resetScanAccumulation(varp, lonidx); // start fresh for next scan
 
 
   /* The scan counts are stored in the ads file as cnts[angle,channel], i.e.
