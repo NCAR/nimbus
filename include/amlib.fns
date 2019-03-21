@@ -180,9 +180,9 @@
 	"FREF3_V3",	NULL,		xlS300cabin4,	NULL,
 	"FTMP3_V3",	NULL,		xlS300cabin7,	NULL,
 #
-	"CS100",	NULL,		NULL,		scs100,
+	"CS100",	(void(*)(void*))cfsspInit,	NULL,		scs100,
 	"CCDP",		(void(*)(void*))ccdpInit,	NULL,		scdp,
-	"CS200",	NULL,		NULL,		scs200,
+	"CS200",	(void(*)(void*))casasInit,	NULL,		scs200,
 	"CUHSAS",	(void(*)(void*))casasInit,	NULL,		scs200,
 	"CS300",	NULL,		NULL,		scf300,
 #
@@ -495,6 +495,13 @@
 	"WDC",		NULL,				NULL,		swd,
 	"ROC",		NULL,				NULL,		sroc,
 	"WIR",		(void(*)(void*))initGust,	NULL,		swi,
+	"VIC1",		NULL,				NULL,		svi,
+	"UIC1",		NULL,				NULL,		sui,
+	"WIC1",		(void(*)(void*))initGust,	NULL,		swi,
+	"VYC1",		NULL,				NULL,		svy,
+	"UXC1",		NULL,				NULL,		sux,
+	"WSC1",		NULL,				NULL,		sws,
+	"WDC1",		NULL,				NULL,		swd,
 #
 #	Fluxes
 #						ProbeCount field.
@@ -916,6 +923,10 @@
 	"GEOPTH",	NULL,		NULL,		sGeopot2,
 	"PSBC",		NULL,		NULL,		spsbc,
 	"PSFC",		NULL,		NULL,		spsfc,
+	"ADIFF",        NULL,           xladiff,        NULL,
+	"AKFF",         NULL,           NULL,           sakrd,
+	"PSFF",		NULL,		xlpsff,		NULL,
+	"PSFFC",	NULL,		NULL,		spsfc,
 	"PSFD",		NULL,		xlpsfd,		NULL,
 	"PSFD1",	NULL,		xlpsfd_ADS2,	NULL,
 	"PSFRD",	NULL,		xlxpsfd,	NULL,

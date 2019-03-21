@@ -55,7 +55,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 #include <raf/vardb.hh>
 #include "NetCDF.h"
 #include "psql.h"
-#include "svnInfo.h"
+#include "gitInfo.h"
 #include "sync_reader.hh"
 
 static char	ADSfileName[MAXPATHLEN];
@@ -79,7 +79,7 @@ static int	validateInputFile();
 static void	checkForProductionSetup(), displaySetupWindow(),
 		setOutputFileName(), readHeader(), stopProcessing(),
 		EngageSignals(), SetConfigGlobalAttributeVariables(),
-		LogLagErrors();
+		validateProjectDirectory(), LogLagErrors();
 
 
 //void	InitAsyncModule(char fileName[]);
@@ -94,23 +94,7 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
   void FreeDefaults();
 
   CloseADSfile();
-/*
- * Causes a "double free or corruption" error that I have not been able to
- * trace.
-  for (int i = 0; i < raw.size(); ++i)
-  {
-    delete raw[i];
-    raw[i] = 0;
-  }
-
-  for (int i = 0; i < derived.size(); ++i)
-  {
-    delete derived[i];
-    derived[i] = 0;
-  }
-*/
   FreeDefaults();
-
   FreeDataArrays();
   ReleaseFlightHeader();
 
@@ -191,7 +175,7 @@ static void readHeader()
   XtSetSensitive(outputFileText, false);
 
   XmUpdateDisplay(Shell001);
-  LogMessage(std::string("Revision: ") + SVNREVISION);
+  LogMessage(std::string("Repo branch: ") + REPO_BRANCH);
 
   int rc = ERR;
 
@@ -245,6 +229,9 @@ static void readHeader()
     checkForProductionSetup();
     LoadSetup_OK(Shell001, NULL, NULL); /* Fake it with any widget name */
     }
+
+  validateProjectDirectory();
+
 }	/* END READHEADER */
 
 /* -------------------------------------------------------------------- */
@@ -753,7 +740,8 @@ void quit()
 /* -------------------------------------------------------------------- */
 void Quit(Widget w, XtPointer client, XtPointer call)
 {
-  ncFile->Close();
+  if (ncFile)
+    ncFile->Close();
 
   extern PostgreSQL *psql;
   if (psql)
@@ -833,6 +821,54 @@ static int validateInputFile()
   return determineInputFileVersion();
 
 }	/* END VALIDATEINPUTFILE */
+
+/* -------------------------------------------------------------------- */
+static void validateProjectDirectory()
+{
+  FILE *pp;
+  int rc;
+  char cmd[200];
+
+  // Get repo revision number of the project directory.
+  sprintf(cmd, "svnversion %s/%s", cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str());
+  if ((pp = popen(cmd, "r")) == 0)
+  {
+    fprintf(stderr, "validateProjectDirectory: popen of [%s] failed\n", cmd);
+    Quit(NULL, NULL, NULL);
+  }
+
+  rc = fread(buffer, 1, 80, pp);
+  buffer[rc-1] = 0;
+  cfg.SetProjectDirectoryRevision(buffer);
+  pclose(pp);
+
+
+return;  // Don't have the following code dialed in yet.  e.g. vardb.xml gets generated at run-time and gcould/will cause a dirty checkout.
+
+  // If not in production mode, check the repo status...
+  if (!cfg.ProductionRun())
+    return;
+
+  sprintf(cmd, "svn status %s/%s", cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str());
+  if ((pp = popen(cmd, "r")) == 0)
+  {
+    fprintf(stderr, "validateProjectDirectory: popen of [%s] failed\n", cmd);
+    Quit(NULL, NULL, NULL);
+  }
+
+  rc = fread(buffer, 1, 8192, pp);
+  pclose(pp);
+
+  if (rc == 0)
+    return;
+
+  buffer[rc] = 0;
+  fprintf(stderr, "\n\n%s", buffer);
+  fprintf(stderr,
+    "\n\nFatal: project directory [%s] must be clean and commited to the repository\n\n",
+    cmd);
+  Quit(NULL, NULL, NULL);
+}
 
 /* -------------------------------------------------------------------- */
 void ValidateOutputFile(Widget w, XtPointer client, XtPointer call)
@@ -961,7 +997,7 @@ XmString CreateListLineItem(var_base *pp, int var_type)
       buffer[33] = 'N'; buffer[34] = 'A';
       memcpy(&buffer[40], "NA    ", 5);
 
-      for (size_t i = 0; i < dp->ndep; ++i)
+      for (size_t i = 0; i < dp->nDependencies; ++i)
         {
         if (i > 0)
           strcat(buffer, ",");
@@ -1064,7 +1100,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
     buffer[33] = 'N'; buffer[34] = 'A';
     fprintf(fp, buffer);
 
-    for (size_t j = 0; j < dp->ndep; ++j)
+    for (size_t j = 0; j < dp->nDependencies; ++j)
       {
       if (j > 0)
         {

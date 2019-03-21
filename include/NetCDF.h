@@ -91,7 +91,7 @@ struct missDat  /* (Time gap) / (missing data) information */
 
   std::queue<struct missDat *> _missingRecords;
 
-  static const std::string Source, Address, Phone, URL, EMail, Conventions,
+  static const std::string Source, Address, Phone, URL, EMail, ProcessorURL, Conventions,
 	ConventionsURL, NETCDF_FORMAT_VERSION;
 
   static const char *ISO8601_Z;

@@ -86,7 +86,7 @@ void AllocateDataArrays()
   /* Reset dependIndices.
    */
   for (size_t i = 0; i < derived.size(); ++i)
-    for (size_t j = 0; j < derived[i]->ndep; ++j)
+    for (size_t j = 0; j < derived[i]->nDependencies; ++j)
       DependIndexLookup(derived[i], j, false);
 
   int nVoltFloats = nSRfloats;

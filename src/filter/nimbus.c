@@ -10,14 +10,14 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2008
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2019
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "gui.h"
 #include "fbr.h"
-#include "svnInfo.h"
+#include "gitInfo.h"
 
 #include <nidas/core/NidasApp.h>
 
@@ -60,23 +60,23 @@ int main(int argc, char *argv[])
   Arg		args[8];
   Cardinal	n;
 
-  printf("Revision: %s\n", SVNREVISION);
-  printf("%s\n", SVNLASTCHANGEDDATE);
-  printf("%s\n\n", SVNURL);
+  printf("%s -> %s\n\n", REPO_URL, REPO_BRANCH);
+  printf(" : %s\n", REPO_DATE);
+  printf(" : %s\n", REPO_HASH);
 
   n = 0;
   AppShell = XtAppInitialize(&context, APP_CLASS, NULL, 0, &argc, argv,
               fallback_resources, NULL, 0);
 
   n = 0;
-  Shell000 = XtCreatePopupShell("topLevelShell", 
+  Shell000 = XtCreatePopupShell("topLevelShell",
               topLevelShellWidgetClass, AppShell, args, n);
 
   MainWindow = CreateMainWindow(Shell000);
 
   n = 0;
   XtSetArg(args[n], XmNiconName, "Nimbus"); n++;
-  Shell001 = XtCreatePopupShell("setupShell", 
+  Shell001 = XtCreatePopupShell("setupShell",
               topLevelShellWidgetClass, AppShell, args, n);
 
   SetupWindow = CreateSetupWindow(Shell001);

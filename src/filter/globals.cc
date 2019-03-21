@@ -93,9 +93,10 @@ variable_vector<T>::~variable_vector()
 variable_vector<RAWTBL> raw;		// Alphabeticly sorted pointers
 variable_vector<DERTBL> derived;	// Alphabeticly sorted pointers
 /*
- * The ComputeOrder vector does not own the pointers, so it is just a
- * regular vector and not a variable_table.
+ * These two vectors do not own the pointers, so it is just a regular vector
+ * and not a variable_table.
  */
+std::vector<RAWTBL*> decode;		// raw variables where "xlate != 0" - for rec_decode.c
 std::vector<DERTBL*> ComputeOrder;	// Compute Order for derived
 
 

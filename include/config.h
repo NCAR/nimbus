@@ -19,7 +19,7 @@ NOTE:		ProcessingRate vs. HRT_Rate, there used to only be 1 HRT,
 class Config
 {
 public:
-  enum aircraft	
+  enum aircraft
   {
 	ELECTRA=308, KINGAIR=312, SABRELINER=307, C130=130, SAILPLANE=9929,
 	NOAA_G4=49, HIAPER=677, NRL_P3=303, B57=357, TECHS=300, TADS=600
@@ -120,6 +120,7 @@ public:
   const std::string& ProjectNumber() const	{ return _projectNumber; }
   const std::string& TailNumber() const		{ return _tailNumber; }
   const std::string& NIDASrevision() const	{ return _nidasRevision; }
+  const std::string& ProjectDirectoryRevision() const	{ return _projDirRevision; }
   const std::string& FlightNumber() const	{ return _flightNumber; }
   const std::string& FlightDate() const		{ return _flightDate; }
   const std::string& ADSfileExtension() const	{ return _adsFileExtension; }
@@ -128,6 +129,7 @@ public:
   void SetProjectDirectory(const std::string s)	{ _projectDirectory = s; }
   void SetProjectName(const std::string s)	{ _projectName = s; }
   void SetProjectNumber(const std::string s)	{ _projectNumber = s; }
+  void SetProjectDirectoryRevision(const std::string s)	{ _projDirRevision = s; }
   void SetTailNumber(const std::string s)	{ _tailNumber = s; }
   void SetFlightNumber(const std::string s)	{ _flightNumber = s; }
   void SetFlightDate(const std::string s);
@@ -158,7 +160,7 @@ public:
 
   void SetSorterLength(int seconds) { _sorterLength = seconds; }
   int GetSorterLength() { return _sorterLength; }
-  
+
 
 private:
   bool _interactive;
@@ -206,6 +208,7 @@ private:
   std::string _flightNumber;
   std::string _flightDate;
   std::string _nidasRevision;
+  std::string _projDirRevision;
   std::string _adsFileExtension;
   std::string _checksum;
 
