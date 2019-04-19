@@ -130,6 +130,8 @@ void initAKRD(var_base *varp)
   if (cfg.ProjectName().compare("CSET") == 0 ||
       cfg.ProjectName().compare("ORCAS") == 0 ||
       cfg.ProjectName().compare("SOCRATES") == 0)
+      cfg.ProjectName().compare("OTREC_TEST") == 0)
+      cfg.ProjectName().compare("OTREC") == 0)
   {
     low = load_AKRD_Default(varp, "AKRD_COEFF_LOW");
     mid = load_AKRD_Default(varp, "AKRD_COEFF_MID");
