@@ -572,7 +572,6 @@ PostgreSQL::initializeVariableList()
 
 }	// END INITIALIZEVARIABLELIST
 
-
 /* -------------------------------------------------------------------- */
 int32_t
 PostgreSQL::WriteSQLvolts(const std::string & timeStamp)
