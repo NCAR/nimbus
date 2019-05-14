@@ -69,6 +69,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
     grantSelectToTables("guest");
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current;", true);
+    createNotifyInsertsTrigger();
 
     submitCommand("INSERT INTO global_attributes VALUES ('checksum', '" + cfg.Checksum() + "');", cfg.TransmitToGround());
   }
@@ -326,6 +327,66 @@ PostgreSQL::grantSelectToTables(const std::string user)
 
 }	// END GRANTSELECTTOTABLES
 /* -------------------------------------------------------------------- */
+
+
+/* -------------------------------------------------------------------- */
+void
+PostgreSQL::createNotifyInsertsTrigger()
+{
+  _sqlString.str("");
+  _sqlString << R"(
+
+    CREATE OR REPLACE FUNCTION notify_inserts() RETURNS trigger AS $trigger$
+      DECLARE
+        rec RECORD;
+        payload TEXT;
+        _column_name TEXT;
+        column_value TEXT;
+        payload_items TEXT[];
+        channel_name TEXT;
+      BEGIN
+        CASE TG_OP
+        WHEN 'INSERT' THEN
+          rec := NEW;
+        ELSE
+          RAISE EXCEPTION 'Action TG_OP: "%" is not supported by this function', TG_OP;
+        END CASE;
+        -- Get required fields
+        FOR _column_name IN SELECT column_name FROM information_schema.columns WHERE table_schema=TG_TABLE_SCHEMA AND table_name=TG_TABLE_NAME LOOP
+          EXECUTE format('SELECT $1.%I::TEXT', _column_name)
+          INTO column_value
+          USING rec;
+          payload_items := array_append(payload_items, '"' || _column_name || '":"' || replace(column_value, '"', '\"') || '"');
+        END LOOP;
+
+        -- Build the payload
+        payload :=  '{' || array_to_string(payload_items, ',') || '}';
+
+        -- Notify the channel
+        IF TG_ARGV[0] IS NOT NULL THEN
+          channel_name := TG_ARGV[0];
+        ELSE
+          channel_name := TG_TABLE_NAME || '_inserts';
+        END IF;
+        PERFORM pg_notify(channel_name, payload);
+
+        RETURN rec;
+      END;
+    $trigger$ LANGUAGE plpgsql;
+  )";
+
+  // DROP TRIGGER IF EXISTS notify_inserts ON raf_lrt;
+  // CREATE TRIGGER notify_inserts AFTER INSERT ON raf_lrt
+  //   FOR EACH ROW EXECUTE PROCEDURE notify_inserts();
+
+  _sqlString << "DROP TRIGGER IF EXISTS notify_inserts ON " << LRT_TABLE << ";";
+  _sqlString << "CREATE TRIGGER notify_inserts AFTER INSERT ON " << LRT_TABLE;
+  _sqlString << "  FOR EACH ROW EXECUTE PROCEDURE notify_inserts();";
+
+  submitCommand(_sqlString.str(), true);
+
+} // END CREATENOTIFYINSERTSTRIGGER
+
 void
 PostgreSQL::initializeGlobalAttributes()
 {
@@ -482,6 +543,7 @@ PostgreSQL::initializeVariableList()
   createSampleRateTables(rateTableMap);
 
 }	// END INITIALIZEVARIABLELIST
+
 
 /* -------------------------------------------------------------------- */
 int32_t
