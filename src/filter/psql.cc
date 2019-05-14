@@ -336,6 +336,34 @@ PostgreSQL::createNotifyInsertsTrigger()
   _sqlString.str("");
   _sqlString << R"(
 
+    --
+    -- based on https://gist.github.com/colophonemes/9701b906c5be572a40a84b08f4d2fa4e
+    --
+
+    --
+    -- notify_inserts((channel_name, optional):
+    --   Trigger notification for messaging to PG Notify
+    --
+    --   If channel_name is not specified, defaults to table_name + '_inserts'
+    --
+    --   e.g.
+    --
+    --   CREATE TRIGGER notify_inserts AFTER INSERT ON raf_lrt
+    --     FOR EACH ROW EXECUTE PROCEDURE notify_inserts();
+    --     => NOTIFY on channel 'raf_lrt_inserts'
+
+    --   CREATE TRIGGER notify_inserts AFTER INSERT ON raf_lrt
+    --     FOR EACH ROW EXECUTE PROCEDURE notify_inserts('foo');
+    --     => NOTIFY on channel 'foo'
+
+    --   Notifies channel w/ JSON hash:
+    --     - column name and value as key-value pairs
+    --     - e.g.
+    --        INSERT INTO raf_lrt(datetime, gglat, gglon,ggalt,atx) VALUES (NOW(), 4, -15,1000,32.2)
+    --
+    --        =>  {"datetime":"2019-05-07 00:28:16.149046","gglat":"4","gglon":"-15","ggalt":"1000","atx":"32.2"}
+    --
+
     CREATE OR REPLACE FUNCTION notify_inserts() RETURNS trigger AS $trigger$
       DECLARE
         rec RECORD;
