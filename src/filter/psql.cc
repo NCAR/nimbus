@@ -326,8 +326,6 @@ PostgreSQL::grantSelectToTables(const std::string user)
   submitCommand(_sqlString.str(), true);
 
 }	// END GRANTSELECTTOTABLES
-/* -------------------------------------------------------------------- */
-
 
 /* -------------------------------------------------------------------- */
 void
