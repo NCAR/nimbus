@@ -4,17 +4,21 @@ OBJECT NAME:	pms1d.c
 
 FULL NAME:	PMS-1D related stuff
 
-ENTRY POINTS:	AddPMS1dAttrs()
-		AddToPMS1DprobeList()
-		GetPMS1DAttrsForSQL()
+ENTRY POINTS:	AddToPMS1DprobeList()	# hdr_decode.c (ADS2 only so far)
+		PMS1D_SetupForADS3()	# hdr_decode.c
+		AddPMS1dAttrs()		# NetCDF.cc
+		GetPMS1DAttrsForSQL()	# psql.cc
+		setProbeCount()		# src/amlib/std/probe_name.c
 
-STATIC FNS:	getCellSizes()
+STATIC FNS:	setSerialNumberAndProbeType()
+		setProbeType()
+		getCellSizes()
 
 DESCRIPTION:	AddPMS1dAttrs() adds PMSspecs probe parameters to the
 		netCDF file variable attributes.  The other function is
 		stub for post-processing.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2011
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2018
 -------------------------------------------------------------------------
 */
 
