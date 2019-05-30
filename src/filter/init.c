@@ -16,13 +16,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 #include <sys/types.h>
 #include <Xm/TextF.h>
 
+#include <nidas/util/Process.h>
+#include <nidas/core/NidasApp.h>
+
 #include "nimbus.h"
 #include "decode.h"
 #include "amlib.h"
 #include "gui.h"
-
-#include <nidas/util/Process.h>
-#include <nidas/core/NidasApp.h>
 
 using nidas::core::NidasApp;
 static void ReadBatchFile(const char *filename, Config::processingRate * rate);

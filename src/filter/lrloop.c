@@ -27,11 +27,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "timeseg.h"
 #include "gui.h"
 #include "circbuff.h"
-#include "amlib.h"
 #include "NetCDF.h"
 #include "injectsd.h"
 
 #include "trace_variables.h"
+
+#include "amlib.h"
 
 extern SyntheticData sd;
 
