@@ -125,20 +125,20 @@ void Proceed(Widget w, XtPointer client, XtPointer call)
   int	rc;
 
   if (w)
-    {
+  {
     ExtractFileName(((XmFileSelectionBoxCallbackStruct *)call)->value, &p);
     strcpy(ADSfileName, p);
     XmTextFieldSetString(aDSdataText, p);
 
     if ((rc = validateInputFile()) == OK)
-      {
+    {
       FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);
       readHeader();
       displaySetupWindow();
-      }
     }
+  }
   else
-    {
+  {
     p = XmTextFieldGetString(aDSdataText);
     strcpy(ADSfileName, p);
     XtFree(p);
@@ -148,11 +148,11 @@ void Proceed(Widget w, XtPointer client, XtPointer call)
     XtFree(p);
 
     if ((rc = validateInputFile()) == OK)
-      {
+    {
       readHeader();
       ValidateOutputFile(NULL, NULL, NULL);
-      }
     }
+  }
 
   if (rc == OK && cfg.isADS2() && FlightNumberInt == 0)
     HandleWarning("Flight Number is 0, a new one may be entered\nvia the 'Edit/Flight Info' menu item,\nor run fixFltNum on the ADS image and start nimbus again.", NULL, NULL);
@@ -186,24 +186,24 @@ static void readHeader()
     rc = DecodeHeader3(ADSfileName);
 
   if (rc == ERR)
-    {
+  {
     CancelSetup(NULL, NULL, NULL);
     return;
-    }
+  }
 
   sprintf(buffer, "%s - %s, Flight %s",
 	cfg.ProjectName().c_str(), cfg.ProjectNumber().c_str(),
 	cfg.FlightNumber().c_str());
 
   if (cfg.Interactive())
-    {
+  {
     Arg		args[1];
 
     XtSetArg(args[0], XmNtitle, buffer);
     XtSetValues(Shell001, args, 1);
 
     if (LogFile)
-      {
+    {
       extern Widget logText;
       char *p = XmTextGetString(logText);
 
@@ -212,15 +212,15 @@ static void readHeader()
 
       fprintf(LogFile, p);
       XtFree(p);
-      }
+    }
 
     CreateProbeOutputMenu();
     CreateProbeDataQualityMenu();
     FillListWidget();
     checkForProductionSetup();
-    }
+  }
   else
-    {
+  {
     if (cfg.ProcessingRate() == Config::HighRate)
       SetHighRate(NULL, (void *)cfg.HRTRate(), NULL);
 
@@ -228,7 +228,7 @@ static void readHeader()
 
     checkForProductionSetup();
     LoadSetup_OK(Shell001, NULL, NULL); /* Fake it with any widget name */
-    }
+  }
 
   validateProjectDirectory();
 
@@ -397,7 +397,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   //ncFile->SwitchToDataMode();
 
   if (cfg.ProcessingMode() == Config::RealTime)
-    {
+  {
     NextTimeInterval(&btim, &etim);
 
     if (cfg.isADS2())
@@ -406,16 +406,16 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
       RealTimeLoop3();
 
     quit();
-    }
+  }
 
 
   startWALL	= time(NULL);
   startCPU	= clock();
 
   while (NextTimeInterval(&btim, &etim))
-    {
+  {
     switch (cfg.ProcessingRate())
-      {
+    {
       case Config::LowRate:
       case Config::SampleRate:
         rc = LowRateLoop(btim, etim);
@@ -423,11 +423,11 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
       case Config::HighRate:
         rc = HighRateLoop(btim, etim);
         break;
-      }
+    }
 
     if (PauseWhatToDo == P_QUIT || rc == ERR)
       break;
-    }
+  }
 
   finishWALL = time(NULL);
   finishCPU  = clock();
@@ -519,20 +519,20 @@ static void checkForProductionSetup()
   ReadTextFile(GROUPS, group);
 
   for (i = 0; group[i]; ++i)
-    {
+  {
     if (strlen(group[i]) < (size_t)4)
       continue;
 
     if (strcmp(group[i], "Revision 2") == 0)
-      {
+    {
       revision2 = True;
       continue;
-      }
+    }
 
     if (!revision2)
-      {
+    {
       if (atoi(group[i]) == FlightNumberInt)
-        {
+      {
         char t[32];
         MakeProjectFileName(buffer, "%s/%s/%s/Production/Flight_");
         sprintf(t, "%d", atoi(strrchr(group[i], '=')+1));
@@ -541,12 +541,12 @@ static void checkForProductionSetup()
         LoadSetup_OK(NULL, NULL, NULL);
 
         break;
-        }
       }
+    }
     else
-      {
+    {
       if (cfg.FlightNumber().compare(0, 4, group[i], 4) == 0)
-        {
+      {
         char *src;
         MakeProjectFileName(buffer, "%s/%s/%s/Production/Flight_");
         src = strtok(group[i], " \t\n:=");
@@ -556,9 +556,9 @@ static void checkForProductionSetup()
         LoadSetup_OK(NULL, NULL, NULL);
 
         break;
-        }
       }
     }
+  }
 
   FreeTextFile(group);
 
@@ -614,11 +614,11 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
     return;
 
   for (size_t i = 0; i < (size_t)pos_cnt; ++i)
-    {
+  {
     size_t indx = pos_list[i] - 1;
 
     if (indx >= raw.size())
-      {
+    {
       DERTBL	*dp = derived[indx-raw.size()];
       dp->Dirty = true;
 
@@ -626,7 +626,7 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
         dp->OutputRate = Config::LowRate;
       else
         switch (dp->OutputRate)
-          {
+        {
           case Config::LowRate:
             /* PMS Probes HRT is SampleRate.  Period.
              */
@@ -639,21 +639,21 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
           default:
             dp->OutputRate = Config::LowRate;
             break;
-          }
+        }
 
       item = CreateListLineItem(dp, DERIVED);
-      }
+    }
     else
-      {
+    {
       RAWTBL	*rp = raw[indx];
 
       if (strcmp(rp->name, "HOUR") != 0 && strcmp(rp->name, "MINUTE") != 0
 				&& strcmp(rp->name, "SECOND") != 0)
-        {
+      {
         rp->Dirty = true;
 
         switch (rp->OutputRate)
-          {
+        {
           case Config::LowRate:
             if (rp->OutputRate != rp->SampleRate ||
                (rp->ProbeType & PROBE_PMS2D) || (rp->ProbeType & PROBE_PMS1D))
@@ -673,15 +673,15 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
               rp->OutputRate = Config::LowRate;
             else
               rp->OutputRate = cfg.HRTRate();
-          }
         }
+      }
 
       item = CreateListLineItem(rp, RAW);
-      }
+    }
 
     XmListReplaceItemsPos(list1, &item, 1, pos_list[i]);
     XmStringFree(item);
-    }
+  }
 
   if (pos_cnt == 1)
     XmListSelectPos(list1, pos_list[0], false);
@@ -700,29 +700,29 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
     return;
 
   for (size_t i = 0; i < (size_t)pos_cnt; ++i)
-    {
+  {
     size_t indx = pos_list[i] - 1;
 
     if (indx >= raw.size())
-      {
+    {
       DERTBL	*dp = derived[indx-raw.size()];
 //      dp->Dirty = true;
       dp->Output = 1 - dp->Output;
 
       item = CreateListLineItem(dp, DERIVED);
-      }
+    }
     else
-      {
+    {
       RAWTBL	*rp = raw[indx];
 //      rp->Dirty = true;
       rp->Output = 1 - rp->Output;
 
       item = CreateListLineItem(rp, RAW);
-      }
+    }
 
     XmListReplaceItemsPos(list1, &item, 1, pos_list[i]);
     XmStringFree(item);
-    }
+  }
 
   if (pos_cnt == 1)
     XmListSelectPos(list1, pos_list[0], false);
@@ -801,22 +801,22 @@ static int validateInputFile()
     return(OK);
 
   if (strlen(ADSfileName) == 0 || access(ADSfileName, R_OK) == ERR)
-    {
+  {
     char msg[128];
     sprintf(msg, "Non-existent input file [%s].\n", ADSfileName);
     HandleError(msg);
     return(ERR);
-    }
+  }
 
   struct stat st_buf;
   stat(ADSfileName, &st_buf);
   if ( S_ISDIR( st_buf.st_mode ) )
-    {
+  {
     char msg[128];
     sprintf(msg, "Input file [%s] is a directory.\n", ADSfileName);
     HandleError(msg);
     return(ERR);
-    }
+  }
 
   return determineInputFileVersion();
 
@@ -877,12 +877,12 @@ void ValidateOutputFile(Widget w, XtPointer client, XtPointer call)
   struct stat statBuf;
 
   if (w)
-    {
+  {
     ExtractFileName(((XmFileSelectionBoxCallbackStruct *)call)->value, &p);
     FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);
     strcpy(OutputFileName, p);
     XmTextFieldSetString(outputFileText, p);
-    }
+  }
 
 
   if (strlen(OutputFileName) == 0 || cfg.ProductionRun())
@@ -898,28 +898,28 @@ void ValidateOutputFile(Widget w, XtPointer client, XtPointer call)
   /* Make sure we have a .nc extension.
    */
   if (strcmp(&OutputFileName[strlen(OutputFileName)-3], ".nc") != 0)
-    {
+  {
     strcat(OutputFileName, ".nc");
     XmTextFieldSetString(outputFileText, OutputFileName);
-    }
+  }
 
 
   /* If it doesn't exist, then go away happy.
    */
   if (access(OutputFileName, F_OK) == ERR && errno == ENOENT)
-    {
+  {
     StartProcessing(NULL, NULL, NULL);
     return;
-    }
+  }
 
   /* If we can't access it for writing, generate perm denied.
    */
   if (access(OutputFileName, W_OK) == ERR && errno == EACCES)
-    {
+  {
     HandleError("Permission denied on output file.");
     QueryOutputFile(NULL, NULL, NULL);
     return;
-    }
+  }
 
   /* Else if it exists, warn user.
    */
@@ -943,18 +943,18 @@ static void setOutputFileName()
   if (s) {
     strcpy(OutputFileName, s);
     strcat(OutputFileName, "/");
-    }
+  }
 
   if (cfg.ProductionRun())
-    {
+  {
     sprintf(buffer, p, cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
     strcat(OutputFileName, buffer);
-    }
+  }
   else
-    {
+  {
     strcat(OutputFileName, getenv("USER"));
     strcat(OutputFileName, ".nc");
-    }
+  }
 
   XmTextFieldSetString(outputFileText, OutputFileName);
 
@@ -968,7 +968,7 @@ XmString CreateListLineItem(var_base *pp, int var_type)
   char		tmp[100];
 
   switch (var_type)
-    {
+  {
     case RAW:
       rp = (RAWTBL *)pp;
 
@@ -979,10 +979,10 @@ XmString CreateListLineItem(var_base *pp, int var_type)
 		rp->DataQuality[0]);
 
       for (size_t i = 0; i < rp->cof.size(); ++i)
-        {
+      {
         sprintf(tmp, "%10.4lf", rp->cof[i]);
         strcat(buffer, tmp);
-        }
+      }
 
       break;
 
@@ -998,16 +998,16 @@ XmString CreateListLineItem(var_base *pp, int var_type)
       memcpy(&buffer[40], "NA    ", 5);
 
       for (size_t i = 0; i < dp->nDependencies; ++i)
-        {
+      {
         if (i > 0)
           strcat(buffer, ",");
 
         sprintf(tmp, " %s", dp->depend[i]);
         strcat(buffer, tmp);
-        }
+      }
 
       break;
-    }
+  }
 
   return(XmStringCreateLocalized(buffer));
 
@@ -1053,10 +1053,10 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
   extern DEFAULT	*Defaults[];
 
   if ((fp = popen("lpr", "w")) == NULL)
-    {
+  {
     HandleError("PrintList: can't open pipe to 'lpr'");
     return;
-    }
+  }
 
 
   fprintf(fp, "%s - %s, Flight %s\n\n", cfg.ProjectName().c_str(), cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
@@ -1066,7 +1066,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 
 
   for (size_t i = 0; i < raw.size(); ++i)
-    {
+  {
     RAWTBL *rp = raw[i];
 
     fprintf(fp, list1lineFrmt,
@@ -1082,11 +1082,11 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
       fprintf(fp, "%14e", rp->cof[j]);
 
     fprintf(fp, "\n");
-    }
+  }
 
 
   for (size_t i = 0; i < derived.size(); ++i)
-    {
+  {
     DERTBL *dp = derived[i];
 
     sprintf(buffer, list1lineFrmt,
@@ -1101,25 +1101,25 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
     fprintf(fp, buffer);
 
     for (size_t j = 0; j < dp->nDependencies; ++j)
-      {
+    {
       if (j > 0)
-        {
+      {
         fprintf(fp, ", ");
 
         if (j % 5 == 0)
           fprintf(fp, "\n\t\t\t\t\t ");
-        }
-
-      fprintf(fp, "%s", dp->depend[j]);
       }
 
-    fprintf(fp, "\n");
+      fprintf(fp, "%s", dp->depend[j]);
     }
+
+    fprintf(fp, "\n");
+  }
 
   fprintf(fp, "\n\nDefaults:\n\n");
 
   for (size_t i = 0; i < nDefaults; ++i)
-    {
+  {
     if (Defaults[i]->Used == false)
       continue;
 
@@ -1129,16 +1129,15 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
       fprintf(fp, "\n\t");
 
     for (size_t j = 0; j < Defaults[i]->Values.size(); ++j)
-      {
+    {
       if (j > 0 && j % 5 == 0)
         fprintf(fp, "\n\t");
 
       fprintf(fp, "%14e", Defaults[i]->Values[j]);
-      }
-
-    fprintf(fp, "\n");
     }
 
+    fprintf(fp, "\n");
+  }
 
   pclose(fp);
 
@@ -1218,7 +1217,6 @@ void ToggleProbeDataQuality(Widget w, XtPointer client, XtPointer call)
   if (cfg.ProductionRun())
     good = dataQuality[GOOD];
 
-    
   for (size_t i = 0; i < raw.size(); ++i)
     if (strstr(raw[i]->name, suffix)) {
       raw[i]->Dirty = true;
@@ -1245,12 +1243,12 @@ void ToggleProbeDataQuality(Widget w, XtPointer client, XtPointer call)
 void QueryOutputFile(Widget w, XtPointer client, XtPointer call)
 {
   if (!cfg.ProductionRun())
-    {
+  {
     GetDataDirectory(buffer);
     strcat(buffer, "*.nc");
 
     QueryFile("Enter netCDF file name:", buffer, ValidateOutputFile);
-    }
+  }
   else
     ValidateOutputFile(NULL, NULL, NULL);
 
