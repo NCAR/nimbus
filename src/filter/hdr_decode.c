@@ -30,19 +30,20 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
 #include <float.h>
 
 
-#include <raf/pms.h>
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
 #include <raf/ctape.h>	// ADS header API
+#include <raf/pms.h>
 #include <raf/vardb.hh>	// Variable DataBase
 #include <raf/VarDBConverter.hh>
-#include "amlib.h"
 #include "mtp.h"
 
 #include "sync_reader.hh"
 #include <nidas/core/NidasApp.h>
 #include <nidas/core/Project.h>
+
+#include "amlib.h"
 
 using nidas::dynld::raf::Aircraft;
 using nidas::core::NidasApp;

@@ -41,11 +41,11 @@ public:
   bool	isValid() const { return(_conn ? true : false); }
 
 //@{
-  /** 
+  /**
    * Write LowRate (LRT) data into the database.
    */
   void	WriteSQL(const std::string & timeStamp);
-  /** 
+  /**
    * Write SampleRate (SRT) data into the database.
    * @returns usec of last sample written.
    */
@@ -127,6 +127,7 @@ protected:
   void grantSelectToTables(const std::string);
   void initializeGlobalAttributes();
   void initializeVariableList();
+  void createNotifyInsertsTrigger();
 
   std::string
   getGlobalAttribute(const char key[]) const;
@@ -142,7 +143,7 @@ protected:
    * Low level add a variable with given params.
    */
   void
-  addVariableToDataBase(const var_base* var, 
+  addVariableToDataBase(const var_base* var,
 	size_t nDims, const int dims[],
 	const std::vector<float>& cals, float missingValue);
 

@@ -69,6 +69,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
     grantSelectToTables("guest");
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current;", true);
+    createNotifyInsertsTrigger();
 
     submitCommand("INSERT INTO global_attributes VALUES ('checksum', '" + cfg.Checksum() + "');", cfg.TransmitToGround());
   }
@@ -325,7 +326,93 @@ PostgreSQL::grantSelectToTables(const std::string user)
   submitCommand(_sqlString.str(), true);
 
 }	// END GRANTSELECTTOTABLES
+
 /* -------------------------------------------------------------------- */
+void
+PostgreSQL::createNotifyInsertsTrigger()
+{
+  _sqlString.str("");
+  _sqlString << R"(
+
+    --
+    -- based on https://gist.github.com/colophonemes/9701b906c5be572a40a84b08f4d2fa4e
+    --
+
+    --
+    -- notify_inserts((channel_name, optional):
+    --   Trigger notification for messaging to PG Notify
+    --
+    --   If channel_name is not specified, defaults to table_name + '_inserts'
+    --
+    --   e.g.
+    --
+    --   CREATE TRIGGER notify_inserts AFTER INSERT ON raf_lrt
+    --     FOR EACH ROW EXECUTE PROCEDURE notify_inserts();
+    --     => NOTIFY on channel 'raf_lrt_inserts'
+
+    --   CREATE TRIGGER notify_inserts AFTER INSERT ON raf_lrt
+    --     FOR EACH ROW EXECUTE PROCEDURE notify_inserts('foo');
+    --     => NOTIFY on channel 'foo'
+
+    --   Notifies channel w/ JSON hash:
+    --     - column name and value as key-value pairs
+    --     - e.g.
+    --        INSERT INTO raf_lrt(datetime, gglat, gglon,ggalt,atx) VALUES (NOW(), 4, -15,1000,32.2)
+    --
+    --        =>  {"datetime":"2019-05-07 00:28:16.149046","gglat":"4","gglon":"-15","ggalt":"1000","atx":"32.2"}
+    --
+
+    CREATE OR REPLACE FUNCTION notify_inserts() RETURNS trigger AS $trigger$
+      DECLARE
+        rec RECORD;
+        payload TEXT;
+        _column_name TEXT;
+        column_value TEXT;
+        payload_items TEXT[];
+        channel_name TEXT;
+      BEGIN
+        CASE TG_OP
+        WHEN 'INSERT' THEN
+          rec := NEW;
+        ELSE
+          RAISE EXCEPTION 'Action TG_OP: "%" is not supported by this function', TG_OP;
+        END CASE;
+        -- Get required fields
+        FOR _column_name IN SELECT column_name FROM information_schema.columns WHERE table_schema=TG_TABLE_SCHEMA AND table_name=TG_TABLE_NAME LOOP
+          EXECUTE format('SELECT $1.%I::TEXT', _column_name)
+          INTO column_value
+          USING rec;
+          payload_items := array_append(payload_items, '"' || _column_name || '":"' || replace(column_value, '"', '\"') || '"');
+        END LOOP;
+
+        -- Build the payload
+        payload :=  '{' || array_to_string(payload_items, ',') || '}';
+
+        -- Notify the channel
+        IF TG_ARGV[0] IS NOT NULL THEN
+          channel_name := TG_ARGV[0];
+        ELSE
+          channel_name := TG_TABLE_NAME || '_inserts';
+        END IF;
+        PERFORM pg_notify(channel_name, payload);
+
+        RETURN rec;
+      END;
+    $trigger$ LANGUAGE plpgsql;
+  )";
+
+  // DROP TRIGGER IF EXISTS notify_inserts ON raf_lrt;
+  // CREATE TRIGGER notify_inserts AFTER INSERT ON raf_lrt
+  //   FOR EACH ROW EXECUTE PROCEDURE notify_inserts();
+
+  _sqlString << "DROP TRIGGER IF EXISTS notify_inserts ON " << LRT_TABLE << ";";
+  _sqlString << "CREATE TRIGGER notify_inserts AFTER INSERT ON " << LRT_TABLE;
+  _sqlString << "  FOR EACH ROW EXECUTE PROCEDURE notify_inserts();";
+
+  submitCommand(_sqlString.str(), true);
+
+} // END CREATENOTIFYINSERTSTRIGGER
+
 void
 PostgreSQL::initializeGlobalAttributes()
 {

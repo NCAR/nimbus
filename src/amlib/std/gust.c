@@ -12,11 +12,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2018
 -------------------------------------------------------------------------
 */
 
-#include "nimbus.h"
-#include "amlib.h"
-
 #include "sync_reader.hh"
 #include <nidas/core/Project.h>
+
+#include "nimbus.h"
+#include "amlib.h"
 
 static const int MAX_PROBES = 8;
 
@@ -38,10 +38,10 @@ bool
 getBoomLengthParameter(var_base* varp, float* boomlength)
 {
   nidas::core::Project* project = nidas::core::Project::getInstance();
-  
+
   varlist_t variables;
   variables = selectVariablesFromProject(project);
-  
+
   nidas::core::Variable* var = lookup_variable(variables, varp->name);
   if (! var)
   {

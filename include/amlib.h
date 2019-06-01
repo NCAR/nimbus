@@ -11,7 +11,6 @@ DESCRIPTION:	Header File declaring amlib functions.
 
 #include <raf/header.h>
 #include <raf/portable.h>
-#include <netinet/in.h>
 
 #include <vector>
 
