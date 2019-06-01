@@ -108,7 +108,7 @@ void RealTimeLoop()
     grnd_feed = new GroundFeed(cfg.GroundFeedDataRate());
 
   do
-    {
+  {
     hdr = (Hdr_blk *)ADSrecord;
     struct tm tm;
     memset(&tm, 0, sizeof(tm));
@@ -135,7 +135,7 @@ pts = ts;
     ApplyCalCoes(SampledData);
     AverageSampledData();
     ComputeLowRateDerived(SampledDataTimeToSeconds(SampledData));
- 
+
     if (cfg.OutputSQL())
       psql->WriteSQL(timeStamp);
 
@@ -157,7 +157,7 @@ pts = ts;
 
     while (file->NextSyncRecord(ADSrecord) == false)
       usleep(50000);
-    }
+  }
   while (1);
 
 }	/* END REALTIMELOOP */
