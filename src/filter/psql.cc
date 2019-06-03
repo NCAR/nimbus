@@ -50,11 +50,11 @@ PostgreSQL::PostgreSQL(std::string specifier)
 
   if (cfg.TransmitToGround())
   {
-   _groundDBinitString.str("");
-   _groundDBinitString << cfg.AircraftString() << '\n';
-   _groundDBinitString << "CREATE OR REPLACE FUNCTION pg_sleep(int) RETURNS int AS '/lib/libc.so.6', 'sleep' LANGUAGE 'C' STRICT;\n";
-   _groundDBinitString << "NOTIFY killiit;\n";
-   _groundDBinitString << "SELECT pg_sleep(2);\n";
+    _groundDBinitString.str("");
+    _groundDBinitString << cfg.AircraftString() << '\n';
+    _groundDBinitString << "CREATE OR REPLACE FUNCTION pg_sleep(int) RETURNS int AS '/lib/libc.so.6', 'sleep' LANGUAGE 'C' STRICT;\n";
+    _groundDBinitString << "NOTIFY killiit;\n";
+    _groundDBinitString << "SELECT pg_sleep(2);\n";
   }
 
   // Don't recreate database if this is the same flight.
@@ -331,8 +331,7 @@ PostgreSQL::grantSelectToTables(const std::string user)
 void
 PostgreSQL::createNotifyInsertsTrigger()
 {
-  _sqlString.str("");
-  _sqlString << R"(
+  _groundDBinitString << R"(
 
     --
     -- based on https://gist.github.com/colophonemes/9701b906c5be572a40a84b08f4d2fa4e
@@ -405,11 +404,9 @@ PostgreSQL::createNotifyInsertsTrigger()
   // CREATE TRIGGER notify_inserts AFTER INSERT ON raf_lrt
   //   FOR EACH ROW EXECUTE PROCEDURE notify_inserts();
 
-  _sqlString << "DROP TRIGGER IF EXISTS notify_inserts ON " << LRT_TABLE << ";";
-  _sqlString << "CREATE TRIGGER notify_inserts AFTER INSERT ON " << LRT_TABLE;
-  _sqlString << "  FOR EACH ROW EXECUTE PROCEDURE notify_inserts();";
-
-  submitCommand(_sqlString.str(), true);
+  _groundDBinitString << "DROP TRIGGER IF EXISTS notify_inserts ON " << LRT_TABLE << ";";
+  _groundDBinitString << "CREATE TRIGGER notify_inserts AFTER INSERT ON " << LRT_TABLE;
+  _groundDBinitString << "  FOR EACH ROW EXECUTE PROCEDURE notify_inserts();";
 
 } // END CREATENOTIFYINSERTSTRIGGER
 
