@@ -184,7 +184,7 @@
 	"CCDP",		(void(*)(void*))ccdpInit,	NULL,		scdp,
 	"CS200",	(void(*)(void*))casasInit,	NULL,		scs200,
 	"CUHSAS",	(void(*)(void*))casasInit,	NULL,		scs200,
-	"CS300",	NULL,		NULL,		scf300,
+	"CS300",	(void(*)(void*))cf300Init,	NULL,		scf300,
 #
 # PMS actual data arrays
 	"A200X_OLD",	(void(*)(void*))c200xInit,	xlP16bin,	NULL,
