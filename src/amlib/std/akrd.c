@@ -100,7 +100,7 @@ void initAKRD(var_base *varp)
       break;
 
     case Config::HIAPER:
-      c1 = 21.481; d0 = 4.51107; d1 = 19.84095; d2 = -0.0018806;
+      c1 = 21.481; d0 = 4.8542; d1 = 8.9817; d2 = -0.011126;
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
         gv_radome_ssn = (int)tmp[0];
 
