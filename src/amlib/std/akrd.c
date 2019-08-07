@@ -24,7 +24,7 @@ static std::vector<float> akrd_coeff_old;	// Old C130.  Currently Pre-WECAN?  Tw
 static std::vector<float> low, mid, high;	// Altitude specific coef's.
 
 // Coeff for aky filtering.
-static double c1 = 1.0, d0 = 1.0, d1 = 1.0, d2 = 1.0;
+static double c1 = 1.0, d0 = 1.0, d1 = 1.0, d2 = 1.0, d3 = 0.0;
 static double filter(double, double *);
 static double zf[nFeedBackTypes][4][6];
 
@@ -100,7 +100,7 @@ void initAKRD(var_base *varp)
       break;
 
     case Config::HIAPER:
-      c1 = 21.481; d0 = 4.8542; d1 = 8.9817; d2 = -0.011126;
+      c1 = 21.481; d0 = 4.8542; d1 = 8.9817; d2 = -0.011126; d3 = -0.00000753;
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
         gv_radome_ssn = (int)tmp[0];
 
@@ -208,17 +208,24 @@ void sakrd(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void saky(DERTBL *varp)
 {
-  NR_TYPE qc, adif, AKY = 0.0;
+  static int timeOfFlight = 0;
+
+  NR_TYPE qc, adif, wow,  AKY = 0.0;
 
   adif	= GetSample(varp, 0);
   qc	= GetSample(varp, 1);
+  wow   = GetSample(varp, 2);
 
-  if (std::isnan(adif) || std::isnan(qc))
+  if (std::isnan(adif) || std::isnan(qc) || std::isnan(wow))
   {
     AKY = floatNAN;
     qc = 0.1;
+    wow = 0;
   }
-
+  if (FeedBack == LOW_RATE_FEEDBACK) /* Only do this in the Low-rate pass */
+  {
+    timeOfFlight +=  (1 - wow); //wow is 1 on ground
+  }
   if (qc > 5.5)	// Avoid blow-ups on the ground.
   {
     double ratio = adif / qc;
@@ -226,7 +233,7 @@ void saky(DERTBL *varp)
     double QCFS = filter(qc, zf[FeedBack][1]);
     double AQF = ratio - AQS;
 
-    AKY = d0 + d1 * AQS + d2 * QCFS + c1 * AQF;
+    AKY = d0 + d1 * AQS + d2 * QCFS + c1 * AQF + d3 * timeOfFlight;
   }
 
   PutSample(varp, AKY);
