@@ -1,5 +1,5 @@
 /*******AKDF  ATTACK ANGLE OF THE BOOM (deg)                         AKDF
- 
+
      Input:
 	adif	- raw boom differential pressure
 	qcb	- raw boom dynamic pressure

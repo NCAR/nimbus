@@ -44,13 +44,13 @@ void sReferAttack(DERTBL *varp)
   NR_TYPE x = GetSample(varp, 0);
 
   if (std::isnan(x))
-  {   
+  {
     // Repeat prev attack up to two samples if missing, otherwise set to 3.0.
     if (++attack_miss_cnt[FeedBack] > ATTACK_MISS_MAX[FeedBack])
       attack[FeedBack] = ATTACK_DEFAULT_VALUE;
-  }   
+  }
   else
-  {   
+  {
     attack_miss_cnt[FeedBack] = 0;
     attack[FeedBack] = x;
   }

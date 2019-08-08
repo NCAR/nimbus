@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2013
 
 #include "nimbus.h"
 #include "amlib.h"
-      
+
 /* -------------------------------------------------------------------- */
 double mach(double p, double q)
 {
