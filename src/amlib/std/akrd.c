@@ -216,11 +216,14 @@ void saky(DERTBL *varp)
   qc	= GetSample(varp, 1);
   wow   = GetSample(varp, 2);
 
-  if (std::isnan(adif) || std::isnan(qc) || std::isnan(wow))
+  if (std::isnan(adif) || std::isnan(qc))
   {
     AKY = floatNAN;
     qc = 0.1;
-    wow = 0;
+  }
+  if (std::isnan(wow))
+  {
+    wow = 1;	// Assume onground if missing..i.e. avionics not powered up yet.
   }
   if (FeedBack == LOW_RATE_FEEDBACK) /* Only do this in the Low-rate pass */
   {
