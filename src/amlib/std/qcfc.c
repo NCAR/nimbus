@@ -22,8 +22,8 @@ void sqcfc(DERTBL *varp)
   NR_TYPE psf = GetSample(varp, 0);
   NR_TYPE qcf = GetSample(varp, 1);
 
-  if (qcf < 0.01)
-    qcf = 0.01;
+  if (qcf < 0.1)
+    qcf = 0.1;
 
   if (cfg.Aircraft() == Config::HIAPER || cfg.Aircraft() == Config::C130)
   {
@@ -39,8 +39,8 @@ void sqcfc(DERTBL *varp)
   if (qcfc < 10.0)
     qcfc = qcf;
 
-  if (qcfc < 0.001)
-    qcfc =  0.001;
+  if (qcfc < 0.1)
+    qcfc =  0.1;
 
   PutSample(varp, qcfc);
 }

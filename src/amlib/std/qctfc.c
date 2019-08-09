@@ -21,8 +21,8 @@ void sqctfc(DERTBL *varp)
   NR_TYPE qctf = GetSample(varp, 0);
   NR_TYPE pstf = GetSample(varp, 1);
 
-  if (qctf < 0.01)
-    qctf = 0.01;
+  if (qctf < 0.1)
+    qctf = 0.1;
 
   if (varp->nDependencies > 3)	// Lenschow method
   {
@@ -40,8 +40,8 @@ void sqctfc(DERTBL *varp)
   if (qctfc < 10.0)
     qctfc = qctf;
 
-  if (qctfc < 0.001)
-    qctfc =  0.001;
+  if (qctfc < 0.1)
+    qctfc =  0.1;
 
   PutSample(varp, qctfc);
 }

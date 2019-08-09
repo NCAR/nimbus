@@ -24,8 +24,8 @@ void sqcbc(DERTBL *varp)
   if (qcbc < 10.0)
     qcbc = qcb;
 
-  if (qcbc < 0.001)
-    qcbc =  0.001;
+  if (qcbc < 0.1)
+    qcbc =  0.1;
 
   PutSample(varp, qcbc);
 }
