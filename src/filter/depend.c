@@ -55,7 +55,7 @@ void ReadDependencies()
     {
       VDBVar *vdb_var = vardb->search_var(dp->name);
       if (vdb_var)
-        sprintf(buffer, "%s\t%s", dp->name, 
+        sprintf(buffer, "%s\t%s", dp->name,
 		vdb_var->get_attribute(VDBVar::DEPENDENCIES).c_str());
     }
     else
@@ -244,7 +244,7 @@ static void doubleCheck(DERTBL *dp)	/* This function is recursive	*/
   dcList.push_back(dp->name);
   if (dcList.size() > 1000)
   {
-    fprintf(stderr, "depend.c::doublCheck infinite loop, stack = \n\n");
+    fprintf(stderr, "depend.c::doubleCheck infinite loop, stack = \n\n");
     for (size_t i = 0; i < dcList.size(); ++i)
       fprintf(stderr, "%s ", dcList[i].c_str());
     fprintf(stderr, "\n\n");
