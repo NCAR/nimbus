@@ -293,6 +293,7 @@
 	"PLWC1DP",	NULL,		NULL,		splwc2,
 	"PLWCPIP",	NULL,		NULL,		splwc2,
 	"PLWCHV",	NULL,		NULL,		splwc2,
+	"IWC1DC",	NULL,		NULL,		siwc2,
 
 # PMS Effective Radius
 	"REFFD",	NULL,		NULL,		sreffd,

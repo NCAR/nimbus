@@ -321,6 +321,17 @@ void splwc2(DERTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
+void siwc2(DERTBL *varp)
+{
+  NR_TYPE area	= GetSample(varp, 0);
+
+  // area still needs to be converted from shadowed pixel count to mm^2
+
+  NR_TYPE iwc = 0.115 * pow(area, 1.218);
+  PutSample(varp, iwc);
+}
+
+/* -------------------------------------------------------------------- */
 void sdbz2(DERTBL *varp)
 {
   PutSample(varp, dbz[varp->ProbeCount]);
@@ -350,7 +361,7 @@ void sconc2dc050(DERTBL *varp)
 
   if (strstr(varp->depend[0], "1DC"))
     n = 64;
-    
+
   // 50 micron and bigger.
   for (size_t i = conc50idx[varp->ProbeCount]; i < n; ++i)
     conc += concentration[i];
