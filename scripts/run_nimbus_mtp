@@ -1,0 +1,12 @@
+#!/bin/csh
+# Moved from proj/CSET/Production, not tested, so may need tweaking to run
+# if we ever decide to integrate MTP into the netCDF files via nimbus -
+# highly unlikely.
+
+# Remove existing files.  Helps to avoid if a residual data if nimbus fails.
+setenv DATA_DIR /net/work/dev/jaa/rdat
+/bin/rm ${DATA_DIR}/CSET/CSET?f??.nc
+
+foreach setup_file ( /net/jlocal/projects/CSET/GV_N677F/Production/setup_?f?? )
+  /net/work/dev/jaa/nimbus/src/filter/nimbus -b $setup_file
+end
