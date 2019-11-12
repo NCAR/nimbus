@@ -266,7 +266,7 @@ void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
 }	/* END SCS200 */
 
 /* -------------------------------------------------------------------- */
-void spflwc(DERTBL *varp)
+void spflwc(DERTBL *varp)	// PCASP / SPP-200 corrected flow.
 {
   NR_TYPE	flow, psxc, atx, flowc;
 
@@ -284,7 +284,7 @@ void spflwc(DERTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
-void suflwc(DERTBL *varp)
+void suflwc(DERTBL *varp)	// UHSAS corrected flow.
 {
   NR_TYPE flow, ups, psxc, atx, flowc;
 
