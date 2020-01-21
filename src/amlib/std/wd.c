@@ -34,10 +34,9 @@ void swd(DERTBL *varp)
   vi = GetSample(varp, 1);
 
   if (ui == 0.0 && vi == 0.0)
-/*  If wind is "calm," output a direction of 0 degrees instead of 360 degrees.
-          Ron Ruth  9 November 2001  */
     {
-    wd = 0.;
+    // Wind Direction is undefined when u and v are zero.
+    wd = nan("");
     }
   else
     {
