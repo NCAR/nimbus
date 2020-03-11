@@ -109,6 +109,8 @@ protected:
 
   std::stringstream _sql2d_str;
 
+  std::string _missingValueStr;
+
   /**
    * List of data rate tables (e.g. RAF_1sps, RAF_10sps, RAF_25sps)
    * created for this database.
@@ -189,8 +191,10 @@ protected:
    * @param value is the value to add.
    * @param addComma is whether to prepend a comma to the stream.
    */
-  void
-  addValueToAllStreams(NR_TYPE value, bool addComma = true);
+  inline void
+  addValueToAllStreams(NR_TYPE value, bool addComma = true)
+  { addValue(_sqlString, value, addComma); }
+
   void
   addValue(std::stringstream& sqlStr, NR_TYPE value, bool addComma = true);
 
