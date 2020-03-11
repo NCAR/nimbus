@@ -31,6 +31,10 @@ std::string readLandmarks();
 /* -------------------------------------------------------------------- */
 PostgreSQL::PostgreSQL(std::string specifier)
 {
+  char miss[32];
+  sprintf(miss, "%.0f", MISSING_VALUE);
+  _missingValueStr = miss;
+
   ILOG(("PostgreSQL ctor, spec = %s", specifier.c_str()));
 
   _conn = PQconnectdb(specifier.c_str());
@@ -664,35 +668,18 @@ PostgreSQL::Submit2dSQL()
 inline void
 PostgreSQL::addValue(std::stringstream& sql, NR_TYPE value, bool addComma)
 {
+  char value_ascii[32];
+
   if (addComma)
     sql << ',';
 
   if (std::isnan(value) || std::isinf(value))
-    sql << MISSING_VALUE;
+    sql << _missingValueStr;
   else
-    sql << value;
-
-}	// END ADDVALUE
-
-/* -------------------------------------------------------------------- */
-inline void
-PostgreSQL::addValueToAllStreams(NR_TYPE value, bool addComma)
-{
-  static const char commaFormat[] = ",%e";
-  static const char normalFormat[] = "%e";
-
-  const char *format = commaFormat;
-  char value_ascii[32];
-
-  if (!addComma)
-    format = normalFormat;
-
-  if (std::isnan(value) || std::isinf(value))
-    value = MISSING_VALUE;
-
-  sprintf(value_ascii, format, value);
-
-  _sqlString << value_ascii;
+  {
+    sprintf(value_ascii, "%.7e", value);
+    sql << value_ascii;
+  }
 
 }	// END ADDVALUE
 
