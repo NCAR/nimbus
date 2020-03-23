@@ -38,7 +38,7 @@ static const size_t maxBins = 130;
 static size_t	FIRST_BIN[MAX_PMS2D], LAST_BIN[MAX_PMS2D], conc50idx[MAX_PMS2D],
 		conc100idx[MAX_PMS2D], conc150idx[MAX_PMS2D];
 static NR_TYPE  responseTime[MAX_PMS2D], armDistance[MAX_PMS2D],
-		DENS[MAX_PMS2D], SampleRate[MAX_PMS2D];
+		DENS[MAX_PMS2D], SampleRate[MAX_PMS2D], basicSampleArea[MAX_PMS2D];
 static double   PLWFAC[MAX_PMS2D], DBZFAC[MAX_PMS2D];
 
 static NR_TYPE  total_concen[MAX_PMS2D], dbar[MAX_PMS2D], plwc[MAX_PMS2D],
@@ -170,6 +170,7 @@ void sTwodInit(var_base *varp)
 
   ReleasePMSspecs();
 
+  basicSampleArea[probeNum] = (armDistance[probeNum]/1000) * (resolution / 1000000) * nDiodes;
 
   /* 1DC/P has length 32, 2DC/P has length 64.
    */
@@ -321,6 +322,17 @@ void splwc2(DERTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
+void siwc2(DERTBL *varp)
+{
+  NR_TYPE area	= GetSample(varp, 0);
+  NR_TYPE tas	= GetSample(varp, 1);
+
+  NR_TYPE mass = 0.115 * pow(area, 1.218) * 0.001;	// grams
+  NR_TYPE iwc = mass / (tas * basicSampleArea[varp->ProbeCount]);
+  PutSample(varp, iwc);
+}
+
+/* -------------------------------------------------------------------- */
 void sdbz2(DERTBL *varp)
 {
   PutSample(varp, dbz[varp->ProbeCount]);
@@ -350,7 +362,7 @@ void sconc2dc050(DERTBL *varp)
 
   if (strstr(varp->depend[0], "1DC"))
     n = 64;
-    
+
   // 50 micron and bigger.
   for (size_t i = conc50idx[varp->ProbeCount]; i < n; ++i)
     conc += concentration[i];

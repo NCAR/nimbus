@@ -69,6 +69,13 @@ void sqlTransmit::sendString(const std::string& str)
     if (cfg.GroundFeedType() == Config::LDM)
       command = "pqinsert";
 
+    // Set up logfile in /tmp
+    int fd = open("/tmp/sendSQL.log", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+
+    dup2(fd, 1);   // make stdout go to file
+    dup2(fd, 2);   // make stderr go to file
+    close(fd);     // fd no longer needed - the dup'ed handles are sufficient
+
     if (execlp((const char *)command, (const char *)command, (const char *)fName, (const char *)0) == -1)
     {
       fprintf(stderr, "nimbus:transmit.cc: Failed to execute pqinsert, errno = %d\n", errno);

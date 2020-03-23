@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
 {
   nidas::core::NidasApp napp("nimbus");
   napp.setApplicationInstance();
+  napp.allowUnrecognized(true);
   napp.enableArguments(napp.XmlHeaderFile | napp.loggingArgs() |
 		       napp.StartTime | napp.EndTime);
   // Require long flags to avoid confusion with nimbus flags like -x.
