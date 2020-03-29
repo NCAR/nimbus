@@ -29,7 +29,8 @@ void sRefer(DERTBL *varp)
 
 /* -------------------------------------------------------------------- */
 /* PCORS use attack.  If attack goes nan, carry previous value for 2 seconds,
- * then set to 3.0 if it continues as nan past that.
+ * then set to 3.0 if it continues as nan past that.  The 3.0 comes from a
+ * Al Cooper memo October 3, 2014.
  * If the requirement for pressures/PCORs goes away, then this can move back
  * to just using sRefer()
  */
@@ -42,9 +43,9 @@ void sReferAttack(DERTBL *varp)
   static const NR_TYPE ATTACK_DEFAULT_VALUE = 3.0;
 
 
-  NR_TYPE x = GetSample(varp, 0);
+  NR_TYPE aoa = GetSample(varp, 0);
 
-  if (std::isnan(x))
+  if (std::isnan(aoa))
   {
     // Repeat prev attack up to two samples if missing, otherwise set to 3.0.
     if (++attack_miss_cnt[FeedBack] > ATTACK_MISS_MAX[FeedBack])
@@ -53,9 +54,8 @@ void sReferAttack(DERTBL *varp)
   else
   {
     attack_miss_cnt[FeedBack] = 0;
-    attack[FeedBack] = x;
+    attack[FeedBack] = aoa;
   }
-
 
   PutSample(varp, attack[FeedBack]);
 }
