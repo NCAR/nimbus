@@ -1,5 +1,5 @@
 /*******SSRD  SIDESLIP ANGLE OF THE RADOME (deg)                       SSRD
- 
+
         Input:
                 bdifr - raw radome differential pressure
                 qcxc - corrected dynamic pressure for radome calcs
@@ -44,7 +44,7 @@ void initSSRD(var_base *varp)
         {
           /*  New coefficients to handle ssrd offset to BDIFR - SOLAR CORONA on.
            *  Kept inactive pending final approval per AJS 12/18/98.
-           */	
+           */
           coeff.push_back(-0.012);
           coeff.push_back(12.21);
         }

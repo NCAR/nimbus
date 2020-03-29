@@ -42,7 +42,7 @@ NR_TYPE	(*pcorPSFv2)(NR_TYPE, NR_TYPE, NR_TYPE), (*pcorQCFv2)(NR_TYPE, NR_TYPE, 
 
 
 // Above functions, but for new pitot-static mounted in the bird strike zone on the GV.
-NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE), 
+NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE),
         (*pcorQCTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
 
 
@@ -61,7 +61,7 @@ NR_TYPE	pcorw8(NR_TYPE), pcorf8(NR_TYPE),
 // GV
 	pcorr5(NR_TYPE),pcorf5(NR_TYPE), pcorq5(NR_TYPE), pcorr5_2(NR_TYPE, NR_TYPE, NR_TYPE),
 	pcorf5_2(NR_TYPE, NR_TYPE, NR_TYPE), pcorq5_2(NR_TYPE, NR_TYPE, NR_TYPE),
-	pcorf5v2(NR_TYPE, NR_TYPE, NR_TYPE), 
+	pcorf5v2(NR_TYPE, NR_TYPE, NR_TYPE),
 	pcortf5(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
 
 /* reference airspeed on J-W liquid water content converted from MPH
@@ -91,7 +91,7 @@ void InitAircraftDependencies()
    * TFHER(Z) = 10.**(-1.7841*ALOG10(Z)-1.4025)    (312)
    * TFHER(Z) = 10.**(-1.7244*ALOG10(Z)-1.5989)    (307)
    * The function is included in the subroutine.  Only the constants
-   * are set here 
+   * are set here
    */
   tfher1 = -1.7841;
   tfher2 = -1.4025;
@@ -369,7 +369,7 @@ NR_TYPE pcorr5_2(NR_TYPE q, NR_TYPE q1)
   NR_TYPE	pfax;
 
   // LAMS PCOR per Al Cooper.  4/6/12
-  pfax = (0.00696 + 0.6678*q) + q1*(-0.05965 + q1*(-0.2833 - 0.2437*q1)); 
+  pfax = (0.00696 + 0.6678*q) + q1*(-0.05965 + q1*(-0.2833 - 0.2437*q1));
 
   return(pfax);
 }
@@ -385,7 +385,7 @@ NR_TYPE pcorf5_2(NR_TYPE q, NR_TYPE q1)
   NR_TYPE	pfix;
 
   // LAMS PCOR per Al Cooper.  4/6/12
-  pfix = (0.00696 + 0.6678*q) + q1*(-0.05965 + q1*(-0.2833 - 0.2437*q1)); 
+  pfix = (0.00696 + 0.6678*q) + q1*(-0.05965 + q1*(-0.2833 - 0.2437*q1));
 
   return(pfix);
 }
@@ -412,9 +412,9 @@ NR_TYPE pcorf5v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)
 }
 
 // --- Friesen August 2016, for new pitot-static on GV
-// Working to determine if want to use Mach # calculated from raw Pm/Qm from new 
-// pitot (calculated as M below), or Mach # calculated from corrected Pm/Qm from 
-// old pitot (MACHF). Consequently, this function can do either. It pulls in 
+// Working to determine if want to use Mach # calculated from raw Pm/Qm from new
+// pitot (calculated as M below), or Mach # calculated from corrected Pm/Qm from
+// old pitot (MACHF). Consequently, this function can do either. It pulls in
 // MACHF as M (assuming MACHF is defined in DependsTable), and will overwrite it
 // with M from new pitot if M is uncommented below.
 NR_TYPE pcortf5(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack, NR_TYPE SSlip, NR_TYPE M)
@@ -504,7 +504,7 @@ NR_TYPE pcorr1v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFRD
   return deltaP;
 }
 
-// These v3 corrections provide a consistent offset from the avionics-provided pressure (PS_A) for recent C-130 
+// These v3 corrections provide a consistent offset from the avionics-provided pressure (PS_A) for recent C-130
 // projects since IDEAS-4-C130 in 2011, where a different correction is needed.
 NR_TYPE pcorf1v3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFD post IDEAS-4-C130
 {
