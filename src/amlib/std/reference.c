@@ -6,7 +6,7 @@ DESCRIPTION:	This function is used for straight assignment of one variable
 		to another.  Allows a second backup parameter to be passed in
 		also.  If the primary parameter is nan, then the backup is used.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2010
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2020
 -------------------------------------------------------------------------
 */
 
@@ -28,7 +28,8 @@ void sRefer(DERTBL *varp)
 }	/* END SREFER */
 
 /* -------------------------------------------------------------------- */
-/* PCORS use attack.  If attack goes nan, carry previous value for 2 seconds.
+/* PCORS use attack.  If attack goes nan, carry previous value for 2 seconds,
+ * then set to 3.0 if it continues as nan past that.
  * If the requirement for pressures/PCORs goes away, then this can move back
  * to just using sRefer()
  */
