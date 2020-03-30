@@ -110,6 +110,9 @@ void sssrd(DERTBL *varp)
   bdifr	= GetSample(varp, 0);
   qcxc	= GetSample(varp, 1);
 
+  if (isnan(qcxc))
+    ssrd = floatNAN;
+  else
   /* Blow-up protection:  output zero while on ground (QCX < 5.5 mbar)
    * installed by Ron Ruth  18 October 2001
    */
