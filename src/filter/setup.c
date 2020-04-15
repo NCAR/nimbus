@@ -25,6 +25,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 #include "gui.h"
 #include "injectsd.h"
 
+void ProcessSetupLineRAW(RAWTBL *, char *, bool);
+void ProcessSetupLineDERIVED(DERTBL *, char *, bool);
+
 static char	SetupFileName[MAXPATHLEN];
 
 extern SyntheticData sd;
@@ -34,13 +37,13 @@ void Set_SetupFileName(char s[])
 {
   strcpy(SetupFileName, s);
 }
- 
+
 /* -------------------------------------------------------------------- */
 void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call)
 {
   int	indx;
   FILE	*fp;
-  char	*file, *target;
+  char	*file, *target, line[256];
   bool	ProductionSetup;
 
   ProductionSetup = w ? false : true;
@@ -120,7 +123,8 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
     if (buffer[0] == COMMENT || buffer[0] == '\n')
       continue;
 
-    target = strtok(buffer, "=");
+    strcpy(line, buffer);
+    target = strtok(line, "=");
 
     if (InterpKey.compare(target) == 0)
     {
@@ -148,6 +152,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
         cfg.SetTwoDProcessingMethod(Config::Reconstruction);
     }
     else
+    // SDI is ADS2 only.  It was Analog and Digital Counters.  All fall under RAW now.
     if (strcmp(target, "SDI") == 0 || strcmp(target, "RAW") == 0)
     {
       target = strtok(NULL, " \t");
@@ -161,40 +166,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
         continue;
       }
 
-      if (!ProductionSetup || cfg.ProductionRun())
-        raw[indx]->Dirty = true;
-
-      while ( (target = strtok(NULL, " \t")) )
-      {
-        if (strncmp(target, "O=", 2) == 0)
-          if (!ProductionSetup || cfg.ProductionRun())
-            raw[indx]->Output = atoi(&target[2]);
-
-        if (strncmp(target, "OR=", 3) == 0)
-          if (!ProductionSetup || cfg.ProductionRun())
-            raw[indx]->OutputRate = atoi(&target[3]);
-
-        if (strncmp(target, "DQ=", 3) == 0)
-          raw[indx]->DataQuality = SearchDataQuality(&target[3]);
-
-        if (strncmp(target, "SL=", 3) == 0)
-          raw[indx]->StaticLag = atoi(&target[3]);
-
-        if (strncmp(target, "SS=", 3) == 0)
-          raw[indx]->SpikeSlope = (NR_TYPE)atof(&target[3]);
-
-        if (strncmp(target, "nCOEF=", 6) == 0)
-        {
-          if (cfg.CalibrationsAppliedBy() == Config::NIMBUS || !cfg.ProductionRun())
-          {
-            size_t order = atoi(strchr(target, '=')+1);
-
-            raw[indx]->cof.clear();
-            for (size_t i = 0; i < order; ++i)
-              raw[indx]->cof.push_back((float)atof(strtok(NULL, " \t")));
-          }
-        }
-      }
+      ProcessSetupLineRAW(raw[indx], target, ProductionSetup);
     }
     else
     if (strcmp(target, "DERIVED") == 0)
@@ -210,31 +182,36 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
         continue;
       }
 
-      if (!ProductionSetup || cfg.ProductionRun())
-        derived[indx]->Dirty = true;
+      ProcessSetupLineDERIVED(derived[indx], target, ProductionSetup);
+    }
+    else
+    if (strcmp(target, "PROBE") == 0)
+    {
+      char suffix[64];
+      target = strtok(NULL, " \t");
+      strcpy(suffix, target);
 
-      while ( (target = strtok(NULL, " \t")) )
+      for (size_t i = 0; i < raw.size(); ++i)
       {
-        if (strncmp(target, "O=", 2) == 0)
-          if (!ProductionSetup || cfg.ProductionRun())
-            derived[indx]->Output = atoi(&target[2]);
-
-        if (strncmp(target, "OR=", 3) == 0)
-          if (!ProductionSetup || cfg.ProductionRun())
-            derived[indx]->OutputRate = atoi(&target[3]);
-
-        if (strncmp(target, "DQ=", 3) == 0)
-          derived[indx]->DataQuality = SearchDataQuality(&target[3]);
-
-        if (strncmp(target, "nDEP=", 5) == 0)
+        if ( strstr(raw[i]->name, suffix) )
         {
-          derived[indx]->nDependencies = atoi(strchr(target, '=')+1);
+          strcpy(line, buffer);
+          target = strtok(line, "=");
+          target = strtok(NULL, " \t");
 
-          for (size_t i = 0; i < derived[indx]->nDependencies; ++i)
-          {
-            strcpy(derived[indx]->depend[i], strtok(NULL, " \t\n"));
-            DependIndexLookup(derived[indx], i, false);
-          }
+          ProcessSetupLineRAW(raw[i], target, ProductionSetup);
+        }
+      }
+
+      for (size_t i = 0; i < derived.size(); ++i)
+      {
+        if ( strstr(derived[i]->name, suffix) )
+        {
+          strcpy(line, buffer);
+          target = strtok(line, "=");
+          target = strtok(NULL, " \t");
+
+          ProcessSetupLineDERIVED(derived[i], target, ProductionSetup);
         }
       }
     }
@@ -273,7 +250,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 void LoadSynthetic_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call)
 {
   char *file;
-  ExtractFileName(call->value, &file); 
+  ExtractFileName(call->value, &file);
 
   if (strlen(file) == 0 || access(file, R_OK) == ERR)
   {
@@ -350,7 +327,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       if (raw[i]->SpikeSlope != 0.0)
         fprintf(fp, "SS=%e ", raw[i]->SpikeSlope);
 
-      fprintf(fp, "DQ=%s OR=%zu", 
+      fprintf(fp, "DQ=%s OR=%zu",
 		raw[i]->DataQuality, raw[i]->OutputRate);
 
       if (cfg.CalibrationsAppliedBy() == Config::NIMBUS || !cfg.ProductionRun())
@@ -395,5 +372,74 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
   fclose(fp);
 
 }	/* END SAVESETUP_OK */
+
+void ProcessSetupLineRAW(RAWTBL *rp, char *target, bool ProductionSetup)
+{
+  if (!ProductionSetup || cfg.ProductionRun())
+    rp->Dirty = true;
+
+  while ( (target = strtok(NULL, " \t")) )
+  {
+    if (strncmp(target, "O=", 2) == 0)
+      if (!ProductionSetup || cfg.ProductionRun())
+        rp->Output = atoi(&target[2]);
+
+    if (strncmp(target, "OR=", 3) == 0)
+      if (!ProductionSetup || cfg.ProductionRun())
+        rp->OutputRate = atoi(&target[3]);
+
+    if (strncmp(target, "DQ=", 3) == 0)
+      rp->DataQuality = SearchDataQuality(&target[3]);
+
+    if (strncmp(target, "SL=", 3) == 0)
+      rp->StaticLag = atoi(&target[3]);
+
+    if (strncmp(target, "SS=", 3) == 0)
+      rp->SpikeSlope = (NR_TYPE)atof(&target[3]);
+
+    if (strncmp(target, "nCOEF=", 6) == 0)
+    {
+      if (cfg.CalibrationsAppliedBy() == Config::NIMBUS || !cfg.ProductionRun())
+      {
+        size_t order = atoi(strchr(target, '=')+1);
+
+        rp->cof.clear();
+        for (size_t i = 0; i < order; ++i)
+          rp->cof.push_back((float)atof(strtok(NULL, " \t")));
+      }
+    }
+  }
+}
+
+void ProcessSetupLineDERIVED(DERTBL *dp, char *target, bool ProductionSetup)
+{
+  if (!ProductionSetup || cfg.ProductionRun())
+    dp->Dirty = true;
+
+  while ( (target = strtok(NULL, " \t")) )
+  {
+    if (strncmp(target, "O=", 2) == 0)
+      if (!ProductionSetup || cfg.ProductionRun())
+        dp->Output = atoi(&target[2]);
+
+    if (strncmp(target, "OR=", 3) == 0)
+      if (!ProductionSetup || cfg.ProductionRun())
+        dp->OutputRate = atoi(&target[3]);
+
+    if (strncmp(target, "DQ=", 3) == 0)
+      dp->DataQuality = SearchDataQuality(&target[3]);
+
+    if (strncmp(target, "nDEP=", 5) == 0)
+    {
+      dp->nDependencies = atoi(strchr(target, '=')+1);
+
+      for (size_t i = 0; i < dp->nDependencies; ++i)
+      {
+        strcpy(dp->depend[i], strtok(NULL, " \t\n"));
+        DependIndexLookup(dp, i, false);
+      }
+    }
+  }
+}
 
 /* END SETUP.C */

@@ -506,6 +506,18 @@ static void checkForProductionSetup()
   if (cfg.LoadProductionSetup() == false)
     return;
 
+  /* Check for three files:
+   *  - Flight_All
+   *  - FlightGroups
+   *  - Flight_rf##; this flight number
+   */
+
+
+  /* Check for Flight_All
+   */
+  MakeProjectFileName(buffer, "%s/%s/%s/Production/Flight_All");
+  LoadSetup_OK(NULL, NULL, NULL);
+
 
   /* Check for Flight Groups
    */
