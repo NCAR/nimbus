@@ -213,8 +213,18 @@ void swi(DERTBL *varp)
   s  = cs * ch + e + ta * f;
   t  = vspd + boomln[probeCnt] * thedot * ch;
 
-  ui[probeCnt] = tas_dab * r + (vew - bvew);
-  vi[probeCnt] = tas_dab * s + (vns - bvns);
+
+  if (isnan(attack))
+  {
+    ui[probeCnt] = -tas * sin((thdg+sslip))+vew;
+    vi[probeCnt] = -tas * cos((thdg+sslip))+vns;
+  }
+  else
+  {
+    ui[probeCnt] = tas_dab * r + (vew - bvew);
+    vi[probeCnt] = tas_dab * s + (vns - bvns);
+  }
+
   ux[probeCnt] =  ui[probeCnt] * ss + vi[probeCnt] * cs;
   vy[probeCnt] = -ui[probeCnt] * cs + vi[probeCnt] * ss;
   wi = tas_dab * ab + t;
