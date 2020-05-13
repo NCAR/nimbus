@@ -6,8 +6,12 @@ Module for the :py:class:`NimbusSetup` class.
 
 import os
 import copy
-import StringIO
 import re
+
+try:
+    from StringIO import StringIO
+except:
+    from io import StringIO
 
 from calendar import timegm as _timegm
 from time import strptime as _strptime

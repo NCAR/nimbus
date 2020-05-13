@@ -9,7 +9,7 @@ import NimbusSetup as ns
 # pylint: disable=C0103
 
 def MakeNimbusSetup(env, **kw):
-    if kw.has_key('ifile'):
+    if 'ifile' in kw:
         kw['ifile'] = env.File(kw['ifile']).abspath
     return ns.NimbusSetup(**kw)
 
