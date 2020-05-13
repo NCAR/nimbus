@@ -514,7 +514,7 @@ NR_TYPE pcorf1v3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFD post IDEAS-4-C1
   if (Qm < 0.01) Qm = 0.01;
 
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
-  if (isnan(Attack)) Attack = 3.0;
+  if (std::isnan(Attack)) Attack = 3.0;
 
   M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * (Qm/Pm) + a[2] * Attack + a[3] * M + a[4] * (Qm/Pm) * Attack*Attack); // per Cooper 15 Sept 2016 memo
@@ -533,7 +533,7 @@ NR_TYPE pcorr1v3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFRD post IDEAS-4-C
   if (Qm < 0.01) Qm = 0.01;
 
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
-  if (isnan(Attack)) Attack = 3.0;
+  if (std::isnan(Attack)) Attack = 3.0;
 
   M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * (Qm/Pm) + a[2] * Attack + a[3] * M + a[4] * (Qm/Pm) * Attack*Attack); // per Cooper 15 Sept 2016 memo

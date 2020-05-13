@@ -214,7 +214,7 @@ void swi(DERTBL *varp)
   t  = vspd + boomln[probeCnt] * thedot * ch;
 
 
-  if (isnan(attack))
+  if (std::isnan(attack))
   {
     ui[probeCnt] = -tas * sin((thdg+sslip))+vew;
     vi[probeCnt] = -tas * cos((thdg+sslip))+vns;
