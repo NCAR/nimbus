@@ -147,7 +147,10 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("RepositoryDate", REPO_DATE);
   putGlobalAttribute("RepositoryHASH", REPO_HASH);
   putGlobalAttribute("RepositoryStatus", REPO_DIRTY);
+  putGlobalAttribute("ProjectDirectoryRepoURL", cfg.ProjectRepoURL());
   putGlobalAttribute("ProjectDirectoryRevision", cfg.ProjectDirectoryRevision());
+  if (cfg.ProjectDirectoryStatus().size() > 0)
+    putGlobalAttribute("ProjectDirectoryStatus", cfg.ProjectDirectoryStatus());
   putGlobalAttribute("Conventions", Conventions);
   putGlobalAttribute("ConventionsURL", ConventionsURL);
   putGlobalAttribute("Metadata_Conventions", "Unidata Dataset Discovery v1.0");

@@ -121,6 +121,8 @@ public:
   const std::string& TailNumber() const		{ return _tailNumber; }
   const std::string& NIDASrevision() const	{ return _nidasRevision; }
   const std::string& ProjectDirectoryRevision() const	{ return _projDirRevision; }
+  const std::string& ProjectDirectoryStatus() const	{ return _projDirStatus; }
+  const std::string& ProjectRepoURL() const	{ return _projRepoURL; }
   const std::string& FlightNumber() const	{ return _flightNumber; }
   const std::string& FlightDate() const		{ return _flightDate; }
   const std::string& ADSfileExtension() const	{ return _adsFileExtension; }
@@ -130,6 +132,8 @@ public:
   void SetProjectName(const std::string s)	{ _projectName = s; }
   void SetProjectNumber(const std::string s)	{ _projectNumber = s; }
   void SetProjectDirectoryRevision(const std::string s)	{ _projDirRevision = s; }
+  void SetProjectDirectoryStatus(const std::string s)	{ _projDirStatus = s; }
+  void SetProjectRepoURL(const std::string s)	{ _projRepoURL = s; }
   void SetTailNumber(const std::string s)	{ _tailNumber = s; }
   void SetFlightNumber(const std::string s)	{ _flightNumber = s; }
   void SetFlightDate(const std::string s);
@@ -208,7 +212,9 @@ private:
   std::string _flightNumber;
   std::string _flightDate;
   std::string _nidasRevision;
+  std::string _projRepoURL;
   std::string _projDirRevision;
+  std::string _projDirStatus;
   std::string _adsFileExtension;
   std::string _checksum;
 

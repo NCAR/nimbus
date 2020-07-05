@@ -54,6 +54,7 @@ rd_spike.c
 rd_sum.c
 rd_xmit.c
 rec_decode.c
+repoinfo.cc
 rtloop.c
 search.c
 setup.c
