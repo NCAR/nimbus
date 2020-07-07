@@ -2418,7 +2418,7 @@ static void ReadProjectName()
     fclose(fp);
 
     if (buffer[strlen(buffer)-1] == '\n')
-      buffer[strlen(buffer)-1] = '\0'; 
+      buffer[strlen(buffer)-1] = '\0';
     cfg.SetProjectName(buffer);
   }
 }

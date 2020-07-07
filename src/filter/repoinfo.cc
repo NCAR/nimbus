@@ -5,19 +5,18 @@
 #include <gui.h>
 
 /*
-
 #!/bin/bash
 
-echo Tag and commit #....we have no tag/version at this point.
+echo "Tag and commit #....we have no tag/version at this point."
 git describe --match [vV][0-9]*
 
-echo Repo URL
+echo "Repo URL"
 git config --get remote.origin.url
 
 echo "git log"
 git log --pretty=format:"%cd,%H" -1
 
-echo Dirty bits
+echo "Dirty bits"
 git status --porcelain
 
 */
@@ -27,6 +26,8 @@ void executePopenCommand(const char cmd[], char result[], int n)
 {
   FILE *pp;
   int rc;
+
+  result[0] = 0;
 
   if ((pp = popen(cmd, "r")) == 0)
   {
@@ -52,12 +53,22 @@ void validateGitProjectDirectory()
   cfg.SetProjectRepoURL(buffer);
 
   // Get repo hash
-  sprintf(cmd, "git status porcelain");
+  sprintf(cmd, "git status --porcelain | grep 'Configuration\\|%s'",
+		cfg.ProjectNumber().c_str());
   executePopenCommand(cmd, buffer, 1000);
   cfg.SetProjectDirectoryStatus(buffer);
 
+  if (cfg.ProductionRun() && strlen(buffer) > 0)
+  {
+    char msg[4096];
+    strcpy(msg, "\nProduction run requires clean/commited projects directory, commit files.\n");
+    strcat(msg, buffer);
+    strcat(msg, "\n");
+    HandleFatalError(msg);
+  }
+
   // Get repo status
-  sprintf(cmd, "git log --pretty=format:\"%H\" -1");
+  sprintf(cmd, "git log --pretty=format:\"%%H\" -1");
   executePopenCommand(cmd, buffer, 1000);
   cfg.SetProjectDirectoryRevision(buffer);
 }
