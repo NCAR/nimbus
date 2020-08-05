@@ -2536,7 +2536,7 @@ openVariableDatabase()
     LogMessage("InitializeVarDB for project specific failed, "
 	       "trying master file.\n");
     sprintf(buffer, VARDB.c_str(), cfg.ProjectDirectory().c_str(),
-	    "Configuration/", "raf/");
+	    "Configuration/", "");
     vardb->open(buffer);
     if (! vardb->is_valid())
     {
