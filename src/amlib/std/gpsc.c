@@ -193,13 +193,13 @@ void slatc(DERTBL *varp)
   if ((alat == 0.0 && alon == 0.0) ||
       std::isnan(alat) || std::isnan(alon) || std::isnan(vns) || std::isnan(vew))
     {
-    if (gps_quality > 1) // differntial or better, then we will return GPS values directly
+    if (gps_quality > 1) // differential or better, then we will return GPS values directly
       {
       latc[FeedBack] = glat;
       lonc[FeedBack] = glon;
       vewc[FeedBack] = gvew;
       vnsc[FeedBack] = gvns;
-      PutSample(varp, floatNAN);
+      PutSample(varp, latc[FeedBack]);
       return;
       }
     else

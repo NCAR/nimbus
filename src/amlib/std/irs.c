@@ -106,8 +106,8 @@ void swp3(DERTBL *varp)
   /* We use an average of the previous computation and this one to
    * center the value in the time period.
    */
-  PutSample(varp, WP3 / 2.0);	
-  
+  PutSample(varp, WP3 / 2.0);
+
 }	/* END SWP3 */
 
 /* -------------------------------------------------------------------- */
@@ -163,6 +163,5 @@ void swpg(DERTBL *varp)
 
   PutSample(varp, WPG / 2.0);
 }
-
 
 /* END IRS.C */
