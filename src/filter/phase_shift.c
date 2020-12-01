@@ -56,6 +56,18 @@ void AddVariableToRAWlagList(RAWTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
+size_t gapSize(RAWTBL *vp)
+{
+  size_t gap_size = 1000 / vp->SampleRate;
+
+  // GV IRS position & ground speed data are at 12.5Hz.
+  if (vp->SampleRate == 13)
+    gap_size = 80;  // (1000.0 / 12.5);
+
+  return gap_size;	// gap in milli-seconds.
+}
+
+/* -------------------------------------------------------------------- */
 void PhaseShift(
 	CircularBuffer	*LRCB,
 	const int	index,		/* Index into CircBuff		*/
@@ -102,7 +114,7 @@ void PhaseShift(
     }
 
     // Don't time-shift if lag is less than 33% of sample spacing.
-    size_t gap_size = 1000 / rp->SampleRate;
+    size_t gap_size = gapSize(rp);
     if (rp->StaticLag == 0 && (size_t)abs(lag) < gap_size / 3)
       lag = 0;
 
@@ -127,11 +139,7 @@ static void
 resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 {
   size_t	nPoints, goodPoints = 0;
-  size_t	gap_size = 1000 / vp->SampleRate;
-
-  // GV IRS position & ground speed data are at 12.5Hz.
-  if (vp->SampleRate == 13)
-    gap_size = 80;  // (1000.0 / 12.5);
+  size_t	gap_size = gapSize(vp);
 
   nPoints = vp->SampleRate * NLRBUFFERS;	// 5 (7?) Seconds.
 
@@ -156,7 +164,7 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
       time_t thisTime = SampledDataTimeToSeconds(recPtrs[ri]);
       std::cerr << "resample() buffer " << ri << " accumulating "
 		<< vp->SampleRate << " "
-		<< vp->name << " samples for record " 
+		<< vp->name << " samples for record "
 		<< UTime(thisTime).format(tfmt) << std::endl;
     }
 #endif
@@ -315,7 +323,7 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
       }
   }
 }	/* END RESAMPLE */
- 
+
 /* -------------------------------------------------------------------- */
 /*
  * Only shift histograms, no interpolation.  Lag will be truncated to mod
@@ -374,7 +382,6 @@ shift_histogram(RAWTBL *rp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 	&prev_rec[rp->SRstart + (rp->Length * (rp->SampleRate - nIntervalsToMove))],
 	nIntervalsToMove * bytesPerVector);
   }
-
 }
 
 /* END PHASE_SHIFT.C */
