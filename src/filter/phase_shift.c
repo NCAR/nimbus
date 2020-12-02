@@ -103,7 +103,7 @@ void PhaseShift(
 
       // Don't time-shift if lag is less than 33% of sample spacing.
       size_t gap_size = gapSize(rp);
-      if (rp->StaticLag == 0 && (size_t)abs(lag) < gap_size / 3)
+      if ((size_t)abs(lag) < gap_size / 3)
         lag = 0;
 
       if (abs((lag)) > MaxLag)
@@ -189,7 +189,11 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 
     for (size_t i = 0; i < vp->SampleRate; ++i)
     {
+// Back when we interpolated over nan's, they were not passed into x, y below.
 //      if (!std::isnan(curPtr[i]))
+
+      // add to x, y if timetag is in this second
+      if ((gap_size * i) + dynLag <= 1000)
       {
         x[goodPoints] = (ri * 1000) + (gap_size * i) + dynLag;
         y[goodPoints] = curPtr[i];
