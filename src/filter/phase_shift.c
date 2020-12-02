@@ -98,25 +98,27 @@ void PhaseShift(
     int		lag = 0;
 
     if (cfg.TimeShifting())
+    {
       lag = rp->StaticLag + rp->DynamicLag;
 
-    if (abs((lag)) > MaxLag)
-    {
-      if (lag < 0)
-        lag = -MaxLag;
-      else
-        lag = MaxLag;
+      // Don't time-shift if lag is less than 33% of sample spacing.
+      size_t gap_size = gapSize(rp);
+      if (rp->StaticLag == 0 && (size_t)abs(lag) < gap_size / 3)
+        lag = 0;
 
-      sprintf(buffer,
-        "Max lag of |%d| ms exceeded, setting to %d ms and continuing; variable %s.\n",
-        MaxLag, lag, rp->name);
-      LogMessage(buffer);
+      if (abs((lag)) > MaxLag)
+      {
+        if (lag < 0)
+          lag = -MaxLag;
+        else
+          lag = MaxLag;
+
+        sprintf(buffer,
+          "Max lag of |%d| ms exceeded, setting to %d ms and continuing; variable %s.\n",
+          MaxLag, lag, rp->name);
+        LogMessage(buffer);
+      }
     }
-
-    // Don't time-shift if lag is less than 33% of sample spacing.
-    size_t gap_size = gapSize(rp);
-    if (rp->StaticLag == 0 && (size_t)abs(lag) < gap_size / 3)
-      lag = 0;
 
     // Only resample data if we have a lag.
     if (lag == 0)
@@ -169,16 +171,16 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
     }
 #endif
 
-    if (vp->LAGstart != -1)
+    if (vp->TTindx != -1)
     {
-      dynLag = recPtrs[ri][vp->LAGstart] / 1000.0;
+      dynLag = recPtrs[ri][vp->TTindx] / 1000.0;
 
       if (std::isnan(dynLag))
       {
-        if (ri >= 2 && !std::isnan(recPtrs[ri-2][vp->LAGstart]))
+        if (ri >= 2 && !std::isnan(recPtrs[ri-2][vp->TTindx]))
         {
-          recPtrs[ri][vp->LAGstart] = recPtrs[ri-2][vp->LAGstart];
-          dynLag = recPtrs[ri][vp->LAGstart] / 1000.0;
+          recPtrs[ri][vp->TTindx] = recPtrs[ri-2][vp->TTindx];
+          dynLag = recPtrs[ri][vp->TTindx] / 1000.0;
         }
         else
           dynLag = 0;

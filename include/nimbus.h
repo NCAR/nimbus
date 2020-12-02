@@ -80,7 +80,6 @@ public:
   int LRstart;		// Start indx into AveragedData
   int SRstart;		// Start indx into SampledData
   int HRstart;		// Start indx into HighRateData
-  int LAGstart;		// ads3 only, @see dsm::SyncRecordVariable
 
   size_t SampleRate;	// Sampled rate
   size_t Length;	// Histogram length, if histogram
@@ -101,8 +100,6 @@ public:
   std::vector<std::pair<int, int> > blank_out;
 
   float min, max;	// Min and max for this variable over course run.
-
-  size_t badLagCntr;
 };
 
 
@@ -118,6 +115,7 @@ class RAWTBL : public var_base
 public:
   RAWTBL(const char s[]);
 
+  // ADS2 only.
   int32_t ADSstart;
   int32_t ADSoffset;	// Offset between samples
   char type[4];		// Analog, Digital or Counter
@@ -131,6 +129,10 @@ public:
   int32_t convertOffset;	// A/D offset
   float	convertFactor;	// A/D slope
   std::vector<NR_TYPE> cof;
+
+  // Index into nidas syncrecord of time tag offset of first sample of second.
+  int TTindx;		// ads3 only, @see dsm::SyncRecordVariable
+  size_t badLagCntr;
 
   int nidasLag;		// Static lag from nidas.  Here as metadata to go in netCDF
   int StaticLag;	// Static lag in ms to shift data

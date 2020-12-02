@@ -549,7 +549,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     {
       nidas::core::Polynomial* poly =
 	dynamic_cast<nidas::core::Polynomial*>(converter);
-      nidas::core::Linear* linear = 
+      nidas::core::Linear* linear =
 	dynamic_cast<nidas::core::Linear*>(converter);
       if (linear)
       {
@@ -567,14 +567,14 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 	  converter = 0;
 	  //	  var->setConverter(0);
 	}
-      } 
+      }
     }
 
     RAWTBL *rp;
     if (converter == 0)
     {
       rp = add_name_to_RAWTBL(name_sans_location);
-      rp->LAGstart = syncRecReader->getLagOffset(var);
+      rp->TTindx = syncRecReader->getLagOffset(var);
       rp->Units = var->getUnits();
       rp->LongName = var->getLongName();
       rp->dsmID = var->getSampleTag()->getDSMId();
@@ -682,12 +682,12 @@ static RAWTBL* initSDI_ADS3(nidas::core::Variable* var, time_t startTime)
   cp->SampleRate   = rate;
 
   nidas::dynld::raf::SyncRecordReader* syncRecReader = GetSyncReader();
-  cp->LAGstart = syncRecReader->getLagOffset(var);
+  cp->TTindx = syncRecReader->getLagOffset(var);
 
   LoadCalibration(var, startTime, cp->cof);
   if (0)
   {
-    printf("VAR %s cal coefficients: %f %f ...", var->getName().c_str(), 
+    printf("VAR %s cal coefficients: %f %f ...", var->getName().c_str(),
 	   cp->cof[0], cp->cof[1]);
   }
 
@@ -1936,7 +1936,7 @@ static void initPMS1Dv3(char vn[])
 
     sprintf(buffer, "HSKP%d", i);
     p = GetPMSparameter(serialNumber.c_str(), buffer);
-    
+
     if (strncmp(p, "DUMMY", 5) == 0)
       continue;
 
@@ -2560,7 +2560,7 @@ var_base::var_base(const char s[])
 {
   strcpy(name, s);
   varid = -1;
-  LRstart = SRstart = HRstart = LAGstart = -1;
+  LRstart = SRstart = HRstart = -1;
 
   SampleRate = 0;
   Length = 1;
@@ -2580,8 +2580,6 @@ var_base::var_base(const char s[])
 
   min = FLT_MAX;
   max = -FLT_MAX;
-
-  badLagCntr = 0;
 }
 
 var_base::~var_base()
@@ -2604,6 +2602,9 @@ RAWTBL::RAWTBL(const char s[]) : var_base(s)
 
   convertOffset = 0;
   convertFactor = 1.0;
+
+  TTindx = -1;
+  badLagCntr = 0;
 
   StaticLag = 0;
   DynamicLag = 0;

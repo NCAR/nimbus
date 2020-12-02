@@ -91,8 +91,8 @@ int LowRateLoop(time_t startTime, time_t endTime)
     thisTime = SampledDataTimeToSeconds(SampledData);
 
     if (SynthData == true)
-      sd.InjectSyntheticData(thisTime); 
-    
+      sd.InjectSyntheticData(thisTime);
+
     ComputeLowRateDerived(thisTime);
 
     // cntr is to get us past buffer load-ups and goobery data at start of file.
