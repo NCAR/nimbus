@@ -17,6 +17,10 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-06
 #include <zlib.h>
 #include <sys/param.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[]);
 
 const std::string PostgreSQL::TIME_VARIABLE = "datetime";
@@ -1008,7 +1012,16 @@ PostgreSQL::outputGroundDBInitPacket()
 
   if (pid == 0)
   {
-    const char * command = "/home/local/Systems/scripts/sendSQL";
+    char command[256];
+    strcpy(command, cfg.ProjectDirectory().c_str());
+    strcat(command, "/scripts/sendSQL");
+
+    // Set up logfile in /tmp
+    int fd = open("/tmp/sendSQL.log", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+
+    dup2(fd, fileno(stdout));   // make stdout go to file
+    dup2(fd, fileno(stderr));   // make stderr go to file
+    close(fd);     // fd no longer needed - the dup'ed handles are sufficient
 
     if ( execlp(command, command, (const char *)fName, (const char *)0) == -1 )
     {

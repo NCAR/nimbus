@@ -1,3 +1,5 @@
+/* This class is currently deprecated / unused.
+ */
 #include "nimbus.h"
 #include "transmit.h"
 #include <cstdlib>
@@ -5,6 +7,11 @@
 #include <ctime>
 #include <zlib.h>
 #include <sys/param.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 
 void quit();
 
@@ -63,17 +70,21 @@ void sqlTransmit::sendString(const std::string& str)
 
   if (pid == 0)
   {
-    const char * command = 0;
+    char command[256];
+    command[0] = 0;
     if (cfg.GroundFeedType() == Config::UDP)
-      command = "/home/local/Systems/scripts/sendSQL";
+    {
+      strcpy(command, cfg.ProjectDirectory().c_str());
+      strcat(command, "/scripts/sendSQL");
+    }
     if (cfg.GroundFeedType() == Config::LDM)
-      command = "pqinsert";
+      strcpy(command, "pqinsert");
 
     // Set up logfile in /tmp
     int fd = open("/tmp/sendSQL.log", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
 
-    dup2(fd, 1);   // make stdout go to file
-    dup2(fd, 2);   // make stderr go to file
+    dup2(fd, fileno(stdout));   // make stdout go to file
+    dup2(fd, fileno(stderr));   // make stderr go to file
     close(fd);     // fd no longer needed - the dup'ed handles are sufficient
 
     if (execlp((const char *)command, (const char *)command, (const char *)fName, (const char *)0) == -1)
