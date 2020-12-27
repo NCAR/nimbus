@@ -1,3 +1,6 @@
 [submodule "tests/projects"]
 	path = tests/projects
 	url = https://github.com/NCAR/RAF_field_projects
+[submodule "vardb"]
+	path = vardb
+	url = https://github.com/ncar/aircraft_vardb
