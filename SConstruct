@@ -27,6 +27,8 @@ env['CXXFLAGS'] = Split("""
 
 Export('env')
 
+SConscript('vardb/SConscript')
+
 ##
 ##  Build include files.
 ##
