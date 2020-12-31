@@ -77,8 +77,6 @@ if env.get('NIDAS_LD_RUN_PATH'):
 libn = env.StaticLibrary('nimbus', sources)
 
 def libnimbus(env):
-  if os.path.exists('/usr/lib/openmotif'):
-    env.Append(LIBPATH=['/usr/lib/openmotif'])
   env.Append(LIBS=libn)
   # In order:
   #  AMLIB (Atmospheric Mathmatical Library) calculations.
@@ -87,14 +85,9 @@ def libnimbus(env):
   #  X windows/GUI.
   #  General math libraries.
   #  ADS3 real-time libraries.
-  env.Require(['libncaru', 'libxlate', 'libstd', 'libuser', 'netcdf'])
+  env.Require(['libncaru', 'libxlate', 'libstd', 'libuser', 'vardb', 'raf'])
   deplibs = Split("""
     hdr_api
-    VarDB domx logx log4cpp boost_regex
-    raf
-    pq
-    Xm Xt X11
-    gsl gslcblas m bz2 z
   """)
   env.Append(LIBS=deplibs)
 

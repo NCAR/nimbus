@@ -2,6 +2,9 @@
 
 import os
 import sys
+import SCons
+sys.path.append('vardb/site_scons')
+import eol_scons
 
 # Rather than depend upon finding eol_scons somewhere else in the RAF
 # source tree, expect it to be on the standard search path:
@@ -9,7 +12,7 @@ import sys
 import eol_scons
 
 def nimbusbase(env):
-    env.Require(['buildmode', 'nidas', 'netcdf', 'jlocal'])
+    env.Require(['buildmode', 'openmotif', 'nidas', 'netcdf', 'gsl', 'postgres_pq', 'boost_regex', 'bz2', 'z', 'jlocal'])
     env['CC'] = env['CXX']
     env.Append(LIBPATH=['$JLOCAL/lib'])
     env.Append(CPPPATH=['#/include', '#/src/filter'])
@@ -26,8 +29,6 @@ env['CXXFLAGS'] = Split("""
 """)
 
 Export('env')
-
-SConscript('vardb/SConscript')
 
 ##
 ##  Build include files.
