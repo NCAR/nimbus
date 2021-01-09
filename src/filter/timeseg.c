@@ -194,7 +194,7 @@ time_t HdrBlkTimeToSeconds(Hdr_blk * hdr)
 }
 
 /* -------------------------------------------------------------------- */
-time_t SampledDataTimeToSeconds(NR_TYPE * record)
+time_t SampledDataTimeToSeconds(const NR_TYPE * record)
 {
   struct tm ft;
 
@@ -219,7 +219,7 @@ time_t UTCseconds(const void *record)
   if (cfg.isADS2())
     t = HdrBlkTimeToSeconds((Hdr_blk *)record);
   else
-    t = SampledDataTimeToSeconds((NR_TYPE *)record);
+    t = SampledDataTimeToSeconds((const NR_TYPE *)record);
 
   return t;
 }
@@ -266,7 +266,7 @@ int CheckForTimeGap(const void *ADShdr, int initMode)
 
       sprintf(buffer,
         "  previous time = %02d:%02d:%02d\n       odd time = %02d:%02d:%02d\n",
-      	pft->tm_hour, pft->tm_min, pft->tm_sec,
+	pft->tm_hour, pft->tm_min, pft->tm_sec,
 	nft->tm_hour, nft->tm_min, nft->tm_sec);
       LogMessage(buffer);
 
@@ -308,7 +308,7 @@ int CheckForTimeGap(const void *ADShdr, int initMode)
 
   /* It's a long time gap, introduce a new time segment.
    */
- 
+
   /* Locate current time segment
    */
   for (i = 0; i < nTimeIntervals; ++i)
@@ -411,6 +411,13 @@ void FormatTimeSegmentsForOutputFile(char *buff)
     strcat(buff, temp);
   }
 }	/* END FORMATTIMESEGMENTSFOROUTPUTFILE */
+
+/* -------------------------------------------------------------------- */
+void PrintHHMMSS(const NR_TYPE *recp)
+{
+  // Function to print record time; for logging and debugging.
+  printf("%02d:%02d:%02d", (int)recp[timeIndex[0]], (int)recp[timeIndex[1]], (int)recp[timeIndex[2]]);
+}
 
 /* -------------------------------------------------------------------- */
 time_t GetPreviousTime()

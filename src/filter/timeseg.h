@@ -10,10 +10,11 @@
 #define BEG_OF_TAPE	(-1)
 #define END_OF_TAPE	(-1)
 
-void GetUserTimeIntervals();
-int NextTimeInterval(time_t *start, time_t *end);
-void GetTimeWindow(time_t* start, time_t* end);
-void ResetTimeGapper();
-time_t	SampledDataTimeToSeconds(NR_TYPE *);
+void	GetUserTimeIntervals();
+int	NextTimeInterval(time_t *start, time_t *end);
+void	GetTimeWindow(time_t* start, time_t* end);
+void	ResetTimeGapper();
+time_t	SampledDataTimeToSeconds(const NR_TYPE *);
+void	PrintHHMMSS(const NR_TYPE *);
 
 #endif /* _timeseg_h_ */
