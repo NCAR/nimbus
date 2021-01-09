@@ -57,10 +57,14 @@ int ReadTextFile(const std::string& filename, char **list)
     if (buffer[0] == COMMENT)
       continue;
 
-    *list = new char[(len = strlen(buffer))+1];
-
+    len = strlen(buffer);
     if (buffer[len-1] == '\n')
-      buffer[len-1] = '\0';
+      buffer[--len] = '\0';
+
+    if (len == 0)
+      continue;
+
+    *list = new char[len+1];
 
     strcpy(*list++, buffer);
     ++cnt;
