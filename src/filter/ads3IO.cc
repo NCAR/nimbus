@@ -39,7 +39,7 @@ time_t xlateToSecondsSinceMidnight(time_t ut) // Unused now.
 //  char timeStamp[64];
 //  strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", &tm);
 //  std::cout << timeStamp << '.' << std::setw(3) << std::setfill('0') << msec
-//        << ' ' << std::endl; 
+//        << ' ' << std::endl;
 
   return tm.tm_hour * 3600 + tm.tm_min * 60 + tm.tm_sec;
 
@@ -54,7 +54,7 @@ using nidas::util::UTime;
 using namespace nidas::dynld::raf;
 
 static void
-sync_read_debug(SyncRecordReader* srr, nidas::core::dsm_time_t tt, 
+sync_read_debug(SyncRecordReader* srr, nidas::core::dsm_time_t tt,
 		char record[], int rc)
 {
   static std::string tfmt("At %Y/%m/%d;%H:%M:%S.%3f: ");
@@ -63,7 +63,7 @@ sync_read_debug(SyncRecordReader* srr, nidas::core::dsm_time_t tt,
   std::vector<std::string> vdebug(vnames, vnames + sizeof(vnames)/sizeof(vnames[0]));
   std::ostringstream msg;
   msg << UTime(tt).format(tfmt);
-  for (std::vector<std::string>::iterator vp = vdebug.begin(); 
+  for (std::vector<std::string>::iterator vp = vdebug.begin();
        vp != vdebug.end(); ++vp)
   {
     const SyncRecordVariable* var = srr->getVariable(*vp);
@@ -147,7 +147,7 @@ int32_t FindNextLogicalADS3(char record[], time_t endTime)
   {
     return 0;
   }
-  
+
   time_t recTime = tt / USECS_PER_SEC;
 
   if (endTime != END_OF_TAPE)

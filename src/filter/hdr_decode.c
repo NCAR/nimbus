@@ -814,7 +814,7 @@ int DecodeHeader(const char header_file[])
         !strcmp(item_type, DIGOUT_STR) ||
         !strcmp(item_type, HSKP_STR))
     {
-      initSDI(vn); 
+      initSDI(vn);
       add_derived_names(vn);
       continue;
     }
