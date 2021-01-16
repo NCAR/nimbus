@@ -85,11 +85,11 @@ def libnimbus(env):
   #  X windows/GUI.
   #  General math libraries.
   #  ADS3 real-time libraries.
-  env.Require(['libncaru', 'libxlate', 'libstd', 'libuser', 'vardb', 'raf'])
-  deplibs = Split("""
-    hdr_api
-  """)
-  env.Append(LIBS=deplibs)
+  env.Require(['libncaru', 'libxlate', 'libstd', 'libuser', 'vardb', 'raf', 'libhdr_api'])
+#  deplibs = Split("""
+#    hdr_api
+#  """)
+#  env.Append(LIBS=deplibs)
 
 Export('libnimbus')
 

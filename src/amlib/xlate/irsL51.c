@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "amlib.h"
-#include <raf/ctape.h>
+#include "src/hdr_api/ctape.h"
 
 #define	INS_MASK	0x0003ffff
 #define MASK		0x3ffff000

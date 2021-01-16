@@ -1,0 +1,35 @@
+# -*- python -*-
+
+Import('env')
+
+thisEnv = env.Clone(CC = 'gcc', CCFLAGS=[])
+
+sources = Split("""
+	init.c
+	getvarlist.c
+	getsdi.c
+	getstartlen.c
+	getlocn.c
+	getrate.c
+	gethdr.c
+	getaddr.c
+	getname.c
+	getres.c
+	getcof.c
+	getlr.c
+	getdmeaddr.c
+	getblkinfo.c
+	getps.c
+	getintf.c
+	getsn.c
+	getserial.c
+	gethskp.c
+	getnbins.c
+""")
+
+hdr_api = thisEnv.StaticLibrary('hdr_api' , sources)
+
+def libhdr_api(env):
+    env.Append(LIBS = hdr_api)
+
+Export('libhdr_api')

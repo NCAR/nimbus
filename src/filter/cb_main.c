@@ -50,7 +50,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 #include "nimbus.h"
 #include "decode.h"
 #include "timeseg.h"
-#include <raf/ctape.h>
+#include "src/hdr_api/ctape.h"
 #include "gui.h"
 #include <raf/vardb.hh>
 #include "NetCDF.h"

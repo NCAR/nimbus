@@ -18,7 +18,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1992-05
 
 #include "nimbus.h"
 #include "decode.h"
-#include <raf/ctape.h>
+#include "src/hdr_api/ctape.h"
 
 #include "sync_reader.hh"
 

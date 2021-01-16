@@ -41,7 +41,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2012
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
-#include <raf/ctape.h>
+#include "src/hdr_api/ctape.h"
 #include <netcdf.h>
 #include <raf/vardb.hh>
 #include "svnInfo.h"

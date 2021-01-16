@@ -12,9 +12,8 @@ import eol_scons
 import eol_scons
 
 def nimbusbase(env):
-    env.Require(['buildmode', 'openmotif', 'nidas', 'netcdf', 'gsl', 'postgres_pq', 'boost_regex', 'bz2', 'z', 'jlocal'])
+    env.Require(['prefixoptions', 'buildmode', 'openmotif', 'nidas', 'netcdf', 'gsl', 'postgres_pq', 'boost_regex', 'bz2', 'z'])
     env['CC'] = env['CXX']
-    env.Append(LIBPATH=['$JLOCAL/lib'])
     env.Append(CPPPATH=['#/include', '#/src/filter'])
     env.Append(CCFLAGS=Split("-Wno-write-strings -Wstrict-aliasing "
                              "-Wno-deprecated"))
@@ -36,9 +35,14 @@ Export('env')
 SConscript('include/SConscript')
 
 ##
-##  Build Derived Calculations libraries.
+##  Build NCAR COS blocked file decoding library.
 ##
 SConscript('src/ncaru/src/SConscript')
+
+##
+##  Build ADS2 Header API.
+##
+SConscript('src/hdr_api/SConscript')
 
 ##
 ##  Build Derived Calculations libraries.
@@ -50,7 +54,8 @@ SConscript('src/amlib/SConscript')
 ##
 SConscript('src/filter/SConscript')
 
-Alias('install', env.subst("${JLOCAL}/bin"))
+#Alias('install', env.subst("${INSTALL_PREFIX}/bin"))
+env.Install('$INSTALL_PREFIX/bin', 'src/filter/nimbus')
 
 SConscript('tests/SConscript')
 

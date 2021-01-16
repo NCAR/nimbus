@@ -33,7 +33,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
-#include <raf/ctape.h>	// ADS header API
+#include "src/hdr_api/ctape.h"
 #include <raf/pms.h>
 #include <raf/vardb.hh>	// Variable DataBase
 #include <raf/VarDBConverter.hh>

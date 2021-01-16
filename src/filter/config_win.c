@@ -35,7 +35,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2011
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
-#include <raf/ctape.h>
+#include "src/hdr_api/ctape.h"
 
 static const size_t nFlightInfo = 4;
 static const size_t nTimeSliceInfo = 2;
