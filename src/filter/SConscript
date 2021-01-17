@@ -97,5 +97,5 @@ env.Tool(libnimbus)
 
 nimbus = env.Program('nimbus', ['nimbus.c'])
 env.Default(nimbus)
-Alias('install', env.Install('$JLOCAL/bin', nimbus))
 
+env.Install('$INSTALL_PREFIX/bin', nimbus)

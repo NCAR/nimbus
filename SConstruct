@@ -54,9 +54,6 @@ SConscript('src/amlib/SConscript')
 ##
 SConscript('src/filter/SConscript')
 
-#Alias('install', env.subst("${INSTALL_PREFIX}/bin"))
-env.Install('$INSTALL_PREFIX/bin', 'src/filter/nimbus')
-
 SConscript('tests/SConscript')
 
 ninja = Environment(tools = ['default', 'ninja'])
