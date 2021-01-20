@@ -6,11 +6,6 @@ import SCons
 sys.path.append('vardb/site_scons')
 import eol_scons
 
-# Rather than depend upon finding eol_scons somewhere else in the RAF
-# source tree, expect it to be on the standard search path:
-# /usr/share/scons/site_scons or ~/.scons/site_scons.
-import eol_scons
-
 def nimbusbase(env):
     env.Require(['prefixoptions', 'buildmode', 'openmotif', 'nidas', 'netcdf', 'gsl', 'postgres_pq', 'boost_regex', 'bz2', 'z'])
     env['CC'] = env['CXX']
