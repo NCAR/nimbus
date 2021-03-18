@@ -2,7 +2,7 @@ Directories:
 
 	./std		RAF supported derived variable computations.
 	./user		User requested derived variable computations.
-	./xlate		Functions for extracting variables from block probes.
+	./xlate		Functions for extracting raw data from instruments (ASD2).
 
 There is a template.c file in each of the "AMLIB" directories for making/adding
 new probes/variables.
@@ -13,9 +13,12 @@ How to add a probe.
 	2) Add std or user routines to create derived variables.
 	3) Edit hdr_decode.c to decode whatever header info on ADS tape.
 
+Note: Step 1 and 3 are mostly assumed by nidas for ADS3.
+
 --------------------------------------------------------------------------
 
-1) Step 1 is extracting "raw" variables stored on the ADS tape.
+1) Step 1 is extracting "raw" variables stored on the ADS tape.  In ADS3
+   this step is handled by nidas.
 
    cd xlate; cp template.c new_probe.c
 
