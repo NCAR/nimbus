@@ -48,6 +48,10 @@ char	dateProcessed[64];	// For export to psql.cc
 void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetaData(int fd),
 	CheckAndAddAttrs(int fd, int varid, char name[]);
 
+extern "C" {
+void sRefer(DERTBL *), sReferAttack(DERTBL *);
+}
+
 /* -------------------------------------------------------------------- */
 NetCDF::NetCDF() :
   _ncid(0), _realTimeMode(false), _recordNumber(0), _timeVar(0),
@@ -466,6 +470,9 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     }
 
     CheckAndAddAttrs(_ncid, dp->varid, dp->name);
+    if (dp->compute == (void(*)(void*))sRefer ||
+        dp->compute == (void(*)(void*))sReferAttack)
+      CheckAndAddAttrs(_ncid, dp->varid, dp->depend[0]);
 
     if (dp->Length > 3 &&
 	(dp->ProbeType & PROBE_PMS2D || dp->ProbeType & PROBE_PMS1D ||
