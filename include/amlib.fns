@@ -987,7 +987,7 @@
 	"TASW",		NULL,		NULL,		stas,
 	"TASX",		NULL,		NULL,		stasx,
 	"TASDRY",	NULL,		NULL,		stas_dry,
-	"TASFLG",	NULL,		NULL,		stas_flag,
+	"TASFLG",	(void(*)(void*))tasFlgInit,	NULL,		stas_flag,
 	"IAS",		NULL,		NULL,		sias,
 	"CAS",		NULL,		NULL,		sias,
 	"MACHB",	NULL,		NULL,		smach,
