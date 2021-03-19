@@ -13,7 +13,12 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2015
 #include "nimbus.h"
 #include "amlib.h"
 
-static NR_TYPE RF_C0[] = { 0.986, 0.969, 0.988, 0.988 };
+/* See Al Cooper memo titled "Study of the Recovery Factor" Sep 23, 2015.
+ */
+static NR_TYPE rosemount_C0[] = { 0.958, 0.957, 0.958, 0.957 };
+
+// Default to HARCO        RTH1   RTH2   RTH3   RTH4
+static NR_TYPE RF_C0[] = { 0.986, 0.969, 0.986, 0.969 };
 
 /* -------------------------------------------------------------------- */
 void athInit(var_base *varp)
@@ -22,8 +27,11 @@ void athInit(var_base *varp)
   float *tmp;
   int sensor = varp->name[3] - '1';
 
-//  if ( (tmp = GetDefaultsValue("HEATED_RF", varp->name)) )
-//    RF_C0 = tmp[0];
+  // Copy in Rosemount C0, if appropriate.
+  std::string s = ((DERTBL *)varp)->depends[0]->LongName;
+  std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+  if ( s.find("rosemount") != std::string::npos )
+    RF_C0[sensor] = rosemount_C0[sensor];
 
   sprintf(buffer, "%.4f + 0.053 log10(mach) + 0.090 (log10(mach))^2 + 0.091 (log10(mach))^3",
 	RF_C0[sensor]);
