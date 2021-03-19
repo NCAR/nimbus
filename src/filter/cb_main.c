@@ -58,7 +58,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 #include "gitInfo.h"
 #include "sync_reader.hh"
 
-static char	ADSfileName[MAXPATHLEN];
+static char	ADSfileName[256];
 char		OutputFileName[MAXPATHLEN];  /* Export to xlate/rdma.c */
 static char	list1lineFrmt[] = "%-12s %c%c   %4d  %4d   %4d  %8.3f   %c";
 
@@ -764,7 +764,7 @@ static int determineInputFileVersion()
 
   if (fp == 0)
   {
-    char msg[128];
+    char msg[512];
     sprintf(msg, "Failed to open input file [%s], errno = %d.\n", ADSfileName, errno);
     perror(msg);
     HandleError(msg);
@@ -807,7 +807,7 @@ static int validateInputFile()
 
   if (strlen(ADSfileName) == 0 || access(ADSfileName, R_OK) == ERR)
   {
-    char msg[128];
+    char msg[512];
     sprintf(msg, "Non-existent input file [%s].\n", ADSfileName);
     HandleError(msg);
     return(ERR);
@@ -817,7 +817,7 @@ static int validateInputFile()
   stat(ADSfileName, &st_buf);
   if ( S_ISDIR( st_buf.st_mode ) )
   {
-    char msg[128];
+    char msg[512];
     sprintf(msg, "Input file [%s] is a directory.\n", ADSfileName);
     HandleError(msg);
     return(ERR);
