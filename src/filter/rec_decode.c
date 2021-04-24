@@ -30,13 +30,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 extern ushort	*bits;
 extern std::vector<RAWTBL *> decode;
 
-static void setNIDASDynamicLags(short lr[]);
+static void setNIDASDynamicLags(const short lr[]);
 static void BlankOutRawData(NR_TYPE nlr[]);
 
 
 /* -------------------------------------------------------------------- */
 void DecodeADSrecord(
-	short	lr[],	/* ADS Logical Record	*/
+	const short	lr[],	/* ADS Logical Record	*/
 	NR_TYPE	nlr[])	/* New Logical Record	*/
 {
   VLOG(("enter DecodeADSrecord()"));
@@ -44,7 +44,7 @@ void DecodeADSrecord(
   {
     // Forcing ADS3 into the ADS2 architecture.  FindNextRecord will
     // put it into ADSrecord, copy it out here.
-    VLOG(("memcpy(") << (void*)nlr << "," << (void*)lr << "," 
+    VLOG(("memcpy(") << (void*)nlr << "," << (void*)lr << ","
 	 << nSRfloats * sizeof(NR_TYPE) << "(" << nSRfloats << " doubles))");
     memcpy((void *)nlr, (void *)lr, nSRfloats * sizeof(NR_TYPE));
 
@@ -66,7 +66,7 @@ void DecodeADSrecord(
 }
 
 /* -------------------------------------------------------------------- */
-static void setNIDASDynamicLags(short lr[])
+static void setNIDASDynamicLags(const short lr[])
 {
   NR_TYPE *rec_p = (NR_TYPE *)lr;
   for (size_t i = 0; i < raw.size(); ++i)
@@ -134,12 +134,12 @@ static void BlankOutRawData(NR_TYPE nlr[])
 }
 
 /* -------------------------------------------------------------------- */
-void decodeADS2analog(RAWTBL *varp, void *input, NR_TYPE *output)
+void decodeADS2analog(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   /* Cast SDI variables into new record
    */
   int pos = 0;
-  short *lrp = (short *)input;
+  const short *lrp = (short *)input;
 
   // Raw analog/digital bits/counts for WINDS display.
   if (cfg.ProcessingMode() == Config::RealTime)

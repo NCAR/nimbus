@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include <unistd.h>
 
 /* -------------------------------------------------------------------- */
-void xlpsfd(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlpsfd(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
   ushort	*input = (ushort *)p;
   unsigned long	psfd;
@@ -43,7 +43,7 @@ void xlpsfd(RAWTBL *varp, void *p, NR_TYPE *output)
 }	/* END XLPSFD */
 
 /* -------------------------------------------------------------------- */
-void xlpsfd_ADS2(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlpsfd_ADS2(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   unsigned long	psfd;
   ushort	*p1_input, *p2_input;
@@ -85,7 +85,7 @@ void xlpsfd_ADS2(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLPSFD */
 
 /* -------------------------------------------------------------------- */
-void xlxpsfd(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlxpsfd(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = ntohf(((Dpres_blk *)input)->press[i]) * 10.0;

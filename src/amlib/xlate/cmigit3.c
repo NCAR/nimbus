@@ -47,7 +47,7 @@ void cmigitsInit(var_base *varp)
 }
 
 /* -------------------------------------------------------------------- */
-void xlclat(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlclat(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
@@ -62,7 +62,7 @@ void xlclat(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLCLAT */
 
 /* -------------------------------------------------------------------- */
-void xlclon(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlclon(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
@@ -72,7 +72,7 @@ void xlclon(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLCLON */
 
 /* -------------------------------------------------------------------- */
-void xlcalt(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlcalt(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
@@ -82,7 +82,7 @@ void xlcalt(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLCALT */
 
 /* -------------------------------------------------------------------- */
-void xlcvew(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlcvew(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
@@ -92,7 +92,7 @@ void xlcvew(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLCVEW */
 
 /* -------------------------------------------------------------------- */
-void xlcvns(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlcvns(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
@@ -102,7 +102,7 @@ void xlcvns(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLCVNS */
 
 /* -------------------------------------------------------------------- */
-void xlcvspd(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlcvspd(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
@@ -112,7 +112,7 @@ void xlcvspd(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLCVSPD */
 
 /* -------------------------------------------------------------------- */
-void xlcpitch(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlcpitch(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
@@ -122,7 +122,7 @@ void xlcpitch(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLCPITCH */
 
 /* -------------------------------------------------------------------- */
-void xlcroll(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlcroll(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
   NR_TYPE	roll;
@@ -140,7 +140,7 @@ void xlcroll(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLCROLL */
 
 /* -------------------------------------------------------------------- */
-void xlcthdg(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlcthdg(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
   NR_TYPE	hdg;

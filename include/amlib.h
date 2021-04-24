@@ -81,7 +81,7 @@ struct _dnfn
 	{
 	const char	*name;
 	void		(*constructor)(void *);
-	void		(*xlate)(RAWTBL *, void *, NR_TYPE *);
+	void		(*xlate)(RAWTBL *, const void *, NR_TYPE *);
 	void		(*compute)(DERTBL *);
 	} ;
 
@@ -107,7 +107,7 @@ void AddToDefaults(const char varName[], const char attrName[],
 void AddToAttributes(const char varName[], const char attrName[],
 	const std::string & text);
 
-void decodeADS2analog(RAWTBL *varp, void *input, NR_TYPE *output);
+void decodeADS2analog(RAWTBL *varp, const void *input, NR_TYPE *output);
 
 #include "amlibProto.h"
 

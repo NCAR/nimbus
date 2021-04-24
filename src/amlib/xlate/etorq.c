@@ -30,10 +30,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 static NR_TYPE	lez[] =	{ 1847.9928, 0.17078673, -2.2302340e-08 };
 static NR_TYPE	otf[] =	{ 1847.3864, 0.17202371, -2.7902932e-07 };
 static NR_TYPE	fte[] =	{ -925.09894, 0.16334911, 4.9590147e-07 };
-		
+
 
 /* -------------------------------------------------------------------- */
-void xletorq(RAWTBL *varp, void *input, NR_TYPE *output)
+void xletorq(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   short		etorq;
   NR_TYPE	*cc;

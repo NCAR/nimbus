@@ -30,14 +30,14 @@ static const int	transportDelay = 0;
 
 
 /* -------------------------------------------------------------------- */
-void xlghmstat(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghmstat(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	*np = ((HwGps_blk *)p)->meas_status;
 
 }	/* END XLGHMSTAT */
 
 /* -------------------------------------------------------------------- */
-void xlghutc(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghutc(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -49,7 +49,7 @@ void xlghutc(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHUTC */
 
 /* -------------------------------------------------------------------- */
-void xlghalt(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghalt(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -63,7 +63,7 @@ void xlghalt(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHALT */
 
 /* -------------------------------------------------------------------- */
-void xlghhdop(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghhdop(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -75,7 +75,7 @@ void xlghhdop(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHHDOP */
 
 /* -------------------------------------------------------------------- */
-void xlghvdop(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghvdop(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -87,7 +87,7 @@ void xlghvdop(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHVDOP */
 
 /* -------------------------------------------------------------------- */
-void xlghlat(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghlat(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -101,7 +101,7 @@ void xlghlat(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHLAT */
 
 /* -------------------------------------------------------------------- */
-void xlghlon(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghlon(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -115,7 +115,7 @@ void xlghlon(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHLON */
 
 /* -------------------------------------------------------------------- */
-void xlghlatf(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghlatf(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -129,7 +129,7 @@ void xlghlatf(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHLATF */
 
 /* -------------------------------------------------------------------- */
-void xlghlonf(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghlonf(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -143,7 +143,7 @@ void xlghlonf(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHLONF */
 
 /* -------------------------------------------------------------------- */
-void xlghgspd(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghgspd(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -157,7 +157,7 @@ void xlghgspd(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHGSPD */
 
 /* -------------------------------------------------------------------- */
-void xlghvzi(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghvzi(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -171,7 +171,7 @@ void xlghvzi(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHVZI */
 
 /* -------------------------------------------------------------------- */
-void xlghvew(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghvew(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -185,7 +185,7 @@ void xlghvew(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHVEW */
 
 /* -------------------------------------------------------------------- */
-void xlghvns(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghvns(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -199,7 +199,7 @@ void xlghvns(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHVNS */
 
 /* -------------------------------------------------------------------- */
-void xlghvfom(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghvfom(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -213,7 +213,7 @@ void xlghvfom(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHVFOM */
 
 /* -------------------------------------------------------------------- */
-void xlghhfom(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghhfom(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	int	x;
 
@@ -227,7 +227,7 @@ void xlghhfom(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLGHHFOM */
 
 /* -------------------------------------------------------------------- */
-void xlghstat(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlghstat(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
 	/* (N/A) N/A bits, +-N/A, label 273
 	 */

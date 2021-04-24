@@ -31,63 +31,63 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-void xluvhsmp(RAWTBL *varp, void *p, NR_TYPE *np)
+void xluvhsmp(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ntohf(((Uv_blk *)p)->uvsmp[i].hydr_smp);
 }
 
 /* -------------------------------------------------------------------- */
-void xluvhref(RAWTBL *varp, void *p, NR_TYPE *np)
+void xluvhref(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ntohf(((Uv_blk *)p)->uvsmp[i].hydr_ref);
 }
 
 /* -------------------------------------------------------------------- */
-void xluvkrsp(RAWTBL *varp, void *p, NR_TYPE *np)
+void xluvkrsp(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ntohf(((Uv_blk *)p)->uvsmp[i].kryp_smp);
 }
 
 /* -------------------------------------------------------------------- */
-void xluvkrrf(RAWTBL *varp, void *p, NR_TYPE *np)
+void xluvkrrf(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ntohf(((Uv_blk *)p)->uvsmp[i].kryp_ref);
 }
 
 /* -------------------------------------------------------------------- */
-void xluvchsp(RAWTBL *varp, void *p, NR_TYPE *np)
+void xluvchsp(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ntohf(((Uv_blk *)p)->uvsmp[i].chop_smp);
 }
 
 /* -------------------------------------------------------------------- */
-void xluvchrf(RAWTBL *varp, void *p, NR_TYPE *np)
+void xluvchrf(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ntohf(((Uv_blk *)p)->uvsmp[i].chop_ref);
 }
 
 /* -------------------------------------------------------------------- */
-void xluvpvol(RAWTBL *varp, void *p, NR_TYPE *np)
+void xluvpvol(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ntohf(((Uv_blk *)p)->uvsmp[i].pressure);
 }
 
 /* -------------------------------------------------------------------- */
-void xluvtvol(RAWTBL *varp, void *p, NR_TYPE *np)
+void xluvtvol(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ntohf(((Uv_blk *)p)->uvsmp[i].temp);
 }
 
 /* -------------------------------------------------------------------- */
-void xlmruv(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlmruv(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ntohf(((Uv_blk *)p)->uvsmp[i].humidity);

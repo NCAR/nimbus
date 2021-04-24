@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-void xlP16bin(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlP16bin(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P16_blk *p = (P16_blk *)input;
 
@@ -39,7 +39,7 @@ void xlP16bin(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLP16BIN */
 
 /* -------------------------------------------------------------------- */
-void xlP16v2bin(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlP16v2bin(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P16v2_blk *p = (P16v2_blk *)input;
 
@@ -50,7 +50,7 @@ void xlP16v2bin(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLP16V2BIN */
 
 /* -------------------------------------------------------------------- */
-void xlP260bin(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlP260bin(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P260_blk *p = (P260_blk *)input;
 
@@ -61,7 +61,7 @@ void xlP260bin(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLP260BIN */
 
 /* -------------------------------------------------------------------- */
-void xlP32v2bin(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlP32v2bin(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P32v2_blk *p = (P32v2_blk *)input;
 
@@ -72,7 +72,7 @@ void xlP32v2bin(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLP32V2BIN */
 
 /* -------------------------------------------------------------------- */
-void xlP32v2_sum(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlP32v2_sum(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P32v2_blk     *p = (P32v2_blk *)input;
 
@@ -87,7 +87,7 @@ void xlP32v2_sum(RAWTBL *varp, void *input, NR_TYPE *np)
 }       /* END XLP32V2_SUM */
 
 /* -------------------------------------------------------------------- */
-void xlP300bin(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlP300bin(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P300_blk *p = (P300_blk *)input;
 
@@ -98,7 +98,7 @@ void xlP300bin(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLP300BIN */
 
 /* -------------------------------------------------------------------- */
-void xlP64v2bin(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlP64v2bin(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P64v2_blk *p = (P64v2_blk *)input;
 
@@ -110,7 +110,7 @@ void xlP64v2bin(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLP64V2BIN */
 
 /* -------------------------------------------------------------------- */
-void xlSPP100(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlSPP100(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   size_t	total_cnt;
   DMT100_blk	*p = (DMT100_blk *)input;
@@ -131,7 +131,7 @@ void xlSPP100(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLSPP100 */
 
 /* -------------------------------------------------------------------- */
-void xlSPP200(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlSPP200(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT200_blk *p = (DMT200_blk *)input;
 
@@ -142,7 +142,7 @@ void xlSPP200(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLSPP200 */
 
 /* -------------------------------------------------------------------- */
-void xlSPP300(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlSPP300(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT300_blk *p = (DMT300_blk *)input;
 

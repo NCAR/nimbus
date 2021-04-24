@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-void xlfreset(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlfreset(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)ntohs(((P16_blk *)p)[i].aux[3]);
@@ -35,7 +35,7 @@ void xlfreset(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLFRESET */
 
 /* -------------------------------------------------------------------- */
-void xlfrange(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlfrange(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -48,7 +48,7 @@ void xlfrange(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLFRANGE */
 
 /* -------------------------------------------------------------------- */
-void xlfrange2(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlfrange2(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -61,7 +61,7 @@ void xlfrange2(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLFRANGE2 */
 
 /* -------------------------------------------------------------------- */
-void xlfrange3(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlfrange3(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -74,7 +74,7 @@ void xlfrange3(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLFRANGE3 */
 
 /* -------------------------------------------------------------------- */
-void xlfstrob(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlfstrob(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)ntohs(((P16_blk *)p)[i].aux[2]);

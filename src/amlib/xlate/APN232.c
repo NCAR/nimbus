@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2011
 
 
 /* -------------------------------------------------------------------- */
-void xlhgm232(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlhgm232(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
   ushort	status, sample;
   ushort	*input = (ushort *)p;
@@ -31,9 +31,9 @@ void xlhgm232(RAWTBL *varp, void *p, NR_TYPE *output)
     {
     status = ntohs(input[i * varp->ADSoffset]) & 0x0001;
     sample = ntohs(input[i * varp->ADSoffset]) & 0xFFFE;
-    out = sample; 
+    out = sample;
 
-    if (toupper(varp->Units.c_str()[0]) == 'M') 
+    if (toupper(varp->Units.c_str()[0]) == 'M')
       out *= FeetToMeters;
 
     if (status)
@@ -44,7 +44,7 @@ void xlhgm232(RAWTBL *varp, void *p, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xlhgm232s(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlhgm232s(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = ntohs(((short *)input)[i * varp->ADSoffset]) & 0x0001;

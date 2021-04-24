@@ -35,7 +35,7 @@ extern char	*AVAPSrecord[];
 
 
 /* -------------------------------------------------------------------- */
-void xldsnum(RAWTBL *varp, void *input, NR_TYPE *output)
+void xldsnum(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   int   avapsIndex;
 
@@ -45,7 +45,7 @@ void xldsnum(RAWTBL *varp, void *input, NR_TYPE *output)
 }       /* END XLDSNUM */
 
 /* -------------------------------------------------------------------- */
-void xldsat(RAWTBL *varp, void *input, NR_TYPE *output)
+void xldsat(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   int	avapsIndex;
   char	localBuff[256], *p;
@@ -87,7 +87,7 @@ void xldsat(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLDSID */
 
 /* -------------------------------------------------------------------- */
-void xldsps(RAWTBL *varp, void *input, NR_TYPE *output)
+void xldsps(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	int	avapsIndex = atoi(strchr(varp->name, '_')+1);
 
@@ -96,7 +96,7 @@ void xldsps(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLDSPS */
 
 /* -------------------------------------------------------------------- */
-void xldstime(RAWTBL *varp, void *input, NR_TYPE *output)
+void xldstime(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	int	avapsIndex = atoi(strchr(varp->name, '_')+1);
 
@@ -105,7 +105,7 @@ void xldstime(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLDSAT */
 
 /* -------------------------------------------------------------------- */
-void xldsmr(RAWTBL *varp, void *input, NR_TYPE *output)
+void xldsmr(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	int	avapsIndex = atoi(strchr(varp->name, '_')+1);
 
@@ -114,7 +114,7 @@ void xldsmr(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLDSMR */
 
 /* -------------------------------------------------------------------- */
-void xldswd(RAWTBL *varp, void *input, NR_TYPE *output)
+void xldswd(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	int	avapsIndex = atoi(strchr(varp->name, '_')+1);
 
@@ -123,7 +123,7 @@ void xldswd(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLDSWD */
 
 /* -------------------------------------------------------------------- */
-void xldsws(RAWTBL *varp, void *input, NR_TYPE *output)
+void xldsws(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	int	avapsIndex = atoi(strchr(varp->name, '_')+1);
 
@@ -132,7 +132,7 @@ void xldsws(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLDSWS */
 
 /* -------------------------------------------------------------------- */
-void xldsvspd(RAWTBL *varp, void *input, NR_TYPE *output)
+void xldsvspd(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	int	avapsIndex = atoi(strchr(varp->name, '_')+1);
 
@@ -141,7 +141,7 @@ void xldsvspd(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLDSVSPD */
 
 /* -------------------------------------------------------------------- */
-void xldslon(RAWTBL *varp, void *input, NR_TYPE *output)
+void xldslon(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	int	avapsIndex = atoi(strchr(varp->name, '_')+1);
 
@@ -150,7 +150,7 @@ void xldslon(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLDSLON */
 
 /* -------------------------------------------------------------------- */
-void xldslat(RAWTBL *varp, void *input, NR_TYPE *output)
+void xldslat(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	int	avapsIndex = atoi(strchr(varp->name, '_')+1);
 
@@ -159,7 +159,7 @@ void xldslat(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLDSLAT */
 
 /* -------------------------------------------------------------------- */
-void xldsgalt(RAWTBL *varp, void *input, NR_TYPE *output)
+void xldsgalt(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	int	avapsIndex = atoi(strchr(varp->name, '_')+1);
 

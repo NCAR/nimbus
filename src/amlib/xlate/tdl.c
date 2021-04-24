@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2000
 
 
 /* -------------------------------------------------------------------- */
-void xllh_ppmv(RAWTBL *varp, void *input, NR_TYPE *output)
+void xllh_ppmv(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   LhTdl_blk	*p = (LhTdl_blk *)input;
 
@@ -37,7 +37,7 @@ void xllh_ppmv(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLFLOAT0 */
 
 /* -------------------------------------------------------------------- */
-void xllh_vmr(RAWTBL *varp, void *input, NR_TYPE *output)
+void xllh_vmr(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   LhTdl_blk	*p = (LhTdl_blk *)input;
 
@@ -47,7 +47,7 @@ void xllh_vmr(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLFLOAT1 */
 
 /* -------------------------------------------------------------------- */
-void xllh_relhum(RAWTBL *varp, void *input, NR_TYPE *output)
+void xllh_relhum(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   LhTdl_blk	*p = (LhTdl_blk *)input;
 
@@ -57,7 +57,7 @@ void xllh_relhum(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLFLOAT2 */
 
 /* -------------------------------------------------------------------- */
-void xllh_press(RAWTBL *varp, void *input, NR_TYPE *output)
+void xllh_press(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   LhTdl_blk	*p = (LhTdl_blk *)input;
 
@@ -67,7 +67,7 @@ void xllh_press(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLFLOAT3 */
 
 /* -------------------------------------------------------------------- */
-void xllh_temp(RAWTBL *varp, void *input, NR_TYPE *output)
+void xllh_temp(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   LhTdl_blk	*p = (LhTdl_blk *)input;
 
@@ -77,7 +77,7 @@ void xllh_temp(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLFLOAT4 */
 
 /* -------------------------------------------------------------------- */
-void xllh_pp2f(RAWTBL *varp, void *input, NR_TYPE *output)
+void xllh_pp2f(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   LhTdl_blk	*p = (LhTdl_blk *)input;
 
@@ -87,7 +87,7 @@ void xllh_pp2f(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLFLOAT5 */
 
 /* -------------------------------------------------------------------- */
-void xllh_Pv0(RAWTBL *varp, void *input, NR_TYPE *output)
+void xllh_Pv0(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   LhTdl_blk	*p = (LhTdl_blk *)input;
 
@@ -97,7 +97,7 @@ void xllh_Pv0(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLFLOAT6 */
 
 /* -------------------------------------------------------------------- */
-void xllh_indexmax(RAWTBL *varp, void *input, NR_TYPE *output)
+void xllh_indexmax(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   LhTdl_blk	*p = (LhTdl_blk *)input;
 
@@ -107,7 +107,7 @@ void xllh_indexmax(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLFLOAT7 */
 
 /* -------------------------------------------------------------------- */
-void xllh_yzero(RAWTBL *varp, void *input, NR_TYPE *output)
+void xllh_yzero(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   LhTdl_blk	*p = (LhTdl_blk *)input;
 

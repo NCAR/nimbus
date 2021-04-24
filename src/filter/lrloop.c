@@ -73,7 +73,7 @@ int LowRateLoop(time_t startTime, time_t endTime)
       break;
 
     BuffPtr = (NR_TYPE *)AddToCircularBuffer(LRCB);
-    DecodeADSrecord((short *)ADSrecord, BuffPtr);
+    DecodeADSrecord((const short *)ADSrecord, BuffPtr);
     tv.trace("after decoding", BuffPtr);
     ApplyCalCoes(BuffPtr);
     tv.trace("after calcoes", BuffPtr);

@@ -86,7 +86,7 @@ void Add2DtoList(RAWTBL *varp)	/* Called by hdr_decode.c */
   static size_t	piCnt = 0;
 
   probes[piCnt] = CreateQueue();
-  
+
   if (strstr(varp->name, "HVPS"))
     probeIDorder[varp->ProbeCount>>1] |= 'H' << 8;
   else
@@ -144,7 +144,7 @@ void xlTwodInit(var_base *varp)
 }	/* END XLTWODINIT */
 
 /* -------------------------------------------------------------------- */
-void xl2dDeadTime1(RAWTBL *varp, void *in, NR_TYPE *np)
+void xl2dDeadTime1(RAWTBL *varp, const void *in, NR_TYPE *np)
 {
   size_t	probeCnt = varp->ProbeCount >> 1;
 
@@ -155,7 +155,7 @@ void xl2dDeadTime1(RAWTBL *varp, void *in, NR_TYPE *np)
 }	/* END XLTWOD */
 
 /* -------------------------------------------------------------------- */
-void xl2dDeadTime2(RAWTBL *varp, void *in, NR_TYPE *np)
+void xl2dDeadTime2(RAWTBL *varp, const void *in, NR_TYPE *np)
 {
   size_t	probeCnt = varp->ProbeCount >> 1;
 
@@ -166,7 +166,7 @@ void xl2dDeadTime2(RAWTBL *varp, void *in, NR_TYPE *np)
 }	/* END XLTWOD */
 
 /* -------------------------------------------------------------------- */
-void xlTwoD(RAWTBL *varp, void *in, NR_TYPE *np)
+void xlTwoD(RAWTBL *varp, const void *in, NR_TYPE *np)
 {
   size_t	probeCnt = varp->ProbeCount >> 1;
 
@@ -176,7 +176,7 @@ void xlTwoD(RAWTBL *varp, void *in, NR_TYPE *np)
 }	/* END XLTWOD */
 
 /* -------------------------------------------------------------------- */
-void xlOneD(RAWTBL *varp, void *in, NR_TYPE *np)
+void xlOneD(RAWTBL *varp, const void *in, NR_TYPE *np)
 {
   size_t	n, probeCount;
   int		thisTime;
@@ -319,7 +319,7 @@ return;
 }	/* END XLONED */
 
 /* -------------------------------------------------------------------- */
-void xlHVPS(RAWTBL *varp, void *in, NR_TYPE *np)
+void xlHVPS(RAWTBL *varp, const void *in, NR_TYPE *np)
 {
   size_t	probeCount;
   int		thisTime;

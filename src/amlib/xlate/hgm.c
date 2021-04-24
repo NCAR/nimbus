@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 
 
 /* -------------------------------------------------------------------- */
-void xlhgm(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlhgm(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
   short		*input = (short *)p;
   NR_TYPE	hgm, hgmv;

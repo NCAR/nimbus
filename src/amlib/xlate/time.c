@@ -22,28 +22,28 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 extern int FlightDate[]; /* 0 = month, 1 = day, 2 = year */
 
 /* -------------------------------------------------------------------- */
-void xlhour(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlhour(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohs(((Hdr_blk *)input)->hour);
 
 }	/* END XLHOUR */
 
 /* -------------------------------------------------------------------- */
-void xlmin(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlmin(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohs(((Hdr_blk *)input)->minute);
 
 }	/* END XLMIN */
 
 /* -------------------------------------------------------------------- */
-void xlsec(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlsec(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohs(((Hdr_blk *)input)->second);
 
 }	/* END XLSEC */
 
 /* -------------------------------------------------------------------- */
-void xlyear(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlyear(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   if (HDRversion < 2.99999)
     *output = FlightDate[2];
@@ -61,12 +61,12 @@ void xlyear(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLYEAR */
 
 /* -------------------------------------------------------------------- */
-void xlmonth(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlmonth(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   if (HDRversion < 2.99999)
     {
     *output = FlightDate[0];	/* Month from ADS header */
-    
+
 /* This needs to be fixed.  Add check for End of Month
     Hdr_blk *h = (Hdr_blk *)input;
 
@@ -80,14 +80,14 @@ void xlmonth(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLMONTH */
 
 /* -------------------------------------------------------------------- */
-void xlday(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlday(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   if (HDRversion < 2.99999)
     {
     Hdr_blk *h = (Hdr_blk *)input;
 
     *output = FlightDate[1];	/* Day from ADS header	*/
-    
+
     /* Midnight rollover */
     if (h->hour == 0 && h->minute == 0 && h->second == 0)
       *output += 1.0;

@@ -30,7 +30,7 @@ static NR_TYPE	dmech, dmefl, dmedi;
 
 
 /* -------------------------------------------------------------------- */
-void xldmedi(RAWTBL *varp, void *pdme, NR_TYPE *output)
+void xldmedi(RAWTBL *varp, const void *pdme, NR_TYPE *output)
 {
   int	i;
   int	dme1, dme2, dme3;  /* temp storage for raw data */
@@ -41,16 +41,16 @@ void xldmedi(RAWTBL *varp, void *pdme, NR_TYPE *output)
   dme3 = ntohl(((Dme_blk *)pdme)->dist);
   dme2 = dme3 >> 16;
 
-  /* Convert the channel number from bi-quinary to megahertz */ 
+  /* Convert the channel number from bi-quinary to megahertz */
   ftemp = (NR_TYPE)(dme1 & 1) / 20.0;
-  itemp = (dme1 & 0x3e) >> 1;   
+  itemp = (dme1 & 0x3e) >> 1;
 
   for (i = 0; i < 10; i++)
     if (look[i] == itemp)
       break;
 
   ftemp += (NR_TYPE)i / 10.0;
-  itemp = (dme1 & 0x7c0) >> 6; 
+  itemp = (dme1 & 0x7c0) >> 6;
 
   for (i = 0; i < 10; i++)
     if (look[i] == itemp)
@@ -74,13 +74,13 @@ void xldmedi(RAWTBL *varp, void *pdme, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xldmech(RAWTBL *varp, void *p, NR_TYPE *output)
+void xldmech(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
   *output = dmech;
 }
 
 /* -------------------------------------------------------------------- */
-void xldmefl(RAWTBL *varp, void *p, NR_TYPE *output)
+void xldmefl(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
   *output = dmefl;
 }

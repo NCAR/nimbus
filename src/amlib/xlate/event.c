@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "amlib.h"
 
 /* -------------------------------------------------------------------- */
-void xlevent(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlevent(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohl(*((long *)input));
 }

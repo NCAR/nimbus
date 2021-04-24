@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 
 /* -------------------------------------------------------------------- */
-void xlGrey_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlGrey_hskp0(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   Grey_house	*p = (Grey_house *)input;
 
@@ -35,7 +35,7 @@ void xlGrey_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLGREY_HSKP0 */
 
 /* -------------------------------------------------------------------- */
-void xlGrey_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlGrey_hskp1(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   Grey_house	*p = (Grey_house *)input;
 

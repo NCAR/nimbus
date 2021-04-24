@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-void xlpartspace(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpartspace(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P1dSpc_blk	*p = (P1dSpc_blk *)input;
 

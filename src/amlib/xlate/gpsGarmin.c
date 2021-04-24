@@ -19,13 +19,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003-05
 
 
 /* -------------------------------------------------------------------- */
-void xlggstat(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlggstat(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohs(((Garmin_blk *)input)->quality);
 }
 
 /* -------------------------------------------------------------------- */
-void xlgglat(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgglat(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   int	ilat;
   float	lat, lon;
@@ -46,7 +46,7 @@ void xlgglat(RAWTBL *varp, void *input, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xlgglon(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgglon(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   int	ilon;
   float	lat, lon;
@@ -67,7 +67,7 @@ void xlgglon(RAWTBL *varp, void *input, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xlggalt(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlggalt(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   Garmin_blk	*gps = (Garmin_blk *)input;
 
@@ -75,7 +75,7 @@ void xlggalt(RAWTBL *varp, void *input, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xlggnsat(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlggnsat(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohs(((Garmin_blk *)input)->nsat);
 }
@@ -83,13 +83,13 @@ void xlggnsat(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 static NR_TYPE	gspd, trk;
 
-void xlggspd(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlggspd(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   gspd = *output = (NR_TYPE)ntohf(((Garmin_blk *)input)->ground_speed) * KNOTS_TO_MPS;
 }
 
 /* -------------------------------------------------------------------- */
-void xlggtrk(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlggtrk(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   trk = *output = (NR_TYPE)ntohf(((Garmin_blk *)input)->course);
 }
@@ -99,13 +99,13 @@ void xlggtrk(RAWTBL *varp, void *input, NR_TYPE *output)
  * above causes headaches, so I moved them into raw.  This works as
  * long as variables are processed in alphabetical order.
  */
-void xlggvew(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlggvew(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (gspd * sin((double)(DEG_RAD*trk)));
 }
 
 /* -------------------------------------------------------------------- */
-void xlggvns(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlggvns(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (gspd * cos((double)(DEG_RAD*trk)));
 }

@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2002
 
 
 /* -------------------------------------------------------------------- */
-void xletorq(RAWTBL *varp, void *input, NR_TYPE *output)
+void xletorq(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 
 

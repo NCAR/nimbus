@@ -35,7 +35,7 @@ void decodeJulianDay(int julian_day, int year, int *month, int *day);
 
 
 /* -------------------------------------------------------------------- */
-void xlgstat(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgstat(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohf(((Gps_blk *)input)->ghealth);
 
@@ -60,7 +60,7 @@ calcDateTime(	(int)((Gps_blk *)input)->gpsweek,
 }	/* END XLGSTAT */
 
 /* -------------------------------------------------------------------- */
-void xlglat(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlglat(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   float	lat, lon;
 
@@ -76,7 +76,7 @@ void xlglat(RAWTBL *varp, void *input, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xlglon(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlglon(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   float	lat, lon;
 
@@ -92,7 +92,7 @@ void xlglon(RAWTBL *varp, void *input, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xlgalt(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgalt(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   float		posTime;
   Gps_blk	*gps = (Gps_blk *)input;
@@ -106,13 +106,13 @@ void xlgalt(RAWTBL *varp, void *input, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xlgtimp(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgtimp(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohf(((Gps_blk *)input)->postime);
 }
 
 /* -------------------------------------------------------------------- */
-void xlgvew(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgvew(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   float	velTime;
   Gps_blk	*gps = (Gps_blk *)input;
@@ -126,7 +126,7 @@ void xlgvew(RAWTBL *varp, void *input, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xlgvns(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgvns(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohf(((Gps_blk *)input)->velnrth);
 
@@ -134,7 +134,7 @@ void xlgvns(RAWTBL *varp, void *input, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xlgvzi(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgvzi(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohf(((Gps_blk *)input)->velup);
 
@@ -142,13 +142,13 @@ void xlgvzi(RAWTBL *varp, void *input, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xlgtimv(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgtimv(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohf(((Gps_blk *)input)->veltime);
 }
 
 /* -------------------------------------------------------------------- */
-void xlgmode(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgmode(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohl(((Gps_blk *)input)->gpsmode);
 /*
@@ -182,18 +182,18 @@ int calcDateTime(int week, int secs, int gps_off)
          {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
   static int leap_calendar[] =
          {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366};
- 
+
 // Apply the gps/utc offset. See the Trimble manual.
   secs -= gps_off;
   if (secs < 0)
     return(0);                          // time is not yet valid
- 
+
 // Compute the day, hour, minute, and second of the current week.
   day = secs / SECS_PER_DAY;
   hour = (secs % SECS_PER_DAY) / SECS_PER_HOUR;
   minute = (secs % SECS_PER_HOUR) / SECS_PER_MIN;
   second = (secs % SECS_PER_MIN);
- 
+
 // GPS time begins on 1/6/80.  Compute the total number of days.  Then
 // compute the year and julian day.
   tot_days = week * DAYS_PER_WEEK + day + 5;
@@ -201,10 +201,10 @@ int calcDateTime(int week, int secs, int gps_off)
   julian_day = tot_days - (year * DAYS_PER_YEAR) + 1;
 
 month = 0;
- 
+
 // Compute number of previous leap days, and correct the julian day.
   julian_day -= (year - 1) / LEAP_YEAR_MOD + 1;
- 
+
 // If julian day is <= 0, roll back to the previous year, and correct the
 // julian day.
   if (julian_day <= 0) {
@@ -214,27 +214,27 @@ month = 0;
     else
       julian_day += DAYS_PER_LEAP_YEAR;
   }
- 
+
   if (year % LEAP_YEAR_MOD)
     cal_ptr = calendar;
   else
     cal_ptr = leap_calendar;
- 
+
 // Compute the month index.
   for (month = 1; (month < CALENDAR_SIZE) &&
       (julian_day > *(cal_ptr + month)); month++)
     ;
- 
+
 // Compute the day of the month for the start of the week.
   day = julian_day - *(cal_ptr + month - 1);
- 
+
 // Add the base year, 1980, to the computed year.
   year += GPS3_BASE_YEAR;
 /*
 printf ("julian day = %3d, %02d/%02d/%02d %02d:%02d:%02d GPS\n", julian_day,
      year, month, day, hour, minute, second);
 
-printf ("julian day = %3d, %02d/%02d/%02d %02d:%02d:%02d Hdr_blk\n", 
+printf ("julian day = %3d, %02d/%02d/%02d %02d:%02d:%02d Hdr_blk\n",
      computeJulianDay(year, month, day),
      hdr->year, hdr->month, hdr->day, hdr->hour, hdr->minute, hdr->second);
 */
@@ -246,17 +246,17 @@ int computeJulianDay(int year, int month, int day)
 // Computes the julian day from the current year, month, day.
 {
   int *cal_ptr;                                 // calendar pointer
- 
+
   static int calendar[] =
          {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
   static int leap_calendar[] =
          {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366};
- 
+
   if (year % 4)
     cal_ptr = calendar;
   else
     cal_ptr = leap_calendar;
- 
+
   return(*(cal_ptr + month - 1) + day);
 }
 
@@ -264,22 +264,22 @@ int computeJulianDay(int year, int month, int day)
 void decodeJulianDay(int julian_day, int year, int *month, int *day)
 {
   int *cal_ptr;                                 // calendar pointer
- 
+
   static int calendar[] =
          {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
   static int leap_calendar[] =
          {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366};
- 
+
   if (year % 4)
     cal_ptr = calendar;
   else
     cal_ptr = leap_calendar;
- 
+
 // Find the month.
   for (*month = 1; (*month < 13) &&
        (julian_day > *(cal_ptr + *month));
        (*month)++);
- 
+
   *day = julian_day - *(cal_ptr + *month - 1);
 }
 

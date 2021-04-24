@@ -123,7 +123,7 @@ public:
   ushort dsmID;		// ADS3/nids A/D temp compensation.
 
   void (*Initializer)(void *); // Function to initialize xlate
-  void (*xlate)(RAWTBL *, void *, NR_TYPE *); // Function to translate data
+  void (*xlate)(RAWTBL *, const void *, NR_TYPE *); // Function to translate data
   void (*Average)(...);	// Routine to use to average/sum data
 
   int32_t convertOffset;	// A/D offset

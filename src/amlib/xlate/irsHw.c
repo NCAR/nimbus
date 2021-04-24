@@ -120,7 +120,7 @@ void irsInit(var_base *varp)
 }  /* END IRSINIT */
 
 /* -------------------------------------------------------------------- */
-void xlilat(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlilat(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->present_lat;
 
@@ -140,7 +140,7 @@ void xlilat(RAWTBL *varp, void *input, NR_TYPE *np)
 } /* END XLILAT */
 
 /* -------------------------------------------------------------------- */
-void xlilon(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlilon(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->present_lon;
 
@@ -167,7 +167,7 @@ void xlilon(RAWTBL *varp, void *input, NR_TYPE *np)
 } /* END XLILON */
 
 /* -------------------------------------------------------------------- */
-void xlipitch(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlipitch(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->pitch_angle;
   float  correction;
@@ -193,7 +193,7 @@ void xlipitch(RAWTBL *varp, void *input, NR_TYPE *np)
 } /* END XLIPITCH */
 
 /* -------------------------------------------------------------------- */
-void xliroll(RAWTBL *varp, void *input, NR_TYPE *np)
+void xliroll(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->roll_angle;
 
@@ -213,7 +213,7 @@ void xliroll(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLIROLL */
 
 /* -------------------------------------------------------------------- */
-void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlithdg(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->true_heading;
   float  correction;
@@ -248,7 +248,7 @@ void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLITHDG */
 
 /* -------------------------------------------------------------------- */
-void xlialt(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlialt(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->inertial_alt;
 
@@ -268,7 +268,7 @@ void xlialt(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLIALT */
 
 /* -------------------------------------------------------------------- */
-void xlivspd(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlivspd(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->inrt_vert_speed;
 
@@ -288,7 +288,7 @@ void xlivspd(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLIVSPD */
 
 /* -------------------------------------------------------------------- */
-void xlvacc(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlvacc(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->vertical_accel;
 
@@ -308,7 +308,7 @@ void xlvacc(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLVACC */
 
 /* -------------------------------------------------------------------- */
-void xlivew(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlivew(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->velocity_ew;
 
@@ -331,7 +331,7 @@ void xlivew(RAWTBL *varp, void *input, NR_TYPE *np)
 } /* END XLIVEW */
 
 /* -------------------------------------------------------------------- */
-void xlivns(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlivns(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->velocity_ns;
 
@@ -354,7 +354,7 @@ void xlivns(RAWTBL *varp, void *input, NR_TYPE *np)
 } /* END XLIVNS */
 
 /* -------------------------------------------------------------------- */
-void xliwd(RAWTBL *varp, void *input, NR_TYPE *np)
+void xliwd(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->wind_dir_true;
 
@@ -382,7 +382,7 @@ void xliwd(RAWTBL *varp, void *input, NR_TYPE *np)
 } /* END XLIWD */
 
 /* -------------------------------------------------------------------- */
-void xliws(RAWTBL *varp, void *input, NR_TYPE *np)
+void xliws(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->wind_speed;
 
@@ -402,7 +402,7 @@ void xliws(RAWTBL *varp, void *input, NR_TYPE *np)
 } /* END XLIWS */
 
 /* -------------------------------------------------------------------- */
-void xligspd(RAWTBL *varp, void *input, NR_TYPE *np)
+void xligspd(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->ground_speed;
 
@@ -426,35 +426,35 @@ void xligspd(RAWTBL *varp, void *input, NR_TYPE *np)
 } /* END XLIGSPD */
 
 /* -------------------------------------------------------------------- */
-void xllag50(RAWTBL *varp, void *p, NR_TYPE *np)
+void xllag50(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohl(((Irs_blk *)p)->lag_50hz_frame);
 
 }  /* END XLLAG50 */
 
 /* -------------------------------------------------------------------- */
-void xllag25(RAWTBL *varp, void *p, NR_TYPE *np)
+void xllag25(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohl(((Irs_blk *)p)->lag_25hz_frame);
 
 }  /* END XLLAG25 */
 
 /* -------------------------------------------------------------------- */
-void xllag10(RAWTBL *varp, void *p, NR_TYPE *np)
+void xllag10(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohl(((Irs_blk *)p)->lag_10hz_frame);
 
 }  /* END XLLAG10 */
 
 /* -------------------------------------------------------------------- */
-void xllag5(RAWTBL *varp, void *p, NR_TYPE *np)
+void xllag5(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohl(((Irs_blk *)p)->lag_5hz_frame);
 
 }  /* END XLLAG5 */
 
 /* -------------------------------------------------------------------- */
-void xlbrollr(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlbrollr(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->roll_rate;
 
@@ -474,7 +474,7 @@ void xlbrollr(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLBROLLR */
 
 /* -------------------------------------------------------------------- */
-void xlbpitchr(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlbpitchr(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->pitch_rate;
 
@@ -494,7 +494,7 @@ void xlbpitchr(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLBPITCHR */
 
 /* -------------------------------------------------------------------- */
-void xlbyawr(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlbyawr(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->yaw_rate;
 
@@ -514,7 +514,7 @@ void xlbyawr(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLBYAWR */
 
 /* -------------------------------------------------------------------- */
-void xlblata(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlblata(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->lat_accel;
 
@@ -534,7 +534,7 @@ void xlblata(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLBLATA */
 
 /* -------------------------------------------------------------------- */
-void xlblona(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlblona(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->long_accel;
 
@@ -554,7 +554,7 @@ void xlblona(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLBLONA */
 
 /* -------------------------------------------------------------------- */
-void xlbnorma(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlbnorma(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->normal_accel;
 
@@ -574,7 +574,7 @@ void xlbnorma(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLBNORMA */
 
 /* -------------------------------------------------------------------- */
-void xlitrkart(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlitrkart(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t	*p = ((Irs_blk *)input)->track_ang_rate;
 
@@ -594,7 +594,7 @@ void xlitrkart(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLITRKART */
 
 /* -------------------------------------------------------------------- */
-void xlittrka(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlittrka(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t	*p = ((Irs_blk *)input)->track_angle_true;
 
@@ -602,10 +602,10 @@ void xlittrka(RAWTBL *varp, void *input, NR_TYPE *np)
   int label = 0xcb;
 
   preProcessData(varp, p, label);
- 
+
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
-/*          Diagnostic print below   
+/*          Diagnostic print below
     if ( (p->track_angle_true[i] & 0xff) != 0xcb)
       printf ("irsHw:  TKAT ID incorrect (%o)\n", p->track_angle_true[i] & 0xff);
             Diagnostic print above   */
@@ -626,7 +626,7 @@ void xlittrka(RAWTBL *varp, void *input, NR_TYPE *np)
 }  /* END XLITTRKA */
 
 /* -------------------------------------------------------------------- */
-void xlidrift(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlidrift(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   int32_t  *p = ((Irs_blk *)input)->drift_angle;
 
@@ -686,7 +686,7 @@ void preProcessData(var_base *varp, int32_t input[], int thisLabel)
     input[i] = ntohl(input[i]);
 
     label = input[i] & 0x000000ff;
- 
+
     if (label != thisLabel)
     {
       sprintf(buffer,
