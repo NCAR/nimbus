@@ -534,7 +534,7 @@ bool Open2dFile(const char file[], int probeCnt)
 
   if (access(twoDfile, R_OK) == ERR)
     {
-    if (p > 0 && isalpha(p[-1]))
+    if (p && isalpha(p[-1]))
       --p;
     strcpy(p, ".2d");
 
