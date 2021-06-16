@@ -8,19 +8,17 @@ import eol_scons
 
 def nimbusbase(env):
     env.Require(['prefixoptions', 'buildmode', 'openmotif', 'nidas', 'netcdf', 'gsl', 'postgres_pq', 'boost_regex', 'bz2', 'z'])
-    env['CC'] = env['CXX']
     env.Append(CPPPATH=['#/include', '#/src/filter'])
-    env.Append(CCFLAGS=Split("-Wno-write-strings -Wstrict-aliasing "
-                             "-Wno-deprecated"))
+    env.Append(CXXFLAGS=['-std=c++11'])
+    env.Append(CXXFLAGS=Split("-Wno-write-strings -Wstrict-aliasing "
+                              "-Wno-deprecated"))
+    env['CC'] = env['CXX']
+    env['CCFLAGS'] = env['CXXFLAGS']
 
 env = Environment(platform='posix', tools=['default', 'gitinfo', nimbusbase])
 #                 GLOBAL_TOOLS=['scanbuild'])
 
 env.GitInfo('include/gitInfo.h', '.')
-
-env['CXXFLAGS'] = Split("""
-    -std=c++11
-""")
 
 Export('env')
 
