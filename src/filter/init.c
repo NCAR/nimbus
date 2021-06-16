@@ -25,6 +25,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 #include "gui.h"
 
 using nidas::core::NidasApp;
+using nidas::core::ArgVector;
+
 static void ReadBatchFile(const char *filename, Config::processingRate * rate);
 static void usage();
 
@@ -102,10 +104,10 @@ void ProcessArgv(int argc, char **argv)
   cfg.SetInteractive(true);
   cfg.SetLoadProductionSetup(true);
 
-  std::vector<std::string> args(argv+1, argv+argc);
+  ArgVector args(argv+1, argv+argc);
   NidasApp& napp = *NidasApp::getApplicationInstance();
 
-  napp.parseArgs(args);
+  args = napp.parseArgs(args);
 
   for (i = 0; i < (int)args.size(); ++i)
   {
