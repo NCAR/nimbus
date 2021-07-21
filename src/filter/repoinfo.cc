@@ -53,7 +53,8 @@ void validateGitProjectDirectory()
   cfg.SetProjectRepoURL(buffer);
 
   // Get repo hash
-  sprintf(cmd, "git status --porcelain | grep 'Configuration\\|%s'",
+  // There may be better ways to search for modified files, like only files nimbus uses.
+  sprintf(cmd, "git status --porcelain --untracked-files=no | grep 'Configuration\\|%s' | grep -v logfile",
 		cfg.ProjectNumber().c_str());
   executePopenCommand(cmd, buffer, 1000);
   cfg.SetProjectDirectoryStatus(buffer);
