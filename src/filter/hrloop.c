@@ -113,7 +113,7 @@ int HighRateLoop(time_t startTime, time_t endTime)
     thisTime = SampledDataTimeToSeconds(SampledData);
 
     if (SynthData == true)
-      sd.InjectSyntheticData(thisTime); 
+      sd.InjectSyntheticData(thisTime);
 
     ComputeLowRateDerived(thisTime);
     ComputeHighRateDerived(thisTime);

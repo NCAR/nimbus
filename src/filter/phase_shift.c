@@ -189,8 +189,10 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 
     for (size_t i = 0; i < vp->SampleRate; ++i)
     {
-// Back when we interpolated over nan's, they were not passed into x, y below.
-//      if (!std::isnan(curPtr[i]))
+      // The 13hz variables from the IRS are really 12.5 hz.
+      // No choice but to interpolate if we want smooth high-rate.
+      if (vp->SampleRate == 13 && std::isnan(curPtr[i]))
+        continue;
 
       // add to x, y if timetag is in this second
       if ((gap_size * i) + dynLag <= 1000)
@@ -291,6 +293,8 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
     }
   }
 
+
+  // Populate high-rate data buffer.
   if (hrt_out)
   {
     double rqst = startTime;
