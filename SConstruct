@@ -10,8 +10,7 @@ def nimbusbase(env):
     env.Require(['prefixoptions', 'buildmode', 'openmotif', 'nidas', 'netcdf', 'gsl', 'postgres_pq', 'boost_regex', 'bz2', 'z'])
     env.Append(CPPPATH=['#/include', '#/src/filter'])
     env.Append(CXXFLAGS=['-std=c++11'])
-    env.Append(CXXFLAGS=Split("-Wno-write-strings -Wstrict-aliasing "
-                              "-Wno-deprecated"))
+    env.Append(CXXFLAGS=Split("-Wno-write-strings -Wstrict-aliasing "))
     env['CC'] = env['CXX']
     env['CCFLAGS'] = env['CXXFLAGS']
 
