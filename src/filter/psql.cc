@@ -936,7 +936,7 @@ PostgreSQL::~PostgreSQL()
 void
 PostgreSQL::remove_trailing_spaces(std::string & target) const
 {
-  while (target[target.size()-1] == ' ')
+  while (target.size()>0 && target[target.size()-1] == ' ')
     target.resize(target.size()-1);
 }
 
