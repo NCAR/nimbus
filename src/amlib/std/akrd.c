@@ -6,7 +6,7 @@ FULL NAME:	Attack Angle from the Radome
 
 DESCRIPTION:    
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2016
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2021
 -------------------------------------------------------------------------
 */
 
@@ -24,7 +24,8 @@ static std::vector<float> akrd_coeff_old;	// Old C130.  Currently Pre-WECAN?  Tw
 static std::vector<float> low, mid, high;	// Altitude specific coef's.
 
 // Coeff for aky filtering.
-static double c1 = 1.0, d0 = 1.0, d1 = 1.0, d2 = 1.0, d3 = 0.0;
+static std::vector<float> aky_d;
+static std::vector<float> aky_c1;
 static double filter(double, double *);
 static double zf[nFeedBackTypes][4][6];
 
@@ -52,6 +53,37 @@ static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
 }
 
 /* -------------------------------------------------------------------- */
+void initAKY(var_base *varp)
+{
+  aky_c1.clear();
+  aky_d.clear();
+
+  /* Set default values per aircraft. */
+  switch (cfg.Aircraft())
+  {
+    case Config::C130:
+      aky_c1.push_back(10.3512);
+      aky_d.push_back(5.1531); aky_d.push_back(13.1655); aky_d.push_back(0.000252);
+      break;
+
+    case Config::HIAPER:
+//      aky_c1.push_back(21.481);	// From Al Cooper
+//      aky_d.push_back(4.8542); aky_d.push_back(8.9817); aky_d.push_back(-0.011126); aky_d.push_back(-0.00000753);
+      aky_c1.push_back(12.9995);	// From Adriana - 11/2021
+      aky_d.push_back(5.4964); aky_d.push_back(12.9995); aky_d.push_back(-0.0108); aky_d.push_back(0.0);
+      break;
+
+    default:
+      aky_c1.push_back(1.0);
+      aky_d.push_back(1.0); aky_d.push_back(1.0); aky_d.push_back(1.0); aky_d.push_back(0.0);
+      break;
+  }
+
+  AddToDefaults(varp->name, "C1", aky_c1);
+  AddToDefaults(varp->name, "D", aky_d);
+}
+
+/* -------------------------------------------------------------------- */
 void initAKRD(var_base *varp)
 {
   float *tmp;
@@ -65,7 +97,6 @@ void initAKRD(var_base *varp)
   switch (cfg.Aircraft())
   {
     case Config::C130:
-      c1 = 10.3512, d0 = 5.1531, d1 = 13.1655, d2 = 0.000252;
       if ( (tmp = GetDefaultsValue("C130_RADOME_SSN", varp->name)) )
         c130_radome_ssn = (int)tmp[0];
 
@@ -100,7 +131,6 @@ void initAKRD(var_base *varp)
       break;
 
     case Config::HIAPER:
-      c1 = 21.481; d0 = 4.8542; d1 = 8.9817; d2 = -0.011126; d3 = -0.00000753;
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
         gv_radome_ssn = (int)tmp[0];
 
@@ -234,8 +264,9 @@ void saky(DERTBL *varp)
     double AQS = filter(ratio, zf[FeedBack][0]);
     double QCFS = filter(qc, zf[FeedBack][1]);
     double AQF = ratio - AQS;
+    double QCFF = qc - QCFS;
 
-    AKY = d0 + d1 * AQS + d2 * QCFS + c1 * AQF + d3 * timeOfFlight;
+    AKY = aky_d[0] + aky_d[1] * AQS + aky_d[2] * QCFS + aky_c1[0] * AQF + aky_d[3] * timeOfFlight + aky_d[2] * QCFF;
   }
 
   PutSample(varp, AKY);

@@ -810,7 +810,7 @@
 #	Others
 #
 	"AKDF",		NULL,		NULL,		sakdf,
-	"AKY",		NULL,		NULL,		saky,
+	"AKY",		(void(*)(void*))initAKY,	NULL,		saky,
 	"AKRD",		(void(*)(void*))initAKRD,	NULL,		sakrd,
 	"AQRATIO",	NULL,		NULL,		saqratio,
 	"ATTACK",	NULL,		NULL,		sReferAttack,
