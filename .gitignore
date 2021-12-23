@@ -12,3 +12,4 @@
 /include/gitInfo.h
 /include/xlatefns.h
 /tests/*.pyc
+/tests/__pycache__
