@@ -61,16 +61,17 @@ char *GetProcessedBuffer(CircularBuffer *, CircularBuffer *, int offset, var_bas
 void InitMRFilters()
 {
   const MOD *mv_p;
-  filterPtr fromOne, fromFive, fromEight, fromTen, fromThirteen, fromSixteen, 
-    fromTwentyFive, fromFifty, fromOneHundred, fromTwoFifty, fromFiveHundred, 
-    fromOneThousand;
+  filterPtr fromOne, fromFive, fromEight, fromTen, fromThirteen, fromSixteen,
+    fromTwenty, fromTwentyFive, fromFifty, fromOneHundred, fromTwoFifty,
+    fromFiveHundred, fromOneThousand;
   char filterFileName[128];
 
   // Custom filters for older Laseref III in the C130.
   filterPtr acins = readAfilter("ACINS");
   filterPtr vspd = readAfilter("VSPD");
-  filterPtr psff = readAfilter("PSFF");
 //  filterPtr gsf = readAfilter("GSF");
+  // Custom filter for a smoothed PSF. PSFF goes into GV windshield static pitot.
+  filterPtr psff = readAfilter("PSFF");
 
   int outRate = (int)cfg.HRTRate();
 
@@ -96,6 +97,9 @@ void InitMRFilters()
 
   sprintf(filterFileName, "16to%d", outRate);
   fromSixteen = (outRate == 16) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "20to%d", outRate);
+  fromTwenty = (outRate == 20) ? 0 : readAfilter(filterFileName);
 
   sprintf(filterFileName, "25to%d", outRate);
   fromTwentyFive = (outRate == 25) ? 0 : readAfilter(filterFileName);
@@ -180,6 +184,10 @@ void InitMRFilters()
         // Data from the Air Data Computer (ADC).
         rawFilters[i] = createMRFilter(L, M, fromSixteen, mv_p);
         break;
+      case 20:
+        // Novatel bumped to twenty Hz in 2021
+        rawFilters[i] = createMRFilter(L, M, fromTwenty, mv_p);
+        break;
       case 25:		/* Just filter	*/
         if (cfg.Aircraft() == Config::C130 && strncmp(raw[i]->name, "VSPD", 4) == 0)
           rawFilters[i] = createMRFilter(L, M, vspd, mv_p);
@@ -259,7 +267,7 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
   {
     // how much space for one second of high-rate data?
     int oneSecondSize = sizeof(NR_TYPE) * cfg.HRTRate() * vp->Length;
-    
+
     if (vp->SampleRate == (size_t)cfg.HRTRate())
       // SampleRate is same as HRT rate, just copy.
       memcpy((char *)&HighRateData[vp->HRstart],
@@ -301,8 +309,8 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
     PSCBindex += (vpFilter->filter->order - 1) / (2 * cfg.HRTRate());
   }
 
-  // XXXX When downsampling, something down the line seems to put us off 
-  // by (one output sample period - one input sample period).  
+  // XXXX When downsampling, something down the line seems to put us off
+  // by (one output sample period - one input sample period).
   // Correct here (for now?).
   if (vp->SampleRate > cfg.HRTRate())
     sampleOffset -= vp->SampleRate / cfg.HRTRate();
@@ -368,7 +376,7 @@ static void SingleStageFilter(CircularBuffer *PSCB, CircularBuffer *HSCB, mRFilt
 
 /* -------------------------------------------------------------------- */
 //
-// Return a pointer to a filter read from the given file, or 
+// Return a pointer to a filter read from the given file, or
 // (filterPtr)BadFilter if the file cannot be opened or is otherwise
 // bad.
 //
@@ -438,7 +446,7 @@ static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, const MOD *mod
   aMRFPtr->L		= L;
   aMRFPtr->M		= M;
   aMRFPtr->modulo	= modvar;
-	
+
   return(aMRFPtr);
 
 }	/* END CREATEMRFILTER */
@@ -470,7 +478,7 @@ static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, const MOD *mod
 */
 static circBuffPtr newCircBuff(int size)
 {
-  circBuffPtr 	aCBPtr;
+  circBuffPtr	aCBPtr;
 
   /* Check size  */
   if (size < 0)
@@ -628,7 +636,7 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
       return(thisMRF->task = GET_INPUT);
       }
 
-    /* Time to calc output sample? 	*/
+    /* Time to calc output sample?	*/
     if (thisMRF->outTime >= thisMRF->M)
       {
       /* Filter. */
