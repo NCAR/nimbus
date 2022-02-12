@@ -490,6 +490,7 @@
 	"UIC",		NULL,				NULL,		sui,
 	"WIC",		(void(*)(void*))initGust,	NULL,		swi,
 	"WIY",		(void(*)(void*))initGust,	NULL,		swi,
+	"WIX",		NULL,				NULL,		sRefer,
 	"VYC",		NULL,				NULL,		svy,
 	"UXC",		NULL,				NULL,		sux,
 	"WSC",		NULL,				NULL,		sws,
