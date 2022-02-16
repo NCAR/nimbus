@@ -38,9 +38,7 @@ static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
   if ((tmp = GetDefaultsValue(name, varp->name)) != NULL)
   {
     c.clear();
-    c.push_back(tmp[0]);
-    c.push_back(tmp[1]);
-    c.push_back(tmp[2]);
+    c.push_back(tmp[0]); c.push_back(tmp[1]); c.push_back(tmp[2]);
     sprintf(buffer,
 	"akrd: %s set to %f, %f, %f from Defaults file.\n", name,
 	  c[0], c[1], c[2]);
@@ -55,6 +53,7 @@ static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
 /* -------------------------------------------------------------------- */
 void initAKY(var_base *varp)
 {
+  float *tmp;
   aky_c1.clear();
   aky_d.clear();
 
@@ -67,10 +66,8 @@ void initAKY(var_base *varp)
       break;
 
     case Config::HIAPER:
-//      aky_c1.push_back(21.481);	// From Al Cooper
-//      aky_d.push_back(4.8542); aky_d.push_back(8.9817); aky_d.push_back(-0.011126); aky_d.push_back(-0.00000753);
-      aky_c1.push_back(12.9995);	// From Adriana - 11/2021
-      aky_d.push_back(5.4964); aky_d.push_back(12.9995); aky_d.push_back(-0.0108); aky_d.push_back(0.0);
+      aky_c1.push_back(21.481);	// From Al Cooper
+      aky_d.push_back(4.8542); aky_d.push_back(8.9817); aky_d.push_back(-0.011126); aky_d.push_back(-0.00000753);
       break;
 
     default:
@@ -79,8 +76,31 @@ void initAKY(var_base *varp)
       break;
   }
 
-  AddToDefaults(varp->name, "C1", aky_c1);
-  AddToDefaults(varp->name, "D", aky_d);
+
+  if ((tmp = GetDefaultsValue("AKY_C1", varp->name)) != NULL)
+  {
+    aky_c1.clear();
+    aky_c1.push_back(tmp[0]);
+    sprintf(buffer,
+	"akrd: AKY_C1 set to %f from Defaults file.\n", aky_c1[0]);
+    LogMessage(buffer);
+  }
+  else
+    AddToDefaults(varp->name, "Coefficient C1", aky_c1);
+
+  if ((tmp = GetDefaultsValue("AKY_D", varp->name)) != NULL)
+  {
+    aky_d.clear();
+    aky_d.push_back(tmp[0]); aky_d.push_back(tmp[1]);
+    aky_d.push_back(tmp[2]); aky_d.push_back(tmp[3]);
+    sprintf(buffer,
+	"akrd: AKY_D set to %f, %f, %f %f from Defaults file.\n",
+	  aky_d[0], aky_d[1], aky_d[2], aky_d[3]);
+    LogMessage(buffer);
+  }
+  else
+    AddToDefaults(varp->name, "Coefficient D", aky_d);
+
 }
 
 /* -------------------------------------------------------------------- */
