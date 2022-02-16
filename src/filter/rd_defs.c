@@ -5,8 +5,8 @@ OBJECT NAME:	rd_defs.c
 FULL NAME:	Read Defaults Object
 
 ENTRY POINTS:	ReadDefaultsFile()
-		AddToDefaults()
-		AddToAttributes()
+		AddToDefaults()		// array of floats
+		AddToAttributes()	// text/string
 		GetDefaultsValue()
 		CheckAndAddAttrs()
 		FreeDefaults()
@@ -96,13 +96,9 @@ float *GetDefaultsValue(const char target[], const char var[])
       return(&Defaults[i]->Values[0]);
     }
   }
- 
-// Suppress message.  Too many defaults are commented out unless we want a change.
-//  sprintf(buffer, "Request for non-existent default, %s.\n", target);
-//  LogMessage(buffer);
- 
+
   return(NULL);
- 
+
 }	/* END GETDEFAULTSVALUE */
 
 /* -------------------------------------------------------------------- */
@@ -125,7 +121,8 @@ void AddToAttributes(const char varName[], const char attrName[],
         const std::string & text)
 {
   /* Shoe-horn text attributes from the amlib constructors into the netCDF
-   * file variable attributes.
+   * file variable attributes.  This is the string/text version of the above
+   * AddToDefaults()
    */
   Defaults[nDefaults] = new DEFAULT;
   Defaults[nDefaults]->Name = new char[strlen(attrName)+1];
