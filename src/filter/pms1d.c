@@ -41,7 +41,7 @@ static void setSerialNumberAndProbeType(const char * name, int probeType)
 
   DLOG(("probe for variable '") << std::string(name) << "'");
 
-  strcpy(cname, name); 
+  strcpy(cname, name);
 
   // A variables are raw Accumulation histograms.  C variables are the
   // derived Concentrations.  Particle probes also have raw and derived
@@ -124,7 +124,7 @@ setProbeType(const std::string& aname, int probeType)
   // Look for all instances of this accumulation variable name, and use it
   // to set the probeType for all variables associated with this probe.
   nidas::core::Project* project = nidas::core::Project::getInstance();
-  
+
   varlist_t variables;
   variables = selectVariablesFromProject(project);
 
@@ -463,6 +463,10 @@ static int getCellSizes(const var_base * rp, float cellSize[])
 /* -------------------------------------------------------------------- */
 void setProbeCount(const char *loc, int probeNum)
 {
+  // This is an ADS3 operation only, ADS2 is correctly setup in hdr_decode.c
+  if (cfg.isADS2())
+    return;
+
   const char *underscore = strchr(loc, '_');
   char target1[64];	// location
   char target2[64];	// optional, used for 1DC vs 2DC in same location.
