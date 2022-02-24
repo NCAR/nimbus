@@ -69,6 +69,8 @@ public:
   lookupSyncVariable(const std::string& vname)
   {
     nidas::dynld::raf::SyncRecordReader* reader = GetSyncReader();
+    if (reader == nullptr)
+      return nullptr;
     const nidas::dynld::raf::SyncRecordVariable* variable =
       lookup_variable(reader->getVariables(), vname);
     return variable;
@@ -152,7 +154,7 @@ public:
     std::vector<const nidas::dynld::raf::SyncRecordVariable*>::iterator it;
     for (it = _syncvars.begin(); it != _syncvars.end(); ++it)
     {
-      const nidas::dynld::raf::SyncRecordVariable* var = *it;      
+      const nidas::dynld::raf::SyncRecordVariable* var = *it;
       size_t varoffset = var->getSyncRecOffset();
       int irate = (int)ceil(var->getSampleRate());
       int vlen = var->getLength();
@@ -163,7 +165,7 @@ public:
   }
 
 private:
-  
+
   template <typename T>
   inline void
   log_variable(const std::string& flag, const std::string& vname,
@@ -196,10 +198,13 @@ TraceVariables() :
   nidas::util::LogScheme scheme = logger->getScheme();
   std::string value = scheme.getParameter("trace_variables");
 
+//  if (value.empty())
+//    return;
+
   std::string::size_type at = 0;
   do {
     std::string::size_type comma = value.find(',', at);
-    if (comma == std::string::npos) 
+    if (comma == std::string::npos)
       comma = value.length();
     std::string vname = value.substr(at, comma-at);
     RAWTBL* vp = lookupRawVariable(vname);
@@ -221,5 +226,3 @@ TraceVariables() :
   while (at < value.length());
   _nvars = _vnames.size();
 }
-
-
