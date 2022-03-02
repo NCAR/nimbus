@@ -2606,6 +2606,7 @@ RAWTBL::RAWTBL(const char s[]) : var_base(s)
   TTindx = -1;
   badLagCntr = 0;
 
+  nidasLag = 0;
   StaticLag = 0;
   DynamicLag = 0;
   SpikeSlope = 0.0;
