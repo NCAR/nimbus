@@ -141,6 +141,10 @@ void xlTwodInit(var_base *varp)
   }
   while (startTime[probeCnt] < 0 || startTime[probeCnt] > 86400);
 
+  std::vector<float> value;
+  value.push_back(cfg.TwoDAreaRejectRatio() * 100);
+  AddToDefaults(varp->name, "AreaRatioReject_%", value);
+
 }	/* END XLTWODINIT */
 
 /* -------------------------------------------------------------------- */
