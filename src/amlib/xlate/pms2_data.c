@@ -990,7 +990,7 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
   for (i = 0; i < partCnt; ++i)
     {
     cp = part[i];
-                                                                                
+
     if (cp->deltaTime < DASelapsedTime)
       {
       if (cp->timeWord == OVERLOAD)
