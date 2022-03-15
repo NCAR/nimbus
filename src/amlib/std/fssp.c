@@ -165,10 +165,10 @@ void cfsspInit(var_base *varp)
   p = strtok(buffer, ", \t\n");
 
   for (i = 0; i < varp->Length*4; ++i)	/* 4 "ranges"	*/
-    {       
+    {
     fssp_csiz[probeNum][i] = p ? atof(p) : 0.0;
     p = strtok(NULL, ", \t\n");
-    }       
+    }
 
   for (i = varp->Length*4-1; i > 0; --i)
     {
@@ -178,7 +178,7 @@ void cfsspInit(var_base *varp)
     fssp_csiz2[probeNum][i] = fssp_csiz[probeNum][i] * fssp_csiz[probeNum][i];
     fssp_csiz3[probeNum][i] = fssp_csiz2[probeNum][i] * fssp_csiz[probeNum][i];
     }
- 
+
   ReleasePMSspecs();
 
   SampleRate[probeNum] = varp->SampleRate;
