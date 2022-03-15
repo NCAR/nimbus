@@ -571,9 +571,9 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
       cp->timeWord = timeWord & 0x00ffffff;
       cp->deltaTime = (NR_TYPE)cp->timeWord * frequency;
       cp->w = 1;	// first slice is generally lost.
-      cp->h = 0;
+      cp->h = 1;
       cp->edge = 0;
-      cp->area = 0;	// assume at list 1 pixel hidden in sync-word.
+      cp->area = 1;	// assume at list 1 pixel hidden in sync-word.
       cp->x1 = 0;
       cp->x2 = 0;
 
