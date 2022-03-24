@@ -38,6 +38,7 @@ void ComputePMS1DParams(
 	float	resolution,	// in
 	size_t	nDiodes,	// in
 	size_t	nBins,		// in
+	float	dof_const,	// in
 	size_t	armDistance)	// in
 {
   float	mag = diodeDiameter / (resolution / 1000);
@@ -51,7 +52,7 @@ void ComputePMS1DParams(
     diam[i]	= minRange;
     radius[i]	= minRange / 2000; /* Units: mm */
     eaw[i]	= diodeDiameter * (nDiodes - i - 1) / mag; /* Units: mm */
-    dof[i]	= 2.37 * diam[i] * diam[i] / 1000.0;
+    dof[i]	= dof_const * diam[i] * diam[i] / 1000.0;
     if (dof[i] > armDistance)
       dof[i] = (NR_TYPE)armDistance;
     }

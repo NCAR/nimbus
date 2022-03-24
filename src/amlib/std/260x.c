@@ -41,7 +41,7 @@ NR_TYPE         reff63[MAX_260X], reff62[MAX_260X];  /* For export to reff.c */
 
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 	NR_TYPE dof[], float minRange, float resolution, size_t nDiodes,
-	size_t length, size_t armDistance),
+	size_t length, float dof_const, size_t armDistance),
 
 	ComputeDOF(NR_TYPE radius[], NR_TYPE tas, NR_TYPE dof[],
 	size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
@@ -134,7 +134,7 @@ void c260xInit(var_base *varp)
   SampleRate[probeNum] = varp->SampleRate;
 
   ComputePMS1DParams(radius[probeNum], eaw[probeNum], cell_size[probeNum],
-	dof, minRange, resolution[probeNum], nDiodes, varp->Length, armDistance[probeNum]);
+	dof, minRange, resolution[probeNum], nDiodes, varp->Length, 2.37, armDistance[probeNum]);
 
   /* Precompute dia squared and cubed. */
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)

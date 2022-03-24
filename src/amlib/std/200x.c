@@ -42,7 +42,7 @@ static NR_TYPE	radius[BINS_16], dia[BINS_16], dia2[BINS_16], dia3[BINS_16],
 
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
                 NR_TYPE dof[], float minRange, float resolution, size_t nDiodes,
-		size_t length, size_t armDistance),
+		size_t length, float dof_const, size_t armDistance),
 
 	ComputeDOF(NR_TYPE radius[], NR_TYPE tas, NR_TYPE dof[],
 		size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
@@ -110,7 +110,7 @@ void c200xInit(var_base *varp)
 
   SampleRate[probeNum] = varp->SampleRate;
 
-  ComputePMS1DParams(radius, eaw, dia, dof, minRange, resolution, nDiodes, varp->Length, armDistance);
+  ComputePMS1DParams(radius, eaw, dia, dof, minRange, resolution, nDiodes, varp->Length, 2.37, armDistance);
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     {

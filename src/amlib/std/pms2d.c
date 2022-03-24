@@ -37,7 +37,7 @@ static const size_t maxBins = 130;
 
 static size_t	FIRST_BIN[MAX_PMS2D], LAST_BIN[MAX_PMS2D], conc50idx[MAX_PMS2D],
 		conc100idx[MAX_PMS2D], conc150idx[MAX_PMS2D];
-static NR_TYPE  responseTime[MAX_PMS2D], armDistance[MAX_PMS2D],
+static NR_TYPE  responseTime[MAX_PMS2D], armDistance[MAX_PMS2D], dof_const[MAX_PMS2D],
 		DENS[MAX_PMS2D], SampleRate[MAX_PMS2D], basicSampleArea[MAX_PMS2D];
 static double   PLWFAC[MAX_PMS2D], DBZFAC[MAX_PMS2D];
 
@@ -52,7 +52,7 @@ NR_TYPE         reff23[MAX_PMS2D], reff22[MAX_PMS2D];  /* For export to reff.c *
 
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 	NR_TYPE dof[], float minRange, float resolution, size_t nDiodes, size_t
-	length, size_t armDistance);
+	length, float dof_const, size_t armDistance);
 
 // Probe Count.
 static size_t nProbes = 0;
@@ -144,6 +144,11 @@ void sTwodInit(var_base *varp)
     }
   responseTime[probeNum] = atof(p);
 
+  if ((p = GetPMSparameter(serialNumber, "DOF_CONST")) == NULL)
+    dof_const[probeNum] = 2.37; // default for PMS2 probes.
+  else
+    dof_const[probeNum] = atof(p);
+
   if ((p = GetPMSparameter(serialNumber, "ARM_DISTANCE")) == NULL) {
     sprintf(buffer, "pms2d: serial number = [%s]: ARM_DISTANCE not found.", serialNumber);
     HandleFatalError(buffer);
@@ -176,11 +181,11 @@ void sTwodInit(var_base *varp)
    */
   length = varp->Length;
 
-  if (strstr(varp->name, "2D"))	// Reconstruction has twice as many bins.
+  if (strstr(varp->name, "2D"))	// Center-in & reconstruction has twice as many bins.
     LAST_BIN[probeNum] *= 2;
 
   ComputePMS1DParams(radius[probeNum], eaw, cell_size[probeNum], dof,
-	minRange, resolution, nDiodes, length, armDistance[probeNum]);
+	minRange, resolution, nDiodes, length, dof_const[probeNum], armDistance[probeNum]);
 
   /* Precompute dia squared and cubed. */
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
