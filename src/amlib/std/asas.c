@@ -383,7 +383,7 @@ void sconcu100(DERTBL *varp)
   if (SampleOffset >= SampleRate[0])
     return;
 
-  for (size_t i = concu100_start_bin; i < 100; ++i)
+  for (size_t i = concu100_start_bin; i < LAST_BIN[varp->ProbeCount]; ++i)
     concu100 += concentration[i];
 
   PutSample(varp, concu100);
@@ -398,7 +398,7 @@ void sconcu500(DERTBL *varp)
   if (SampleOffset >= SampleRate[0])
     return;
 
-  for (size_t i = concu500_start_bin; i < 100; ++i)
+  for (size_t i = concu500_start_bin; i < LAST_BIN[varp->ProbeCount]; ++i)
     concu500 += concentration[i];
 
   PutSample(varp, concu500);
