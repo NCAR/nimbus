@@ -38,10 +38,6 @@ Config::Config() : _adsFileExtension(".ads")
   SetEnableBroadcast(true);
   SetWarnTimeLags(true);
 
-  // These correspond to defaults originally from psql.cc.
-  SetAnalyzeInterval(1500);
-  SetVacuumInterval(1850);
-
   SetCreateKMLFile(true);
   SetCreateNavFile(false);
 
