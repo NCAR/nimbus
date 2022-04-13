@@ -181,9 +181,6 @@ void ProcessArgv(int argc, char **argv)
       case 'y':
 	cfg.SetEnableBroadcast(false);
 	cfg.SetWarnTimeLags(false);
-	/* Disable ANALYZE and VACUUM when loading a raw file. */
-	cfg.SetAnalyzeInterval(0);
-	cfg.SetVacuumInterval(0);
 	break;
 
       case 'n':

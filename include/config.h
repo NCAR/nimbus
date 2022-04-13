@@ -75,9 +75,6 @@ public:
   pms2dProcessing TwoDProcessingMethod() const { return _pms2dProcessing; }
   float TwoDAreaRejectRatio() const	{ return _twoDrejectRatio; }
 
-  size_t AnalyzeInterval() const        { return _analyzeInterval; }
-  size_t VacuumInterval() const         { return _vacuumInterval; }
-
   void SetInteractive(bool state)	{ _interactive = state; }
   void SetProductionRun(bool state)	{ _productionRun = state; }
   void SetWarnTimeLags(bool state)	{ _warnTimeLags = state; }
@@ -111,9 +108,6 @@ public:
   void SetLagErrorReporting(bool state)	{ _lagReporting = state; }
 
   void SetADSVersion(ADSVersion nv) { _adsVersion = nv; }
-
-  void SetAnalyzeInterval(size_t ai)              { _analyzeInterval = ai; }
-  void SetVacuumInterval(size_t vi)               { _vacuumInterval = vi; }
 
   const std::string& ProjectDirectory() const	{ return _projectDirectory; }
   const std::string& ProjectName() const	{ return _projectName; }
@@ -190,9 +184,6 @@ private:
   bool _lagReporting;
 
   int _transmitRate;
-
-  size_t _analyzeInterval;
-  size_t _vacuumInterval;
 
   aircraft _aircraft;
   ADSVersion _adsVersion;

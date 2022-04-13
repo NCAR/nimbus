@@ -176,45 +176,6 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
 
   submitCommand(updateEndTimeString(timeStamp, usec), false);
 
-  /*
-   * Should ANALYZE and VACUUM intervals be based on time or on number of
-   * records inserted?  When loading a database directly from a raw data
-   * file, the records are inserted as fast as possible, and so the ANALYZE
-   * and VACUUM will happen much more frequently, perhaps too frequently.
-   */
-
-  // Defaults to 1500, which is supposed to be about every hour, but really
-  // is 25 minutes.
-  size_t interval = cfg.AnalyzeInterval();
-  if (interval && (cntr % interval == 0))
-  {
-    char msg[128];
-    sprintf(msg, "psql.cc: Performing ANALYZE @ %s.", timeStamp.c_str());
-
-    ILOG((msg));
-    fprintf(stderr, "%s\n", msg);
-
-    _sqlString.str("");
-    _sqlString << "ANALYZE " << LRT_TABLE << " (" << TIME_VARIABLE << ");";
-
-    submitCommand(_sqlString.str(), true);
-  }
-
-  // Defaults to 1000, which is supposed to be about every half-hour, but
-  // really is about 17 minutes.
-  interval = cfg.VacuumInterval();
-  if (interval && (cntr % interval == 0))
-  {
-    char msg[128];
-    sprintf(msg, "psql.cc: Performing VACUUM @ %s.", timeStamp.c_str());
-
-    ILOG((msg));
-    fprintf(stderr, "%s\n", msg);
-
-    _sqlString.str("VACUUM;");
-    submitCommand(_sqlString.str(), true);
-  }
-
 }	/* END WRITESQL */
 
 /* -------------------------------------------------------------------- */
