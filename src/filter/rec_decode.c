@@ -49,7 +49,7 @@ void DecodeADSrecord(
     memcpy((void *)nlr, (void *)lr, nSRfloats * sizeof(NR_TYPE));
 
     // Set dynamic lags.  HRT only...
-    if (cfg.TimeShifting() && cfg.ProcessingRate() == HighRate)
+    if (cfg.TimeShifting() && cfg.ProcessingRate() == Config::HighRate)
       setNIDASDynamicLags(lr);
 
     for (size_t i = 0; i < decode.size(); ++i)
