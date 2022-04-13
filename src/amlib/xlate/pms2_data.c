@@ -480,8 +480,8 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
     {
     short       *sp = (short *)rec;
 
-    for (int i = 1; i < 10; ++i, ++sp)
-      *sp = ntohs(*sp);
+    for (int i = 1; i < 10; ++i)
+      sp[i] = ntohs(sp[i]);
 
 
     p = (uint32_t *)rec->data;
@@ -489,7 +489,6 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
     for (int i = 0; i < 1024; ++i, ++p)
       *p = ntohl(*p);
     }
-
 
   endTime = rec->hour * 3600 + rec->minute * 60 + rec->second;
 
