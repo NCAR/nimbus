@@ -296,40 +296,44 @@ void suflwc(DERTBL *varp)	// UHSAS corrected flow.
   if (flow < 0.0)	// basic check.
     flow = 0.0;
 
-  /* The UHSAS sample flow readout will periodically saturate the A/2 to
-   * about 1.5 even though the flow was actually correct.  Hold flow to
-   * average controlled value when this happens.  Dave Rogers 2010, confirmed
-   * Mike Reeves 2014.
-   */
-  if (flow > 1.0)
-    flow = 0.836;
-
-  /* UHSAS flow algorithm changed to correct error.  09/29/2014, M Reeves.
-   * Previously flow was interpreted as a mass flow referenced to standard
-   * conditions.  It has been shown to be volumetric flow.  The old
-   * correction from standard to ambient pressure and temperature is replaced
-   * with a correction from instrument conditions to ambient.  This requires
-   * UHSAS internal pressure UPRESS.
-   */
-
-  /* Check for valid UPRESS.  UPRESS readout at times fails, and the reported
-   * value is too high.  UHSAS operates slightly below ambient pressure, so compare
-   * with PSXC.  If UPRESS exceeds ambient pressure, replace it using a
-   * parameterization in PSXC.  For the C-130, this is a linear relationship derived
-   * from NOMADSS flight data, and for the GV it is a cubic polynomial derived
-   * from CONTRAST flight data.  M Reeves, 09/29/2014.
-   */
-  if (ups*10.0 > 1.04*psxc)
+  // All of this is for the original HAIS UHSAS.  S/N 001.
+  if (varp->SerialNumber.compare("UHSAS001") == 0)
   {
-    if (cfg.Aircraft() == Config::C130)
-    {
-      ups = 0.1004 * psxc - 2.678;
-    }
+    /* The UHSAS sample flow readout will periodically saturate the A/2 to
+     * about 1.5 even though the flow was actually correct.  Hold flow to
+     * average controlled value when this happens.  Dave Rogers 2010, confirmed
+     * Mike Reeves 2014.
+     */
+    if (flow > 1.0)
+      flow = 0.836;
 
-    if (cfg.Aircraft() == Config::HIAPER)
+    /* UHSAS flow algorithm changed to correct error.  09/29/2014, M Reeves.
+     * Previously flow was interpreted as a mass flow referenced to standard
+     * conditions.  It has been shown to be volumetric flow.  The old
+     * correction from standard to ambient pressure and temperature is replaced
+     * with a correction from instrument conditions to ambient.  This requires
+     * UHSAS internal pressure UPRESS.
+     */
+
+    /* Check for valid UPRESS.  UPRESS readout at times fails, and the reported
+     * value is too high.  UHSAS operates slightly below ambient pressure, so compare
+     * with PSXC.  If UPRESS exceeds ambient pressure, replace it using a
+     * parameterization in PSXC.  For the C-130, this is a linear relationship derived
+     * from NOMADSS flight data, and for the GV it is a cubic polynomial derived
+     * from CONTRAST flight data.  M Reeves, 09/29/2014.
+     */
+    if (ups*10.0 > 1.04*psxc)
     {
-      static const double a[] = { 7.52558263, 0.00782470, 0.00016456, -0.00000008 };
-      ups = a[0] + a[1] * psxc + a[2] * psxc*psxc + a[3] * psxc*psxc*psxc;
+      if (cfg.Aircraft() == Config::C130)
+      {
+        ups = 0.1004 * psxc - 2.678;
+      }
+
+      if (cfg.Aircraft() == Config::HIAPER)
+      {
+        static const double a[] = { 7.52558263, 0.00782470, 0.00016456, -0.00000008 };
+        ups = a[0] + a[1] * psxc + a[2] * psxc*psxc + a[3] * psxc*psxc*psxc;
+      }
     }
   }
 
