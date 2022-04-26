@@ -129,13 +129,26 @@ void swi(DERTBL *varp)
   sslip	= GetSample(varp, 7) * DEG_RAD;
   vspd	= GetSample(varp, 8);
 
-  if (std::isnan(pitch) || std::isnan(thdg) || std::isnan(tas) || std::isnan(vspd))
+  if (std::isnan(pitch) || std::isnan(roll) || std::isnan(thdg) || std::isnan(tas) || std::isnan(vspd))
   {
     ui[probeCnt] = floatNAN;
     vi[probeCnt] = floatNAN;
     ux[probeCnt] = floatNAN;
     vy[probeCnt] = floatNAN;
     wi = floatNAN;
+    PutSample(varp, wi);
+    return;
+  }
+
+  /* Blow-up protection:  output no winds while on-ground (TAS < 30.0 m/s)
+       installed by Ron Ruth  18 October 2001 */
+  if (tas < 30.0)
+  {
+    ui[probeCnt] = 0.0;
+    vi[probeCnt] = 0.0;
+    ux[probeCnt] = 0.0;
+    vy[probeCnt] = 0.0;
+    wi = 0.0;
     PutSample(varp, wi);
     return;
   }
@@ -228,17 +241,6 @@ void swi(DERTBL *varp)
   ux[probeCnt] =  ui[probeCnt] * ss + vi[probeCnt] * cs;
   vy[probeCnt] = -ui[probeCnt] * cs + vi[probeCnt] * ss;
   wi = tas_dab * ab + t;
-
-  /* Blow-up protection:  output no winds while on-ground (TAS < 30.0 m/s)
-       installed by Ron Ruth  18 October 2001 */
-  if (tas < 30.0)
-  {
-    ui[probeCnt] = 0.0;
-    vi[probeCnt] = 0.0;
-    ux[probeCnt] = 0.0;
-    vy[probeCnt] = 0.0;
-    wi = 0.0;
-  }
 
 //printf("wi=%g, tas_dab=%g, ab=%g, t=%g, thedot=%g\n", wi, tas_dab, ab, t, thedot);
   PutSample(varp, wi);
