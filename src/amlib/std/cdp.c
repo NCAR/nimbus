@@ -128,10 +128,10 @@ void ccdpInit(var_base *varp)
   p = strtok(buffer, ", \t\n");
 
   for (i = 0; i < varp->Length; ++i)	/* 4 "ranges"	*/
-  {       
+  {
     cell_size[probeNum][i] = p ? atof(p) : 0.0;
     p = strtok(NULL, ", \t\n");
-  }       
+  }
 
   for (i = varp->Length-1; i > 0; --i)
   {
@@ -141,7 +141,7 @@ void ccdpInit(var_base *varp)
     cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
     cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
   }
- 
+
   ReleasePMSspecs();
 
   SampleRate[probeNum] = varp->SampleRate;

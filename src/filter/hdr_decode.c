@@ -80,13 +80,13 @@ static PMS	pms1v2_probes[] =
   { X200_STR,	X200,	16,	PROBE_200X,	0 },
   { Y200_STR,	Y200,	16,	PROBE_200Y,	0 },
   { X260_STR,	X260,	64,	PROBE_260X,	0 },
-  { MASP_STR,	MASP,	32,	PROBE_MASP,	0 },
+  { MASP_STR,	MASP,	32,	PROBE_200X,	0 },	// This only ever flew in INDOEX.
   { NULL,	0,	0,	0,		0 }
   };
 
 static PMS	pms1v3_probes[] =
   {
-  { SPP100_STR,	FSSP,	0,	PROBE_FSSP,	0 },
+  { SPP100_STR,	FSSP,	0,	PROBE_FSSP,	0 },	// These are the DMT versions.
   { SPP200_STR,	ASAS,	0,	PROBE_PCASP,	0 },
   { SPP300_STR,	F300,	0,	PROBE_F300,	0 },
   { NULL,	0,	0,	0,		0 }
@@ -96,8 +96,9 @@ static PMS	pms2d_probes[] =
   {
   { P2D_C_STR,	0,	0,	PROBE_2DC,	0 },
   { P2D_P_STR,	0,	0,	PROBE_2DP,	0 },
-  { P2D_G_STR,	0,	0,	PROBE_PMS2D,	0 },
+  { P2D_G_STR,	0,	0,	PROBE_PMS2D,	0 },	// Greyscale.  Only flew this once.
   { P2D_H_STR,	0,	0,	PROBE_HVPS,	0 },
+  { P2D_S_STR,	0,	0,	PROBE_2DS,	0 },
   { NULL,	0,	0,	0,		0 }
   };
 

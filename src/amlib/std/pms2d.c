@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	pms2d.c
 
-FULL NAME:	Derived computations for the PMS2D C & P probes.
+FULL NAME:	Derived computations for the PMS 2DC & 2DP probes.
 
 ENTRY POINTS:	sTwodInit()
 		sTwoD()
@@ -14,7 +14,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2011
+COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2022
 -------------------------------------------------------------------------
 */
 
@@ -28,9 +28,6 @@ static const size_t MAX_PMS2D = 8;
 
 // % of a diode which must be shadowed for the diode to trigger.
 static const NR_TYPE shadowLevel = 0.55;
-
-// Use a fixed DOF, not what the manual specifies, until such time that a "research
-// project" can be done.  Al Cooper, Jorgen Jensen 6/26/06
 
 static const size_t maxBins = 130;
 
