@@ -35,13 +35,13 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define PROBE_200X	0x00001000
 #define PROBE_200Y	0x00002000
 #define PROBE_F300	0x00004000
-#define PROBE_MASP	0x00008000
-#define PROBE_2DC	0x00010000
-#define PROBE_2DP	0x00020000
-#define PROBE_HVPS	0x00040000
-#define PROBE_RDMA	0x00080000
-#define PROBE_CLMT	0x00100000
-#define PROBE_CDP	0x00200000
+#define PROBE_2DC	0x00008000
+#define PROBE_2DP	0x00010000
+#define PROBE_HVPS	0x00020000
+#define PROBE_RDMA	0x00040000
+#define PROBE_CLMT	0x00080000
+#define PROBE_CDP	0x00100000
+#define PROBE_2DS	0x00200000
 
 
 /* Input module config files
