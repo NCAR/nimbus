@@ -159,11 +159,17 @@ void PMS1D_SetupForADS3()
   setProbeType("A260X", PROBE_PMS1D | PROBE_260X);
   setProbeType("ACDP", PROBE_PMS1D | PROBE_CDP);
   setProbeType("AUHSAS", PROBE_PMS1D | PROBE_PCASP);
-  setProbeType("A1DC", PROBE_PMS2D | PROBE_2DC);
+  setProbeType("A1DC", PROBE_PMS2D | PROBE_2DC);	// 2DC & 2DP
   setProbeType("A2DC", PROBE_PMS2D | PROBE_2DC);
   setProbeType("A1DP", PROBE_PMS2D | PROBE_2DP);
   setProbeType("A2DP", PROBE_PMS2D | PROBE_2DP);
-  setProbeType("APIP", PROBE_PMS2D | PROBE_2DP);
+  setProbeType("A1DSH", PROBE_PMS2D | PROBE_2DS);	// SPEC 2DS
+  setProbeType("A2DSH", PROBE_PMS2D | PROBE_2DS);
+  setProbeType("A1DSV", PROBE_PMS2D | PROBE_2DS);
+  setProbeType("A2DSV", PROBE_PMS2D | PROBE_2DS);
+  setProbeType("A1DH", PROBE_PMS2D | PROBE_HVPS);	// SPEC HVPS
+  setProbeType("A2DH", PROBE_PMS2D | PROBE_HVPS);
+  setProbeType("APIP", PROBE_PMS2D | PROBE_2DP);	// DMT PIP
 }
 
 /* -------------------------------------------------------------------- */
@@ -197,7 +203,9 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
      * See 12 lines down and also psql.cc PostgreSQL::addVectorToAllStreams().
      * Remove when we FIRST_BIN/LAST_BIN no longer compensate for the legacy 0th bin.
      */
-    --fb;
+    if ( rp->SerialNumber.compare("UHSAS059") && // UHSASG does not have a ZERO_BIN.
+         rp->SerialNumber.compare("F2DS019") )   // 2DS UDP packet also does not have.
+      --fb;
   }
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "LAST_BIN")) )
@@ -211,7 +219,9 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
      * See also psql.cc PostgreSQL::addVectorToAllStreams().
      * Remove when we FIRST_BIN/LAST_BIN no longer compensate for the legacy 0th bin.
      */
-    --lb;
+    if ( rp->SerialNumber.compare("UHSAS059") && // UHSASG does not have a ZERO_BIN.
+         rp->SerialNumber.compare("F2DS019") )   // 2DS UDP packet also does not have.
+      --lb;
   }
 
   nBins = getCellSizes(rp, cellSize);

@@ -73,6 +73,7 @@ rhrho.c
 rhum.c
 roc.c
 solang.c
+spec2udp.c
 sphum.c
 ssdf.c
 ssrd.c
