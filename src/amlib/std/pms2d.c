@@ -47,6 +47,7 @@ static NR_TYPE  radius[MAX_PMS2D][maxBins], cell_size[MAX_PMS2D][maxBins],
 
 NR_TYPE         reff23[MAX_PMS2D], reff22[MAX_PMS2D];  /* For export to reff.c */
 
+bool	thisIs2Dnot1D(const char * name);
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 	NR_TYPE dof[], float minRange, float resolution, size_t nDiodes, size_t
 	length, float dof_const, size_t armDistance);
@@ -178,7 +179,7 @@ void sTwodInit(var_base *varp)
    */
   length = varp->Length;
 
-  if (strstr(varp->name, "2D"))	// Center-in & reconstruction has twice as many bins.
+  if (thisIs2Dnot1D(varp->name))	// Center-in & reconstruction has twice as many bins.
     LAST_BIN[probeNum] *= 2;
 
   ComputePMS1DParams(radius[probeNum], eaw, cell_size[probeNum], dof,
@@ -192,7 +193,7 @@ void sTwodInit(var_base *varp)
     }
 
   // For center-in algorithm use this eaw, not one from ComputePMS1DParams()
-  if (strstr(varp->name, "2D"))  /* 2DC/P only (not 1DC/P). */
+  if (thisIs2Dnot1D(varp->name))  /* 2DC/P only (not 1DC/P). */
     {
     for (i = 0; i < length; ++i)
       eaw[i] = (resolution / 1000) * nDiodes;
