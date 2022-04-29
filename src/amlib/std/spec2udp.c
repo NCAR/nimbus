@@ -23,9 +23,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2022
 
 #include <cassert>
 
-static const size_t MAX_SPEC = 8;
+static const size_t MAX_SPEC = 4;
 
-static const size_t maxBins = 256;
+static const size_t maxBins = 32;
 
 
 static size_t	FIRST_BIN[MAX_SPEC], LAST_BIN[MAX_SPEC], conc50idx[MAX_SPEC],
