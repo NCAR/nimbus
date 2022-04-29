@@ -34,6 +34,18 @@ static int getCellSizes(const var_base * rp, float cellSizes[]);
 
 
 /* -------------------------------------------------------------------- */
+bool thisIs2Dnot1D(const char * name)
+{
+  char basename[64], *p;
+
+  strcpy(basename, name);
+  if ( (p = strchr(basename, '_')) )
+    *p = '\0';
+
+  return( (strstr(basename, "2D")) );
+}
+
+/* -------------------------------------------------------------------- */
 static void setSerialNumberAndProbeType(const char * name, int probeType)
 {
   int raw_indx, der_indx;
@@ -212,7 +224,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   {
     lb = atoi(p) - 1;
 
-    if (strstr(rp->name, "2D"))	/* 2D's use 63 bins, instead of 1DC */
+    if (thisIs2Dnot1D(rp->name))	/* 2D's use 63 bins, instead of 1DC */
       lb += (rp->Length >> 1);
 
     /* We are dropping the unused 0th bin for SQL database.
@@ -311,7 +323,7 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
         nc_put_att_text(ncid, cvarid, "ParticleAcceptMethod", strlen(s), s);
       }
 
-      if (strstr(varp->name, "2D"))
+      if (thisIs2Dnot1D(varp->name))
       {
         const char * s = "Error";
         float f;
@@ -337,7 +349,7 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
     if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "LAST_BIN")) ) {
       int	value = atoi(p) - 1;	/* Go from exclusive to inclusive */
 
-      if (strstr(varp->name, "2D"))	/* 2D's use 63 bins, instead of 1DC */
+      if (thisIs2Dnot1D(varp->name))	/* 2D's use 63 bins, instead of 1DC */
         value += (varp->Length >> 1);
 
       nc_put_att_int(ncid, cvarid, "LastBin", NC_INT, 1, &value);
@@ -421,7 +433,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
   {
     strcpy(buffer, p);
     p = strtok(buffer, " \t,");
- 
+
     for (i = 0; p && i < 164; ++i)
     {
       cellSize[i] = atof(p);
@@ -434,7 +446,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
   }
 
 
-  if (rp->ProbeType & PROBE_260X || strstr(rp->name, "2D") || strstr(rp->name, "PIP"))
+  if (rp->ProbeType & PROBE_260X || thisIs2Dnot1D(rp->name) || strstr(rp->name, "PIP"))
     nBins = 64;
   else
   if (rp->ProbeType & PROBE_HVPS)
