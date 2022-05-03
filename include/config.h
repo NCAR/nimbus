@@ -60,6 +60,8 @@ public:
   bool DespikeReporting() const		{ return _despikeReporting; }
   bool LagReporting() const		{ return _lagReporting; }
 
+  int ZeroBinOffset() const		{ return _zeroBinOffset; }
+
   bool isADS2() const			{ return _adsVersion == ADS_2; }
   bool isADS3() const			{ return _adsVersion == ADS_3; }
 
@@ -133,6 +135,7 @@ public:
   void SetFlightDate(const std::string s);
   void SetNIDASrevision(const std::string s)	{ _nidasRevision = s; }
   void SetChecksum(const std::string s)		{ _checksum = s; }
+  void SetLegacyZeroBin(int z)			{ _zeroBinOffset = z; }
 
   std::string CoordinateLatitude() const        { return _coordLAT; }
   std::string CoordinateLongitude() const       { return _coordLON; }
@@ -226,6 +229,13 @@ private:
 
   // Length in seconds of the nidas processed sample sorter.
   int _sorterLength;
+
+  /* Are we using legacy size distribution zeroth bin?  Refactored the zeroth bin
+   * out in 2022.  So default is 0.  Set to 1 if you need to process old style.
+   * If you enable this, you also need to go into nidas/src/nidas/dynld/raf/SppSerial.h
+   * and enable the #define ZERO_BIN_HACK.
+   */
+  int _zeroBinOffset;
 
   static const interpolationType _defaultInterp;
   static const pms2dProcessing _defaultPMS2DProcessingMethod;
