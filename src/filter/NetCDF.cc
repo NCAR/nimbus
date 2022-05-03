@@ -6,7 +6,7 @@ DESCRIPTION:	This file has the routines necessary to Create and write
 		data for distribution of NCAR/RAF aircraft data in netCDF
 		format.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2018
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2022
 -------------------------------------------------------------------------
 */
 
@@ -31,7 +31,7 @@ const std::string NetCDF::EMail = "codiac at ucar.edu";
 const std::string NetCDF::ProcessorURL = "https://github.com/NCAR/nimbus";
 const std::string NetCDF::Conventions = "NCAR-RAF/nimbus";
 const std::string NetCDF::ConventionsURL = "http://www.eol.ucar.edu/raf/Software/netCDF.html";
-const std::string NetCDF::NETCDF_FORMAT_VERSION = "1.3";
+const std::string NetCDF::NETCDF_FORMAT_VERSION = "2.0";
 
 const char *NetCDF::ISO8601_Z = "%FT%T %z";
 
@@ -165,6 +165,11 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   if (!cfg.ProductionRun())
     putGlobalAttribute("WARNING",
 	"This file contains PRELIMINARY DATA that are NOT to be used for critical analysis.");
+
+  if (cfg.ZeroBinOffset())
+    putGlobalAttribute("SizeDistributionZeroBin", "yes");
+  else
+    putGlobalAttribute("SizeDistributionZeroBin", "no");
 
 
   {
