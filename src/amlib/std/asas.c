@@ -90,7 +90,7 @@ printf("uhsas::asasInit: %s pn=%d dt=%f\n", varp->name, probeNum, dt[probeNum]);
      * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
-    sprintf(buffer, "CELL_SIZE_%zu", varp->Length - 1);
+    sprintf(buffer, "CELL_SIZE_%zu", varp->Length - cfg.ZeroBinOffset());
     if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
       char msg[128];
       sprintf(msg, "pcasp: serial number = [%s]: %s not found.", serialNumber, buffer);
