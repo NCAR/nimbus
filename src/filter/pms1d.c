@@ -210,14 +210,6 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "FIRST_BIN")) )
   {
     fb = atoi(p);
-
-    /* We are dropping the unused 0th bin for SQL database.
-     * See 12 lines down and also psql.cc PostgreSQL::addVectorToAllStreams().
-     * Remove when we FIRST_BIN/LAST_BIN no longer compensate for the legacy 0th bin.
-     */
-    if ( rp->SerialNumber.compare("UHSAS059") && // UHSASG does not have a ZERO_BIN.
-         rp->SerialNumber.compare("F2DS019") )   // 2DS UDP packet also does not have.
-      --fb;
   }
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "LAST_BIN")) )
@@ -226,14 +218,11 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
 
     if (thisIs2Dnot1D(rp->name))	/* 2D's use 63 bins, instead of 1DC */
       lb += (rp->Length >> 1);
+  }
 
-    /* We are dropping the unused 0th bin for SQL database.
-     * See also psql.cc PostgreSQL::addVectorToAllStreams().
-     * Remove when we FIRST_BIN/LAST_BIN no longer compensate for the legacy 0th bin.
-     */
-    if ( rp->SerialNumber.compare("UHSAS059") && // UHSASG does not have a ZERO_BIN.
-         rp->SerialNumber.compare("F2DS019") )   // 2DS UDP packet also does not have.
-      --lb;
+  if (cfg.ZeroBinOffset())	// Legacy zeroth bin only.
+  {
+    --fb; --lb;
   }
 
   nBins = getCellSizes(rp, cellSize);
@@ -242,7 +231,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   sprintf(temp, "%g", cellSize[0]);
   strcat(sql_buff, temp);
 
-  for (i = 1; i < nBins; ++i)
+  for (i = cfg.ZeroBinOffset(); i < nBins; ++i)
   {
     sprintf(temp, ",%g", cellSize[i]);
     strcat(sql_buff, temp);
@@ -358,8 +347,14 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
     nBins = getCellSizes(varp, cellSize);
     nc_put_att_float(ncid, cvarid, "CellSizes", NC_FLOAT, nBins, cellSize);
     nc_put_att_text(ncid, cvarid, "CellSizeUnits", 11, "micrometers");
-    nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are upper bin limits as diameter.");
-    nc_put_att_text(ncid, cvarid, "HistogramNote", 48, "Zeroth data bin is an unused legacy placeholder.");
+
+    if (cfg.ZeroBinOffset())
+    {
+      nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are upper bin limits as diameter.");
+      nc_put_att_text(ncid, cvarid, "HistogramNote", 48, "Zeroth data bin is an unused legacy placeholder.");
+    }
+    else
+      nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are lower bin limits as diameter.");
 
     if (cellSize[0] == 0.0)
       warnMidPoints = true;
@@ -425,7 +420,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
      */
 // Note: ADS3 is propogating the problem until netCDF file refactor.
 // Then we should remove all evidence of this 0th bin from ADS2 & ADS3.
-    sprintf(buffer, "CELL_SIZE_%lu", rp->Length - 1);
+    sprintf(buffer, "CELL_SIZE_%lu", rp->Length - cfg.ZeroBinOffset());
     p = GetPMSparameter(rp->SerialNumber.c_str(), buffer);
   }
 
@@ -448,6 +443,9 @@ static int getCellSizes(const var_base * rp, float cellSize[])
 
   if (rp->ProbeType & PROBE_260X || thisIs2Dnot1D(rp->name) || strstr(rp->name, "PIP"))
     nBins = 64;
+  else
+  if (rp->ProbeType == PROBE_2DS)
+    nBins = 128;
   else
   if (rp->ProbeType & PROBE_HVPS)
     nBins = 256;
@@ -475,6 +473,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "RANGE_STEP")) )
     step = atof(p);
 
+  if (cfg.ZeroBinOffset() == 0) ++nBins;	// one more than actual bins.
   for (i = 0; i < nBins; min += step)
     cellSize[i++] = min;
 

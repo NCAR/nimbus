@@ -27,7 +27,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 static NR_TYPE diodeDiameter = 0.2;	// 200 micron
 
 /* -------------------------------------------------------------------- */
-/* This function is used by the 260X and all 2DC probes.
+/* This function is used by the 260X and all 2DC/2DP probes.
+ * EAW is for entire-in algorithm.
  */
 void ComputePMS1DParams(
 	NR_TYPE	radius[],	// out
@@ -42,16 +43,17 @@ void ComputePMS1DParams(
 	size_t	armDistance)	// in
 {
   float	mag = diodeDiameter / (resolution / 1000);
-
-  minRange += resolution / 2;	/* Create mid-points for diam. */
+  float diameter = minRange + resolution / 2;	/* Create mid-points for diam. */
+  int offset = 1 + (1 - cfg.ZeroBinOffset());
 
   diam[0] = radius[0] = eaw[0] = dof[0] = 0;
 
-  for (size_t i = 1; i < nBins; ++i, minRange += resolution)
+  for (size_t i = cfg.ZeroBinOffset(); i < nBins; ++i, diameter += resolution)
     {
-    diam[i]	= minRange;
-    radius[i]	= minRange / 2000; /* Units: mm */
-    eaw[i]	= diodeDiameter * (nDiodes - i - 1) / mag; /* Units: mm */
+    diam[i]	= diameter;
+    radius[i]	= diameter / 2000; /* Units: mm */
+    eaw[i]	= diodeDiameter * (nDiodes - i - offset) / mag; /* Units: mm */
+//    eaw[i]	= diodeDiameter * (nDiodes - i - 1) / mag; /* Units: mm */
     dof[i]	= dof_const * diam[i] * diam[i] / 1000.0;
     if (dof[i] > armDistance)
       dof[i] = (NR_TYPE)armDistance;

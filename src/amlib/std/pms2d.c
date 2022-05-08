@@ -203,9 +203,9 @@ void sTwodInit(var_base *varp)
   for (i = 0; i < length; ++i)
     sampleArea[probeNum][i] = eaw[i] * dof[i];
 
-  conc50idx[probeNum] = 50 / (int)resolution;
-  conc100idx[probeNum] = 100 / (int)resolution;
-  conc150idx[probeNum] = 150 / (int)resolution;
+  conc50idx[probeNum] = (50 / (int)resolution) - 1 + cfg.ZeroBinOffset();
+  conc100idx[probeNum] = (100 / (int)resolution) - 1 + cfg.ZeroBinOffset();
+  conc150idx[probeNum] = (150 / (int)resolution) - 1 + cfg.ZeroBinOffset();
 
 }	/* END STWODINIT */
 
@@ -256,12 +256,12 @@ void sTwoD(DERTBL *varp)
     {
     if (strstr(varp->name, "1DC"))
       {
-      for (i = 1; i < varp->Length; ++i)
+      for (i = 0; i < varp->Length; ++i)
         actual[i] *= std::max(1.0, (tas / 50.0) / i);
       }
     else	// 2DC is unusable due to incorrect airspeed, zero it out.
       {
-      for (i = 1; i < varp->Length; ++i)
+      for (i = 0; i < varp->Length; ++i)
         actual[i] = 0.0;
       }
     }
@@ -291,7 +291,7 @@ void sTwoD(DERTBL *varp)
     /* For mixing with FSSP/CDP, no channels below 47 micron.
      */
     reff23[varp->ProbeCount] = reff22[varp->ProbeCount] = 0.0;
-    for (i = 2; i < LAST_BIN[probeNum]; ++i)
+    for (i = 1 + cfg.ZeroBinOffset(); i < LAST_BIN[probeNum]; ++i)
       {
       reff23[varp->ProbeCount] += concentration[i] * dia3[i]; /* Export to reff.c */
       reff22[varp->ProbeCount] += concentration[i] * dia2[i];

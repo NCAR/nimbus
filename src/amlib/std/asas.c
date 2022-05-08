@@ -101,28 +101,28 @@ printf("uhsas::asasInit: %s pn=%d dt=%f\n", varp->name, probeNum, dt[probeNum]);
   strcpy(buffer, p);
   p = strtok(buffer, ", \t\n");
 
-  for (i = 0; i < varp->Length; ++i)
+  for (i = 0; i < varp->Length+1; ++i)
     {
     cell_size[probeNum][i] = p ? atof(p) : 0.0;
     p = strtok(NULL, ", \t\n");
     }
 
-  for (i = varp->Length-1; i > 0; --i)
+  for (i = cfg.ZeroBinOffset(); i < varp->Length; ++i)
     {
     // Compute mid-point.
     cell_size[probeNum][i] =
-	(cell_size[probeNum][i] + cell_size[probeNum][i-1]) / 2;
+	(cell_size[probeNum][i] + cell_size[probeNum][i+1]) / 2;
 
     // Squared and cube'd.
     cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
     cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
 
     // Locate start bin numbers for .1 and .5 nanometer variables (CONCU100 & CONCU500).
-    if (cell_size[probeNum][i] >= 0.1)
-      concu100_start_bin = i;
+    if (cell_size[probeNum][i] < 0.1)
+      concu100_start_bin = i+1 + cfg.ZeroBinOffset();
 
-    if (cell_size[probeNum][i] >= 0.5)
-      concu500_start_bin = i;
+    if (cell_size[probeNum][i] < 0.5)
+      concu500_start_bin = i+1 + cfg.ZeroBinOffset();
     }
 
   ReleasePMSspecs();
