@@ -1,11 +1,11 @@
 /**************************** QCTFC *******************************  QCTFC
  ** Corrected dynamic pressure (bird strike) (mb)
- 	Input:
- 		qctf - raw dynamic pressure, bird strike zone mounted
- 	Output:
- 		qctfc - corrected dynamic pressure, bird strike zone
- 	Include:
- 		pcortf - dynamic pressure correction, bird strike zone
+	Input:
+		qctf - raw dynamic pressure, bird strike zone mounted
+	Output:
+		qctfc - corrected dynamic pressure, bird strike zone
+	Include:
+		pcortf - dynamic pressure correction, bird strike zone
 */
 
 #include "nimbus.h"

@@ -1,12 +1,12 @@
 /************************* PSTFC **********************************  PSTFC
  ** Corrected static pressure (top of fuselage) (mb)
- 	Input:
- 		pstf - raw static pressure, top of fuselage mounted
- 		qctf - raw dynamic pressure, top of fuselage mounted
- 	Output:
- 		pstfc - corrected static pressure
- 	Include:
- 		pcorf - fuselage dynamic pressure correction
+	Input:
+		pstf - raw static pressure, top of fuselage mounted
+		qctf - raw dynamic pressure, top of fuselage mounted
+	Output:
+		pstfc - corrected static pressure
+	Include:
+		pcorf - fuselage dynamic pressure correction
 */
 
 #include "nimbus.h"
