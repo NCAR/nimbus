@@ -17,8 +17,8 @@ pipeline {
     }
   }
   post {
-    success {
-      mail(subject: 'nimbus Jenkinsfile build successful', body: 'nimbus Jenkinsfile build successful', to: 'cjw@ucar.edu janine@ucar.edu taylort@ucar.edu')
+    failure {
+      mail(subject: 'nimbus Jenkinsfile build failed', body: 'nimbus Jenkinsfile build failed', to: 'cjw@ucar.edu janine@ucar.edu taylort@ucar.edu')
     }
   }
   options {
