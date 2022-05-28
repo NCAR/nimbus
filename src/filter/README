@@ -85,8 +85,8 @@ DERTBL	*derived[] is the alpha sorted list of purily derived variables,
 struct _dnfn	derivftns[], associates all valid raw & derived variables
 	with the appropriate amlib function (xlate or std/user) see amlibfn.c.
 
-nFloats = Total # of floats occupied by all variables at SampleRate.
-	(e.g. SampledData = malloc(sizeof(float) * nFloats)).  Phasing this out.
+nSRvalues = Total # of values occupied by all variables at SampleRate.
+	(e.g. SampledData = malloc(sizeof(float) * nSRvalues)).  Phasing this out.
 
 Data Records:
 

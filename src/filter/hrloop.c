@@ -64,7 +64,7 @@ int HighRateLoop(time_t startTime, time_t endTime)
   CircularBuffer	*PSCB = NULL;	// Phase Shifted Circular Buffers
   CircularBuffer	*HSCB = NULL;	// 25Hz resampled data (interped only).
 
-  nBytes = nSRfloats * sizeof(NR_TYPE);
+  nBytes = nSRvalues * sizeof(NR_TYPE);
   if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nBytes)) == NULL ||
       (PSCB = CreateCircularBuffer(NPSBUFFERS, nBytes)) == NULL)
     {
@@ -72,7 +72,7 @@ int HighRateLoop(time_t startTime, time_t endTime)
     goto exit;
     }
 
-  nBytes = nHRfloats * sizeof(NR_TYPE);
+  nBytes = nHRvalues * sizeof(NR_TYPE);
   if ((HSCB = CreateCircularBuffer(NPSBUFFERS, nBytes)) == NULL)
     {
     nBytes = ERR;

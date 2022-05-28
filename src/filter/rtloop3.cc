@@ -155,7 +155,7 @@ void RealTimeLoop3()
     DLOGT("rtloop3", ("rtloop3: begin cycle %d", nloop));
     int nRead;
     try {
-        nRead = syncRecReader->read(&tt, SampledData, nSRfloats);
+        nRead = syncRecReader->read(&tt, SampledData, nSRvalues);
         DLOGT("rtloop3", ("sync read: nread=%d", nRead));
     }
     catch(const nidas::util::EOFException& e) {

@@ -126,9 +126,9 @@ NR_TYPE	*SampledData = 0, *AveragedData = 0, *HighRateData = 0;
 
 float	HDRversion;
 
-size_t	nLRfloats = 0,
-	nSRfloats = 0,	// Contains number of floats used in SampledData.
-	nHRfloats = 0;	// Contains number of floats used in HighRateData.
+size_t	nLRvalues = 0,
+	nSRvalues = 0,	// Contains number of values used in SampledData.
+	nHRvalues = 0;	// Contains number of values used in HighRateData.
 size_t	LITTON51_start;	// hdr_decode.c & adsIO.c
 
 int32_t (*FindFirstLogicalRecord)(char lr[], time_t starttime);
@@ -142,7 +142,7 @@ NetCDF *ncFile = 0;
 
 int	timeIndex[6];	// array of time
 float	temptime;	//temporary time  holder
-int	hr,sec,mins;	// store the hours, minutes and seconds 
+int	hr,sec,mins;	// store the hours, minutes and seconds
 SyntheticData sd;
 const char *func[19];
 

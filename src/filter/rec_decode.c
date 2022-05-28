@@ -45,8 +45,8 @@ void DecodeADSrecord(
     // Forcing ADS3 into the ADS2 architecture.  FindNextRecord will
     // put it into ADSrecord, copy it out here.
     VLOG(("memcpy(") << (void*)nlr << "," << (void*)lr << ","
-	 << nSRfloats * sizeof(NR_TYPE) << "(" << nSRfloats << " doubles))");
-    memcpy((void *)nlr, (void *)lr, nSRfloats * sizeof(NR_TYPE));
+	 << nSRvalues * sizeof(NR_TYPE) << "(" << nSRvalues << " doubles))");
+    memcpy((void *)nlr, (void *)lr, nSRvalues * sizeof(NR_TYPE));
 
     // Set dynamic lags.  HRT only...
     if (cfg.TimeShifting() && cfg.ProcessingRate() == Config::HighRate)

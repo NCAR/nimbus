@@ -61,7 +61,7 @@ extern const std::string
 /* External definitions
  */
 extern bool	LITTON51_present, AsyncFileEnabled, AVAPS;
-extern size_t	nLRfloats, nSRfloats, nHRfloats, LITTON51_start;
+extern size_t	nLRvalues, nSRvalues, nHRvalues, LITTON51_start;
 
 extern const std::string DSMSERVER;
 extern const int DSMSERVERPORT;

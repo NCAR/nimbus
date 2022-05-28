@@ -81,7 +81,7 @@ void PhaseShift(
   next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+1);
 
   // Copy current rec into srt output rec.
-  memcpy((char *)output, (char *)this_rec, sizeof(NR_TYPE) * nSRfloats);
+  memcpy((char *)output, (char *)this_rec, sizeof(NR_TYPE) * nSRvalues);
 
 
   {	// Get pointers into an array.

@@ -57,7 +57,7 @@ int LowRateLoop(time_t startTime, time_t endTime)
 
   /* Perform initialization before entering main loop.
    */
-  nBytes = nSRfloats * sizeof(NR_TYPE);
+  nBytes = nSRvalues * sizeof(NR_TYPE);
   if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nBytes)) == NULL ||
       LocateFirstRecord(startTime, endTime, NLRBUFFERS) == false)
     {

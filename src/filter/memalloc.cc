@@ -43,24 +43,24 @@ void AllocateDataArrays()
       AVAPSrecord[i] = new char[256];
 
 
-  nLRfloats = nSRfloats = nHRfloats = 0;
+  nLRvalues = nSRvalues = nHRvalues = 0;
 
-  // Set nSRfloats to the number already being sent in by SyncRecordReader.
+  // Set nSRvalues to the number already being sent in by SyncRecordReader.
   if (cfg.isADS3())
-    nSRfloats = syncRecReader->getNumValues();
+    nSRvalues = syncRecReader->getNumValues();
 
   const nidas::dynld::raf::SyncRecordVariable* var;
 
   for (size_t i = 0; i < raw.size(); ++i)
   {
-    raw[i]->LRstart = nLRfloats;
-    raw[i]->HRstart = nHRfloats;
+    raw[i]->LRstart = nLRvalues;
+    raw[i]->HRstart = nHRvalues;
     if (cfg.isADS3() && (var = syncRecReader->getVariable(raw[i]->name)) != 0)
       raw[i]->SRstart = var->getSyncRecOffset();
     else
     {
-      raw[i]->SRstart = nSRfloats;
-      nSRfloats += (raw[i]->SampleRate * raw[i]->Length);
+      raw[i]->SRstart = nSRvalues;
+      nSRvalues += (raw[i]->SampleRate * raw[i]->Length);
     }
 
     if (raw[i]->Length < 1)	// Sanity check.
@@ -71,16 +71,16 @@ void AllocateDataArrays()
       HandleFatalError(msg);
     }
 
-    nLRfloats += raw[i]->Length;
-    nHRfloats += (cfg.HRTRate() * raw[i]->Length);
+    nLRvalues += raw[i]->Length;
+    nHRvalues += (cfg.HRTRate() * raw[i]->Length);
   }
 
   for (size_t i = 0; i < derived.size(); ++i)
   {
-    derived[i]->LRstart = nLRfloats;
-    derived[i]->HRstart = nHRfloats;
-    nLRfloats += derived[i]->Length;
-    nHRfloats += (cfg.HRTRate() * derived[i]->Length);
+    derived[i]->LRstart = nLRvalues;
+    derived[i]->HRstart = nHRvalues;
+    nLRvalues += derived[i]->Length;
+    nHRvalues += (cfg.HRTRate() * derived[i]->Length);
   }
 
   /* Reset dependIndices.
@@ -89,13 +89,13 @@ void AllocateDataArrays()
     for (size_t j = 0; j < derived[i]->nDependencies; ++j)
       DependIndexLookup(derived[i], j, false);
 
-  int nVoltFloats = nSRfloats;
+  int nVoltFloats = nSRvalues;
 
-  bits = new ushort[nLRfloats];
-  volts = new NR_TYPE[nLRfloats];
+  bits = new ushort[nLRvalues];
+  volts = new NR_TYPE[nLRvalues];
   SRTvolts = new NR_TYPE[nVoltFloats];
-  SampledData = new NR_TYPE[nSRfloats];
-  AveragedData = new NR_TYPE[nLRfloats];
+  SampledData = new NR_TYPE[nSRvalues];
+  AveragedData = new NR_TYPE[nLRvalues];
 
   if (cfg.isADS2())
   {
@@ -105,15 +105,15 @@ void AllocateDataArrays()
   else
   {
     // ADS3 will be put here, then copied out in rec_decode.c
-    ADSrecord = new char[nSRfloats * sizeof(NR_TYPE)];
+    ADSrecord = new char[nSRvalues * sizeof(NR_TYPE)];
 #ifdef DEBUG
-    std::cerr << "Allocated ADSrecord with " << nSRfloats << " values, or "
-	      << nSRfloats*sizeof(NR_TYPE) << " bytes." << std::endl;
+    std::cerr << "Allocated ADSrecord with " << nSRvalues << " values, or "
+	      << nSRvalues*sizeof(NR_TYPE) << " bytes." << std::endl;
 #endif
   }
 
   if (cfg.ProcessingRate() == Config::HighRate)
-    HighRateData = new NR_TYPE[nHRfloats];
+    HighRateData = new NR_TYPE[nHRvalues];
 
   ArraysInitialized = true;
 
