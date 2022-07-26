@@ -231,7 +231,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   sprintf(temp, "%g", cellSize[0]);
   strcat(sql_buff, temp);
 
-  for (i = cfg.ZeroBinOffset(); i < nBins; ++i)
+  for (i = 1; i < nBins; ++i)
   {
     sprintf(temp, ",%g", cellSize[i]);
     strcat(sql_buff, temp);
