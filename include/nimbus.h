@@ -31,7 +31,8 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define MAXDEPEND	12
 #define MAX_TIME_SLICES	1
 
-#define ZERO_BIN	1
+// Turn off legacy zero bin for size-distributions.
+//#define ZERO_BIN	1
 
 /* Nimbus Record Info		*/
 typedef double NR_TYPE;
