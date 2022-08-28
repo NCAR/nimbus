@@ -304,12 +304,12 @@ void InitAircraftDependencies()
 /* Electra ------------------------------------------------------------ */
 NR_TYPE pcorw8(NR_TYPE q)
 {
-  return(1.23 - 0.0846 * q);	
+  return(1.23 - 0.0846 * q);
 }
 
 NR_TYPE pcorf8(NR_TYPE q)
 {
-  return(0.366 - 0.0182 * q);	
+  return(0.366 - 0.0182 * q);
 }
 
 /* NRL P-3 ------------------------------------------------------------ */
@@ -346,7 +346,7 @@ NR_TYPE pcorf7(NR_TYPE q)
 }
 
 /* GV ---------------------------------------------------------------- */
-/* delete pcorr5 and pcorq5  as not used 
+/* delete pcorr5 and pcorq5  as not used
 
 NR_TYPE pcorr5(NR_TYPE q, NR_TYPE q1)
 {
