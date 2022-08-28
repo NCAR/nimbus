@@ -4,7 +4,7 @@ OBJECT NAME:	ophir3.c
 
 FULL NAME:	Ophir III
 
-ENTRY POINTS:	soat(),
+ENTRY POINTS:	soat()
 
 STATIC FNS:	planck_rad()
 		planck_t()
