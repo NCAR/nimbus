@@ -47,6 +47,8 @@ static size_t nProbes = 0;
 extern void setProbeCount(const char * location, int count);
 
 void addDOFtoAttrs(const var_base *varp, NR_TYPE eaw[], NR_TYPE dof[]);
+void ReadPMSspecs(const char fileName[]);
+
 
 /* -------------------------------------------------------------------- */
 
@@ -79,7 +81,7 @@ void sSpecUDPinit(var_base *varp)
   probeNum = varp->ProbeCount;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     sprintf(buffer, "spec2d: serial number = [%s]: FIRST_BIN not found.", serialNumber);

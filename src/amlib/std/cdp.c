@@ -39,6 +39,8 @@ NR_TYPE		reffd3[MAX_CDP], reffd2[MAX_CDP];  /* For export to reff.c */
 static int nProbes = 0;
 extern void setProbeCount(const char * location, int count);
 
+void	ReadPMSspecs(const char fileName[]);
+
 /* -------------------------------------------------------------------- */
 void ccdpInit(var_base *varp)
 {
@@ -62,7 +64,7 @@ void ccdpInit(var_base *varp)
     reffd3[i] = reffd2[i] = 0.0;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     sprintf(buffer, "cdp: serial number = [%s]: FIRST_BIN not found.", serialNumber);

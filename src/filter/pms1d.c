@@ -26,11 +26,32 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2018
 #include "decode.h"
 #include <raf/pms.h>
 #include <netcdf.h>
+#include <unistd.h>
 
 #include "sync_reader.hh"
 #include <nidas/core/Project.h>
 
 static int getCellSizes(const var_base * rp, float cellSizes[]);
+
+
+/* -------------------------------------------------------------------- */
+void ReadPMSspecs(const char name[])
+{
+  char tmp[1024];
+
+  /* Try to open a flight specific PMSspecs.rf## file first, if that does
+   * not exist, fall back on the plain old PMSspecs.
+   */
+  strcpy(tmp, name);
+  strcat(tmp, ".");
+  strcat(tmp, cfg.FlightNumber().c_str());
+
+  if (access(tmp, R_OK) == F_OK)
+    InitPMSspecs(tmp);
+  else
+    InitPMSspecs(name);
+
+}
 
 
 /* -------------------------------------------------------------------- */
@@ -202,7 +223,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   }
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   fb = 0;
   lb = rp->Length-1;
@@ -261,7 +282,7 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
   cvarid = varp->varid;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   // Really wish I could up dymamic_cast.  What I really want to check:
   // if (varp == <RAWTBL*>)

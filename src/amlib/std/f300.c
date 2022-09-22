@@ -45,6 +45,8 @@ static NR_TYPE	cell_size[MAX_F300][BINS_40+1], pvol[MAX_F300], SAMPLE_AREA[MAX_F
 static size_t nProbes = 0;
 extern void setProbeCount(const char * location, int count);
 
+void	ReadPMSspecs(const char fileName[]);
+
 /* -------------------------------------------------------------------- */
 void cf300Init(var_base *varp)
 {
@@ -69,7 +71,7 @@ void cf300Init(var_base *varp)
   probeNum = varp->ProbeCount;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     sprintf(buffer, "f300: serial number = [%s]: FIRST_BIN not found.", serialNumber);

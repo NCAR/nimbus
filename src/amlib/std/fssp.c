@@ -55,6 +55,8 @@ static NR_TYPE	total_concen[MAX_FSSP], dbar[MAX_FSSP], plwc[MAX_FSSP],
 
 NR_TYPE		refff3[MAX_FSSP], refff2[MAX_FSSP];  /* For export to reff.c */
 
+void	ReadPMSspecs(const char fileName[]);
+
 // Probe Count.
 static size_t nProbes = 0;
 extern void setProbeCount(const char * location, int count);
@@ -87,7 +89,7 @@ void cfsspInit(var_base *varp)
     refff3[i] = refff2[i] = 0.0;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     sprintf(buffer, "fssp: serial number = [%s]: FIRST_BIN not found.", serialNumber);

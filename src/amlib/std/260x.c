@@ -39,6 +39,8 @@ static NR_TYPE	radius[MAX_260X][BINS_64], cell_size[MAX_260X][BINS_64],
 
 NR_TYPE         reff63[MAX_260X], reff62[MAX_260X];  /* For export to reff.c */
 
+void	ReadPMSspecs(const char fileName[]);
+
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 	NR_TYPE dof[], float minRange, float resolution, size_t nDiodes,
 	size_t length, float dof_const, size_t armDistance),
@@ -77,7 +79,7 @@ void c260xInit(var_base *varp)
     reff63[i] = reff62[i] = 0.0;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     fprintf(stderr, "260x: serial # = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);

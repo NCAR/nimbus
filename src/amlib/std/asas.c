@@ -38,6 +38,8 @@ extern void setProbeCount(const char * location, int count);
 
 static void uhsasBinConsolidation(NR_TYPE *actual);
 
+void	ReadPMSspecs(const char fileName[]);
+
 /* -------------------------------------------------------------------- */
 void casasInit(var_base *varp)
 {
@@ -62,7 +64,7 @@ void casasInit(var_base *varp)
   probeNum = varp->ProbeCount;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     sprintf(buffer, "pcasp: serial number = [%s]: FIRST_BIN not found.", serialNumber);

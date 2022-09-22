@@ -40,6 +40,8 @@ static NR_TYPE	radius[BINS_16],
 		dia[BINS_16], dia2[BINS_16], dia3[BINS_16],
 		eaw[BINS_16];	/* Effective Sample Width	*/
 
+void	ReadPMSspecs(const char fileName[]);
+
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
                 NR_TYPE dof[], float minRange, float resolution, size_t nDiodes,
 		size_t length, float dof_const, size_t armDistance),
@@ -61,7 +63,7 @@ void c200yInit(var_base *varp)
   probeNum = varp->ProbeCount;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     printf("%s: FIRST_BIN not found.\n", serialNumber); exit(1);

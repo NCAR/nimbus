@@ -48,6 +48,8 @@ static NR_TYPE  radius[MAX_PMS2D][maxBins], cell_size[MAX_PMS2D][maxBins],
 NR_TYPE         reff23[MAX_PMS2D], reff22[MAX_PMS2D];  /* For export to reff.c */
 
 bool	thisIs2Dnot1D(const char * name);
+void	ReadPMSspecs(const char fileName[]);
+
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 	NR_TYPE dof[], float minRange, float resolution, size_t nDiodes, size_t
 	length, float dof_const, size_t armDistance);
@@ -104,7 +106,7 @@ void sTwodInit(var_base *varp)
     reff23[i] = reff22[i] = 0.0;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     sprintf(buffer, "pms2d: serial number = [%s]: FIRST_BIN not found.", serialNumber);
@@ -432,7 +434,7 @@ void sTwodInitH(var_base *varp)
   probeNum = varp->ProbeCount;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   /* Perform twice, once for 1DC, and again for 2DC.
    */
