@@ -18,7 +18,10 @@ pipeline {
   }
   post {
     failure {
-      mail(subject: 'nimbus Jenkinsfile build failed', body: 'nimbus Jenkinsfile build failed', to: 'cjw@ucar.edu janine@ucar.edu taylort@ucar.edu')
+      emailext to: "cjw@ucar.edu janine@ucar.edu cdewerd@ucar.edu taylort@ucar.edu",
+      subject: "Jenkinsfile nimbus build failed",
+      body: "See console output attached",
+      attachLog: true
     }
   }
   options {

@@ -252,7 +252,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   sprintf(temp, "%g", cellSize[0]);
   strcat(sql_buff, temp);
 
-  for (i = cfg.ZeroBinOffset(); i < nBins; ++i)
+  for (i = 1; i < nBins; ++i)
   {
     sprintf(temp, ",%g", cellSize[i]);
     strcat(sql_buff, temp);
@@ -371,11 +371,11 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
 
     if (cfg.ZeroBinOffset())
     {
-      nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are upper bin limits as diameter.");
+      nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are upper bin limits as particle size.");
       nc_put_att_text(ncid, cvarid, "HistogramNote", 48, "Zeroth data bin is an unused legacy placeholder.");
     }
     else
-      nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are lower bin limits as diameter.");
+      nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are lower bin limits as particle size.");
 
     if (cellSize[0] == 0.0)
       warnMidPoints = true;
