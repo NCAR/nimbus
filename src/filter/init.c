@@ -350,6 +350,7 @@ void GetDataDirectory(char buff[])
 static void usage()
 {
   fprintf(stderr, "Usage: nimbus [-b batch_file] [-r] [-rt3 [-x [rate]]] [-pr s|l|h] [-n]\n\n\
+ Post-processing options:\n\
   -b:	Loads a batch_file instead of going interactive.  File options\n\
 	are (last 3 are optional):\n\
 	if=input_file.ads\n\
@@ -357,21 +358,21 @@ static void usage()
 	sf=setup_file\n\
 	pr=processing_rate [SampleRate=0, LowRate=1, HighRate=25]\n\
 	ti=time_interval [xx:xx:xx-xx:xx:xx]\n\n\
+  -n:	Do NOT load any existing production setup files.\n\
+  -pr:	Set processing rate, options 0,1,25 or s,l,h for sample-rate, low-rate, or\n\
+        high-rate respectively.  Default is low-rate.\n\
   -r:	Raw mode, no despiking, time shifting or Honeywell cleanup.\n\
-	Default all variables to sample rate output.\n\
-  -rt:	Real-time for ADS2.\n\
+	Default all variables to sample rate output.\n\n\
+ Real-time options:\n\
+  -rt:	Real-time for ADS2 (obsolete).\n\
   -rt3:	Real-time for ADS3.\n\
   -x:	Produce and transmit SQL statements to ground (see groundvars file), add an\n\
         optional frequency which to transmit the data.  Default is every 5 seconds.\n\
   -y:   When running real-time on old data: do not broadcast IWG1 packets,\n\
-        do not warn about time lags, and disable periodic ANALYZE and VACUUM\n\
-        on the database.\n\
-  -pr:	Set processing rate, options 0,1,25 or s,l,h for sample-rate, low-rate, or\n\
-        high-rate respectively.  Default is low-rate.\n\
-  -n:	Do NOT load any existing production setup files.\n\
+        do not warn about time lags.\n\
 \n\
 NIDAS-related options:\n");
-  
+
   NidasApp& napp = *NidasApp::getApplicationInstance();
   fprintf(stderr, "%s", napp.usage().c_str());
   exit(0);
