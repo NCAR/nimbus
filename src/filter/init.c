@@ -214,6 +214,10 @@ void ProcessArgv(int argc, char **argv)
         cfg.SetQCenabled(true);
         break;
 
+      case 'z':
+        cfg.SetLegacyZeroBin(1);
+        break;
+
       default:
         fprintf(stderr, "Invalid option %s, ignoring.\n", arg.c_str());
     }
@@ -362,7 +366,9 @@ static void usage()
   -pr:	Set processing rate, options 0,1,25 or s,l,h for sample-rate, low-rate, or\n\
         high-rate respectively.  Default is low-rate.\n\
   -r:	Raw mode, no despiking, time shifting or Honeywell cleanup.\n\
-	Default all variables to sample rate output.\n\n\
+	Default all variables to sample rate output.\n\
+  -z	Engage legacy zero bin for size distributions\n\
+	Should only really be used for projects before 2022 (before TI3GER).\n\n\
  Real-time options:\n\
   -rt:	Real-time for ADS2 (obsolete).\n\
   -rt3:	Real-time for ADS3.\n\
