@@ -316,7 +316,8 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
         nc_put_att_float(ncid, cvarid, "ArmDistance", NC_FLOAT, 1, &value);
       }
 
-    nc_put_att_text(ncid, cvarid, "HistogramNote", 48, "Zeroth data bin is an unused legacy placeholder.");
+      if (cfg.ZeroBinOffset())
+        nc_put_att_text(ncid, cvarid, "HistogramNote", 48, "Zeroth data bin is an unused legacy placeholder.");
     }
 
     if ((varp->ProbeType & PROBE_PMS2D))
