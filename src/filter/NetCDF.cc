@@ -167,9 +167,9 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 	"This file contains PRELIMINARY DATA that are NOT to be used for critical analysis.");
 
   if (cfg.ZeroBinOffset())
-    putGlobalAttribute("SizeDistributionZeroBin", "yes");
+    putGlobalAttribute("SizeDistributionLegacyZeroBin", "yes");
   else
-    putGlobalAttribute("SizeDistributionZeroBin", "no");
+    putGlobalAttribute("SizeDistributionLegacyZeroBin", "no");
 
 
   {
