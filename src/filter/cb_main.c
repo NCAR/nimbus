@@ -282,6 +282,8 @@ void ConfigurationDump()
 	cfg.OutputNetCDF() ? "yes" : "no"); LogMessage(buffer);
   sprintf(buffer, "  Output SQL: %s.",
 	cfg.OutputSQL() ? "yes" : "no"); LogMessage(buffer);
+  sprintf(buffer, "  Size distribution legacy zero bin : %s.",
+	cfg.ZeroBinOffset() ? "yes" : "no"); LogMessage(buffer);
 
   if (cfg.TransmitToGround())
     sprintf(buffer, "  Ground transmission every %d seconds.", cfg.GroundFeedDataRate());
