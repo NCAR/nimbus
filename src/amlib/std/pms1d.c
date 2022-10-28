@@ -48,7 +48,7 @@ void ComputePMS1DParams(
 
   diam[0] = radius[0] = eaw[0] = dof[0] = 0;
 
-  for (size_t i = cfg.ZeroBinOffset(); i < nBins; ++i, diameter += resolution)
+  for (size_t i = 0; i < nBins; ++i, diameter += resolution)
     {
     diam[i]	= diameter;
     radius[i]	= diameter / 2000; /* Units: mm */

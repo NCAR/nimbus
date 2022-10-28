@@ -97,7 +97,7 @@ void cf300Init(var_base *varp)
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
     char s[32];
-    sprintf(s, "CELL_SIZE_%zd", varp->Length - cfg.ZeroBinOffset());
+    sprintf(s, "CELL_SIZE_%zd", varp->Length);
     if ((p = GetPMSparameter(serialNumber, s)) == NULL) {
       sprintf(buffer, "f300: serial number = [%s]: %s not found.", serialNumber, s);
       HandleFatalError(buffer);
@@ -107,16 +107,16 @@ void cf300Init(var_base *varp)
   strcpy(buffer, p);
   p = strtok(buffer, ", \t\n");
 
-  for (i = 0; i < varp->Length; ++i)
+  for (i = 0; i < varp->Length+1; ++i)
     {
     cell_size[probeNum][i] = p ? atof(p) : 0.0;
     p = strtok(NULL, ", \t\n");
     }
 
-  for (i = varp->Length-1; i > 0; --i)
+  for (i = 0; i < varp->Length; ++i)
     {
     cell_size[probeNum][i] =
-        (cell_size[probeNum][i] + cell_size[probeNum][i-1]) / 2;
+        (cell_size[probeNum][i] + cell_size[probeNum][i+1]) / 2;
 
     cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
     cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];

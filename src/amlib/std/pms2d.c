@@ -205,9 +205,9 @@ void sTwodInit(var_base *varp)
   for (i = 0; i < length; ++i)
     sampleArea[probeNum][i] = eaw[i] * dof[i];
 
-  conc50idx[probeNum] = (50 / (int)resolution) - 1 + cfg.ZeroBinOffset();
-  conc100idx[probeNum] = (100 / (int)resolution) - 1 + cfg.ZeroBinOffset();
-  conc150idx[probeNum] = (150 / (int)resolution) - 1 + cfg.ZeroBinOffset();
+  conc50idx[probeNum] = (50 / (int)resolution) - 1;
+  conc100idx[probeNum] = (100 / (int)resolution) - 1;
+  conc150idx[probeNum] = (150 / (int)resolution) - 1;
 
 }	/* END STWODINIT */
 
@@ -293,7 +293,7 @@ void sTwoD(DERTBL *varp)
     /* For mixing with FSSP/CDP, no channels below 47 micron.
      */
     reff23[varp->ProbeCount] = reff22[varp->ProbeCount] = 0.0;
-    for (i = 1 + cfg.ZeroBinOffset(); i < LAST_BIN[probeNum]; ++i)
+    for (i = 1; i < LAST_BIN[probeNum]; ++i)
       {
       reff23[varp->ProbeCount] += concentration[i] * dia3[i]; /* Export to reff.c */
       reff22[varp->ProbeCount] += concentration[i] * dia2[i];

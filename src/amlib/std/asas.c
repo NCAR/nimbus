@@ -92,7 +92,7 @@ printf("uhsas::asasInit: %s pn=%d dt=%f\n", varp->name, probeNum, dt[probeNum]);
      * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
-    sprintf(buffer, "CELL_SIZE_%zu", varp->Length - cfg.ZeroBinOffset());
+    sprintf(buffer, "CELL_SIZE_%zu", varp->Length);
     if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
       char msg[128];
       sprintf(msg, "pcasp: serial number = [%s]: %s not found.", serialNumber, buffer);
@@ -109,7 +109,7 @@ printf("uhsas::asasInit: %s pn=%d dt=%f\n", varp->name, probeNum, dt[probeNum]);
     p = strtok(NULL, ", \t\n");
     }
 
-  for (i = cfg.ZeroBinOffset(); i < varp->Length; ++i)
+  for (i = 0; i < varp->Length; ++i)
     {
     // Compute mid-point.
     cell_size[probeNum][i] =
@@ -121,10 +121,10 @@ printf("uhsas::asasInit: %s pn=%d dt=%f\n", varp->name, probeNum, dt[probeNum]);
 
     // Locate start bin numbers for .1 and .5 nanometer variables (CONCU100 & CONCU500).
     if (cell_size[probeNum][i] < 0.1)
-      concu100_start_bin = i+1 + cfg.ZeroBinOffset();
+      concu100_start_bin = i + 1;
 
     if (cell_size[probeNum][i] < 0.5)
-      concu500_start_bin = i+1 + cfg.ZeroBinOffset();
+      concu500_start_bin = i + 1;
     }
 
   ReleasePMSspecs();

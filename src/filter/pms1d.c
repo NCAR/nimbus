@@ -241,11 +241,6 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
       lb += (rp->Length >> 1);
   }
 
-  if (cfg.ZeroBinOffset())	// Legacy zeroth bin only.
-  {
-    --fb; --lb;
-  }
-
   nBins = getCellSizes(rp, cellSize);
   sprintf(sql_buff, ", %d, %d, '{", fb, lb);
 
@@ -315,9 +310,6 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
         float value = atof(p);
         nc_put_att_float(ncid, cvarid, "ArmDistance", NC_FLOAT, 1, &value);
       }
-
-      if (cfg.ZeroBinOffset())
-        nc_put_att_text(ncid, cvarid, "HistogramNote", 48, "Zeroth data bin is an unused legacy placeholder.");
     }
 
     if ((varp->ProbeType & PROBE_PMS2D))
@@ -369,14 +361,7 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
     nBins = getCellSizes(varp, cellSize);
     nc_put_att_float(ncid, cvarid, "CellSizes", NC_FLOAT, nBins, cellSize);
     nc_put_att_text(ncid, cvarid, "CellSizeUnits", 11, "micrometers");
-
-    if (cfg.ZeroBinOffset())
-    {
-      nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are upper bin limits as particle size.");
-      nc_put_att_text(ncid, cvarid, "HistogramNote", 48, "Zeroth data bin is an unused legacy placeholder.");
-    }
-    else
-      nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are lower bin limits as particle size.");
+    nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are lower bin limits as particle size.");
 
     if (cellSize[0] == 0.0)
       warnMidPoints = true;
@@ -436,13 +421,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "CELL_SIZE")) == NULL)
   {
-    /* ADS2 SPP probes mimiced old PMS1D interface and padded a useless
-     * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
-     * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
-     */
-// Note: ADS3 is propogating the problem until netCDF file refactor.
-// Then we should remove all evidence of this 0th bin from ADS2 & ADS3.
-    sprintf(buffer, "CELL_SIZE_%lu", rp->Length - cfg.ZeroBinOffset());
+    sprintf(buffer, "CELL_SIZE_%lu", rp->Length);
     p = GetPMSparameter(rp->SerialNumber.c_str(), buffer);
   }
 
@@ -495,8 +474,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "RANGE_STEP")) )
     step = atof(p);
 
-  if (cfg.ZeroBinOffset() == 0) ++nBins;	// one more than actual bins.
-  for (i = 0; i < nBins; min += step)
+  for (i = 0; i < nBins+1; min += step)
     cellSize[i++] = min;
 
   return(nBins);

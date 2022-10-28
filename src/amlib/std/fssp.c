@@ -157,7 +157,7 @@ void cfsspInit(var_base *varp)
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
     char s[32];
-    sprintf(s, "CELL_SIZE_%zd", varp->Length - cfg.ZeroBinOffset());
+    sprintf(s, "CELL_SIZE_%zd", varp->Length);
     if ((p = GetPMSparameter(serialNumber, s)) == NULL) {
       sprintf(buffer, "fssp: serial number = [%s]: %s not found.", serialNumber, s);
       }
@@ -166,16 +166,16 @@ void cfsspInit(var_base *varp)
   strcpy(buffer, p);
   p = strtok(buffer, ", \t\n");
 
-  for (i = 0; i < varp->Length*4; ++i)	/* 4 "ranges"	*/
+  for (i = 0; i < (varp->Length+1)*4; ++i)	/* 4 "ranges"	*/
     {
     fssp_csiz[probeNum][i] = p ? atof(p) : 0.0;
     p = strtok(NULL, ", \t\n");
     }
 
-  for (i = varp->Length*4-1; i > 0; --i)
+  for (i = 0; i < varp->Length; ++i)
     {
     fssp_csiz[probeNum][i] =
-        (fssp_csiz[probeNum][i] + fssp_csiz[probeNum][i-1]) / 2;
+        (fssp_csiz[probeNum][i] + fssp_csiz[probeNum][i+1]) / 2;
 
     fssp_csiz2[probeNum][i] = fssp_csiz[probeNum][i] * fssp_csiz[probeNum][i];
     fssp_csiz3[probeNum][i] = fssp_csiz2[probeNum][i] * fssp_csiz[probeNum][i];
