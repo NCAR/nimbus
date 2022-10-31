@@ -474,7 +474,8 @@ static int getCellSizes(const var_base * rp, float cellSize[])
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "RANGE_STEP")) )
     step = atof(p);
 
-  for (i = 0; i < nBins+1; min += step)
+  nBins += 1;	// One more than actual bins
+  for (i = 0; i < nBins; min += step)
     cellSize[i++] = min;
 
   return(nBins);
