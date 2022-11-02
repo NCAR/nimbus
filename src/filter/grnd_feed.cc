@@ -48,8 +48,8 @@ getDestHostName()
 
 /* -------------------------------------------------------------------- */
 GroundFeed::
-GroundFeed(int rate) : 
-  UDP_Base(31007), 
+GroundFeed(int rate) :
+  UDP_Base(31007),
   _dataRate(rate)
 {
   // maintain the 5-minute count from earlier implementations
@@ -91,14 +91,13 @@ void GroundFeed::setCoordinatesFrom(const std::vector<var_base *> & list) const
 
 /* -------------------------------------------------------------------- */
 void GroundFeed::BroadcastData(nidas::core::dsm_time_t tt)
-	throw(IOException)
 {
   static int rate_cntr = 0;
   static bool valid_ground_conn = false;
 
   if (cfg.GroundFeedType() != Config::UDP)
     return;
-    
+
   rate_cntr++;
 
   std::string timeStamp = formatTimestamp(tt);
@@ -178,7 +177,7 @@ std::string GroundFeed::calculateChecksum() {
   if (_varList.size() == 0) return "0";
 
   //calculate current md5 using proj, platform, flight# and var list.
-  std::string md5_instring = cfg.ProjectName() + cfg.TailNumber() 
+  std::string md5_instring = cfg.ProjectName() + cfg.TailNumber()
     + cfg.FlightNumber();
 
   for (unsigned int i=0; i<_varList.size(); i++)

@@ -22,8 +22,7 @@ class GroundFeed : public UDP_Base
 public:
   GroundFeed(int rate);
 
-  void	BroadcastData(nidas::core::dsm_time_t tt)
-	throw(nidas::util::IOException);
+  void	BroadcastData(nidas::core::dsm_time_t tt);
 
   std::string calculateChecksum();
 
