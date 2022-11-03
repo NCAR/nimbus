@@ -1264,6 +1264,9 @@ static void SetConfigGlobalAttributeVariables()
     cfg.SetWindDirection("WD");
 
 
+  if (SearchTable(derived, "WIX") != ERR)
+    cfg.SetWindVertical("WIX");
+  else
   if (SearchTable(derived, "WIC") != ERR)
     cfg.SetWindVertical("WIC");
   else
