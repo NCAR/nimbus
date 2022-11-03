@@ -69,8 +69,9 @@ getBoomLengthParameter(var_base* varp, float* boomlength)
 /* -------------------------------------------------------------------- */
 void initGust(var_base *varp)
 {
-  NR_TYPE	GetBoomLength();
+  NR_TYPE	GetBoomLength(const char *key);
   bool		gustPod = false;
+  char		*boom_str = 0;
 
   if (strstr(varp->name, "_GP"))
     gustPod = true;
@@ -86,7 +87,12 @@ void initGust(var_base *varp)
   memset(pitch0, 0, sizeof(pitch0));
   memset(thdg0, 0, sizeof(thdg0));
 
-  boomln[varp->ProbeCount] = GetBoomLength();
+  if (strcmp(varp->name, "WI") == 0)
+    boom_str = "IRS_BOOM_LEN";
+  else
+    boom_str = "GPS_BOOM_LEN";
+
+  boomln[varp->ProbeCount] = GetBoomLength(boom_str);
 
   /* Since each aircraft traditionally only had one gust system, the boomlength is
    * stored as a aircraft parameter.  The gustpod is a standalone system and can't

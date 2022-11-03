@@ -28,10 +28,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2016
 
 
 /* -------------------------------------------------------------------- */
-NR_TYPE GetBoomLength()
+NR_TYPE GetBoomLength(const char *key)
 {
   NR_TYPE boomln;
-  char aircraft[16];
+  char aircraft[16], *rc;
 
   switch (cfg.Aircraft())
     {
@@ -57,7 +57,9 @@ NR_TYPE GetBoomLength()
     }
 
   InitAircraftSpecs(AIRCRAFT.c_str());
-  boomln = atof(GetAircraftParameter(aircraft, "BOOM_LEN"));
+  if ((rc = GetAircraftParameter(aircraft, key)) == 0)
+    rc = GetAircraftParameter(aircraft, "BOOM_LEN");
+  boomln = atof(rc);
   ReleaseAircraftSpecs();
 
   return(boomln);
