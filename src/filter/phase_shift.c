@@ -194,6 +194,14 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
       if (vp->SampleRate == 13 && std::isnan(curPtr[i]))
         continue;
 
+      // Let's interp the few random INS missing values.....
+      //   for now...  -- cjw 11/2022
+      if ((strncmp(vp->name, "THDG", 4) == 0 ||
+           strncmp(vp->name, "PITCH", 5) == 0 ||
+           strncmp(vp->name, "ROLL", 4) == 0)
+           && std::isnan(curPtr[i]))
+        continue;
+
       // add to x, y if timetag is in this second
       if ((gap_size * i) + dynLag <= 1000)
       {
