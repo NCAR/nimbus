@@ -32,7 +32,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 <body>
 
 <h1 align=center>NCAR-RAF netCDF Conventions</h1>
-<h3 align=center>Version 2.0</h3>
+<h3 align=center>Version 1.3</h3>
 <hr>
 <h4 align=center>National Center for Atmospheric Research</h4>
 <h4 align=center>Research Aviation Facility</h4>
@@ -66,8 +66,6 @@ span.comment { background-color: #88FF88; font-style: italic; }
 <li class="toc">B &nbsp;<a href="#pms1d_app">PMS1D Probe Variables Description</a></li>
 </ul>
 
-
-<b><a href="netCDF_1_3.html">RAF netCDF Conventions 1.3</a></b> for files produced prior to 2021.
 
 
 <hr>
@@ -133,8 +131,8 @@ e.g.<br>
 <div class="example">
 
 <span class="runin">PREDICTtf01.nc</span> would be low-rate data from <b>test</b> flight 1 from the PREDICT project.<br>
-<span class="runin">SPICULEff01s.nc</span> would be sample-rate data from <b>ferry</b> flight 1 from the SPICULE project.<br>
-<span class="runin">RICOrf08h.nc</span> would be high-rate data from <b>research</b> flight 8 of the RICO project.<br>
+<span class="runin">131ff01.nc</span> would be low-rate data <b>ferry</b> flight 1 from project 131.<br>
+<span class="runin">803rf17h.nc</span> would be high-rate data from <b>research</b> flight 17 of project 803.<br>
 </div>
 <p>
 Flight types used by RAF are "ff", "tf", and "rf".
@@ -179,7 +177,7 @@ In our files RPO stands for "Right Pod Outboard".
 Dimension names we use are:
 <ul>
 <li><kbd>sps#</kbd> for variable data rate (sps1, sps5, sps25, sps1000, etc.)
-<li><kbd>Vector#</kbd> for vector lengths (Vector16, Vector30, etc.)
+<li><kbd>Vector#</kbd> for vector lengths (Vector16, Vector41, etc.)
 </ul>
 although I don't believe it matters what they are called.
 <p>
@@ -201,8 +199,20 @@ rate of the variable (e.g., RAF uses 1, 5, 10, 25, 50, 250, and 1000).
 If the dimension does not exist, then there is only one sample for the second.
 <p>
 <h4>4.3 Third dimension - vector length</h4>
-The third dimension, if present, signifies a histogram and is the length of the
-array.  (This will be present only for array data).
+The third dimension, if present, is the vector length of the data.
+(This will be present only for variables with vector data).  Only PMS-1D
+probes are producing vector data at this time.
+<p>
+A new dimension has been added called <b>Async</b>.  <b>Async</b> is a
+triplet containing the location of the asynchronous data in a separate
+binary "heap" file.  The first value contains the offset in bytes into the
+file of the first record for that second, the second number tells the record
+length, and the third is the number of records for that particular second.
+<b>Async</b> will always be in the 3rd (or Vector) dimension, e.g., float
+2D-P_LPI(Time, sps1, Async).  <b>Async</b> was added to facilitate future
+capabilities of being able to provide satellite images, PMS-2D data, and other
+asynchronous products into one "heap" file.  (Note:  I have yet to use this
+feature, so implementation of file name, etc., are incomplete).
 <p>
 
 <!--------------------------------------------------------------------------- ABS -->
@@ -219,6 +229,28 @@ Time follows the recomendations set forth in the <a href="http://cfconventions.o
                 Time:units = "seconds since 2004-08-02 16:46:11 +0000" ;
                 Time:strptime_format = "seconds since %F %T %z" ;
 </pre>
+
+<p>
+<div class="sidebar">
+Pre version 1.3 time was represented as follows, it is still included for
+backwards compatibility but is being deprecated.
+<p>
+Time is stored as a <b>base_time</b> and <b>time_offset</b> pair.
+<b>base_time</b> is standard Unix time (seconds since Jan 1, 1970),
+and is typically the time stamp of the first record in the file.
+<b>base_time</b> has only one value, and does not contain the time
+dimension.  <b>time_offset</b> is added to <b>base_time</b> to give
+the time of the current record.
+
+<pre class="CDL">
+        int base_time ;
+                base_time:units = "seconds since 1970-01-01 00:00:00 +0000" ;
+                base_time:long_name = "Start time of data recording." ;
+        float time_offset(Time) ;
+                time_offset:long_name = "Seconds since base_time." ;
+                time_offset:units = "seconds since 2004-08-02 16:46:11 +0000" ;
+</pre>
+</div>
 
 <p>
 <h4>5.2 Missing data</h4>
@@ -241,51 +273,43 @@ value.  <kbd class="att">missing_value</kbd> (pre 1998 spelled <kbd class="att">
                 :Address = "P.O. Box 3000, Boulder, CO 80307-3000" ;
                 :Phone = "(303) 497-1030" ;
                 :creator_url = "http://www.eol.ucar.edu" ;
-                :creator_email = "codiac at ucar.edu" ;
-                :RepositoryURL = "https://github.com/NCAR/nimbus" ;
-                :RepositoryBranch = "master" ;
-                :RepositoryRevision = "v5.0-80M" ;
-                :RepositoryDate = "Sat Apr 24 12:26:46 2021 -0600" ;
-                :RepositoryHASH = "8fd13287c0ce7a4cdbc387e355e3fa306fbb3f6b" ;
-                :RepositoryStatus = "?? tests/__pycache__/" ;
-                :ProjectDirectoryRepoURL = "https://topher800@github.com/ncar/aircraft_projects" ;
-                :ProjectDirectoryRevision = "da43da3aeb11dcc9abde6a10bf00cdb707a6763" ;
                 :Conventions = "NCAR-RAF/nimbus" ;
                 :ConventionsURL = "http://www.eol.ucar.edu/raf/Software/netCDF.html" ;
-                :Metadata_Conventions = "Unidata Dataset Discovery v1.0" ;
                 :ConventionsVersion = "1.3" ;
+                :Metadata_Conventions = "Unidata Dataset Discovery v1.0" ;
                 :standard_name_vocabulary = "CF-1.0" ;
-                :NIDASrevision = "v1.2-1469" ;
-                :WARNING = "This file contains PRELIMINARY DATA that are NOT to be used for critical analysis." ;
-                :date_created = "2021-06-06T23:41:31 +0000" ;
-                :ProjectName = "SPICULE" ;
-                :project = "SPICULE" ;
+                :ProcessorRevision = "4927" ;
+                :ProcessorURL = "http://svn/svn/raf/trunk/nimbus" ;
+                :date_created = "2010-06-28T20:27:34 +0000" ;
+                :ProjectName = "HIPPO-3" ;
                 :Platform = "N677F" ;
-                :FlightNumber = "rf04" ;
-                :FlightDate = "06/05/2021" ;
-                :TimeInterval = "11:54:29-22:09:16" ;
+                :ProjectNumber = "HIPPO-3" ;
+                :FlightNumber = "rf08" ;
+                :FlightDate = "04/10/2010" ;
+                :TimeInterval = "19:27:23-03:36:43" ;
                 :InterpolationMethod = "Linear" ;
                 :latitude_coordinate = "LATC" ;
                 :longitude_coordinate = "LONC" ;
                 :zaxis_coordinate = "GGALT" ;
                 :time_coordinate = "Time" ;
-                :geospatial_lat_min = 33.74531f ;
-                :geospatial_lat_max = 40.17661f ;
-                :geospatial_lon_min = -105.1467f ;
-                :geospatial_lon_max = -96.44314f ;
-                :geospatial_vertical_min = 304.9131f ;
-                :geospatial_vertical_max = 13012.9f ;
+                :geospatial_lat_min = -14.33873f ;
+                :geospatial_lat_max = 20.13709f ;
+                :geospatial_lon_min = -170.7218f ;
+                :geospatial_lon_max = -154.5442f ;
+                :geospatial_vertical_min = 3.815f ;
+                :geospatial_vertical_max = 13780.87f ;
                 :geospatial_vertical_positive = "up" ;
                 :geospatial_vertical_units = "m" ;
                 :wind_field = "WSC WDC WIC" ;
-                :landmarks = "39.9088 -105.117 jeffco" ;
+                :landmarks = "39.9083 -105.116 BJC,61.1741 -149.996 ANC,19.6475 -156.013 KOA,-43.4893 172.532 NZCH" ;
                 :Categories = "Position,Thermodynamic,Aircraft State,Atmos. State,Liquid Water,Uncorr\'d Raw,Wind,PMS Probe,Housekeeping,Chemistry,Radiation,Non-Standard" ;
-                :time_coverage_start = "2021-06-05T11:54:29 +0000" ;
-                :time_coverage_end = "2021-06-05T22:09:16 +0000" ;
+                :time_coverage_start = "2010-04-10T19:27:23 +0000" ;
+                :time_coverage_end = "2010-04-11T03:36:43 +0000" ;
 </pre>
 <p>
-<kbd class="att">*_coordinate</kbd> is required starting with version 1.3.  These
+<kbd class="att">coordinates</kbd> is required starting with version 1.3.  These
 are the aircrafts "best" position variables.<br>
+<kbd class="att">TimeInterval</kbd> is required by <b>ncplot</b> and <b>ncpp</b>, but I hope to get away from that.
 
 <h4>6.2 Variable attributes</h4>
 <p>All variables contain the basic attributes <kbd class="att">units</kbd>,
@@ -317,10 +341,12 @@ are present for documentation.
 produce this derived value.  Like <kbd class="att">CalibrationCoefficients</kbd>
 , these are present for documentation.
 <p>
-For processing purposes, variables in <b>our</b> files are organized into two
-sorted lists.  The first sorted list consists of raw sampled variables.  These
-only have calibration coefficients applied to them.  The second group consists
-of derived variables.  I have included one example from each of the
+For processing purposes, variables in <b>our</b> files are organized into 3
+sorted lists.  The first sorted list consists of Analog or Digitally-sampled
+variables.  These only have calibration coefficients applied to them.  The
+second group is raw data from "block" probes (e.g., PMS1D, IRS, GPS, and a
+few from group 1 that need special processing).  The third group consists
+of purely derived variables.  I have included one example from each of the
 3 groups (which also show different dimension schemes):
 <pre class="CDL">
         float PITCH(Time) ;
@@ -337,25 +363,25 @@ of derived variables.  I have included one example from each of the
                 PITCH:DataQuality = "Preliminary" ;
                 PITCH:CalibrationCoefficients = 0.26f, 1.f ;
 
-        float CCDP_LWOO(Time, sps1, Vector30) ;
-                CCDP_LWOO:_FillValue = -32767.f ;
-                CCDP_LWOO:units = "#/cm3" ;
-                CCDP_LWOO:long_name = "CDP Concentration (per cell)" ;
-                CCDP_LWOO:actual_range = 0.f, 538.7375f ;
-                CCDP_LWOO:Category = "PMS Probe" ;
-                CCDP_LWOO:SerialNumber = "CDP016" ;
-                CCDP_LWOO:DataQuality = "Preliminary" ;
-                CCDP_LWOO:Dependencies = "2 ACDP_LWOO TASX" ;
-                CCDP_LWOO:FirstBin = 0 ;
-                CCDP_LWOO:LastBin = 29 ;
-                CCDP_LWOO:CellSizes = 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f, 10.f, 11.f, 12.f, 13.f, 14.f, 16.f, 18.f, 20.f, 22.f, 24.f, 26.f, 28.f, 30.f, 32.f, 34.f, 36.f, 38.f, 40.f, 42.f, 44.f, 46.f, 48.f, 50.f ;
-                CCDP_LWOO:CellSizeUnits = "micrometers" ;
-                CCDP_LWOO:CellSizeNote = "CellSizes are lower bin limits as particle " ;
-                CCDP_LWOO:DepthOfField = 1.2f ;
-                CCDP_LWOO:BeamDiameter = 0.2f ;
-                CCDP_LWOO:Density = 1.f ;
-                CCDP_LWOO:PLWfactor = 1.e-06f ;
-                CCDP_LWOO:DBZfactor = 1000000.f ;
+        float CFSSP_RPC(Time, sps1, Vector16) ;
+                CFSSP_RPC:_FillValue = -32767.f ;
+                CFSSP_RPC:units = "#/cm3" ;
+                CFSSP_RPC:long_name = "FSSP-100 Concentration (per cell)" ;
+                CFSSP_RPC:Category = "PMS Probe" ;
+                CFSSP_RPC:SerialNumber = "FSSP076" ;
+                CFSSP_RPC:DataQuality = "Preliminary" ;
+                CFSSP_RPC:Dependencies = "2 AFSSP_RPC TASX" ;
+                CFSSP_RPC:FirstBin = 1 ;
+                CFSSP_RPC:LastBin = 15 ;
+                CFSSP_RPC:CellSizes = 2.f, 5.f, 8.f, 11.f, 14.f, 17.f, 20.f, 23.f, 26.f, 29.f, 32.f, 35.f, 38.f, 41.f, 44.f, 47.f, 2.f, 4.f, 6.f, 8.f, 10.f, 12.f, 14.f, 16.f, 18.f, 20.f, 22.f, 24.f, 26.f, 28.f, 30.f, 32.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f, 10.f, 11.f, 12.f, 13.f, 14.f, 15.f, 16.f, 0.5f, 1.f, 1.5f, 2.f, 2.5f, 3.f, 3.5f, 4.f, 4.5f, 5.f, 5.5f, 6.f, 6.5f, 7.f, 7.5f, 8.f ;
+                CFSSP_RPC:CellSizeUnits = "micrometers" ;
+                CFSSP_RPC:CellSizeNote = "CellSizes are upper bin limits as diameter." ;
+                CFSSP_RPC:HistogramNote = "Zeroth data bin is an unused legacy placeholder." ;
+                CFSSP_RPC:DepthOfField = 2.7f ;
+                CFSSP_RPC:BeamDiameter = 0.18f ;
+                CFSSP_RPC:Density = 1.f ;
+                CFSSP_RPC:PLWfactor = 1.e-06f ;
+                CFSSP_RPC:DBZfactor = 1000000.f ;
 
         float WIC(Time, sps25) ;
                 WIC:_FillValue = -32767.f ;
@@ -400,136 +426,93 @@ names for the orginal PMS probe and for the DMT converted electronics.
 <p>
 <table border=1>
  <tr><th>PMS1D</th><th># bins</th><th>Counts name</th><th>Concentration name</th><th>DMT Converted</th><th># bins</th><th>Counts name</th><th>Concentration name</th></tr>
- <tr><td>FSSP</td><td>16</td><td>AFSSP_xxx</td><td>CFSSP_xxx</td><td>S100</td><td>30</td><td>AS100_xxx</td><td>CS100_xxx</td></tr>
- <tr><td>PCASP</td><td>16</td><td>APCAS_xxx</td><td>CPCAS_xxx</td><td>S200</td><td>30</td><td>AS200_xxx</td><td>CS200_xxx</td></tr>
- <tr><td>F300</td><td>32</td><td>AF300_xxx</td><td>CF300_xxx</td><td>S300</td><td>30</td><td>AS300_xxx</td><td>CS300_xxx</td></tr>
- <tr><td> </td><td> </td><td> </td><td> </td><td>CDP</td><td>30</td><td>ACDP_xxx</td><td>CCDP_xxx</td></tr>
- <tr><td> </td><td> </td><td> </td><td> </td><td>UHSAS</td><td>99</td><td>AUHSAS_xxx</td><td>CUHSAS_xxx</td></tr>
+ <tr><td>FSSP</td><td>16</td><td>AFSSP_xxx</td><td>CFSSP_xxx</td><td>S100</td><td>31</td><td>AS100_xxx</td><td>CS100_xxx</td></tr>
+ <tr><td>PCASP</td><td>16</td><td>APCAS_xxx</td><td>CPCAS_xxx</td><td>S200</td><td>31</td><td>AS200_xxx</td><td>CS200_xxx</td></tr>
+ <tr><td>F300</td><td>32</td><td>AF300_xxx</td><td>CF300_xxx</td><td>S300</td><td>31</td><td>AS300_xxx</td><td>CS300_xxx</td></tr>
+ <tr><td> </td><td> </td><td> </td><td> </td><td>CDP</td><td>31</td><td>ACDP_xxx</td><td>CCDP_xxx</td></tr>
+ <tr><td> </td><td> </td><td> </td><td> </td><td>UHSAS</td><td>100</td><td>AUHSAS_xxx</td><td>CUHSAS_xxx</td></tr>
  <tr><td>260X</td><td>64</td><td>A260X_xxx</td><td>C260X_xxx</td><td>----</td><td>--</td><td></td><td></td></tr>
  <tr><td>2D-C (entire-in algo)</td><td>32</td><td>A1DC_xxx</td><td>C1DC_xxx</td><td>Fast2DC</td><td>64</td><td>A1DC_xxx</td><td>C1DC_xxx</td></tr>
- <tr><td>2D-C (center-in algo)</td><td>64</td><td>A2DC_xxx</td><td>C2DC_xxx</td><td>Fast2DC</td><td>128</td><td>A2DC_xxx</td><td>C2DC_xxx</td></tr>
+ <tr><td>2D-C (center-in algo)</td><td>32</td><td>A2DC_xxx</td><td>C2DC_xxx</td><td>Fast2DC</td><td>64</td><td>A2DC_xxx</td><td>C2DC_xxx</td></tr>
 </table>
 <p>
 <ul>
  <li>The _xxx is any number of alpha-numeric characters uniquely identifying the probe in this dataset.  This allows for multiple identical probes to exist in the same file.
- <li>Two sets of arrays are produced for each 2D probe.  The 1DC pair is produced from the 2D probe data using an "entire-in" algorithm.  The 2DC pair is produced using a "center-in" algorithm (see our 2D processing document for further information).
+ <li>Two sets of arrays are produced for each 2D probe.  The 1DC pair is the produced from the 2D probe data using an "entire-in" algorithm.  The 2DC pair is produced using a "center-in" algorithm.
 </ul>
 
 <p>
+<h4>B.2 Number of bins</h4>
+The original PMS probes always had the first (zeroth) bin set to zero or a value
+which was not part of the size-distribution histogram (e.g. the FSSP-100 recorded
+16 bins of which the last 15 contained data).  However we wanted all raw data
+available to an investigator.  For consistency this required the concentration
+array to be the same size, so it's first (zeroth) bin is also set to zero.
+<p>
+DMT converted probes can record either 10, 20, 30 or 40 bins of data.  To maintain
+backwards compatability, we pad the front of the array with a zero and increase the
+number of bins by one (11, 21, 31 or 41).
+<p>
+<b>NOTE: Always ignore the very first bin of any size-distribution histogram in
+our netCDF files.</b>
 
-<h4>B.2 Cell sizes</h4>
-Cell sizes are stored as an attribute of the size-distribution array.  They are <b>lower bin limits</b>.
+<p>
+<h4>B.3 Cell sizes</h4>
+Cell sizes are stored as an attribute of the counts array.  They are <b>upper bin limits</b>.
 These are diameters.  In the example below, there are 31 cell sizes to go with the 30 used
-values of the size-distribution.  The first cell size is the lower bin limit for the first bin of
-data.  Also note the attributes <b>FirstBin</b> and <b>LastBin</b>, these should be used to
-determine which bins are considered valid, both are inclusive.
+values of the size-distribution.  The first cell size is actually the lower bin limit for
+the first bin of data.  Also note the attributes <b>FirstBin</b> and <b>LastBin</b>, these
+should be used to determine which bins are considered valid, both are inclusive.
 <p>
-e.g. The bin limits for CS100[n] are CellSizes[n] and CellSizes[n+1], lower and upper respectivily.
+e.g. The bin limits for CS100[n] are CellSizes[n-1] and CellSizes[n], lower and upper respectivily.
 
 <pre class="CDL">
-        float ACDP_LWOO(Time, sps1, Vector30) ;
-                ACDP_LWOO:_FillValue = -32767.f ;
-                ACDP_LWOO:units = "count" ;
-                ACDP_LWOO:long_name = "CDP Raw Accumulation (per cell)" ;
-                ACDP_LWOO:actual_range = 0.f, 8328.f ;
-                ACDP_LWOO:Category = "PMS Probe" ;
-                ACDP_LWOO:SerialNumber = "CDP016" ;
-                ACDP_LWOO:SampledRate = 10 ;
-                ACDP_LWOO:DataQuality = "Preliminary" ;
+        float AS100_LPC(Time, sps1, Vector31) ;
+                AS100_LPC:_FillValue = -32767.f ;
+                AS100_LPC:units = "count" ;
+                AS100_LPC:long_name = "FSSP-100 Raw Accumulation (per cell) - DMT" ;
+                AS100_LPT:actual_range = 0.f, 3914.f ;
+                AS100_LPC:Category = "PMS Probe" ;
+                AS100_LPC:SerialNumber = "FSSP122" ;
+                AS100_LPC:SampledRate = 10 ;
+                AS100_LPC:DataQuality = "Good" ;
 
-        float CCDP_LWOO(Time, sps1, Vector30) ;
-                CCDP_LWOO:_FillValue = -32767.f ;
-                CCDP_LWOO:units = "#/cm3" ;
-                CCDP_LWOO:long_name = "CDP Concentration (per cell)" ;
-                CCDP_LWOO:actual_range = 0.f, 273.5868f ;
-                CCDP_LWOO:Category = "PMS Probe" ;
-                CCDP_LWOO:SerialNumber = "CDP016" ;
-                CCDP_LWOO:DataQuality = "Preliminary" ;
-                CCDP_LWOO:Dependencies = "2 ACDP_LWOO TASX" ;
-                CCDP_LWOO:FirstBin = 0 ;
-                CCDP_LWOO:LastBin = 29 ;
-                CCDP_LWOO:CellSizes = 2.12f, 3.14f, 4.16f, 5.18f, 6.2f, 7.22f, 8.24f, 9.26f, 10.29f, 11.31f, 12.33f, 13.35f, 14.37f, 16.41f, 18.46f, 20.5f, 22.54f, 24.58f, 26.63f, 28.67f, 30.71f, 32.75f, 34.8f, 36.84f, 38.88f, 40.92f, 42.97f, 45.01f, 47.05f, 49.1f, 51.14f ;
-                CCDP_LWOO:CellSizeUnits = "micrometers" ;
-                CCDP_LWOO:CellSizeNote = "CellSizes are lower bin limits as particle " ;
-                CCDP_LWOO:DepthOfField = 1.2f ;
-                CCDP_LWOO:BeamDiameter = 0.2f ;
-                CCDP_LWOO:Density = 1.f ;
-                CCDP_LWOO:PLWfactor = 1.e-06f ;
-                CCDP_LWOO:DBZfactor = 1000000.f ;
+        float CS100_LPC(Time, sps1, Vector31) ;
+                CS100_LPC:_FillValue = -32767.f ;
+                CS100_LPC:units = "#/cm3" ;
+                CS100_LPC:long_name = "FSSP-100 Concentration (per cell) - DMT" ;
+                CS100_LPC:Category = "PMS Probe" ;
+                CS100_LPC:SerialNumber = "FSSP122" ;
+                CS100_LPC:DataQuality = "Good" ;
+                CS100_LPC:Dependencies = "5 AS100_LPC TASX REJAT_LPC OVFLW_LPC FRNG_LPC" ;
+                CS100_LPC:FirstBin = 3 ;
+                CS100_LPC:LastBin = 30 ;
+                CS100_LPC:CellSizes = 0.7f, 1.4f, 2.35f, 3.9f, 5.45f, 7.f, 8.55f, 10.1f, 11.65f, 13.2f, 14.75f, 16.3f, 17.85f, 19.4f, 20.95f, 22.5f, 24.05f, 25.6f, 27.15f, 28.7f, 30.25f, 31.8f, 33.35f, 34.9f, 36.45f, 38.f, 39.55f, 41.1f, 42.65f, 44.2f, 45.75f ;
+                CS100_LPC:CellSizeUnits = "micrometers" ;
+                CS100_LPC:CellSizeNote = "CellSizes are upper bin limits as diameter." ;
+                CS100_LPC:HistogramNote = "Zeroth data bin is an unused legacy placeholder." ;
+                CS100_LPC:DepthOfField = 2.3f ;
+                CS100_LPC:BeamDiameter = 0.2f ;
+                CS100_LPC:Density = 1.f ;
+                CS100_LPC:PLWfactor = 1.e-06f ;
+                CS100_LPC:DBZfactor = 1000000.f ;
 
-        float CONCD_LWOO(Time) ;
-                CONCD_LWOO:_FillValue = -32767.f ;
-                CONCD_LWOO:units = "#/cm3" ;
-                CONCD_LWOO:long_name = "CDP Concentration (all cells)" ;
-                CONCD_LWOO:actual_range = 0.f, 963.0727f ;
-                CONCD_LWOO:Category = "PMS Probe" ;
-                CONCD_LWOO:SerialNumber = "CDP016" ;
-                CONCD_LWOO:DataQuality = "Preliminary" ;
-                CONCD_LWOO:Dependencies = "1 CCDP_LWOO" ;
-</pre>
-<p>
-Older version of RAF netCDF files have a "legacy zeroth bin" in the histogram.  Old PMS probes had a rotating housekeeping value in the first bin, and we wanted to preserve the raw data, and have a one-to-one correspondance between the counts array and the size-distribution array.
-
-Previously:
-<pre class="CDL">
-        float ACDP_LWOO(Time, sps1, Vector31) ;
-                ACDP_LWOO:_FillValue = -32767.f ;
-                ACDP_LWOO:units = "count" ;
-                ACDP_LWOO:long_name = "CDP Raw Accumulation (per cell)" ;
-                ACDP_LWOO:actual_range = 0.f, 8328.f ;
-                ACDP_LWOO:Category = "PMS Probe" ;
-                ACDP_LWOO:SerialNumber = "CDP016" ;
-                ACDP_LWOO:SampledRate = 10 ;
-                ACDP_LWOO:DataQuality = "Preliminary" ;
-
-        float CCDP_LWOO(Time, sps1, Vector31) ;
-                CCDP_LWOO:_FillValue = -32767.f ;
-                CCDP_LWOO:units = "#/cm3" ;
-                CCDP_LWOO:long_name = "CDP Concentration (per cell)" ;
-                CCDP_LWOO:actual_range = 0.f, 273.5868f ;
-                CCDP_LWOO:Category = "PMS Probe" ;
-                CCDP_LWOO:SerialNumber = "CDP016" ;
-                CCDP_LWOO:DataQuality = "Preliminary" ;
-                CCDP_LWOO:Dependencies = "2 ACDP_LWOO TASX" ;
-                CCDP_LWOO:FirstBin = 1 ;
-                CCDP_LWOO:LastBin = 30 ;
-                CCDP_LWOO:CellSizes = 2.12f, 3.14f, 4.16f, 5.18f, 6.2f, 7.22f, 8.24f, 9.26f, 10.29f, 11.31f, 12.33f, 13.35f, 14.37f, 16.41f, 18.46f, 20.5f, 22.54f, 24.58f, 26.63f, 28.67f, 30.71f, 32.75f, 34.8f, 36.84f, 38.88f, 40.92f, 42.97f, 45.01f, 47.05f, 49.1f, 51.14f ;
-                CCDP_LWOO:CellSizeUnits = "micrometers" ;
-                CCDP_LWOO:CellSizeNote = "CellSizes are upper bin limits as particle " ;
-                CCDP_LWOO:HistogramNote = "Zeroth data bin is an unused legacy placeholder." ;
-                CCDP_LWOO:DepthOfField = 1.2f ;
-                CCDP_LWOO:BeamDiameter = 0.2f ;
-                CCDP_LWOO:Density = 1.f ;
-                CCDP_LWOO:PLWfactor = 1.e-06f ;
-                CCDP_LWOO:DBZfactor = 1000000.f ;
-</pre>
-<p>
-Difference (plus is new, minus is old):
-<pre class="CDL">
-+       float ACDP_LWOO(Time, sps1, Vector30) ;
--       float ACDP_LWOO(Time, sps1, Vector31) ;
-
-+       float CCDP_LWOO(Time, sps1, Vector30) ;
--       float CCDP_LWOO(Time, sps1, Vector31) ;
-
-+               CCDP_LWOO:FirstBin = 0 ;
-+               CCDP_LWOO:LastBin = 29 ;
-
--               CCDP_LWOO:FirstBin = 1 ;
--               CCDP_LWOO:LastBin = 30 ;
-
-+               CCDP_LWOO:CellSizeNote = "CellSizes are lower bin limits as particle " ;
--               CCDP_LWOO:CellSizeNote = "CellSizes are upper bin limits as particle " ;
-
--               CCDP_LWOO:HistogramNote = "Zeroth data bin is an unused legacy placeholder." ;
-
+        float CONCF_LPC(Time) ;
+                CONCF_LPC:_FillValue = -32767.f ;
+                CONCF_LPC:units = "#/cm3" ;
+                CONCF_LPC:long_name = "FSSP-100 Concentration (all cells)" ;
+                CONCF_LPT:actual_range = 0.f, 437.7162f ;
+                CONCF_LPC:Category = "PMS Probe" ;
+                CONCF_LPC:SerialNumber = "FSSP122" ;
+                CONCF_LPC:DataQuality = "Good" ;
+                CONCF_LPC:Dependencies = "1 CS100_LPC" ;
 </pre>
 <p>
 <table border=1>
- <tr><th>bin#</th><th>0</th><th>1</th><th>2</th><th>3</th><th>....</th><th></th><th>29</th></tr>
- <tr><td></td><td>FirstBin</td><td></td><td></td><td></td><td></td><td></td><td>LastBin</td></tr>
+ <tr><th>bin#</th><th>0</th><th>1</th><th>2</th><th>3</th><th>....</th><th>29</th><th>30</th></tr>
+ <tr><td></td><td>n/a</td><td></td><td></td><td>FirstBin</td><td></td><td></td><td>LastBin</td></tr>
 </table>
-FirstBin is typically set to two or three for OAP probes as we find the data to be questionable at the smaller sizes.
+
 
 <!--------------------------------------------------------------------------- ABS -->
 <hr>
@@ -544,7 +527,7 @@ Research Aviation Facility<br>
 <hr>
 <font size=2>
 Last update:
-Tue Dec 13 15:40:33 MST 2022
+Mon Jun 29 03:43:37 MDT 2009
 </font>
 </body>
 </html>
