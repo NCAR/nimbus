@@ -207,7 +207,7 @@ void sakrd(DERTBL *varp)
       case Config::C130:
         if (varp->nDependencies == 3)  // Post IDEAS-4
         {
-          psf   = GetSample(varp, 2);	// PSF
+          psf  = GetSample(varp, 2);	// PSF
           mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
           akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach); // 15 Sept 2016 memo
         }
@@ -226,9 +226,9 @@ void sakrd(DERTBL *varp)
         mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
         if (varp->nDependencies == 4)
         {
-          NR_TYPE alt = GetSample(varp, 3);
-          if (alt < 6500) akrd_coeff = low; else
-          if (alt < 9300) akrd_coeff = mid; else
+          NR_TYPE rho = GetSample(varp, 3);
+          if (rho < 0.35) akrd_coeff = low; else
+          if (rho < 0.7) akrd_coeff = mid; else
           akrd_coeff = high;
         }
 

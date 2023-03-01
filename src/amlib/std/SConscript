@@ -65,6 +65,7 @@ raltm.c
 ratio.c
 reference.c
 reff.c
+rho.c
 rhodt.c
 rhola.c
 rhomr.c
