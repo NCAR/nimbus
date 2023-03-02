@@ -965,6 +965,7 @@
 	"QCX",		NULL,		NULL,		sRefer,
 	"QCXC",		NULL,		NULL,		sRefer,
 	"RHOUV",	(void(*)(void*))rhouvInit,	NULL,		srhouv,
+	"RHO",		NULL,		NULL,		srho,
 	"RHOCR",	NULL,		NULL,		srhocr,
 	"RHODR",	NULL,		NULL,		srhodt,
 	"RHODL",	NULL,		NULL,		srhodt,
