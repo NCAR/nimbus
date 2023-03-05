@@ -10,7 +10,6 @@ akdf.c
 akrd.c
 altc.c
 angcr.c
-asas.c
 atf.c
 ath.c
 boomln.c
@@ -45,6 +44,7 @@ mr.c
 mrla.c
 nevzorov.c
 palt.c
+pcasp.c
 plwcc.c
 pms1d.c
 pms2d.c
