@@ -395,6 +395,11 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
       float value = atof(p);
       nc_put_att_float(ncid, cvarid, "SampleArea", NC_FLOAT, 1, &value);
     }
+
+    if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "PULSE_WIDTH")) ) {
+      float value = atof(p);
+      nc_put_att_float(ncid, cvarid, "PulseWidth", NC_FLOAT, 1, &value);
+    }
   }
 
 
