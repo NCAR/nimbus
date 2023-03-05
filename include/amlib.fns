@@ -183,7 +183,7 @@
 	"CS100",	(void(*)(void*))cfsspInit,	NULL,		scs100,
 	"CCDP",		(void(*)(void*))ccdpInit,	NULL,		scdp,
 	"CS200",	(void(*)(void*))casasInit,	NULL,		scs200,
-	"CUHSAS",	(void(*)(void*))casasInit,	NULL,		scs200,
+	"CUHSAS",	(void(*)(void*))cuhsasInit,	NULL,		scuhsas,
 	"CS300",	(void(*)(void*))cf300Init,	NULL,		scf300,
 #
 # PMS actual data arrays
@@ -223,7 +223,7 @@
 	"TCNTD",	NULL,		NULL,		stcntd,
 	"TCNTF",	NULL,		NULL,		stcntf,
 	"TCNTP",	NULL,		NULL,		stcntp,
-	"TCNTU",	NULL,		NULL,		stcntp,
+	"TCNTU",	NULL,		NULL,		stcntu,
 	"TCNT2DC",	NULL,		NULL,		stcnt2,
 	"TCNT2DP",	NULL,		NULL,		stcnt2,
 	"TCNT1DC",	NULL,		NULL,		stcnt2,
@@ -238,7 +238,7 @@
 	"CONCD",	NULL,		NULL,		sconcd,
 	"CONCF",	NULL,		NULL,		sconcf,
 	"CONCP",	NULL,		NULL,		sconca,
-	"CONCU",	NULL,		NULL,		sconca,
+	"CONCU",	NULL,		NULL,		sconcu,
 	"CONCX",	NULL,		NULL,		sconcx,
 	"CONCY",	NULL,		NULL,		sconcy,
 	"CONC2DC",	NULL,		NULL,		sconc2,
@@ -259,7 +259,7 @@
 	"DBARD",	NULL,		NULL,		sdbard,
 	"DBARF",	NULL,		NULL,		sdbarf,
 	"DBARP",	NULL,		NULL,		sdbara,
-	"DBARU",	NULL,		NULL,		sdbara,
+	"DBARU",	NULL,		NULL,		sdbaru,
 	"DBARX",	NULL,		NULL,		sdbarx,
 	"DBARY",	NULL,		NULL,		sdbary,
 	"DBAR2DC",	NULL,		NULL,		sdbar2,
@@ -279,7 +279,7 @@
 	"DISPD",	NULL,		NULL,		sdispd,
 	"DISPF",	NULL,		NULL,		sdispf,
 	"DISPP",	NULL,		NULL,		sdispa,
-	"DISPU",	NULL,		NULL,		sdispa,
+	"DISPU",	NULL,		NULL,		sdispu,
 	"DISPX",	NULL,		NULL,		sdispx,
 	"DISPY",	NULL,		NULL,		sdispy,
 	"DISP2DC",	NULL,		NULL,		sdisp2,
@@ -358,7 +358,7 @@
 # Volume
 	"PVOL3",	NULL,		NULL,		spvol3,
 	"PVOLP",	NULL,		NULL,		spvolp,
-	"PVOLU",	NULL,		NULL,		spvolp,
+	"PVOLU",	NULL,		NULL,		spvolu,
 
 #	"TCNT3",	NULL,		xlP32v2_sum,	NULL,
 	"TEVT3",	NULL,		xlpms32_sum,	NULL,

@@ -89,6 +89,7 @@ thetav.c
 thf.c
 tsurf.c
 tvir.c
+uhsas.c
 vcsel.c
 wd.c
 ws.c
