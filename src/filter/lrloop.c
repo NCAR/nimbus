@@ -118,6 +118,7 @@ int LowRateLoop(time_t startTime, time_t endTime)
 
 exit:
   ReleaseCircularBuffer(LRCB);
+  LRCB = 0;
 
   return(nBytes);
 

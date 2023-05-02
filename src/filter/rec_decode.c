@@ -53,7 +53,8 @@ void DecodeADSrecord(
       setNIDASDynamicLags(lr);
 
     for (size_t i = 0; i < decode.size(); ++i)
-      (*decode[i]->xlate)(decode[i], (void *)nlr, &nlr[decode[i]->SRstart]);
+      if (decode[i]->xlate)
+        (*decode[i]->xlate)(decode[i], (void *)nlr, &nlr[decode[i]->SRstart]);
   }
   else
   {
