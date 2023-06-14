@@ -16,8 +16,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2023
 #include "amlib.h"
 #include <raf/pms.h>
 
-#include <gsl/gsl_sf_lambert.h>
-
 static const size_t MAX_UHSAS = 2;
 static const int MAX_BINS = 101;
 
@@ -202,24 +200,14 @@ void scuhsas(DERTBL *varp)
     }
   }
 
-  // Apply coincidence correction (Lambert version).
-  if (dt[probeNum] > 0.0 && !std::isnan(tact[probeNum]))
+  // Apply coincidence correction.
+  if (dt[probeNum] > 0.0)
   {
-    NR_TYPE N, W_arg, N_corrected, ccf;
-
-    N = tact[probeNum];
+    NR_TYPE N = tact[probeNum];
     if (FeedBack == HIGH_RATE_FEEDBACK)
       N *= SampleRate[probeNum];
 
-    // Coincidence correction using Lambert W function, principal branch.
-    W_arg = -N * dt[probeNum];		// Argument for Lambert W
-
-    // Test for W argument exceeding limit.  The constant is 1/e.
-    if (-W_arg > 3.6787944e-1) W_arg = -3.6787944e-1;	// Cap argument at limit
-
-    N_corrected = -gsl_sf_lambert_W0( W_arg ) / dt[probeNum];
-
-    ccf = N_corrected / N;		// New correction factor
+    NR_TYPE ccf = 1.0 / (1.0 - (dt[probeNum] * N));
 
     if (ccf > 0.0)
     {
