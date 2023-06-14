@@ -22,6 +22,10 @@ git status --porcelain
 */
 
 
+void CloseLogFile();
+
+
+/* -------------------------------------------------------------------- */
 void executePopenCommand(const char cmd[], char result[], int n)
 {
   FILE *pp;
@@ -65,6 +69,7 @@ void validateGitProjectDirectory()
     strcpy(msg, "\nProduction run requires clean/commited projects directory, commit files.\n");
     strcat(msg, buffer);
     strcat(msg, "\n");
+    CloseLogFile();
     HandleFatalError(msg);
   }
 

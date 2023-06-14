@@ -189,14 +189,22 @@ void CleanOutUnwantedVariables()
     }
 
   for (cnt = 0, i = 0; i < raw.size(); ++i)
+  {
     if (raw[i]->Output || raw[i]->DependedUpon)
       raw[cnt++] = raw[i];
+    else
+      raw[i]->xlate = 0;
+  }
 
   raw.resize(cnt);
 
   for (cnt = 0, i = 0; i < derived.size(); ++i)
+  {
     if (derived[i]->Output || derived[i]->DependedUpon)
       derived[cnt++] = derived[i];
+    else
+      derived[i]->compute = 0;
+  }
 
   derived.resize(cnt);
 
