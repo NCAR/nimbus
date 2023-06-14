@@ -191,7 +191,7 @@ static void readHeader()
     return;
   }
 
-  sprintf(buffer, "%s - %s, Flight %s",
+  snprintf(buffer, 8192, "%s - %s, Flight %s",
 	cfg.ProjectName().c_str(), cfg.ProjectNumber().c_str(),
 	cfg.FlightNumber().c_str());
 
@@ -239,7 +239,7 @@ static void runSecondPassPrograms()
 {
   {
     LogMessage("Running netCDF file sanity checker (nc_sane)...\n");
-    sprintf(buffer, "nc_sane %s", OutputFileName);
+    snprintf(buffer, 8192, "nc_sane %s", OutputFileName);
     system(buffer);
   }
 
@@ -248,7 +248,7 @@ static void runSecondPassPrograms()
     char kml_file[1024];
     strcpy(kml_file, OutputFileName);
     strcpy(strrchr(kml_file, '.'), ".kml");
-    sprintf(buffer, "acTrack2kml %s %s", OutputFileName, kml_file);
+    snprintf(buffer, 8192, "acTrack2kml %s %s", OutputFileName, kml_file);
     system(buffer);
   }
 }	/* END RUNSECONDPASSPROGRAMS */
@@ -257,38 +257,38 @@ static void runSecondPassPrograms()
 void ConfigurationDump()
 {
   LogMessage("\nConfiguration dump:");
-  sprintf(buffer, "  Input file is %s.",
+  snprintf(buffer, 8192, "  Input file is %s.",
 	cfg.isADS2() ? "ADS-2" : "ADS-3"); LogMessage(buffer);
-  sprintf(buffer, "  %s mode.",
+  snprintf(buffer, 8192, "  %s mode.",
 	cfg.ProcessingMode() == Config::RealTime ? "Real-time" : "Post-processing");
 	LogMessage(buffer);
-  sprintf(buffer, "  %s rate.",
+  snprintf(buffer, 8192, "  %s rate.",
 	cfg.ProcessingRate() == Config::HighRate ? "High" : 
 	  (cfg.ProcessingRate() == Config::LowRate ? "Low" : "Sample"));
 	LogMessage(buffer);
-  sprintf(buffer, "  %s run.",
+  snprintf(buffer, 8192, "  %s run.",
 	cfg.ProductionRun() ? "Production" : "Preliminary"); LogMessage(buffer);
-  sprintf(buffer, "  De-spiking %s.",
+  snprintf(buffer, 8192, "  De-spiking %s.",
 	cfg.Despiking() ? "enabled" : "disabled"); LogMessage(buffer);
-  sprintf(buffer, "  Time-shifting %s.",
+  snprintf(buffer, 8192, "  Time-shifting %s.",
 	cfg.TimeShifting() ? "enabled" : "disabled"); LogMessage(buffer);
-  sprintf(buffer, "  Blankouts %s.",
+  snprintf(buffer, 8192, "  Blankouts %s.",
 	cfg.BlankoutVariables() ? "enabled" : "disabled"); LogMessage(buffer);
-  sprintf(buffer, "  Honeywell IRS cleanup %s.",
+  snprintf(buffer, 8192, "  Honeywell IRS cleanup %s.",
 	cfg.HoneyWellCleanup() ? "enabled" : "disabled"); LogMessage(buffer);
-  sprintf(buffer, "  Intertial time-shift %s.",
+  snprintf(buffer, 8192, "  Intertial time-shift %s.",
 	cfg.InertialShift() ? "enabled" : "disabled"); LogMessage(buffer);
-  sprintf(buffer, "  Output NetCDF: %s.",
+  snprintf(buffer, 8192, "  Output NetCDF: %s.",
 	cfg.OutputNetCDF() ? "yes" : "no"); LogMessage(buffer);
-  sprintf(buffer, "  Output SQL: %s.",
+  snprintf(buffer, 8192, "  Output SQL: %s.",
 	cfg.OutputSQL() ? "yes" : "no"); LogMessage(buffer);
-  sprintf(buffer, "  Size distribution legacy zero bin : %s.",
+  snprintf(buffer, 8192, "  Size distribution legacy zero bin : %s.",
 	cfg.ZeroBinOffset() ? "yes" : "no"); LogMessage(buffer);
 
   if (cfg.TransmitToGround())
-    sprintf(buffer, "  Ground transmission every %d seconds.", cfg.GroundFeedDataRate());
+    snprintf(buffer, 8192, "  Ground transmission every %d seconds.", cfg.GroundFeedDataRate());
   else
-    sprintf(buffer, "  Ground transmission: no.");
+    snprintf(buffer, 8192, "  Ground transmission: no.");
   LogMessage(buffer);
 }
 
@@ -453,15 +453,15 @@ void stopProcessing()
   x = (float)(finishWALL - startWALL) / 60.0;
 
   if (x > 60.0)
-    sprintf(buffer, "Processing took %.2f hour(s).\n", x / 60.0);
+    snprintf(buffer, 8192, "Processing took %.2f hour(s).\n", x / 60.0);
   else
-    sprintf(buffer, "Processing took %.1f minutes.\n", x);
+    snprintf(buffer, 8192, "Processing took %.1f minutes.\n", x);
 
   LogMessage(buffer);
 
 /*
   x = (float)(finishCPU - startCPU) / CLOCKS_PER_SEC / 60.0;
-  sprintf(buffer, "CPU time took %.1f minutes.\n", x);
+  snprintf(buffer, 8192, "CPU time took %.1f minutes.\n", x);
   LogMessage(buffer);
 */
 
@@ -486,7 +486,7 @@ void stopProcessing()
 /* -------------------------------------------------------------------- */
 void LoadSetup(Widget w, XtPointer client, XtPointer call)
 {
-  sprintf(buffer, "%s/nimbus/*", getenv("HOME"));
+  snprintf(buffer, 8192, "%s/nimbus/*", getenv("HOME"));
   QueryFile("Enter file name to load:", buffer, (XtCallbackProc)LoadSetup_OK);
 
 }	/* END LOADSETUP */
@@ -494,7 +494,7 @@ void LoadSetup(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void  LoadSynthetic(Widget w, XtPointer client, XtPointer call)
 {
-  sprintf(buffer, "%s/nimbus/*", getenv("HOME"));
+  snprintf(buffer, 8192, "%s/nimbus/*", getenv("HOME"));
   QueryFile("Enter synthetic data file name to load:", buffer, (XtCallbackProc)LoadSynthetic_OK);
 
 }	/* END LOADSYNTHETIC */
@@ -542,7 +542,7 @@ static void checkForProductionSetup()
       {
         char t[32];
         MakeProjectFileName(buffer, "%s/%s/%s/Production/Flight_");
-        sprintf(t, "%d", atoi(strrchr(group[i], '=')+1));
+        snprintf(t, 32, "%d", atoi(strrchr(group[i], '=')+1));
         strcat(buffer, t);
 
         LoadSetup_OK(NULL, NULL, NULL);
@@ -579,7 +579,7 @@ static void checkForProductionSetup()
   if (!revision2)
   {
     char t[32];
-    sprintf(t, "%d", FlightNumberInt);
+    snprintf(t, 32, "%d", FlightNumberInt);
     strcat(buffer, t);
   }
   else
@@ -604,7 +604,7 @@ void SaveSetup(Widget w, XtPointer client, XtPointer call)
   }
   else
   {
-    sprintf(buffer, "%s/nimbus/*", getenv("HOME"));
+    snprintf(buffer, 8192, "%s/nimbus/*", getenv("HOME"));
     QueryFile("Enter file name to save setup to:", buffer,
 		    (XtCallbackProc)SaveSetup_OK);
   }
@@ -767,7 +767,7 @@ static int determineInputFileVersion()
   if (fp == 0)
   {
     char msg[512];
-    sprintf(msg, "Failed to open input file [%s], errno = %d.\n", ADSfileName, errno);
+    snprintf(msg, 128, "Failed to open input file [%s], errno = %d.\n", ADSfileName, errno);
     perror(msg);
     HandleError(msg);
     return ERR;
@@ -810,7 +810,7 @@ static int validateInputFile()
   if (strlen(ADSfileName) == 0 || access(ADSfileName, R_OK) == ERR)
   {
     char msg[512];
-    sprintf(msg, "Non-existent input file [%s].\n", ADSfileName);
+    snprintf(msg, 128, "Non-existent input file [%s].\n", ADSfileName);
     HandleError(msg);
     return(ERR);
   }
@@ -820,7 +820,7 @@ static int validateInputFile()
   if ( S_ISDIR( st_buf.st_mode ) )
   {
     char msg[512];
-    sprintf(msg, "Input file [%s] is a directory.\n", ADSfileName);
+    snprintf(msg, 128, "Input file [%s] is a directory.\n", ADSfileName);
     HandleError(msg);
     return(ERR);
   }
@@ -882,7 +882,7 @@ void ValidateOutputFile(Widget w, XtPointer client, XtPointer call)
 
   /* Else if it exists, warn user.
    */
-  sprintf(buffer, "Output file [%s] exists.", OutputFileName);
+  snprintf(buffer, 8192, "Output file [%s] exists.", OutputFileName);
   HandleWarning(buffer, StartProcessing, CancelSetup);
 
 }	/* END VALIDATEOUTPUTFILE */
@@ -906,7 +906,7 @@ static void setOutputFileName()
 
   if (cfg.ProductionRun())
   {
-    sprintf(buffer, p, cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
+    snprintf(buffer, 8192, p, cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
     strcat(OutputFileName, buffer);
   }
   else
@@ -931,7 +931,7 @@ XmString CreateListLineItem(var_base *pp, int var_type)
     case RAW:
       rp = (RAWTBL *)pp;
 
-      sprintf(buffer, list1lineFrmt, rp->name,
+      snprintf(buffer, 8192, list1lineFrmt, rp->name,
 		rp->Dirty ? '*' : ' ', rp->Output ? 'Y' : 'N',
 		rp->SampleRate, rp->OutputRate,
 		rp->StaticLag, rp->SpikeSlope,
@@ -939,7 +939,7 @@ XmString CreateListLineItem(var_base *pp, int var_type)
 
       for (size_t i = 0; i < rp->cof.size(); ++i)
       {
-        sprintf(tmp, "%10.4lf", rp->cof[i]);
+        snprintf(tmp, 100, "%10.4lf", rp->cof[i]);
         strcat(buffer, tmp);
       }
 
@@ -948,7 +948,7 @@ XmString CreateListLineItem(var_base *pp, int var_type)
     case DERIVED:
       dp = (DERTBL *)pp;
 
-      sprintf(buffer, list1lineFrmt, dp->name,
+      snprintf(buffer, 8192, list1lineFrmt, dp->name,
 		dp->Dirty ? '*' : ' ', dp->Output ? 'Y' : 'N',
 		0, dp->OutputRate, 0, 0.0, dp->DataQuality[0]);
 
@@ -961,7 +961,7 @@ XmString CreateListLineItem(var_base *pp, int var_type)
         if (i > 0)
           strcat(buffer, ",");
 
-        sprintf(tmp, " %s", dp->depend[i]);
+        snprintf(tmp, 100, " %s", dp->depend[i]);
         strcat(buffer, tmp);
       }
 
@@ -1048,7 +1048,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
   {
     DERTBL *dp = derived[i];
 
-    sprintf(buffer, list1lineFrmt,
+    snprintf(buffer, 8192, list1lineFrmt,
 			dp->name,
 			dp->Dirty ? '*' : ' ',
 			dp->Output ? 'Y' : 'N',
@@ -1284,7 +1284,7 @@ static void LogLagErrors()
   {
     if (raw[i]->badLagCntr > 0)
     {
-      sprintf(buffer, "%s: %zu bad Lags.\n", raw[i]->name, raw[i]->badLagCntr);
+      snprintf(buffer, 8192, "%s: %zu bad Lags.\n", raw[i]->name, raw[i]->badLagCntr);
       LogMessage(buffer);
     }
   }

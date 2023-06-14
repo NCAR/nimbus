@@ -74,7 +74,7 @@ void SetFlightValue(char target[], char new_value[])
       return;
     }
 
-  sprintf(buffer, "Request to set non-existent default, %s.\n", target);
+  snprintf(buffer, 8192, "Request to set non-existent default, %s.\n", target);
   LogMessage(buffer);
 
 }	/* END SETDEFAULTSVALUE */
@@ -185,7 +185,7 @@ void SetConfigWinFromConfig()
        default:
         {
         char msg[1000];
-	sprintf(msg, 
+	snprintf(msg, 128,
 		"SetConfigWinFromConfig() does not handle %d Hz rate!",
 		cfg.HRTRate());
 	HandleFatalError(msg);
@@ -630,7 +630,7 @@ void createTwoDRejectRatio(Widget parent)
     char s[16];
     int value = i * 10;
 
-    sprintf(s, "%d%%", value);
+    snprintf(s, 16, "%d%%", value);
 
     n = 0;
     twoDarrB[i] = XmCreateToggleButton(twoDarrRB, s, args,n);
@@ -771,7 +771,7 @@ void ValidateTime(Widget w, XtPointer client, XtPointer call)
   if (sec < 0)          sec = 0;
   if (sec > 59)         sec = 59;
 
-  sprintf(buffer, "%02d:%02d:%02d", hour, min, sec);
+  snprintf(buffer, 8192, "%02d:%02d:%02d", hour, min, sec);
   XmTextFieldSetString(w, buffer);
   XtFree(p);
 
@@ -796,7 +796,7 @@ static void VerifyFlightInfo(Widget w, int indx, XtPointer call)
   {
     case 0:	/* Proj #	*/
       i = atoi(p);
-      sprintf(buffer, "%d", i);
+      snprintf(buffer, 8192, "%d", i);
       buffer[7] = '\0';
       XmTextFieldSetString(flightText[indx], buffer);
       /* Need to set ProjectNumber variable.	*/

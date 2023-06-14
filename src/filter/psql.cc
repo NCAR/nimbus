@@ -36,7 +36,7 @@ std::string readLandmarks();
 PostgreSQL::PostgreSQL(std::string specifier)
 {
   char miss[32];
-  sprintf(miss, "%.0f", MISSING_VALUE);
+  snprintf(miss, 32, "%.0f", MISSING_VALUE);
   _missingValueStr = miss;
 
   ILOG(("PostgreSQL ctor, spec = %s", specifier.c_str()));
@@ -600,9 +600,6 @@ PostgreSQL::Write2dSQL(RAWTBL *rp, int32_t time, int32_t msec, uint32_t *p, int 
 
   _sql2d_str << "INSERT INTO " << name << " VALUES ('";
 
-//  sprintf(temp, "%02d:%02d:%02d.%03u', %d, '{",
-//	time/3600, (time%3600)/60, time%60, msec, nSlices);
-
   char  pf = _sql2d_str.fill('0');
   int   pw = _sql2d_str.width(2);
 
@@ -642,7 +639,7 @@ PostgreSQL::addValue(std::stringstream& sql, NR_TYPE value, bool addComma)
     sql << _missingValueStr;
   else
   {
-    sprintf(value_ascii, "%.7e", value);
+    snprintf(value_ascii, 32, "%.7e", value);
     sql << value_ascii;
   }
 
@@ -811,7 +808,7 @@ PostgreSQL::getGlobalAttribute(const char key[]) const
   char temp[128];
   std::string resultStr;
 
-  sprintf(temp, "SELECT value FROM global_attributes WHERE key='%s';", key);
+  snprintf(temp, 128, "SELECT value FROM global_attributes WHERE key='%s';", key);
   PGresult *res = PQexec(_conn, temp);
 
   if (PQntuples(res) > 0)
@@ -962,7 +959,7 @@ PostgreSQL::outputGroundDBInitPacket()
   time_t t = time(0);
   char timeStamp[64];
   strftime(timeStamp, sizeof(timeStamp), ISO8601_T, gmtime(&t));
-  sprintf(fName, "%s/%s_nimbus_start_%s.gz", dir, cfg.AircraftString().c_str(), timeStamp);
+  snprintf(fName, MAXPATHLEN, "%s/%s_nimbus_start_%s.gz", dir, cfg.AircraftString().c_str(), timeStamp);
 
   gzFile gzfd = gzopen(fName, "wbx");
   gzwrite(gzfd, _groundDBinitString.str().c_str(), _groundDBinitString.str().length());

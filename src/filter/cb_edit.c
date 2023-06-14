@@ -16,15 +16,7 @@ STATIC FNS:	set_edit_window_data()
 
 DESCRIPTION:	Contains callbacks for the nimbus GUI.
 
-INPUT:			
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	XtAppMainLoop()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2023
 -------------------------------------------------------------------------
 */
 
@@ -92,7 +84,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
 
       for (i = 0; i < rp->cof.size(); ++i)
         {
-        sprintf(buffer, "%e", rp->cof[i]);
+        snprintf(buffer, 8192, "%e", rp->cof[i]);
         XmTextFieldSetString(ev_text[i], buffer);
         XtSetSensitive(ev_text[i], true);
         }
@@ -335,7 +327,7 @@ static void set_edit_window_data(
   XtSetArg(args[0], XmNlabelString, ns);
   XtSetValues(XmOptionButtonGadget(slOpMenu), args, 1);
   XmStringFree(ns);
- 
+
   ns=XmStringCreateLocalized((char *)func[0]);   //sets the function to none
   XtSetArg(sarg[0], XmNlabelString, ns);
   XtSetValues(XmOptionButtonGadget(funcOpMenu),sarg,1);
@@ -362,13 +354,13 @@ static void set_edit_window_data(
     XtSetSensitive(outputSRbutton, true);
     XtSetSensitive(funcOpMenu,true);    //for some reason a segmentation error occures here on some occasions
     XtSetSensitive(synthConstText,true);
-   
-    sprintf(buffer, "%d", lag);
+
+    snprintf(buffer, 8192, "%d", lag);
     XmTextFieldSetString(lagText, buffer);
     pos = XmTextFieldGetLastPosition(lagText);
     XmTextFieldSetInsertionPosition(lagText, pos);
 
-    sprintf(buffer, "%.2e", spike);
+    snprintf(buffer, 8192, "%.2e", spike);
     XmTextFieldSetString(spikeText, buffer);
     pos = XmTextFieldGetLastPosition(spikeText);
     XmTextFieldSetInsertionPosition(spikeText, pos);
@@ -390,7 +382,7 @@ void MapCalCof(Widget w, XtPointer client, XtPointer call)
     }
   else
     {
-    sprintf(buffer, "%e", atof(p));
+    snprintf(buffer, 8192, "%e", atof(p));
     XmTextFieldSetString(w, buffer);
     }
 
@@ -678,7 +670,7 @@ void CreateEditWindow()
 
   for (i = 0; i < MAXDEPEND; ++i)
     {
-    sprintf(buffer, "ev_text%ld", i);
+    snprintf(buffer, 8192, "ev_text%ld", i);
     ev_text[i] = XmCreateTextField(evRC[0], buffer, args, n);
 
     XtAddCallback(ev_text[i], XmNlosingFocusCallback, MapCalCof, NULL);

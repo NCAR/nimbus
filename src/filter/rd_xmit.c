@@ -52,7 +52,7 @@ void ReadGroundVarsFile()
     if (r_idx == ERR && d_idx == ERR)
     {
       char msg[100];
-      sprintf(msg, "rd_xmit.c: Variable [%s] not found, ignoring.\n", list[i]);
+      snprintf(msg, 128, "rd_xmit.c: Variable [%s] not found, ignoring.\n", list[i]);
       LogMessage(msg);
     }
   }

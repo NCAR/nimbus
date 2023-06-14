@@ -244,12 +244,12 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   nBins = getCellSizes(rp, cellSize);
   sprintf(sql_buff, ", %d, %d, '{", fb, lb);
 
-  sprintf(temp, "%g", cellSize[0]);
+  snprintf(temp, 32, "%g", cellSize[0]);
   strcat(sql_buff, temp);
 
   for (i = 1; i < nBins; ++i)
   {
-    sprintf(temp, ",%g", cellSize[i]);
+    snprintf(temp, 32, ",%g", cellSize[i]);
     strcat(sql_buff, temp);
   }
 
@@ -426,7 +426,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "CELL_SIZE")) == NULL)
   {
-    sprintf(buffer, "CELL_SIZE_%lu", rp->Length);
+    snprintf(buffer, 8192, "CELL_SIZE_%lu", rp->Length);
     p = GetPMSparameter(rp->SerialNumber.c_str(), buffer);
   }
 

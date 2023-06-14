@@ -93,7 +93,7 @@ void InitAsyncModule(char fileName[])
 
   if ((AsyncFP = fopen(tempName, "w+")) == NULL)
     {
-    sprintf(buffer, "Async: Unable to destroy/create %s.\n", tempName);
+    snprintf(buffer, 8192, "Async: Unable to destroy/create %s.\n", tempName);
     LogMessage(buffer);
     LogMessage("Disabling Async data processing, and continuing.\n");
     cfg.SetAsyncFileEnabled(false);

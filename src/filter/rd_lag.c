@@ -41,7 +41,7 @@ void ReadStaticLags()
 
     if (abs(lag) > MaxLag)
       {
-      sprintf(buffer, "Lag may not exceed %d ms, igonoring lag for %s.\n",
+      snprintf(buffer, 8192, "Lag may not exceed %d ms, igonoring lag for %s.\n",
              MaxLag, target);
       LogMessage(buffer);
       continue;
@@ -51,7 +51,7 @@ void ReadStaticLags()
       raw[index]->StaticLag = lag;
     else
       {
-      sprintf(buffer, "ReadStaticLags: non-existent variable %s specified, continuing.\n", target);
+      snprintf(buffer, 8192, "ReadStaticLags: non-existent variable %s specified, continuing.\n", target);
       LogMessage(buffer);
       }
     }

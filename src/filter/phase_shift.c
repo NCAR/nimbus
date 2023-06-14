@@ -49,7 +49,7 @@ void AddVariableToRAWlagList(RAWTBL *varp)
   if (varp->StaticLag == 0)
     return;
 
-  sprintf(buffer, "Time lag for %s enabled, with lag of %d milliseconds.\n",
+  snprintf(buffer, 8192, "Time lag for %s enabled, with lag of %d milliseconds.\n",
           varp->name, varp->StaticLag);
 
   LogMessage(buffer);
@@ -113,7 +113,7 @@ void PhaseShift(
         else
           lag = MaxLag;
 
-        sprintf(buffer,
+        snprintf(buffer, 8192,
           "Max lag of |%d| ms exceeded, setting to %d ms and continuing; variable %s.\n",
           MaxLag, lag, rp->name);
         LogMessage(buffer);
@@ -236,7 +236,7 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
     if (goodPoints != 0)
     {
       char msg[256];
-      sprintf(msg, "Not enough points for interp, var=%s, sr=%d, goodPoints=%d",
+      snprintf(msg, 128, "Not enough points for interp, var=%s, sr=%d, goodPoints=%d",
 		vp->name, vp->SampleRate, goodPoints);
       LogThisRecordMsg(this_rec, msg);
     }
@@ -272,7 +272,7 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   {
     if (x[i] < x[i-1])
     {
-      sprintf(buffer, "Non-monotonically increasing time values: %s (%zu/%zu).", vp->name, i, goodPoints);
+      snprintf(buffer, 8192, "Non-monotonically increasing time values: %s (%zu/%zu).", vp->name, i, goodPoints);
       LogThisRecordMsg(this_rec, buffer);
 //    for (size_t j = 0; j < goodPoints; ++j)
 //      printf("%d, %f\n", (int)x[j], y[j]);

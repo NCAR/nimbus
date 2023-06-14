@@ -178,7 +178,7 @@ int32_t FindNextLogicalADS2(char record[], time_t endtime)
   if (endtime == END_OF_TAPE && (rectime < 0 || rectime > 86399L || ntohs((ushort)((Hdr_blk*)record)->id) != SDI_WORD))
     {
 
-    sprintf(buffer, "Record found id = %x @ %02d:%02d:%02d, throwing away.\n",
+    snprintf(buffer, 8192, "Record found id = %x @ %02d:%02d:%02d, throwing away.\n",
 		ntohs(ADShdr->id), ntohs(ADShdr->hour),
 		ntohs(ADShdr->minute), ntohs(ADShdr->second));
     LogMessage(buffer);
@@ -271,7 +271,7 @@ char *ExtractHeaderIntoFile(const char fileName[])
 
   if ((infd = open(adsFileName, O_RDONLY)) < 0)
     {
-    sprintf(buffer, "adsIO: Failure opening ADS2 input file %s.\n", adsFileName);
+    snprintf(buffer, 8192, "adsIO: Failure opening ADS2 input file %s.\n", adsFileName);
     perror(buffer);
     exit(1);
     }
@@ -315,7 +315,7 @@ char *ExtractHeaderIntoFile(const char fileName[])
 
     if ((infd = open(adsFileName, O_RDONLY)) < 0)
       {
-      sprintf(buffer, "adsIO: Failure opening ADS2 input file %s.\n", adsFileName);
+      snprintf(buffer, 8192, "adsIO: Failure opening ADS2 input file %s.\n", adsFileName);
       perror(buffer);
       exit(1);
       }

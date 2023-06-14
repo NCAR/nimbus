@@ -33,7 +33,7 @@ void ReadBlankOuts()
   if (cfg.BlankoutVariables() == false)
     return;
 
-  sprintf(buffer, "%s.%s", BLANKVARS.c_str(), cfg.FlightNumber().c_str());
+  snprintf(buffer, 8192, "%s.%s", BLANKVARS.c_str(), cfg.FlightNumber().c_str());
   if (AccessProjectFile(buffer, "r") == FALSE)
     return;
 
@@ -93,7 +93,7 @@ static void check_var(var_base *var)
       strcmp(var->name, "SECOND") == 0)
   {
     char msg[128];
-    sprintf(msg, "Blankout can not apply to variable %s, clearing.\n", var->name);
+    snprintf(msg, 128, "Blankout can not apply to variable %s, clearing.\n", var->name);
     LogMessage(msg);
     var->blank_out.clear();
   }

@@ -59,7 +59,7 @@ FILE *OpenProjectFile(const std::string& filename, const char mode[], int action
   {
     char msg[MAXPATHLEN];
 
-    sprintf(msg, "ProjectOpen: can't open %s", file);
+    snprintf(msg, 128, "ProjectOpen: can't open %s", file);
     HandleFatalError(msg);
   }
 

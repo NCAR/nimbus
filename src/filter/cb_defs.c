@@ -79,7 +79,7 @@ void SetDefaultsValue(const char target[], NR_TYPE *new_value)
       return;
       }
 
-  sprintf(buffer, "Request to set non-existent default, %s.\n", target);
+  snprintf(buffer, 8192, "Request to set non-existent default, %s.\n", target);
   LogMessage(buffer);
 
 }	/* END SETDEFAULTSVALUE */
@@ -262,7 +262,7 @@ static void set_defaultText(int indx)
     if (i > 0)
       strcat(buffer, ", ");
 
-    sprintf(temp, "%e", Defaults[indx]->Values[i]);
+    snprintf(temp, 64, "%e", Defaults[indx]->Values[i]);
     strcat(buffer, temp);
     }
 

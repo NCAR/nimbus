@@ -155,7 +155,7 @@ void GroundFeed::BroadcastData(nidas::core::dsm_time_t tt)
     b.lastErr = ret;
     int errnum;
     char msg[100];
-    sprintf(msg, "Failed to compress the ground feed stream: %s\n", BZ2_bzerror(&b, &errnum) );
+    snprintf(msg, 128, "Failed to compress the ground feed stream: %s\n", BZ2_bzerror(&b, &errnum) );
     ::LogMessage(msg);
     return;
   }

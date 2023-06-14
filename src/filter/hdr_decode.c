@@ -436,7 +436,7 @@ int DecodeHeader3(const char header_file[])
   {
     // Using the VarDBConverter to open either a binary or xml vardb makes
     // this script obsolete.
-    sprintf(buffer, "update_depend %s", cfg.ProjectNumber().c_str());
+    snprintf(buffer, 8192, "update_depend %s", cfg.ProjectNumber().c_str());
     system(buffer);
   }
 
@@ -447,7 +447,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   {
   time_t t = syncRecReader->getStartTime();
   struct tm *flDate = gmtime(&t);
-  sprintf(buffer, "%02d/%02d/%04d", flDate->tm_mon+1, flDate->tm_mday, flDate->tm_year+1900);
+  snprintf(buffer, 8192, "%02d/%02d/%04d", flDate->tm_mon+1, flDate->tm_mday, flDate->tm_year+1900);
   cfg.SetFlightDate(buffer);
   }
 
@@ -495,9 +495,9 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
     if (rate == 0)
     {
-      char msg[256];
+      char msg[128];
 
-      sprintf(msg, "hdr_decode.c: %s: Assertion `SampleRate > 0' failed.", var->getName().c_str());
+      snprintf(msg, 128, "hdr_decode.c: %s: Assertion `SampleRate > 0' failed.", var->getName().c_str());
       LogMessage(msg);
       quit();
     }
@@ -720,7 +720,7 @@ int DecodeHeader(const char header_file[])
   p = ExtractHeaderIntoFile(header_file);
   if (InitFlightHeader(p, CLOSE) == ERR)
   {
-    sprintf(buffer, "Header decode failed, taperr = %d.", taperr);
+    snprintf(buffer, 8192, "Header decode failed, taperr = %d.", taperr);
     HandleError(buffer);
     unlink(p);
     free(p);
@@ -753,10 +753,10 @@ int DecodeHeader(const char header_file[])
   GetHeaderDate(&p);
   cfg.SetFlightDate(p);
 
-  sprintf(buffer, "%s/%s", cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str());
+  snprintf(buffer, 8192, "%s/%s", cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str());
   if (access(buffer, R_OK) == ERR)
   {
-    sprintf(buffer, "No project directory for %s.", cfg.ProjectNumber().c_str());
+    snprintf(buffer, 8192, "No project directory for %s.", cfg.ProjectNumber().c_str());
     HandleError(buffer);
     return(ERR);
   }
@@ -985,7 +985,7 @@ int DecodeHeader(const char header_file[])
     else
     if (!strcmp(item_type, NEPH903_STR))
     {
-      sprintf(location, "_%zu", ++NephCnt);
+      snprintf(location, NAMELEN, "_%zu", ++NephCnt);
       add_raw_names(item_type);
     }
     else
@@ -1124,7 +1124,7 @@ int DecodeHeader(const char header_file[])
         AVAPS = true;
         for (size_t i = 0; i < 4; ++i)
         {
-          sprintf(location, "_%02zu", i);
+          snprintf(location, NAMELEN, "_%02zu", i);
           add_raw_names(item_type);
         }
       }
@@ -1132,7 +1132,7 @@ int DecodeHeader(const char header_file[])
     }
     else
     {
-      sprintf(buffer, "Unknown variable/probe %s encountered, ignoring & continuing.\n", item_type);
+      snprintf(buffer, 8192, "Unknown variable/probe %s encountered, ignoring & continuing.\n", item_type);
       LogMessage(buffer);
     }
   }
@@ -1145,7 +1145,7 @@ int DecodeHeader(const char header_file[])
   {
     for (probeCnt = 0; probeCnt < 3; ++probeCnt)
     {
-      sprintf(location, "_%zu", probeCnt);
+      snprintf(location, NAMELEN, "_%zu", probeCnt);
       add_derived_names("PRCLTRK");
     }
 
@@ -1509,7 +1509,7 @@ static void initMASP(char vn[])
   {
     char	msg[128];
 
-    sprintf(msg, "Unknown MASP probe: %s, continuing\n", vn);
+    snprintf(msg, 128, "Unknown MASP probe: %s, continuing\n", vn);
     LogMessage(msg);
     return;
   }
@@ -1642,7 +1642,7 @@ static void initPMS1D(char vn[])
   {
     char	msg[128];
 
-    sprintf(msg, "Unknown pms1d probe: %s, continuing\n", probe);
+    snprintf(msg, 128, "Unknown pms1d probe: %s, continuing\n", probe);
     LogMessage(msg);
     return;
   }
@@ -1738,7 +1738,7 @@ static void initPMS1Dv2(char vn[])
   {
     char	msg[128];
 
-    sprintf(msg, "Unknown pms1d probe: %s, continuing\n", probe);
+    snprintf(msg, 128, "Unknown pms1d probe: %s, continuing\n", probe);
     LogMessage(msg);
     return;
   }
@@ -1888,7 +1888,7 @@ static void initPMS1Dv3(char vn[])
   {
     char	msg[128];
 
-    sprintf(msg, "Unknown pms1d probe: %s, continuing\n", probe);
+    snprintf(msg, 128, "Unknown pms1d probe: %s, continuing\n", probe);
     LogMessage(msg);
     return;
   }
@@ -1935,7 +1935,7 @@ static void initPMS1Dv3(char vn[])
   {
     int j;
 
-    sprintf(buffer, "HSKP%d", i);
+    snprintf(buffer, 8192, "HSKP%d", i);
     p = GetPMSparameter(serialNumber.c_str(), buffer);
 
     if (strncmp(p, "DUMMY", 5) == 0)
@@ -2074,7 +2074,7 @@ static void initPMS2D(char vn[], int order)
   {
     char	msg[128];
 
-    sprintf(msg, "Unknown pms2d probe: %s, continuing\n", vn);
+    snprintf(msg, 128, "Unknown pms2d probe: %s, continuing\n", vn);
     LogMessage(msg);
     return;
   }
@@ -2142,7 +2142,7 @@ static void initPMS2D(char vn[], int order)
     if (order == 0)
       Add2DtoList(rp);
 
-    sprintf(name, "DT%s", &buffer[1]);
+    snprintf(name, 32, "DT%s", &buffer[1]);
     rp = add_name_to_RAWTBL(name);
 
     /* Perform add_derived_names manually   */
@@ -2264,7 +2264,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   {
     char msg[128];
 
-    sprintf(msg, "add_name_to_RAWTBL: Throwing away %s, has no decode function.\n", fullName);
+    snprintf(msg, 128, "add_name_to_RAWTBL: Throwing away %s, has no decode function.\n", fullName);
     LogMessage(msg);
     return((RAWTBL *)ERR);
   }
@@ -2276,7 +2276,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   {
     char	msg[128];
 
-    sprintf(msg, "Will not add %s to raw table, it already exists in derived table.\n", name);
+    snprintf(msg, 128, "Will not add %s to raw table, it already exists in derived table.\n", name);
     LogMessage(msg);
     return((RAWTBL *)ERR);
   }
@@ -2327,7 +2327,7 @@ static DERTBL *add_name_to_DERTBL(const char name_sans_location[])
   {
     char	msg[128];
 
-    sprintf(msg, "add_name_to_DERTBL: Throwing away %s, has no compute function.\n", name_sans_location);
+    snprintf(msg, 128, "add_name_to_DERTBL: Throwing away %s, has no compute function.\n", name_sans_location);
     LogMessage(msg);
     return((DERTBL *)ERR);
   }
@@ -2342,7 +2342,7 @@ static DERTBL *add_name_to_DERTBL(const char name_sans_location[])
   {
     char	msg[128];
 
-    sprintf(msg, "Will not add %s to derived table, it already exists in raw table.\n", name);
+    snprintf(msg, 128, "Will not add %s to derived table, it already exists in raw table.\n", name);
     LogMessage(msg);
     return((DERTBL *)ERR);
   }
@@ -2351,7 +2351,7 @@ static DERTBL *add_name_to_DERTBL(const char name_sans_location[])
   {
     char	msg[128];
 
-    sprintf(msg, "%s already added to derived list, ignoring duplicate, check dependencies.\n", name);
+    snprintf(msg, 128, "%s already added to derived list, ignoring duplicate, check dependencies.\n", name);
     LogMessage(msg);
     return((DERTBL *)ERR);
   }
@@ -2536,7 +2536,7 @@ openVariableDatabase()
   {
     LogMessage("InitializeVarDB for project specific failed, "
 	       "trying master file.\n");
-    sprintf(buffer, VARDB.c_str(), cfg.ProjectDirectory().c_str(),
+    snprintf(buffer, 8192, VARDB.c_str(), cfg.ProjectDirectory().c_str(),
 	    "Configuration/", "");
     vardb->open(buffer);
     if (! vardb->is_valid())

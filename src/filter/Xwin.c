@@ -546,12 +546,12 @@ Widget CreateEditWindow(Widget parent)
   b[0] = XmCreatePushButton(cbRC, "applyButton", args, n);
   b[1] = XmCreatePushButton(cbRC, "resetButton", args, n);
   b[2] = XmCreatePushButton(cbRC, "dismissButton", args, n);
-  
+
   XtAddCallback(b[0], XmNactivateCallback, ApplyVariableMods, NULL);
   XtAddCallback(b[1], XmNactivateCallback, (XtCallbackProc)EditVariable,NULL);
   XtAddCallback(b[2], XmNactivateCallback, DismissEditWindow, NULL);
   XtManageChildren(b,3);
-  
+
 
   n = 0;
   label = XmCreateLabel(frame[6], "evTextTitle", args, n);
@@ -565,13 +565,13 @@ Widget CreateEditWindow(Widget parent)
 
   for (i = 0; i < MAXDEPEND; ++i)
     {
-    sprintf(buffer, "ev_text%zu", i);
+    snprintf(buffer, 8192, "ev_text%zu", i);
     ev_text[i] = XmCreateTextField(evRC[0], buffer, args, n);
 
     XtAddCallback(ev_text[i], XmNlosingFocusCallback, MapCalCof, NULL);
     XtAddCallback(ev_text[i], XmNactivateCallback, (XtCallbackProc)NextWidget,(XtPointer)i);
     }
-  
+
   XtManageChildren(ev_text, MAXDEPEND);
 
 

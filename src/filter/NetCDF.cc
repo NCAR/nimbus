@@ -101,7 +101,7 @@ void NetCDF::SetBaseTime(double *record)
 
   if (BaseTime <= 0)
   {
-    sprintf(buffer, "\nWARNING:  >>>>> base_time = %ld <<<<<\n\n", BaseTime);
+    snprintf(buffer, 8192, "\nWARNING:  >>>>> base_time = %ld <<<<<\n\n", BaseTime);
     LogMessage(buffer);
   }
 
@@ -192,7 +192,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("FlightNumber", cfg.FlightNumber());
 
   if (cfg.ProcessingMode() == Config::RealTime)
-    sprintf(buffer, "%02d/%02d/%04d", _startFlight.tm_mon+1, _startFlight.tm_mday, _startFlight.tm_year+1900);
+    snprintf(buffer, 8192, "%02d/%02d/%04d", _startFlight.tm_mon+1, _startFlight.tm_mday, _startFlight.tm_year+1900);
   else
     strcpy(buffer, cfg.FlightDate().c_str());
 
@@ -312,7 +312,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     {
       char msg[256];
 
-      sprintf(msg, "%s: Assertion `OutputRate > 0' failed.", rp->name);
+      snprintf(msg, 128, "%s: Assertion `OutputRate > 0' failed.", rp->name);
       LogMessage(msg);
       quit();
     }
@@ -321,7 +321,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     if (_rateDimIDs.find(rp->OutputRate) == _rateDimIDs.end())
     {
       char tmp[32];
-      sprintf(tmp, "sps%zu", rp->OutputRate);
+      snprintf(tmp, 32, "sps%zu", rp->OutputRate);
       nc_def_dim(_ncid, tmp, rp->OutputRate, &_rateDimIDs[rp->OutputRate]);
     }
 
@@ -337,7 +337,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       if (_vectorDimIDs.find(rp->Length) == _vectorDimIDs.end())
       {
         char tmp[32];
-        sprintf(tmp, "Vector%zu", rp->Length);
+        snprintf(tmp, 32, "Vector%zu", rp->Length);
         nc_def_dim(_ncid, tmp, rp->Length, &_vectorDimIDs[rp->Length]);
       }
 
@@ -410,7 +410,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     {
       char msg[256];
 
-      sprintf(msg, "%s: Assertion `OutputRate > 0' failed.", dp->name);
+      snprintf(msg, 128, "%s: Assertion `OutputRate > 0' failed.", dp->name);
       LogMessage(msg);
       quit();
     }
@@ -419,7 +419,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     if (_rateDimIDs.find(dp->OutputRate) == _rateDimIDs.end())
     {
       char tmp[32];
-      sprintf(tmp, "sps%zu", dp->OutputRate);
+      snprintf(tmp, 32, "sps%zu", dp->OutputRate);
       nc_def_dim(_ncid, tmp, dp->OutputRate, &_rateDimIDs[dp->OutputRate]);
     }
 
@@ -435,7 +435,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       if (_vectorDimIDs.find(dp->Length) == _vectorDimIDs.end())
         {
         char tmp[32];
-        sprintf(tmp, "Vector%zu", dp->Length);
+        snprintf(tmp, 32, "Vector%zu", dp->Length);
         nc_def_dim(_ncid, tmp, dp->Length, &_vectorDimIDs[dp->Length]);
         }
 
@@ -456,7 +456,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     nc_put_att_text(_ncid, dp->varid, "DataQuality", strlen(dp->DataQuality)+1,
 		dp->DataQuality);
 
-    sprintf(buffer, "%zu", dp->nDependencies);
+    snprintf(buffer, 8192, "%zu", dp->nDependencies);
     for (size_t j = 0; j < dp->nDependencies; ++j)
     {
       strcat(buffer, " ");
@@ -795,7 +795,7 @@ void NetCDF::BlankOutBadData()
   /* Come through as a second pass after all processing has been done, and
    * replace "bad" segments with MISSING_VALUE.
    */
-  sprintf(buffer, "%s.%s", BLANKVARS.c_str(), cfg.FlightNumber().c_str());
+  snprintf(buffer, 8192, "%s.%s", BLANKVARS.c_str(), cfg.FlightNumber().c_str());
   if (AccessProjectFile(buffer, "r") == FALSE)
     return;
 
@@ -823,7 +823,7 @@ void NetCDF::BlankOutBadData()
     {
     if (strcmp(derived[i]->DataQuality, dataQuality[BAD]) == 0)
       {
-      sprintf(buffer, "Blanking %s from %02d:%02d:%02d to %02d:%02d:%02d.\n",
+      snprintf(buffer, 8192, "Blanking %s from %02d:%02d:%02d to %02d:%02d:%02d.\n",
        derived[i]->name, fsTime[0], fsTime[1], fsTime[2], feTime[0],
        feTime[1], feTime[2]);
       LogMessage(buffer);
@@ -837,7 +837,7 @@ void NetCDF::BlankOutBadData()
         }
       if (writeBlank(derived[i]->varid, start, count, derived[i]->OutputRate) != NC_NOERR)
         {
-        sprintf(buffer, "Failure writing BadData for variable %s.\n",
+        snprintf(buffer, 8192, "Failure writing BadData for variable %s.\n",
                 derived[i]->name);
         LogMessage(buffer);
         }
@@ -874,7 +874,7 @@ void NetCDF::BlankOutBadData()
      */
     if (sTime[3] > feTime[3] || eTime[3] < fsTime[3])
       {
-      sprintf(buffer, "Blanking times (%02d:%02d:%02d to %02d:%02d:%02d) not valid for %s.\n", sTime[0], sTime[1], sTime[2], eTime[0], eTime[1], eTime[2], target);
+      snprintf(buffer, 8192, "Blanking times (%02d:%02d:%02d to %02d:%02d:%02d) not valid for %s.\n", sTime[0], sTime[1], sTime[2], eTime[0], eTime[1], eTime[2], target);
       LogMessage(buffer);
       continue;
       }
@@ -885,7 +885,7 @@ void NetCDF::BlankOutBadData()
     if (eTime[3] > feTime[3])
       memcpy((void *)eTime, (void *)feTime, sizeof(feTime));
 
-    sprintf(buffer, "Blanking %s from %02d:%02d:%02d to %02d:%02d:%02d.\n",
+    snprintf(buffer, 8192, "Blanking %s from %02d:%02d:%02d to %02d:%02d:%02d.\n",
     target, sTime[0], sTime[1], sTime[2], eTime[0], eTime[1], eTime[2]);
     LogMessage(buffer);
 
@@ -895,7 +895,7 @@ void NetCDF::BlankOutBadData()
 
     if (start[0] < 0)
       {
-      sprintf(buffer, "Start time precedes file start time for %s.\n", target);
+      snprintf(buffer, 8192, "Start time precedes file start time for %s.\n", target);
       LogMessage(buffer);
       continue;
       }
@@ -913,7 +913,7 @@ void NetCDF::BlankOutBadData()
 /*  See if measurement has already been blanked for whole flight  */
       if (strcmp(derived[index]->DataQuality, dataQuality[BAD]) == 0)
         {
-        sprintf(buffer, "%s has already been blanked because the DataQuality flag is Bad.\n",derived[index]->name);
+        snprintf(buffer, 8192, "%s has already been blanked because the DataQuality flag is Bad.\n",derived[index]->name);
         LogMessage(buffer);
         }
       else
@@ -925,7 +925,7 @@ void NetCDF::BlankOutBadData()
           }
         if (writeBlank(derived[index]->varid, start, count, derived[index]->OutputRate) != NC_NOERR)
           {
-          sprintf(buffer, "Failure writing BadData for variable %s.\n",
+          snprintf(buffer, 8192, "Failure writing BadData for variable %s.\n",
 		  derived[index]->name);
           LogMessage(buffer);
           }
@@ -933,7 +933,7 @@ void NetCDF::BlankOutBadData()
       }
     else
       {
-      sprintf(buffer, "  WARNING: %s NOT found!  Continuing.\n", target);
+      snprintf(buffer, 8192, "  WARNING: %s NOT found!  Continuing.\n", target);
       LogMessage(buffer);
       }
     }
@@ -1070,7 +1070,7 @@ void NetCDF::printDependedByList()
   for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->DependedUpon & 0xf0)
     {
-      sprintf(buffer, " %s", derived[i]->name);
+      snprintf(buffer, 8192, " %s", derived[i]->name);
       LogMessage(buffer);
     }
 

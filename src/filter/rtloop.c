@@ -50,7 +50,7 @@ void RTinit_ADS2()
   gethostname(host, 80);
   if ((p = strchr(host, '.')) ) *p = '\0';
 
-  sprintf(buffer, "%s/hosts/%s/rtdata.filename", cfg.ProjectDirectory().c_str(), host);
+  snprintf(buffer, 8192, "%s/hosts/%s/rtdata.filename", cfg.ProjectDirectory().c_str(), host);
 
   for (int j = 0; j < 60 && (fp = fopen(buffer, "r")) == NULL; ++j)
     sleep(1);
@@ -119,7 +119,7 @@ void RealTimeLoop()
     tm.tm_mon = ntohs(hdr->month) - 1;
     tm.tm_mday = ntohs(hdr->day);
     long long microsecs = mktime(&tm) * 1e6;
-    sprintf(timeStamp, "%04d%02d%02dT%02d%02d%02d",
+    snprintf(timeStamp, 32, "%04d%02d%02dT%02d%02d%02d",
 		ntohs(hdr->year)+2000, ntohs(hdr->month), ntohs(hdr->day),
 		ntohs(hdr->hour), ntohs(hdr->minute), ntohs(hdr->second));
 

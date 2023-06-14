@@ -218,7 +218,7 @@ void RealTimeLoop3()
       if (abs(sys_time - ut) > max_lag_delta)
       {
         char msg[128];
-        sprintf(msg, "WARNING: Time lag > 10 seconds; sys_clock=%ld, dsm_time=%ld !!!", sys_time, ut);
+        snprintf(msg, 128, "WARNING: Time lag > 10 seconds; sys_clock=%ld, dsm_time=%ld !!!", sys_time, ut);
         WLOG((msg));
         fprintf(stderr, "\n%s\n\n", msg);
       }

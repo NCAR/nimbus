@@ -48,13 +48,13 @@ void validateGitProjectDirectory()
   chdir(cfg.ProjectDirectory().c_str());
 
   // Get repo URL
-  sprintf(cmd, "git config --get remote.origin.url");
+  snprintf(cmd, 200, "git config --get remote.origin.url");
   executePopenCommand(cmd, buffer, 1000);
   cfg.SetProjectRepoURL(buffer);
 
   // Get repo hash
   // There may be better ways to search for modified files, like only files nimbus uses.
-  sprintf(cmd, "git status --porcelain --untracked-files=no | grep 'Configuration\\|%s' | grep -v logfile | grep -v run_",
+  snprintf(cmd, 200, "git status --porcelain --untracked-files=no | grep 'Configuration\\|%s' | grep -v logfile | grep -v run_",
 		cfg.ProjectNumber().c_str());
   executePopenCommand(cmd, buffer, 1000);
   cfg.SetProjectDirectoryStatus(buffer);
@@ -69,7 +69,7 @@ void validateGitProjectDirectory()
   }
 
   // Get repo status
-  sprintf(cmd, "git log --pretty=format:\"%%H\" -1");
+  snprintf(cmd, 200, "git log --pretty=format:\"%%H\" -1");
   executePopenCommand(cmd, buffer, 1000);
   cfg.SetProjectDirectoryRevision(buffer);
 }
@@ -84,7 +84,7 @@ void validateProjectDirectory()
    */
 
   // Get repo revision number of the project directory.
-  sprintf(cmd, "svnversion %s/%s", cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str());
+  snprintf(cmd, 200, "svnversion %s/%s", cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str());
   executePopenCommand(cmd, buffer, 1000);
 
   if (strcmp(buffer, "Unversioned directory") == 0)

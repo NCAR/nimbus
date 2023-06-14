@@ -80,43 +80,43 @@ void InitMRFilters()
   // should be named <in_rate>to<out_rate>, e.g., 50to250 for the 50 Hz to
   // 250 Hz upsampling filter.
   //
-  sprintf(filterFileName, "1to%d", outRate);
+  snprintf(filterFileName, 128, "1to%d", outRate);
   fromOne = (outRate == 1) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "5to%d", outRate);
+  snprintf(filterFileName, 128, "5to%d", outRate);
   fromFive = (outRate == 5) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "8to%d", outRate);
+  snprintf(filterFileName, 128, "8to%d", outRate);
   fromEight = (outRate == 8) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "10to%d", outRate);
+  snprintf(filterFileName, 128, "10to%d", outRate);
   fromTen = (outRate == 10) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "13to%d", outRate);
+  snprintf(filterFileName, 128, "13to%d", outRate);
   fromThirteen = (outRate == 13) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "16to%d", outRate);
+  snprintf(filterFileName, 128, "16to%d", outRate);
   fromSixteen = (outRate == 16) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "20to%d", outRate);
+  snprintf(filterFileName, 128, "20to%d", outRate);
   fromTwenty = (outRate == 20) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "25to%d", outRate);
+  snprintf(filterFileName, 128, "25to%d", outRate);
   fromTwentyFive = (outRate == 25) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "50to%d", outRate);
+  snprintf(filterFileName, 128, "50to%d", outRate);
   fromFifty = (outRate == 50) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "100to%d", outRate);
+  snprintf(filterFileName, 128, "100to%d", outRate);
   fromOneHundred = (outRate == 100) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "250to%d", outRate);
+  snprintf(filterFileName, 128, "250to%d", outRate);
   fromTwoFifty = (outRate == 250) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "500to%d", outRate);
+  snprintf(filterFileName, 128, "500to%d", outRate);
   fromFiveHundred = (outRate == 500) ? 0 : readAfilter(filterFileName);
 
-  sprintf(filterFileName, "1000to%d", outRate);
+  snprintf(filterFileName, 128, "1000to%d", outRate);
   fromOneThousand = (outRate == 1000) ? 0 : readAfilter(filterFileName);
 
   /* Create filter Data for each variable
@@ -226,7 +226,7 @@ void InitMRFilters()
     if (rawFilters[i] == 0 && raw[i]->SampleRate != raw[i]->OutputRate)
     {
       char msg[128];
-      sprintf(msg, "%s [sr=%ld] has no FIR filter, resampled data will be used.",
+      snprintf(msg, 128, "%s [sr=%ld] has no FIR filter, resampled data will be used.",
               raw[i]->name, raw[i]->SampleRate);
       LogMessage(msg);
     }
@@ -386,7 +386,7 @@ static filterPtr readAfilter(const char file[])
   char	*filter[2000];
   double	sum = 0.0;
 
-  sprintf(buffer, FILTERS.c_str(), nimbus, file);
+  snprintf(buffer, 8192, FILTERS.c_str(), nimbus, file);
   ReadTextFile(buffer, filter);
 
   if (filter[0] == 0)

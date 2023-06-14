@@ -45,7 +45,7 @@ void ReadDespikeFile()
       raw[index]->SpikeSlope = fabs((double)slope);
     else
       {
-      sprintf(buffer, "ReadDespikeFile: non-existent variable %s specified, continuing.\n", target);
+      snprintf(buffer, 8192, "ReadDespikeFile: non-existent variable %s specified, continuing.\n", target);
       LogMessage(buffer);
       }
     }

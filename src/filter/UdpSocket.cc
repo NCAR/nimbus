@@ -48,7 +48,7 @@ void UdpSocket::openSock (int binding)
 
   sock_name.sin_family = AF_INET;
   sock_name.sin_port = htons(udp_num);
-  
+
   switch (binding) {
     case UDP_BOUND:				// bound socket request
       sock_name.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -116,7 +116,7 @@ void UdpSocket::openSock (int binding)
           exit (1);
         }
 
-        sprintf(buf2, "%u.%u.%u.%u",
+        snprintf(buf2, 32, "%u.%u.%u.%u",
            (unsigned char)ifr->ifr_broadaddr.sa_data[2],
            (unsigned char)ifr->ifr_broadaddr.sa_data[3],
            (unsigned char)ifr->ifr_broadaddr.sa_data[4],
@@ -144,13 +144,13 @@ int UdpSocket::querySock ()
 {
   fd_set read_mask;                     // select read mask
   struct timeval sel_tout;              // select timeout struct
- 
+
   sel_tout.tv_sec = 0;
   sel_tout.tv_usec = 0;
- 
+
   FD_ZERO (&read_mask);
   FD_SET (udp_sock, &read_mask);
- 
+
   if (select (FD_SETSIZE, &read_mask,(fd_set*)0,(fd_set*)0,&sel_tout) < 0)
     {
     switch (errno) {
@@ -179,7 +179,7 @@ int UdpSocket::readSock (char *dest, int len)
 int UdpSocket::writeSock (const char *src, int len)
 {
   int slen;
- 
+
   if ((slen = sendto(udp_sock, src, len, 0,
        (struct sockaddr *)&sock_name, sizeof(sock_name))) == (-1)) {
     perror ("UdpSocket:sendto");
@@ -194,5 +194,4 @@ void UdpSocket::closeSock ()
     close (udp_sock);
     udp_sock = 0;
   }
-
 }

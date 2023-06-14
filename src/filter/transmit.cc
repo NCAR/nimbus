@@ -58,7 +58,7 @@ void sqlTransmit::sendString(const std::string& str)
   char timeStamp[64];
   strftime(timeStamp, sizeof(timeStamp), ISO8601_T, gmtime(&t));
 
-  sprintf(fName, "%s/%s_nimbus_start_%s.gz", dir, _aircraft.c_str(), timeStamp);
+  snprintf(fName, MAXPATHLEN, "%s/%s_nimbus_start_%s.gz", dir, _aircraft.c_str(), timeStamp);
   }
 
   gzFile gzfd = gzopen(fName, "wb");

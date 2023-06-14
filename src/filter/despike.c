@@ -53,7 +53,7 @@ void LogDespikeInfo()
   {
     if (nSpikesRAW[i] > 0)
     {
-      sprintf(buffer, "%s: %ld spikes removed with slope exceeding %f\n",
+      snprintf(buffer, 8192, "%s: %ld spikes removed with slope exceeding %f\n",
 	raw_spike[i]->name, nSpikesRAW[i], raw_spike[i]->SpikeSlope);
 
       LogMessage(buffer);
@@ -99,7 +99,7 @@ static void check1Hz(var_base *varp, NR_TYPE SpikeSlope, size_t *counter)
   {
     this_rec[varp->SRstart] = floatNAN;
     (*counter)++;
-    sprintf(buffer, "Despike: %s, deltas %g %g - slope=%g\n", varp->name,dir1,dir2,SpikeSlope);
+    snprintf(buffer, 8192, "Despike: %s, deltas %g %g - slope=%g\n", varp->name,dir1,dir2,SpikeSlope);
     LogThisRecordMsg(this_rec, buffer);
   }
 
@@ -209,7 +209,7 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 
       if (ex < nPoints)
       {
-        sprintf(buffer, "Despike: %s, delta %g - slope=%g, point = %g, nPoints=%ld, pos=%ld\n",
+        snprintf(buffer, 8192, "Despike: %s, delta %g - slope=%g, point = %g, nPoints=%ld, pos=%ld\n",
 		vp->name, dir1, SpikeSlope, this_rec[sx+1], ex-sx-1, i);
         LogThisRecordMsg(this_rec, buffer);
 

@@ -32,11 +32,11 @@ void OpenLogFile()
   char tmp[MAXPATHLEN];
 
   MakeProjectFileName(tmp, LOGFILE);
-  sprintf(logFileName, "%s.%d", tmp, getpid());
+  snprintf(logFileName, MAXPATHLEN, "%s.%d", tmp, getpid());
 
   if ((LogFile = fopen(logFileName, "w")) == NULL)
   {
-    sprintf(buffer, "Unable to create %s\n", logFileName);
+    snprintf(buffer, 8192, "Unable to create %s\n", logFileName);
     LogMessage(buffer);
   }
 
@@ -80,7 +80,7 @@ void CloseLogFile()
   strcpy(buffer, logFileName);
   char tmp[MAXPATHLEN], *p = strrchr(buffer, '.');
 
-  sprintf(tmp, "_%s.%s",
+  snprintf(tmp, MAXPATHLEN, "_%s.%s",
           cfg.ProcessingRate() == Config::HighRate ? "HRT" : "LRT",
           cfg.FlightNumber().c_str());
   strcpy(p, tmp);
@@ -88,7 +88,7 @@ void CloseLogFile()
   if (rename(logFileName, buffer) == ERR)
   {
     char msg[512];
-    sprintf(msg,	"\n>> Can't rename logFile: %s to %s.\n",
+    snprintf(msg, 128, "\n>> Can't rename logFile: %s to %s.\n",
 			logFileName, buffer);
     LogMessage(msg);
     fprintf(stderr, msg);

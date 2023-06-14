@@ -90,7 +90,7 @@ void GetUserTimeIntervals() /* From TimeSliceWindow	*/
     struct tm *start = gmtime(&UserBtim[nTimeIntervals]);
 
     // Reset the FlightDate in case we moved the start time past midnight.
-    sprintf(buffer, "%02d/%02d/%d", start->tm_mon+1, start->tm_mday, start->tm_year+1900);
+    snprintf(buffer, 8192, "%02d/%02d/%d", start->tm_mon+1, start->tm_mday, start->tm_year+1900);
     cfg.SetFlightDate(buffer);
 
     sscanf(ep, "%02d:%02d:%02d", &ft.tm_hour, &ft.tm_min, &ft.tm_sec);
@@ -264,7 +264,7 @@ int CheckForTimeGap(const void *ADShdr, int initMode)
       else
         LogMessage("Advancing past odd-ball time stamp:\n");
 
-      sprintf(buffer,
+      snprintf(buffer, 8192,
         "  previous time = %02d:%02d:%02d\n       odd time = %02d:%02d:%02d\n",
 	pft->tm_hour, pft->tm_min, pft->tm_sec,
 	nft->tm_hour, nft->tm_min, nft->tm_sec);
@@ -277,7 +277,7 @@ int CheckForTimeGap(const void *ADShdr, int initMode)
       nft = gmtime(&newTime);
     }
 
-    sprintf(	buffer, "    advanced to = %02d:%02d:%02d\n",
+    snprintf(	buffer, 128, "    advanced to = %02d:%02d:%02d\n",
 		nft->tm_hour, nft->tm_min, nft->tm_sec);
     LogMessage(buffer);
 
@@ -294,7 +294,7 @@ int CheckForTimeGap(const void *ADShdr, int initMode)
     pft = gmtime(&prevTime);
     nft = gmtime(&newTime);
 
-    sprintf(buffer, "Time break of %ld seconds ending @ %02d:%02d:%02d, filling in with MISSING_VALUE.\n",
+    snprintf(buffer, 8192, "Time break of %ld seconds ending @ %02d:%02d:%02d, filling in with MISSING_VALUE.\n",
 	newTime - prevTime - 1, nft->tm_hour, nft->tm_min, nft->tm_sec);
     LogMessage(buffer);
 
@@ -332,7 +332,7 @@ int CheckForTimeGap(const void *ADShdr, int initMode)
    */
   if (newTime <= UserEtim[i] || UserEtim[i] == END_OF_TAPE)
   {
-    sprintf(buffer, "Break in time sequence of %ld seconds, ", newTime-prevTime);
+    snprintf(buffer, 8192, "Break in time sequence of %ld seconds, ", newTime-prevTime);
     LogMessage(buffer);
 
     LogMessage("adding new time interval.\n");
@@ -376,7 +376,7 @@ void UpdateTime(const NR_TYPE *record)
   EtimeInt[currentTimeSegment][1] = minute;
   EtimeInt[currentTimeSegment][2] = second;
 
-  sprintf(buffer, "%02d:%02d:%02d", hour, minute, second);
+  snprintf(buffer, 8192, "%02d:%02d:%02d", hour, minute, second);
 
   if (cfg.Interactive() && second == 0)
   {
@@ -404,7 +404,7 @@ void FormatTimeSegmentsForOutputFile(char *buff)
     if (BtimeInt[i][0] == NEW_SEG)
       BtimeInt[i][0] = 0;
 
-    sprintf(temp, "%02d:%02d:%02d-%02d:%02d:%02d",
+    snprintf(temp, 32, "%02d:%02d:%02d-%02d:%02d:%02d",
 		BtimeInt[i][0], BtimeInt[i][1], BtimeInt[i][2],
 		EtimeInt[i][0], EtimeInt[i][1], EtimeInt[i][2]);
 

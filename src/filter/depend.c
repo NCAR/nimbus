@@ -55,7 +55,7 @@ void ReadDependencies()
     {
       VDBVar *vdb_var = vardb->search_var(dp->name);
       if (vdb_var)
-        sprintf(buffer, "%s\t%s", dp->name,
+        snprintf(buffer, 8192, "%s\t%s", dp->name,
 		vdb_var->get_attribute(VDBVar::DEPENDENCIES).c_str());
     }
     else
@@ -70,7 +70,7 @@ void ReadDependencies()
 
     if (strlen(buffer) == 0)
     {
-      sprintf(buffer, "%s has no dependencies, turning off.\n", name);
+      snprintf(buffer, 8192, "%s has no dependencies, turning off.\n", name);
       LogMessage(buffer);
       dp->Output = false;
       dp->compute = (void(*)(void *))smissval;
@@ -164,7 +164,7 @@ static void setupDependencies(bool set_depends)
 
           if (DependIndexLookup(dp, j, set_depends) == ERR)
           {
-            sprintf(buffer, DependMsg, name, dp->depend[j]);
+            snprintf(buffer, 8192, DependMsg, name, dp->depend[j]);
             LogMessage(buffer);
             dp->Output = false;
             dp->compute = (void(*)(void *))smissval;

@@ -65,7 +65,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
   {
     if (!ProductionSetup)
     {
-      sprintf(buffer, "LoadSetup: Can't open %s.", file);
+      snprintf(buffer, 8192, "LoadSetup: Can't open %s.", file);
       HandleError(buffer);
       return;
     }
@@ -77,7 +77,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
     FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);
 
 
-  sprintf(&buffer[500], "Loading setup file: %s\n", file);
+  snprintf(&buffer[500], 256, "Loading setup file: %s\n", file);
   LogMessage(&buffer[500]);
 
 
@@ -161,7 +161,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       {
         char	tmp[64];
 
-        sprintf(tmp, "LoadSetup: can't find %s.\n", target);
+        snprintf(tmp, 64, "LoadSetup: can't find %s.\n", target);
         LogMessage(tmp);
         continue;
       }
@@ -177,7 +177,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       {
         char	tmp[64];
 
-        sprintf(tmp, "LoadSetup: can't find %s.\n", target);
+        snprintf(tmp, 64, "LoadSetup: can't find %s.\n", target);
         LogMessage(tmp);
         continue;
       }
@@ -233,7 +233,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
     else
     {
       char msg[200];
-      sprintf(msg, "Invalid keyword [%s] found in setup file, ignoring.\n",
+      snprintf(msg, 128, "Invalid keyword [%s] found in setup file, ignoring.\n",
 	target);
       LogMessage(msg);
       continue;
@@ -276,7 +276,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
   if ((fp = fopen(file, "w+")) == NULL)
   {
-    sprintf(&buffer[500], "Can't create %s.", file);
+    snprintf(&buffer[500], 256, "Can't create %s.", file);
     HandleError(&buffer[500]);
     return;
   }
