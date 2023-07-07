@@ -165,10 +165,6 @@ void initAKRD(var_base *varp)
         akrd_coeff.push_back(4.6049);	// Cooper memo 8/15/2014; with QCF
         akrd_coeff.push_back(18.4376);
         akrd_coeff.push_back(6.7646);
-
-//        akrd_coeff.push_back(4.422);	// CONTRAST specific, get into Defaults file.
-//        akrd_coeff.push_back(20.58);
-//        akrd_coeff.push_back(1.717);
       }
       break;
 
