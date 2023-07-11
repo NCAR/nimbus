@@ -195,16 +195,15 @@ void sconcv(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void svmr(DERTBL *varp)
 {
-  NR_TYPE vmr_vxl = floatNAN, h2o_conc_vxl, atx, ps;
+  NR_TYPE dry_vmr = floatNAN, ewv, psx;
 
-  h2o_conc_vxl = GetSample(varp, 0);
-  ps = GetSample(varp, 1) * 100.0;	// hPa -> Pascal
-  atx = GetSample(varp, 2) + Kelvin;
+  ewv = GetSample(varp, 0);
+  psx = GetSample(varp, 1);
 
-  if (h2o_conc_vxl > 1.0)
-    vmr_vxl = h2o_conc_vxl / (ps / Boltzmann / atx) * 1.0e12;
+  if ((psx - ewv) != 0.0)
+    dry_vmr = ewv / (psx - ewv) * 1.0e6;
 
-  PutSample(varp, vmr_vxl);
+  PutSample(varp, dry_vmr);
 
 }	/* END SVMR */
 
