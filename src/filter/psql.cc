@@ -550,7 +550,8 @@ PostgreSQL::WriteSQLvolts(const std::string & timeStamp)
   for (it = _ratesTables.begin(); it != _ratesTables.end(); ++it)
   {
     /// @todo should the LRT_TABLE be in the rateTableMap?
-    if (it->second == LRT_TABLE)
+    // Do not do tables above 1000hz, we only timestamp to millisecond
+    if (it->second == LRT_TABLE || it->first > 1000)
       continue;
 
     maxRate = std::max(maxRate, it->first);
