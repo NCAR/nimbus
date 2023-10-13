@@ -359,9 +359,13 @@ GetADSFileList(const std::string& adsFileName)
   closedir(dir);
 
   std::set<std::string>::iterator it;
-  for (it = fileList.begin(); it != fileList.end(); ++it)
+  for (it = fileList.begin(); it != fileList.end(); )
+  {
     if ((*it).compare(adsFileName) < 0)
-      fileList.erase(*it);
+      it = fileList.erase(it);
+    else
+      ++it;
+  }
 
   for (it = fileList.begin(); it != fileList.end(); ++it)
     printf("%s\n", (*it).c_str());
