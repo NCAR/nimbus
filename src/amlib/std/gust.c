@@ -87,11 +87,10 @@ void initGust(var_base *varp)
   memset(pitch0, 0, sizeof(pitch0));
   memset(thdg0, 0, sizeof(thdg0));
 
-  if (strcmp(varp->name, "WI") == 0)
-    boom_str = "IRS_BOOM_LEN";
-  else
-    boom_str = "GPS_BOOM_LEN";
-
+  /* Boom length is the distrance from the tip of the radome to the IRS.
+   * If we ever start getting heading & pitch from GPS, then use GPS_BOOM_LEN.
+   */
+  boom_str = "IRS_BOOM_LEN";
   boomln[varp->ProbeCount] = GetBoomLength(boom_str);
 
   /* Since each aircraft traditionally only had one gust system, the boomlength is
