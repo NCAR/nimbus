@@ -149,7 +149,7 @@ void RealTimeLoop3()
   int nExpected = syncRecReader->getNumValues();
 
   unsigned int nloop = 0;
-  for (;;)
+  for (cntr = 0; ; ++cntr)
   {
     ++nloop;
     DLOGT("rtloop3", ("rtloop3: begin cycle %d", nloop));
@@ -205,13 +205,13 @@ void RealTimeLoop3()
       ncFile->WriteNetCDF();
 
     // This typically produces SRT netCDF in real-time.  Not used at this time.
-    if (cfg.OutputNetCDF())
+    if (cfg.OutputNetCDF() && (cntr % 30) == 0)
       ncFile->Sync();
 
     /* Check every 20 seconds to see if we are lagging more than 10 seconds
      * behind the system clock.
      */
-    if (cfg.WarnTimeLags() && (++cntr % 20) == 0)
+    if (cfg.WarnTimeLags() && (cntr % 20) == 0)
     {
       time_t sys_time = time(0);
 
