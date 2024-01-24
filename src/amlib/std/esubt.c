@@ -13,7 +13,7 @@ DESCRIPTION:	ESUBT function prior to 2011was based on the Goff-Gratch formula
 		("Trans. Am.  Soc. Heat. Vent. Eng.," Vol. 52, pp. 95-121, 1946)
 		for computing vapor pressure over a plane water surface.  After
 		2011 Murphy and Koop below is used.
-		
+
 		Prior to 2011, the code included the enhancement factor of Buck
 		("J. Appl. Meteorol.," Vol. 20, pp. 1527-1532, 1981).
 
@@ -151,7 +151,7 @@ void sew(DERTBL *varp)
 
     double Tk = GetSample(varp, 0) + Kelvin;
     double psxc = GetSample(varp, 1);
- 
+
     // fw() From Murphy and Koop, 2005.  Enhancement factor.  See esubt.c
     e = WaterVaporPressure(Tk) * fw(Tk, psxc);
     if (varp->nDependencies > 2)
@@ -170,9 +170,10 @@ void sedpc(DERTBL *varp)
 {
   NR_TYPE dpxc = GetSample(varp, 0);
   NR_TYPE psxc = GetSample(varp, 1);
- 
+
   PutSample(varp, (NR_TYPE)esubt(dpxc, psxc));
 }
+
 /* -------------------------------------------------------------------- */
 void scavpe(DERTBL *varp)
 // Dew point correction for pressure in housing from Al Cooper's 12 Oct 2011

@@ -29,7 +29,7 @@ void atfInit(var_base *varp)
 }
 
 /* -------------------------------------------------------------------- */
-/* Implement Mach number dependent recovery factor per Al Cooper's 8 Oct 2014 
+/* Implement Mach number dependent recovery factor per Al Cooper's 8 Oct 2014
  * memo with constants per Cooper 14 Oct 2014 memo. */
 double unheatedRecoveryFactor(double mach)
 {
@@ -43,7 +43,7 @@ void satf(DERTBL * varp)
   NR_TYPE rt = GetSample(varp, 0);
   NR_TYPE mach = GetSample(varp, 1);
   NR_TYPE recovery = unheatedRecoveryFactor(mach);
-	
+
   if (rt < -Kelvin)
     rt  = -Kelvin;
 

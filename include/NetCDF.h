@@ -33,8 +33,6 @@ public:
   void	Close();
 
 
-
-
 protected:
 
   int	writeBlank(int varid, size_t start[], size_t count[], int OutputRate);
@@ -50,7 +48,6 @@ protected:
   void	putGlobalAttribute(const char attrName[], const float *value);
   void	putGlobalAttribute(const char attrName[], const char *value);
   void	putGlobalAttribute(const char attrName[], const std::string value);
-
 
 
   int _ncid;
