@@ -277,6 +277,12 @@ void suflwc(DERTBL *varp)	// UHSAS corrected flow.
     }
   }
 
+  if (varp->Units.find("ccm", 1, 3) != std::string::npos)
+  {
+    // Convert ccm to ccs
+    flow /= 60.0;
+  }
+
   flowc = flow * (ups*10.0 / psxc) * (atx + Kelvin) / 305.0;
 
   PutSample(varp, flowc);
