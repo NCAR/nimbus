@@ -226,12 +226,15 @@ void scuhsas(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void suflwc(DERTBL *varp)	// UHSAS corrected flow.
 {
-  NR_TYPE flow, ups, psxc, atx, flowc;
+  NR_TYPE flow, ups, psxc, atx, ubtmp = 305.0, flowc;
 
   flow	= GetSample(varp, 0);
   ups	= GetSample(varp, 1);	// kPa; factor of 10 in calculations converts to hPa
   psxc	= GetSample(varp, 2);
   atx	= GetSample(varp, 3);
+  if (varp->nDependencies == 5)
+    ubtmp = GetSample(varp, 4);	// Block temperature, starting /w UHSASG
+
 
   if (flow < 0.0)	// basic check.
     flow = 0.0;
@@ -283,7 +286,15 @@ void suflwc(DERTBL *varp)	// UHSAS corrected flow.
     flow /= 60.0;
   }
 
-  flowc = flow * (ups*10.0 / psxc) * (atx + Kelvin) / 305.0;
+  if (varp->SerialNumber.compare("UHSAS011") == 0)	// Wyoming
+    flowc = flow * ( (ubtmp/ups) / (298.15/101.325) );	// atx needs to be UTMP in DependTable
+  else
+  if (varp->Units.compare(0, 3, "scc") == 0)
+    flowc = flow * (StdPress / psxc) * (atx + Kelvin) / 298.15;	// sccs
+  else
+    // This should be the default
+    flowc = flow * (ups*10.0 / psxc) * (atx + Kelvin) / ubtmp;	// vccs
+
 
   PutSample(varp, flowc);
 }
