@@ -216,8 +216,10 @@ Time follows the recomendations set forth in the <a href="http://cfconventions.o
         int Time(Time) ;
                 Time:long_name = "time of measurement" ;
                 Time:standard_name = "time" ;
-                Time:units = "seconds since 2004-08-02 16:46:11 +0000" ;
+                Time:units = "seconds since 2004-08-02 00:00:00 +0000" ;
                 Time:strptime_format = "seconds since %F %T %z" ;
+
+RAF sets the Time:units to midnight prior to take-off and then the values of Time are seconds since midnight.  This helps with correlation of NASA Ames and ICARTT data formats.
 </pre>
 
 <p>
