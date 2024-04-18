@@ -75,7 +75,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 The goal is to support synchronous time series including the following properties:
 <p>
 <ul>
-<li>Both scalar and vector variables.
+<li>Both scalar and histogram variables.
 <li>Different sample rates among variables
 </ul>
 <p>
@@ -88,15 +88,10 @@ raw packed data files from the NCAR C-130 and GV are 2-3 GB, and unpacked with
 no data reduction would be twice that size.  Files reduced to 1 sample
 per second (sps) are typically 100-150 MB.
 <p>
-<h4>1.0.1 Vector data</h4>
-Instruments which measure particle size distributions produce histograms or
-vector data.  These instruments include the suite of PMS-1D probes, the RDMA
-and quantitative data reduction from the PMS-2D probes.
-<p>
-<b>Note:</b> For <b>all</b> size-distributions (PMS1D, PMS2D, RDMA) the
-zeroth or first (depending on how you count) bin is undefined, do not use
-this value.  Attributes for the various size distribution variables should
-include <kbd class="att">FirstBin</kbd> and <kbd class="att">LastBin</kbd>.
+<h4>1.0.1 Histogram data</h4>
+Instruments which measure particle size distributions produce histograms These
+instruments include the suite of PMS-1D probes, the RDMA and quantitative data
+reduction from the PMS-2D probes.
 <p>
 <h4>1.0.2 Multi-rate files</h4>
 RAF's standard data product is a netCDF file where all measurements are
@@ -144,8 +139,7 @@ Flight types used by RAF are "ff", "tf", and "rf".
 
 <h3><a name="dtype">2 Data types</a></h3>
 
-All data are stored using type <kbd>float</kbd>, except for <b>base_time</b> which is
-of type <kbd>int</kbd>.
+All data are stored using type <kbd>float</kbd>.
 <p>
 
 <!--------------------------------------------------------------------------- ABS -->
@@ -166,10 +160,10 @@ mounting location on the aircraft.
 e.g.,<br>
 <div class="example">
 
-<span class="runin">AFSSP_RPO</span>,
-<span class="runin">CFSSP_RPO</span>,
-<span class="runin">PLWC_RPO</span>,
-<span class="runin">CONCF_RPO</span>
+<span class="runin">AFSSP_RPO</span><br>
+<span class="runin">CFSSP_RPO</span><br>
+<span class="runin">PLWC_RPO</span><br>
+<span class="runin">CONCF_RPO</span><p>
 all belong to the same intrument.
 </div>
 <p>
@@ -179,7 +173,7 @@ In our files RPO stands for "Right Pod Outboard".
 Dimension names we use are:
 <ul>
 <li><kbd>sps#</kbd> for variable data rate (sps1, sps5, sps25, sps1000, etc.)
-<li><kbd>Vector#</kbd> for vector lengths (Vector16, Vector30, etc.)
+<li><kbd>Vector#</kbd> for histogram lengths (Vector16, Vector30, etc.)
 </ul>
 although I don't believe it matters what they are called.
 <p>
@@ -188,11 +182,11 @@ although I don't believe it matters what they are called.
 
 <h3><a name="dims">4 Dimensions</a></h3>
 <h4>4.1 First dimension - Time</h4>
-<p><b>Time</b> is the <b>unlimited dimension</b>, and every variable (except
-<b>base_time</b>) has the <b>Time</b> dimension.  No more than one record
-is to be written per second; all high-rate data are to be contained "per
-record", though data averaged down slower than 1 sps may be written (e.g.,
-when you have 1 sample every 10 seconds).
+<p><b>Time</b> is the <b>unlimited dimension</b>, and most every variable
+has the <b>Time</b> dimension.  No more than one record is to be written
+per second; all subsamples are to be contained in the record, though data
+averaged down slower than 1 sps may be written (e.g., when you have 1
+sample every 10 seconds).
 <p>
 <h4>4.2 Second dimension - data rate</h4>
 The second dimension, if present, represents the number of samples
@@ -200,7 +194,7 @@ per second.  The size of this dimension will vary according to the output
 rate of the variable (e.g., RAF uses 1, 5, 10, 25, 50, 250, and 1000).
 If the dimension does not exist, then there is only one sample for the second.
 <p>
-<h4>4.3 Third dimension - vector length</h4>
+<h4>4.3 Third dimension - histogram length</h4>
 The third dimension, if present, signifies a histogram and is the length of the
 array.  (This will be present only for array data).
 <p>
@@ -211,7 +205,8 @@ array.  (This will be present only for array data).
 
 http://www.cfconventions.org/.
 <h4>5.1 Time</h4>
-Time follows the recomendations set forth in the <a href="http://cfconventions.org/latest.html">CF conventions</a> section 4.4.
+Time follows the recomendations set forth in the <a href="http://cfconventions.org/latest.html">CF conventions</a> section 4.4.  This always has one dimension, the Time dimension.  It is assumed that subsamples, dimension two in a variable, are evenly spaced.
+
 <pre class="CDL">
         int Time(Time) ;
                 Time:long_name = "time of measurement" ;
@@ -544,7 +539,7 @@ Research Aviation Facility<br>
 <hr>
 <font size=2>
 Last update:
-Tue Dec 13 15:40:33 MST 2022
+Thu Apr 18 07:00:00 MDT 2024
 </font>
 </body>
 </html>
