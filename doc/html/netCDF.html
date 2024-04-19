@@ -273,14 +273,21 @@ value.  <kbd class="att">missing_value</kbd> (pre 1998 spelled <kbd class="att">
                 :geospatial_vertical_positive = "up" ;
                 :geospatial_vertical_units = "m" ;
                 :wind_field = "WSC WDC WIC" ;
-                :landmarks = "39.9088 -105.117 jeffco" ;
+                :landmarks = "39.9088 -105.117 BJC, 40.536 -104.8206 radar" ;
                 :Categories = "Position,Thermodynamic,Aircraft State,Atmos. State,Liquid Water,Uncorr\'d Raw,Wind,PMS Probe,Housekeeping,Chemistry,Radiation,Non-Standard" ;
                 :time_coverage_start = "2021-06-05T11:54:29 +0000" ;
                 :time_coverage_end = "2021-06-05T22:09:16 +0000" ;
 </pre>
 <p>
-<kbd class="att">*_coordinate</kbd> is required starting with version 1.3.  These
-are the aircrafts "best" position variables.<br>
+<kbd class="att">ConventionVersion</kbd> is the RAF nimbus conventions versions number.
+<p>
+<kbd class="att">RepositoryStatus</kbd> and <kbd class="att">ProjectDirectoryStatus</kbd>, if present, indicate files that were used but not commited into github.  Results may not be reproducable.
+<p>
+<kbd class="att">*_coordinate</kbd> is required starting with version 1.3.  These are the aircrafts "best" position variables.<br>
+<p>
+<kbd class="att">wind_field</kbd> lists the variables comprising the 3D wind field.  Wind Speed, Wind Direction, and Vertical Wind Speed respectively.
+<p>
+<kbd class="att">landmarks</kbd> is a comma separated list of relevant locations on a map.  Each landmark comprises three fields, "latitude longitude label".
 
 <h4>6.2 Variable attributes</h4>
 <p>All variables contain the basic attributes <kbd class="att">units</kbd>,
@@ -539,7 +546,7 @@ Research Aviation Facility<br>
 <hr>
 <font size=2>
 Last update:
-Thu Apr 18 07:00:00 MDT 2024
+Thu Apr 19 07:00:00 MDT 2024
 </font>
 </body>
 </html>
