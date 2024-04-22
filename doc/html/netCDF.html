@@ -205,7 +205,7 @@ array.  (This will be present only for array data).
 
 http://www.cfconventions.org/.
 <h4>5.1 Time</h4>
-Time follows the recomendations set forth in the <a href="http://cfconventions.org/latest.html">CF conventions</a> section 4.4.  This always has one dimension, the Time dimension.  It is assumed that subsamples, dimension two in a variable, are evenly spaced.
+Time follows the recomendations set forth in the <a href="http://cfconventions.org/latest.html">CF conventions</a> section 4.4.  This always has one dimension, the Time dimension.  It is assumed that subsamples, dimension two in a variable, are evenly spaced.  Data that are averaged down to 1hz, the timestamp is the mid-point of the second (i.e. it is the average of all the data that was acquired during that second).
 
 <pre class="CDL">
         int Time(Time) ;
@@ -292,19 +292,27 @@ value.  <kbd class="att">missing_value</kbd> (pre 1998 spelled <kbd class="att">
 <h4>6.2 Variable attributes</h4>
 <p>All variables contain the basic attributes <kbd class="att">units</kbd>,
 <kbd class="att">long_name</kbd>, and <kbd class="att">_FillValue</kbd>
-(<kbd class="att">missing_value</kbd> is being deprecated).  In addition
-we provide some other attributes; not all are used for every variable:
+(<kbd class="att">missing_value</kbd> is being deprecated).
+<p>
+Every variable will have either <kbd class="att">SampledRate</kbd> or
+<kbd class="att">Dependencies</kbd>, this is how you can determine if it is a raw
+vs. derived (calculated) variable.
+<p>
+In addition we provide some other attributes; not all are used for every variable:
 <p>
 <kbd class="att">standard_name</kbd> we have adopted the CF
 <a href="http://cfconventions.org/latest.html">CF conventions</a> section 3.3
 use of standard_name where applicable.
 <p>
 <kbd class="att">SampledRate</kbd> is the rate (sps) at which the variable was
-sampled onboard the aircraft.  This does not apply to derived variables.
+sampled onboard the aircraft.  This does not apply to derived variables.  All
+variables recorded by the data acquistion system will have this attribute.  All
+derived variables will not.
 <p>
 <kbd class="att">DataQuality</kbd> attempts to inform the user of the quality
 of these data.  Some values are <kbd>Bad</kbd>, <kbd>Preliminary</kbd> and
-<kbd>Good</kbd>
+<kbd>Good</kbd>.  Data distributed in the field will always be set to
+<kbd>Preliminary</kbd>.
 <p>
 <kbd class="att">Category</kbd> Since a file can contain hundreds of variables
 with not very descriptive names, this is provided to help create sub-lists of
@@ -316,8 +324,8 @@ analog/digital group.  <b>These values have already been applied!</b>  They
 are present for documentation.
 <p>
 <kbd class="att">Dependencies</kbd> are the input variables that were used to
-produce this derived value.  Like <kbd class="att">CalibrationCoefficients</kbd>
-, these are present for documentation.
+produce this derived (calculated) variable.  Like <kbd class="att">CalibrationCoefficients</kbd>
+, these are present for documentation.  All derived variables will have this attribute.
 <p>
 For processing purposes, variables in <b>our</b> files are organized into two
 sorted lists.  The first sorted list consists of raw sampled variables.  These
