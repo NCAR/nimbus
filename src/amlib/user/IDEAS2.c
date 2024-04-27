@@ -13,7 +13,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2002
 #include "nimbus.h"
 #include "amlib.h"
 
-static const NR_TYPE Tzero = 273.0;
+static const NR_TYPE Tzero = Kelvin;
 //static NR_TYPE	cal[] = { 58.915, 33.57, 1.0 };
 static NR_TYPE	supersat, conc;
 

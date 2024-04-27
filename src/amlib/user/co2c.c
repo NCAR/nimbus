@@ -46,7 +46,7 @@ void sco2c(DERTBL *varp)
 	fx = x * (0.1362 + x * (2.008e-5 + 2.029e-9 * x));
 
 	/* co2 concentration calculation - 308.11 is licor std. cal. temp. */
-	PutSample(varp, fx * (xco2t + 273.0) / 308.11);
+	PutSample(varp, fx * (xco2t + Kelvin) / 308.11);
 
 }	/* END SCO2C */
 

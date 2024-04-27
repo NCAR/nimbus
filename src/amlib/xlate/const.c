@@ -22,10 +22,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2012
 
 const double Kelvin = 273.15;
 
-// Reference pressure for US standard atmosphere (hPa)
+// Reference pressure for US standard atmosphere (hPa).
 const double StdPress = 1013.25;
 
-// Reference temperature in a standard atmosphere at sea level..
+// Reference temperature in a standard atmosphere at sea level.
 const double Tr = 15.0 + Kelvin;
 
 /* Molecular weight dry air (kg/kmol-1)
