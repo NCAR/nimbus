@@ -124,14 +124,24 @@ void smissval(DERTBL *varp)
 void sone(DERTBL *varp)
 {
   PutSample(varp, 1.0);
-
-}	/* END SONE */
+}
 
 /* -------------------------------------------------------------------- */
 void szero(DERTBL *varp)
 {
   PutSample(varp, 0.0);
+}
 
-}	/* END SZERO */
+/* -------------------------------------------------------------------- */
+void sStdP(DERTBL *varp)
+{
+  PutSample(varp, 820.0);
+}
+
+/* -------------------------------------------------------------------- */
+void sStdT(DERTBL *varp)
+{
+  PutSample(varp, 21.0);
+}
 
 /* END CONST.C */

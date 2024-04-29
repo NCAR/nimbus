@@ -1028,6 +1028,8 @@
 	"RATIO",	NULL,		NULL,		sratio,
 	"ZERO",		NULL,		NULL,		szero,
 	"ONE",		NULL,		NULL,		sone,
+	"STDP",		NULL,		NULL,		sStdP,
+	"STDT",		NULL,		NULL,		sStdT,
 #
 #	CVI
 #
