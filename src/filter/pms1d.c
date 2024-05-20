@@ -269,6 +269,7 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
   char	*p;
   float	cellSize[300];
   bool	warnMidPoints = false;
+  const char *cstr;
 
   /* If not PMS1D, then bail out. */
   if ((varp->ProbeType & 0xff000000) != 0x80000000 && (varp->ProbeType & 0xff000000) != 0x10000000)
@@ -316,26 +317,26 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
     {
       if (varp->Length < 64)
       {
-        strcpy(buffer, "2D buffers with more than 8 seconds elapsed time or fewer than 20 particles.");
-        nc_put_att_text(ncid, cvarid, "Rejected", strlen(buffer), buffer);
+        cstr = "2D buffers with more than 8 seconds elapsed time or fewer than 20 particles.";
+        nc_put_att_text(ncid, cvarid, "Rejected", strlen(cstr), cstr);
       }
 
       if (strstr(varp->name, "1D"))
       {
-        const char * s = "Entire In";
-        nc_put_att_text(ncid, cvarid, "ParticleAcceptMethod", strlen(s), s);
+        cstr = "Entire In";
+        nc_put_att_text(ncid, cvarid, "ParticleAcceptMethod", strlen(cstr), cstr);
       }
 
       if (thisIs2Dnot1D(varp->name))
       {
-        const char * s = "Error";
+        cstr = "Error";
         float f;
 
         if (cfg.TwoDProcessingMethod() == Config::Center_In)
-          s = "Center In";
+          cstr = "Center In";
         if (cfg.TwoDProcessingMethod() == Config::Reconstruction)
-          s = "Reconstruction";
-        nc_put_att_text(ncid, cvarid, "ParticleAcceptMethod", strlen(s), s);
+          cstr = "Reconstruction";
+        nc_put_att_text(ncid, cvarid, "ParticleAcceptMethod", strlen(cstr), cstr);
 
         f = cfg.TwoDAreaRejectRatio();
         nc_put_att_float(ncid, cvarid, "ParticleAreaRejectionRatio", NC_FLOAT, 1, &f);
@@ -360,8 +361,10 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
 
     nBins = getCellSizes(varp, cellSize);
     nc_put_att_float(ncid, cvarid, "CellSizes", NC_FLOAT, nBins, cellSize);
-    nc_put_att_text(ncid, cvarid, "CellSizeUnits", 11, "micrometers");
-    nc_put_att_text(ncid, cvarid, "CellSizeNote", 43, "CellSizes are lower bin limits as particle size.");
+    cstr = "micrometers";
+    nc_put_att_text(ncid, cvarid, "CellSizeUnits", strlen(cstr), cstr);
+    cstr = "CellSizes are lower bin limits as particle size";
+    nc_put_att_text(ncid, cvarid, "CellSizeNote", strlen(cstr), cstr);
 
     if (cellSize[0] == 0.0)
       warnMidPoints = true;

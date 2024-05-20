@@ -358,14 +358,15 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     if (lag != 0)
     {
+      const char *cstr = "milliseconds";
       nc_put_att_int(_ncid, rp->varid, "TimeLag", NC_INT, 1, &lag);
-      nc_put_att_text(_ncid, rp->varid, "TimeLagUnits", 13, "milliseconds");
+      nc_put_att_text(_ncid, rp->varid, "TimeLagUnits", strlen(cstr), cstr);
     }
 
     if (cfg.Despiking() && rp->SpikeSlope != 0.0)
       nc_put_att_float(_ncid, rp->varid, "DespikeSlope", NC_FLOAT, 1, &rp->SpikeSlope);
 
-    nc_put_att_text(_ncid, rp->varid, "DataQuality", strlen(rp->DataQuality)+1,
+    nc_put_att_text(_ncid, rp->varid, "DataQuality", strlen(rp->DataQuality),
 		rp->DataQuality);
 
     if (rp->cof.size() > 0)
@@ -453,7 +454,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     addCommonVariableAttributes(dp);
 
-    nc_put_att_text(_ncid, dp->varid, "DataQuality", strlen(dp->DataQuality)+1,
+    nc_put_att_text(_ncid, dp->varid, "DataQuality", strlen(dp->DataQuality),
 		dp->DataQuality);
 
     snprintf(buffer, 8192, "%zu", dp->nDependencies);
@@ -463,7 +464,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       strcat(buffer, dp->depend[j]);
     }
 
-    nc_put_att_text(_ncid, dp->varid, "Dependencies", strlen(buffer)+1,buffer);
+    nc_put_att_text(_ncid, dp->varid, "Dependencies", strlen(buffer),buffer);
 
     if (dp->Modulo)
     {
@@ -1120,12 +1121,12 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
     char temp[32];
     strcpy(temp, var->CategoryList[0].c_str());
     if ( strcmp(temp, "None") )
-      nc_put_att_text(_ncid, var->varid, "Category", strlen(temp)+1, temp);
+      nc_put_att_text(_ncid, var->varid, "Category", strlen(temp), temp);
   }
 
   if (var->SerialNumber.length() > 0)
     nc_put_att_text(_ncid, var->varid, "SerialNumber",
-	var->SerialNumber.length()+1, var->SerialNumber.c_str());
+	var->SerialNumber.length(), var->SerialNumber.c_str());
 
 }	/* END ADDCOMMONVARIABLEATTRIBUTES */
 
@@ -1191,7 +1192,7 @@ void NetCDF::putGlobalAttribute(const char attrName[], const float *value)
 
 void NetCDF::putGlobalAttribute(const char attrName[], const char *value)
 {
-  nc_put_att_text(_ncid, NC_GLOBAL, attrName, strlen(value)+1, value);
+  nc_put_att_text(_ncid, NC_GLOBAL, attrName, strlen(value), value);
 }
 
 void NetCDF::putGlobalAttribute(const char attrName[], const std::string value)

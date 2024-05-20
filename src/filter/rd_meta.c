@@ -40,11 +40,11 @@ void ReadMetaData(int ncid)
 
     if ((index = SearchTable(raw, var)) != ERR)
       nc_put_att_text(	ncid, raw[index]->varid, attr_name,
-		strlen(attr_value)+1, attr_value);
+		strlen(attr_value), attr_value);
 
     if ((index = SearchTable(derived, var)) != ERR)
       nc_put_att_text(	ncid, derived[index]->varid, attr_name,
-		strlen(attr_value)+1, attr_value);
+		strlen(attr_value), attr_value);
   }
 
   FreeTextFile(meta);
