@@ -19,6 +19,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2018
 static const size_t MAX_ASAS = 2;
 static const int MAX_BINS = 40;
 
+// Changed from 294.15 C to 298.15 C on 9/13/01 per DCRogers.
+static NR_TYPE StdTemperature = 298.15;
+
 static size_t FIRST_BIN[MAX_ASAS], LAST_BIN[MAX_ASAS], SampleRate[MAX_ASAS];
 
 static NR_TYPE	total_concen[MAX_ASAS], disp[MAX_ASAS], dbar[MAX_ASAS];
@@ -71,6 +74,10 @@ void casasInit(var_base *varp)
     HandleFatalError(buffer);
     }
   LAST_BIN[probeNum] = atoi(p);
+
+  // Flow cals and std temp changed in 2024 starting with CAESAR.
+  if ((p = GetPMSparameter(serialNumber, "STD_TEMP")) != NULL)
+    StdTemperature = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "PULSE_WIDTH")) == NULL)
     dt[probeNum] = 0.0;
@@ -233,8 +240,7 @@ void spflwc(DERTBL *varp)	// PCASP / SPP-200 corrected flow.
   if (flow < 0.0)	// basic check.
     flow = 0.0;
 
-  // Changed from 294.15 C to 298.15 C on 9/13/01 per DCRogers.
-  flowc = flow * (StdPress / psxc) * (atx + Kelvin) / 298.15;
+  flowc = flow * (StdPress / psxc) * (atx + Kelvin) / StdTemperature;
 
   PutSample(varp, flowc);
 }
