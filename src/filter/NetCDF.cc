@@ -274,15 +274,15 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
   nc_def_var(_ncid, "Time", NC_LONG, 1, dims, &_timeVarID);
   strcpy(buffer, "time of measurement");
-  nc_put_att_text(_ncid, _timeVarID, "long_name", strlen(buffer)+1, buffer);
+  nc_put_att_text(_ncid, _timeVarID, "long_name", strlen(buffer), buffer);
   strcpy(buffer, "time");
-  nc_put_att_text(_ncid, _timeVarID, "standard_name", strlen(buffer)+1, buffer);
+  nc_put_att_text(_ncid, _timeVarID, "standard_name", strlen(buffer), buffer);
 
   if (cfg.isADS2())
   {
     nc_def_var(_ncid, "time_offset", NC_FLOAT, 1, dims, &_timeOffsetID);
     strcpy(buffer, "Seconds since base_time.");
-    nc_put_att_text(_ncid, _timeOffsetID, "long_name", strlen(buffer)+1, buffer);
+    nc_put_att_text(_ncid, _timeOffsetID, "long_name", strlen(buffer), buffer);
   }
 
 
@@ -1023,10 +1023,10 @@ void NetCDF::writeTimeUnits()
 printf("%s\n", asctime(&_startFlight));
   tmp.tm_hour = tmp.tm_min = tmp.tm_sec = 0;
   strftime(buffer, 256, format, &tmp);
-  nc_put_att_text(_ncid, _timeVarID, "units", strlen(buffer)+1, buffer);
-  nc_put_att_text(_ncid, _timeVarID, "strptime_format", strlen(format)+1, format);
+  nc_put_att_text(_ncid, _timeVarID, "units", strlen(buffer), buffer);
+  nc_put_att_text(_ncid, _timeVarID, "strptime_format", strlen(format), format);
   if (cfg.isADS2())
-    nc_put_att_text(_ncid, _timeOffsetID, "units", strlen(buffer)+1, buffer);
+    nc_put_att_text(_ncid, _timeOffsetID, "units", strlen(buffer), buffer);
 
 
   strftime(buffer, 256, ISO8601_Z, &_startFlight);
@@ -1092,16 +1092,16 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
 */
 
   strcpy(buffer, var->Units.c_str());
-  nc_put_att_text(_ncid, var->varid, "units", strlen(buffer)+1, buffer);
+  nc_put_att_text(_ncid, var->varid, "units", strlen(buffer), buffer);
 
   strcpy(buffer, var->LongName.c_str());
-  nc_put_att_text(_ncid, var->varid, "long_name", strlen(buffer)+1, buffer);
+  nc_put_att_text(_ncid, var->varid, "long_name", strlen(buffer), buffer);
 
   if (vdb_var)
   {
     std::string std_name = vdb_var->get_attribute(VDBVar::STANDARD_NAME);
     if (std_name.size() > 0)
-      nc_put_att_text(_ncid, var->varid, "standard_name", std_name.size()+1, std_name.c_str());
+      nc_put_att_text(_ncid, var->varid, "standard_name", std_name.size(), std_name.c_str());
 
     if (vdb_var->has_attribute(VDBVar::MIN_LIMIT) &&
 	vdb_var->has_attribute(VDBVar::MAX_LIMIT))
