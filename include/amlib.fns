@@ -1052,6 +1052,9 @@
 	"CVIFLAG",	NULL,		NULL,		scviflag,
 	"CVCFACTTDL",	NULL,		NULL,		scvcfacttdl,
 	"UFLAG_CVIU",	NULL,		NULL,		scviuflag,
+# SDI FLAG
+	"SDIQUAL",	NULL,		NULL,		ssdiFlag,
+
 #
 #	PMS 2d Probes
 #

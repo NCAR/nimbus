@@ -45,6 +45,7 @@ raz.c
 rdma.c
 rlwp.c
 sail.c
+sdi.c
 spefm.c
 turbulence.c
 xpsfdc.c
