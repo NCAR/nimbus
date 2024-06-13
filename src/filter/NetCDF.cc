@@ -121,7 +121,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
   ncopts = NC_VERBOSE;
 
-  if (nc_create(fileName, NC_CLOBBER, &_ncid) != NC_NOERR)
+  if (nc_create(fileName, NC_CLOBBER | NC_NETCDF4, &_ncid) != NC_NOERR)
   {
     HandleError("netcdf.c: Failed to create or open output file.");
   }
