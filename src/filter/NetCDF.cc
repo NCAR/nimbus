@@ -334,16 +334,29 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     if (rp->Length > 1)
     {
-      // Check to see if dimension exists.  If not, create it.
-      if (_vectorDimIDs.find(rp->Length) == _vectorDimIDs.end())
+      if (rp->SerialNumber.size() > 0)	// you should only ever come here once per serial number
+      {
+        int coord_dims[1];
+        nc_def_dim(_ncid, rp->SerialNumber.c_str(), rp->Length, &coord_dims[0]);
+        _vectorDimIDs[rp->SerialNumber] = coord_dims[0];
+        dims[2] = _vectorDimIDs[rp->SerialNumber];
+        status = nc_def_var(_ncid, rp->SerialNumber.c_str(), NC_FLOAT, 1, coord_dims, &rp->coord_dim_varid);
+        if (status != NC_NOERR)
+        {
+          fprintf(stderr, "CreateNetCDF: error, coord variable %s %s status = %d\n", rp->name, rp->SerialNumber.c_str(), status);
+          fprintf(stderr, "%s\n", nc_strerror(status));
+        }
+      }
+      else
       {
         char tmp[32];
-        snprintf(tmp, 32, "Vector%zu", rp->Length);
-        nc_def_dim(_ncid, tmp, rp->Length, &_vectorDimIDs[rp->Length]);
+        int dimID;
+        snprintf(tmp, 32, "histogram%zu", rp->Length);
+        nc_def_dim(_ncid, tmp, rp->Length, &dimID);
+        dims[2] = dimID;
       }
 
       ndims = 3;
-      dims[2] = _vectorDimIDs[rp->Length];
     }
 
 //printf("RAW: %s\n", rp->name);
@@ -434,15 +447,15 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     if (dp->Length > 1)
     {
       // Check to see if dimension exists.  If not, create it.
-      if (_vectorDimIDs.find(dp->Length) == _vectorDimIDs.end())
-        {
-        char tmp[32];
-        snprintf(tmp, 32, "Vector%zu", dp->Length);
-        nc_def_dim(_ncid, tmp, dp->Length, &_vectorDimIDs[dp->Length]);
-        }
+      if (_vectorDimIDs.find(dp->SerialNumber) == _vectorDimIDs.end())
+      {
+        int coord_dims[1] = { (int)dp->Length };
+        nc_def_dim(_ncid, dp->SerialNumber.c_str(), dp->Length, &_vectorDimIDs[dp->SerialNumber]);
+        nc_def_var(_ncid, dp->SerialNumber.c_str(), NC_FLOAT, 1, coord_dims, &dp->coord_dim_varid);
+      }
 
       ndims = 3;
-      dims[2] = _vectorDimIDs[dp->Length];
+      dims[2] = _vectorDimIDs[dp->SerialNumber];
     }
 
     status = nc_def_var(_ncid, dp->name, NC_FLOAT, ndims, dims, &dp->varid);

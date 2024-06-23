@@ -66,7 +66,8 @@ protected:
   // Rate, DimID
   std::map<int, int> _rateDimIDs;
   // VectorLen, DimID
-  std::map<int, int> _vectorDimIDs;
+  // SerialNumber, DimID
+  std::map<std::string, int> _vectorDimIDs;
 
   // Count of netcCDF write errors.
   size_t _errCnt;

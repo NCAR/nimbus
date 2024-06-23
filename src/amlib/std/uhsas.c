@@ -19,6 +19,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2023
 static const size_t MAX_UHSAS = 2;
 static const int MAX_BINS = 101;
 
+static const NR_TYPE StdTemperature = 298.15;
+static const NR_TYPE StdPressure = StdPress / 10.0;
+
 static NR_TYPE USCAT_THRESHOLD = 3.95;
 
 static size_t FIRST_BIN[MAX_UHSAS], LAST_BIN[MAX_UHSAS], SampleRate[MAX_UHSAS];
@@ -52,6 +55,7 @@ void cuhsasInit(var_base *varp)
     HandleFatalError(buffer);
     }
 
+printf("uhsas.c: UHSAS %s serial number %s.\n", varp->name, varp->SerialNumber.c_str());
   if (nProbes == MAX_UHSAS) {
     sprintf(buffer, "uhsas.c: Exceeded maximum number of UHSAS probes, change amlib.h.");
     HandleFatalError(buffer);
@@ -287,10 +291,10 @@ void suflwc(DERTBL *varp)	// UHSAS corrected flow.
   }
 
   if (varp->SerialNumber.compare("UHSAS011") == 0)	// Wyoming
-    flowc = flow * ( (ubtmp/ups) / (298.15/101.325) );	// atx needs to be UTMP in DependTable
+    flowc = flow * ( (ubtmp/ups) / (StdTemperature/StdPressure) );	// atx needs to be UTMP in DependTable
   else
   if (varp->depends[0]->Units.compare(0, 3, "scc") == 0)
-    flowc = flow * (StdPress / psxc) * (atx + Kelvin) / 298.15;	// sccs
+    flowc = flow * (StdPress / psxc) * (atx + Kelvin) / StdTemperature;	// sccs
   else
     // This should be the default
     flowc = flow * (ups*10.0 / psxc) * (atx + Kelvin) / ubtmp;	// vccs
