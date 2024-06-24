@@ -39,6 +39,7 @@ protected:
   void	markDependedByList(const char target[]), writeTimeUnits();
   void	clearDependedByList(), printDependedByList(), writeMinMax();
   void	addCommonVariableAttributes(const var_base *var), addLandmarks();
+  void  addVariableMetadata(const var_base *var);
 
   long	UTSeconds(double *record);
   void	SetBaseTime(double *record);

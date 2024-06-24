@@ -51,4 +51,22 @@ void ReadMetaData(int ncid)
 
 }	/* END READMETADATA */
 
+
+
+/* -------------------------------------------------------------------- */
+// These functions are not related to the above function....other than they deal with meatdata.
+
+void  AddToMetadata(var_base *varp, const char attr_name[], const char attr[])
+{
+  std::string key(attr_name), value(attr);
+  varp->metadata.push_back(Metadata(key, value));
+}
+
+
+void  AddToMetadata(var_base *varp, const char attr_name[], std::vector<float> values)
+{
+  std::string key(attr_name);
+  varp->metadata.push_back(Metadata(key, values));
+}
+
 /* END RD_META.C */

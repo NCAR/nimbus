@@ -60,6 +60,24 @@ typedef struct
 	std::string text;
 	} DEFAULT;
 
+class Metadata
+{
+  public:
+    Metadata(std::string name, std::string value)
+	: _attr_name(name), _attr_str(value) { }
+    Metadata(std::string name, std::vector<float> values)
+	: _attr_name(name), _attr_flt(values) { }
+
+    bool isString() const { return (_attr_str.size() > 0); }
+    bool isFloat() const { return (_attr_flt.size() > 0); }
+
+//  private:
+    std::string _attr_name;
+
+    std::string _attr_str;
+    std::vector<float> _attr_flt;
+};
+
 
 // Base for the RAWTBL & DERTBL.  Refactored Jan/05.
 class var_base
@@ -102,6 +120,9 @@ public:
   std::vector<std::pair<int, int> > blank_out;
 
   float min, max;	// Min and max for this variable over course run.
+
+  // Misc additional metadata to add to netCDF file.  Might replace the Defaults stuff...
+  std::vector<Metadata> metadata;
 };
 
 

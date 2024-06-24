@@ -408,6 +408,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 	 rp->ProbeType & PROBE_RDMA || rp->ProbeType & PROBE_CLMT))
       AddPMS1dAttrs(_ncid, rp);
 
+    addVariableMetadata(rp);
     CheckAndAddAttrs(_ncid, rp->varid, rp->name);
   }
 
@@ -489,6 +490,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       nc_put_att_float(_ncid, dp->varid, "modulus_range", NC_FLOAT, 2, mod);
     }
 
+    addVariableMetadata(dp);
     CheckAndAddAttrs(_ncid, dp->varid, dp->name);
     if (dp->compute == (void(*)(void*))sRefer ||
         dp->compute == (void(*)(void*))sReferAttack)
@@ -1143,6 +1145,22 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
 	var->SerialNumber.length(), var->SerialNumber.c_str());
 
 }	/* END ADDCOMMONVARIABLEATTRIBUTES */
+
+/* -------------------------------------------------------------------- */
+void NetCDF::addVariableMetadata(const var_base *var)
+{
+  for (size_t i = 0; i < var->metadata.size(); ++i)
+  {
+    const Metadata *mdp = &var->metadata[i];
+    if (mdp->isFloat())
+      nc_put_att_float(_ncid, var->varid, mdp->_attr_name.c_str(), NC_FLOAT,
+                mdp->_attr_flt.size(), &mdp->_attr_flt[0]);
+    else
+    if (mdp->isString())
+      nc_put_att_text(_ncid, var->varid, mdp->_attr_name.c_str(),
+                mdp->_attr_str.length(), mdp->_attr_str.c_str());
+  }
+}       /* END CHECKANDADDATTRS */
 
 /* -------------------------------------------------------------------- */
 void NetCDF::ProcessFlightDate()
