@@ -99,7 +99,7 @@ void initSSRD(var_base *varp)
     LogMessage(buffer);
   }
   else
-    AddToDefaults(varp->name, "CalibrationCoefficients", coeff);
+    AddToMetadata(varp, "CalibrationCoefficients", coeff);
 }
 
 /* -------------------------------------------------------------------- */

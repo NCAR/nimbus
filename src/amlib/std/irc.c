@@ -77,7 +77,7 @@ void initPyrgeometer(var_base *varp)
     LogMessage(buffer);
     cal.push_back(26.505);
     cal.push_back(-61.487);
-    AddToDefaults(dp->depend[1], name, cal);
+    AddToMetadata(dp->depends[1], name, cal);
   }
   else
   {

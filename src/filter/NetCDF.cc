@@ -490,11 +490,14 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       nc_put_att_float(_ncid, dp->varid, "modulus_range", NC_FLOAT, 2, mod);
     }
 
-    addVariableMetadata(dp);
     CheckAndAddAttrs(_ncid, dp->varid, dp->name);
     if (dp->compute == (void(*)(void*))sRefer ||
         dp->compute == (void(*)(void*))sReferAttack)
+    {
       CheckAndAddAttrs(_ncid, dp->varid, dp->depend[0]);
+      dp->metadata = dp->depends[0]->metadata;
+    }
+    addVariableMetadata(dp);
 
     if (dp->Length > 3 &&
 	(dp->ProbeType & PROBE_PMS2D || dp->ProbeType & PROBE_PMS1D ||
@@ -1160,7 +1163,7 @@ void NetCDF::addVariableMetadata(const var_base *var)
       nc_put_att_text(_ncid, var->varid, mdp->_attr_name.c_str(),
                 mdp->_attr_str.length(), mdp->_attr_str.c_str());
   }
-}       /* END CHECKANDADDATTRS */
+}       /* END ADDVARIABLEMETADATA */
 
 /* -------------------------------------------------------------------- */
 void NetCDF::ProcessFlightDate()

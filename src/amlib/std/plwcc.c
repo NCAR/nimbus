@@ -81,7 +81,7 @@ void plwccInit(var_base *varp)
   {
     std::vector<float> values;
     values.push_back(tWire[probe_index]);
-    AddToDefaults(varp->name, defaultName, values);
+    AddToMetadata(varp, defaultName, values);
   }
   else
     tWire[probe_index] = tmp[0];
@@ -91,7 +91,7 @@ void plwccInit(var_base *varp)
   {
     std::vector<float> values;
     values.push_back(dWire[probe_index]);
-    AddToDefaults(varp->name, defaultName, values);
+    AddToMetadata(varp, defaultName, values);
   }
   else
     dWire[probe_index] = tmp[0];
@@ -101,7 +101,7 @@ void plwccInit(var_base *varp)
   {
     std::vector<float> values;
     values.push_back(lWire[probe_index]);
-    AddToDefaults(varp->name, defaultName, values);
+    AddToMetadata(varp, defaultName, values);
   }
   else
     lWire[probe_index] = tmp[0];
@@ -111,7 +111,7 @@ void plwccInit(var_base *varp)
   {
     std::vector<float> values;
     values.push_back(tau_Nu[probe_index]);
-    AddToDefaults(varp->name, defaultName, values);
+    AddToMetadata(varp, defaultName, values);
   }
   else
     tau_Nu[probe_index] = (int)tmp[0];
@@ -121,7 +121,7 @@ void plwccInit(var_base *varp)
   {
     std::vector<float> values;
     values.push_back(cloud_conc_threshold);
-    AddToDefaults(varp->name, defaultName, values);
+    AddToMetadata(varp, defaultName, values);
   }
   else
     cloud_conc_threshold = tmp[0];
@@ -131,7 +131,7 @@ void plwccInit(var_base *varp)
   {
     std::vector<float> values;
     values.push_back(min_watt_threshold);
-    AddToDefaults(varp->name, defaultName, values);
+    AddToMetadata(varp, defaultName, values);
   }
   else
     min_watt_threshold = tmp[0];

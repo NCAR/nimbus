@@ -46,7 +46,7 @@ static NR_TYPE  cell_size[MAX_SPEC][maxBins],
 static size_t nProbes = 0;
 extern void setProbeCount(const char * location, int count);
 
-void addDOFtoAttrs(const var_base *varp, NR_TYPE eaw[], NR_TYPE dof[]);
+void addDOFtoAttrs(var_base *varp, NR_TYPE eaw[], NR_TYPE dof[]);
 void ReadPMSspecs(const char fileName[]);
 
 

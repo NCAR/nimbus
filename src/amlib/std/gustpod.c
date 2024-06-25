@@ -63,7 +63,7 @@ void GP_AKinit(var_base *varp)
     LogMessage(buffer);
   }
   else
-    AddToDefaults(varp->name, "CalibrationCoefficients", ak_coeff);
+    AddToMetadata(varp, "CalibrationCoefficients", ak_coeff);
 }
 
 void GP_SSinit(var_base *varp)
@@ -85,7 +85,7 @@ void GP_SSinit(var_base *varp)
     LogMessage(buffer);
   }
   else
-    AddToDefaults(varp->name, "CalibrationCoefficients", ss_coeff);
+    AddToMetadata(varp, "CalibrationCoefficients", ss_coeff);
 }
 
 /* -------------------------------------------------------------------- */

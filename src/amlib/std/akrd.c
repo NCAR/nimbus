@@ -45,7 +45,7 @@ static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
     LogMessage(buffer);
   }
   else
-    AddToDefaults(varp->name, "CalibrationCoefficients", c);
+    AddToMetadata(varp, "CalibrationCoefficients", c);
 
   return c;
 }
@@ -86,7 +86,7 @@ void initAKY(var_base *varp)
     LogMessage(buffer);
   }
   else
-    AddToDefaults(varp->name, "Coefficient C1", aky_c1);
+    AddToMetadata(varp, "Coefficient C1", aky_c1);
 
   if ((tmp = GetDefaultsValue("AKY_D", varp->name)) != NULL)
   {
@@ -99,7 +99,7 @@ void initAKY(var_base *varp)
     LogMessage(buffer);
   }
   else
-    AddToDefaults(varp->name, "Coefficient D", aky_d);
+    AddToMetadata(varp, "Coefficient D", aky_d);
 
 }
 

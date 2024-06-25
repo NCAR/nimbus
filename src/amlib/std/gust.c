@@ -112,7 +112,7 @@ void initGust(var_base *varp)
 
   std::vector<float> bl;
   bl.push_back(boomln[varp->ProbeCount]);
-  AddToDefaults(varp->name, "BoomLength", bl);
+  AddToMetadata(varp, "BoomLength", bl);
 }
 
 /* -------------------------------------------------------------------- */

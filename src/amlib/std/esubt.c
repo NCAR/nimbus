@@ -114,13 +114,13 @@ double esubt(double temperature, double pressure)
 /* -------------------------------------------------------------------- */
 void ewInit(var_base *varp)
 {
-  AddToAttributes(varp->name, "Method", "Murphy-Koop");
+  AddToMetadata(varp, "Method", "Murphy-Koop");
 }
 
 /* -------------------------------------------------------------------- */
 void edpcInit(var_base *varp)
 {
-  AddToAttributes(varp->name, "Method", "Goff-Gratch");
+  AddToMetadata(varp, "Method", "Goff-Gratch");
 }
 
 /* -------------------------------------------------------------------- */

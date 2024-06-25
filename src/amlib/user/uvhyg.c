@@ -51,7 +51,8 @@ void uvhInit(var_base *varp)
   if (cfg.ProjectName().compare("NOMADSS") == 0)	// NOMADSS only.
   {
     LogMessage("UVHygrometer: NOMADSS specific multiplier being applied to XSIGV.");
-    AddToAttributes("XSIGV_UVH", "NOTE", "NOMADSS specific: XSIGV is converted to g/cm3, multiplied by 3.3427e16 to convert to #/cm3");
+    AddToMetadata(((DERTBL*)varp)->depends[1],
+	"NOTE", "NOMADSS specific: XSIGV is converted to g/cm3, multiplied by 3.3427e16 to convert to #/cm3");
   }
 
 

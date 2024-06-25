@@ -5,8 +5,6 @@ OBJECT NAME:	rd_defs.c
 FULL NAME:	Read Defaults Object
 
 ENTRY POINTS:	ReadDefaultsFile()
-		AddToDefaults()		// array of floats
-		AddToAttributes()	// text/string
 		GetDefaultsValue()
 		CheckAndAddAttrs()
 		FreeDefaults()
@@ -102,40 +100,6 @@ float *GetDefaultsValue(const char target[], const char var[])
 }	/* END GETDEFAULTSVALUE */
 
 /* -------------------------------------------------------------------- */
-void AddToDefaults(const char varName[], const char attrName[],
-        const std::vector<float>& values)
-{
-  Defaults[nDefaults] = new DEFAULT;
-  Defaults[nDefaults]->Name = new char[strlen(attrName)+1];
-  strcpy(Defaults[nDefaults]->var, varName);
-  strcpy(Defaults[nDefaults]->Name, attrName);
-  Defaults[nDefaults]->Dirty = false;
-  Defaults[nDefaults]->Used = true;
-  Defaults[nDefaults]->Values = values;
-
-  ++nDefaults;
-}
-
-/* -------------------------------------------------------------------- */
-void AddToAttributes(const char varName[], const char attrName[],
-        const std::string & text)
-{
-  /* Shoe-horn text attributes from the amlib constructors into the netCDF
-   * file variable attributes.  This is the string/text version of the above
-   * AddToDefaults()
-   */
-  Defaults[nDefaults] = new DEFAULT;
-  Defaults[nDefaults]->Name = new char[strlen(attrName)+1];
-  strcpy(Defaults[nDefaults]->var, varName);
-  strcpy(Defaults[nDefaults]->Name, attrName);
-  Defaults[nDefaults]->Dirty = false;
-  Defaults[nDefaults]->Used = true;
-  Defaults[nDefaults]->text = text;
-
-  ++nDefaults;
-}
-
-/* -------------------------------------------------------------------- */
 void CheckAndAddAttrs(int fd, int varid, char name[])
 {
   /* Called by netCDF.c:CreateNetCDF file to add any of the defaults to
@@ -151,7 +115,7 @@ void CheckAndAddAttrs(int fd, int varid, char name[])
       else
       if (Defaults[i]->text.length() > 0)
         nc_put_att_text(fd, varid, Defaults[i]->Name,
-		Defaults[i]->text.length()+1, Defaults[i]->text.c_str());
+		Defaults[i]->text.length(), Defaults[i]->text.c_str());
     }
   }
 }	/* END CHECKANDADDATTRS */

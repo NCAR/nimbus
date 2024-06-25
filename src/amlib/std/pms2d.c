@@ -60,20 +60,17 @@ extern void setProbeCount(const char * location, int count);
 
 
 /* -------------------------------------------------------------------- */
-void addDOFtoAttrs(const var_base *varp, NR_TYPE eaw[], NR_TYPE dof[])
+void addDOFtoAttrs(var_base *varp, NR_TYPE eaw[], NR_TYPE dof[])
 {
   std::vector<float> dof_v, eaw_v;
-  char name[64];
-  strcpy(name, varp->name);
-  name[0] = 'C';
 
   for (size_t i = 0; i < varp->Length; ++i)
     eaw_v.push_back(eaw[i]);
-  AddToDefaults(name, "EffectiveAreaWidth", eaw_v);
+  AddToMetadata(varp, "EffectiveAreaWidth", eaw_v);
 
   for (size_t i = 0; i < varp->Length; ++i)
     dof_v.push_back(dof[i]);
-  AddToDefaults(name, "DepthOfField", dof_v);
+  AddToMetadata(varp, "DepthOfField", dof_v);
 }
 
 /* -------------------------------------------------------------------- */

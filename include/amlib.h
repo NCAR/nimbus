@@ -105,10 +105,6 @@ void  AddToMetadata(var_base *varp, const char attr_name[], const char attr[]);
 void  AddToMetadata(var_base *varp, const char attr_name[], std::vector<float> values);
 
 float *GetDefaultsValue(const char target[], const char var[]);
-void AddToDefaults(const char varName[], const char attrName[],
-	const std::vector<float>& values);
-void AddToAttributes(const char varName[], const char attrName[],
-	const std::string & text);
 
 void decodeADS2analog(RAWTBL *varp, const void *input, NR_TYPE *output);
 
