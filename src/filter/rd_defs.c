@@ -46,6 +46,7 @@ void FreeDefaults()
     delete Defaults[i];
   }
 }
+
 /* -------------------------------------------------------------------- */
 void readDefaultsFile(const std::string file)
 {

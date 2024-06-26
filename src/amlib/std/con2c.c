@@ -16,22 +16,31 @@ static NR_TYPE  C1_EAW = 0.8, C2_EAW = 0.8; /* PMS-2D Effective Area Width (MM^2
 void conc2cInit(var_base *varp)
 {
   float  *tmp;
+  std::vector<float> eaw;
 
   if ((tmp = GetDefaultsValue("C1_EAW", varp->name)) == NULL)
-    {
+  {
     sprintf(buffer, "Value set to %f in AMLIB function conc2cInit.\n", C1_EAW);
     LogMessage(buffer);
-    }
+  }
   else
     C1_EAW = tmp[0];
 
   if ((tmp = GetDefaultsValue("C2_EAW", varp->name)) == NULL)
-    {
+  {
     sprintf(buffer, "Value set to %f in AMLIB function conc2cInit.\n", C2_EAW);
     LogMessage(buffer);
-    }
+  }
   else
     C2_EAW = tmp[0];
+
+
+  if (varp->name[5] == '1')
+    eaw.push_back(C1_EAW);
+  else
+    eaw.push_back(C2_EAW);
+
+  AddToMetadata(varp, "EffectiveAreaWidth", eaw);
 
 }  /* END CON2CINIT */
 
@@ -47,10 +56,10 @@ void scon2c(DERTBL *varp)
        installed by Ron Ruth  18 October 2001 */
 
   if (tasx < 30.0)
-    {
+  {
     sdwrc = 0.0;
     tasx  = 30.0;
-    }
+  }
 
   if (varp->name[5] == '1')
     EAW = C1_EAW;

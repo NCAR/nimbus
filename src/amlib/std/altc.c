@@ -86,6 +86,7 @@ void sgaltc(DERTBL *varp)
         }
       else
         Tau = tmp[0];
+     AddToMetadata(varp, "GALT_TAU", { &Tau, &Tau[1] });
  */
 
       if (FeedBack == LOW_RATE_FEEDBACK)
@@ -239,6 +240,7 @@ void sggaltc(DERTBL *varp)
         }
       else
         Tau = tmp[0];
+     AddToMetadata(varp, "GALT_TAU", { &Tau, &Tau[1] });
  */
 
       if (FeedBack == LOW_RATE_FEEDBACK)

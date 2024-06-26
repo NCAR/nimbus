@@ -16,6 +16,8 @@ static NR_TYPE  P1_EAW = 3.2, P2_EAW = 3.2;
 void conc2pInit(var_base *varp)
 {
   float  *tmp;
+  std::vector<float> eaw;
+
   if ((tmp = GetDefaultsValue("P1_EAW", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function conc2pInit.\n", P1_EAW);
@@ -32,6 +34,13 @@ void conc2pInit(var_base *varp)
   else
     P2_EAW = tmp[0];
 
+  if (varp->name[5] == '1')
+    eaw.push_back(P1_EAW);
+  else
+    eaw.push_back(P2_EAW);
+
+  AddToMetadata(varp, "EffectiveAreaWidth", eaw);
+
 }  /* END CON2PINIT */
 
 /* -------------------------------------------------------------------- */
@@ -46,11 +55,11 @@ void scon2p(DERTBL *varp)
        installed by Ron Ruth  18 October 2001 */
 
   if (tasx < 30.0)
-    {
+  {
     sdwrp = 0.0;
     tasx  = 30.0;
-    }
-  
+  }
+
   if (varp->name[5] == '1')
     EAW = P1_EAW;
   else

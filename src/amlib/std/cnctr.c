@@ -29,12 +29,15 @@ void cnctrInit(var_base *varp)
   float  *tmp;
 
   if ((tmp = GetDefaultsValue("DIV", varp->name)) == NULL)
-    {
+  {
     sprintf(buffer, "Value set to %f in AMLIB function cnctrInit.\n", DIV);
     LogMessage(buffer);
-    }
+  }
   else
+  {
     DIV = tmp[0];
+    AddToMetadata(varp, "DIV", { tmp, tmp+1 });
+  }
 
   std::vector<float> values;
   values.push_back(StdTemperature);

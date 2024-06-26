@@ -35,12 +35,33 @@ void GP_AKinit(var_base *varp)
   ak_coeff.push_back(0.0);
   ak_coeff.push_back(0.0);
 
+  if ((tmp = GetDefaultsValue("GP_AK_COEFF", varp->name)) != NULL)
+  {
+    ak_coeff.clear();
+    ak_coeff.push_back(tmp[0]);
+    ak_coeff.push_back(tmp[1]);
+    ak_coeff.push_back(tmp[2]);
+    ak_coeff.push_back(tmp[3]);
+    sprintf(buffer,"AK cals set to %f, %f, %f,%f in AMLIB function initGust.\n", ak_coeff[0], ak_coeff[1], ak_coeff[2], ak_coeff[3]);
+    LogMessage(buffer);
+  }
+
+  AddToMetadata(varp, "Coefficients", ak_coeff);
+}
+
+void GP_AKCinit(var_base *varp)
+{
   // sakc_gp(); This is used to adjust AK_GP to AKRD.  Used when you want to replace
   // aircraft attack (AKRD) with this attack.  e.g. Radome freeze-up.
   akc_coeff.clear();
   akc_coeff.push_back(3.73);
   akc_coeff.push_back(1.1);
 
+  AddToMetadata(varp, "Coefficients", akc_coeff);
+}
+
+void GP_TASinit(var_base *varp)
+{
   // tas coefficients from the WindUncertainty document, Al Cooper.  Feb/2015
   tas_coeff.clear();
   tas_coeff.push_back(1.2251);
@@ -52,18 +73,7 @@ void GP_AKinit(var_base *varp)
   tas_coeff.push_back(0.1492);
   tas_coeff.push_back(1.2385);
 
-  if ((tmp = GetDefaultsValue("GP_AK_COEFF", varp->name)) != NULL)
-  {
-    ak_coeff.clear();
-    ak_coeff.push_back(tmp[0]);
-    ak_coeff.push_back(tmp[1]);
-    ak_coeff.push_back(tmp[2]);
-    ak_coeff.push_back(tmp[3]);
-    sprintf(buffer,"AK cals set to %f, %f, %f,%f in AMLIB function initGust.\n", ak_coeff[0], ak_coeff[1], ak_coeff[2], ak_coeff[3]);
-    LogMessage(buffer);
-  }
-  else
-    AddToMetadata(varp, "CalibrationCoefficients", ak_coeff);
+  AddToMetadata(varp, "Coefficients", tas_coeff);
 }
 
 void GP_SSinit(var_base *varp)
@@ -84,8 +94,8 @@ void GP_SSinit(var_base *varp)
     sprintf(buffer,"SS cals set to %f,%f in AMLIB function initGust.\n", ss_coeff[0], ss_coeff[1]);
     LogMessage(buffer);
   }
-  else
-    AddToMetadata(varp, "CalibrationCoefficients", ss_coeff);
+
+  AddToMetadata(varp, "Coefficients", ss_coeff);
 }
 
 /* -------------------------------------------------------------------- */
@@ -122,7 +132,7 @@ void sak_gp(DERTBL *varp)	// Attack
   NR_TYPE adif = GetSample(varp, 0);
   NR_TYPE qc = GetSample(varp, 1);
   NR_TYPE ps = GetSample(varp, 2);
-  
+
   NR_TYPE ratio = adif / qc;
   NR_TYPE QoverP = qc / ps;
   NR_TYPE mach = sqrt(XMAC2(QoverP));
