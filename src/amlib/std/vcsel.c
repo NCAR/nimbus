@@ -22,11 +22,17 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2012
 enum { STRONG=83, DIRECT=68, WEAK=87 };
 
 static const int nCoeffs = 4;
-
+/*
 static double	P_COEFF_WEAK[nCoeffs], P_COEFF_DIRECT[nCoeffs], P_COEFF_STRONG[nCoeffs],
 		T_COEFF_WEAK[nCoeffs], T_COEFF_DIRECT[nCoeffs], T_COEFF_STRONG[nCoeffs],
 		LI_COEFF_WEAK[2][nCoeffs], LI_COEFF_DIRECT[2][nCoeffs], LI_COEFF_STRONG[2][nCoeffs],
 		ABS_COEFF_WEAK[nCoeffs], ABS_COEFF_DIRECT[nCoeffs], ABS_COEFF_STRONG[nCoeffs];
+*/
+static std::vector<float>
+		P_COEFF_WEAK, P_COEFF_DIRECT, P_COEFF_STRONG,
+		T_COEFF_WEAK, T_COEFF_DIRECT, T_COEFF_STRONG,
+		LI_COEFF_WEAK[2], LI_COEFF_DIRECT[2], LI_COEFF_STRONG[2],
+		ABS_COEFF_WEAK, ABS_COEFF_DIRECT, ABS_COEFF_STRONG;
 
 static double	ps_conv = 1.0;
 
@@ -35,7 +41,7 @@ static char flightDateString[32];
 
 /* -------------------------------------------------------------------- */
 static void readDefs(const char varName[], const char line[],
-	double P_COEFF[], double T_COEFF[], double LI_COEFF[][nCoeffs], double ABS_COEFF[])
+	std::vector<float> &P_COEFF, std::vector<float> &T_COEFF, std::vector<float> LI_COEFF[], std::vector<float> &ABS_COEFF)
 {
   float *tmp;
   char name[256];
@@ -43,57 +49,57 @@ static void readDefs(const char varName[], const char line[],
   sprintf(name, "VXL_T_%s", line);
   if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
-    sprintf(buffer, "%s value defaulting to %f in AMLIB function vcselInit.\n",
-		name, T_COEFF[0]);
+    sprintf(buffer, "%s value defaulting to 0 in AMLIB function vcselInit.\n",
+		name);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
-      T_COEFF[i] = tmp[i];
+      T_COEFF.push_back(tmp[i]);
 
   sprintf(name, "VXL_P_%s", line);
   if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
-    sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		name, P_COEFF[0], P_COEFF[1], P_COEFF[2]);
+    sprintf(buffer, "%s values defaulting to 0, 0, 0 in AMLIB function vcselInit.\n",
+		name);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
-      P_COEFF[i] = tmp[i];
+      P_COEFF.push_back(tmp[i]);
 
   sprintf(name, "VXL_LI_%s", line);
   if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
-    sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		name, LI_COEFF[0][0], LI_COEFF[0][1], LI_COEFF[0][2]);
+    sprintf(buffer, "%s values defaulting to 0, 0, 0 in AMLIB function vcselInit.\n",
+		name);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
-      LI_COEFF[0][i] = tmp[i];
+      LI_COEFF[0].push_back(tmp[i]);
 
   sprintf(name, "VXL_LILO_%s", line);
   if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
-    sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		name, LI_COEFF[1][0], LI_COEFF[1][1], LI_COEFF[1][2]);
+    sprintf(buffer, "%s values defaulting to 0, 0, 0 in AMLIB function vcselInit.\n",
+		name);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
-      LI_COEFF[1][i] = tmp[i];
+      LI_COEFF[1].push_back(tmp[i]);
 
   sprintf(name, "VXL_ABS_%s", line);
   if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
-    sprintf(buffer, "%s values defaulting to %f, %f, %f in AMLIB function vcselInit.\n",
-		name, ABS_COEFF[0], ABS_COEFF[1], ABS_COEFF[2]);
+    sprintf(buffer, "%s values defaulting to 0, 0, 0 in AMLIB function vcselInit.\n",
+		name);
     LogMessage(buffer);
   }
   else
     for (int i = 0; i < nCoeffs; ++i)
-      ABS_COEFF[i] = tmp[i];
+      ABS_COEFF.push_back(tmp[i]);
 
 
   // was briefly used, currently unused, check if cruft in 2014.
@@ -109,6 +115,24 @@ void vcselInit(var_base *varp)
   readDefs(varp->name, "DIRECT", P_COEFF_DIRECT, T_COEFF_DIRECT, LI_COEFF_DIRECT, ABS_COEFF_DIRECT);
   readDefs(varp->name, "WEAK", P_COEFF_WEAK, T_COEFF_WEAK, LI_COEFF_WEAK, ABS_COEFF_WEAK);
 
+  AddToMetadata(varp, "T_Strong", T_COEFF_STRONG);
+  AddToMetadata(varp, "P_Strong", P_COEFF_STRONG);
+  AddToMetadata(varp, "LI_Strong", LI_COEFF_STRONG[0]);
+  AddToMetadata(varp, "LILO_Strong", LI_COEFF_STRONG[1]);
+  AddToMetadata(varp, "ABS_Strong", ABS_COEFF_STRONG);
+
+  AddToMetadata(varp, "T_Direct", T_COEFF_DIRECT);
+  AddToMetadata(varp, "P_Direct", P_COEFF_DIRECT);
+  AddToMetadata(varp, "LI_Direct", LI_COEFF_DIRECT[0]);
+  AddToMetadata(varp, "LILO_Direct", LI_COEFF_DIRECT[1]);
+  AddToMetadata(varp, "ABS_Direct", ABS_COEFF_DIRECT);
+
+  AddToMetadata(varp, "T_Weak", T_COEFF_WEAK);
+  AddToMetadata(varp, "P_Weak", P_COEFF_WEAK);
+  AddToMetadata(varp, "LI_Weak", LI_COEFF_WEAK[0]);
+  AddToMetadata(varp, "LILO_Weak", LI_COEFF_WEAK[1]);
+  AddToMetadata(varp, "ABS_Weak", ABS_COEFF_WEAK);
+
   // Conversion factor from torr to hPa.
   if (((DERTBL *)varp)->depends[1]->Units.compare("torr") == 0)
     ps_conv = StdPress / 760;
@@ -118,7 +142,7 @@ void vcselInit(var_base *varp)
 /* -------------------------------------------------------------------- */
 void sconcv(DERTBL *varp)
 {
-  NR_TYPE *pCoeffs, *tCoeffs, *liCoeffs, *absCoeffs;
+  std::vector<float> pCoeffs, tCoeffs, liCoeffs, absCoeffs;
   NR_TYPE concv, p_coeff, t_coeff, li_coeff, abs_coeff, mr_raw, mr_corr;
   static int mode;
   int pregain;

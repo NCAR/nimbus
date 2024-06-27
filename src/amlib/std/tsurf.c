@@ -9,12 +9,15 @@ void initTsurf(var_base *varp)
   float  *tmp;
   if ((tmp = GetDefaultsValue("TSURF_CAL", varp->name)) == NULL)
   {
-    sprintf(buffer, "Value set to %f in AMLIB function initPsurf.\n", TSURF_CAL);
+    sprintf(buffer, "Value set to %f in AMLIB function initTsurf.\n", TSURF_CAL);
     LogMessage(buffer);
   }
   else
     TSURF_CAL = tmp[0];
 
+  std::vector<float> val;
+  val.push_back(TSURF_CAL);
+  AddToMetadata(varp, "AltitudeCal", val);
 }
 
 /* -------------------------------------------------------------------- */

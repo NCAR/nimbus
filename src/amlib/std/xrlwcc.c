@@ -29,6 +29,10 @@ void xrlwccInit(var_base *varp)
   else
     twire = tmp[0];
 
+  std::vector<float> val;
+  val.push_back(twire);
+  AddToMatadata(varp, "WireTemperature", val);
+
 }  /* END XRLWCCINIT */
 
 /* -------------------------------------------------------------------- */
@@ -45,12 +49,12 @@ void sxrlwcc(DERTBL *varp)
        installed by Ron Ruth  18 October 2001 */
 
   if (tasx < 30.0)
-    {
+  {
     plwc = 0.0;
     PutSample(varp, plwc);
-    }
+  }
   else
-    {
+  {
     PutSample(varp, kinglwcc(plwc, tasx, atx, psxc, twire));
-    }
+  }
 }
