@@ -36,7 +36,7 @@ static float _Wtg = 0.1;
 static int _LocHor = 5;
 
 // per-flight constants from the Defaults.<flight> files
-// @param CND0 float[] are the 'Cnd0' values from the REF file.  
+// @param CND0 float[] are the 'Cnd0' values from the REF file.
 // I believe that these are the "temperatures" of the target in each channel
 // in degrees C when the noise diode is on.  Comments in the VB code call
 // it the Noise Diode Temperature Fit Offset value.
@@ -50,49 +50,53 @@ static int _LocHor = 5;
 // @param gec2 float[] is the 'GEC(chan,2)' vector from the REF file
 // called Gain Equation Coefficients, this one is the linear coefficient
 // applied to the difference of the Mixer temperature minus the GOF above.
-static const int nCoeffs = 3;
-static float CND0[nCoeffs] = {1.0,1.0,1.0}, GOF[nCoeffs] = {1.0,1.0,1.0}, 
-             GEC1[nCoeffs] = {1.0,1.0,1.0}, GEC2[nCoeffs] = {1.0,1.0,1.0};
-char file[256]="/net/work/dev/jaa/raf/instruments/mtp/src/mtpbin/CSET/RCF/";
+static const int nChannels = 3;
+static std::vector<float> CND0 {1.0,1.0,1.0}, GOF {1.0,1.0,1.0},GEC1 {1.0,1.0,1.0}, GEC2 {1.0,1.0,1.0};
+
+static char file[256]="/net/work/dev/jaa/raf/instruments/mtp/src/mtpbin/CSET/RCF/";
 static const int numFlightLevels = 13;
 float flightLevelsKm[numFlightLevels] = {13.0,12.0,9.5,8.0,6.0,5.0,3.5,2.5,2.0,1.5,1.0,0.5,0.0};
 
 /* -------------------------------------------------------------------- */
 /* Read in constants from the defaults file.                            */
-static void readDefs(const char name[],float var[nCoeffs])
+static void readDefs(const char varName[], const char defName[], std::vector<float> &var)
 {
-
     float *tmp;
 
-    if ((tmp = GetDefaultsValue(name, name)) == NULL)
+// @TODO, seems the second name in this call needs to be the variable, so we should
+// be passing in (name, varp->name, vector<float>&
+    if ((tmp = GetDefaultsValue(defName, varName)) == NULL)
     {
-	sprintf(buffer, "%s value defaulting to %f %f %f in AMLIB function mtpInit.\n",
-                name, var[0], var[1], var[2]);
+	sprintf(buffer, "mtp.c:mtpInit %s value defaulting to %f %f %f.\n",
+                defName, var[0], var[1], var[2]);
         LogMessage(buffer);
     }
     else
     {
-      for (int i = 0; i < nCoeffs; ++i)
-        var[i] = tmp[i];
-      sprintf(buffer,"mtp.c: %s set to %f %f %f from Defaults file.\n", name,
+      var.clear();
+      for (int i = 0; i < nChannels; ++i)
+        var.push_back(tmp[i]);
+      sprintf(buffer,"mtp.c:mtpInit %s set to %f %f %f from Defaults file.\n", defName,
 	      var[0], var[1], var[2]);
-	LogMessage(buffer);
-    }    
+      LogMessage(buffer);
+    }
 }
 /* -------------------------------------------------------------------- */
 void mtpInit(var_base *varp)
 {
-    char name[256];
+    readDefs(varp->name, "CND0", CND0);
+    AddToMetadata(varp, "NoiseDiodeTemperatureOffset", CND0);
 
-    strcpy(name,"CND0");
-    readDefs(name,CND0);
-    strcpy(name,"GOF");
-    readDefs(name,GOF);
-    strcpy(name,"GEC1");
-    readDefs(name,GEC1);
-    strcpy(name,"GEC2");
-    readDefs(name,GEC2);
+    readDefs(varp->name, "GOF", GOF);
+    AddToMetadata(varp, "MixerTemperatureOffset", GOF);
+
+    readDefs(varp->name, "GEC1", GEC1);
+    AddToMetadata(varp, "GainOffset", GEC1);
+
+    readDefs(varp->name, "GEC2", GEC2);
+    AddToMetadata(varp, "GainSlope", GEC2);
 }
+
 /* -------------------------------------------------------------------- */
 /* Calibrate the MTP scans using constants that are written to the .CAL */
 /* file by the VB code for the flight in question.                      */
@@ -100,7 +104,7 @@ void mtpInit(var_base *varp)
 /* When the MTP instrument completes a scan of the atmosphere the scan  */
 /* counts are converted to Brightness Temperatures using this routine.  */
 void scal(DERTBL *varp)
-{  
+{
   float Gnd[NUM_CHANNELS];
   // For storing the rolling gain value - one value per channel
   float _Gain[NUM_CHANNELS];
