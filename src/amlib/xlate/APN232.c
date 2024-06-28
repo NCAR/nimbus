@@ -33,7 +33,7 @@ void xlhgm232(RAWTBL *varp, const void *p, NR_TYPE *output)
     sample = ntohs(input[i * varp->ADSoffset]) & 0xFFFE;
     out = sample;
 
-    if (toupper(varp->Units.c_str()[0]) == 'M')
+    if (toupper(varp->Units().c_str()[0]) == 'M')
       out *= FeetToMeters;
 
     if (status)

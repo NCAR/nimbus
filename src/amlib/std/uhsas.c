@@ -289,7 +289,7 @@ void suflwc(DERTBL *varp)	// UHSAS corrected flow.
     }
   }
 
-  if (varp->depends[0]->Units.find("ccm", 1, 3) != std::string::npos)
+  if (varp->depends[0]->Units().find("ccm", 1, 3) != std::string::npos)
   {
     // Convert ccm to ccs
     flow /= 60.0;
@@ -298,7 +298,7 @@ void suflwc(DERTBL *varp)	// UHSAS corrected flow.
   if (varp->SerialNumber.compare("UHSAS011") == 0)	// Wyoming
     flowc = flow * ( (ubtmp/ups) / (StdTemperature/StdPressure) );	// atx needs to be UTMP in DependTable
   else
-  if (varp->depends[0]->Units.compare(0, 3, "scc") == 0)
+  if (varp->depends[0]->Units().compare(0, 3, "scc") == 0)
     flowc = flow * (StdPress / psxc) * (atx + Kelvin) / StdTemperature;	// sccs
   else
     // This should be the default

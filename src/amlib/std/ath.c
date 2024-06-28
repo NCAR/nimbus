@@ -33,7 +33,7 @@ void athInit(var_base *varp)
 
   // We will use the HARCO variables regardless, so copy in Rosemount
   // C0/C1, if appropriate.
-  std::string s = ((DERTBL *)varp)->depends[0]->LongName;
+  std::string s = ((DERTBL *)varp)->depends[0]->LongName();
   std::transform(s.begin(), s.end(), s.begin(), ::tolower);
   if ( s.find("rosemount") != std::string::npos )
   {

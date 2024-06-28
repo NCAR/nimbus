@@ -406,8 +406,6 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 	(rp->ProbeType & PROBE_PMS2D || rp->ProbeType & PROBE_PMS1D ||
 	 rp->ProbeType & PROBE_RDMA || rp->ProbeType & PROBE_CLMT))
       AddPMS1dAttrs(_ncid, rp);
-
-    addVariableMetadata(rp);
   }
 
 
@@ -465,6 +463,12 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     }
 
 
+    if (dp->compute == (void(*)(void*))sRefer ||
+        dp->compute == (void(*)(void*))sReferAttack)
+    {
+      dp->metadata = dp->depends[0]->metadata;
+    }
+
     addCommonVariableAttributes(dp);
 
     nc_put_att_text(_ncid, dp->varid, "DataQuality", strlen(dp->DataQuality),
@@ -487,13 +491,6 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       mod[1] = (float)dp->Modulo->value[1];
       nc_put_att_float(_ncid, dp->varid, "modulus_range", NC_FLOAT, 2, mod);
     }
-
-    if (dp->compute == (void(*)(void*))sRefer ||
-        dp->compute == (void(*)(void*))sReferAttack)
-    {
-      dp->metadata = dp->depends[0]->metadata;
-    }
-    addVariableMetadata(dp);
 
     if (dp->Length > 3 &&
 	(dp->ProbeType & PROBE_PMS2D || dp->ProbeType & PROBE_PMS1D ||
@@ -1101,16 +1098,7 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
   float miss_val = (float)MISSING_VALUE;
   nc_put_att_float(_ncid, var->varid, "_FillValue", NC_FLOAT, 1, &miss_val);
 
-/* Once we support individual _FillValue in Q missing data routine, then use this line.
-  float fv = VarDB_GetFillValue(var->name);
-  ncattput(_ncid, var->varid, "_FillValue", NC_FLOAT, 1, &fv);
-*/
-
-  strcpy(buffer, var->Units.c_str());
-  nc_put_att_text(_ncid, var->varid, "units", strlen(buffer), buffer);
-
-  strcpy(buffer, var->LongName.c_str());
-  nc_put_att_text(_ncid, var->varid, "long_name", strlen(buffer), buffer);
+  addVariableMetadata(var);
 
   if (vdb_var)
   {
@@ -1155,7 +1143,6 @@ void NetCDF::addVariableMetadata(const var_base *var)
       nc_put_att_float(_ncid, var->varid, mdp->_attr_name.c_str(), NC_FLOAT,
                 mdp->_attr_flt.size(), &mdp->_attr_flt[0]);
     else
-    if (mdp->isString())
       nc_put_att_text(_ncid, var->varid, mdp->_attr_name.c_str(),
                 mdp->_attr_str.length(), mdp->_attr_str.c_str());
   }

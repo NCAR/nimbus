@@ -128,7 +128,7 @@ void sew(DERTBL *varp)
 {
   double e = floatNAN;
 
-  if (varp->depends[0]->Units.compare("#/cm3") == 0)
+  if (varp->depends[0]->Units().compare("#/cm3") == 0)
   {
     // E from Density.
 

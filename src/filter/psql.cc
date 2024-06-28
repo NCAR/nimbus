@@ -682,9 +682,9 @@ PostgreSQL::addVariableToDataBase(
    */
   entry << "INSERT INTO Variable_List VALUES ('" <<
 	var->name	<< "', '" <<
-	escape_string(var->Units)	<< "', '" <<
-	escape_string(var->AltUnits)	<< "', '" <<
-	escape_string(var->LongName)	<< "', '";
+	escape_string(var->Units())	<< "', '" <<
+	escape_string(var->AltUnits())	<< "', '" <<
+	escape_string(var->LongName())	<< "', '";
 
   if (var->SampleRate > 0)
     entry << RATE_TABLE_PREFIX << var->SampleRate;

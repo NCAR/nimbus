@@ -178,7 +178,7 @@ void scvcfacttdl(DERTBL *varp)
   static NR_TYPE previousTCN = Tr;	// 15C.
 
   // Convert to Kelvin, if not already.
-  if (varp->depends[2]->Units.find('C') != std::string::npos)
+  if (varp->depends[2]->Units().find('C') != std::string::npos)
     cvtcn += Kelvin;
 
   // Replicate previous samle if out of bounds (15C and 35C).

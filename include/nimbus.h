@@ -87,6 +87,7 @@ public:
   ~var_base();
 
   void addToMetadata(const char attr_name[], const char attr[]);
+  void addToMetadata(const char attr_name[], std::string attr);
   void addToMetadata(const char attr_name[], std::vector<float> values);
 
 
@@ -94,9 +95,12 @@ public:
 
   std::string SerialNumber;	// Probe Serial Number
 
-  std::string Units;
-  std::string AltUnits;	// Alternate units.
-  std::string LongName;
+  std::string Units() const;
+  std::string AltUnits() const;	// Alternate units.
+  std::string LongName() const;
+//  std::string Units;
+//  std::string AltUnits;	// Alternate units.
+//  std::string LongName;
   std::vector<std::string> CategoryList;
 
   int varid;		// NetCDF variable ID

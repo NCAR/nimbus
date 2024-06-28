@@ -134,7 +134,7 @@ void vcselInit(var_base *varp)
   varp->addToMetadata("ABS_Weak", ABS_COEFF_WEAK);
 
   // Conversion factor from torr to hPa.
-  if (((DERTBL *)varp)->depends[1]->Units.compare("torr") == 0)
+  if (((DERTBL *)varp)->depends[1]->Units().compare("torr") == 0)
     ps_conv = StdPress / 760;
 }
 
