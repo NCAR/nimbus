@@ -24,7 +24,7 @@ static NR_TYPE P3_FUSELAGE_PCORS[3] = { -0.046, -0.0265, 0.000087 };
 
 extern int	FlightDate[];
 
-NR_TYPE	recfb, recff, recfrh, recfw, recfra, recfrhGV[2];
+NR_TYPE	recff, recfrh, recfw, recfra;
 
 // Function pointers called by QC & PS functions (qcrc.c psfc.c, etc).
 NR_TYPE	(*pcorPSF)(NR_TYPE), (*pcorQCF)(NR_TYPE),
@@ -96,16 +96,11 @@ void InitAircraftDependencies()
   tfher1 = -1.7841;
   tfher2 = -1.4025;
 
-  // RECFB = Rosemount 102E2AL (boom) recovery factor
-  recfb = 0.95;
-
   // RECFF = Rosemount 102E2AL (fuselage) recovery factor
   recff = 0.985;
 
   // RECFRH= Rosemount 102E2AL (Heated) recovery factor
   recfrh = 0.985;
-  recfrhGV[0] = 0.985;
-  recfrhGV[1] = 0.985;
 
   // RECFW = Rosemount 102E2AL (wing) recovery factor
   recfw = 0.95;
@@ -252,7 +247,6 @@ void InitAircraftDependencies()
         pcorPSF	= pcorr5;
       }
 */
-      recfb	= 0.985;
       recfrh	= 0.985;
       tfher1	= -1.7244;
       tfher2	= -1.5989;
@@ -288,17 +282,6 @@ void InitAircraftDependencies()
       HandleFatalError(buffer);
   }
 
-  if ( (tmp = GetDefaultsValue("RECFRH", "INIT_AC")) )
-  {
-    LogMessage("initAC.c: RECFRH found in Defaults, using.");
-    recfrhGV[0] = tmp[0];
-    recfrhGV[1] = tmp[1];
-  }
-  if ( (tmp = GetDefaultsValue("RECFB", "INIT_AC")) )
-  {
-    LogMessage("initAC.c: RECFB found in Defaults, using.");
-    recfb = tmp[0];
-  }
 }	/* END INITAIRCRAFTDEPENDANCIES */
 
 /* Electra ------------------------------------------------------------ */
