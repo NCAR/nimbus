@@ -45,8 +45,7 @@ int	FlightDate[3];		// HACK: for amlib
 char	dateProcessed[64];	// For export to psql.cc
 
 
-void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetaData(int fd),
-	CheckAndAddAttrs(int fd, int varid, char name[]);
+void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetaData(int fd);
 
 extern "C" {
 void sRefer(DERTBL *), sReferAttack(DERTBL *);
@@ -409,7 +408,6 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       AddPMS1dAttrs(_ncid, rp);
 
     addVariableMetadata(rp);
-    CheckAndAddAttrs(_ncid, rp->varid, rp->name);
   }
 
 
@@ -490,11 +488,9 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       nc_put_att_float(_ncid, dp->varid, "modulus_range", NC_FLOAT, 2, mod);
     }
 
-    CheckAndAddAttrs(_ncid, dp->varid, dp->name);
     if (dp->compute == (void(*)(void*))sRefer ||
         dp->compute == (void(*)(void*))sReferAttack)
     {
-      CheckAndAddAttrs(_ncid, dp->varid, dp->depend[0]);
       dp->metadata = dp->depends[0]->metadata;
     }
     addVariableMetadata(dp);

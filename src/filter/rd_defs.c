@@ -101,27 +101,6 @@ float *GetDefaultsValue(const char target[], const char var[])
 }	/* END GETDEFAULTSVALUE */
 
 /* -------------------------------------------------------------------- */
-void CheckAndAddAttrs(int fd, int varid, char name[])
-{
-  /* Called by netCDF.c:CreateNetCDF file to add any of the defaults to
-   * the variable attributes.
-   */
-  for (size_t i = 0; i < nDefaults; ++i)
-  {
-    if (strcmp(name, Defaults[i]->var) == 0)
-    {
-      if (Defaults[i]->Values.size() > 0)
-        nc_put_att_float(fd, varid, Defaults[i]->Name, NC_FLOAT,
-		Defaults[i]->Values.size(), &Defaults[i]->Values[0]);
-      else
-      if (Defaults[i]->text.length() > 0)
-        nc_put_att_text(fd, varid, Defaults[i]->Name,
-		Defaults[i]->text.length(), Defaults[i]->text.c_str());
-    }
-  }
-}	/* END CHECKANDADDATTRS */
-
-/* -------------------------------------------------------------------- */
 static void process_line(char *line_p, FILE *fp)
 {
   size_t whichOne;
