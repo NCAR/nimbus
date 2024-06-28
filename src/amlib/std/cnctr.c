@@ -34,15 +34,15 @@ void cnctrInit(var_base *varp)
     LogMessage(buffer);
   }
   else
-  {
     DIV = tmp[0];
-    AddToMetadata(varp, "DIV", { tmp, tmp+1 });
-  }
+
+  if (DIV != 1.0)
+    varp->addToMetadata("DIV", { tmp, tmp+1 });
 
   std::vector<float> values;
   values.push_back(StdTemperature);
   // Add this to FCNC
-  AddToMetadata(((DERTBL *)varp)->depends[1], "std_temperature", values);
+  ((DERTBL *)varp)->depends[1]->addToMetadata("std_temperature", values);
 
 }  /* END CNCTRINIT */
 

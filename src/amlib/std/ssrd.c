@@ -35,7 +35,7 @@ void initSSRD(var_base *varp)
         c130_radome_ssn = (int)tmp[0];
         ssn = tmp[0];
       }
-      AddToMetadata(varp, "RadomeSerialNumber", { ssn, ssn + 1 });
+      varp->addToMetadata("RadomeSerialNumber", { ssn, ssn + 1 });
 
       if (FlightDate[2] < 1998)
       {
@@ -83,7 +83,7 @@ void initSSRD(var_base *varp)
         gv_radome_ssn = (int)tmp[0];
         ssn = tmp[0];
       }
-      AddToMetadata(varp, "RadomeSerialNumber", { ssn, ssn + 1 });
+      varp->addToMetadata("RadomeSerialNumber", { ssn, ssn + 1 });
 
       if (gv_radome_ssn == 1)
         coeff.push_back(0.1051);
@@ -106,7 +106,7 @@ void initSSRD(var_base *varp)
 	  coeff[0], coeff[1]);
     LogMessage(buffer);
   }
-  AddToMetadata(varp, "CalibrationCoefficients", coeff);
+  varp->addToMetadata("CalibrationCoefficients", coeff);
 }
 
 /* -------------------------------------------------------------------- */

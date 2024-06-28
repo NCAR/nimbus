@@ -115,23 +115,23 @@ void vcselInit(var_base *varp)
   readDefs(varp->name, "DIRECT", P_COEFF_DIRECT, T_COEFF_DIRECT, LI_COEFF_DIRECT, ABS_COEFF_DIRECT);
   readDefs(varp->name, "WEAK", P_COEFF_WEAK, T_COEFF_WEAK, LI_COEFF_WEAK, ABS_COEFF_WEAK);
 
-  AddToMetadata(varp, "T_Strong", T_COEFF_STRONG);
-  AddToMetadata(varp, "P_Strong", P_COEFF_STRONG);
-  AddToMetadata(varp, "LI_Strong", LI_COEFF_STRONG[0]);
-  AddToMetadata(varp, "LILO_Strong", LI_COEFF_STRONG[1]);
-  AddToMetadata(varp, "ABS_Strong", ABS_COEFF_STRONG);
+  varp->addToMetadata("T_Strong", T_COEFF_STRONG);
+  varp->addToMetadata("P_Strong", P_COEFF_STRONG);
+  varp->addToMetadata("LI_Strong", LI_COEFF_STRONG[0]);
+  varp->addToMetadata("LILO_Strong", LI_COEFF_STRONG[1]);
+  varp->addToMetadata("ABS_Strong", ABS_COEFF_STRONG);
 
-  AddToMetadata(varp, "T_Direct", T_COEFF_DIRECT);
-  AddToMetadata(varp, "P_Direct", P_COEFF_DIRECT);
-  AddToMetadata(varp, "LI_Direct", LI_COEFF_DIRECT[0]);
-  AddToMetadata(varp, "LILO_Direct", LI_COEFF_DIRECT[1]);
-  AddToMetadata(varp, "ABS_Direct", ABS_COEFF_DIRECT);
+  varp->addToMetadata("T_Direct", T_COEFF_DIRECT);
+  varp->addToMetadata("P_Direct", P_COEFF_DIRECT);
+  varp->addToMetadata("LI_Direct", LI_COEFF_DIRECT[0]);
+  varp->addToMetadata("LILO_Direct", LI_COEFF_DIRECT[1]);
+  varp->addToMetadata("ABS_Direct", ABS_COEFF_DIRECT);
 
-  AddToMetadata(varp, "T_Weak", T_COEFF_WEAK);
-  AddToMetadata(varp, "P_Weak", P_COEFF_WEAK);
-  AddToMetadata(varp, "LI_Weak", LI_COEFF_WEAK[0]);
-  AddToMetadata(varp, "LILO_Weak", LI_COEFF_WEAK[1]);
-  AddToMetadata(varp, "ABS_Weak", ABS_COEFF_WEAK);
+  varp->addToMetadata("T_Weak", T_COEFF_WEAK);
+  varp->addToMetadata("P_Weak", P_COEFF_WEAK);
+  varp->addToMetadata("LI_Weak", LI_COEFF_WEAK[0]);
+  varp->addToMetadata("LILO_Weak", LI_COEFF_WEAK[1]);
+  varp->addToMetadata("ABS_Weak", ABS_COEFF_WEAK);
 
   // Conversion factor from torr to hPa.
   if (((DERTBL *)varp)->depends[1]->Units.compare("torr") == 0)

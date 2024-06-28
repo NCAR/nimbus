@@ -46,7 +46,7 @@ void GP_AKinit(var_base *varp)
     LogMessage(buffer);
   }
 
-  AddToMetadata(varp, "Coefficients", ak_coeff);
+  varp->addToMetadata("Coefficients", ak_coeff);
 }
 
 void GP_AKCinit(var_base *varp)
@@ -57,7 +57,7 @@ void GP_AKCinit(var_base *varp)
   akc_coeff.push_back(3.73);
   akc_coeff.push_back(1.1);
 
-  AddToMetadata(varp, "Coefficients", akc_coeff);
+  varp->addToMetadata("Coefficients", akc_coeff);
 }
 
 void GP_TASinit(var_base *varp)
@@ -73,7 +73,7 @@ void GP_TASinit(var_base *varp)
   tas_coeff.push_back(0.1492);
   tas_coeff.push_back(1.2385);
 
-  AddToMetadata(varp, "Coefficients", tas_coeff);
+  varp->addToMetadata("Coefficients", tas_coeff);
 }
 
 void GP_SSinit(var_base *varp)
@@ -95,7 +95,7 @@ void GP_SSinit(var_base *varp)
     LogMessage(buffer);
   }
 
-  AddToMetadata(varp, "Coefficients", ss_coeff);
+  varp->addToMetadata("Coefficients", ss_coeff);
 }
 
 /* -------------------------------------------------------------------- */

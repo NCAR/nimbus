@@ -85,16 +85,16 @@ static void readDefs(const char varName[], const char defName[], std::vector<flo
 void mtpInit(var_base *varp)
 {
     readDefs(varp->name, "CND0", CND0);
-    AddToMetadata(varp, "NoiseDiodeTemperatureOffset", CND0);
+    varp->addToMetadata("NoiseDiodeTemperatureOffset", CND0);
 
     readDefs(varp->name, "GOF", GOF);
-    AddToMetadata(varp, "MixerTemperatureOffset", GOF);
+    varp->addToMetadata("MixerTemperatureOffset", GOF);
 
     readDefs(varp->name, "GEC1", GEC1);
-    AddToMetadata(varp, "GainOffset", GEC1);
+    varp->addToMetadata("GainOffset", GEC1);
 
     readDefs(varp->name, "GEC2", GEC2);
-    AddToMetadata(varp, "GainSlope", GEC2);
+    varp->addToMetadata("GainSlope", GEC2);
 }
 
 /* -------------------------------------------------------------------- */

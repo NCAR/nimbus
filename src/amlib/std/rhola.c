@@ -49,7 +49,7 @@ void lymanInit(var_base *varp)
 
   val.clear();
   val.push_back(XC_1);
-  AddToMetadata(varp, "XC", val);
+  varp->addToMetadata("XC", val);
 
   if ((tmp = GetDefaultsValue("THRSH_1", varp->name)) == NULL)
   {
@@ -61,7 +61,7 @@ void lymanInit(var_base *varp)
 
   val.clear();
   val.push_back(THRSH_1);
-  AddToMetadata(varp, "Threshold", val);
+  varp->addToMetadata("Threshold", val);
 
   if ((tmp = GetDefaultsValue("CX_1", varp->name)) == NULL)
   {
@@ -74,7 +74,7 @@ void lymanInit(var_base *varp)
     for (int i = 0; i < nCals; ++i)
       CX_1[i] = tmp[i];
   }
-  AddToMetadata(varp, "Coefficients", CX_1);
+  varp->addToMetadata("Coefficients", CX_1);
 
 }  /* END LYMANINIT */
 
@@ -94,7 +94,7 @@ void lyman1Init(var_base *varp)
 
   val.clear();
   val.push_back(XC_2);
-  AddToMetadata(varp, "XC", val);
+  varp->addToMetadata("XC", val);
 
   if ((tmp = GetDefaultsValue("THRSH_2", varp->name)) == NULL)
   {
@@ -106,7 +106,7 @@ void lyman1Init(var_base *varp)
 
   val.clear();
   val.push_back(THRSH_2);
-  AddToMetadata(varp, "Threshold", val);
+  varp->addToMetadata("Threshold", val);
 
   if ((tmp = GetDefaultsValue("CX_2", varp->name)) == NULL)
   {
@@ -119,7 +119,7 @@ void lyman1Init(var_base *varp)
     for (int i = 0; i < nCals; ++i)
       CX_2[i] = tmp[i];
   }
-  AddToMetadata(varp, "Coefficients", CX_2);
+  varp->addToMetadata("Coefficients", CX_2);
 
 }  /* END LYMAN1INIT */
 

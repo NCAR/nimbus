@@ -47,9 +47,9 @@ void deiInit(var_base *varp)
 
   std::vector<float> lat, lon;
   lat.push_back(startLat);
-  AddToMetadata(varp, "StartingLatitude", lat);
+  varp->addToMetadata("StartingLatitude", lat);
   lon.push_back(startLon);
-  AddToMetadata(varp, "StartingLongitude", lon);
+  varp->addToMetadata("StartingLongitude", lon);
 
 }  /* END DEIINIT */
 

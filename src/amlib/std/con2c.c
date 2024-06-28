@@ -40,7 +40,7 @@ void conc2cInit(var_base *varp)
   else
     eaw.push_back(C2_EAW);
 
-  AddToMetadata(varp, "EffectiveAreaWidth", eaw);
+  varp->addToMetadata("EffectiveAreaWidth", eaw);
 
 }  /* END CON2CINIT */
 

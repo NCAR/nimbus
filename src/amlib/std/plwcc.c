@@ -79,32 +79,32 @@ void plwccInit(var_base *varp)
   sprintf(defaultName, "KING%d_WIRE_TEMP", probe_index);
   if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     tWire[probe_index] = tmp[0];
-  AddToMetadata(varp, defaultName, {&tWire[probe_index], &tWire[probe_index+1]});
+  varp->addToMetadata(defaultName, {&tWire[probe_index], &tWire[probe_index+1]});
 
   sprintf(defaultName, "KING%d_WIRE_DIAM", probe_index);
   if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     dWire[probe_index] = tmp[0];
-  AddToMetadata(varp, defaultName, {&dWire[probe_index], &dWire[probe_index+1]});
+  varp->addToMetadata(defaultName, {&dWire[probe_index], &dWire[probe_index+1]});
 
   sprintf(defaultName, "KING%d_WIRE_LEN", probe_index);
   if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     lWire[probe_index] = tmp[0];
-  AddToMetadata(varp, defaultName, {&lWire[probe_index], &lWire[probe_index+1]});
+  varp->addToMetadata(defaultName, {&lWire[probe_index], &lWire[probe_index+1]});
 
   sprintf(defaultName, "KING%d_TAU_NUSSELT", probe_index);
   if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     tau_Nu[probe_index] = (int)tmp[0];
-  AddToMetadata(varp, defaultName, {&tau_Nu[probe_index], &tau_Nu[probe_index+1]});
+  varp->addToMetadata(defaultName, {&tau_Nu[probe_index], &tau_Nu[probe_index+1]});
 
   sprintf(defaultName, "KING_CLOUD_CONC_THRESHOLD");
   if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     cloud_conc_threshold = tmp[0];
-  AddToMetadata(varp, defaultName, {&cloud_conc_threshold, &cloud_conc_threshold+1});
+  varp->addToMetadata(defaultName, {&cloud_conc_threshold, &cloud_conc_threshold+1});
 
   sprintf(defaultName, "KING_MIN_WATT_THRESHOLD");
   if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     min_watt_threshold = tmp[0];
-  AddToMetadata(varp, defaultName, {&min_watt_threshold, &min_watt_threshold+1});
+  varp->addToMetadata(defaultName, {&min_watt_threshold, &min_watt_threshold+1});
 
 }	/* END PLWCCINIT */
 

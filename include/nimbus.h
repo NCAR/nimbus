@@ -86,6 +86,10 @@ public:
   var_base(const char s[]);
   ~var_base();
 
+  void addToMetadata(const char attr_name[], const char attr[]);
+  void addToMetadata(const char attr_name[], std::vector<float> values);
+
+
   char name[NAMELEN];	// Variable name
 
   std::string SerialNumber;	// Probe Serial Number

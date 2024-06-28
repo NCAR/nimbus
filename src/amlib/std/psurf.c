@@ -32,7 +32,7 @@ void initPsurf(var_base *varp)
 
   std::vector<float> val;
   val.push_back(PSURF_ALT_MAX);
-  AddToMetadata(varp, "AltitudeMax", val);
+  varp->addToMetadata("AltitudeMax", val);
 }
 
 /* -------------------------------------------------------------------- */

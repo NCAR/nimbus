@@ -36,7 +36,7 @@ void rhouvInit(var_base *varp)
     for (int i = 0; i < nCals; ++i)
       CX_1.push_back(tmp[i]);
   }
-  AddToMetadata(varp, "Coefficients", CX_1);
+  varp->addToMetadata("Coefficients", CX_1);
 }
 
 /* -------------------------------------------------------------------- */

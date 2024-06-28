@@ -138,7 +138,7 @@ printf("uhsas.c: UHSAS %s serial number %s.\n", varp->name, varp->SerialNumber.c
   std::vector<float> values;
   values.push_back(StdTemperature);
   // Add this to UFLWC
-  AddToMetadata(((DERTBL *)varp)->depends[1], "std_temperature", values);
+  ((DERTBL *)varp)->depends[1]->addToMetadata("std_temperature", values);
 
 }	/* END CUHSASINIT */
 

@@ -72,7 +72,7 @@ void initLATC(var_base *varp)
 
   std::vector<float> rollmax;
   rollmax.push_back(ROLL_MAX);
-  AddToMetadata(varp, "ROLL_MAX", rollmax);
+  varp->addToMetadata("ROLL_MAX", rollmax);
 
   // At this time do not allow over-rides in the Defaults file.  cjw 5/15
 /*

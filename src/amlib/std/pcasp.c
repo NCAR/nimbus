@@ -121,7 +121,7 @@ void casasInit(var_base *varp)
   std::vector<float> values;
   values.push_back(StdTemperature);
   // Add this to PFLWC
-  AddToMetadata(((DERTBL *)varp)->depends[1], "std_temperature", values);
+  ((DERTBL *)varp)->depends[1]->addToMetadata("std_temperature", values);
 
 }	/* END CASASINIT */
 

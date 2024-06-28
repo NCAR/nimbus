@@ -66,11 +66,11 @@ void addDOFtoAttrs(var_base *varp, NR_TYPE eaw[], NR_TYPE dof[])
 
   for (size_t i = 0; i < varp->Length; ++i)
     eaw_v.push_back(eaw[i]);
-  AddToMetadata(varp, "EffectiveAreaWidth", eaw_v);
+  varp->addToMetadata("EffectiveAreaWidth", eaw_v);
 
   for (size_t i = 0; i < varp->Length; ++i)
     dof_v.push_back(dof[i]);
-  AddToMetadata(varp, "DepthOfField", dof_v);
+  varp->addToMetadata("DepthOfField", dof_v);
 }
 
 /* -------------------------------------------------------------------- */

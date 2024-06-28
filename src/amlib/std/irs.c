@@ -37,7 +37,7 @@ void initWP3(var_base *varp)
 	wp3_C[0], wp3_C[1], wp3_C[2]);
     LogMessage(buffer);
   }
-  AddToMetadata(varp, "TimeConstants", wp3_C);
+  varp->addToMetadata("TimeConstants", wp3_C);
 }
 
 /* -------------------------------------------------------------------- */

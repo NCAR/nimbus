@@ -17,7 +17,7 @@ void initTsurf(var_base *varp)
 
   std::vector<float> val;
   val.push_back(TSURF_CAL);
-  AddToMetadata(varp, "AltitudeCal", val);
+  varp->addToMetadata("AltitudeCal", val);
 }
 
 /* -------------------------------------------------------------------- */

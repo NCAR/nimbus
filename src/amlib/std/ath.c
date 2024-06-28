@@ -43,7 +43,7 @@ void athInit(var_base *varp)
 
   sprintf(buffer, "%.3f + %.3f log10(mach) + 0.090 (log10(mach))^2 + 0.091 (log10(mach))^3",
 	RF_C0[sensor], RF_C1[sensor]);
-  AddToMetadata(varp, "RecoveryFactor", buffer);
+  varp->addToMetadata("RecoveryFactor", buffer);
 
 }	/* END CONSTRUCTOR */
 

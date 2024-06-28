@@ -44,7 +44,7 @@ static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
 	  c[0], c[1], c[2]);
     LogMessage(buffer);
   }
-  AddToMetadata(varp, "CalibrationCoefficients", c);
+  varp->addToMetadata("CalibrationCoefficients", c);
 
   return c;
 }
@@ -84,7 +84,7 @@ void initAKY(var_base *varp)
 	"akrd: AKY_C1 set to %f from Defaults file.\n", aky_c1[0]);
     LogMessage(buffer);
   }
-  AddToMetadata(varp, "Coefficient C1", aky_c1);
+  varp->addToMetadata("Coefficient C1", aky_c1);
 
   if ((tmp = GetDefaultsValue("AKY_D", varp->name)) != NULL)
   {
@@ -96,7 +96,7 @@ void initAKY(var_base *varp)
 	  aky_d[0], aky_d[1], aky_d[2], aky_d[3]);
     LogMessage(buffer);
   }
-  AddToMetadata(varp, "Coefficient D", aky_d);
+  varp->addToMetadata("Coefficient D", aky_d);
 
 }
 
@@ -120,7 +120,7 @@ void initAKRD(var_base *varp)
         c130_radome_ssn = (int)tmp[0];
         ssn = tmp[0];
       }
-      AddToMetadata(varp, "RadomeSerialNumber", { ssn, ssn + 1 });
+      varp->addToMetadata("RadomeSerialNumber", { ssn, ssn + 1 });
 
       if (c130_radome_ssn == 1)
       {
@@ -158,7 +158,7 @@ void initAKRD(var_base *varp)
         gv_radome_ssn = (int)tmp[0];
         ssn = tmp[0];
       }
-      AddToMetadata(varp, "RadomeSerialNumber", { ssn, ssn + 1 });
+      varp->addToMetadata("RadomeSerialNumber", { ssn, ssn + 1 });
 
       if (gv_radome_ssn == 1)
       {

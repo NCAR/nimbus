@@ -37,7 +37,7 @@ void teo3cInit(var_base *varp)
     for (int i = 0; i < nCals; ++i)
       teo3c_cal.push_back(tmp[i]);
   }
-  AddToMetadata(varp, "Coefficients", teo3c_cal);
+  varp->addToMetadata("Coefficients", teo3c_cal);
 }
 
 /* -------------------------------------------------------------------- */
