@@ -657,6 +657,8 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 //    addSerialNumber(var, rp);
   }
 
+  serialNumber = "";
+
   if (cfg.ProjectName().compare("RAF_Lab") && (cfg.Aircraft() != Config::TADS) )
   {
     addGustVariables("GUST");
