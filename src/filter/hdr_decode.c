@@ -655,7 +655,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
 
     location[0] = '\0';
-    addSerialNumber(var, rp);
+//    addSerialNumber(var, rp);
   }
 
   serialNumber = "";
