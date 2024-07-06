@@ -88,6 +88,7 @@ public:
 
   void addToMetadata(const char attr_name[], const char attr[]);
   void addToMetadata(const char attr_name[], std::string attr);
+  void addToMetadata(const char attr_name[], float value);
   void addToMetadata(const char attr_name[], std::vector<float> values);
 
 

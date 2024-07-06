@@ -37,7 +37,7 @@ void cnctrInit(var_base *varp)
     DIV = tmp[0];
 
   if (DIV != 1.0)
-    varp->addToMetadata("DIV", std::vector<float>( tmp, tmp+1 ));
+    varp->addToMetadata("DIV", tmp[0]);
 
   std::vector<float> values;
   values.push_back(StdTemperature);

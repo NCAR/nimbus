@@ -120,7 +120,7 @@ void initAKRD(var_base *varp)
         c130_radome_ssn = (int)tmp[0];
         ssn = tmp[0];
       }
-      varp->addToMetadata("RadomeSerialNumber", std::vector<float>( &ssn, &ssn+1 ));
+      varp->addToMetadata("RadomeSerialNumber", ssn);
 
       if (c130_radome_ssn == 1)
       {
@@ -158,7 +158,7 @@ void initAKRD(var_base *varp)
         gv_radome_ssn = (int)tmp[0];
         ssn = tmp[0];
       }
-      varp->addToMetadata("RadomeSerialNumber", std::vector<float>( &ssn, &ssn+1 ));
+      varp->addToMetadata("RadomeSerialNumber", ssn);
 
       if (gv_radome_ssn == 1)
       {
