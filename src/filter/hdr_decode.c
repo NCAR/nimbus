@@ -131,7 +131,7 @@ static void	add_file_to_DERTBL(const std::string&),
 	initPMS2Dhouse(char vn[]), add_raw_names(const char vn[]),
 	initGreyHouse(char vn[]), initMASP(char vn[]), initPMS1Dv3(char vn[]),
 	ReadProjectName(), initRDMA(char vn[]), initCLIMET(char vn[]),
-	openVariableDatabase(), addUnitsAndLongName(var_base *var),
+	openVariableDatabase(), addUnitsAndLongName(var_base *vbp, const nidas::core::Variable *var),
 	checkUnitsTitles();
 
 static std::vector<NR_TYPE> getCalsForADS2(const char vn[]);
@@ -561,7 +561,6 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 	if (std::isnan(linear->getIntercept()) || std::isnan(linear->getSlope()))
 	{
 	  converter = 0;
-	  //	  var->setConverter(0);
 	}
       }
       else if (poly)
@@ -570,7 +569,6 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 	if (dcoefs.size() == 0 || std::isnan(dcoefs[0]))
 	{
 	  converter = 0;
-	  //	  var->setConverter(0);
 	}
       }
     }
@@ -580,8 +578,6 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     {
       rp = add_name_to_RAWTBL(name_sans_location);
       rp->TTindx = syncRecReader->getLagOffset(var);
-      rp->addToMetadata("units", var->getUnits());
-      rp->addToMetadata("long_name", var->getLongName());
 
       rp->dsmID = var->getSampleTag()->getDSMId();
 
@@ -683,8 +679,7 @@ static RAWTBL* initSDI_ADS3(nidas::core::Variable* var, time_t startTime)
   RAWTBL *cp = new RAWTBL(var->getName().c_str());
   raw.push_back(cp);
 
-  cp->addToMetadata("units", var->getUnits());
-  cp->addToMetadata("long_name", var->getLongName());
+  addUnitsAndLongName(cp, var);
   cp->CategoryList.push_back("Analog");
 
   cp->SampleRate   = rate;
@@ -1323,7 +1318,7 @@ static void initSDI(char vn[])
   RAWTBL *cp = new RAWTBL(vn);
   raw.push_back(cp);
 
-  addUnitsAndLongName(cp);
+  addUnitsAndLongName(cp, 0);
   cp->CategoryList.push_back("Analog");
 
   if (GetConversionOffset(vn, &(cp->convertOffset)) == ERR)
@@ -2266,8 +2261,9 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   strcat(fullName, location);
 
   nidas::dynld::raf::SyncRecordReader* syncRecReader = GetSyncReader();
+  const nidas::core::Variable *var = syncRecReader->getVariable(fullName);
 
-  if (indx == ERR && (cfg.isADS2() || syncRecReader->getVariable(fullName) == 0))
+  if (indx == ERR && (cfg.isADS2() || var == 0))
   {
     char msg[128];
 
@@ -2291,7 +2287,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   RAWTBL *rp = new RAWTBL(fullName);
   raw.push_back(rp);
 
-  addUnitsAndLongName(rp);
+  addUnitsAndLongName(rp, var);
   rp->CategoryList.push_back("Raw");
 
   /* For ADS2 we decode raw/block/struct data.  ADS3 hands us everything in
@@ -2375,7 +2371,7 @@ static DERTBL *add_name_to_DERTBL(const char name_sans_location[])
   DERTBL *dp = new DERTBL(name);
   derived.push_back(dp);
 
-  addUnitsAndLongName(dp);
+  addUnitsAndLongName(dp, 0);
   dp->CategoryList.push_back("Derived");
 
   dp->Initializer	= deriveftns[indx].constructor;
@@ -2469,20 +2465,34 @@ static std::vector<NR_TYPE> getCalsForADS2(const char vn[])
 
 /* -------------------------------------------------------------------- */
 static void
-addUnitsAndLongName(var_base *var)
+addUnitsAndLongName(var_base *vbp, const nidas::core::Variable *nidas_var)
 {
-  VDBVar *vdb_var = vardb->search_var(var->name);
+  VDBVar *vdb_var = vardb->search_var(vbp->name);
 
+  float miss_val = (float)MISSING_VALUE;
+  vbp->addToMetadata("_FillValue", miss_val);
+
+  // If this is a nidas raw variable, then get units/long_name from here.
+  // null will be passed in if the variable is derived, or from ADS2.
+  if (nidas_var)
+  {
+    vbp->addToMetadata("units", nidas_var->getUnits());
+    vbp->addToMetadata("long_name", nidas_var->getLongName());
+  }
+
+  /* Check if units and long_name have already been added (from above),
+   * if they are empty, try and locate them in the VarDB
+   */
   if (vdb_var)
   {
-    if (var->Units().length() == 0)
-      var->addToMetadata("units", vdb_var->get_attribute(VDBVar::UNITS));
-    if (var->LongName().length() == 0)
-      var->addToMetadata("long_name", vdb_var->get_attribute(VDBVar::LONG_NAME));
+    if (vbp->Units().length() == 0)
+      vbp->addToMetadata("units", vdb_var->get_attribute(VDBVar::UNITS));
+    if (vbp->LongName().length() == 0)
+      vbp->addToMetadata("long_name", vdb_var->get_attribute(VDBVar::LONG_NAME));
 
     std::string cat = vdb_var->get_attribute(VDBVar::CATEGORY);
     if ( cat.size() > 0 )
-      var->CategoryList.push_back(cat);
+      vbp->CategoryList.push_back(cat);
   }
 }
 
