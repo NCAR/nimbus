@@ -22,9 +22,9 @@ void ssdiFlag(DERTBL *varp)
   mflow = GetSample(varp, 0);
   setpt = GetSample(varp, 1);
 
-  flag = (mflow <= setpt*1.02 && mflow >= setpt*0.94);
-  // check if mflow is within -6% to +2% of setpt 
+  // check if mflow is within -2% to +2% of setpt 
   // limits determined for CAESAR conditions
+  flag = (mflow <= setpt*1.02 && mflow >= setpt*0.98);
 
   PutSample(varp, flag);
 
