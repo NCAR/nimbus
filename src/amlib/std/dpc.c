@@ -69,7 +69,7 @@ void sdpc_MK(DERTBL *varp)	// Murphy-Koop.
 /* -------------------------------------------------------------------- */
 void dpggInit(var_base *varp)
 {
-  AddToAttributes(varp->name, "Method", "Goff-Gratch");
+  varp->addToMetadata("Method", "Goff-Gratch");
 }
 
 /* -------------------------------------------------------------------- */
@@ -78,7 +78,7 @@ void dpmkInit(var_base *varp)
   double WaterVaporPressure(double Tk);
   double WaterVaporPressureOfWater(double Tk);
 
-  AddToAttributes(varp->name, "Method", "Murphy-Koop");
+  varp->addToMetadata("Method", "Murphy-Koop");
 
   // Bail out if we've already initialized the interp stuff.  Only needed once.
   if (interp.isValid())

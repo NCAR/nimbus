@@ -77,64 +77,34 @@ void plwccInit(var_base *varp)
 
 
   sprintf(defaultName, "KING%d_WIRE_TEMP", probe_index);
-  if ((tmp = GetDefaultsValue(defaultName, varp->name)) == NULL)
-  {
-    std::vector<float> values;
-    values.push_back(tWire[probe_index]);
-    AddToDefaults(varp->name, defaultName, values);
-  }
-  else
+  if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     tWire[probe_index] = tmp[0];
+  varp->addToMetadata(defaultName, std::vector<float>(&tWire[probe_index], &tWire[probe_index+1]));
 
   sprintf(defaultName, "KING%d_WIRE_DIAM", probe_index);
-  if ((tmp = GetDefaultsValue(defaultName, varp->name)) == NULL)
-  {
-    std::vector<float> values;
-    values.push_back(dWire[probe_index]);
-    AddToDefaults(varp->name, defaultName, values);
-  }
-  else
+  if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     dWire[probe_index] = tmp[0];
+  varp->addToMetadata(defaultName, std::vector<float>(&dWire[probe_index], &dWire[probe_index+1]));
 
   sprintf(defaultName, "KING%d_WIRE_LEN", probe_index);
-  if ((tmp = GetDefaultsValue(defaultName, varp->name)) == NULL)
-  {
-    std::vector<float> values;
-    values.push_back(lWire[probe_index]);
-    AddToDefaults(varp->name, defaultName, values);
-  }
-  else
+  if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     lWire[probe_index] = tmp[0];
+  varp->addToMetadata(defaultName, std::vector<float>(&lWire[probe_index], &lWire[probe_index+1]));
 
   sprintf(defaultName, "KING%d_TAU_NUSSELT", probe_index);
-  if ((tmp = GetDefaultsValue(defaultName, varp->name)) == NULL)
-  {
-    std::vector<float> values;
-    values.push_back(tau_Nu[probe_index]);
-    AddToDefaults(varp->name, defaultName, values);
-  }
-  else
+  if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     tau_Nu[probe_index] = (int)tmp[0];
+  varp->addToMetadata(defaultName, std::vector<float>(&tau_Nu[probe_index], &tau_Nu[probe_index+1]));
 
   sprintf(defaultName, "KING_CLOUD_CONC_THRESHOLD");
-  if ((tmp = GetDefaultsValue(defaultName, varp->name)) == NULL)
-  {
-    std::vector<float> values;
-    values.push_back(cloud_conc_threshold);
-    AddToDefaults(varp->name, defaultName, values);
-  }
-  else
+  if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     cloud_conc_threshold = tmp[0];
+  varp->addToMetadata(defaultName, std::vector<float>(&cloud_conc_threshold, &cloud_conc_threshold+1));
 
   sprintf(defaultName, "KING_MIN_WATT_THRESHOLD");
-  if ((tmp = GetDefaultsValue(defaultName, varp->name)) == NULL)
-  {
-    std::vector<float> values;
-    values.push_back(min_watt_threshold);
-    AddToDefaults(varp->name, defaultName, values);
-  }
-  else
+  if ( (tmp = GetDefaultsValue(defaultName, varp->name)) )
     min_watt_threshold = tmp[0];
+  varp->addToMetadata(defaultName, std::vector<float>(&min_watt_threshold, &min_watt_threshold+1));
 
 }	/* END PLWCCINIT */
 
@@ -154,7 +124,7 @@ void splwcc(DERTBL *varp)
   tasx  = GetSample(varp, 1);	// True Airspeed
   atx   = GetSample(varp, 2);	// Ambient Temperature
   psxc  = GetSample(varp, 3);	// Static Pressure
- 
+
   /* This cut-off is about a broken wire or some other issue with probe.
    * Still under investigation if 10.0 is the best value.
    */

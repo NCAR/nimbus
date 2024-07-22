@@ -44,8 +44,7 @@ static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
 	  c[0], c[1], c[2]);
     LogMessage(buffer);
   }
-  else
-    AddToDefaults(varp->name, "CalibrationCoefficients", c);
+  varp->addToMetadata("CalibrationCoefficients", c);
 
   return c;
 }
@@ -85,8 +84,7 @@ void initAKY(var_base *varp)
 	"akrd: AKY_C1 set to %f from Defaults file.\n", aky_c1[0]);
     LogMessage(buffer);
   }
-  else
-    AddToDefaults(varp->name, "Coefficient C1", aky_c1);
+  varp->addToMetadata("Coefficient_C1", aky_c1);
 
   if ((tmp = GetDefaultsValue("AKY_D", varp->name)) != NULL)
   {
@@ -98,15 +96,14 @@ void initAKY(var_base *varp)
 	  aky_d[0], aky_d[1], aky_d[2], aky_d[3]);
     LogMessage(buffer);
   }
-  else
-    AddToDefaults(varp->name, "Coefficient D", aky_d);
+  varp->addToMetadata("Coefficient_D", aky_d);
 
 }
 
 /* -------------------------------------------------------------------- */
 void initAKRD(var_base *varp)
 {
-  float *tmp;
+  float *tmp, ssn;
 
   memset((void *)zf, 0, sizeof(zf));
 
@@ -117,8 +114,13 @@ void initAKRD(var_base *varp)
   switch (cfg.Aircraft())
   {
     case Config::C130:
+      ssn = c130_radome_ssn;
       if ( (tmp = GetDefaultsValue("C130_RADOME_SSN", varp->name)) )
+      {
         c130_radome_ssn = (int)tmp[0];
+        ssn = tmp[0];
+      }
+      varp->addToMetadata("RadomeSerialNumber", ssn);
 
       if (c130_radome_ssn == 1)
       {
@@ -152,7 +154,11 @@ void initAKRD(var_base *varp)
 
     case Config::HIAPER:
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
+      {
         gv_radome_ssn = (int)tmp[0];
+        ssn = tmp[0];
+      }
+      varp->addToMetadata("RadomeSerialNumber", ssn);
 
       if (gv_radome_ssn == 1)
       {

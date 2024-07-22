@@ -285,7 +285,7 @@ static void set_edit_window_data(
 
   strcpy(buffer, var->name);
   strcat(buffer, " - ");
-  strcat(buffer, var->LongName.c_str());
+  strcat(buffer, var->LongName().c_str());
   ns = XmStringCreateLocalized(buffer);
 
   n = 0;

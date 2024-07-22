@@ -25,18 +25,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2011
 static NR_TYPE  rholap[2], corc1[2] = {0.0, 0.0};
 static int  n1[2] = {0, 0};
 
-static NR_TYPE compute_rhola(int indx, DERTBL *varp, NR_TYPE vla, NR_TYPE psxc, NR_TYPE atx, NR_TYPE qcxc, NR_TYPE rhodt, NR_TYPE XC, NR_TYPE THRSH, NR_TYPE CX[]);
+static NR_TYPE compute_rhola(int indx, DERTBL *varp, NR_TYPE vla, NR_TYPE psxc, NR_TYPE atx, NR_TYPE qcxc, NR_TYPE rhodt, float XC, float THRSH, std::vector<float> CX);
 
 /*  Values from /home/local/proj/Defaults on 23 April 1998           RLR */
 static const int nCals = 4;
-static NR_TYPE CX_1[] = {4.2, 0.8712, -0.0045, -0.0056};
-static NR_TYPE CX_2[] = {4.2, 0.8712, -0.0045, -0.0056};
-static NR_TYPE XC_1 = 0.50, XC_2 = 0.50, THRSH_1 = 900.0, THRSH_2 = 900.0;
+static std::vector<float> CX_1 = {4.2, 0.8712, -0.0045, -0.0056};
+static std::vector<float> CX_2 = {4.2, 0.8712, -0.0045, -0.0056};
+static float XC_1 = 0.50, XC_2 = 0.50, THRSH_1 = 900.0, THRSH_2 = 900.0;
 
 /* -------------------------------------------------------------------- */
 void lymanInit(var_base *varp)
 {
   float *tmp;
+  std::vector<float> val;
 
   if ((tmp = GetDefaultsValue("XC_1", varp->name)) == NULL)
   {
@@ -46,6 +47,10 @@ void lymanInit(var_base *varp)
   else
     XC_1 = tmp[0];
 
+  val.clear();
+  val.push_back(XC_1);
+  varp->addToMetadata("XC", val);
+
   if ((tmp = GetDefaultsValue("THRSH_1", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function lymanInit.\n", THRSH_1);
@@ -54,6 +59,10 @@ void lymanInit(var_base *varp)
   else
     THRSH_1 = tmp[0];
 
+  val.clear();
+  val.push_back(THRSH_1);
+  varp->addToMetadata("Threshold", val);
+
   if ((tmp = GetDefaultsValue("CX_1", varp->name)) == NULL)
   {
     sprintf(buffer, "Values returned = %f, %f, %f, %f in AMLIB function lymanInit.\n", CX_1[0], CX_1[1], CX_1[2], CX_1[3]);
@@ -61,15 +70,19 @@ void lymanInit(var_base *varp)
   }
   else
   {
+    CX_1.clear();
     for (int i = 0; i < nCals; ++i)
       CX_1[i] = tmp[i];
   }
+  varp->addToMetadata("Coefficients", CX_1);
+
 }  /* END LYMANINIT */
 
 /* -------------------------------------------------------------------- */
 void lyman1Init(var_base *varp)
 {
   float *tmp;
+  std::vector<float> val;
 
   if ((tmp = GetDefaultsValue("XC_2", varp->name)) == NULL)
   {
@@ -79,6 +92,10 @@ void lyman1Init(var_base *varp)
   else
     XC_2 = tmp[0];
 
+  val.clear();
+  val.push_back(XC_2);
+  varp->addToMetadata("XC", val);
+
   if ((tmp = GetDefaultsValue("THRSH_2", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function lymanInit.\n", THRSH_2);
@@ -87,6 +104,10 @@ void lyman1Init(var_base *varp)
   else
     THRSH_2 = tmp[0];
 
+  val.clear();
+  val.push_back(THRSH_2);
+  varp->addToMetadata("Threshold", val);
+
   if ((tmp = GetDefaultsValue("CX_2", varp->name)) == NULL)
   {
     sprintf(buffer, "Values returned = %f, %f, %f, %f in AMLIB function lymanInit.\n", CX_2[0], CX_2[1], CX_2[2], CX_2[3]);
@@ -94,9 +115,11 @@ void lyman1Init(var_base *varp)
   }
   else
   {
+    CX_2.clear();
     for (int i = 0; i < nCals; ++i)
       CX_2[i] = tmp[i];
   }
+  varp->addToMetadata("Coefficients", CX_2);
 
 }  /* END LYMAN1INIT */
 
@@ -133,7 +156,7 @@ void srhola1(DERTBL *varp)
 }  /* END SRHOLA1 */
 
 /* -------------------------------------------------------------------- */
-static NR_TYPE compute_rhola(int indx, DERTBL *varp, NR_TYPE vla, NR_TYPE psxc, NR_TYPE atx, NR_TYPE qcxc, NR_TYPE rhodt, NR_TYPE XC, NR_TYPE THRSH, NR_TYPE CX[])
+static NR_TYPE compute_rhola(int indx, DERTBL *varp, NR_TYPE vla, NR_TYPE psxc, NR_TYPE atx, NR_TYPE qcxc, NR_TYPE rhodt, float XC, float THRSH, std::vector<float> CX)
 {
   NR_TYPE  rhola, rflag, rhota, rxpr1, vo2, vh2o, dfdla, del, errlr, ertst;
 

@@ -10,7 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:  
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2007
+COPYRIGHT:	University Corporation for Atmospheric Research, 2007-2024
 -------------------------------------------------------------------------
 */
 
@@ -18,7 +18,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include "amlib.h"
 
 static const int nCals = 4;
-static NR_TYPE CX_1[] = { 1.0, 0.0, 0.0, 0.0 };
+static std::vector<float> CX_1 = { 1.0, 0.0, 0.0, 0.0 };
 
 /* -------------------------------------------------------------------- */
 void rhouvInit(var_base *varp)
@@ -32,9 +32,11 @@ void rhouvInit(var_base *varp)
   }
   else
   {
+    CX_1.clear();
     for (int i = 0; i < nCals; ++i)
-      CX_1[i] = tmp[i];
+      CX_1.push_back(tmp[i]);
   }
+  varp->addToMetadata("Coefficients", CX_1);
 }
 
 /* -------------------------------------------------------------------- */

@@ -17,7 +17,7 @@ REFERENCES:	SearchTable(), AccessProjectFile()
 
 REFERENCED BY:	netcdf.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 2006-2024
 -------------------------------------------------------------------------
 */
 
@@ -50,5 +50,70 @@ void ReadMetaData(int ncid)
   FreeTextFile(meta);
 
 }	/* END READMETADATA */
+
+
+
+/* -------------------------------------------------------------------- */
+// These functions are not related to the above function....other than they deal with meatdata.
+
+void  var_base::addToMetadata(const char attr_name[], const char attr[])
+{
+  std::string value(attr);
+  addToMetadata(attr_name, value);
+}
+
+void  var_base::addToMetadata(const char attr_name[], std::string attr)
+{
+  std::string key(attr_name);
+  metadata.push_back(Metadata(key, attr));
+}
+
+void var_base::addToMetadata(const char attr_name[], float value)
+{
+  std::string key(attr_name);
+  std::vector<float> val = {value};
+  metadata.push_back(Metadata(key, val));
+}
+
+void var_base::addToMetadata(const char attr_name[], std::vector<float> values)
+{
+  std::string key(attr_name);
+  metadata.push_back(Metadata(key, values));
+}
+
+
+// Search functions
+std::string var_base::Units() const
+{
+  std::string rc;
+
+  for (std::vector<Metadata>::const_iterator it = metadata.begin(); it != metadata.end(); ++it)
+    if (it->_attr_name.compare("units") == 0)
+      rc = it->_attr_str;
+
+  return rc;
+}
+
+std::string var_base::LongName() const
+{
+  std::string rc;
+
+  for (std::vector<Metadata>::const_iterator it = metadata.begin(); it != metadata.end(); ++it)
+    if (it->_attr_name.compare("long_name") == 0)
+      rc = it->_attr_str;
+
+  return rc;
+}
+
+std::string var_base::AltUnits() const
+{
+  std::string rc;
+/*
+  for (std::vector<Metadata>::const_iterator it = metadata.begin(); it != metadata.end(); ++it)
+    if (it->_attr_name.compare("units") == 0)
+      rc = it->_attr_str;
+*/
+  return rc;
+}
 
 /* END RD_META.C */

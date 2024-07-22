@@ -24,14 +24,18 @@ extern int	FlightDate[];
 /* -------------------------------------------------------------------- */
 void initSSRD(var_base *varp)
 {
-  float *tmp;
+  float *tmp, ssn;
 
   /* Set default values per aircraft. */
   switch (cfg.Aircraft())
   {
     case Config::C130:
       if ( (tmp = GetDefaultsValue("C130_RADOME_SSN", varp->name)) )
+      {
         c130_radome_ssn = (int)tmp[0];
+        ssn = tmp[0];
+      }
+      varp->addToMetadata("RadomeSerialNumber", ssn);
 
       if (FlightDate[2] < 1998)
       {
@@ -75,7 +79,11 @@ void initSSRD(var_base *varp)
 
     case Config::HIAPER:
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
+      {
         gv_radome_ssn = (int)tmp[0];
+        ssn = tmp[0];
+      }
+      varp->addToMetadata("RadomeSerialNumber", ssn);
 
       if (gv_radome_ssn == 1)
         coeff.push_back(0.1051);
@@ -98,8 +106,7 @@ void initSSRD(var_base *varp)
 	  coeff[0], coeff[1]);
     LogMessage(buffer);
   }
-  else
-    AddToDefaults(varp->name, "CalibrationCoefficients", coeff);
+  varp->addToMetadata("CalibrationCoefficients", coeff);
 }
 
 /* -------------------------------------------------------------------- */

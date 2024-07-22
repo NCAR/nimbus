@@ -143,7 +143,7 @@ void xlTwodInit(var_base *varp)
 
   std::vector<float> value;
   value.push_back(cfg.TwoDAreaRejectRatio() * 100);
-  AddToDefaults(varp->name, "AreaRatioReject_%", value);
+  varp->addToMetadata("AreaRatioReject_%", value);
 
 }	/* END XLTWODINIT */
 

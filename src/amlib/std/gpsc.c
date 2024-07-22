@@ -70,6 +70,10 @@ void initLATC(var_base *varp)
   else
     ROLL_MAX = tmp[0];
 
+  std::vector<float> rollmax;
+  rollmax.push_back(ROLL_MAX);
+  varp->addToMetadata("ROLL_MAX", rollmax);
+
   // At this time do not allow over-rides in the Defaults file.  cjw 5/15
 /*
   if ((tmp = GetDefaultsValue("GPS_TAUP", varp->name)) == NULL)

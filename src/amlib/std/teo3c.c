@@ -10,15 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2024
 -------------------------------------------------------------------------
 */
 
@@ -26,16 +18,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "amlib.h"
 
 static const int nCals = 4;
-static NR_TYPE	*teo3c_cal;
-static NR_TYPE	default_teo3_cals[] = { 0.0, 1.0, 0.0, 0.0 };
+static std::vector<float> teo3c_cal = { 0.0, 1.0, 0.0, 0.0 };
 
 
 /* -------------------------------------------------------------------- */
 void teo3cInit(var_base *varp)
 {
   float *tmp;
-
-  teo3c_cal = default_teo3_cals;
 
   if ((tmp = GetDefaultsValue("TEO3CAL", varp->name)) == NULL)
   {
@@ -44,9 +33,11 @@ void teo3cInit(var_base *varp)
   }
   else
   {
+    teo3c_cal.clear();
     for (int i = 0; i < nCals; ++i)
-      teo3c_cal[i] = tmp[i];
+      teo3c_cal.push_back(tmp[i]);
   }
+  varp->addToMetadata("Coefficients", teo3c_cal);
 }
 
 /* -------------------------------------------------------------------- */

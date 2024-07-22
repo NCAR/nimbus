@@ -39,6 +39,7 @@ protected:
   void	markDependedByList(const char target[]), writeTimeUnits();
   void	clearDependedByList(), printDependedByList(), writeMinMax();
   void	addCommonVariableAttributes(const var_base *var), addLandmarks();
+  void  addVariableMetadata(const var_base *var);
 
   long	UTSeconds(double *record);
   void	SetBaseTime(double *record);
@@ -66,7 +67,8 @@ protected:
   // Rate, DimID
   std::map<int, int> _rateDimIDs;
   // VectorLen, DimID
-  std::map<int, int> _vectorDimIDs;
+  // SerialNumber, DimID
+  std::map<std::string, int> _vectorDimIDs;
 
   // Count of netcCDF write errors.
   size_t _errCnt;

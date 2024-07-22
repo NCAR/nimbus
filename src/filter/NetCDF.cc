@@ -52,7 +52,7 @@ char	dateProcessed[64];	// For export to psql.cc
 
 
 void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetaData(int fd),
-	ReadDOI(int fd), CheckAndAddAttrs(int fd, int varid, char name[]);
+	ReadDOI(int fd);
 
 extern "C" {
 void sRefer(DERTBL *), sReferAttack(DERTBL *);
@@ -354,16 +354,29 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     if (rp->Length > 1)
     {
-      // Check to see if dimension exists.  If not, create it.
-      if (_vectorDimIDs.find(rp->Length) == _vectorDimIDs.end())
+      if (rp->SerialNumber.size() > 0)	// you should only ever come here once per serial number
+      {
+        int coord_dims[1];
+        nc_def_dim(_ncid, rp->SerialNumber.c_str(), rp->Length, &coord_dims[0]);
+        _vectorDimIDs[rp->SerialNumber] = coord_dims[0];
+        dims[2] = _vectorDimIDs[rp->SerialNumber];
+        status = nc_def_var(_ncid, rp->SerialNumber.c_str(), NC_FLOAT, 1, coord_dims, &rp->coord_dim_varid);
+        if (status != NC_NOERR)
+        {
+          fprintf(stderr, "CreateNetCDF: error, coord variable %s %s status = %d\n", rp->name, rp->SerialNumber.c_str(), status);
+          fprintf(stderr, "%s\n", nc_strerror(status));
+        }
+      }
+      else
       {
         char tmp[32];
-        snprintf(tmp, 32, "Vector%zu", rp->Length);
-        nc_def_dim(_ncid, tmp, rp->Length, &_vectorDimIDs[rp->Length]);
+        int dimID;
+        snprintf(tmp, 32, "histogram%zu", rp->Length);
+        nc_def_dim(_ncid, tmp, rp->Length, &dimID);
+        dims[2] = dimID;
       }
 
       ndims = 3;
-      dims[2] = _vectorDimIDs[rp->Length];
     }
 
 //printf("RAW: %s\n", rp->name);
@@ -414,8 +427,6 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 	(rp->ProbeType & PROBE_PMS2D || rp->ProbeType & PROBE_PMS1D ||
 	 rp->ProbeType & PROBE_RDMA || rp->ProbeType & PROBE_CLMT))
       AddPMS1dAttrs(_ncid, rp);
-
-    CheckAndAddAttrs(_ncid, rp->varid, rp->name);
   }
 
 
@@ -454,15 +465,15 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     if (dp->Length > 1)
     {
       // Check to see if dimension exists.  If not, create it.
-      if (_vectorDimIDs.find(dp->Length) == _vectorDimIDs.end())
-        {
-        char tmp[32];
-        snprintf(tmp, 32, "Vector%zu", dp->Length);
-        nc_def_dim(_ncid, tmp, dp->Length, &_vectorDimIDs[dp->Length]);
-        }
+      if (_vectorDimIDs.find(dp->SerialNumber) == _vectorDimIDs.end())
+      {
+        int coord_dims[1] = { (int)dp->Length };
+        nc_def_dim(_ncid, dp->SerialNumber.c_str(), dp->Length, &_vectorDimIDs[dp->SerialNumber]);
+        nc_def_var(_ncid, dp->SerialNumber.c_str(), NC_FLOAT, 1, coord_dims, &dp->coord_dim_varid);
+      }
 
       ndims = 3;
-      dims[2] = _vectorDimIDs[dp->Length];
+      dims[2] = _vectorDimIDs[dp->SerialNumber];
     }
 
     status = nc_def_var(_ncid, dp->name, NC_FLOAT, ndims, dims, &dp->varid);
@@ -472,6 +483,12 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       fprintf(stderr, "%s\n", nc_strerror(status));
     }
 
+
+    if (dp->compute == (void(*)(void*))sRefer ||
+        dp->compute == (void(*)(void*))sReferAttack)
+    {
+      dp->metadata = dp->depends[0]->metadata;
+    }
 
     addCommonVariableAttributes(dp);
 
@@ -495,11 +512,6 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       mod[1] = (float)dp->Modulo->value[1];
       nc_put_att_float(_ncid, dp->varid, "modulus_range", NC_FLOAT, 2, mod);
     }
-
-    CheckAndAddAttrs(_ncid, dp->varid, dp->name);
-    if (dp->compute == (void(*)(void*))sRefer ||
-        dp->compute == (void(*)(void*))sReferAttack)
-      CheckAndAddAttrs(_ncid, dp->varid, dp->depend[0]);
 
     if (dp->Length > 3 &&
 	(dp->ProbeType & PROBE_PMS2D || dp->ProbeType & PROBE_PMS1D ||
@@ -1104,19 +1116,7 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
 {
   VDBVar *vdb_var = vardb->search_var(var->name);
 
-  float miss_val = (float)MISSING_VALUE;
-  nc_put_att_float(_ncid, var->varid, "_FillValue", NC_FLOAT, 1, &miss_val);
-
-/* Once we support individual _FillValue in Q missing data routine, then use this line.
-  float fv = VarDB_GetFillValue(var->name);
-  ncattput(_ncid, var->varid, "_FillValue", NC_FLOAT, 1, &fv);
-*/
-
-  strcpy(buffer, var->Units.c_str());
-  nc_put_att_text(_ncid, var->varid, "units", strlen(buffer), buffer);
-
-  strcpy(buffer, var->LongName.c_str());
-  nc_put_att_text(_ncid, var->varid, "long_name", strlen(buffer), buffer);
+  addVariableMetadata(var);
 
   if (vdb_var)
   {
@@ -1150,6 +1150,21 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
 	var->SerialNumber.length(), var->SerialNumber.c_str());
 
 }	/* END ADDCOMMONVARIABLEATTRIBUTES */
+
+/* -------------------------------------------------------------------- */
+void NetCDF::addVariableMetadata(const var_base *var)
+{
+  for (size_t i = 0; i < var->metadata.size(); ++i)
+  {
+    const Metadata *mdp = &var->metadata[i];
+    if (mdp->isFloat())
+      nc_put_att_float(_ncid, var->varid, mdp->_attr_name.c_str(), NC_FLOAT,
+                mdp->_attr_flt.size(), &mdp->_attr_flt[0]);
+    else
+      nc_put_att_text(_ncid, var->varid, mdp->_attr_name.c_str(),
+                mdp->_attr_str.length(), mdp->_attr_str.c_str());
+  }
+}       /* END ADDVARIABLEMETADATA */
 
 /* -------------------------------------------------------------------- */
 void NetCDF::ProcessFlightDate()

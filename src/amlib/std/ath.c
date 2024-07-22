@@ -33,7 +33,7 @@ void athInit(var_base *varp)
 
   // We will use the HARCO variables regardless, so copy in Rosemount
   // C0/C1, if appropriate.
-  std::string s = ((DERTBL *)varp)->depends[0]->LongName;
+  std::string s = ((DERTBL *)varp)->depends[0]->LongName();
   std::transform(s.begin(), s.end(), s.begin(), ::tolower);
   if ( s.find("rosemount") != std::string::npos )
   {
@@ -43,7 +43,7 @@ void athInit(var_base *varp)
 
   sprintf(buffer, "%.3f + %.3f log10(mach) + 0.090 (log10(mach))^2 + 0.091 (log10(mach))^3",
 	RF_C0[sensor], RF_C1[sensor]);
-  AddToAttributes(varp->name, "RecoveryFactor", buffer);
+  varp->addToMetadata("RecoveryFactor", buffer);
 
 }	/* END CONSTRUCTOR */
 

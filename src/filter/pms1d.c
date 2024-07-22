@@ -404,11 +404,6 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
       nc_put_att_float(ncid, cvarid, "PulseWidth", NC_FLOAT, 1, &value);
     }
 
-    if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "STD_TEMP")) ) {
-      float value = atof(p);
-      nc_put_att_float(ncid, cvarid, "std_temperature", NC_FLOAT, 1, &value);
-    }
-
     if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "STD_PRESS")) ) {
       float value = atof(p);
       nc_put_att_float(ncid, cvarid, "standard_pressure", NC_FLOAT, 1, &value);

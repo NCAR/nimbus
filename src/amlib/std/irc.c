@@ -65,6 +65,7 @@ void initPyrgeometer(var_base *varp)
     cal.push_back(tmp[0]);
     cal.push_back(tmp[1]);
   }
+  varp->addToMetadata("Coefficients", cal);
 
   cals[varp->name] = cal;
 
@@ -77,13 +78,13 @@ void initPyrgeometer(var_base *varp)
     LogMessage(buffer);
     cal.push_back(26.505);
     cal.push_back(-61.487);
-    AddToDefaults(dp->depend[1], name, cal);
   }
   else
   {
     cal.push_back(tmp[0]);
     cal.push_back(tmp[1]);
   }
+  dp->depends[1]->addToMetadata("Coefficients", cal);
 
   dome_temp_cal = cal;
 }

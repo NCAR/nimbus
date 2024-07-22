@@ -14,7 +14,7 @@ DESCRIPTION:    Calculate aircraft attitude corrections for hemispheric
 
 INPUT:          PITCH ROLL THF SOLAZ SOLZE
 
-OUTPUT:         RADCF RADC 
+OUTPUT:         RADCF RADC
 
 REFERENCES:    
 

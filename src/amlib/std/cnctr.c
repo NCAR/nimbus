@@ -11,12 +11,14 @@ STATIC FNS:	none
 DESCRIPTION:	Computation for the CN Counter, see Cindy Towhy for
 		in-depth information.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-95
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2024
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "amlib.h"
+
+static NR_TYPE StdTemperature = 294.15;
 
 /*  Value from /home/local/proj/Defaults on 23 April 1998           RLR */
 static NR_TYPE  DIV = 1.0;  /* counter card prescale factor (none)      */
@@ -27,12 +29,20 @@ void cnctrInit(var_base *varp)
   float  *tmp;
 
   if ((tmp = GetDefaultsValue("DIV", varp->name)) == NULL)
-    {
+  {
     sprintf(buffer, "Value set to %f in AMLIB function cnctrInit.\n", DIV);
     LogMessage(buffer);
-    }
+  }
   else
     DIV = tmp[0];
+
+  if (DIV != 1.0)
+    varp->addToMetadata("DIV", tmp[0]);
+
+  std::vector<float> values;
+  values.push_back(StdTemperature);
+  // Add this to FCNC
+  ((DERTBL *)varp)->depends[1]->addToMetadata("std_temperature", values);
 
 }  /* END CNCTRINIT */
 
@@ -95,7 +105,7 @@ void scFlow(DERTBL *varp)
 
   /* Corrected sample flow rate in vlpm
    */
-  flowc = flow * (StdPress / pressure) * ((temperature + Kelvin) / 294.15);
+  flowc = flow * (StdPress / pressure) * ((temperature + Kelvin) / StdTemperature);
 
   if (flowc <= 0.0)
     flowc = 0.0001;

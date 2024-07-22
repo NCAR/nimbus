@@ -118,6 +118,11 @@ void casasInit(var_base *varp)
 
   SampleRate[probeNum] = varp->SampleRate;
 
+  std::vector<float> values;
+  values.push_back(StdTemperature);
+  // Add this to PFLWC
+  ((DERTBL *)varp)->depends[1]->addToMetadata("std_temperature", values);
+
 }	/* END CASASINIT */
 
 /* -------------------------------------------------------------------- */

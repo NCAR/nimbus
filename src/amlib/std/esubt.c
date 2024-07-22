@@ -114,13 +114,13 @@ double esubt(double temperature, double pressure)
 /* -------------------------------------------------------------------- */
 void ewInit(var_base *varp)
 {
-  AddToAttributes(varp->name, "Method", "Murphy-Koop");
+  varp->addToMetadata("Method", "Murphy-Koop");
 }
 
 /* -------------------------------------------------------------------- */
 void edpcInit(var_base *varp)
 {
-  AddToAttributes(varp->name, "Method", "Goff-Gratch");
+  varp->addToMetadata("Method", "Goff-Gratch");
 }
 
 /* -------------------------------------------------------------------- */
@@ -128,7 +128,7 @@ void sew(DERTBL *varp)
 {
   double e = floatNAN;
 
-  if (varp->depends[0]->Units.compare("#/cm3") == 0)
+  if (varp->depends[0]->Units().compare("#/cm3") == 0)
   {
     // E from Density.
 
