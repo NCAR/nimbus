@@ -6,7 +6,6 @@ FULL NAME:	Read Defaults Object
 
 ENTRY POINTS:	ReadDefaultsFile()
 		GetDefaultsValue()
-		CheckAndAddAttrs()
 		FreeDefaults()
 
 STATIC FNS:	process_line()
