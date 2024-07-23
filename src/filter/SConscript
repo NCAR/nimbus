@@ -45,6 +45,7 @@ brdcast.cc
 rd_blanks.c
 rd_ddor.c
 rd_defs.c
+rd_doi.c
 rd_lag.c
 rd_meta.c
 rd_mod.c

@@ -44,6 +44,7 @@ const std::string TwoD_MethodRecon = "Reconstruction";
 const std::string PROJ_NAME     = "%s/%s/%s/ProjectName";
 const std::string DEPENDTBL     = "%s/%s/%s/DependTable";
 const std::string DEFAULTS      = "%s/%s/%s/Defaults";
+const std::string DOI_FILE      = "%s/%s/%s/DOI";
 const std::string GROUPS        = "%s/%s/%s/Production/FlightGroups";
 const std::string BLANKVARS     = "%s/%s/%s/Production/BlankOuts";
 const std::string LOGFILE	= "%s/%s/%s/Production/logfile";

@@ -23,14 +23,20 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2022
 
 #include "trace_variables.h"
 
+const std::string NetCDF::Program = "NSF NCAR";
+const std::string NetCDF::Institution = "National Center for Atmospheric Research";
 const std::string NetCDF::Source = "NCAR Research Aviation Facility";
 const std::string NetCDF::Address = "P.O. Box 3000, Boulder, CO 80307-3000";
 const std::string NetCDF::Phone = "(303) 497-1030";
-const std::string NetCDF::URL = "http://www.eol.ucar.edu";
-const std::string NetCDF::EMail = "codiac at ucar.edu";
+const std::string NetCDF::Creator_Name = "NSF NCAR EOL - Research Aviation Facility";
+const std::string NetCDF::Creator_URL = "https://www.eol.ucar.edu/who-we-are/eol-organization/research-aviation-facility-raf";
+const std::string NetCDF::Creator_EMail = "raf-pm at ucar.edu";
+const std::string NetCDF::Publisher_Name = "NSF NCAR - Earth Observing Laboratory";
+const std::string NetCDF::Publisher_URL = "https://www.eol.ucar.edu/data-software/eol-field-data-archive";
+const std::string NetCDF::Publisher_EMail = "datahelp at ucar.edu";
 const std::string NetCDF::ProcessorURL = "https://github.com/NCAR/nimbus";
 const std::string NetCDF::Conventions = "NCAR-RAF/nimbus";
-const std::string NetCDF::ConventionsURL = "http://www.eol.ucar.edu/raf/Software/netCDF.html";
+const std::string NetCDF::ConventionsURL = "https://www.eol.ucar.edu/raf/Software/netCDF.html";
 const std::string NetCDF::NETCDF_FORMAT_VERSION = "2.0";
 
 const char *NetCDF::ISO8601_Z = "%FT%T %z";
@@ -45,7 +51,8 @@ int	FlightDate[3];		// HACK: for amlib
 char	dateProcessed[64];	// For export to psql.cc
 
 
-void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetaData(int fd);
+void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetaData(int fd),
+	ReadDOI(int fd);
 
 extern "C" {
 void sRefer(DERTBL *), sReferAttack(DERTBL *);
@@ -139,11 +146,33 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
   /* Global Attributes.
    */
-  putGlobalAttribute("institution", Source);
+  putGlobalAttribute("program", Program);
+  putGlobalAttribute("institution", Institution);
   putGlobalAttribute("Address", Address);
   putGlobalAttribute("Phone", Phone);
-  putGlobalAttribute("creator_url", URL);
-  putGlobalAttribute("creator_email", EMail);
+
+  snprintf(buffer, 128, "NSF NCAR %s Team", cfg.AircraftString().c_str());
+  putGlobalAttribute("source", buffer);
+  putGlobalAttribute("platform", cfg.TailNumber());
+  putGlobalAttribute("project", cfg.ProjectName());
+
+  putGlobalAttribute("creator_name", Creator_Name);
+  putGlobalAttribute("creator_email", Creator_EMail);
+  putGlobalAttribute("creator_url", Creator_URL);
+  putGlobalAttribute("creator_type", "group");
+
+  putGlobalAttribute("publisher_name", Publisher_Name);
+  putGlobalAttribute("publisher_url", Publisher_URL);
+  putGlobalAttribute("publisher_email", Publisher_EMail);
+  putGlobalAttribute("publisher_type", "group");
+
+  ReadDOI(_ncid);
+  putGlobalAttribute("Conventions", Conventions);
+  putGlobalAttribute("ConventionsURL", ConventionsURL);
+  putGlobalAttribute("Metadata_Conventions", "Unidata Dataset Discovery v1.0");
+  putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION);
+  putGlobalAttribute("standard_name_vocabulary", "CF-1.0");
+
   putGlobalAttribute("ProcessorRepositoryURL", ProcessorURL);
   putGlobalAttribute("ProcessorRepositoryBranch", REPO_BRANCH);
   putGlobalAttribute("ProcessorRepositoryRevision", REPO_REVISION);
@@ -155,16 +184,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("ProjectDirectoryRevision", cfg.ProjectDirectoryRevision());
   if (cfg.ProjectDirectoryStatus().size() > 0)
     putGlobalAttribute("ProjectDirectoryDirt", cfg.ProjectDirectoryStatus());
-  putGlobalAttribute("Conventions", Conventions);
-  putGlobalAttribute("ConventionsURL", ConventionsURL);
-  putGlobalAttribute("Metadata_Conventions", "Unidata Dataset Discovery v1.0");
-  putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION);
-  putGlobalAttribute("standard_name_vocabulary", "CF-1.0");
   putGlobalAttribute("NIDASrevision", cfg.NIDASrevision());
-
-  if (!cfg.ProductionRun())
-    putGlobalAttribute("WARNING",
-	"This file contains PRELIMINARY DATA that are NOT to be used for critical analysis.");
 
   if (cfg.ZeroBinOffset())
     putGlobalAttribute("SizeDistributionLegacyZeroBin", "yes");
@@ -185,9 +205,6 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     fprintf(LogFile, "Processed on: %s\n", dateProcessed);
   }
 
-  putGlobalAttribute("ProjectName", cfg.ProjectName());	// Deprecate this sometime after 2011.  cjw
-  putGlobalAttribute("project", cfg.ProjectName());
-  putGlobalAttribute("Platform", cfg.TailNumber());
   if (cfg.isADS2()) putGlobalAttribute("ProjectNumber", cfg.ProjectNumber());
   putGlobalAttribute("FlightNumber", cfg.FlightNumber());
 
@@ -215,6 +232,10 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   else
   if (cfg.InterpolationType() == Config::AkimaSpline)
     putGlobalAttribute(InterpKey.c_str(), Interp_Akima);
+
+  if (!cfg.ProductionRun())
+    putGlobalAttribute("WARNING",
+	"This file contains PRELIMINARY DATA that are NOT to be used for critical analysis.");
 
   putGlobalAttribute("latitude_coordinate", cfg.CoordinateLatitude());
   putGlobalAttribute("longitude_coordinate", cfg.CoordinateLongitude());
