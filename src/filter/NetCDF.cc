@@ -33,7 +33,7 @@ const std::string NetCDF::Creator_URL = "https://www.eol.ucar.edu/who-we-are/eol
 const std::string NetCDF::Creator_EMail = "raf-pm at ucar.edu";
 const std::string NetCDF::Publisher_Name = "NSF NCAR - Earth Observing Laboratory";
 const std::string NetCDF::Publisher_URL = "https://www.eol.ucar.edu/data-software/eol-field-data-archive";
-const std::string NetCDF::Publisher_EMail = "datahelp at ucar.edu";
+const std::string NetCDF::Publisher_EMail = "datahelp at eol.ucar.edu";
 const std::string NetCDF::ProcessorURL = "https://github.com/NCAR/nimbus";
 const std::string NetCDF::Conventions = "NCAR-RAF/nimbus-2.0,ACDD-1.3";
 const std::string NetCDF::ConventionsURL = "https://www.eol.ucar.edu/raf/Software/netCDF.html";
@@ -153,6 +153,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
   putGlobalAttribute("source", Source);
   putGlobalAttribute("platform", cfg.TailNumber());
+  putGlobalAttribute("platform_type", "aircraft");
   putGlobalAttribute("project", cfg.ProjectName());
 
   putGlobalAttribute("creator_name", Creator_Name);
