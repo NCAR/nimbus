@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2022
 
 const std::string NetCDF::Program = "NSF NCAR";
 const std::string NetCDF::Institution = "National Center for Atmospheric Research";
-const std::string NetCDF::Source = "NCAR Research Aviation Facility";
+const std::string NetCDF::Source = "airborne observations";
 const std::string NetCDF::Address = "P.O. Box 3000, Boulder, CO 80307-3000";
 const std::string NetCDF::Phone = "(303) 497-1030";
 const std::string NetCDF::Creator_Name = "NSF NCAR EOL - Research Aviation Facility";
@@ -35,7 +35,7 @@ const std::string NetCDF::Publisher_Name = "NSF NCAR - Earth Observing Laborator
 const std::string NetCDF::Publisher_URL = "https://www.eol.ucar.edu/data-software/eol-field-data-archive";
 const std::string NetCDF::Publisher_EMail = "datahelp at ucar.edu";
 const std::string NetCDF::ProcessorURL = "https://github.com/NCAR/nimbus";
-const std::string NetCDF::Conventions = "NCAR-RAF/nimbus";
+const std::string NetCDF::Conventions = "NCAR-RAF/nimbus-2.0,ACDD-1.3";
 const std::string NetCDF::ConventionsURL = "https://www.eol.ucar.edu/raf/Software/netCDF.html";
 const std::string NetCDF::NETCDF_FORMAT_VERSION = "2.0";
 
@@ -151,8 +151,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("Address", Address);
   putGlobalAttribute("Phone", Phone);
 
-  snprintf(buffer, 128, "NSF NCAR %s Team", cfg.AircraftString().c_str());
-  putGlobalAttribute("source", buffer);
+  putGlobalAttribute("source", Source);
   putGlobalAttribute("platform", cfg.TailNumber());
   putGlobalAttribute("project", cfg.ProjectName());
 
@@ -160,6 +159,8 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("creator_email", Creator_EMail);
   putGlobalAttribute("creator_url", Creator_URL);
   putGlobalAttribute("creator_type", "group");
+  snprintf(buffer, 128, "%s %s Team", Program, cfg.AircraftString().c_str());
+  putGlobalAttribute("creator_group", buffer);
 
   putGlobalAttribute("publisher_name", Publisher_Name);
   putGlobalAttribute("publisher_url", Publisher_URL);
@@ -169,9 +170,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   ReadDOI(_ncid);
   putGlobalAttribute("Conventions", Conventions);
   putGlobalAttribute("ConventionsURL", ConventionsURL);
-  putGlobalAttribute("Metadata_Conventions", "Unidata Dataset Discovery v1.0");
-  putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION);
-  putGlobalAttribute("standard_name_vocabulary", "CF-1.0");
+  putGlobalAttribute("standard_name_vocabulary", "CF-1.11");
 
   putGlobalAttribute("ProcessorRepositoryURL", ProcessorURL);
   putGlobalAttribute("ProcessorRepositoryBranch", REPO_BRANCH);
