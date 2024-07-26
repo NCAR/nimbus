@@ -111,7 +111,8 @@ public:
 
   size_t SampleRate;	// Sampled rate
   size_t Length;	// Histogram length, if histogram
-  int coord_dim_varid;	// varid for coordinate variable (size_distribution vars only)
+  int coord_varid;	// varid for coordinate variable (size_distribution vars only)
+  int bounds_varid;	// varid for coordinate bounds variable (size_distribution vars only)
 
   size_t ProbeType;	// Is this a probe & which one
   size_t ProbeCount;	// For mulitple identicle probes

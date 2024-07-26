@@ -202,6 +202,7 @@ void PMS1D_SetupForADS3()
   setProbeType("A2DSV", PROBE_PMS2D | PROBE_2DS);
   setProbeType("A1DH", PROBE_PMS2D | PROBE_HVPS);	// SPEC HVPS
   setProbeType("A2DH", PROBE_PMS2D | PROBE_HVPS);
+  setProbeType("AHVPS", PROBE_PMS2D | PROBE_HVPS);
   setProbeType("APIP", PROBE_PMS2D | PROBE_2DP);	// DMT PIP
 }
 
@@ -313,9 +314,10 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
       }
     }
 
-    if ((varp->ProbeType & PROBE_PMS2D))
+    if ((varp->ProbeType & PROBE_PMS2D) && varp->Length > 13)	// 13 is the SPEC UDP feed, skip them
     {
-      if (varp->Length < 64)
+      // Old 32 diode probes.
+      if (varp->Length == 32)
       {
         cstr = "2D buffers with more than 8 seconds elapsed time or fewer than 20 particles.";
         nc_put_att_text(ncid, cvarid, "Rejected", strlen(cstr), cstr);

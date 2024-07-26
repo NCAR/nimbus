@@ -28,16 +28,16 @@ const std::string NetCDF::Institution = "National Center for Atmospheric Researc
 const std::string NetCDF::Source = "airborne observations";
 const std::string NetCDF::Address = "P.O. Box 3000, Boulder, CO 80307-3000";
 const std::string NetCDF::Phone = "(303) 497-1030";
-const std::string NetCDF::Creator_Name = "NSF NCAR EOL - Research Aviation Facility";
+const std::string NetCDF::Creator_Name = "NCAR EOL - Research Aviation Facility";
 const std::string NetCDF::Creator_URL = "https://www.eol.ucar.edu/who-we-are/eol-organization/research-aviation-facility-raf";
 const std::string NetCDF::Creator_EMail = "raf-pm at ucar.edu";
-const std::string NetCDF::Publisher_Name = "NSF NCAR - Earth Observing Laboratory";
+const std::string NetCDF::Publisher_Name = "UCAR NCAR - Earth Observing Laboratory";
 const std::string NetCDF::Publisher_URL = "https://www.eol.ucar.edu/data-software/eol-field-data-archive";
 const std::string NetCDF::Publisher_EMail = "datahelp at eol.ucar.edu";
 const std::string NetCDF::ProcessorURL = "https://github.com/NCAR/nimbus";
 const std::string NetCDF::Conventions = "NCAR-RAF/nimbus-2.0,ACDD-1.3";
 const std::string NetCDF::ConventionsURL = "https://www.eol.ucar.edu/raf/Software/netCDF.html";
-const std::string NetCDF::NETCDF_FORMAT_VERSION = "2.0";
+//const std::string NetCDF::NETCDF_FORMAT_VERSION = "2.0";
 
 const char *NetCDF::ISO8601_Z = "%FT%T %z";
 
@@ -61,7 +61,7 @@ void sRefer(DERTBL *), sReferAttack(DERTBL *);
 /* -------------------------------------------------------------------- */
 NetCDF::NetCDF() :
   _ncid(0), _realTimeMode(false), _recordNumber(0), _timeVar(0),
-  _timeOffset(0.0), _errCnt(0)
+  _timeOffset(0.0), _bnds_dimid(-1), _errCnt(0)
 {
   memset(&_startFlight, 0, sizeof(_startFlight));
 
@@ -160,7 +160,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("creator_email", Creator_EMail);
   putGlobalAttribute("creator_url", Creator_URL);
   putGlobalAttribute("creator_type", "group");
-  snprintf(buffer, 128, "%s %s Team", Program, cfg.AircraftString().c_str());
+  snprintf(buffer, 128, "%s %s Team", Program.c_str(), cfg.AircraftString().c_str());
   putGlobalAttribute("creator_group", buffer);
 
   putGlobalAttribute("publisher_name", Publisher_Name);
@@ -356,16 +356,8 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     {
       if (rp->SerialNumber.size() > 0)	// you should only ever come here once per serial number
       {
-        int coord_dims[1];
-        nc_def_dim(_ncid, rp->SerialNumber.c_str(), rp->Length, &coord_dims[0]);
-        _vectorDimIDs[rp->SerialNumber] = coord_dims[0];
+        createSizeDistributionCoordinateDimVars(rp);
         dims[2] = _vectorDimIDs[rp->SerialNumber];
-        status = nc_def_var(_ncid, rp->SerialNumber.c_str(), NC_FLOAT, 1, coord_dims, &rp->coord_dim_varid);
-        if (status != NC_NOERR)
-        {
-          fprintf(stderr, "CreateNetCDF: error, coord variable %s %s status = %d\n", rp->name, rp->SerialNumber.c_str(), status);
-          fprintf(stderr, "%s\n", nc_strerror(status));
-        }
       }
       else
       {
@@ -469,7 +461,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       {
         int coord_dims[1] = { (int)dp->Length };
         nc_def_dim(_ncid, dp->SerialNumber.c_str(), dp->Length, &_vectorDimIDs[dp->SerialNumber]);
-        nc_def_var(_ncid, dp->SerialNumber.c_str(), NC_FLOAT, 1, coord_dims, &dp->coord_dim_varid);
+        nc_def_var(_ncid, dp->SerialNumber.c_str(), NC_FLOAT, 1, coord_dims, &dp->coord_varid);
       }
 
       ndims = 3;
@@ -525,6 +517,58 @@ int old_fill_mode;
 nc_set_fill(_ncid, NC_NOFILL, &old_fill_mode); /* set nofill */
 
 }	/* END CREATENETCDF */
+
+/* -------------------------------------------------------------------- */
+void NetCDF::createSizeDistributionCoordinateDimVars(var_base *vp)
+{
+  char dname[128], text[128];
+  int coord_dims[2], status;
+
+  // exit if we've already created these (2DSH & 2DSV would cause two entries into here)
+  if (_vectorDimIDs.count(vp->SerialNumber))
+    return;
+
+  if (_bnds_dimid == -1)	// Create this only once.
+    nc_def_dim(_ncid, "bnds", 2, &_bnds_dimid);
+
+  strcpy(dname, vp->SerialNumber.c_str());
+
+  // Create dimension
+  nc_def_dim(_ncid, dname, vp->Length, &coord_dims[0]);
+  _vectorDimIDs[vp->SerialNumber] = coord_dims[0];
+  coord_dims[1] = _bnds_dimid;
+
+  // Create coordinate variable
+  status = nc_def_var(_ncid, dname, NC_FLOAT, 1, coord_dims, &vp->coord_varid);
+  strcat(dname, "_bnds");
+  if (status != NC_NOERR)
+  {
+    fprintf(stderr, "CreateNetCDF: error, coord variable %s %s status = %d\n", vp->name, vp->SerialNumber.c_str(), status);
+    fprintf(stderr, "%s\n", nc_strerror(status));
+  }
+  else
+  {
+    nc_put_att_text(_ncid, vp->coord_varid, "units", 2, "um");
+    snprintf(text, 128, "%s center bin size in diameter", & vp->name[1]);
+    nc_put_att_text(_ncid, vp->coord_varid, "long_name", strlen(text), text);
+    nc_put_att_text(_ncid, vp->coord_varid, "bounds", strlen(dname), dname);
+  }
+
+  // Create bounds variable
+  status = nc_def_var(_ncid, dname, NC_FLOAT, 2, coord_dims, &vp->bounds_varid);
+  if (status != NC_NOERR)
+  {
+    fprintf(stderr, "CreateNetCDF: error, coord variable %s %s status = %d\n", vp->name, vp->SerialNumber.c_str(), status);
+    fprintf(stderr, "%s\n", nc_strerror(status));
+  }
+  else
+  {
+    nc_put_att_text(_ncid, vp->bounds_varid, "units", 2, "um");
+    snprintf(text, 128, "lower and upper bounds for %s", & vp->name[1]);
+    nc_put_att_text(_ncid, vp->bounds_varid, "long_name", strlen(text), text);
+  }
+
+}
 
 /* -------------------------------------------------------------------- */
 void NetCDF::SwitchToDataMode()
