@@ -26,8 +26,8 @@ void ReadDOI(int ncid)
 {
   char	*dois[32], dataSet[64], doi[64], doi_value[64], attr_value[128], *p;
 
-//  if ( !cfg.ProductionRun() )
-//    return;
+  if ( !cfg.ProductionRun() )
+    return;
 
 
   ReadTextFile(DOI_FILE, dois);

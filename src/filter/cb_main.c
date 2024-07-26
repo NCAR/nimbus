@@ -393,6 +393,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   }
 
   ncFile->SwitchToDataMode();
+  ncFile->WriteCoordinateVariableData();
 
   if (cfg.ProcessingMode() == Config::RealTime)
   {
