@@ -457,7 +457,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     if (dp->Length > 1)
     {
       // Check to see if dimension exists.  If not, create it.
-      if (_vectorDimIDs.find(dp->SerialNumber) == _vectorDimIDs.end())
+      if (_vectorDimIDs.count(dp->SerialNumber) == 0)
       {
         int coord_dims[1] = { (int)dp->Length };
         nc_def_dim(_ncid, dp->SerialNumber.c_str(), dp->Length, &_vectorDimIDs[dp->SerialNumber]);
@@ -549,7 +549,7 @@ void NetCDF::createSizeDistributionCoordinateDimVars(var_base *vp)
   else
   {
     nc_put_att_text(_ncid, vp->coord_varid, "units", 2, "um");
-    snprintf(text, 128, "%s center bin size in diameter", & vp->name[1]);
+    snprintf(text, 128, "%s arithmetic midpoint bin size in diameter", & vp->name[1]);
     nc_put_att_text(_ncid, vp->coord_varid, "long_name", strlen(text), text);
     nc_put_att_text(_ncid, vp->coord_varid, "bounds", strlen(dname), dname);
   }
@@ -567,7 +567,6 @@ void NetCDF::createSizeDistributionCoordinateDimVars(var_base *vp)
     snprintf(text, 128, "lower and upper bounds for %s", & vp->name[1]);
     nc_put_att_text(_ncid, vp->bounds_varid, "long_name", strlen(text), text);
   }
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -577,6 +576,44 @@ void NetCDF::SwitchToDataMode()
   nc_sync(_ncid);
 
 }	/* END SWITCHNETCDFTODATAMODE */
+
+/* -------------------------------------------------------------------- */
+void NetCDF::WriteCoordinateVariableData()
+{
+  float cell_size[1024], mid_points[1024], bounds[1024][2];
+
+  nc_enddef(_ncid);
+
+  for (size_t i = 0; i < derived.size(); ++i)
+  {
+    DERTBL *dp;
+    if ((dp = derived[i])->Output == false)
+      continue;
+
+    memset(cell_size, 0, sizeof(cell_size));
+    memset(mid_points, 0, sizeof(mid_points));
+    memset(bounds, 0, sizeof(bounds));
+    if (nc_get_att_float(_ncid, dp->varid, "CellSizes", cell_size) == NC_NOERR)
+    {
+      size_t nCell, lend;
+
+      nc_inq_attlen(_ncid, dp->varid, "CellSizes", &nCell);
+      assert(nCell <= 1024);
+
+      for (int j = 0; j < dp->Length; ++j)
+      {
+        mid_points[j] = (cell_size[j]+cell_size[j+1]) / 2;
+        bounds[j][0] = cell_size[j];
+        bounds[j][1] = cell_size[j+1];
+      }
+      nc_put_var_float(_ncid, dp->depends[0]->coord_varid, mid_points);
+      nc_put_var_float(_ncid, dp->depends[0]->bounds_varid, (float *)bounds);
+    }
+  }
+
+  nc_sync(_ncid);
+
+}	/* END WRITECOORDINATEVARIABLEDATA */
 
 /* -------------------------------------------------------------------- */
 void NetCDF::WriteNetCDF()

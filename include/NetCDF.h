@@ -26,6 +26,7 @@ public:
 
   void	CreateFile(const char fileName[], size_t nRecords);
   void	SwitchToDataMode();
+  void	WriteCoordinateVariableData();
   void	WriteNetCDF();
   void	ProcessFlightDate();
   void	QueueMissingData(int h, int m, int s, int nRecords);
