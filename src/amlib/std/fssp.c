@@ -39,6 +39,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2003
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 static const size_t MAX_FSSP = 4;
@@ -55,11 +56,8 @@ static NR_TYPE	total_concen[MAX_FSSP], dbar[MAX_FSSP], plwc[MAX_FSSP],
 
 NR_TYPE		refff3[MAX_FSSP], refff2[MAX_FSSP];  /* For export to reff.c */
 
-void	ReadPMSspecs(const char fileName[]);
-
 // Probe Count.
 static size_t nProbes = 0;
-extern void setProbeCount(const char * location, int count);
 
 /* -------------------------------------------------------------------- */
 void cfsspInit(var_base *varp)
@@ -193,6 +191,8 @@ void cfsspInit(var_base *varp)
     sprintf(msg, "fssp.c: <<< WARNING >>> %s: Serial # %s, TAS will be altered as follows:\n  tas = -0.0466 + 0.95171 * tas;", varp->name, varp->SerialNumber.c_str());
     LogMessage(msg);
   }
+
+  addProbeMetadata(varp, "scattering", "cloud_droplet");
 
 }	/* END CFSSPINIT */
 

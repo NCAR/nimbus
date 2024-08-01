@@ -19,6 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 static const size_t MAX_CDP = 2;
@@ -37,9 +38,7 @@ NR_TYPE		reffd3[MAX_CDP], reffd2[MAX_CDP];  /* For export to reff.c */
 
 // Probe Count.
 static int nProbes = 0;
-extern void setProbeCount(const char * location, int count);
 
-void	ReadPMSspecs(const char fileName[]);
 
 /* -------------------------------------------------------------------- */
 void ccdpInit(var_base *varp)
@@ -147,6 +146,8 @@ void ccdpInit(var_base *varp)
   ReleasePMSspecs();
 
   SampleRate[probeNum] = varp->SampleRate;
+
+  addProbeMetadata(varp, "scattering", "cloud_droplet");
 
 }	/* END CCDPINIT */
 

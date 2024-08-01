@@ -23,6 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 
 static NR_TYPE diodeDiameter = 0.2;	// 200 micron
 
@@ -114,5 +115,13 @@ void ComputeDOF(
     }
 
 }	/* END COMPUTEDOF */
+
+void addProbeMetadata(var_base *varp, const char *technique, const char *sz_dist_type)
+{
+  varp->addToMetadata("probe_technique", technique);
+  if ( dynamic_cast<DERTBL*>(varp) )
+    ((DERTBL*)varp)->depends[0]->addToMetadata("probe_technique", technique);
+  varp->addToMetadata("size_distribution_type", sz_dist_type);
+}
 
 /* END PMS1D.C */

@@ -20,6 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2022
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 #include <cassert>
@@ -48,15 +49,9 @@ static NR_TYPE  radius[MAX_PMS2D][maxBins], cell_size[MAX_PMS2D][maxBins],
 NR_TYPE         reff23[MAX_PMS2D], reff22[MAX_PMS2D];  /* For export to reff.c */
 
 bool	thisIs2Dnot1D(const char * name);
-void	ReadPMSspecs(const char fileName[]);
-
-void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-	NR_TYPE dof[], float minRange, float resolution, size_t nDiodes, size_t
-	length, float dof_const, size_t armDistance);
 
 // Probe Count.
 static size_t nProbes = 0;
-extern void setProbeCount(const char * location, int count);
 
 
 /* -------------------------------------------------------------------- */
@@ -205,6 +200,11 @@ void sTwodInit(var_base *varp)
   conc50idx[probeNum] = (50 / (int)resolution) - 1;
   conc100idx[probeNum] = (100 / (int)resolution) - 1;
   conc150idx[probeNum] = (150 / (int)resolution) - 1;
+
+  if (resolution < 100)
+    addProbeMetadata(varp, "oap", "cloud_drop");
+  else
+    addProbeMetadata(varp, "oap", "cloud_precipitation");
 
 }	/* END STWODINIT */
 

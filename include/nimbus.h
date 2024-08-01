@@ -84,7 +84,7 @@ class var_base
 {
 public:
   var_base(const char s[]);
-  ~var_base();
+  virtual ~var_base();
 
   void addToMetadata(const char attr_name[], const char attr[]);
   void addToMetadata(const char attr_name[], std::string attr);
@@ -99,9 +99,7 @@ public:
   std::string Units() const;
   std::string AltUnits() const;	// Alternate units.
   std::string LongName() const;
-//  std::string Units;
-//  std::string AltUnits;	// Alternate units.
-//  std::string LongName;
+
   std::vector<std::string> CategoryList;
 
   int varid;		// NetCDF variable ID
