@@ -30,6 +30,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 static const size_t MAX_F300 = 1;
@@ -43,9 +44,7 @@ static NR_TYPE	cell_size[MAX_F300][BINS_40+1], pvol[MAX_F300], SAMPLE_AREA[MAX_F
 
 // Probe Count.
 static size_t nProbes = 0;
-extern void setProbeCount(const char * location, int count);
 
-void	ReadPMSspecs(const char fileName[]);
 
 /* -------------------------------------------------------------------- */
 void cf300Init(var_base *varp)

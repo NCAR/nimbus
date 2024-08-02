@@ -25,6 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 #define MAX_200Y	1
@@ -39,15 +40,6 @@ static NR_TYPE	total_concen[MAX_200Y], dbar[MAX_200Y], plwc[MAX_200Y],
 static NR_TYPE	radius[BINS_16],
 		dia[BINS_16], dia2[BINS_16], dia3[BINS_16],
 		eaw[BINS_16];	/* Effective Sample Width	*/
-
-void	ReadPMSspecs(const char fileName[]);
-
-void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-                NR_TYPE dof[], float minRange, float resolution, size_t nDiodes,
-		size_t length, float dof_const, size_t armDistance),
-
-	ComputeDOF(NR_TYPE radius[], NR_TYPE tas, NR_TYPE dof[],
-		size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
 
 
 /* -------------------------------------------------------------------- */

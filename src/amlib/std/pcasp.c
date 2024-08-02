@@ -14,6 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2018
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 static const size_t MAX_ASAS = 2;
@@ -33,9 +34,7 @@ static NR_TYPE	dt[MAX_ASAS];	// Average Particle Pulse Width - Coincidence corrr
 
 // Probe Count.
 static size_t nProbes = 0;
-extern void setProbeCount(const char * location, int count);
 
-void	ReadPMSspecs(const char fileName[]);
 
 /* -------------------------------------------------------------------- */
 void casasInit(var_base *varp)
@@ -122,6 +121,8 @@ void casasInit(var_base *varp)
   values.push_back(StdTemperature);
   // Add this to PFLWC
   ((DERTBL *)varp)->depends[1]->addToMetadata("std_temperature", values);
+
+  addProbeMetadata(varp, "scattering", "aerosol_course");
 
 }	/* END CASASINIT */
 

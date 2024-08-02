@@ -14,6 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2023
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 static const size_t MAX_UHSAS = 2;
@@ -37,11 +38,9 @@ static size_t concu100_start_bin = 1, concu500_start_bin = 1;
 
 // Probe Count.
 static size_t nProbes = 0;
-extern void setProbeCount(const char * location, int count);
 
 static void uhsasBinConsolidation(NR_TYPE *actual);
 
-void	ReadPMSspecs(const char fileName[]);
 
 /* -------------------------------------------------------------------- */
 void cuhsasInit(var_base *varp)
@@ -139,6 +138,8 @@ printf("uhsas.c: UHSAS %s serial number %s.\n", varp->name, varp->SerialNumber.c
   values.push_back(StdTemperature);
   // Add this to UFLWC
   ((DERTBL *)varp)->depends[1]->addToMetadata("std_temperature", values);
+
+  addProbeMetadata(varp, "scattering", "aerosol_fine");
 
 }	/* END CUHSASINIT */
 
