@@ -68,6 +68,7 @@ void  var_base::addToMetadata(const char attr_name[], std::string attr)
   metadata.push_back(Metadata(key, attr));
 }
 
+
 void var_base::addToMetadata(const char attr_name[], float value)
 {
   std::string key(attr_name);
@@ -76,6 +77,20 @@ void var_base::addToMetadata(const char attr_name[], float value)
 }
 
 void var_base::addToMetadata(const char attr_name[], std::vector<float> values)
+{
+  std::string key(attr_name);
+  metadata.push_back(Metadata(key, values));
+}
+
+
+void var_base::addToMetadata(const char attr_name[], int value)
+{
+  std::string key(attr_name);
+  std::vector<int> val = {value};
+  metadata.push_back(Metadata(key, val));
+}
+
+void var_base::addToMetadata(const char attr_name[], std::vector<int> values)
 {
   std::string key(attr_name);
   metadata.push_back(Metadata(key, values));

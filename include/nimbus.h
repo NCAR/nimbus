@@ -65,16 +65,20 @@ class Metadata
   public:
     Metadata(std::string name, std::string value)
 	: _attr_name(name), _attr_str(value) { }
+    Metadata(std::string name, std::vector<int> values)
+	: _attr_name(name), _attr_int(values) { }
     Metadata(std::string name, std::vector<float> values)
 	: _attr_name(name), _attr_flt(values) { }
 
     bool isString() const { return (_attr_str.size() > 0); }
     bool isFloat() const { return (_attr_flt.size() > 0); }
+    bool isInt() const { return (_attr_int.size() > 0); }
 
 //  private:
     std::string _attr_name;
 
     std::string _attr_str;
+    std::vector<int> _attr_int;
     std::vector<float> _attr_flt;
 };
 
@@ -88,7 +92,9 @@ public:
 
   void addToMetadata(const char attr_name[], const char attr[]);
   void addToMetadata(const char attr_name[], std::string attr);
+  void addToMetadata(const char attr_name[], int value);
   void addToMetadata(const char attr_name[], float value);
+  void addToMetadata(const char attr_name[], std::vector<int> values);
   void addToMetadata(const char attr_name[], std::vector<float> values);
 
 
