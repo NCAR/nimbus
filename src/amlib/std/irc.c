@@ -35,19 +35,29 @@ static const double SBC = 5.6686E-8;
 static std::vector<float> dome_temp_cal;
 
 static std::map<std::string, std::vector<float> > cals;
+static std::map<std::string, std::vector<float> > pitch_threshold;
+static std::map<std::string, float> roll_threshold;
 
 /* -------------------------------------------------------------------- */
 void initPyrgeometer(var_base *varp)
 {
   DERTBL *dp = (DERTBL *)varp;
+  
+  roll_threshold[varp->name] = 90;
+  pitch_threshold[varp->name].push_back(-90);
+  pitch_threshold[varp->name].push_back(90);
 
   /* If old Eppley processing, then leave.  Eppley's had two dependencies,
    * sink tempearture and dome temperature.  The new CGR4 has just dome
    * temperature.
    */
-  if (dp->nDependencies > 2)	// If old Eppley processing, then leave.
+  if (strchr(dp->depends[0]->name,'V')==0) // If old Eppley processing, then leave.
+  {
+    sprintf(buffer, "irc.c: Pyrgeometer, no 'V' detected in first variable, setting to Eppley.");
+    LogMessage(buffer);
     return;
-
+  }
+  
   float	*tmp;
   char	name[100];
   std::vector<float> cal;
@@ -87,6 +97,20 @@ void initPyrgeometer(var_base *varp)
   dp->depends[1]->addToMetadata("Coefficients", cal);
 
   dome_temp_cal = cal;
+
+  sprintf(name, "%s_PITCH_THRESHOLD", varp->name);
+  if ((tmp = GetDefaultsValue(name,varp->name)))
+  {
+    pitch_threshold[varp->name].clear();
+    pitch_threshold[varp->name].push_back(tmp[0]);
+    pitch_threshold[varp->name].push_back(tmp[1]);
+  }
+
+  sprintf(name, "%s_ROLL_THRESHOLD", varp->name);
+  if ((tmp = GetDefaultsValue(name, varp->name)))
+  {
+    roll_threshold[varp->name] = tmp[0];
+  }
 }
 
 /* -------------------------------------------------------------------- */
@@ -94,8 +118,9 @@ void sirc(DERTBL *varp)
 {
   NR_TYPE ir = GetSample(varp, 0);
 
-  if (varp->nDependencies == 2)	// New CGR4 Pyrgeometer (2011).
+  if (strchr(varp->depends[0]->name,'V'))	// New CGR4 Pyrgeometer (2011).
   {
+    bool fail_test = false;
     NR_TYPE dt = GetSample(varp, 1);
 
     /* Since the cal for Dome Temp has a log in it and I didn't want to
@@ -105,7 +130,22 @@ void sirc(DERTBL *varp)
     dt = dome_temp_cal[0] + dome_temp_cal[1] * log10(dt);
     PutSample(varp->depends[1], dt);  // this does not write into SampleRateData, just AveragedData.
 
-    PutSample(varp, ((cals[varp->name])[0] * ir - (cals[varp->name])[1]) + SBC * pow(dt+Kelvin, 4.0));
+    // Pitch & roll thershold tests, if defined in Defaults file.
+    if (varp->nDependencies == 4)
+    {
+      NR_TYPE pitch = GetSample(varp, 2);
+      NR_TYPE roll = GetSample(varp, 3);
+      if (!std::isnan(roll) && fabs(roll) > roll_threshold[varp->name])
+        fail_test = true;
+      if (!std::isnan(pitch)&&(pitch < (pitch_threshold[varp->name])[0] ||
+          pitch > (pitch_threshold[varp->name])[1]))
+        fail_test = true;
+    }
+
+    if (fail_test)
+      PutSample(varp, floatNAN);
+    else
+      PutSample(varp, ((cals[varp->name])[0] * ir - (cals[varp->name])[1]) + SBC * pow(dt+Kelvin, 4.0));
   }
   else	// Eppley Pyrgeometer (up to about 2005).
   {
