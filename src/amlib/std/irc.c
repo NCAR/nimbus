@@ -98,18 +98,21 @@ void initPyrgeometer(var_base *varp)
 
   dome_temp_cal = cal;
 
-  sprintf(name, "%s_PITCH_THRESHOLD", varp->name);
+  sprintf(name, "SP_%s_PITCH_THRESHOLD", 
+		strchr(varp->name, 'B') ? "BOTTOM" : "TOP");
   if ((tmp = GetDefaultsValue(name,varp->name)))
   {
     pitch_threshold[varp->name].clear();
     pitch_threshold[varp->name].push_back(tmp[0]);
     pitch_threshold[varp->name].push_back(tmp[1]);
+    dp->addToMetadata("PitchThreshold", pitch_threshold[varp->name]);
   }
 
-  sprintf(name, "%s_ROLL_THRESHOLD", varp->name);
+  strcpy(name, "SP_ROLL_THRESHOLD");
   if ((tmp = GetDefaultsValue(name, varp->name)))
   {
     roll_threshold[varp->name] = tmp[0];
+    dp->addToMetadata("RollThreshold", tmp[0]);
   }
 }
 

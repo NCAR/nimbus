@@ -91,6 +91,7 @@ tsurf.c
 tvir.c
 uhsas.c
 vcsel.c
+visc.c
 wd.c
 ws.c
 """)

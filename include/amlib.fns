@@ -929,6 +929,8 @@
 	"HGM",		NULL,		xlhgm,		NULL,
 	"IRBC",		(void(*)(void*))initPyrgeometer,	NULL,	sirc,
 	"IRTC",		(void(*)(void*))initPyrgeometer,	NULL,	sirc,
+	"VISTC",	(void(*)(void*))initVisPyrgeometer,	NULL,	svisc,
+	"VISBC",	(void(*)(void*))initVisPyrgeometer,	NULL,	svisc,
 	"LWCC",		NULL,		NULL,		slwcc,
 	"MR",		NULL,		NULL,		smr,
 	"MRLA",		NULL,		NULL,		smrla,
