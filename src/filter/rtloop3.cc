@@ -174,6 +174,7 @@ void RealTimeLoop3()
 
     time_t ut = tt / USECS_PER_SEC;
     struct tm tm;
+    memset(&tm, 0, sizeof(struct tm));
     gmtime_r(&ut, &tm);
     strftime(timeStamp, sizeof(timeStamp), "%Y%m%dT%H%M%S", &tm);
 //    std::cout << timeStamp << std::endl;

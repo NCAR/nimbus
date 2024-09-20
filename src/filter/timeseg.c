@@ -175,6 +175,7 @@ time_t HdrBlkTimeToSeconds(Hdr_blk * hdr)
 {
   struct tm ft;
 
+  memset(&ft, 0, sizeof(ft));
   ft.tm_hour = ntohs(hdr->hour);
   ft.tm_min = ntohs(hdr->minute);
   ft.tm_sec = ntohs(hdr->second);

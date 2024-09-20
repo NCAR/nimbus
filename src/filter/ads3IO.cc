@@ -33,6 +33,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-06
 time_t xlateToSecondsSinceMidnight(time_t ut) // Unused now.
 {
   struct tm tm;
+  memset(&tm, 0, sizeof(struct tm));
   gmtime_r(&ut, &tm);
 //  int msec = (tt % USECS_PER_SEC) / USECS_PER_MSEC;
 

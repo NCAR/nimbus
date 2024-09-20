@@ -196,6 +196,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   time_t	t;
   struct tm	tm;
 
+  memset(&tm, 0, sizeof(struct tm));
   t = time(0);
   tm = *localtime(&t);
   strftime(dateProcessed, 64, ISO8601_Z, &tm);
@@ -1130,7 +1131,10 @@ void NetCDF::writeMinMax()
 void NetCDF::writeTimeUnits()
 {
   const char *format = "seconds since %F %T %z";
-  struct tm tmp;
+  struct tm tmp, EndFlight;
+
+  memset(&tmp, 0, sizeof(struct tm));
+  memset(&EndFlight, 0, sizeof(struct tm));
 
   _startFlight.tm_isdst = 0;
   tmp = _startFlight;
@@ -1148,7 +1152,6 @@ printf("%s\n", asctime(&_startFlight));
 
   time_t endTime = timegm(&tmp);
   endTime += (_timeVar - 1);
-  struct tm EndFlight;
   gmtime_r(&endTime, &EndFlight);
   EndFlight.tm_isdst = 0;
   strftime(buffer, 256, ISO8601_Z, &EndFlight);
