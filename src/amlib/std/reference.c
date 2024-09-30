@@ -65,4 +65,36 @@ void sReferAttack(DERTBL *varp)
   PutSample(varp, attack[FeedBack]);
 }
 
+
+void sReferSSlip(DERTBL *varp)
+{
+  static NR_TYPE sslip[nFeedBackTypes] = { 0.0, 0.0 };
+  static int sslip_miss_cnt[nFeedBackTypes] = { 0, 0 };
+  static const int SSLIP_MISS_MAX[nFeedBackTypes] = { 2, 2 * Config::HighRate };
+
+  // Fallback value for Attack if it goes missing.
+  static const NR_TYPE GV_SSLIP_DEFAULT_VALUE = nan("");
+  static const NR_TYPE C130_SSLIP_DEFAULT_VALUE = 1.1;
+
+
+  NR_TYPE slipin = GetSample(varp, 0);
+
+  if (std::isnan(slipin))
+  {
+    NR_TYPE substitute_sslip = cfg.Aircraft() == Config::HIAPER ?
+			GV_SSLIP_DEFAULT_VALUE : C130_SSLIP_DEFAULT_VALUE;
+
+    // Repeat prev sslip up to two samples if missing, otherwise set to 3.0.
+    if (++sslip_miss_cnt[FeedBack] > SSLIP_MISS_MAX[FeedBack])
+      sslip[FeedBack] = substitute_sslip;
+  }
+  else
+  {
+    sslip_miss_cnt[FeedBack] = 0;
+    sslip[FeedBack] = slipin;
+  }
+
+  PutSample(varp, sslip[FeedBack]);
+}
+
 /* END REFERENCE.C */

@@ -829,8 +829,11 @@
 	"AKDF",		NULL,		NULL,		sakdf,
 	"AKY",		(void(*)(void*))initAKY,	NULL,		saky,
 	"AKRD",		(void(*)(void*))initAKRD,	NULL,		sakrd,
-	"AQRATIO",	NULL,		NULL,		saqratio,
 	"ATTACK",	NULL,		NULL,		sReferAttack,
+	"AQRATIO",	NULL,		NULL,		saqratio,
+	"SSDF",		NULL,		NULL,		sssdf,
+	"SSLIP",	NULL,		NULL,		sReferSSlip,
+	"SSRD",		(void(*)(void*))initSSRD,	NULL,		sssrd,
 	"ALTX",		NULL,		NULL,		sRefer,
 	"CMRCR",	NULL,		NULL,		scmrcr,
 	"CONCCN",	NULL,		NULL,		sconccn,
@@ -993,9 +996,6 @@
 	"RHLA",		NULL,		NULL,		srhrho,
 	"RHLA1",	NULL,		NULL,		srhrho,
 	"SERIAL",	NULL,		xlserial,	NULL,
-	"SSDF",		NULL,		NULL,		sssdf,
-	"SSLIP",	NULL,		NULL,		sRefer,
-	"SSRD",		(void(*)(void*))initSSRD,	NULL,		sssrd,
 #
 #	True Air Speed
 #
