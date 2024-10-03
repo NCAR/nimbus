@@ -14,6 +14,8 @@
 
 extern NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
 
+NR_TYPE defaultATTACK(), defaultSSLIP();
+
 /* -------------------------------------------------------------------- */
 void spstfc(DERTBL *varp)
 {
@@ -24,6 +26,11 @@ void spstfc(DERTBL *varp)
   NR_TYPE attack = GetSample(varp, 2);
   NR_TYPE sslip = GetSample(varp, 3);
   NR_TYPE mach = GetSample(varp, 4);
+
+  if (std::isnan(attack))
+    attack = defaultATTACK();
+  if (std::isnan(sslip))
+    attack = defaultSSLIP();
 
   pstfc = pstf - (*pcorPSTF)(qctf, pstf, attack, sslip, mach);
 

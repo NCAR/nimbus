@@ -14,6 +14,8 @@
 extern NR_TYPE (*pcorQCF)(NR_TYPE);
 extern NR_TYPE (*pcorQCFv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
+NR_TYPE defaultATTACK();
+
 /* -------------------------------------------------------------------- */
 void sqcfc(DERTBL *varp)
 {
@@ -28,6 +30,9 @@ void sqcfc(DERTBL *varp)
   if (cfg.Aircraft() == Config::HIAPER || cfg.Aircraft() == Config::C130)
   {
     NR_TYPE attack = GetSample(varp, 2);
+
+    if (std::isnan(attack))
+      attack = defaultATTACK();
 
     qcfc = qcf - (*pcorQCFv2)(qcf, psf, attack);
   }

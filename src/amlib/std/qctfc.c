@@ -13,6 +13,8 @@
 
 extern NR_TYPE (*pcorQCTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
 
+NR_TYPE defaultATTACK(), defaultSSLIP();
+
 /* -------------------------------------------------------------------- */
 void sqctfc(DERTBL *varp)
 {
@@ -29,6 +31,12 @@ void sqctfc(DERTBL *varp)
     NR_TYPE attack = GetSample(varp, 2);
     NR_TYPE sslip = GetSample(varp, 3);
     NR_TYPE mach = GetSample(varp, 4);
+
+    if (std::isnan(attack))
+      attack = defaultATTACK();
+    if (std::isnan(sslip))
+      attack = defaultSSLIP();
+
     qctfc = qctf + (*pcorQCTF)(qctf, pstf, attack, sslip, mach);
   }
   else	// Cooper method

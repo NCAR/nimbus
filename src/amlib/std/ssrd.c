@@ -17,9 +17,23 @@ static int      gv_radome_ssn = 1;      // default to first radome.
 // Serial number for C130 radome.  #2 was installed in May of 2013.
 static int      c130_radome_ssn = 1;      // default to first radome.
 
+// Fallback value for SSLIP if it goes missing.  Only applies to
+// propeller planes.   https://en.wikipedia.org/wiki/P-factor
+static const NR_TYPE GV_SSLIP_DEFAULT_VALUE = nan("");
+static const NR_TYPE C130_SSLIP_DEFAULT_VALUE = 1.1;
+
 static std::vector<float> coeff;
 
 extern int	FlightDate[];
+
+/* -------------------------------------------------------------------- */
+NR_TYPE defaultSSLIP()
+{
+  if (cfg.Aircraft() == Config::HIAPER)
+    return(GV_SSLIP_DEFAULT_VALUE);
+  else
+    return(C130_SSLIP_DEFAULT_VALUE);
+}
 
 /* -------------------------------------------------------------------- */
 void initSSRD(var_base *varp)

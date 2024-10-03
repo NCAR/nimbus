@@ -19,6 +19,10 @@ static int	gv_radome_ssn = 1;	// default to first radome.
 // Serial number for C130 radome.  #2 was installed in May of 2013.
 static int      c130_radome_ssn = 1;      // default to first radome.
 
+// Fallback value for Attack if it goes missing.
+static const NR_TYPE GV_ATTACK_DEFAULT_VALUE = 3.0;
+static const NR_TYPE C130_ATTACK_DEFAULT_VALUE = 2.0;
+
 static std::vector<float> akrd_coeff;		// New C130.  Three-coeff.
 static std::vector<float> akrd_coeff_old;	// Old C130.  Currently Pre-WECAN?  Two-coeff
 static std::vector<float> low, mid, high;	// Altitude specific coef's.
@@ -28,6 +32,15 @@ static std::vector<float> aky_d;
 static std::vector<float> aky_c1;
 static double filter(double, double *);
 static double zf[nFeedBackTypes][4][6];
+
+/* -------------------------------------------------------------------- */
+NR_TYPE defaultATTACK()
+{
+  if (cfg.Aircraft() == Config::HIAPER)
+    return(GV_ATTACK_DEFAULT_VALUE);
+  else
+    return(C130_ATTACK_DEFAULT_VALUE);
+}
 
 /* -------------------------------------------------------------------- */
 static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])

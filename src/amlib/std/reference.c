@@ -31,6 +31,11 @@ void sRefer(DERTBL *varp)
 /* PCORS use attack.  If attack goes nan, carry previous value for 2 seconds,
  * then set to 3.0 if it continues as nan past that.  The 3.0 comes from a
  * Al Cooper memo October 3, 2014.
+ *
+ * Setting to 3.0 has been moved in the pressure functions (or point of use.
+ * Revert to nan after two second carryover.  Also added similar for sslip.
+ * cjw 10/2024
+ *
  * If the requirement for pressures/PCORs goes away, then this can move back
  * to just using sRefer()
  */
@@ -40,21 +45,13 @@ void sReferAttack(DERTBL *varp)
   static int attack_miss_cnt[nFeedBackTypes] = { 0, 0 };
   static const int ATTACK_MISS_MAX[nFeedBackTypes] = { 2, 2 * Config::HighRate };
 
-  // Fallback value for Attack if it goes missing.
-  static const NR_TYPE GV_ATTACK_DEFAULT_VALUE = 3.0;
-  static const NR_TYPE C130_ATTACK_DEFAULT_VALUE = 2.0;
-
-
   NR_TYPE aoa = GetSample(varp, 0);
 
   if (std::isnan(aoa))
   {
-    NR_TYPE substitute_attack = cfg.Aircraft() == Config::HIAPER ?
-			GV_ATTACK_DEFAULT_VALUE : C130_ATTACK_DEFAULT_VALUE;
-
-    // Repeat prev attack up to two samples if missing, otherwise set to 3.0.
+    // Repeat prev attack up to two samples if missing.
     if (++attack_miss_cnt[FeedBack] > ATTACK_MISS_MAX[FeedBack])
-      attack[FeedBack] = substitute_attack;
+      attack[FeedBack] = aoa;
   }
   else
   {
@@ -72,21 +69,13 @@ void sReferSSlip(DERTBL *varp)
   static int sslip_miss_cnt[nFeedBackTypes] = { 0, 0 };
   static const int SSLIP_MISS_MAX[nFeedBackTypes] = { 2, 2 * Config::HighRate };
 
-  // Fallback value for Attack if it goes missing.
-  static const NR_TYPE GV_SSLIP_DEFAULT_VALUE = nan("");
-  static const NR_TYPE C130_SSLIP_DEFAULT_VALUE = 1.1;
-
-
   NR_TYPE slipin = GetSample(varp, 0);
 
   if (std::isnan(slipin))
   {
-    NR_TYPE substitute_sslip = cfg.Aircraft() == Config::HIAPER ?
-			GV_SSLIP_DEFAULT_VALUE : C130_SSLIP_DEFAULT_VALUE;
-
-    // Repeat prev sslip up to two samples if missing, otherwise set to 3.0.
+    // Repeat prev sslip up to two samples if missing.
     if (++sslip_miss_cnt[FeedBack] > SSLIP_MISS_MAX[FeedBack])
-      sslip[FeedBack] = substitute_sslip;
+      sslip[FeedBack] = slipin;
   }
   else
   {
