@@ -153,7 +153,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
     }
     else
     // SDI is ADS2 only.  It was Analog and Digital Counters.  All fall under RAW now.
-    if (strcmp(target, "SDI") == 0 || strcmp(target, "RAW") == 0)
+    if (strcmp(target, "RAW") == 0 || strcmp(target, "SDI") == 0)
     {
       target = strtok(NULL, " \t");
 
@@ -187,13 +187,16 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
     else
     if (strcmp(target, "PROBE") == 0)
     {
-      char suffix[64];
+      char *p, suffix[64];
       target = strtok(NULL, " \t");
       strcpy(suffix, target);
 
       for (size_t i = 0; i < raw.size(); ++i)
       {
-        if ( strstr(raw[i]->name, suffix) )
+        if ((p = strstr(raw[i]->name, suffix)) == 0)
+          continue;
+
+        if ( suffix[0] != '_' || strcmp(p, suffix) == 0 )
         {
           strcpy(line, buffer);
           target = strtok(line, "=");
@@ -205,7 +208,10 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
       for (size_t i = 0; i < derived.size(); ++i)
       {
-        if ( strstr(derived[i]->name, suffix) )
+        if ((p = strstr(derived[i]->name, suffix)) == 0)
+          continue;
+
+        if ( suffix[0] != '_' || strcmp(p, suffix) == 0 )
         {
           strcpy(line, buffer);
           target = strtok(line, "=");
