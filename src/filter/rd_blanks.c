@@ -52,7 +52,13 @@ void ReadBlankOuts()
       et.tm_mon -= 1;
     }
 
-    sscanf(bo[i], "%s %d:%d:%d %d:%d:%d", target,
+
+    // Test for hh:mm:ss vs hhmmss
+    if ( strchr(bo[0], ':') )
+      sscanf(bo[i], "%s %d:%d:%d %d:%d:%d", target,
+	&st.tm_hour, &st.tm_min, &st.tm_sec, &et.tm_hour, &et.tm_min, &et.tm_sec);
+    else
+      sscanf(bo[i], "%s %02d%02d%02d %02d%02d%02d", target,
 	&st.tm_hour, &st.tm_min, &st.tm_sec, &et.tm_hour, &et.tm_min, &et.tm_sec);
 
     std::pair<int, int> tm(mktime(&st), mktime(&et));
