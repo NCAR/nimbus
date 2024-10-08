@@ -511,6 +511,7 @@
 	"UXC",		NULL,				NULL,		sux,
 	"WSC",		NULL,				NULL,		sws,
 	"WDC",		NULL,				NULL,		swd,
+	"WINDSFLG",	NULL,				NULL,		swindflg,
 	"ROC",		NULL,				NULL,		sroc,
 	"WIR",		(void(*)(void*))initGust,	NULL,		swi,
 	"VIC1",		NULL,				NULL,		svi,
