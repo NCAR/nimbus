@@ -134,7 +134,7 @@ void swi(DERTBL *varp)
   vew	= GetSample(varp, 1);
   vns	= GetSample(varp, 2);
   pitch	= GetSample(varp, 3) * DEG_RAD;
-  roll	= GetSample(varp, 4) * DEG_RAD;
+  roll	= GetSample(varp, 4);
   thdg	= GetSample(varp, 5) * DEG_RAD;
   attack= GetSample(varp, 6);
   sslip	= GetSample(varp, 7);
@@ -178,21 +178,25 @@ void swi(DERTBL *varp)
 
   // If attack or sslip are nan, use a constant average and set flag.
   if (std::isnan(attack)) {
-    attack = defaultATTACK();
-    wind_flag[probeCnt] = 1.0;	// adifr compromised
     attack_compromised = true;
+    wind_flag[probeCnt] = 1.0;	// adifr compromised
+    if (fabs(roll) <= 2.5)
+      attack = defaultATTACK();
   }
+
   if (std::isnan(sslip)) {
-    sslip = defaultSSLIP();
+    sslip_compromised = true;
     if (attack_compromised)
       wind_flag[probeCnt] = 3.0;	// both are compromised
     else
       wind_flag[probeCnt] = 2.0;	// bdifr compromised
-    sslip_compromised = true;
+    if (fabs(roll) <= 2.5)
+      sslip = defaultSSLIP();
   }
 
   attack *= DEG_RAD;
   sslip *= DEG_RAD;
+  roll *= DEG_RAD;
 
   /* Coordinate transformation
    */
