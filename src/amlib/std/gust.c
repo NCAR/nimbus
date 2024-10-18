@@ -119,21 +119,23 @@ void initGust(var_base *varp)
 
   // Need to figute out how to add this same thing to all the vars calculated in here
   // UI/VI & WS/WD
-  varp->addToMetadata("ancillary_variables", "WINDSFLG")
+  varp->addToMetadata("ancillary_variables", "WINDSFLG");
 }
 
 /* -------------------------------------------------------------------- */
 void initWindsFlag(var_base *varp)
 {
   std::vector<int> values;
-  values.push_back(0);
-  values.push_back(1);
-  values.push_back(2);
-  values.push_back(4);
-  values.push_back(8);
+  values.push_back(0);	// good
+  values.push_back(1);	// bad attack
+  values.push_back(2);	// bad sslip
+  values.push_back(3);	// bad both
+  values.push_back(4);	// icing attack
+  values.push_back(5);	// icing sslip
+  values.push_back(6);	// icing both
 
-  varp->addToMetadata("flag_values", values)
-  varp->addToMetadata("flag_meanings", "good bad_attack_angle bad_sideslip_angle iced_attack iced_sideslip")
+  varp->addToMetadata("flag_values", values);
+  varp->addToMetadata("flag_meanings", "good bad_attack_angle bad_sideslip_angle bad_both_angles iced_attack iced_sideslip iced_both");
 
 }
 

@@ -21,7 +21,7 @@ static NR_TYPE dry_tas;
 void tasInit(var_base *varp)
 {
   // Add flag variable metadata
-  varp->addMetadata("ancillary_variables", "TASFLG");
+  varp->addToMetadata("ancillary_variables", "TASFLG");
 }
 
 /* -------------------------------------------------------------------- */
@@ -54,8 +54,8 @@ void tasFlgInit(var_base *varp)
   values.push_back(0);
   values.push_back(1);
 
-  varp->addToMetadata("flag_values", values)
-  varp->addToMetadata("flag_meanings", "humidity_corrected dry")
+  varp->addToMetadata("flag_values", values);
+  varp->addToMetadata("flag_meanings", "humidity_corrected dry");
 }
 
 /* -------------------------------------------------------------------- */
