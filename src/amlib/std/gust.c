@@ -278,6 +278,8 @@ void swi(DERTBL *varp)
   s  = cs * ch + e + ta * f;
   t  = vspd + boomln[probeCnt] * thedot * ch;
 
+/*  Removing this since we have adjusted how we are handling nan values.
+ * but left it here for a bit in case we want to revert.  10/15/2024 cjw
 
   if (std::isnan(attack))	// no longer true with const attack above
   {
@@ -285,6 +287,7 @@ void swi(DERTBL *varp)
     vi[probeCnt] = -tas * cos((thdg+sslip))+vns;
   }
   else
+*/
   {
     ui[probeCnt] = tas_dab * r + (vew - bvew);
     vi[probeCnt] = tas_dab * s + (vns - bvns);
