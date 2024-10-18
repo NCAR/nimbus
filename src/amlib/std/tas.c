@@ -18,11 +18,19 @@ void setEOP(double);
 static NR_TYPE dry_tas;
 
 /* -------------------------------------------------------------------- */
+void tasInit(var_base *varp)
+{
+  // Add flag variable metadata
+  varp->addMetadata("ancillary_variables", "TASFLG");
+}
+
+/* -------------------------------------------------------------------- */
 void tasFlgInit(var_base *varp)
 {
   size_t i;
   DERTBL *dp = (DERTBL *)varp;
   DERTBL *rt = 0;
+  std::vector<int> values;
 
   // Locate Recovry Temperature in depends list.
   for (i = 0; i < dp->depends.size(); ++i)
@@ -41,6 +49,13 @@ void tasFlgInit(var_base *varp)
     rt_sensor = rt->depend[0][3] - '1';		// Get sensor number for (see recovery factor for why).
 
   fprintf(stderr, "tas.c::tasFlgInit() found RT = [%s]\n", rt->depend[0]);
+
+  // flag attributes.
+  values.push_back(0);
+  values.push_back(1);
+
+  varp->addToMetadata("flag_values", values)
+  varp->addToMetadata("flag_meanings", "humidity_corrected dry")
 }
 
 /* -------------------------------------------------------------------- */
