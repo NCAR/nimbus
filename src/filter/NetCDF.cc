@@ -412,7 +412,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
       mod[0] = (float)rp->Modulo->value[0];
       mod[1] = (float)rp->Modulo->value[1];
-      ncattput(_ncid, rp->varid, "modulus_range", NC_FLOAT, 2, mod);
+      nc_put_att_float(_ncid, rp->varid, "modulus_range", NC_FLOAT, 2, mod);
     }
 
 
@@ -1244,6 +1244,10 @@ void NetCDF::addVariableMetadata(const var_base *var)
     if (mdp->isFloat())
       nc_put_att_float(_ncid, var->varid, mdp->_attr_name.c_str(), NC_FLOAT,
                 mdp->_attr_flt.size(), &mdp->_attr_flt[0]);
+    else
+    if (mdp->isInt())
+      nc_put_att_int(_ncid, var->varid, mdp->_attr_name.c_str(), NC_INT,
+                mdp->_attr_int.size(), &mdp->_attr_int[0]);
     else
       nc_put_att_text(_ncid, var->varid, mdp->_attr_name.c_str(),
                 mdp->_attr_str.length(), mdp->_attr_str.c_str());
