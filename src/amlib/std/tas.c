@@ -55,7 +55,7 @@ void tasFlgInit(var_base *varp)
   values.push_back(1);
 
   varp->addToMetadata("flag_values", values);
-  varp->addToMetadata("flag_meanings", "humidity_corrected dry");
+  varp->addToMetadata("flag_meanings", "humidity_corrected 50%_rh_assumed");
 }
 
 /* -------------------------------------------------------------------- */
