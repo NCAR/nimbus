@@ -50,14 +50,14 @@ extern const std::string PROJ_NAME, DEPENDTBL, DEFAULTS, GROUPS, BLANKVARS,
 	LAGS, BROADCAST, SPIKE, DEFDEROR, VARDB, BROADCASTVARS, XMIT_VARS,
 	AIRCRAFT, MODVARS, SUMVARS, FILTERS, RAWNAMES, DERIVEDNAMES, INSNAMES,
 	IRSNAMES, USERNAMES, OPHIR3NAMES, LANDMARKS, META_DATA, LOGFILE,
-	DOI_FILE;
+	DOI_FILE, SETVALVARS;
 
 extern const std::string
 	InterpKey, Interp_Linear, Interp_Cubic, Interp_Akima,
 	TwoD_AreaRatioKey,
 	TwoD_MethodKey, TwoD_MethodCenterIn, TwoD_MethodRecon;
 
-#define SecondsSinceMidnite(t) (t[0] * 3600 + t[1] * 60 + t[2])
+#define SecondsSinceMidnight(t) (t[0] * 3600 + t[1] * 60 + t[2])
 
 /* External definitions
  */
@@ -78,7 +78,7 @@ void	SetLookupSuffix(const char *new_suffix),
 	AddVariableToRAWdespikeList(RAWTBL *varp),
 	ReadDefaultDerivedOutputRate(), ReadSumVariables(),
 	ReadDefaultsFile(), ReadStaticLags(), ReadModuloVariables(),
-	ReadGroundVarsFile(), ReadBlankOuts(),
+	ReadGroundVarsFile(), ReadSetValues(std::string fileName, bool chk_config),
         RunAMLIBinitializers(),
 	ReadDependencies(), SetupDependencies(), GenerateComputeOrder(),
 	CleanOutUnwantedVariables(),

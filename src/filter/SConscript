@@ -42,7 +42,7 @@ popen.c
 probe.c
 psql.cc
 brdcast.cc
-rd_blanks.c
+rd_setvalue.c
 rd_ddor.c
 rd_defs.c
 rd_doi.c

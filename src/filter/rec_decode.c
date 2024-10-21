@@ -86,23 +86,19 @@ static void setNIDASDynamicLags(const short lr[])
 }
 
 /* -------------------------------------------------------------------- */
-bool blankOutThisValue(var_base * var, time_t thisTime)
+int blankOutThisValue(var_base * var, time_t thisTime)
 {
-  // If DataQuality has been marked bad, blank.
-  if (strcmp(var->DataQuality, "Bad") == 0)
-    return true;
-
   /* Check to see if the time of this record falls into any of the blank
    * out times for this variable.
    */
-  for (size_t i = 0; i < var->blank_out.size(); ++i)
+  for (size_t i = 0; i < var->set_value.size(); ++i)
   {
-    if (thisTime >= var->blank_out[i].first &&
-      thisTime <= var->blank_out[i].second)
-    return true;
+    if (thisTime >= var->set_value[i].start &&
+      thisTime <= var->set_value[i].end)
+    return i;
   }
 
-  return false;
+  return -1;
 }
 
 /* -------------------------------------------------------------------- */
@@ -116,12 +112,13 @@ static void BlankOutRawData(NR_TYPE nlr[])
   for (size_t i = 0; i < raw.size(); ++i)
   {
     RAWTBL *rp = raw[i];
+    int index = blankOutThisValue(rp, thisTime); 
 
-    if (blankOutThisValue(rp, thisTime) == true || (cfg.isADS2() && rp->xlate == 0))
+    if (index >= 0 || (cfg.isADS2() && rp->xlate == 0))
     {
       size_t n = rp->SampleRate * rp->Length;
       for (size_t j = 0; j < n; ++j)
-        nlr[rp->SRstart+j] = floatNAN;
+        nlr[rp->SRstart+j] = rp->set_value[index].value;
     }
   }
 }

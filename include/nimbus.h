@@ -60,6 +60,16 @@ typedef struct
 	std::string text;
 	} DEFAULT;
 
+// Informations for BlankOuts and SetValue files. Refactored Oct/2024
+typedef struct
+	{
+	int	sTime[3];	// Start time hh:mm:ss
+	int	eTime[3];	// Start time hh:mm:ss
+	int	start;		// Start time epoch
+	int	end;		// End time epoch
+	float	value;		// Value to substitute 
+	} SETVAL;
+
 class Metadata
 {
   public:
@@ -131,7 +141,7 @@ public:
   size_t OutputRate;	// Rate of data in the output [netCDF] file.
   const char *DataQuality;	// Prelim, QC'd, Bad, etc
 
-  std::vector<std::pair<int, int> > blank_out;
+  std::vector<SETVAL> set_value;
 
   float min, max;	// Min and max for this variable over course run.
 

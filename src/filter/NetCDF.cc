@@ -883,6 +883,8 @@ void NetCDF::Close()
   if (_ncid == ERR)
     return;
 
+  BlankOutBadData();
+
   nc_redef(_ncid);
   writeMinMax();
   writeTimeUnits();
@@ -902,28 +904,18 @@ void NetCDF::Close()
 /* -------------------------------------------------------------------- */
 void NetCDF::BlankOutBadData()
 {
-  char  *blanks[512];
-  int	sTime[4], eTime[4];	// Requested Start/End Time.
   size_t start[3], count[3];
   int	fsTime[4], feTime[4];	// File Start/End Time.
 
 
-  /* Come through as a second pass after all processing has been done, and
-   * replace "bad" segments with MISSING_VALUE.
-   */
-  snprintf(buffer, 8192, "%s.%s", BLANKVARS.c_str(), cfg.FlightNumber().c_str());
-  if (AccessProjectFile(buffer, "r") == FALSE)
-    return;
-
-  ReadTextFile(buffer, blanks);
 
   /* Acquire file start & end times. */
   FormatTimeSegmentsForOutputFile(buffer);
   sscanf(buffer, "%d:%d:%d-%d:%d:%d",
 	&fsTime[0], &fsTime[1], &fsTime[2], &feTime[0], &feTime[1], &feTime[2]);
 
-  fsTime[3] = SecondsSinceMidnite(fsTime);
-  feTime[3] = SecondsSinceMidnite(feTime);
+  fsTime[3] = SecondsSinceMidnight(fsTime);
+  feTime[3] = SecondsSinceMidnight(feTime);
 
   /* Check for time wrap within output data file
    */
@@ -963,113 +955,106 @@ void NetCDF::BlankOutBadData()
 
   /* Loop through each line item in BLANKVARS file.
    */
-  for (int i = 0; blanks[i]; ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     {
-    int	index;
-    char target[NAMELEN];
+    DERTBL *dp = derived[i];
 
-    sscanf(blanks[i], "%s %d:%d:%d %d:%d:%d", target,
-	&sTime[0], &sTime[1], &sTime[2], &eTime[0], &eTime[1], &eTime[2]);
-
-    /* Turn time period into record numbers. */
-    sTime[3] = SecondsSinceMidnite(sTime);
-    eTime[3] = SecondsSinceMidnite(eTime);
-
-    if (eTime[3] == sTime[3])
-      eTime[3] = sTime[3] + 1;
-
-    if (eTime[3] < sTime[3])
-      eTime[3] += 86400;
-
-    /* Sync blanking times to file times  (RLR  13 July 2001)
-     */
-    if (sTime[3] < fsTime[3]) sTime[3] += 86400;
-    if (eTime[3] < sTime[3]) eTime[3] += 86400;
-
-    /*  Test for invalid time period (ignore and warn)  (RLR  13 July 2001)
-     */
-    if (sTime[3] > feTime[3] || eTime[3] < fsTime[3])
+    for (int j = 0; j < dp->set_value.size();  ++j)
       {
-      snprintf(buffer, 8192, "Blanking times (%02d:%02d:%02d to %02d:%02d:%02d) not valid for %s.\n", sTime[0], sTime[1], sTime[2], eTime[0], eTime[1], eTime[2], target);
-      LogMessage(buffer);
-      continue;
-      }
+      int	index;
+      char target[NAMELEN];
+      SETVAL sv = dp->set_value[j];
 
-    if (sTime[3] < fsTime[3])
-      memcpy((void *)sTime, (void *)fsTime, sizeof(fsTime));
+      if (sv.end == sv.start)
+        sv.end = sv.start + 1;
 
-    if (eTime[3] > feTime[3])
-      memcpy((void *)eTime, (void *)feTime, sizeof(feTime));
+      if (sv.end < sv.start)
+        sv.end += 86400;
 
-    snprintf(buffer, 8192, "Blanking %s from %02d:%02d:%02d to %02d:%02d:%02d.\n",
-    target, sTime[0], sTime[1], sTime[2], eTime[0], eTime[1], eTime[2]);
-    LogMessage(buffer);
+      /* Sync blanking times to file times  (RLR  13 July 2001)
+       */
+      if (sv.start < fsTime[3]) sv.start += 86400;
+      if (sv.end < sv.start) sv.end += 86400;
 
-    start[0] = sTime[3] - fsTime[3];
-    start[1] = start[2] = 0;
-    count[0] = eTime[3] - sTime[3] + 1;
-
-    if (start[0] < 0)
-      {
-      snprintf(buffer, 8192, "Start time precedes file start time for %s.\n", target);
-      LogMessage(buffer);
-      continue;
-      }
-
-    clearDependedByList();
-
-    if ((index = SearchTable(raw, target)) != ERR &&
-        raw[index]->Output)
-      {		// Do nothing, but avoid error message below if it was a raw variable.
-      }
-    else
-    if ((index = SearchTable(derived, target)) != ERR &&
-	derived[index]->Output)
-      {
-/*  See if measurement has already been blanked for whole flight  */
-      if (strcmp(derived[index]->DataQuality, dataQuality[BAD]) == 0)
+      /*  Test for invalid time period (ignore and warn)  (RLR  13 July 2001)
+       */
+      if (sv.start > feTime[3] || sv.end < fsTime[3])
         {
-        snprintf(buffer, 8192, "%s has already been blanked because the DataQuality flag is Bad.\n",derived[index]->name);
+        snprintf(buffer, 8192, "Blanking times (%02d:%02d:%02d to %02d:%02d:%02d) not valid for %s.\n", sv.sTime[0], sv.sTime[1], sv.sTime[2], sv.eTime[0], sv.eTime[1], sv.eTime[2], target);
         LogMessage(buffer);
+        continue;
         }
-      else
+
+      if (sv.start < fsTime[3])
+      {
+        memcpy((void *)sv.sTime, (void *)fsTime, sizeof(sv.sTime));
+        sv.start = SecondsSinceMidnight(sv.sTime);
+      }
+
+      if (sv.end > feTime[3])
+      {
+        memcpy((void *)sv.eTime, (void *)feTime, sizeof(sv.eTime));
+        sv.end = SecondsSinceMidnight(sv.eTime);
+      }
+
+      snprintf(buffer, 8192, "Blanking %s from %02d:%02d:%02d to %02d:%02d:%02d.\n",
+      target, sv.sTime[0], sv.sTime[1], sv.sTime[2], sv.eTime[0], sv.eTime[1], sv.eTime[2]);
+      LogMessage(buffer);
+
+      start[0] = sv.start - fsTime[3];
+      start[1] = start[2] = 0;
+      count[0] = sv.end - sv.start + 1;
+      count[1] = dp->OutputRate;
+      count[2] = dp->Length;
+
+      if (start[0] < 0)
         {
-        if (derived[index]->DependedUpon)
+        snprintf(buffer, 8192, "Start time precedes file start time for %s.\n", target);
+        LogMessage(buffer);
+        continue;
+        }
+
+      clearDependedByList();
+
+      if (dp->Output)
+        {
+/*  See if measurement has already been blanked for whole flight  */
+        if (strcmp(dp->DataQuality, dataQuality[BAD]) == 0)
           {
-          markDependedByList(derived[index]->name);
-          printDependedByList();
-          }
-        if (writeBlank(derived[index]->varid, start, count, derived[index]->OutputRate) != NC_NOERR)
-          {
-          snprintf(buffer, 8192, "Failure writing BadData for variable %s.\n",
-		  derived[index]->name);
+          snprintf(buffer, 8192, "%s has already been blanked because the DataQuality flag is Bad.\n",dp->name);
           LogMessage(buffer);
           }
+        else
+          {
+          if (dp->DependedUpon)
+            {
+            markDependedByList(dp->name);
+            printDependedByList();
+            }
+          if (writeBlank(dp->varid, start, count, sv.value) != NC_NOERR)
+            {
+            snprintf(buffer, 8192, "Failure writing BadData for variable %s.\n",
+		  dp->name);
+            LogMessage(buffer);
+            }
+          }
         }
-      }
-    else
-      {
-      snprintf(buffer, 8192, "  WARNING: %s NOT found!  Continuing.\n", target);
-      LogMessage(buffer);
       }
     }
 }       /* END BLANKOUTBADDATA */
 
 /* -------------------------------------------------------------------- */
-int NetCDF::writeBlank(int varid, size_t start[], size_t count[], int OutputRate)
+int NetCDF::writeBlank(int varid, size_t start[], size_t count[], float value)
 {
   int rc;
   long nValues;
   float	*p;
 
-  count[1] = OutputRate;
-  count[2] = 1;
-
   nValues = count[0] * count[1] * count[2];
   p = new float[nValues];
 
   for (int i = 0; i < nValues; ++i)
-    p[i] = (float)MISSING_VALUE;
+    p[i] = value;
 
   rc = nc_put_vara_float(_ncid, varid, start, count, p);
   delete [] p;

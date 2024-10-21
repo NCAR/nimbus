@@ -311,7 +311,8 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   AllocateDataArrays();
   GenerateComputeOrder();	/* for Derived variables		*/
   GetUserTimeIntervals();
-  ReadBlankOuts();
+  ReadSetValues(BLANKVARS, true);
+  ReadSetValues(SETVALVARS, false);
 
   if (cfg.ProductionRun())	/* Do it again in case Flight# changed	*/
     setOutputFileName();

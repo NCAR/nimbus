@@ -36,7 +36,7 @@ public:
 
 protected:
 
-  int	writeBlank(int varid, size_t start[], size_t count[], int OutputRate);
+  int	writeBlank(int varid, size_t start[], size_t count[], float value);
   void	markDependedByList(const char target[]), writeTimeUnits();
   void	clearDependedByList(), printDependedByList(), writeMinMax();
   void	addCommonVariableAttributes(const var_base *var), addLandmarks();

@@ -47,6 +47,7 @@ const std::string DEFAULTS      = "%s/%s/%s/Defaults";
 const std::string DOI_FILE      = "%s/%s/%s/DOI";
 const std::string GROUPS        = "%s/%s/%s/Production/FlightGroups";
 const std::string BLANKVARS     = "%s/%s/%s/Production/BlankOuts";
+const std::string SETVALVARS    = "%s/%s/%s/Production/SetValues";
 const std::string LOGFILE	= "%s/%s/%s/Production/logfile";
 const std::string LAGS          = "%s/%s/%s/Lags";
 const std::string BROADCAST     = "%s/%s/%s/ascii_parms";
