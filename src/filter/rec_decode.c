@@ -112,7 +112,7 @@ static void BlankOutRawData(NR_TYPE nlr[])
   for (size_t i = 0; i < raw.size(); ++i)
   {
     RAWTBL *rp = raw[i];
-    int index = blankOutThisValue(rp, thisTime); 
+    int index = blankOutThisValue(rp, thisTime);
 
     if (index >= 0 || (cfg.isADS2() && rp->xlate == 0))
     {

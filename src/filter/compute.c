@@ -94,5 +94,5 @@ void ComputeHighRateDerived(time_t thisTime)
     }
   }
 }	/* END COMPUTEHIGHRATEDERIVED */
- 
+
 /* END COMPUTE.C */

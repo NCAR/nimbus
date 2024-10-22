@@ -908,7 +908,6 @@ void NetCDF::BlankOutBadData()
   int	fsTime[4], feTime[4];	// File Start/End Time.
 
 
-
   /* Acquire file start & end times. */
   FormatTimeSegmentsForOutputFile(buffer);
   sscanf(buffer, "%d:%d:%d-%d:%d:%d",

@@ -64,10 +64,12 @@ typedef struct
 typedef struct
 	{
 	int	sTime[3];	// Start time hh:mm:ss
-	int	eTime[3];	// Start time hh:mm:ss
+	int	eTime[3];	// End time hh:mm:ss
 	int	start;		// Start time epoch
 	int	end;		// End time epoch
-	float	value;		// Value to substitute 
+
+	// Value to substitute (BlankOuts: nan for RAWTBL, MISS_VAL for DERTBL)
+	float	value;
 	} SETVAL;
 
 class Metadata
