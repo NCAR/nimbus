@@ -78,6 +78,9 @@ void stas_flag(DERTBL *varp)
   NR_TYPE rt = GetSample(varp, 2); // If this changes from index 2, then modify tasFlgInit() above.
   NR_TYPE ewx = GetSample(varp, 3);
 
+  static NR_TYPE lastew;
+  static int count = 0;
+
   setEOP(0.0);	// Set for dry constants.
 
   NR_TYPE dry_mach, recovery, dry_at, ews, ewt, retval = 0.0;
@@ -97,11 +100,21 @@ void stas_flag(DERTBL *varp)
   {
     ewt = ewx;
     retval = 0.0;
+    lastew = ewx;
+    count = 0;
   }
   else
   {
-    ewt = ews * 0.5;
-    retval = 1.0;
+    if (count++ >= 5)
+    { 
+      ewt = ews * 0.5;
+      retval = 1.0;
+    }
+    else 
+    {
+      // Carry over last good ewx for 5 seconds
+      ewt = lastew;
+    }
   }
 
   if (!std::isnan(p) && p > 0.0)
