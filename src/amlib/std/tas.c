@@ -32,7 +32,7 @@ void tasFlgInit(var_base *varp)
   DERTBL *rt = 0;
   std::vector<int> values;
 
-  // Locate Recovry Temperature in depends list.
+  // Locate Recovery Temperature in depend list.
   for (i = 0; i < dp->depends.size(); ++i)
     if (strncmp(dp->depends[i]->name, "RT", 2) == 0)
       rt = (DERTBL *)dp->depends[i];
