@@ -63,12 +63,6 @@ void ReadSetValues(std::string fileName, bool chk_config)
 	&st.tm_hour, &st.tm_min, &st.tm_sec, &et.tm_hour, &et.tm_min, &et.tm_sec, &value);
 
     SETVAL sv;
-    sv.sTime[0] = st.tm_hour;
-    sv.sTime[1] = st.tm_min;
-    sv.sTime[2] = st.tm_sec;
-    sv.eTime[0] = et.tm_hour;
-    sv.eTime[1] = et.tm_min;
-    sv.eTime[2] = et.tm_sec;
     sv.start = mktime(&st);
     sv.end   = mktime(&et);
     if(chk_config == true)
@@ -93,9 +87,6 @@ void ReadSetValues(std::string fileName, bool chk_config)
 
       if ((index = SearchTable(derived, target)) != ERR)
       {
-	// derived vars are handled in NetCDF.cc and is expecting seconds since midnight
-	sv.start = SecondsSinceMidnight(sv.sTime);
-	sv.end = SecondsSinceMidnight(sv.eTime);
 	if(std::isnan(sv.value))
           sv.value=(float)MISSING_VALUE;
         derived[index]->set_value.push_back(sv);

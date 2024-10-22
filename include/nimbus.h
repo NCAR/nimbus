@@ -63,10 +63,8 @@ typedef struct
 // Informations for BlankOuts and SetValue files. Refactored Oct/2024
 typedef struct
 	{
-	int	sTime[3];	// Start time hh:mm:ss
-	int	eTime[3];	// End time hh:mm:ss
-	int	start;		// Start time epoch
-	int	end;		// End time epoch
+	time_t	start;		// Start time epoch
+	time_t  end;		// End time epoch
 
 	// Value to substitute (BlankOuts: nan for RAWTBL, MISS_VAL for DERTBL)
 	float	value;

@@ -36,9 +36,7 @@ public:
 
 protected:
 
-  int	writeBlank(int varid, size_t start[], size_t count[], float value);
-  void	markDependedByList(const char target[]), writeTimeUnits();
-  void	clearDependedByList(), printDependedByList(), writeMinMax();
+  void	writeTimeUnits(), writeMinMax();
   void	addCommonVariableAttributes(const var_base *var), addLandmarks();
   void	createSizeDistributionCoordinateDimVars(var_base *var);
   void  addVariableMetadata(const var_base *var);
@@ -46,7 +44,6 @@ protected:
   long	UTSeconds(double *record);
   void	SetBaseTime(double *record);
   void	WriteMissingRecords();
-  void	BlankOutBadData();
 
   void	putGlobalAttribute(const char attrName[], const float *value);
   void	putGlobalAttribute(const char attrName[], const char *value);

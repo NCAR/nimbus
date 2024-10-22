@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2011
 
 extern NR_TYPE	*HighRateData, *AveragedData;
 
-bool blankOutThisValue(var_base * var, time_t thistime);
+int blankOutThisValue(var_base * var, time_t thistime);
 
 // Why was this here?  It is shadowed by the thisTime parameter to all the
 // functions in this module, so perhaps it is a leftover global variable...
@@ -40,6 +40,7 @@ compute_break()
 void ComputeLowRateDerived(time_t thisTime)
 {
   FeedBack = LOW_RATE_FEEDBACK;
+  int index;
 
   for (size_t i = 0; i < derived.size(); i++)
   {
@@ -63,10 +64,12 @@ void ComputeLowRateDerived(time_t thisTime)
     }
 #endif
 
-    if (blankOutThisValue(dp, thisTime) == true || dp->compute == 0)
+
+    index = blankOutThisValue(dp, thisTime);
+    if ( index >= 0 || dp->compute == 0)
     {
       for (size_t j = 0; j < dp->Length; ++j)
-        AveragedData[dp->LRstart+j] = floatNAN;
+        AveragedData[dp->LRstart+j] = dp->set_value[index].value;
     }
   }
 }	/* END COMPUTELOWRATEDERIVED */
@@ -74,6 +77,7 @@ void ComputeLowRateDerived(time_t thisTime)
 /* -------------------------------------------------------------------- */
 void ComputeHighRateDerived(time_t thisTime)
 {
+  int index;
   FeedBack = HIGH_RATE_FEEDBACK;
 
   for (SampleOffset = 0; SampleOffset < (size_t)cfg.HRTRate(); ++SampleOffset)
@@ -85,11 +89,12 @@ void ComputeHighRateDerived(time_t thisTime)
       if ((dp = ComputeOrder[i])->compute)
         (*dp->compute)(dp);
 
-      if (blankOutThisValue(dp, thisTime) == true || dp->compute == 0)
+      index = blankOutThisValue(dp, thisTime);
+      if ( index >= 0 || dp->compute == 0)
       {
         size_t n = cfg.ProcessingRate() * dp->Length;
         for (size_t j = 0; j < n; ++j)
-          HighRateData[dp->HRstart+j] = floatNAN;
+          HighRateData[dp->HRstart+j] = dp->set_value[index].value;
       }
     }
   }
