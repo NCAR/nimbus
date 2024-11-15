@@ -1,12 +1,12 @@
 
 /* Copyright 1994 University Corporation for Atmospheric Research (UCAR).
 **	All rights reserved
-** 
-** Permission to use, copy, and modify this software and its documentation 
-** for any non-commercial purpose is hereby granted without fee, provided 
-** that the above copyright notice appear in all copies and that both that 
-** copyright notice and this permission notice appear in supporting 
-** documentation. UCAR makes no representations about the suitability of 
+**
+** Permission to use, copy, and modify this software and its documentation
+** for any non-commercial purpose is hereby granted without fee, provided
+** that the above copyright notice appear in all copies and that both that
+** copyright notice and this permission notice appear in supporting
+** documentation. UCAR makes no representations about the suitability of
 ** this software for any purpose.   It is provided "as is" without express
 ** or implied warranty.
 */
@@ -37,7 +37,7 @@
 
 #define CRAY_WORD_SIZE		8
 #define CRAY_BLOCK_SIZE		4096
-#define CRAY_BLOCK_WORDS 	512
+#define CRAY_BLOCK_WORDS	512
 
 /*
 ** define all the operations possible.
@@ -50,7 +50,7 @@
 
 typedef struct {
 	int		unblkFlag;	/* unblocked flag */
-	int		last_op;    	/* what the last operation was...a */
+	int		last_op;	/* what the last operation was...a */
 	int		blockn;		/* current block number */
 	int		crayfd;		/* fd to cray file */
 	int		reod;		/* read EOD ?? */
@@ -59,15 +59,15 @@ typedef struct {
 	int		fwi;		/* forward word index. */
 	int		pfi;		/* previous file index (unused) */
 	int		pri;		/* previous record index */
-	int		oflags; 	/* Open flags */
+	int		oflags;		/* Open flags */
 	char		*buffer;	/* library buffer */
 	union pcw	*cw;		/* current word */
-	union pcw	*end_buf;    	/* end of lib buffer  */
+	union pcw	*end_buf;	/* end of lib buffer  */
 	union pcw	*start_buf;	/* beginning of the block. */
 	union pcw	*end_block;     /* end of current "block" */
 	int		numBlocks;	/* n blocks in "block" */
 	char		*cbuf;		/*  conversion buffer */
-	int		cbufSize; 	/* size of cbuf */
+	int		cbufSize;	/* size of cbuf */
 } CrayFile;
 
 
@@ -76,7 +76,7 @@ typedef struct {
 #if defined(ArchLinux)
 
 struct pbcw {
-	unsigned int		:4;	
+	unsigned int		:4;
 	unsigned int	m	:4;	/* 0 - 3 */
 	unsigned int		:4;
 	unsigned int	bdf	:1;	/* 11 */
@@ -92,7 +92,7 @@ struct pbcw {
 	unsigned int	fwiL	:8;	/* 56 - 63 */
 };
 
-#else 
+#else
 #if defined(ArchCray)
 
 struct pbcw {
@@ -104,7 +104,7 @@ struct pbcw {
 	unsigned int	fwi	:9;	/* 55 - 63 */
 };
 
-#else 
+#else
 
 struct pbcw {
 	unsigned int	m	:4;	/* 0 - 3 */
@@ -116,8 +116,8 @@ struct pbcw {
 	unsigned int	fwi	:9;	/* 55 - 63 */
 };
 
-#endif 
-#endif 
+#endif
+#endif
 
 struct bcw {
 	unsigned int	bn;		/* 24 bits */
@@ -150,7 +150,7 @@ struct bcw {
 	(u)->bn |= (p)->bnLM << 7;	\
 	(u)->bn |= (p)->bnLL
 
-#else 
+#else
 #if defined(ArchCray)
 
 #define PACK_BCW(u, p)			\
@@ -182,8 +182,8 @@ struct bcw {
 	(u)->bn = (p)->bnH << 23;	\
 	(u)->bn |= (p)->bnL
 
-#endif 
-#endif 
+#endif
+#endif
 
 #else
 
@@ -203,7 +203,7 @@ struct bcw {
 	(u)->bn |= (p)->bnLM << 7;	\
 	(u)->bn |= (p)->bnLL
 
-#else 
+#else
 
 #if defined(ArchCray)
 
@@ -225,10 +225,10 @@ struct bcw {
 	(u)->bn = (p)->bnH << 23;	\
 	(u)->bn |= (p)->bnL
 
-#endif 
-#endif 
+#endif
+#endif
 
-#endif 
+#endif
 
 #if defined(ArchLinux)
 
@@ -266,7 +266,7 @@ struct prcw {
 	unsigned int	fwi	:9;	/* 55 - 63 */
 };
 
-#else 
+#else
 
 struct prcw {
 	unsigned int	m	:4;	/* 0 - 3 */
@@ -281,8 +281,8 @@ struct prcw {
 	unsigned int	fwi	:9;	/* 55 - 63 */
 };
 
-#endif 
-#endif 
+#endif
+#endif
 
 struct rcw {
 	unsigned int	pfi;		/* 20 bits */
@@ -329,7 +329,7 @@ struct rcw {
 	(u)->pfi |= (p)->pfiM << 8;	\
 	(u)->pfi |= (p)->pfiL
 
-#else 
+#else
 #if defined(ArchCray)
 
 #define PACK_RCW(u, p)			\
@@ -376,10 +376,10 @@ struct rcw {
 	(u)->pfi = (p)->pfiH << 8;	\
 	(u)->pfi |= (p)->pfiL
 
-#endif 
-#endif 
+#endif
+#endif
 
-#else 
+#else
 
 #if defined(ArchLinux)
 
@@ -432,8 +432,8 @@ struct rcw {
 	(u)->pri = (p)->pri;		\
 	(u)->fwi = (p)->fwi;
 
-#endif 
-#endif 
+#endif
+#endif
 
 #endif
 
@@ -457,7 +457,7 @@ union pcw {
 		unsigned int	bnLL	:7;	/* 48 - 54 */
 		unsigned int	fwiL	:8;	/* 56 - 63 */
 	} u;
-#else 
+#else
 	struct {
 		unsigned int	m	:4;
 		unsigned int		:28;
@@ -489,7 +489,7 @@ union pcw {
 #define M_EOF	016
 #define M_EOD	017
 
-#endif 
+#endif
 
 
 /*

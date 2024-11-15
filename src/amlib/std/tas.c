@@ -99,18 +99,17 @@ void stas_flag(DERTBL *varp)
   if (!std::isnan(ewx) && ewx < 1.05 * ews)
   {
     ewt = ewx;
-    retval = 0.0;
     lastew = ewx;
     count = 0;
   }
   else
   {
     if (count++ >= 5)
-    { 
+    {
       ewt = ews * 0.5;
       retval = 1.0;
     }
-    else 
+    else
     {
       // Carry over last good ewx for 5 seconds
       ewt = lastew;

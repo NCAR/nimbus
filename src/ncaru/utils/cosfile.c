@@ -1,12 +1,12 @@
 
 /* Copyright 1994 University Corporation for Atmospheric Research (UCAR).
 **	All rights reserved
-** 
-** Permission to use, copy, and modify this software and its documentation 
-** for any non-commercial purpose is hereby granted without fee, provided 
-** that the above copyright notice appear in all copies and that both that 
-** copyright notice and this permission notice appear in supporting 
-** documentation. UCAR makes no representations about the suitability of 
+**
+** Permission to use, copy, and modify this software and its documentation
+** for any non-commercial purpose is hereby granted without fee, provided
+** that the above copyright notice appear in all copies and that both that
+** copyright notice and this permission notice appear in supporting
+** documentation. UCAR makes no representations about the suitability of
 ** this software for any purpose.   It is provided "as is" without express
 ** or implied warranty.
 */
@@ -21,7 +21,7 @@
 #include <cray.h>
 
 /*
-**  cosfile  - Emulates the cosfile command available on the 
+**  cosfile  - Emulates the cosfile command available on the
 **		Cray systems written by Tom Parker.
 **
 **  AUTHOR:	Peter W. Morreale,  SCD Consulting
@@ -32,19 +32,19 @@
 #define False	0
 typedef char Boolean;
 
-static int	min  	= 999999999;
-static int	dmin  	= 999999999;
-static int	max  	= 0;
-static int	dmax  	= 0;
-static int	nrec 	= 0;
+static int	min	= 999999999;
+static int	dmin	= 999999999;
+static int	max	= 0;
+static int	dmax	= 0;
+static int	nrec	= 0;
 static int	lastnrec= 0;
-static int	nfile 	= 1;
-static int	prsize 	= 0;
-static Boolean 	aflag 	= True;
+static int	nfile	= 1;
+static int	prsize	= 0;
+static Boolean	aflag	= True;
 static Boolean	verbose = False;
-static int	binary 	= 0;
-static int	ascii 	= 0;
-static int	bfi 	= 0;
+static int	binary	= 0;
+static int	ascii	= 0;
+static int	bfi	= 0;
 static int	fsize	= 0;
 static int	dsize	= 0;
 
@@ -55,7 +55,7 @@ extern void	PrintEOD();
 
 #define RECORD_SIZE  3*1024000
 
-static unsigned char	record[RECORD_SIZE]; 
+static unsigned char	record[RECORD_SIZE];
 
 #define VERSION "2.1"
 
@@ -88,7 +88,7 @@ char	*argv[];
 	    }
 	}
 
-	if (optind >= argc) Usage(); 	/* no return */
+	if (optind >= argc) Usage();	/* no return */
 
 
 	for(i = optind; i < argc; i++) {
@@ -98,6 +98,7 @@ char	*argv[];
 	exit(0);
 	return(0);	/* for lint */
 }
+
 /*----------------------------------------------------------------------*/
 void Usage()
 {
@@ -105,7 +106,6 @@ void Usage()
                     stderr);
         (void)fprintf(stderr, " Version %s\n", VERSION);
         exit(0);
-
 }
 
 /*---------------------------------------------------------------------*/
@@ -116,8 +116,6 @@ char	*flnm;
 	int		bytes;
 	int		lastBytes;
 	unsigned char	*p;
-
-	
 
 	if ((cf = _CrayOpen(flnm, O_RDONLY, 0600, 0)) == (CrayFile *) NULL) {
 	   return;
@@ -137,26 +135,26 @@ char	*flnm;
 	        nrec++;
 		if (verbose) PrintEOR(bytes);
 		lastBytes = bytes;
-	    	if (aflag) {
-	 	    p = record;
+		if (aflag) {
+		    p = record;
 		    while (p < &record[bytes]) {
-		    	if (*p == 27) 
+			if (*p == 27)
 		            bfi++;
-		    	else if (*p > 32 && *p < 127)
-		    	    ascii++;
-		    	else
+			else if (*p > 32 && *p < 127)
+			    ascii++;
+			else
 			    binary++;
 
-		    	p++;
-	    	    }
+			p++;
+		    }
 	        }
-	    } 
+	    }
 	    else if (bytes == CRAY_EOF) {
-	    	if (verbose && lastnrec != nrec) 
+		if (verbose && lastnrec != nrec)
 			(void)printf("%9d%9d\n", nrec, lastBytes);
 		PrintEOF();
 		/*
-		** Update 
+		** Update
 		*/
 		prsize = 0;
 		nrec = 0;
@@ -172,15 +170,12 @@ char	*flnm;
 		max = 0;
 	    }
 	    else {
-  		(void)fprintf(stderr, 
+		(void)fprintf(stderr,
 		    " Error on record %d.  Dataset probably not COS-blocked.\n",
 		     nrec);
 		_CrayClose(cf);
 		return;
 	    }
-
-		
-
 	}
 
 	PrintEOD();
@@ -201,8 +196,8 @@ int	len;
 	** Only print out the record if the lengths are not the same
 	*/
 	if (prsize != len) {
-	    	(void)printf("%9d%9d\n", nrec, len);
-	    	prsize = len;
+		(void)printf("%9d%9d\n", nrec, len);
+		prsize = len;
 		lastnrec = nrec;
 	}
 
@@ -213,8 +208,6 @@ int	len;
 /*-------------------------------------------------------------------------*/
 void PrintEOF()
 {
-
-
 	(void)printf("  EOF %d: Recs=%d Min=%d Max=%d Avg=%d Bytes=%d\n",
 		      nfile,
 		      nrec,
@@ -225,7 +218,7 @@ void PrintEOF()
 
 	if (aflag) {
 	    (void)printf("         Type=");
-	    if (binary && !ascii) 
+	    if (binary && !ascii)
 	        (void)printf("Binary\n");
 	    else if (ascii && !binary) {
 		if (bfi)
@@ -237,7 +230,7 @@ void PrintEOF()
 		/*
 		** Determine the percentages of the bytes in the file
 		*/
-	        int 	bin, asc;
+	        int	bin, asc;
 	        bin = (binary + bfi) * 100 / fsize;
 	        asc = 100 - bin;
 	        if (ascii && asc == 0) {
@@ -252,8 +245,8 @@ void PrintEOF()
 			      bin, asc);
 	    }
 	}
-	return;
 
+	return;
 }
 
 /*-------------------------------------------------------------------------*/
