@@ -8,7 +8,7 @@ import eol_scons
 
 def nimbusbase(env):
     env.Require(['prefixoptions', 'buildmode', 'openmotif', 'nidas', 'netcdf', 'gsl', 'postgres_pq', 'boost_regex', 'bz2', 'z'])
-    env.Append(CPPPATH=['#/include', '#/src/filter'])
+    env.Append(CPPPATH=['#/include', '#/src/nimbus'])
     env.Append(CXXFLAGS=['-std=c++11'])
     env.Append(CXXFLAGS=['-g'])
     env.Append(CXXFLAGS=Split("-Wno-write-strings -Wstrict-aliasing "))
@@ -47,7 +47,7 @@ SConscript('src/amlib/SConscript')
 ##
 ##  Build nimbus proper.
 ##
-SConscript('src/filter/SConscript')
+SConscript('src/nimbus/SConscript')
 
 SConscript('tests/SConscript')
 
