@@ -413,8 +413,6 @@ selectVariablesFromProject(nidas::core::Project* project)
   return vlist;
 }
 
-
-
 std::string
 getSerialNumber(const nidas::core::Variable* variable)
 {
@@ -425,12 +423,23 @@ getSerialNumber(const nidas::core::Variable* variable)
   if (tag)
     sensor = tag->getDSMSensor();
   if (sensor)
-    parm = sensor->getParameter("SerialNumber");
+  {
+    /* If analog variable, get the serial number parameter from the "variable"
+     * not the analog card "sensor" serial number
+     */
+    if (sensor->getDeviceName().find("mmat") != std::string::npos || 
+        sensor->getClassName().find("SerialAnalog") != std::string::npos)
+    {
+      parm = variable->getParameter("InstrumentSerialNumber");
+    }
+    else
+      parm = sensor->getParameter("SerialNumber");
+
+  }
   if (parm)
     sn = parm->getStringValue(0);
   return sn;
 }
-
 
 int
 getLag(const nidas::core::Variable* variable)
