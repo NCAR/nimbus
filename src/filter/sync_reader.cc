@@ -32,7 +32,7 @@ using nidas::dynld::raf::SyncRecordVariable;
 #include "timeseg.h" // for BEG_OF_TAPE, END_OF_TAPE
 #include "trace_variables.h"
 
-namespace 
+namespace
 {
   char sync_server_pipe[128] = "";
   pid_t syncPID = -1;
@@ -116,7 +116,7 @@ CloseSyncReader()
 }
 
 
-nidas::dynld::raf::SyncRecordReader* 
+nidas::dynld::raf::SyncRecordReader*
 GetSyncReader()
 {
   return syncRecReader;
@@ -153,7 +153,7 @@ SyncReaderSetTimeWindow(time_t begin, time_t end)
     // feature.
     //
     // syncServer->setTimeWindow(ustart, uend);
-  }    
+  }
 }
 
 // When post-processing, this starts the SyncServer thread which will read
@@ -162,7 +162,7 @@ SyncReaderSetTimeWindow(time_t begin, time_t end)
 // the user can change calibrations or the time window after loading the
 // project configuration.  In that case the start happens in in
 // FindFirstLogicalADS3().
-nidas::dynld::raf::SyncRecordReader* 
+nidas::dynld::raf::SyncRecordReader*
 StartReadingSyncRecords()
 {
   // Make sure reader is running if not started yet.
@@ -190,7 +190,7 @@ StartSyncServerProcess(const std::set<std::string>& headerfiles,
   // path inside that directory to sync_server.
   mkdtemp(sync_server_pipe);
   strcat(sync_server_pipe, "/sync_server.pipe");
-    
+
   std::vector<std::string> args;
   if (getenv("NIMBUS_SYNC_SERVER_VALGRIND"))
   {
@@ -262,7 +262,7 @@ StartSyncServerProcess(const std::set<std::string>& headerfiles,
 }
 
 
-nidas::dynld::raf::SyncRecordReader* 
+nidas::dynld::raf::SyncRecordReader*
 StartSyncReader(const std::set<std::string>& headerfiles, bool postprocess)
 {
   DLOG(("entering StartSyncReader() with ") << headerfiles.size()
@@ -288,7 +288,7 @@ StartSyncReader(const std::set<std::string>& headerfiles, bool postprocess)
     // to accommodate the processed particle samples whose time tags can
     // grossly precede the raw times, and traditionally the raw sorter
     // length is left as the default.
-    // 
+    //
     syncServer->setSorterLengthSeconds(cfg.GetSorterLength());
 
     if (sync_xml_path.length() > 0)
@@ -383,7 +383,7 @@ LoadCalibration(nidas::core::Variable* var, time_t startTime,
 
   nidas::core::Polynomial* poly =
     dynamic_cast<nidas::core::Polynomial*>(converter);
-  nidas::core::Linear* linear = 
+  nidas::core::Linear* linear =
     dynamic_cast<nidas::core::Linear*>(converter);
   if (linear)
   {
@@ -399,7 +399,7 @@ LoadCalibration(nidas::core::Variable* var, time_t startTime,
     const std::vector<float>& dcoefs = poly->getCoefficients();
     for (size_t i = 0; i < dcoefs.size(); ++i)
       coefs.push_back(dcoefs[i]);
-  } 
+  }
 
 }
 
@@ -453,7 +453,7 @@ void
 SetCalibration(RAWTBL* rp)
 {
   Project* project = Project::getInstance();
-  Variable* variable = lookup_variable(selectVariablesFromProject(project), 
+  Variable* variable = lookup_variable(selectVariablesFromProject(project),
 				       rp->name);
   if (variable)
   {

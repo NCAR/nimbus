@@ -550,7 +550,7 @@ void NetCDF::createSizeDistributionCoordinateDimVars(var_base *vp)
   else
   {
     nc_put_att_text(_ncid, vp->coord_varid, "units", 2, "um");
-    snprintf(text, 128, "%s arithmetic midpoint bin size in diameter", & vp->name[1]);
+    snprintf(text, 128, "%s arithmetic midpoint bin size in diameter", &vp->name[1]);
     nc_put_att_text(_ncid, vp->coord_varid, "long_name", strlen(text), text);
     nc_put_att_text(_ncid, vp->coord_varid, "bounds", strlen(dname), dname);
   }
