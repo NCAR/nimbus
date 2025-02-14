@@ -8,3 +8,4 @@
 |std|These are the blessed calculations for mainstream instruments|
 |user|These are per-project or user instrumentation calculations|
 |ncaru|Old routines for dealing with Cray OS (COS) blocked files|
+|qc|This is unused at this time, it was a real-time QC checker|
