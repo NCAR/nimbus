@@ -680,7 +680,7 @@ static RAWTBL* initSDI_ADS3(nidas::core::Variable* var, time_t startTime)
   raw.push_back(cp);
 
   addUnitsAndLongName(cp, var);
-  cp->CategoryList.push_back("Analog");
+  cp->CategoryList.push_back("Housekeeping");
 
   cp->SampleRate   = rate;
 
@@ -1319,7 +1319,7 @@ static void initSDI(char vn[])
   raw.push_back(cp);
 
   addUnitsAndLongName(cp, 0);
-  cp->CategoryList.push_back("Analog");
+  cp->CategoryList.push_back("Housekeeping");
 
   if (GetConversionOffset(vn, &(cp->convertOffset)) == ERR)
     cp->convertOffset = 0;
@@ -2288,7 +2288,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   raw.push_back(rp);
 
   addUnitsAndLongName(rp, var);
-  rp->CategoryList.push_back("Raw");
+  rp->CategoryList.push_back("None");
 
   /* For ADS2 we decode raw/block/struct data.  ADS3 hands us everything in
    * float format, so decode fn's not required.
@@ -2372,7 +2372,7 @@ static DERTBL *add_name_to_DERTBL(const char name_sans_location[])
   derived.push_back(dp);
 
   addUnitsAndLongName(dp, 0);
-  dp->CategoryList.push_back("Derived");
+  dp->CategoryList.push_back("None");
 
   dp->Initializer	= deriveftns[indx].constructor;
   dp->compute		= (void (*) (void *))deriveftns[indx].compute;
