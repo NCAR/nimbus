@@ -372,7 +372,7 @@ StartSyncReader(const std::set<std::string>& headerfiles, bool postprocess)
 
 
 void
-LoadCalibration(nidas::core::Variable* var, time_t startTime,
+LoadCalibration(const nidas::core::Variable* var, time_t startTime,
 		std::vector<double>& coefs)
 {
   nidas::core::VariableConverter* converter =
@@ -439,6 +439,26 @@ getSerialNumber(const nidas::core::Variable* variable)
   if (parm)
     sn = parm->getStringValue(0);
   return sn;
+}
+
+std::string
+getCategory(const nidas::core::Variable* variable)
+{
+  std::string cat;
+  if (variable == 0)
+    return cat;
+
+  const nidas::core::SampleTag* tag = variable->getSampleTag();
+  const nidas::core::DSMSensor* sensor = 0;
+  const nidas::core::Parameter* parm = 0;
+
+  if (tag)
+    sensor = tag->getDSMSensor();
+  if (sensor)
+    parm = sensor->getParameter("Category");
+  if (parm)
+    cat = parm->getStringValue(0);
+  return cat;
 }
 
 int

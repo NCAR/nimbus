@@ -141,7 +141,7 @@ void RealTimeLoop3()
 
   if (cfg.OutputSQL())
   {
-    std::string BuildPGspecString();
+    extern std::string BuildPGspecString();
     psql = new PostgreSQL(BuildPGspecString());
   }
 

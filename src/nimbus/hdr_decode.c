@@ -49,6 +49,8 @@ using nidas::dynld::raf::Aircraft;
 using nidas::core::NidasApp;
 using nidas::core::Project;
 
+static nidas::dynld::raf::SyncRecordReader* syncRecReader;
+
 VDBFile *vardb = 0; // Exports to cb_main.c and netcdf.c
 
 typedef struct
@@ -113,9 +115,7 @@ static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
 		*rawlist[MAX_DEFAULTS*4];	/* RawNames file	*/
 
 
-static RAWTBL	*initSDI_ADS3(nidas::core::Variable* var,
-			      time_t startTime);
-static void     initMTP();
+static RAWTBL	*initSDI_ADS3(const nidas::core::Variable* nidas_var, time_t startTime);
 static RAWTBL	*add_name_to_RAWTBL(const char []);
 static DERTBL	*add_name_to_DERTBL(const char []);
 
@@ -123,7 +123,7 @@ static DERTBL	*add_name_to_DERTBL(const char []);
 static void	add_file_to_RAWTBL(const std::string&);
 #endif
 
-static void	add_file_to_DERTBL(const std::string&),
+static void	add_file_to_DERTBL(const std::string&), initMTP(),
 	initHDR(char vn[]), initSDI(char vn[]), initHoneywell(char vn[]),
 	initOphir3(char vn[]), initPMS1D(char vn[]), initPMS1Dv2(char vn[]),
 	addGustVariables(const char s[]), initGustCorrected(), initLitton51(char vn[]),
@@ -304,9 +304,9 @@ for (size_t i = 0; i < derived.size(); ++i)
 }	// END COMMONPOSTINITIALIZATION
 
 /* -------------------------------------------------------------------- */
-static void addSerialNumber(nidas::core::Variable *var, var_base *rp)
+static void addSerialNumber(nidas::core::Variable *nidas_var, var_base *rp)
 {
-  const std::list<const nidas::core::Parameter *> parms = var->getParameters();
+  const std::list<const nidas::core::Parameter *> parms = nidas_var->getParameters();
 
   std::list<const nidas::core::Parameter *>::const_iterator it;
   for (it = parms.begin(); it != parms.end(); ++it)
@@ -413,7 +413,6 @@ int DecodeHeader3(const char header_file[])
   Project* project = napp.getProject();
   SetSyncXMLPath(napp.xmlHeaderFile());
 
-  nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
   // After calling this, the SyncServer should have created the project and
   // initialized all the sensors.
@@ -478,6 +477,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   //  vars = syncRecReader->getVariables();
   vars = selectVariablesFromProject(project);
 
+  // Main loop
   time_t startTime = syncRecReader->getStartTime();
   std::list<const nidas::core::Variable*>::const_iterator vi;
   for (vi = vars.begin(); vi != vars.end(); ++vi)
@@ -507,6 +507,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     }
 
     length = var->getLength();
+
     serialNumber = getSerialNumber(var);
 
 //printf("DecodeHeader3: adding %s, converter = %d, rate = %d, %s\n",
@@ -674,31 +675,30 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 }
 
 /* -------------------------------------------------------------------- */
-static RAWTBL* initSDI_ADS3(nidas::core::Variable* var, time_t startTime)
+static RAWTBL* initSDI_ADS3(const nidas::core::Variable* nidas_var, time_t startTime)
 {
-  RAWTBL *cp = new RAWTBL(var->getName().c_str());
+  RAWTBL *cp = new RAWTBL(nidas_var->getName().c_str());
   raw.push_back(cp);
 
-  addUnitsAndLongName(cp, var);
-  cp->CategoryList.push_back("Housekeeping");
+  addUnitsAndLongName(cp, nidas_var);
+//  cp->CategoryList.push_back("Housekeeping");
 
   cp->SampleRate   = rate;
 
-  nidas::dynld::raf::SyncRecordReader* syncRecReader = GetSyncReader();
-  cp->TTindx = syncRecReader->getLagOffset(var);
+  cp->TTindx = syncRecReader->getLagOffset(nidas_var);
 
-  LoadCalibration(var, startTime, cp->cof);
+  LoadCalibration(nidas_var, startTime, cp->cof);
   if (0)
   {
-    printf("VAR %s cal coefficients: %f %f ...", var->getName().c_str(),
+    printf("VAR %s cal coefficients: %f %f ...", nidas_var->getName().c_str(),
 	   cp->cof[0], cp->cof[1]);
   }
 
   nidas::core::VariableConverter* converter =
-    const_cast<nidas::core::VariableConverter*>(var->getConverter());
+    const_cast<nidas::core::VariableConverter*>(nidas_var->getConverter());
   if (converter)
   {
-//    cp->AltUnits = var->getUnits();	// Do we really use AltUnits?  If I add to metadata, then it goes in the netCDF file regardless
+//    cp->AltUnits = nidas_var->getUnits();	// Do we really use AltUnits?  If I add to metadata, then it goes in the netCDF file regardless
     cp->addToMetadata("units", converter->getUnits());
   }
 
@@ -2260,10 +2260,9 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   strcpy(fullName, name);
   strcat(fullName, location);
 
-  nidas::dynld::raf::SyncRecordReader* syncRecReader = GetSyncReader();
-  const nidas::core::Variable *var = syncRecReader->getVariable(fullName);
+  const nidas::core::Variable *nidas_var = syncRecReader->getVariable(fullName);
 
-  if (indx == ERR && (cfg.isADS2() || var == 0))
+  if (indx == ERR && (cfg.isADS2() || nidas_var == 0))
   {
     char msg[128];
 
@@ -2286,8 +2285,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
 
   RAWTBL *rp = new RAWTBL(fullName);
   raw.push_back(rp);
-
-  addUnitsAndLongName(rp, var);
+  addUnitsAndLongName(rp, nidas_var);
   rp->CategoryList.push_back("None");
 
   /* For ADS2 we decode raw/block/struct data.  ADS3 hands us everything in
@@ -2370,7 +2368,6 @@ static DERTBL *add_name_to_DERTBL(const char name_sans_location[])
 
   DERTBL *dp = new DERTBL(name);
   derived.push_back(dp);
-
   addUnitsAndLongName(dp, 0);
   dp->CategoryList.push_back("None");
 
@@ -2468,6 +2465,7 @@ static void
 addUnitsAndLongName(var_base *vbp, const nidas::core::Variable *nidas_var)
 {
   VDBVar *vdb_var = vardb->search_var(vbp->name);
+  std::string cat;
 
   float miss_val = (float)MISSING_VALUE;
   vbp->addToMetadata("_FillValue", miss_val);
@@ -2490,10 +2488,19 @@ addUnitsAndLongName(var_base *vbp, const nidas::core::Variable *nidas_var)
     if (vbp->LongName().length() == 0)
       vbp->addToMetadata("long_name", vdb_var->get_attribute(VDBVar::LONG_NAME));
 
-    std::string cat = vdb_var->get_attribute(VDBVar::CATEGORY);
+    cat = vdb_var->get_attribute(VDBVar::CATEGORY);
     if ( cat.size() > 0 )
       vbp->CategoryList.push_back(cat);
   }
+
+  /* Order of precedence for Category is VarDB, XML, nimbus
+   * VarDB is checked 3 lines above, XML is checked here, nimbus will add default
+   * if this is empty.  Move this above the "if (vdb_var)" 10 lines above to
+   * change the order of precedence.
+   */
+  cat = getCategory(nidas_var);
+  if ( cat.size() > 0 )
+    vbp->CategoryList.push_back(cat);
 }
 
 /* -------------------------------------------------------------------- */

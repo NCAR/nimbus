@@ -29,20 +29,20 @@ SetSyncXMLPath(const std::string& path);
 void
 SyncReaderSetTimeWindow(time_t begin, time_t end);
 
-nidas::dynld::raf::SyncRecordReader* 
+nidas::dynld::raf::SyncRecordReader*
 StartSyncReader(const std::set<std::string>& headerfiles, bool postprocess);
 
 int
 SyncRead(nidas::core::dsm_time_t* tt, double* record, int nvalues);
 
-nidas::dynld::raf::SyncRecordReader* 
+nidas::dynld::raf::SyncRecordReader*
 GetSyncReader();
 
-nidas::dynld::raf::SyncRecordReader* 
+nidas::dynld::raf::SyncRecordReader*
 StartReadingSyncRecords();
 
 void
-LoadCalibration(nidas::core::Variable* var, time_t startTime,
+LoadCalibration(const nidas::core::Variable* var, time_t startTime,
 		std::vector<double>& coefs);
 
 /**
@@ -60,6 +60,9 @@ selectVariablesFromProject(nidas::core::Project* project);
 
 std::string
 getSerialNumber(const nidas::core::Variable* variable);
+
+std::string
+getCategory(const nidas::core::Variable* variable);
 
 int
 getLag(const nidas::core::Variable* variable);
