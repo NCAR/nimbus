@@ -355,11 +355,13 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
     if (rp->Length > 1)
     {
-      if (rp->SerialNumber.size() > 0)	// you should only ever come here once per serial number
+      // Do this if it's a size distribution
+      if (variableIs_a_SizeDistribution(rp))
       {
         createSizeDistributionCoordinateDimVars(rp);
         dims[2] = _vectorDimIDs[rp->SerialNumber];
       }
+      // otherwise a generic histogram dimension.
       else
       {
         char tmp[32];
@@ -416,9 +418,8 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
     }
 
 
-    if (rp->Length > 3 &&
-	(rp->ProbeType & PROBE_PMS2D || rp->ProbeType & PROBE_PMS1D ||
-	 rp->ProbeType & PROBE_RDMA || rp->ProbeType & PROBE_CLMT))
+    // Size distribution variable only.  Adds meta-data from PMSspecs
+    if (variableIs_a_SizeDistribution(rp))
       AddPMS1dAttrs(_ncid, rp);
   }
 
@@ -506,9 +507,8 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
       nc_put_att_float(_ncid, dp->varid, "modulus_range", NC_FLOAT, 2, mod);
     }
 
-    if (dp->Length > 3 &&
-	(dp->ProbeType & PROBE_PMS2D || dp->ProbeType & PROBE_PMS1D ||
-	 dp->ProbeType & PROBE_RDMA || dp->ProbeType & PROBE_CLMT))
+    // Size distribution variable only.  Adds meta-data from PMSspecs
+    if (variableIs_a_SizeDistribution(dp))
       AddPMS1dAttrs(_ncid, dp);
   }
 
@@ -1108,6 +1108,23 @@ void NetCDF::putGlobalAttribute(const char attrName[], const char *value)
 void NetCDF::putGlobalAttribute(const char attrName[], const std::string value)
 {
   putGlobalAttribute(attrName, value.c_str());
+}
+
+/* -------------------------------------------------------------------- */
+bool NetCDF::variableIs_a_SizeDistribution(var_base *vp) const
+{
+  /* Size distribution
+   *  - length must be greater than 1 (i.e. not a scalar), but really 3 to eliminate _bnds
+   *  - must of a specific probe type
+   *  - also eliminate PBP varaibles which have length 256 and not a distribution
+   */
+  if (vp->Length > 3 &&
+      (vp->ProbeType & PROBE_PMS2D || vp->ProbeType & PROBE_PMS1D ||
+       vp->ProbeType & PROBE_RDMA || vp->ProbeType & PROBE_CLMT) &&
+      strncmp(vp->name, "PBP", 3))
+   return true;
+
+  return false;
 }
 
 /* END NETCDF.C */

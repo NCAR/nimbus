@@ -49,6 +49,7 @@ protected:
   void	putGlobalAttribute(const char attrName[], const char *value);
   void	putGlobalAttribute(const char attrName[], const std::string value);
 
+  bool	variableIs_a_SizeDistribution(var_base *vp) const;
 
   int _ncid;
 
