@@ -63,12 +63,19 @@ span.comment { background-color: #88FF88; font-style: italic; }
 
 <ul>
 <li class="toc">A &nbsp;<a href="#ref_app">References</a></li>
-<li class="toc">B &nbsp;<a href="#pms1d_app">PMS1D Probe Variables Description</a></li>
+<li class="toc">B &nbsp;<a href="#pms1d_app">Size-distribution Probe Variables Description</a></li>
 </ul>
 
-
-<b><a href="netCDF_1_3.html">RAF netCDF Conventions 1.3</a></b> for files produced prior to 2021.
-
+<hr>
+For files produced prior to 2021, visit <b><a href="netCDF_1_3.html">RAF netCDF Conventions 1.3</a></b>.
+<ul>
+<li>The primary difference is in how size-distributions are stored.  The legacy zeroth bin has been removed.  Now a 30 channel probe will have 30 bins, where as previously it had 31, with the zeroth (or 1st, depending on your method of numbering) bin being a fixed zero.</li>
+</ul>
+Check the Conventions global attribute for version number.  The "NCAR-RAF/nimbus" entry is what you want. ACDD is for data discovery.
+<pre>
+34% ncdump -h CAESARrf01.nc | grep Conventions
+                :Conventions = "NCAR-RAF/nimbus-2.0,ACDD-1.3" ;
+</pre>
 
 <hr>
 <h2 align=center><a name="intro">Introduction</a></h2>
@@ -385,31 +392,43 @@ of derived variables.  I have included one example from each of the
 <h3><a name="ref_app">A &nbsp;References</a></h3>
 <dl>
 <dt><a name="ref_nc">[NetCDF]</a></dt>
-  <dd><a href="http://www.unidata.ucar.edu/packages/netcdf/index.html">NetCDF
+  <dd><a href="http://www.unidata.ucar.edu/software/netcdf/">NetCDF
   Software Package</a>, from the UNIDATA Program Center of the University
   Corporation for Atmospheric Research.
   </dd>
-
+<br>
 <dt><a name="ref_units">[UDUNITS]</a></dt>
-  <dd><a href="http://www.unidata.ucar.edu/packages/udunits/">UDUNITS
+  <dd><a href="http://www.unidata.ucar.edu/software/udunits/">UDUNITS
   Software Package</a>, from the UNIDATA Program Center of the University
   Corporation for Atmospheric Research.
+  </dd>
+<br>
+<dt><a name="ref_units">[CF Conventions]</a></dt>
+  <dd><a href="http://www.cfconventions.org/conventions.html">CF
+  Conventions</a>, Climate Forcast data and meta-data conventions.
+  </dd>
+<br>
+<dt><a name="ref_units">[ACDD]</a></dt>
+  <dd><a href="https://wiki.esipfed.org/Attribute_Convention_for_Data_Discovery_1-3">ACDD</a>, Attribute Conventions for Data Discovery
   </dd>
 
 </dl>
 
-<h3><a name="pms1d_app">B &nbsp;PMS1D Probe Variables Description</a></h3>
+<p>
+<h3><a name="pms1d_app">B &nbsp;Size-distribution Probe Variables Description</a></h3>
+
+Units for all size-distributions will always be #/vol.  They will never be normalized (i.e. divided by bin width or log bin width).
 
 <p>
 <h4>B.1 Variable names</h4>
 
 Each PMS probe has two histograms stored in the netCDF file.  First is the raw
 counts and this variable always starts with the letter 'A' (for "Actual").  Second is the
-concentration array which always starts with the letter 'C'.  Below you will see the variable
+size-distribution array which always starts with the letter 'C'.  Below you will see the variable
 names for the orginal PMS probe and for the DMT converted electronics.
 <p>
 <table border=1>
- <tr><th>PMS1D</th><th># bins</th><th>Counts name</th><th>Concentration name</th><th>DMT Converted</th><th># bins</th><th>Counts name</th><th>Concentration name</th></tr>
+ <tr><th>Probe</th><th># bins</th><th>Counts name</th><th>Concentration name</th><th>DMT Converted</th><th># bins</th><th>Counts name</th><th>Concentration name</th></tr>
  <tr><td>FSSP</td><td>16</td><td>AFSSP_xxx</td><td>CFSSP_xxx</td><td>S100</td><td>30</td><td>AS100_xxx</td><td>CS100_xxx</td></tr>
  <tr><td>PCASP</td><td>16</td><td>APCAS_xxx</td><td>CPCAS_xxx</td><td>S200</td><td>30</td><td>AS200_xxx</td><td>CS200_xxx</td></tr>
  <tr><td>F300</td><td>32</td><td>AF300_xxx</td><td>CF300_xxx</td><td>S300</td><td>30</td><td>AS300_xxx</td><td>CS300_xxx</td></tr>
@@ -418,6 +437,17 @@ names for the orginal PMS probe and for the DMT converted electronics.
  <tr><td>260X</td><td>64</td><td>A260X_xxx</td><td>C260X_xxx</td><td>----</td><td>--</td><td></td><td></td></tr>
  <tr><td>2D-C (entire-in algo)</td><td>32</td><td>A1DC_xxx</td><td>C1DC_xxx</td><td>Fast2DC</td><td>64</td><td>A1DC_xxx</td><td>C1DC_xxx</td></tr>
  <tr><td>2D-C (center-in algo)</td><td>64</td><td>A2DC_xxx</td><td>C2DC_xxx</td><td>Fast2DC</td><td>128</td><td>A2DC_xxx</td><td>C2DC_xxx</td></tr>
+</table>
+<br>
+SPEC probes are only processed through our OAP post-processing tool.  This will produce two sets of data for each probe.  One for round particles, and one for all particles.  This processor uses center-in algorithm.
+<table border=1>
+ <tr><th>SPEC Probe</th><th># bins</th><th>Type</th><th>Counts name</th><th>Size-distribution name</th></tr>
+ <tr><td>Fast2DS (vertical)</td><td>128</td><td>all</td><td>A2DSVA_xxx</td><td>C2DSVA_xxx</td></tr>
+ <tr><td>        </td><td>128</td><td>round</td><td>A2DSVR_xxx</td><td>C2DSVR_xxx</td></tr>
+ <tr><td>Fast2DS (horizontal)</td><td>128</td><td>all</td><td>A2DSHA_xxx</td><td>C2DSHA_xxx</td></tr>
+ <tr><td>        </td><td>128</td><td>round</td><td>A2DSHR_xxx</td><td>C2DSHR_xxx</td></tr>
+ <tr><td>HVPS</td><td>128</td><td>all</td><td>A2DHA_xxx</td><td>C2DHA_xxx</td></tr>
+ <tr><td> </td><td>128</td><td>round</td><td>A2DHR_xxx</td><td>C2DHR_xxx</td></tr>
 </table>
 <p>
 <ul>
@@ -554,7 +584,7 @@ Research Aviation Facility<br>
 <hr>
 <font size=2>
 Last update:
-Thu Apr 19 07:00:00 MDT 2024
+Sun Apr  6 10:11:43 MDT 2025
 </font>
 </body>
 </html>
