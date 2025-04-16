@@ -13,7 +13,7 @@ DESCRIPTION:
 
 REFERENCES:	pms1d.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2025
 -------------------------------------------------------------------------
 */
 
@@ -33,6 +33,11 @@ static NR_TYPE	SAMPLE_AREA[MAX_CDP], vol[MAX_CDP],
 
 static NR_TYPE	total_concen[MAX_CDP], dbar[MAX_CDP], plwc[MAX_CDP],
 		disp[MAX_CDP], dbz[MAX_CDP], reff2[MAX_CDP], reff3[MAX_CDP];
+
+// for PbP sizing
+static NR_TYPE	channelThresholds[MAX_CDP][BINS_40+1];
+static NR_TYPE	defaultThresholds[] = { 91, 111, 159, 190, 215, 243, 254, 272, 301, 355, 382, 488, 636, 751, 846, 959, 1070, 1297, 1452, 1665, 1851, 2016, 2230, 2513, 2771, 3003, 3220, 3424, 3660, 4095 };
+
 
 NR_TYPE		reffd3[MAX_CDP], reffd2[MAX_CDP];  /* For export to reff.c */
 
@@ -141,6 +146,9 @@ void ccdpInit(var_base *varp)
 
     cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
     cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
+
+// Remove this once we get them from the XML
+channelThresholds[probeNum][i] = defaultThresholds[i];
   }
 
   ReleasePMSspecs();
@@ -251,6 +259,34 @@ void sreffd(DERTBL *varp)	/* Effective Radius	*/
     PutSample(varp, 0.5 * (reff3[varp->ProbeCount] / reff2[varp->ProbeCount]));
   else
     PutSample(varp, 0.0);
+}
+
+/* -------------------------------------------------------------------- */
+/* Particle By Particle sizing */
+
+void pbpInit(var_base *varp)
+{
+  printf(" PBP Initialize\n");
+}
+
+void xlpbpsz(RAWTBL *varp, const void *p, NR_TYPE *np)
+{
+  // To disengage the sizing and view the A2D counts, just have this function return;
+
+  NR_TYPE *thresholds = channelThresholds[varp->ProbeCount];
+  NR_TYPE d, *diameter = cell_size[varp->ProbeCount];
+  for (size_t i = 0; i < varp->SampleRate; ++i)
+  {
+    NR_TYPE *inp = &np[i * varp->Length];
+    for (size_t chan = 0; chan < varp->Length; ++chan)
+    {
+      for (size_t thresh = 0; thresh < varp->Length && thresholds[thresh] < inp[chan]; ++thresh)
+      {
+        d = diameter[thresh];
+      }
+      inp[chan] = d;
+    }
+  }
 }
 
 /* END CDP.C */

@@ -186,6 +186,8 @@
 	"CUHSAS",	(void(*)(void*))cuhsasInit,	NULL,		scuhsas,
 	"CS300",	(void(*)(void*))cf300Init,	NULL,		scf300,
 #
+	"PBPSZ",	(void(*)(void*))pbpInit,	xlpbpsz,	NULL,
+#
 # PMS actual data arrays
 	"A200X_OLD",	(void(*)(void*))c200xInit,	xlP16bin,	NULL,
 	"A200X",	(void(*)(void*))c200xInit,	xlP16v2bin,	NULL,

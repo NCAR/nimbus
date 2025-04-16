@@ -619,6 +619,13 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     }
 
 
+    // CDP pbp needs needs to be converted from A2D counts to particle size.
+    // Doing it by creating a derived variable, will not let us get the 2hz out.
+    if (strncmp(rp->name, "PBPSZ", 5) == 0)
+    {
+      rp->xlate = xlpbpsz;
+    }
+
     /* Raw variables that are copied for HRT filtering purposes on the GV for
      * the Pitot-static.
      * These are redundant and useless in a LRT run.
