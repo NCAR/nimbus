@@ -23,7 +23,7 @@ env.Require([jsoncpp, 'valgrind', 'pylint',
 # Override the PROJ_DIR setting and force the use of the local project
 # configurations for consistent testing.
 env.SetProjDirENV('projects')
-env['NIMBUS'] = env.File("#/src/filter/nimbus")
+env['NIMBUS'] = env.File("#/src/nimbus/nimbus")
 
 test_sources = Split("""
 test_Interpolator.cc
