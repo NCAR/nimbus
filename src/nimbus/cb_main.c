@@ -237,12 +237,13 @@ static void readHeader()
 /* -------------------------------------------------------------------- */
 static void runSecondPassPrograms()
 {
+/*
   {
     LogMessage("Running netCDF file sanity checker (nc_sane)...\n");
     snprintf(buffer, 8192, "nc_sane %s", OutputFileName);
     system(buffer);
   }
-
+*/
   {
     LogMessage("Producing KML file (acTrack2kml)...\n");
     char kml_file[1024];
