@@ -62,7 +62,7 @@ std::string
 getSerialNumber(const nidas::core::Variable* variable);
 
 std::string
-getCategory(const nidas::core::Variable* variable);
+getSensorStringParameter(const nidas::core::Variable* variable, std::string target);
 
 int
 getLag(const nidas::core::Variable* variable);

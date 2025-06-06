@@ -2506,7 +2506,7 @@ addUnitsAndLongName(var_base *vbp, const nidas::core::Variable *nidas_var)
    * if this is empty.  Move this above the "if (vdb_var)" 10 lines above to
    * change the order of precedence.
    */
-  cat = getCategory(nidas_var);
+  cat = getSensorStringParameter(nidas_var, "Category");
   if ( cat.size() > 0 )
     vbp->CategoryList.push_back(cat);
 }

@@ -442,7 +442,7 @@ getSerialNumber(const nidas::core::Variable* variable)
 }
 
 std::string
-getCategory(const nidas::core::Variable* variable)
+getSensorStringParameter(const nidas::core::Variable* variable, std::string target)
 {
   std::string cat;
   if (variable == 0)
@@ -455,7 +455,7 @@ getCategory(const nidas::core::Variable* variable)
   if (tag)
     sensor = tag->getDSMSensor();
   if (sensor)
-    parm = sensor->getParameter("Category");
+    parm = sensor->getParameter(target);
   if (parm)
     cat = parm->getStringValue(0);
   return cat;
