@@ -67,6 +67,9 @@ getCategory(const nidas::core::Variable* variable);
 int
 getLag(const nidas::core::Variable* variable);
 
+std::vector<int>
+getChannelThresholds(const nidas::core::Variable* variable);
+
 
 template <typename T>
 struct match_variable_name

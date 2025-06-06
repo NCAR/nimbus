@@ -624,6 +624,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     if (strncmp(rp->name, "PBPSZ", 5) == 0)
     {
       rp->xlate = xlpbpsz;
+      rp->channelThresholds = getChannelThresholds(var);
     }
 
     /* Raw variables that are copied for HRT filtering purposes on the GV for

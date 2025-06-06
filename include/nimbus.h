@@ -141,7 +141,7 @@ public:
   size_t OutputRate;	// Rate of data in the output [netCDF] file.
   const char *DataQuality;	// Prelim, QC'd, Bad, etc
 
-  std::vector<SETVAL> set_value;
+  std::vector<SETVAL> set_value;	// Fixed values for raw data for time periods.
 
   float min, max;	// Min and max for this variable over course run.
 
@@ -185,6 +185,9 @@ public:
   int StaticLag;	// Static lag in ms to shift data
   int DynamicLag;	// Dynamic lag in ms
   float SpikeSlope;	// Slope for spike detection
+
+  // This could be turned into a generic Payload pattern.
+  std::vector<int> channelThresholds; // PCASP/SPP probes
 
   SYNTHTYPE synthtype;
 };

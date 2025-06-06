@@ -461,6 +461,28 @@ getCategory(const nidas::core::Variable* variable)
   return cat;
 }
 
+std::vector<int>
+getChannelThresholds(const nidas::core::Variable* variable)
+{
+  std::vector<int> thresh;
+  if (variable == 0)
+    return thresh;
+
+  const nidas::core::SampleTag* tag = variable->getSampleTag();
+  const nidas::core::DSMSensor* sensor = 0;
+  const nidas::core::Parameter* parm = 0;
+
+  if (tag)
+    sensor = tag->getDSMSensor();
+  if (sensor)
+    parm = sensor->getParameter("CHAN_THRESH");
+  if (parm)
+    for (int i = 0; i < parm->getLength(); ++i)
+      thresh.push_back(parm->getNumericValue(i));
+
+  return thresh;
+}
+
 int
 getLag(const nidas::core::Variable* variable)
 {
