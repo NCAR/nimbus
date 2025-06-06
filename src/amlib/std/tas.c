@@ -79,7 +79,7 @@ void stas_flag(DERTBL *varp)
   NR_TYPE ewx = GetSample(varp, 3);
 
   static NR_TYPE lastew;
-  static int countL = 0, countH = 0;
+  static int count = 0;
 
   setEOP(0.0);	// Set for dry constants.
 
@@ -100,26 +100,11 @@ void stas_flag(DERTBL *varp)
   {
     ewt = ewx;
     lastew = ewx;
-    countL = countH = 0;
+    count = 0;
   }
   else
   {
-    int cntr, cntrN;
-
-    if (FeedBack == HIGH_RATE_FEEDBACK)
-    {
-      countH++;
-      cntr = countH++;
-      cntrN = 125;
-    }
-    else
-    {
-      countL++;
-      cntr = countL++;
-      cntrN = 5;
-    }
-
-    if (cntr >= cntrN)
+    if (count++ >= 5)
     {
       ewt = ews * 0.5;
       retval = 1.0;
