@@ -49,9 +49,12 @@ using nidas::dynld::raf::Aircraft;
 using nidas::core::NidasApp;
 using nidas::core::Project;
 
-static nidas::dynld::raf::SyncRecordReader* syncRecReader;
+// ADS3 / nidas only
+static nidas::dynld::raf::SyncRecordReader* syncRecReader = 0;
+static nidas::core::Variable *nidas_var = 0;
 
 VDBFile *vardb = 0; // Exports to cb_main.c and netcdf.c
+
 
 typedef struct
   {
@@ -480,12 +483,13 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   // Main loop
   time_t startTime = syncRecReader->getStartTime();
   std::list<const nidas::core::Variable*>::const_iterator vi;
+
   for (vi = vars.begin(); vi != vars.end(); ++vi)
   {
-    nidas::core::Variable *var = const_cast<nidas::core::Variable*>(*vi);
+    nidas_var = const_cast<nidas::core::Variable*>(*vi);
 
     char name_sans_location[64];
-    strcpy(name_sans_location, var->getName().c_str());
+    strcpy(name_sans_location, nidas_var->getName().c_str());
     char * p = strrchr(name_sans_location, '_');
     if (p)
     {
@@ -495,23 +499,23 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     else
       location[0] = '\0';
 
-    rate = (int)ceil(var->getSampleRate());
+    rate = (int)ceil(nidas_var->getSampleRate());
 
     if (rate == 0)
     {
       char msg[128];
 
-      snprintf(msg, 128, "hdr_decode.c: %s: Assertion `SampleRate > 0' failed.", var->getName().c_str());
+      snprintf(msg, 128, "hdr_decode.c: %s: Assertion `SampleRate > 0' failed.", nidas_var->getName().c_str());
       LogMessage(msg);
       quit();
     }
 
-    length = var->getLength();
+    length = nidas_var->getLength();
 
-    serialNumber = getSerialNumber(var);
+    serialNumber = getSerialNumber(nidas_var);
 
 //printf("DecodeHeader3: adding %s, converter = %d, rate = %d, %s\n",
-//  var->getName().c_str(), (size_t)var->getConverter(), (int)ceil(var->getSampleRate()), serialNumber.c_str());
+//  nidas_var->getName().c_str(), (size_t)nidas_var->getConverter(), (int)ceil(nidas_var->getSampleRate()), serialNumber.c_str());
 
     // Add Gust Pod derived (once).  This can be cleaned up after sync_server merge.
     if (!gustPodAdded && strcmp(location, "_GP") == 0)
@@ -550,7 +554,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     // that it is consistent with past behavior.
 
     nidas::core::VariableConverter* converter =
-      const_cast<nidas::core::VariableConverter*>(var->getConverter());
+      const_cast<nidas::core::VariableConverter*>(nidas_var->getConverter());
     if (converter)
     {
       nidas::core::Polynomial* poly =
@@ -578,9 +582,9 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     if (converter == 0)
     {
       rp = add_name_to_RAWTBL(name_sans_location);
-      rp->TTindx = syncRecReader->getLagOffset(var);
+      rp->TTindx = syncRecReader->getLagOffset(nidas_var);
 
-      rp->dsmID = var->getSampleTag()->getDSMId();
+      rp->dsmID = nidas_var->getSampleTag()->getDSMId();
 
       // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
@@ -590,7 +594,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     }
     else
     {
-      rp = initSDI_ADS3(var, startTime);
+      rp = initSDI_ADS3(nidas_var, startTime);
 
       // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
@@ -602,7 +606,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
       initMTP();
     }
 
-    rp->nidasLag = getLag(var);
+    rp->nidasLag = getLag(nidas_var);
     rp->SerialNumber = serialNumber;
     add_derived_names(name_sans_location);
 
@@ -624,7 +628,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     if (strncmp(rp->name, "PBPSZ", 5) == 0)
     {
       rp->xlate = xlpbpsz;
-      rp->channelThresholds = getChannelThresholds(var);
+      rp->channelThresholds = getChannelThresholds(nidas_var);
     }
 
     /* Raw variables that are copied for HRT filtering purposes on the GV for
@@ -660,7 +664,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
 
     location[0] = '\0';
-//    addSerialNumber(var, rp);
+//    addSerialNumber(nidas_var, rp);
   }
 
   serialNumber = "";
@@ -2267,8 +2271,6 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   char fullName[64];
   strcpy(fullName, name);
   strcat(fullName, location);
-
-  const nidas::core::Variable *nidas_var = syncRecReader->getVariable(fullName);
 
   if (indx == ERR && (cfg.isADS2() || nidas_var == 0))
   {
