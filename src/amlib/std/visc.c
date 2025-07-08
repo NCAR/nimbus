@@ -26,14 +26,14 @@ static std::map<std::string, float> roll_threshold;
 void initVisPyrgeometer(var_base *varp)
 {
   DERTBL *dp = (DERTBL *)varp;
-  
-  roll_threshold[varp->name] = 90;
-  pitch_threshold[varp->name].push_back(-90);
-  pitch_threshold[varp->name].push_back(90);
+
+  roll_threshold[varp->name] = 90.0;
+  pitch_threshold[varp->name].push_back(-90.0);
+  pitch_threshold[varp->name].push_back(90.0);
 
   float	*tmp;
   char	name[100];
-  sprintf(name, "SP_%s_PITCH_THRESHOLD", 
+  sprintf(name, "SP_%s_PITCH_THRESHOLD",
 		strchr(varp->name, 'B') ? "BOTTOM" : "TOP");
   if ((tmp = GetDefaultsValue(name, varp->name)))
   {
@@ -61,6 +61,7 @@ void svisc(DERTBL *varp)
   // Pitch & roll thershold tests, if defined in Defaults file.
   NR_TYPE pitch = GetSample(varp, 1);
   NR_TYPE roll = GetSample(varp, 2);
+
   if (!std::isnan(roll) && fabs(roll) > roll_threshold[varp->name])
       fail_test = true;
   if (!std::isnan(pitch)&&(pitch < (pitch_threshold[varp->name])[0] ||
@@ -70,5 +71,5 @@ void svisc(DERTBL *varp)
   if (fail_test)
     PutSample(varp, floatNAN);
   else
-    PutSample(varp, vis); 
+    PutSample(varp, vis);
 }
