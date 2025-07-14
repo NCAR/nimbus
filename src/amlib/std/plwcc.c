@@ -4,15 +4,17 @@ OBJECT NAME:	plwcc.c
 
 FULL NAME:	King Liquid Water Content
 
-ENTRY POINTS:	sfunc()
+ENTRY POINTS:	splwcc()
+		spdry()
 
-STATIC FNS:	
+STATIC FNS:	CooperLWC_GV()
+		CooperLWC_C130()
 
 DESCRIPTION:	King Liquid Water content calculation.  Two algorithms, one
 		for C130 and one for the GV.  Difference is in number of
 		coefficients for Nusselt number.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2012
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2025
 -------------------------------------------------------------------------
 */
 
@@ -120,6 +122,8 @@ void splwcc(DERTBL *varp)
   NR_TYPE plwc, tasx, atx, psxc, concf = floatNAN;
   NR_TYPE plwcc;
 
+  static int resetCntr = 0;
+
   plwc  = GetSample(varp, 0);	// Raw Liquid Water measurement
   tasx  = GetSample(varp, 1);	// True Airspeed
   atx   = GetSample(varp, 2);	// Ambient Temperature
@@ -130,6 +134,10 @@ void splwcc(DERTBL *varp)
    */
   if (plwc < min_watt_threshold || std::isnan(plwc))
   {
+    if (plwc < 2.0) {	// power turned off.
+      resetCntr = 0;
+    }
+
     PutSample(varp, floatNAN);
     return;
   }
@@ -137,6 +145,14 @@ void splwcc(DERTBL *varp)
   if (tasx < 30.0)
   {
     PutSample(varp, 0.0);
+    return;
+  }
+
+  // On power up, PLWC spikes too high, mask out the spike for N seconds
+  if (resetCntr < 2) {
+    if (FeedBack == LOW_RATE_FEEDBACK)
+      ++resetCntr;
+    PutSample(varp, floatNAN);
     return;
   }
 
@@ -225,7 +241,7 @@ NR_TYPE CooperLWC_GV(const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE atx,
 
   NR_TYPE Tbp = pow(10.0, (bp[0]+xp*(bp[1]+xp*(bp[2]+xp*bp[3]))));
 
-  // Liquid water content, convreted from MKS to g/m^3
+  // Liquid water content, converted from MKS to g/m^3
   return 1000.0 * (plwc - Pdry[indx]) / (lWire[indx] * dWire[indx] * tasx * ((Lv0+Lv*Tbp) + Cw * (Tbp - atx)));
 }
 
@@ -246,7 +262,6 @@ NR_TYPE CooperLWC_C130(	const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE at
   if (std::isnan(Re))
     return floatNAN;
 
-  // Update Nusselt-number coefficients
   if (concf < cloud_conc_threshold && !std::isnan(concf))
   {
     Nu = plwc / (M_PI * lWire[indx] * cond * (tWire[indx] - atx));
@@ -261,6 +276,6 @@ NR_TYPE CooperLWC_C130(	const NR_TYPE plwc, const NR_TYPE tasx, const NR_TYPE at
 
   NR_TYPE Tbp = pow(10.0, (bp[0]+xp*(bp[1]+xp*(bp[2]+xp*bp[3]))));
 
-  // Liquid water content, convreted from MKS to g/m^3
+  // Liquid water content, converted from MKS to g/m^3
   return 1000.0 * (plwc - Pdry[indx]) / (lWire[indx] * dWire[indx] * tasx * ((Lv0+Lv*Tbp) + Cw * (Tbp - atx)));
 }
