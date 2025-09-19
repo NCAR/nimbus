@@ -35,9 +35,9 @@ const std::string NetCDF::Publisher_Name = "UCAR NCAR - Earth Observing Laborato
 const std::string NetCDF::Publisher_URL = "https://www.eol.ucar.edu/data-software/eol-field-data-archive";
 const std::string NetCDF::Publisher_EMail = "datahelp at eol.ucar.edu";
 const std::string NetCDF::ProcessorURL = "https://github.com/NCAR/nimbus";
-const std::string NetCDF::Conventions = "NCAR-RAF/nimbus-2.0,ACDD-1.3";
+const std::string NetCDF::Conventions = "NCAR-RAF/nimbus-2.1,ACDD-1.3";
 const std::string NetCDF::ConventionsURL = "https://www.eol.ucar.edu/raf/Software/netCDF.html";
-//const std::string NetCDF::NETCDF_FORMAT_VERSION = "2.0";
+//const std::string NetCDF::NETCDF_FORMAT_VERSION = "2.1";
 
 const char *NetCDF::ISO8601_Z = "%FT%T %z";
 
