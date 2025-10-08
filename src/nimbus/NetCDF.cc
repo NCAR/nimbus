@@ -830,7 +830,7 @@ void NetCDF::WriteMissingRecords()
 
   mdp = _missingRecords.front();
 
-  for (d = 0; d < mdp->nRecords; ++d) 
+  for (d = 0; d < mdp->nRecords; ++d)
   {
   _TimeSamples.push_back((int)_timeVar);
   _timeLength+=1;
@@ -866,7 +866,7 @@ void NetCDF::WriteMissingRecords()
       second = mdp->second;
       }
     else
-      for (size_t j = 0; j < N; ++j) { 
+      for (size_t j = 0; j < N; ++j) {
         rp->OutputData.push_back((float)MISSING_VALUE);
       }
     }
@@ -890,7 +890,7 @@ void NetCDF::WriteMissingRecords()
     {
       size_t N = dp->Length * dp->OutputRate;
       //ldp[indx++] = (void *)&d[0]; // assign missing (no times in derived var list)
-      for (size_t j = 0; j < N; ++j) { 
+      for (size_t j = 0; j < N; ++j) {
         dp->OutputData.push_back((float)MISSING_VALUE);
       }
     }
