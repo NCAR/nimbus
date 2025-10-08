@@ -1,0 +1,100 @@
+# -*- python -*-
+
+Import('env')
+
+sources = Split("""
+UDP_Base.cc
+Xwin.c
+adsIO.c
+ads3IO.cc
+amlibfn.c
+average.c
+calco.c
+cb_defs.c
+cb_edit.c
+cb_main.c
+cb_pause.c
+circbuff.c
+compute.c
+config.cc
+config_win.c
+depend.c
+despike.c
+dq.c
+error.c
+filter.c
+globals.cc
+grnd_feed.cc
+hdr_decode.c
+hrloop.c
+init.c
+injectsd.cc
+log.c
+logfile.c
+lrloop.c
+memalloc.cc
+minmax.cc
+NetCDF.cc
+order.c
+phase_shift.c
+pms1d.c
+popen.c
+probe.c
+psql.cc
+brdcast.cc
+rd_setvalue.c
+rd_ddor.c
+rd_defs.c
+rd_doi.c
+rd_lag.c
+rd_meta.c
+rd_mod.c
+rd_spike.c
+rd_sum.c
+rd_xmit.c
+rec_decode.c
+repoinfo.cc
+rtloop.c
+search.c
+setup.c
+textfile.c
+timeseg.c
+rtloop3.cc
+Interpolator.cc
+sync_reader.cc
+""")
+
+md5o = env.StaticObject('md5.cc', CCFLAGS=env['CCFLAGS']+['-Wno-parentheses'])
+sources = sources + [md5o]
+
+# This may be unnecessary and even undesirable with the introduction of
+# the ld.so.conf file.  However, leave it in for now, especially for the
+# case of building nimbus against the buildbot nidas.
+if env.get('NIDAS_LD_RUN_PATH'):
+  env.Append(_LIBFLAGS=['-Wl,-R', "${NIDAS_LD_RUN_PATH}"])
+
+libn = env.StaticLibrary('nimbus', sources)
+
+def libnimbus(env):
+  env.Append(LIBS=libn)
+  # In order:
+  #  AMLIB (Atmospheric Mathmatical Library) calculations.
+  #  raf 'building blocks'.
+  #  File access stuff.
+  #  X windows/GUI.
+  #  General math libraries.
+  #  ADS3 real-time libraries.
+  env.Require(['libncaru', 'libxlate', 'libstd', 'libuser', 'vardb', 'raf', 'libhdr_api'])
+#  deplibs = Split("""
+#    hdr_api
+#  """)
+#  env.Append(LIBS=deplibs)
+
+Export('libnimbus')
+
+env.Tool(libnimbus)
+
+nimbus = env.Program('nimbus', ['nimbus.c'])
+env.Default(nimbus)
+
+env.Install('$INSTALL_PREFIX/bin', nimbus)

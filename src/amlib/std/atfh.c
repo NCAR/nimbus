@@ -28,7 +28,7 @@ void atfhInit(var_base *varp)
 {
   std::vector<float> values;
   values.push_back((float)recfrh);
-  AddToDefaults(varp->name, "RecoveryFactor", values);
+  varp->addToMetadata("RecoveryFactor", values);
 
 }	/* END CONSTRUCTOR */
 
@@ -39,7 +39,7 @@ void tthcInit(var_base *varp)
   std::vector<float> values;
   values.push_back((float)tfher2);
   values.push_back((float)tfher1);
-  AddToDefaults(varp->name, "Calibrations", values);
+  varp->addToMetadata("Calibrations", values);
 
 }	/* END CONSTRUCTOR */
 

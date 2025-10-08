@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "amlib.h"
 
 /* -------------------------------------------------------------------- */
-void xlaact(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlaact(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   NR_TYPE	reset;
 

@@ -13,6 +13,8 @@
 
 extern NR_TYPE (*pcorQCFRv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
+NR_TYPE defaultATTACK();
+
 /* -------------------------------------------------------------------- */
 void sqcfrc(DERTBL *varp)
 {
@@ -22,13 +24,16 @@ void sqcfrc(DERTBL *varp)
   NR_TYPE psf   = GetSample(varp, 1);
   NR_TYPE attack= GetSample(varp, 2);
 
+  if (std::isnan(attack))
+    attack = defaultATTACK();
+
   qcfc = qcf - (*pcorQCFRv2)(qcf, psf, attack);
 
   if (qcfc < 10.0)
     qcfc = qcf;
 
-  if (qcfc < 0.001)
-    qcfc =  0.001;
+  if (qcfc < 0.1)
+    qcfc =  0.1;
 
   PutSample(varp, qcfc);
 }

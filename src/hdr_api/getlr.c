@@ -1,0 +1,75 @@
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:	getlr.c
+
+ENTRY POINTS:	GetLRLength()
+		GetLRPPR()
+
+DESCRIPTION:	hdr_api routines to return logical record information.
+
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+-------------------------------------------------------------------------
+*/
+
+#include "hdr_api.h"
+
+#define VALID_VARS	(PMS2D | ASYNC)
+
+
+/* -------------------------------------------------------------------- */
+int GetLRLength(const char vn[], int32_t *result)
+{
+  int	indx;
+
+  if ((indx = HAPI_lookupvar(vn, VALID_VARS)) == ERR)
+    return(ERR);
+
+
+  switch (HAPI_var[indx].type)
+    {
+    case PMS2D:
+      *result = ntohl(((Pms2 *)HAPI_var[indx].ptr)->lrlen);
+      break;
+
+    case ASYNC:
+      *result = ntohl(((Asy *)HAPI_var[indx].ptr)->lrlen);
+      break;
+
+    default:
+      taperr = BADTYPE;
+      return(ERR);
+    }
+
+  return(OK);
+
+}	/* END GETLRLENGTH */
+
+/* -------------------------------------------------------------------- */
+int GetLRPPR(const char vn[], int32_t *result)
+{
+  int	indx;
+
+  if ((indx = HAPI_lookupvar(vn, VALID_VARS)) == ERR)
+    return(ERR);
+
+
+  switch (HAPI_var[indx].type)
+    {
+    case PMS2D:
+      *result = (int32_t)ntohs(((Pms2 *)HAPI_var[indx].ptr)->lrppr);
+      break;
+
+    case ASYNC:
+      *result = ntohl(((Asy *)HAPI_var[indx].ptr)->lrppr);
+      break;
+
+    default:
+      taperr = BADTYPE;
+      return(ERR);
+    }
+
+  return(OK);
+
+}	/* END GETLRPPR */
+
+/* END GETLR.C */

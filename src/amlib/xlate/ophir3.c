@@ -48,7 +48,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-void xlogain(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlogain(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(((Oph3_blk *)p)->gain), varp->cof);
@@ -58,14 +58,14 @@ void xlogain(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLOGAIN */
 
 /* -------------------------------------------------------------------- */
-void xlobbcod(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlobbcod(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   *np = (NR_TYPE)((Oph3_blk *)p)->bb_pos[0];
 
 }	/* END XLOBBCOD */
 
 /* -------------------------------------------------------------------- */
-void xlodetdc(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlodetdc(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(((Oph3_blk *)p)->det_bias), varp->cof);
@@ -75,7 +75,7 @@ void xlodetdc(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLODETDC */
 
 /* -------------------------------------------------------------------- */
-void xlotsnt(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlotsnt(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(((Oph3_blk *)p)->snout_tmp), varp->cof);
@@ -85,7 +85,7 @@ void xlotsnt(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLOTSNT */
 
 /* -------------------------------------------------------------------- */
-void xlotbnch(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlotbnch(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(((Oph3_blk *)p)->bench_tmp), varp->cof);
@@ -95,7 +95,7 @@ void xlotbnch(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLOTBNCH */
 
 /* -------------------------------------------------------------------- */
-void xlotdet(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlotdet(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(((Oph3_blk *)p)->det_tmp), varp->cof);
@@ -105,7 +105,7 @@ void xlotdet(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLOTDET */
 
 /* -------------------------------------------------------------------- */
-void xlotbbc(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlotbbc(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(((Oph3_blk *)p)->cool_tmp), varp->cof);
@@ -115,7 +115,7 @@ void xlotbbc(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLOTBBC */
 
 /* -------------------------------------------------------------------- */
-void xlotbbf(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlotbbf(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(((Oph3_blk *)p)->float_tmp), varp->cof);
@@ -125,7 +125,7 @@ void xlotbbf(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLOTBBF */
 
 /* -------------------------------------------------------------------- */
-void xlosmotr(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlosmotr(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(((Oph3_blk *)p)->motor_spd), varp->cof);
@@ -135,7 +135,7 @@ void xlosmotr(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLOSMOTR */
 
 /* -------------------------------------------------------------------- */
-void xlodetsg(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlodetsg(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(((Oph3_blk *)p)->det_sig), varp->cof);
@@ -145,7 +145,7 @@ void xlodetsg(RAWTBL *varp, void *p, NR_TYPE *np)
 }	/* END XLDETSG */
 
 /* -------------------------------------------------------------------- */
-void xlotbox(RAWTBL *varp, void *p, NR_TYPE *np)
+void xlotbox(RAWTBL *varp, const void *p, NR_TYPE *np)
 {
   if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(((Oph3_blk *)p)->box_tmp), varp->cof);

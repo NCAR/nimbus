@@ -1,12 +1,12 @@
 
 /* Copyright 1994 University Corporation for Atmospheric Research (UCAR).
 **	All rights reserved
-** 
-** Permission to use, copy, and modify this software and its documentation 
-** for any non-commercial purpose is hereby granted without fee, provided 
-** that the above copyright notice appear in all copies and that both that 
-** copyright notice and this permission notice appear in supporting 
-** documentation. UCAR makes no representations about the suitability of 
+**
+** Permission to use, copy, and modify this software and its documentation
+** for any non-commercial purpose is hereby granted without fee, provided
+** that the above copyright notice appear in all copies and that both that
+** copyright notice and this permission notice appear in supporting
+** documentation. UCAR makes no representations about the suitability of
 ** this software for any purpose.   It is provided "as is" without express
 ** or implied warranty.
 */
@@ -24,7 +24,7 @@
 #include <cray.h>
 
 /*
-**  cossplit  - Emulates the cossplit command available on the 
+**  cossplit  - Emulates the cossplit command available on the
 **		Cray systems written by Tom Parker.
 **
 **  AUTHOR:	Peter W. Morreale,  SCD Consulting
@@ -100,8 +100,8 @@ void Usage()
 		    stderr);
 	(void)fprintf(stderr, " Version %s\n", VERSION);
 	exit(0);
-
 }
+
 /*---------------------------------------------------------------------*/
 void SplitDataset(flnm)
 char	*flnm;
@@ -133,10 +133,10 @@ char	*flnm;
 	    if (bytes > 0) {
 	       ier = _CrayWrite(ocf, record, bytes);
 	       if (ier < 0) {
-		   (void)fprintf(stderr, 
+		   (void)fprintf(stderr,
 				 "Unable to write record %d of file %d to %s\n",
-				 nrec, 
-				 fileNo, 
+				 nrec,
+				 fileNo,
 				 oflnm);
 		    (void)_CrayClose(cf);
 		    return;
@@ -144,8 +144,8 @@ char	*flnm;
 	    }
 	    else if (bytes == CRAY_EOF) {
 		if (_CrayClose(ocf)) {
-		    (void)fprintf(stderr, 
-				  "Unable to close file: %s, removing...\n", 
+		    (void)fprintf(stderr,
+				  "Unable to close file: %s, removing...\n",
 				  oflnm);
 		    (void)_CrayClose(cf);
 		    (void)unlink(oflnm);
@@ -163,9 +163,9 @@ char	*flnm;
 		}
 	    }
 	    else {	/* something's wrong! */
-		(void)fprintf(stderr, 
-			      "ERROR reading record %d of file %s\n", 
-			      nrec, 
+		(void)fprintf(stderr,
+			      "ERROR reading record %d of file %s\n",
+			      nrec,
 			      flnm);
 		(void)_CrayClose(cf);
 		(void)_CrayClose(ocf);
@@ -186,7 +186,6 @@ char	*flnm;
 	_CrayClose(cf);
 
 	return;
-
 }
 
 /*----------------------------------------------------------------------*/
@@ -211,6 +210,7 @@ CrayFile *OpenOutput()
 
 	return(cf);
 }
+
 /*----------------------------------------------------------------------*/
 void Toast()
 {

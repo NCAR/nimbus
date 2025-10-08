@@ -81,7 +81,7 @@ struct _dnfn
 	{
 	const char	*name;
 	void		(*constructor)(void *);
-	void		(*xlate)(RAWTBL *, void *, NR_TYPE *);
+	void		(*xlate)(RAWTBL *, const void *, NR_TYPE *);
 	void		(*compute)(DERTBL *);
 	} ;
 
@@ -101,13 +101,12 @@ extern struct _dnfn	deriveftns[];
 
 extern float	HDRversion;
 
-float *GetDefaultsValue(const char target[], const char var[]);
-void AddToDefaults(const char varName[], const char attrName[],
-	const std::vector<float>& values);
-void AddToAttributes(const char varName[], const char attrName[],
-	const std::string & text);
+void  AddToMetadata(var_base *varp, const char attr_name[], const char attr[]);
+void  AddToMetadata(var_base *varp, const char attr_name[], std::vector<float> values);
 
-void decodeADS2analog(RAWTBL *varp, void *input, NR_TYPE *output);
+float *GetDefaultsValue(const char target[], const char var[]);
+
+void decodeADS2analog(RAWTBL *varp, const void *input, NR_TYPE *output);
 
 #include "amlibProto.h"
 

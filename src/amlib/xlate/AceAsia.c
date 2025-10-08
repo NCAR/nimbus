@@ -28,28 +28,28 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2001
 
 
 /* -------------------------------------------------------------------- */
-void xlNephP10(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlNephP10(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Neph_UW_blk *)input)->tsG_1);
 
 }
 
 /* -------------------------------------------------------------------- */
-void xlNephT10(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlNephT10(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Neph_UW_blk *)input)->tsG_10);
 
 }
 
 /* -------------------------------------------------------------------- */
-void xlNephRH10(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlNephRH10(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Neph_UW_blk *)input)->tsG_180);
 
 }
 
 /* -------------------------------------------------------------------- */
-void xlNephTSG10(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlNephTSG10(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Neph_UW_blk *)input)->tsG_180);
 

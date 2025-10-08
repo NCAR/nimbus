@@ -15,6 +15,8 @@
 extern NR_TYPE (*pcorPSF)(NR_TYPE);
 extern NR_TYPE (*pcorPSFv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
+NR_TYPE defaultATTACK();
+
 /* -------------------------------------------------------------------- */
 void spsfc(DERTBL *varp)
 {
@@ -26,6 +28,9 @@ void spsfc(DERTBL *varp)
   if (cfg.Aircraft() == Config::HIAPER || cfg.Aircraft() == Config::C130)
   {
     NR_TYPE attack = GetSample(varp, 2);
+
+    if (std::isnan(attack))
+      attack = defaultATTACK();
 
     psfc = psf + (*pcorPSFv2)(qcf, psf, attack);
   }

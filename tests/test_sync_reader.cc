@@ -424,7 +424,7 @@ TEST_P(SyncReaderTest, CheckCurrentCalCoefficients)
   EXPECT_EQ(var->getLength(), 1);
   EXPECT_EQ(var->getUnits(), "V");
   EXPECT_EQ(var->getLongName(), "Fast 2DC End Diode Voltage #1");
-  check_coefficients(var->getName(), "V", 0, 1);
+  check_coefficients(var->getName(), "V", 0, 2);
   if (0)
   {
     // I don't think these are actually written to the sync header, and

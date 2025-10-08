@@ -47,7 +47,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 
 
 /* -------------------------------------------------------------------- */
-void xlpms16_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms16_hskp0(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -64,7 +64,7 @@ void xlpms16_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS16_HSKP0 */
 
 /* -------------------------------------------------------------------- */
-void xlpms16_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms16_hskp1(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -78,7 +78,7 @@ void xlpms16_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS16_HSKP1 */
 
 /* -------------------------------------------------------------------- */
-void xlpms16_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms16_hskp2(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -92,7 +92,7 @@ void xlpms16_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS16_HSKP2 */
 
 /* -------------------------------------------------------------------- */
-void xlpms16_hskp3(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms16_hskp3(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -106,7 +106,7 @@ void xlpms16_hskp3(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS16_HSKP3 */
 
 /* -------------------------------------------------------------------- */
-void xlpms16_hskp4(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms16_hskp4(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -121,7 +121,7 @@ void xlpms16_hskp4(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS16_HSKP4 */
 
 /* -------------------------------------------------------------------- */
-void xlpms16_hskp5(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms16_hskp5(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -137,7 +137,7 @@ void xlpms16_hskp5(RAWTBL *varp, void *input, NR_TYPE *np)
 #define AVERAGE_LENGTH  44
 
 /* -------------------------------------------------------------------- */
-void xlpms16_hskp6(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms16_hskp6(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -182,7 +182,7 @@ void xlpms16_hskp6(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS16_HSKP6 */
 
 /* -------------------------------------------------------------------- */
-void xlpms16_hskp7(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms16_hskp7(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -197,7 +197,7 @@ void xlpms16_hskp7(RAWTBL *varp, void *input, NR_TYPE *np)
 
 
 /* -------------------------------------------------------------------- */
-void xlpms32_sum(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms32_sum(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P32v2_blk	*p = (P32v2_blk *)input;
 
@@ -216,7 +216,7 @@ void xlpms32_sum(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS_HSKP0 */
 
 /* -------------------------------------------------------------------- */
-void xlpms32_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms32_hskp1(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P32v2_blk     *p = (P32v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -233,7 +233,7 @@ void xlpms32_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
 }       /* END XLPMS32_HSKP1 */
 
 /* -------------------------------------------------------------------- */
-void xlpms32_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms32_hskp2(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P32v2_blk     *p = (P32v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -250,7 +250,7 @@ void xlpms32_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
 }       /* END XLPMS32_HSKP2 */
 
 /* -------------------------------------------------------------------- */
-void xlpms64_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms64_hskp0(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -264,7 +264,7 @@ void xlpms64_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS64_HSKP0 */
 
 /* -------------------------------------------------------------------- */
-void xlpms64_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms64_hskp1(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -278,7 +278,7 @@ void xlpms64_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS64_HSKP1 */
 
 /* -------------------------------------------------------------------- */
-void xlpms64_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms64_hskp2(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -292,7 +292,7 @@ void xlpms64_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS64_HSKP2 */
 
 /* -------------------------------------------------------------------- */
-void xlpms64_hskp3(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms64_hskp3(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -306,7 +306,7 @@ void xlpms64_hskp3(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS64_HSKP3 */
 
 /* -------------------------------------------------------------------- */
-void xlpms64_hskp4(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms64_hskp4(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -321,7 +321,7 @@ void xlpms64_hskp4(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS64_HSKP4 */
 
 /* -------------------------------------------------------------------- */
-void xlpms64_hskp5(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms64_hskp5(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -335,7 +335,7 @@ void xlpms64_hskp5(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS64_HSKP5 */
 
 /* -------------------------------------------------------------------- */
-void xlpms64_hskp6(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms64_hskp6(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;
@@ -349,7 +349,7 @@ void xlpms64_hskp6(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS64_HSKP6 */
 
 /* -------------------------------------------------------------------- */
-void xlpms64_hskp7(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlpms64_hskp7(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
   NR_TYPE	*c = &varp->cof[0], x;

@@ -175,14 +175,14 @@ void scvcfacttdl(DERTBL *varp)
   NR_TYPE cvtcn = GetSample(varp, 2);
   NR_TYPE ptdlr = GetSample(varp, 3);
   NR_TYPE ttdlr = GetSample(varp, 4);
-  static NR_TYPE previousTCN = 288.0;	// 15C.
+  static NR_TYPE previousTCN = Tr;	// 15C.
 
   // Convert to Kelvin, if not already.
-  if (varp->depends[2]->Units.find('C') != std::string::npos)
+  if (varp->depends[2]->Units().find('C') != std::string::npos)
     cvtcn += Kelvin;
 
   // Replicate previous samle if out of bounds (15C and 35C).
-  if (std::isnan(cvtcn) || cvtcn < 288.0 || cvtcn > 308.0)
+  if (std::isnan(cvtcn) || cvtcn < Tr || cvtcn > 308.0)
     cvtcn = previousTCN;
   else
     previousTCN = cvtcn;

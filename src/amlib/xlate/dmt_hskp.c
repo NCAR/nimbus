@@ -50,7 +50,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2001
 
 
 /* -------------------------------------------------------------------- */
-void xlrejDOF(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrejDOF(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT100_blk	*p = (DMT100_blk *)input;
 
@@ -60,7 +60,7 @@ void xlrejDOF(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlrejAT(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrejAT(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT100_blk	*p = (DMT100_blk *)input;
 
@@ -70,7 +70,7 @@ void xlrejAT(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xloFlow(RAWTBL *varp, void *input, NR_TYPE *np)
+void xloFlow(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT100_blk	*p = (DMT100_blk *)input;
 
@@ -80,10 +80,10 @@ void xloFlow(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlsumCabin(RAWTBL *varp, void *input, NR_TYPE *np)
-{ 
+void xlsumCabin(RAWTBL *varp, const void *input, NR_TYPE *np)
+{
   DMT300_blk    *p = (DMT300_blk *)input;
-  
+
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     np[i] = 0.0;
@@ -94,7 +94,7 @@ void xlsumCabin(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlS100cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlS100cabin4(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT100_blk	*p = (DMT100_blk *)input;
 
@@ -104,7 +104,7 @@ void xlS100cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlS100cabin7(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlS100cabin7(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT100_blk	*p = (DMT100_blk *)input;
 
@@ -113,7 +113,7 @@ void xlS100cabin7(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlS200cabin0(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlS200cabin0(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT200_blk	*p = (DMT200_blk *)input;
 
@@ -123,7 +123,7 @@ void xlS200cabin0(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlS200cabin1(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlS200cabin1(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT200_blk	*p = (DMT200_blk *)input;
 
@@ -133,7 +133,7 @@ void xlS200cabin1(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlS200cabin2(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlS200cabin2(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT200_blk	*p = (DMT200_blk *)input;
 
@@ -143,7 +143,7 @@ void xlS200cabin2(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlS200cabin3(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlS200cabin3(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT200_blk	*p = (DMT200_blk *)input;
 
@@ -183,7 +183,7 @@ void xlS200cabin3(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlS200cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlS200cabin4(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT200_blk	*p = (DMT200_blk *)input;
 
@@ -193,7 +193,7 @@ void xlS200cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlS200cabin6(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlS200cabin6(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT200_blk	*p = (DMT200_blk *)input;
 
@@ -233,7 +233,7 @@ void xlS200cabin6(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlS200cabin7(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlS200cabin7(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT200_blk	*p = (DMT200_blk *)input;
 
@@ -243,7 +243,7 @@ void xlS200cabin7(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlS300cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlS300cabin4(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT300_blk	*p = (DMT300_blk *)input;
 
@@ -253,7 +253,7 @@ void xlS300cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlS300cabin7(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlS300cabin7(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   DMT300_blk	*p = (DMT300_blk *)input;
 

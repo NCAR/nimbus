@@ -23,7 +23,7 @@ env.Require([jsoncpp, 'valgrind', 'pylint',
 # Override the PROJ_DIR setting and force the use of the local project
 # configurations for consistent testing.
 env.SetProjDirENV('projects')
-env['NIMBUS'] = env.File("#/src/filter/nimbus")
+env['NIMBUS'] = env.File("#/src/nimbus/nimbus")
 
 test_sources = Split("""
 test_Interpolator.cc
@@ -98,7 +98,7 @@ env.Depends(nt, utd)
 # env['GTESTS'] = "--gtest_filter=*CompareHeader*"
 # env['GTESTS'] = "--gtest_filter=*SyncReaderTest.CheckCurrentCalCoefficients*"
 # env['GTESTS'] = "--gtest_filter=*SyncReaderTest.*"
-env.Alias('test', env.Command('xtest', nt, 
+env.Alias('test', env.Command('ntest', nt, 
                               "cd ${SOURCE.dir} && ./${SOURCE.file} ${GTESTS}"))
 
 env['VALGRIND_OPTIONS'] = str("--leak-check=full"
@@ -162,7 +162,7 @@ def nimbus_diff_case(case, name):
         env.AlwaysBuild(casex)
         xd = env.Alias(name+'-xdiff', env.CompareNimbusNetCDF(casex, casea))
         env.Alias('xdiff', xd)
-        env.Alias('xtest', xd)
+        env.Alias('ntest', xd)
     
 for tc in testcases:
     project = tc[0]
@@ -175,7 +175,7 @@ for tc in testcases:
     nimbus_diff_case(case, re.sub('[^a-z]', '', tc[0].lower()))
 
 # Create an alias to run all the tests and diffs.
-env.Alias('xtest', 'test')
+env.Alias('ntest', 'test')
 
 env.Alias('html',
           env.Command("README.html", "README.rst", "rst2html ${SOURCE} ${TARGET}"))

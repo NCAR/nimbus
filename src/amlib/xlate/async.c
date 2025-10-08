@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 
 
 /* -------------------------------------------------------------------- */
-void xlAsync(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlAsync(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   output[0] = output[1] = output[2] = 0.0;
 

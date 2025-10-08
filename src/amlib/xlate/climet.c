@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2002
 
 
 /* -------------------------------------------------------------------- */
-void xlClimetPOF(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlClimetPOF(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   Climet_blk *p = (Climet_blk *)input;
 
@@ -36,7 +36,7 @@ void xlClimetPOF(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlClimet(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlClimet(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   Climet_blk *p = (Climet_blk *)input;
 

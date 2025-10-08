@@ -31,7 +31,8 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define MAXDEPEND	12
 #define MAX_TIME_SLICES	1
 
-#define ZERO_BIN	1
+// Turn off legacy zero bin for size-distributions.
+//#define ZERO_BIN	1
 
 /* Nimbus Record Info		*/
 typedef double NR_TYPE;
@@ -59,32 +60,74 @@ typedef struct
 	std::string text;
 	} DEFAULT;
 
+// Informations for BlankOuts and SetValue files. Refactored Oct/2024
+typedef struct
+	{
+	time_t	start;		// Start time epoch
+	time_t  end;		// End time epoch
+
+	// Value to substitute (BlankOuts: nan for RAWTBL, MISS_VAL for DERTBL)
+	float	value;
+	} SETVAL;
+
+class Metadata
+{
+  public:
+    Metadata(std::string name, std::string value)
+	: _attr_name(name), _attr_str(value) { }
+    Metadata(std::string name, std::vector<int> values)
+	: _attr_name(name), _attr_int(values) { }
+    Metadata(std::string name, std::vector<float> values)
+	: _attr_name(name), _attr_flt(values) { }
+
+    bool isString() const { return (_attr_str.size() > 0); }
+    bool isFloat() const { return (_attr_flt.size() > 0); }
+    bool isInt() const { return (_attr_int.size() > 0); }
+
+//  private:
+    std::string _attr_name;
+
+    std::string _attr_str;
+    std::vector<int> _attr_int;
+    std::vector<float> _attr_flt;
+};
+
 
 // Base for the RAWTBL & DERTBL.  Refactored Jan/05.
 class var_base
 {
 public:
   var_base(const char s[]);
-  ~var_base();
+  virtual ~var_base();
+
+  void addToMetadata(const char attr_name[], const char attr[]);
+  void addToMetadata(const char attr_name[], std::string attr);
+  void addToMetadata(const char attr_name[], int value);
+  void addToMetadata(const char attr_name[], float value);
+  void addToMetadata(const char attr_name[], std::vector<int> values);
+  void addToMetadata(const char attr_name[], std::vector<float> values);
+
 
   char name[NAMELEN];	// Variable name
 
   std::string SerialNumber;	// Probe Serial Number
 
-  std::string Units;
-  std::string AltUnits;	// Alternate units.
-  std::string LongName;
+  std::string Units() const;
+  std::string AltUnits() const;	// Alternate units.
+  std::string LongName() const;
+
   std::vector<std::string> CategoryList;
 
   int varid;		// NetCDF variable ID
   int LRstart;		// Start indx into AveragedData
   int SRstart;		// Start indx into SampledData
   int HRstart;		// Start indx into HighRateData
-  int LAGstart;		// ads3 only, @see dsm::SyncRecordVariable
 
   size_t TimeLength;	// number of measurements in Time dimension
   size_t SampleRate;	// Sampled rate
   size_t Length;	// Histogram length, if histogram
+  int coord_varid;	// varid for coordinate variable (size_distribution vars only)
+  int bounds_varid;	// varid for coordinate bounds variable (size_distribution vars only)
 
   size_t ProbeType;	// Is this a probe & which one
   size_t ProbeCount;	// For mulitple identicle probes
@@ -99,13 +142,14 @@ public:
   size_t OutputRate;	// Rate of data in the output [netCDF] file.
   const char *DataQuality;	// Prelim, QC'd, Bad, etc
 
-  std::vector<std::pair<int, int> > blank_out;
+  std::vector<SETVAL> set_value;	// Fixed values for raw data for time periods.
 
   std::vector<float> OutputData;      // vector to hold output data for this var
 
   float min, max;	// Min and max for this variable over course run.
 
-  size_t badLagCntr;
+  // Misc additional metadata to add to netCDF file.  Might replace the Defaults stuff...
+  std::vector<Metadata> metadata;
 };
 
 
@@ -121,6 +165,7 @@ class RAWTBL : public var_base
 public:
   RAWTBL(const char s[]);
 
+  // ADS2 only.
   int32_t ADSstart;
   int32_t ADSoffset;	// Offset between samples
   char type[4];		// Analog, Digital or Counter
@@ -128,17 +173,24 @@ public:
   ushort dsmID;		// ADS3/nids A/D temp compensation.
 
   void (*Initializer)(void *); // Function to initialize xlate
-  void (*xlate)(RAWTBL *, void *, NR_TYPE *); // Function to translate data
+  void (*xlate)(RAWTBL *, const void *, NR_TYPE *); // Function to translate data
   void (*Average)(...);	// Routine to use to average/sum data
 
   int32_t convertOffset;	// A/D offset
   float	convertFactor;	// A/D slope
   std::vector<NR_TYPE> cof;
 
+  // Index into nidas syncrecord of time tag offset of first sample of second.
+  int TTindx;		// ads3 only, @see dsm::SyncRecordVariable
+  size_t badLagCntr;
+
   int nidasLag;		// Static lag from nidas.  Here as metadata to go in netCDF
   int StaticLag;	// Static lag in ms to shift data
   int DynamicLag;	// Dynamic lag in ms
   float SpikeSlope;	// Slope for spike detection
+
+  // This could be turned into a generic Payload pattern.
+  std::vector<int> channelThresholds; // PCASP/SPP probes
 
   SYNTHTYPE synthtype;
 };

@@ -10,7 +10,6 @@ akdf.c
 akrd.c
 altc.c
 angcr.c
-asas.c
 atf.c
 ath.c
 boomln.c
@@ -45,6 +44,7 @@ mr.c
 mrla.c
 nevzorov.c
 palt.c
+pcasp.c
 plwcc.c
 pms1d.c
 pms2d.c
@@ -65,6 +65,7 @@ raltm.c
 ratio.c
 reference.c
 reff.c
+rho.c
 rhodt.c
 rhola.c
 rhomr.c
@@ -73,6 +74,7 @@ rhrho.c
 rhum.c
 roc.c
 solang.c
+spec2udp.c
 sphum.c
 ssdf.c
 ssrd.c
@@ -87,7 +89,9 @@ thetav.c
 thf.c
 tsurf.c
 tvir.c
+uhsas.c
 vcsel.c
+visc.c
 wd.c
 ws.c
 """)

@@ -30,6 +30,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 static const size_t MAX_F300 = 1;
@@ -43,7 +44,7 @@ static NR_TYPE	cell_size[MAX_F300][BINS_40+1], pvol[MAX_F300], SAMPLE_AREA[MAX_F
 
 // Probe Count.
 static size_t nProbes = 0;
-extern void setProbeCount(const char * location, int count);
+
 
 /* -------------------------------------------------------------------- */
 void cf300Init(var_base *varp)
@@ -69,7 +70,7 @@ void cf300Init(var_base *varp)
   probeNum = varp->ProbeCount;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     sprintf(buffer, "f300: serial number = [%s]: FIRST_BIN not found.", serialNumber);
@@ -95,7 +96,7 @@ void cf300Init(var_base *varp)
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
     char s[32];
-    sprintf(s, "CELL_SIZE_%zd", varp->Length - 1);
+    sprintf(s, "CELL_SIZE_%zd", varp->Length);
     if ((p = GetPMSparameter(serialNumber, s)) == NULL) {
       sprintf(buffer, "f300: serial number = [%s]: %s not found.", serialNumber, s);
       HandleFatalError(buffer);
@@ -105,21 +106,21 @@ void cf300Init(var_base *varp)
   strcpy(buffer, p);
   p = strtok(buffer, ", \t\n");
 
-  for (i = 0; i < varp->Length; ++i)
+  for (i = 0; i < varp->Length+1; ++i)
     {
     cell_size[probeNum][i] = p ? atof(p) : 0.0;
     p = strtok(NULL, ", \t\n");
     }
 
-  for (i = varp->Length-1; i > 0; --i)
+  for (i = 0; i < varp->Length; ++i)
     {
     cell_size[probeNum][i] =
-        (cell_size[probeNum][i] + cell_size[probeNum][i-1]) / 2;
+        (cell_size[probeNum][i] + cell_size[probeNum][i+1]) / 2;
 
     cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
     cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
     }
- 
+
   ReleasePMSspecs();
 
   SampleRate[probeNum] = varp->SampleRate;

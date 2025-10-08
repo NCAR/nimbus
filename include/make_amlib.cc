@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
       }
 
     if (strcmp(xlateFn, "NULL") && strncmp(xlateFn, "(void*)", 7))
-      fprintf(proto, "\t%s(RAWTBL *, void *, NR_TYPE *),\n", xlateFn);
+      fprintf(proto, "\t%s(RAWTBL *, const void *, NR_TYPE *),\n", xlateFn);
 
     if (strcmp(sFun, "NULL"))
       fprintf(proto, "\t%s(DERTBL *),\n", sFun);
@@ -185,7 +185,7 @@ void SortFns(int beg, int end)
 
 	while (x <= y)
 		{
-	 	while (strcmp(file[x], mid) < 0)
+		while (strcmp(file[x], mid) < 0)
 			++x;
 
 		while (strcmp(file[y], mid) > 0)

@@ -66,10 +66,10 @@ void spalt(DERTBL *varp)
   psxc = GetSample(varp, 0);
 
   if (psxc > ISAP1)
-    /*  Branch for upper altitude lapse rate.				*/
+    /*  Branch for lower altitude lapse rate.				*/
     palt = 44330.77 * (1.0 - pow(psxc / StdPress, 0.1902632));
   else
-    /*  Branch for lower altitude lapse rate.				*/
+    /*  Branch for upper altitude lapse rate.				*/
     palt = 11000.0 + 14602.12 * log10(ISAP1 / psxc);
 
   PutSample(varp, palt);

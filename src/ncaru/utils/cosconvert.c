@@ -1,12 +1,12 @@
 
 /* Copyright 1994 University Corporation for Atmospheric Research (UCAR).
 **	All rights reserved
-** 
-** Permission to use, copy, and modify this software and its documentation 
-** for any non-commercial purpose is hereby granted without fee, provided 
-** that the above copyright notice appear in all copies and that both that 
-** copyright notice and this permission notice appear in supporting 
-** documentation. UCAR makes no representations about the suitability of 
+**
+** Permission to use, copy, and modify this software and its documentation
+** for any non-commercial purpose is hereby granted without fee, provided
+** that the above copyright notice appear in all copies and that both that
+** copyright notice and this permission notice appear in supporting
+** documentation. UCAR makes no representations about the suitability of
 ** this software for any purpose.   It is provided "as is" without express
 ** or implied warranty.
 */
@@ -23,7 +23,7 @@
 #include <cray.h>
 
 /*
-**  cosfile  - Emulates the cosfile command available on the 
+**  cosfile  - Emulates the cosfile command available on the
 **		Cray systems written by Tom Parker.
 **
 **  AUTHOR:	Peter W. Morreale,  SCD Consulting
@@ -107,7 +107,7 @@ char	*argv[];
 	if (optind >= argc)  Usage();	/* no return*/
 
 	for(i = optind; i < argc; i++) {
-	    if (dobfi) 
+	    if (dobfi)
 		RemoveBFI(argv[i]);
 	    else
 	        ConvertFile(argv[i]);
@@ -124,8 +124,8 @@ void Usage()
 		    stderr);
 	(void)fprintf(stderr, " Version %s\n", VERSION);
 	exit(0);
-
 }
+
 /*---------------------------------------------------------------------*/
 void ConvertFile(flnm)
 char	*flnm;
@@ -145,13 +145,13 @@ char	*flnm;
 	/*
 	** Open a output file in the current directory.
 	**
-	** We need to do it here since we will rename the file after 
+	** We need to do it here since we will rename the file after
 	** conversion
 	*/
 	(void)sprintf(oflnm, "%s-conv.%d", flnm, (int) getpid());
 	if ((fp = fopen(oflnm, "w")) == (FILE *) NULL) {
-	    (void)fprintf(stderr, 
-			  "Unable to open temp file, %s unchanged\n", 
+	    (void)fprintf(stderr,
+			  "Unable to open temp file, %s unchanged\n",
 			  flnm);
 	    CrayClose(cf);
 	    return;
@@ -197,7 +197,7 @@ char	*flnm;
 
 
 	if (rename(oflnm, flnm)) {
-	    (void)fprintf(stderr, 
+	    (void)fprintf(stderr,
 			  " Unable to rename tmp file, %s unchanged\n",
 			  flnm);
 	}
@@ -205,7 +205,6 @@ char	*flnm;
 	(void)unlink(oflnm);
 
 	return;
-
 }
 
 /*----------------------------------------------------------------------*/
@@ -218,11 +217,11 @@ char	*flnm;
 	char		*ptr;
 
 	/*
-	** Set a buffer for both the input and output cray files 
+	** Set a buffer for both the input and output cray files
 	*/
 
 	/*
-	** Open the input file 
+	** Open the input file
 	*/
 	cf = CrayOpen(flnm, O_RDONLY, 0600, 0);
 	if (cf < 0) {
@@ -236,7 +235,7 @@ char	*flnm;
 	(void)sprintf(oflnm, "%s-conv.%d", flnm, (int)getpid());
 	ocf = CrayOpen(oflnm, O_WRONLY | O_TRUNC | O_CREAT, 0600, 0);
 	if (ocf < 0) {
-	   (void)fprintf(stderr, "Unable to open temp file, %s unchanged\n", 
+	   (void)fprintf(stderr, "Unable to open temp file, %s unchanged\n",
 			 flnm);
 	   CrayClose(cf);
 	   return;
@@ -249,13 +248,13 @@ char	*flnm;
 	    while (p < &record[bytes]) {
 
 		/*
-		** If this is a BFI character, then 
-		**  write the number of blanks 
+		** If this is a BFI character, then
+		**  write the number of blanks
 		*/
-		if (*p == BFI_CHAR) 
-	 	    ier = CrayWrite(ocf, (unsigned char *) blanks, 
+		if (*p == BFI_CHAR)
+		    ier = CrayWrite(ocf, (unsigned char *) blanks,
 								(*(++p) - 30));
-		else 
+		else
 		    ier = CrayWrite(ocf, p, 1);
 
 		/*
@@ -265,22 +264,21 @@ char	*flnm;
 			CrayClose(ocf);
 			CrayClose(cf);
 			(void)unlink(oflnm);
-			(void)fprintf(stderr, 
+			(void)fprintf(stderr,
 				      "Unable to write record, %s unchanged\n",
 				      flnm);
 			return;
 		}
 
 		/*
-		** Advance the record pointer 
+		** Advance the record pointer
 		*/
 		p++;
 
-		/* 
-		** Increment the record counter 
+		/*
+		** Increment the record counter
 		*/
 		nrec++;
-
 	    }
 
 	}
@@ -297,7 +295,7 @@ char	*flnm;
 
 
 	if (rename(oflnm, flnm)) {
-	    (void)fprintf(stderr, 
+	    (void)fprintf(stderr,
 			  " Unable to rename tmp file, %s unchanged\n",
 			  flnm);
 	}
@@ -305,9 +303,8 @@ char	*flnm;
 	(void)unlink(oflnm);
 
 	return;
-
-
 }
+
 /*----------------------------------------------------------------------*/
 void Toast()
 {
@@ -317,7 +314,7 @@ void Toast()
 	else {
 	    if (fp) (void)fclose(fp);
 	}
-	
+
 	(void)unlink(oflnm);
 	exit(0);
 }
@@ -364,12 +361,10 @@ char		*flnm;
 
 	    case CRAY_DISKERR:
 		(void)fprintf(stderr, 
-			      " Read error on record %d.  %s unchanged\n", 
+			      " Read error on record %d.  %s unchanged\n",
 			      nrec+1, flnm);
 		return(1);
-	
 	}
 
 	return(0);
 }
-	

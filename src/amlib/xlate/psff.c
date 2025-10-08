@@ -18,7 +18,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2018
 
 
 /* -------------------------------------------------------------------- */
-void xlpsff(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlpsff(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
   static RAWTBL *psf = 0;
 
@@ -35,7 +35,7 @@ void xlpsff(RAWTBL *varp, void *p, NR_TYPE *output)
 }	/* END XLPSFF */
 
 /* -------------------------------------------------------------------- */
-void xladiff(RAWTBL *varp, void *p, NR_TYPE *output)
+void xladiff(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
   static RAWTBL *adifr = 0;
 

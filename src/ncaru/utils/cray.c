@@ -24,12 +24,12 @@
 
 /* Copyright 1999 University Corporation for Atmospheric Research (UCAR).
 **	All rights reserved
-** 
-** Permission to use, copy, and modify this software and its documentation 
-** for any non-commercial purpose is hereby granted without fee, provided 
-** that the above copyright notice appear in all copies and that both that 
-** copyright notice and this permission notice appear in supporting 
-** documentation. UCAR makes no representations about the suitability of 
+**
+** Permission to use, copy, and modify this software and its documentation
+** for any non-commercial purpose is hereby granted without fee, provided
+** that the above copyright notice appear in all copies and that both that
+** copyright notice and this permission notice appear in supporting
+** documentation. UCAR makes no representations about the suitability of
 ** this software for any purpose.   It is provided "as is" without express
 ** or implied warranty.
 */
@@ -47,7 +47,7 @@
 #include <ncaru/cray.h>
 
 /*
-**  cossplit  - Emulates the cossplit command available on the 
+**  cossplit  - Emulates the cossplit command available on the
 **		Cray systems written by Tom Parker.
 **
 **  AUTHOR:	Peter W. Morreale,  SCD Consulting
@@ -57,9 +57,9 @@
 
 static char	*record = NULL;
 
-static int		record_size = 0;
-static int		num_records = 0;
-static int		block_size = 0;
+static int	record_size = 0;
+static int	num_records = 0;
+static int	block_size = 0;
 
 /*----------------------------------------------------------------------*/
 static
@@ -74,15 +74,12 @@ void Usage()
 	(void)fputs("\t-r\t	record size\n", stderr);
 
 	return;
-
-
 }
 
 /*---------------------------------------------------------------------*/
 static
-int WriteData(
-	char	*flnm
-) {
+int WriteData(char *flnm)
+{
 	CrayFile	*cf;
 	int		i;
 	int		ier;
@@ -119,12 +116,12 @@ int WriteData(
 
 
 	/*
-	** Open the file 
+	** Open the file
 	*/
 	cf = _CrayOpen(flnm, O_WRONLY | O_TRUNC | O_CREAT, 0660, 0);
 	if (cf == (CrayFile *) NULL) {
-	   	(void)fprintf(stderr, "Unable to open file: %s\n", flnm);
-	   	return(-1);
+		(void)fprintf(stderr, "Unable to open file: %s\n", flnm);
+		return(-1);
 	}
 
 
@@ -133,7 +130,7 @@ int WriteData(
 	for(i = 0; i < num_records; i++) {
 		ier = _CrayWrite(cf, (unsigned char *) record, size);
 		if (ier < 0) {
-		   	(void)fprintf(stderr, "Unable to write record %d\n", i);
+			(void)fprintf(stderr, "Unable to write record %d\n", i);
 			return(-1);
 		}
 	}
@@ -146,15 +143,11 @@ int WriteData(
 	}
 
 	return(0);
-
-
 }
 
 /*---------------------------------------------------------------------------*/
-main(
-	int	argc,
-	char	**argv
-) {
+main(int argc, char **argv)
+{
 	int		i;
 	extern int	opterr;
 	extern int	optind;
@@ -167,21 +160,21 @@ main(
 		switch (i) {
 
 			case 'b':
-		    		block_size = atoi(optarg);
-		    		break;
+				block_size = atoi(optarg);
+				break;
 
 			case 'n':
-		    		num_records = atoi(optarg);
-		    		break;
+				num_records = atoi(optarg);
+				break;
 
 			case 'r':
 				record_size = atoi(optarg);
-		    		break;
+				break;
 
 			default:
-		    		Usage();
+				Usage();
 				exit(1);
-	    	}
+		}
 	}
 
 	if ((optind+1) - argc)  {
@@ -193,5 +186,5 @@ main(
 
 	if (i < 0) i = 1;
 
-	return(i);	
+	return(i);
 }

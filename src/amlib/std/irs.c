@@ -16,7 +16,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2008
 #include "amlib.h"
 
 /* Honeywell Manual Time constants.  126 second time constants */
-static NR_TYPE	wp3_C[3] = { 0.15, 0.0075, 0.000125 };
+static std::vector<float> wp3_C = { 0.15, 0.0075, 0.000125 };
 
 static NR_TYPE	hi3[nFeedBackTypes] = { 0.0, 0.0 };
 
@@ -28,14 +28,16 @@ void initWP3(var_base *varp)
 
   if ((tmp = GetDefaultsValue("WP3_TIME_CONSTS", varp->name)) != NULL)
   {
-    wp3_C[0] = tmp[0];
-    wp3_C[1] = tmp[1];
-    wp3_C[2] = tmp[2];
+    wp3_C.clear();
+    wp3_C.push_back(tmp[0]);
+    wp3_C.push_back(tmp[1]);
+    wp3_C.push_back(tmp[2]);
     sprintf(buffer,
 	"initWP3: WP3_TIME_CONSTS set to %f, %f, %f from Defaults file.\n",
 	wp3_C[0], wp3_C[1], wp3_C[2]);
     LogMessage(buffer);
   }
+  varp->addToMetadata("TimeConstants", wp3_C);
 }
 
 /* -------------------------------------------------------------------- */
@@ -106,8 +108,8 @@ void swp3(DERTBL *varp)
   /* We use an average of the previous computation and this one to
    * center the value in the time period.
    */
-  PutSample(varp, WP3 / 2.0);	
-  
+  PutSample(varp, WP3 / 2.0);
+
 }	/* END SWP3 */
 
 /* -------------------------------------------------------------------- */
@@ -163,6 +165,5 @@ void swpg(DERTBL *varp)
 
   PutSample(varp, WPG / 2.0);
 }
-
 
 /* END IRS.C */

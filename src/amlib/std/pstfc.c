@@ -1,18 +1,20 @@
 /************************* PSTFC **********************************  PSTFC
  ** Corrected static pressure (top of fuselage) (mb)
- 	Input:
- 		pstf - raw static pressure, top of fuselage mounted
- 		qctf - raw dynamic pressure, top of fuselage mounted
- 	Output:
- 		pstfc - corrected static pressure
- 	Include:
- 		pcorf - fuselage dynamic pressure correction
+	Input:
+		pstf - raw static pressure, top of fuselage mounted
+		qctf - raw dynamic pressure, top of fuselage mounted
+	Output:
+		pstfc - corrected static pressure
+	Include:
+		pcorf - fuselage dynamic pressure correction
 */
 
 #include "nimbus.h"
 #include "amlib.h"
 
 extern NR_TYPE (*pcorPSTF)(NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE, NR_TYPE);
+
+NR_TYPE defaultATTACK(), defaultSSLIP();
 
 /* -------------------------------------------------------------------- */
 void spstfc(DERTBL *varp)
@@ -24,6 +26,11 @@ void spstfc(DERTBL *varp)
   NR_TYPE attack = GetSample(varp, 2);
   NR_TYPE sslip = GetSample(varp, 3);
   NR_TYPE mach = GetSample(varp, 4);
+
+  if (std::isnan(attack))
+    attack = defaultATTACK();
+  if (std::isnan(sslip))
+    attack = defaultSSLIP();
 
   pstfc = pstf - (*pcorPSTF)(qctf, pstf, attack, sslip, mach);
 

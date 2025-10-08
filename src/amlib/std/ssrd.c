@@ -1,5 +1,5 @@
 /*******SSRD  SIDESLIP ANGLE OF THE RADOME (deg)                       SSRD
- 
+
         Input:
                 bdifr - raw radome differential pressure
                 qcxc - corrected dynamic pressure for radome calcs
@@ -17,21 +17,39 @@ static int      gv_radome_ssn = 1;      // default to first radome.
 // Serial number for C130 radome.  #2 was installed in May of 2013.
 static int      c130_radome_ssn = 1;      // default to first radome.
 
+// Fallback value for SSLIP if it goes missing.
+// Propeller planes - https://en.wikipedia.org/wiki/P-factor
+static const NR_TYPE GV_SSLIP_DEFAULT_VALUE = 0.0;
+static const NR_TYPE C130_SSLIP_DEFAULT_VALUE = 1.1;
+
 static std::vector<float> coeff;
 
 extern int	FlightDate[];
 
 /* -------------------------------------------------------------------- */
+NR_TYPE defaultSSLIP()
+{
+  if (cfg.Aircraft() == Config::HIAPER)
+    return(GV_SSLIP_DEFAULT_VALUE);
+  else
+    return(C130_SSLIP_DEFAULT_VALUE);
+}
+
+/* -------------------------------------------------------------------- */
 void initSSRD(var_base *varp)
 {
-  float *tmp;
+  float *tmp, ssn;
 
   /* Set default values per aircraft. */
   switch (cfg.Aircraft())
   {
     case Config::C130:
       if ( (tmp = GetDefaultsValue("C130_RADOME_SSN", varp->name)) )
+      {
         c130_radome_ssn = (int)tmp[0];
+        ssn = tmp[0];
+      }
+      varp->addToMetadata("RadomeSerialNumber", ssn);
 
       if (FlightDate[2] < 1998)
       {
@@ -44,7 +62,7 @@ void initSSRD(var_base *varp)
         {
           /*  New coefficients to handle ssrd offset to BDIFR - SOLAR CORONA on.
            *  Kept inactive pending final approval per AJS 12/18/98.
-           */	
+           */
           coeff.push_back(-0.012);
           coeff.push_back(12.21);
         }
@@ -75,7 +93,11 @@ void initSSRD(var_base *varp)
 
     case Config::HIAPER:
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
+      {
         gv_radome_ssn = (int)tmp[0];
+        ssn = tmp[0];
+      }
+      varp->addToMetadata("RadomeSerialNumber", ssn);
 
       if (gv_radome_ssn == 1)
         coeff.push_back(0.1051);
@@ -98,8 +120,7 @@ void initSSRD(var_base *varp)
 	  coeff[0], coeff[1]);
     LogMessage(buffer);
   }
-  else
-    AddToDefaults(varp->name, "CalibrationCoefficients", coeff);
+  varp->addToMetadata("CalibrationCoefficients", coeff);
 }
 
 /* -------------------------------------------------------------------- */
@@ -110,6 +131,9 @@ void sssrd(DERTBL *varp)
   bdifr	= GetSample(varp, 0);
   qcxc	= GetSample(varp, 1);
 
+  if (std::isnan(qcxc))
+    ssrd = floatNAN;
+  else
   /* Blow-up protection:  output zero while on ground (QCX < 5.5 mbar)
    * installed by Ron Ruth  18 October 2001
    */

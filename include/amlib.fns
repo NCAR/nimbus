@@ -104,8 +104,8 @@
 	"MACH",		NULL,		NULL,		smach,
 	"AK",		(void(*)(void*))GP_AKinit,	NULL,		sak_gp,
 	"SS",		(void(*)(void*))GP_SSinit,	NULL,		sss_gp,
-	"AKC",		NULL,		NULL,		sakc_gp,
-	"TAS",		NULL,		NULL,		stas_gp,
+	"AKC",		(void(*)(void*))GP_AKCinit,	NULL,		sakc_gp,
+	"TAS",		(void(*)(void*))GP_TASinit,	NULL,		stas_gp,
 #
 # Climet
 #
@@ -183,8 +183,10 @@
 	"CS100",	(void(*)(void*))cfsspInit,	NULL,		scs100,
 	"CCDP",		(void(*)(void*))ccdpInit,	NULL,		scdp,
 	"CS200",	(void(*)(void*))casasInit,	NULL,		scs200,
-	"CUHSAS",	(void(*)(void*))casasInit,	NULL,		scs200,
-	"CS300",	NULL,		NULL,		scf300,
+	"CUHSAS",	(void(*)(void*))cuhsasInit,	NULL,		scuhsas,
+	"CS300",	(void(*)(void*))cf300Init,	NULL,		scf300,
+#
+	"PBPSZ",	(void(*)(void*))pbpInit,	xlpbpsz,	NULL,
 #
 # PMS actual data arrays
 	"A200X_OLD",	(void(*)(void*))c200xInit,	xlP16bin,	NULL,
@@ -223,7 +225,7 @@
 	"TCNTD",	NULL,		NULL,		stcntd,
 	"TCNTF",	NULL,		NULL,		stcntf,
 	"TCNTP",	NULL,		NULL,		stcntp,
-	"TCNTU",	NULL,		NULL,		stcntp,
+	"TCNTU",	NULL,		NULL,		stcntu,
 	"TCNT2DC",	NULL,		NULL,		stcnt2,
 	"TCNT2DP",	NULL,		NULL,		stcnt2,
 	"TCNT1DC",	NULL,		NULL,		stcnt2,
@@ -238,13 +240,17 @@
 	"CONCD",	NULL,		NULL,		sconcd,
 	"CONCF",	NULL,		NULL,		sconcf,
 	"CONCP",	NULL,		NULL,		sconca,
-	"CONCU",	NULL,		NULL,		sconca,
+	"CONCU",	NULL,		NULL,		sconcu,
 	"CONCX",	NULL,		NULL,		sconcx,
 	"CONCY",	NULL,		NULL,		sconcy,
 	"CONC2DC",	NULL,		NULL,		sconc2,
 	"CONC2DP",	NULL,		NULL,		sconc2,
 	"CONC1DC",	NULL,		NULL,		sconc2,
 	"CONC1DP",	NULL,		NULL,		sconc2,
+	"CONC2DSH",	NULL,		NULL,		sconc2s,
+	"CONC2DSV",	NULL,		NULL,		sconc2s,
+	"CONC1DSH",	NULL,		NULL,		sconc2s,
+	"CONC1DSV",	NULL,		NULL,		sconc2s,
 	"CONCPIP",	NULL,		NULL,		sconc2,
 	"CONCHV",	NULL,		NULL,		sconc2,
 
@@ -255,13 +261,17 @@
 	"DBARD",	NULL,		NULL,		sdbard,
 	"DBARF",	NULL,		NULL,		sdbarf,
 	"DBARP",	NULL,		NULL,		sdbara,
-	"DBARU",	NULL,		NULL,		sdbara,
+	"DBARU",	NULL,		NULL,		sdbaru,
 	"DBARX",	NULL,		NULL,		sdbarx,
 	"DBARY",	NULL,		NULL,		sdbary,
 	"DBAR2DC",	NULL,		NULL,		sdbar2,
 	"DBAR2DP",	NULL,		NULL,		sdbar2,
 	"DBAR1DC",	NULL,		NULL,		sdbar2,
 	"DBAR1DP",	NULL,		NULL,		sdbar2,
+	"DBAR2DSH",	NULL,		NULL,		sdbar2s,
+	"DBAR2DSV",	NULL,		NULL,		sdbar2s,
+	"DBAR1DSH",	NULL,		NULL,		sdbar2s,
+	"DBAR1DSV",	NULL,		NULL,		sdbar2s,
 	"DBARPIP",	NULL,		NULL,		sdbar2,
 	"DBARHV",	NULL,		NULL,		sdbar2,
 
@@ -271,13 +281,17 @@
 	"DISPD",	NULL,		NULL,		sdispd,
 	"DISPF",	NULL,		NULL,		sdispf,
 	"DISPP",	NULL,		NULL,		sdispa,
-	"DISPU",	NULL,		NULL,		sdispa,
+	"DISPU",	NULL,		NULL,		sdispu,
 	"DISPX",	NULL,		NULL,		sdispx,
 	"DISPY",	NULL,		NULL,		sdispy,
 	"DISP2DC",	NULL,		NULL,		sdisp2,
 	"DISP2DP",	NULL,		NULL,		sdisp2,
 	"DISP1DC",	NULL,		NULL,		sdisp2,
 	"DISP1DP",	NULL,		NULL,		sdisp2,
+	"DISP2DSH",	NULL,		NULL,		sdisp2s,
+	"DISP2DSV",	NULL,		NULL,		sdisp2,
+	"DISP1DSH",	NULL,		NULL,		sdisp2s,
+	"DISP1DSV",	NULL,		NULL,		sdisp2s,
 	"DISPPIP",	NULL,		NULL,		sdisp2,
 	"DISPHV",	NULL,		NULL,		sdisp2,
 
@@ -291,8 +305,13 @@
 	"PLWC2DP",	NULL,		NULL,		splwc2,
 	"PLWC1DC",	NULL,		NULL,		splwc2,
 	"PLWC1DP",	NULL,		NULL,		splwc2,
+	"PLWC2DSH",	NULL,		NULL,		splwc2s,
+	"PLWC2DSV",	NULL,		NULL,		splwc2s,
+	"PLWC1DSH",	NULL,		NULL,		splwc2s,
+	"PLWC1DSV",	NULL,		NULL,		splwc2s,
 	"PLWCPIP",	NULL,		NULL,		splwc2,
 	"PLWCHV",	NULL,		NULL,		splwc2,
+	"IWC1DC",	NULL,		NULL,		siwc2,
 
 # PMS Effective Radius
 	"REFFD",	NULL,		NULL,		sreffd,
@@ -300,11 +319,11 @@
 	"REFF3",	NULL,		NULL,		sreff3,
 	"REFF6",	NULL,		NULL,		sreff6,
 	"REFFF6",	NULL,		NULL,		srefff6,
-	"REFF2DC",	NULL,		NULL,		sreff2,
+	"REFF1DC",	NULL,		NULL,		sreff2,
 # CDP & 2DC combined.
-	"REFFD2DC",	NULL,		NULL,		sreffd2,
+	"REFFD1DC",	NULL,		NULL,		sreffd2,
 # S100 & 2DC combined.
-	"REFFF2DC",	NULL,		NULL,		srefff2,
+	"REFFF1DC",	NULL,		NULL,		srefff2,
 
 # Laser Hygrometer
 	"MRLHS",	NULL,		xlfloat0,	NULL,
@@ -341,7 +360,7 @@
 # Volume
 	"PVOL3",	NULL,		NULL,		spvol3,
 	"PVOLP",	NULL,		NULL,		spvolp,
-	"PVOLU",	NULL,		NULL,		spvolp,
+	"PVOLU",	NULL,		NULL,		spvolu,
 
 #	"TCNT3",	NULL,		xlP32v2_sum,	NULL,
 	"TEVT3",	NULL,		xlpms32_sum,	NULL,
@@ -489,10 +508,12 @@
 	"UIC",		NULL,				NULL,		sui,
 	"WIC",		(void(*)(void*))initGust,	NULL,		swi,
 	"WIY",		(void(*)(void*))initGust,	NULL,		swi,
+	"WIX",		NULL,				NULL,		sRefer,
 	"VYC",		NULL,				NULL,		svy,
 	"UXC",		NULL,				NULL,		sux,
 	"WSC",		NULL,				NULL,		sws,
 	"WDC",		NULL,				NULL,		swd,
+	"WINDSFLG",	(void(*)(void*))initWindsFlag,	NULL,		swindflg,
 	"ROC",		NULL,				NULL,		sroc,
 	"WIR",		(void(*)(void*))initGust,	NULL,		swi,
 	"VIC1",		NULL,				NULL,		svi,
@@ -809,10 +830,13 @@
 #	Others
 #
 	"AKDF",		NULL,		NULL,		sakdf,
-	"AKY",		NULL,		NULL,		saky,
+	"AKY",		(void(*)(void*))initAKY,	NULL,		saky,
 	"AKRD",		(void(*)(void*))initAKRD,	NULL,		sakrd,
-	"AQRATIO",	NULL,		NULL,		saqratio,
 	"ATTACK",	NULL,		NULL,		sReferAttack,
+	"AQRATIO",	NULL,		NULL,		saqratio,
+	"SSDF",		NULL,		NULL,		sssdf,
+	"SSLIP",	NULL,		NULL,		sReferSSlip,
+	"SSRD",		(void(*)(void*))initSSRD,	NULL,		sssrd,
 	"ALTX",		NULL,		NULL,		sRefer,
 	"CMRCR",	NULL,		NULL,		scmrcr,
 	"CONCCN",	NULL,		NULL,		sconccn,
@@ -911,6 +935,8 @@
 	"HGM",		NULL,		xlhgm,		NULL,
 	"IRBC",		(void(*)(void*))initPyrgeometer,	NULL,	sirc,
 	"IRTC",		(void(*)(void*))initPyrgeometer,	NULL,	sirc,
+	"VISTC",	(void(*)(void*))initVisPyrgeometer,	NULL,	svisc,
+	"VISBC",	(void(*)(void*))initVisPyrgeometer,	NULL,	svisc,
 	"LWCC",		NULL,		NULL,		slwcc,
 	"MR",		NULL,		NULL,		smr,
 	"MRLA",		NULL,		NULL,		smrla,
@@ -947,6 +973,7 @@
 	"QCX",		NULL,		NULL,		sRefer,
 	"QCXC",		NULL,		NULL,		sRefer,
 	"RHOUV",	(void(*)(void*))rhouvInit,	NULL,		srhouv,
+	"RHO",		NULL,		NULL,		srho,
 	"RHOCR",	NULL,		NULL,		srhocr,
 	"RHODR",	NULL,		NULL,		srhodt,
 	"RHODL",	NULL,		NULL,		srhodt,
@@ -972,21 +999,18 @@
 	"RHLA",		NULL,		NULL,		srhrho,
 	"RHLA1",	NULL,		NULL,		srhrho,
 	"SERIAL",	NULL,		xlserial,	NULL,
-	"SSDF",		NULL,		NULL,		sssdf,
-	"SSLIP",	NULL,		NULL,		sRefer,
-	"SSRD",		(void(*)(void*))initSSRD,	NULL,		sssrd,
 #
 #	True Air Speed
 #
-	"TASB",		NULL,		NULL,		stas,
-	"TASF",		NULL,		NULL,		stas,
-	"TASTF",	NULL,		NULL,		stas,
-	"TASR",		NULL,		NULL,		stas,
-	"TASFR",	NULL,		NULL,		stas,
-	"TASW",		NULL,		NULL,		stas,
-	"TASX",		NULL,		NULL,		stasx,
-	"TASDRY",	NULL,		NULL,		stas_dry,
-	"TASFLG",	NULL,		NULL,		stas_flag,
+	"TASB",		(void(*)(void*))tasInit,	NULL,		stas,
+	"TASF",		(void(*)(void*))tasInit,	NULL,		stas,
+	"TASTF",	(void(*)(void*))tasInit,	NULL,		stas,
+	"TASR",		(void(*)(void*))tasInit,	NULL,		stas,
+	"TASFR",	(void(*)(void*))tasInit,	NULL,		stas,
+	"TASW",		(void(*)(void*))tasInit,	NULL,		stas,
+	"TASX",		(void(*)(void*))tasInit,	NULL,		stasx,
+	"TASDRY",	NULL,				NULL,		stas_dry,
+	"TASFLG",	(void(*)(void*))tasFlgInit,	NULL,		stas_flag,
 	"IAS",		NULL,		NULL,		sias,
 	"CAS",		NULL,		NULL,		sias,
 	"MACHB",	NULL,		NULL,		smach,
@@ -1009,6 +1033,8 @@
 	"RATIO",	NULL,		NULL,		sratio,
 	"ZERO",		NULL,		NULL,		szero,
 	"ONE",		NULL,		NULL,		sone,
+	"STDP",		NULL,		NULL,		sStdP,
+	"STDT",		NULL,		NULL,		sStdT,
 #
 #	CVI
 #
@@ -1031,6 +1057,9 @@
 	"CVIFLAG",	NULL,		NULL,		scviflag,
 	"CVCFACTTDL",	NULL,		NULL,		scvcfacttdl,
 	"UFLAG_CVIU",	NULL,		NULL,		scviuflag,
+# SDI FLAG
+	"SDIQUAL",	NULL,		NULL,		ssdiFlag,
+
 #
 #	PMS 2d Probes
 #
@@ -1042,6 +1071,8 @@
 #	"A2DG",		xlTwodInit,	xlTwoDG,	NULL,
 	"C1DC",		(void(*)(void*))sTwodInit,	NULL,		sTwoD,
 	"C1DP",		(void(*)(void*))sTwodInit,	NULL,		sTwoD,
+	"C1DSH",	(void(*)(void*))sSpecUDPinit,	NULL,		s2DS,
+	"C1DSV",	(void(*)(void*))sSpecUDPinit,	NULL,		s2DS,
 	"CHVPS",	(void(*)(void*))sTwodInitH,	NULL,		sHVPS,
 	"C2DC",		(void(*)(void*))sTwodInit,	NULL,		sTwoD,
 	"C2DP",		(void(*)(void*))sTwodInit,	NULL,		sTwoD,

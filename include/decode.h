@@ -35,13 +35,13 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define PROBE_200X	0x00001000
 #define PROBE_200Y	0x00002000
 #define PROBE_F300	0x00004000
-#define PROBE_MASP	0x00008000
-#define PROBE_2DC	0x00010000
-#define PROBE_2DP	0x00020000
-#define PROBE_HVPS	0x00040000
-#define PROBE_RDMA	0x00080000
-#define PROBE_CLMT	0x00100000
-#define PROBE_CDP	0x00200000
+#define PROBE_2DC	0x00008000
+#define PROBE_2DP	0x00010000
+#define PROBE_HVPS	0x00020000
+#define PROBE_RDMA	0x00040000
+#define PROBE_CLMT	0x00080000
+#define PROBE_CDP	0x00100000
+#define PROBE_2DS	0x00200000
 
 
 /* Input module config files
@@ -49,19 +49,20 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 extern const std::string PROJ_NAME, DEPENDTBL, DEFAULTS, GROUPS, BLANKVARS,
 	LAGS, BROADCAST, SPIKE, DEFDEROR, VARDB, BROADCASTVARS, XMIT_VARS,
 	AIRCRAFT, MODVARS, SUMVARS, FILTERS, RAWNAMES, DERIVEDNAMES, INSNAMES,
-	IRSNAMES, USERNAMES, OPHIR3NAMES, LANDMARKS, META_DATA, LOGFILE;
+	IRSNAMES, USERNAMES, OPHIR3NAMES, LANDMARKS, META_DATA, LOGFILE,
+	DOI_FILE, SETVALVARS;
 
 extern const std::string
 	InterpKey, Interp_Linear, Interp_Cubic, Interp_Akima,
 	TwoD_AreaRatioKey,
 	TwoD_MethodKey, TwoD_MethodCenterIn, TwoD_MethodRecon;
 
-#define SecondsSinceMidnite(t) (t[0] * 3600 + t[1] * 60 + t[2])
+#define SecondsSinceMidnight(t) (t[0] * 3600 + t[1] * 60 + t[2])
 
 /* External definitions
  */
 extern bool	LITTON51_present, AsyncFileEnabled, AVAPS;
-extern size_t	nLRfloats, nSRfloats, nHRfloats, LITTON51_start;
+extern size_t	nLRvalues, nSRvalues, nHRvalues, LITTON51_start;
 
 extern const std::string DSMSERVER;
 extern const int DSMSERVERPORT;
@@ -77,14 +78,14 @@ void	SetLookupSuffix(const char *new_suffix),
 	AddVariableToRAWdespikeList(RAWTBL *varp),
 	ReadDefaultDerivedOutputRate(), ReadSumVariables(),
 	ReadDefaultsFile(), ReadStaticLags(), ReadModuloVariables(),
-	ReadGroundVarsFile(), ReadBlankOuts(),
+	ReadGroundVarsFile(), ReadSetValues(std::string fileName, bool chk_config),
         RunAMLIBinitializers(),
 	ReadDependencies(), SetupDependencies(), GenerateComputeOrder(),
 	CleanOutUnwantedVariables(),
 	CreateNetCDF(const char file_name[]),
 	CheckAndAddAtts(int, int, char *),
 	InitMRFilters(), ClearMRFilters(),
-	DecodeADSrecord(short lr[], NR_TYPE nlr[]),
+	DecodeADSrecord(const short lr[], NR_TYPE nlr[]),
 	AverageSampledData(),
 	ApplyCalCoes(NR_TYPE *record),
 	ComputeLowRateDerived(time_t), ComputeHighRateDerived(time_t),

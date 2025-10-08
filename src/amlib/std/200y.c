@@ -25,6 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 #define MAX_200Y	1
@@ -40,13 +41,6 @@ static NR_TYPE	radius[BINS_16],
 		dia[BINS_16], dia2[BINS_16], dia3[BINS_16],
 		eaw[BINS_16];	/* Effective Sample Width	*/
 
-void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-                NR_TYPE dof[], float minRange, float resolution, size_t nDiodes,
-		size_t length, size_t armDistance),
-
-	ComputeDOF(NR_TYPE radius[], NR_TYPE tas, NR_TYPE dof[],
-		size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
-
 
 /* -------------------------------------------------------------------- */
 void c200yInit(var_base *varp)
@@ -61,7 +55,7 @@ void c200yInit(var_base *varp)
   probeNum = varp->ProbeCount;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     printf("%s: FIRST_BIN not found.\n", serialNumber); exit(1);
@@ -112,7 +106,7 @@ void c200yInit(var_base *varp)
 
   SampleRate[probeNum] = varp->SampleRate;
 
-  ComputePMS1DParams(radius, eaw, dia, dof, minRange, resolution, nDiodes, varp->Length, armDistance);
+  ComputePMS1DParams(radius, eaw, dia, dof, minRange, resolution, nDiodes, varp->Length, 2.37, armDistance);
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     {

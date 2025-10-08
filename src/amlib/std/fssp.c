@@ -39,6 +39,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2003
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 static const size_t MAX_FSSP = 4;
@@ -57,7 +58,6 @@ NR_TYPE		refff3[MAX_FSSP], refff2[MAX_FSSP];  /* For export to reff.c */
 
 // Probe Count.
 static size_t nProbes = 0;
-extern void setProbeCount(const char * location, int count);
 
 /* -------------------------------------------------------------------- */
 void cfsspInit(var_base *varp)
@@ -87,7 +87,7 @@ void cfsspInit(var_base *varp)
     refff3[i] = refff2[i] = 0.0;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     sprintf(buffer, "fssp: serial number = [%s]: FIRST_BIN not found.", serialNumber);
@@ -155,7 +155,7 @@ void cfsspInit(var_base *varp)
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
     char s[32];
-    sprintf(s, "CELL_SIZE_%zd", varp->Length - 1);
+    sprintf(s, "CELL_SIZE_%zd", varp->Length);
     if ((p = GetPMSparameter(serialNumber, s)) == NULL) {
       sprintf(buffer, "fssp: serial number = [%s]: %s not found.", serialNumber, s);
       }
@@ -164,21 +164,21 @@ void cfsspInit(var_base *varp)
   strcpy(buffer, p);
   p = strtok(buffer, ", \t\n");
 
-  for (i = 0; i < varp->Length*4; ++i)	/* 4 "ranges"	*/
-    {       
+  for (i = 0; i < (varp->Length+1)*4; ++i)	/* 4 "ranges"	*/
+    {
     fssp_csiz[probeNum][i] = p ? atof(p) : 0.0;
     p = strtok(NULL, ", \t\n");
-    }       
+    }
 
-  for (i = varp->Length*4-1; i > 0; --i)
+  for (i = 0; i < varp->Length; ++i)
     {
     fssp_csiz[probeNum][i] =
-        (fssp_csiz[probeNum][i] + fssp_csiz[probeNum][i-1]) / 2;
+        (fssp_csiz[probeNum][i] + fssp_csiz[probeNum][i+1]) / 2;
 
     fssp_csiz2[probeNum][i] = fssp_csiz[probeNum][i] * fssp_csiz[probeNum][i];
     fssp_csiz3[probeNum][i] = fssp_csiz2[probeNum][i] * fssp_csiz[probeNum][i];
     }
- 
+
   ReleasePMSspecs();
 
   SampleRate[probeNum] = varp->SampleRate;
@@ -191,6 +191,8 @@ void cfsspInit(var_base *varp)
     sprintf(msg, "fssp.c: <<< WARNING >>> %s: Serial # %s, TAS will be altered as follows:\n  tas = -0.0466 + 0.95171 * tas;", varp->name, varp->SerialNumber.c_str());
     LogMessage(msg);
   }
+
+  addProbeMetadata(varp, "scattering", "cloud_droplet");
 
 }	/* END CFSSPINIT */
 

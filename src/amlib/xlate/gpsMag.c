@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-void xlgmtime(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgmtime(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	char	*gpstime = (char *)input;
 
@@ -35,43 +35,43 @@ void xlgmtime(RAWTBL *varp, void *input, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
-void xlgmlat(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgmlat(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
         *output = (NR_TYPE)((GpsMag_blk *)input)->glat;
 }
 
 /* -------------------------------------------------------------------- */
-void xlgmlon(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgmlon(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
         *output = (NR_TYPE)((GpsMag_blk *)input)->glon;
 }
 
 /* -------------------------------------------------------------------- */
-void xlgmalt(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgmalt(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
         *output = (NR_TYPE)((GpsMag_blk *)input)->galt;
 }
 
 /* -------------------------------------------------------------------- */
-void xlgmgeoh(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgmgeoh(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
         *output = (NR_TYPE)((GpsMag_blk *)input)->geo_height;
 }
 
 /* -------------------------------------------------------------------- */
-void xlgmvew(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgmvew(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
         *output = (NR_TYPE)((GpsMag_blk *)input)->veleast;
 }
 
 /* -------------------------------------------------------------------- */
-void xlgmvns(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgmvns(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
         *output = (NR_TYPE)((GpsMag_blk *)input)->velnrth;
 }
 
 /* -------------------------------------------------------------------- */
-void xlgmmode(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgmmode(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
         *output = (NR_TYPE)((GpsMag_blk *)input)->gpsmode;
 }

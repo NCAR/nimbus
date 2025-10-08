@@ -29,7 +29,7 @@ extern NR_TYPE	*SampledData;
 NR_TYPE	crdma_cnc[128];
 
 /* -------------------------------------------------------------------- */
-void xlardma(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlardma(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   ardma_varp = varp;
   memset((char *)np, 0, varp->Length * sizeof(NR_TYPE));
@@ -37,7 +37,7 @@ void xlardma(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrdmahvps(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   Rdma_blk	*rdma = (Rdma_blk *)input;
 
@@ -163,7 +163,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLRDMAHVPS */
 
 /* -------------------------------------------------------------------- */
-void xlrdmavsh(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrdmavsh(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->vsh);
   if (*np < -32000.0 || *np > 32000.0)
@@ -171,7 +171,7 @@ void xlrdmavsh(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlrdmaqa(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrdmaqa(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qa);
   if (*np < -32000.0 || *np > 32000.0)
@@ -179,7 +179,7 @@ void xlrdmaqa(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlrdmaqsh(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrdmaqsh(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qsh);
   if (*np < -32000.0 || *np > 32000.0)
@@ -187,7 +187,7 @@ void xlrdmaqsh(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlrdmaqs(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrdmaqs(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qs);
   if (*np < -32000.0 || *np > 32000.0)
@@ -195,7 +195,7 @@ void xlrdmaqs(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlrdmaqex(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrdmaqex(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qex);
   if (*np < -32000.0 || *np > 32000.0)
@@ -203,7 +203,7 @@ void xlrdmaqex(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlrdmavd(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrdmavd(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->vd);
   if (*np < -32000.0 || *np > 32000.0)
@@ -211,7 +211,7 @@ void xlrdmavd(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlrdmarh(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrdmarh(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->rh);
   if (*np < -32000.0 || *np > 32000.0)
@@ -219,7 +219,7 @@ void xlrdmarh(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlrdmatemp(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrdmatemp(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->temp);
   if (*np < -32000.0 || *np > 32000.0)
@@ -229,7 +229,7 @@ void xlrdmatemp(RAWTBL *varp, void *input, NR_TYPE *np)
 }
 
 /* -------------------------------------------------------------------- */
-void xlrdmapabs(RAWTBL *varp, void *input, NR_TYPE *np)
+void xlrdmapabs(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->pabs);
   if (*np < -32000.0 || *np > 32000.0)

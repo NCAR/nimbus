@@ -25,11 +25,11 @@ void atfInit(var_base *varp)
     RF_C0 = tmp[0];
 
   sprintf(buffer, "%.4f + 0.0283 log10(mach) + 0.0374 (log10(mach))^2 + 0.0762 (log10(mach))^3", RF_C0);
-  AddToAttributes(varp->name, "RecoveryFactor", buffer);
+  varp->addToMetadata("RecoveryFactor", buffer);
 }
 
 /* -------------------------------------------------------------------- */
-/* Implement Mach number dependent recovery factor per Al Cooper's 8 Oct 2014 
+/* Implement Mach number dependent recovery factor per Al Cooper's 8 Oct 2014
  * memo with constants per Cooper 14 Oct 2014 memo. */
 double unheatedRecoveryFactor(double mach)
 {
@@ -43,7 +43,7 @@ void satf(DERTBL * varp)
   NR_TYPE rt = GetSample(varp, 0);
   NR_TYPE mach = GetSample(varp, 1);
   NR_TYPE recovery = unheatedRecoveryFactor(mach);
-	
+
   if (rt < -Kelvin)
     rt  = -Kelvin;
 

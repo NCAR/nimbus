@@ -27,9 +27,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2011
 
 static std::map<std::string, float> SampleArea;
 
+void	ReadPMSspecs(const char fileName[]);
+
 /* -------------------------------------------------------------------- */
 void conc2Init(var_base *varp)
-{ 
+{
   if (varp->SerialNumber.length() == 0) {
     if (cfg.isADS3()) {
       fprintf(stderr, "conc2d.c: %s has no serial number, fatal.\n", varp->name);
@@ -47,7 +49,7 @@ void conc2Init(var_base *varp)
   const char *serialNumber = varp->SerialNumber.c_str();
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   char *eaw, *arm_dist;
   if ((eaw = GetPMSparameter(serialNumber, "EAW")) == NULL) {

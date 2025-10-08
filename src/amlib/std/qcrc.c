@@ -18,6 +18,7 @@
 extern NR_TYPE	(*pcorQCR)(NR_TYPE);
 extern NR_TYPE	(*pcorQCRv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
+NR_TYPE defaultATTACK();
 
 /* -------------------------------------------------------------------- */
 void sqcrc(DERTBL *varp)
@@ -28,8 +29,8 @@ void sqcrc(DERTBL *varp)
 
   qcr	= GetSample(varp, 0);
 
-  if (qcr < 0.01)
-    qcr = 0.01;
+  if (qcr < 0.1)
+    qcr = 0.1;
 
   switch (cfg.Aircraft())
   {
@@ -38,6 +39,9 @@ void sqcrc(DERTBL *varp)
       psf = GetSample(varp, 1);
       qcf = GetSample(varp, 2);
       attack = GetSample(varp, 3);
+
+      if (std::isnan(attack))
+        attack = defaultATTACK();
 
       qcrc = qcr - (*pcorQCRv2)(qcf, psf, attack);
       break;
@@ -54,7 +58,7 @@ void sqcrc(DERTBL *varp)
 		  (1.0 - 2.25 * sbeta3 * sbeta3);
 
       if (bqcrc == 0.0)
-        bqcrc = 0.0001;		
+        bqcrc = 0.0001;
 /* Electra only
       qcrc	= qcr * (1.02633 - 0.00819 * atk3)  / bqcrc -
 						(*pcorQCR)(qcr,1.0);	*/

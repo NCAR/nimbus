@@ -47,7 +47,7 @@ void initP2DH(var_base *varp)
 }
 
 /* -------------------------------------------------------------------- */
-void xl2d_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
+void xl2d_hskp0(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P2d_house	*p = (P2d_house *)input;
 
@@ -57,7 +57,7 @@ void xl2d_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS_HSKP0 */
 
 /* -------------------------------------------------------------------- */
-void xl2d_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
+void xl2d_hskp1(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P2d_house	*p = (P2d_house *)input;
 
@@ -68,7 +68,7 @@ void xl2d_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS_HSKP1 */
 
 /* -------------------------------------------------------------------- */
-void xl2d_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
+void xl2d_hskp2(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P2d_house	*p = (P2d_house *)input;
 
@@ -79,7 +79,7 @@ void xl2d_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS_HSKP2 */
 
 /* -------------------------------------------------------------------- */
-void xl2d_hskp3(RAWTBL *varp, void *input, NR_TYPE *np)
+void xl2d_hskp3(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P2d_house	*p = (P2d_house *)input;
 
@@ -90,7 +90,7 @@ void xl2d_hskp3(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS_HSKP3 */
 
 /* -------------------------------------------------------------------- */
-void xl2d_hskp4(RAWTBL *varp, void *input, NR_TYPE *np)
+void xl2d_hskp4(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P2d_house	*p = (P2d_house *)input;
 
@@ -101,7 +101,7 @@ void xl2d_hskp4(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS_HSKP4 */
 
 /* -------------------------------------------------------------------- */
-void xl2d_hskp5(RAWTBL *varp, void *input, NR_TYPE *np)
+void xl2d_hskp5(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P2d_house	*p = (P2d_house *)input;
 
@@ -112,7 +112,7 @@ void xl2d_hskp5(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS_HSKP5 */
 
 /* -------------------------------------------------------------------- */
-void xl2d_hskp6(RAWTBL *varp, void *input, NR_TYPE *np)
+void xl2d_hskp6(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P2d_house	*p = (P2d_house *)input;
 
@@ -123,7 +123,7 @@ void xl2d_hskp6(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS_HSKP6 */
 
 /* -------------------------------------------------------------------- */
-void xl2d_hskp7(RAWTBL *varp, void *input, NR_TYPE *np)
+void xl2d_hskp7(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P2d_house	*p = (P2d_house *)input;
 
@@ -134,7 +134,7 @@ void xl2d_hskp7(RAWTBL *varp, void *input, NR_TYPE *np)
 }	/* END XLPMS_HSKP7 */
 
 /* -------------------------------------------------------------------- */
-void xl2d_shadow(RAWTBL *varp, void *input, NR_TYPE *np)
+void xl2d_shadow(RAWTBL *varp, const void *input, NR_TYPE *np)
 {
   P2d_house	*p = (P2d_house *)input;
 

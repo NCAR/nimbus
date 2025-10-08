@@ -1,25 +1,25 @@
 /*******       MIXING RATIO (G/KG)                                      MR
                   REQUIRES --- PSXC, EDPC(DPXC)
- 	Input:
- 		psxc - derived static pressure
- 		dpxc - derived dew point
- 	Output:
- 		mr - mixing ratio
+	Input:
+		psxc - derived static pressure
+		dpxc - derived dew point
+	Output:
+		mr - mixing ratio
 */
- 
+
 #include "nimbus.h"
 #include "amlib.h"
 
 /* -------------------------------------------------------------------- */
 void smr(DERTBL *varp)
 {
-  NR_TYPE	mr, psxc, edpc;
+  NR_TYPE	mr, psxc, ew;
 
   psxc = GetSample(varp, 0);
-  edpc = GetSample(varp, 1);
+  ew = GetSample(varp, 1);
 
-  if (psxc != edpc)
-    mr = 622.0 * edpc / (psxc - edpc);
+  if (psxc != ew)
+    mr = 622.0 * ew / (psxc - ew);
   else
     mr = 0.0;
 

@@ -28,6 +28,7 @@ static NR_TYPE	startLat = 39.913333, startLon = -105.118333;
 void deiInit(var_base *varp)
 {
   float  *tmp;
+
   if ((tmp = GetDefaultsValue("DENI_START_LAT", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function deiInit.\n", startLat);
@@ -43,6 +44,12 @@ void deiInit(var_base *varp)
   }
   else
     startLon = tmp[0];
+
+  std::vector<float> lat, lon;
+  lat.push_back(startLat);
+  varp->addToMetadata("StartingLatitude", lat);
+  lon.push_back(startLon);
+  varp->addToMetadata("StartingLongitude", lon);
 
 }  /* END DEIINIT */
 

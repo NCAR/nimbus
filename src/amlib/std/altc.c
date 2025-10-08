@@ -81,11 +81,12 @@ void sgaltc(DERTBL *varp)
 
       if ((tmp = GetDefaultsValue("GPS_GALT_TAU", varp->name)) == NULL)
         {
-        sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", GALT_TAU);
+        sprintf(buffer, "Value set to %f in AMLIB function sgaltc.\n", GALT_TAU);
         LogMessage(buffer);
         }
       else
         Tau = tmp[0];
+     varp->addToMetadata("GALT_TAU", { &Tau, &Tau[1] });
  */
 
       if (FeedBack == LOW_RATE_FEEDBACK)
@@ -234,11 +235,12 @@ void sggaltc(DERTBL *varp)
 
       if ((tmp = GetDefaultsValue("GPS_GALT_TAU", varp->name)) == NULL)
         {
-        sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", GALT_TAU);
+        sprintf(buffer, "Value set to %f in AMLIB function sggaltc.\n", GALT_TAU);
         LogMessage(buffer);
         }
       else
         Tau = tmp[0];
+     varp->addToMetadata("GALT_TAU", { &Tau, &Tau[1] });
  */
 
       if (FeedBack == LOW_RATE_FEEDBACK)

@@ -22,10 +22,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2012
 
 const double Kelvin = 273.15;
 
-// Reference pressure for US standard atmosphere (hPa)
+// Reference pressure for US standard atmosphere (hPa).
 const double StdPress = 1013.25;
 
-// Reference temperature in a standard atmosphere at sea level..
+// Reference temperature in a standard atmosphere at sea level.
 const double Tr = 15.0 + Kelvin;
 
 /* Molecular weight dry air (kg/kmol-1)
@@ -36,7 +36,7 @@ const double MolecularWeightDryAir = 28.9637;	// kg kmol-1
 const double MolecularWeightWater = 18.01528;	// kg kmol-1
 
 // Universal gas constant
-const double R0 = 8314.472;
+const double R0 = 8314.462618;
 
 // The specific gas constant for dry air (J/(kg*K))
 const double Rd = R0 / MolecularWeightDryAir;
@@ -67,7 +67,7 @@ const double Lv = -2370.0;
 const double Rd_DIV_Cpd = 2.0 / 7.0;
 
 // Boltzmann's constant
-const double Boltzmann = 1.380658e-23;
+const double Boltzmann = 1.380649e-23;
 
 // Planck's Constant
 const double Planck = 6.62606957e-34;
@@ -78,7 +78,7 @@ const double StdSpeedOfSound = sqrt(2.0 * Cpd * Tr);
 
 const double StdSpeedOfLight = 299792458.0;	// m/s
 
-const double PI = M_PI;			// defined in math.h 
+const double PI = M_PI;			// defined in math.h
 
 const double EARTH_RADIUS = 6.371229e06;	// Mean Earth radius (m)
 const double OMEGAE = 7.292115e-5;	// Angular vel of the Earth (rad/sec)
@@ -124,14 +124,24 @@ void smissval(DERTBL *varp)
 void sone(DERTBL *varp)
 {
   PutSample(varp, 1.0);
-
-}	/* END SONE */
+}
 
 /* -------------------------------------------------------------------- */
 void szero(DERTBL *varp)
 {
   PutSample(varp, 0.0);
+}
 
-}	/* END SZERO */
+/* -------------------------------------------------------------------- */
+void sStdP(DERTBL *varp)
+{
+  PutSample(varp, 820.0);
+}
+
+/* -------------------------------------------------------------------- */
+void sStdT(DERTBL *varp)
+{
+  PutSample(varp, 21.0);
+}
 
 /* END CONST.C */

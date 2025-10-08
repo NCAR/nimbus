@@ -1,23 +1,22 @@
 /*******       MIXING RATIO from Lyman Alpha (G/KG)                      MRLA
 
- 	Input:
+	Input:
 		rhola - derived absolute humidity from lyman alpha
- 		psxc - derived static pressure
- 		atx - derived dew point
- 	Output:
- 		mrla - mixing ratio from lyman alpha
+		psxc - derived static pressure
+		atx - derived dew point
+	Output:
+		mrla - mixing ratio from lyman alpha
 */
 
 #include "nimbus.h"
 #include "amlib.h"
 
-static NR_TYPE mrla;
- 
+
 /* -------------------------------------------------------------------- */
 void smrla(DERTBL *varp)
 {
-  NR_TYPE	rhola,atx,psxc;
-  NR_TYPE	edla;
+  NR_TYPE	edla, rhola, atx, psxc;
+  NR_TYPE	mrla;
 
   rhola	= GetSample(varp, 0);
   psxc	= GetSample(varp, 1);

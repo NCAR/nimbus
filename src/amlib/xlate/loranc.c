@@ -27,20 +27,20 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-void xlcstat(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlcstat(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
   *output = (NR_TYPE)((Lrn_blk *)p)->stat;
 }
 
 /* -------------------------------------------------------------------- */
-void xlctmlag(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlctmlag(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
   *output =	(NR_TYPE)((Lrn_blk *)p)->second +
 		(NR_TYPE)((Lrn_blk *)p)->msec / 1000.0;
 }
 
 /* -------------------------------------------------------------------- */
-void xlcnavtm(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlcnavtm(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
 	char	*dp = (char *)&((Lrn_blk *)p)->data1[5];
 	char	c;
@@ -55,7 +55,7 @@ void xlcnavtm(RAWTBL *varp, void *p, NR_TYPE *output)
 }	/* END XLCNAVTM */
 
 /* -------------------------------------------------------------------- */
-void xlclat(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlclat(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
 	char	*dp = &((char *)((Lrn_blk *)p)->data1)[8];
 	char	c;
@@ -78,7 +78,7 @@ void xlclat(RAWTBL *varp, void *p, NR_TYPE *output)
 }	/* END XLCLAT */
 
 /* -------------------------------------------------------------------- */
-void xlclon(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlclon(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
 	char	*dp = &((char *)((Lrn_blk *)p)->data1)[16];
 	char	c;
@@ -102,7 +102,7 @@ void xlclon(RAWTBL *varp, void *p, NR_TYPE *output)
 
 
 /* -------------------------------------------------------------------- */
-void xlccep(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlccep(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
 	char	*dp = &((char *)((Lrn_blk *)p)->data1)[41];
 	char	c;
@@ -117,7 +117,7 @@ void xlccep(RAWTBL *varp, void *p, NR_TYPE *output)
 }	/* END XLCCEP */
 
 /* -------------------------------------------------------------------- */
-void xlccgs(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlccgs(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
 	char	*dp = &((char *)((Lrn_blk *)p)->data2)[4];
 	char	c;
@@ -133,7 +133,7 @@ void xlccgs(RAWTBL *varp, void *p, NR_TYPE *output)
 }	/* END XLCCGS */
 
 /* -------------------------------------------------------------------- */
-void xlcctk(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlcctk(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
 	char	*dp = &((char *)((Lrn_blk *)p)->data2)[18];
 	char	c;
@@ -149,7 +149,7 @@ void xlcctk(RAWTBL *varp, void *p, NR_TYPE *output)
 
 
 /* -------------------------------------------------------------------- */
-void xlcmagvr(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlcmagvr(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
 	char	*dp = &((char *)((Lrn_blk *)p)->data2)[39];
 	char	c;
@@ -164,7 +164,7 @@ void xlcmagvr(RAWTBL *varp, void *p, NR_TYPE *output)
 }	/* END XLCMAGVR */
 
 /* -------------------------------------------------------------------- */
-void xlclortm(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlclortm(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
 	char	*dp = &((char *)((Lrn_blk *)p)->data4)[5];
 	char	c;
@@ -179,7 +179,7 @@ void xlclortm(RAWTBL *varp, void *p, NR_TYPE *output)
 }	/* END XLCLORTM */
 
 /* -------------------------------------------------------------------- */
-void xlcwarn(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlcwarn(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
 	char	*dp = &((char *)((Lrn_blk *)p)->data4)[11];
 	char	c;
@@ -194,7 +194,7 @@ void xlcwarn(RAWTBL *varp, void *p, NR_TYPE *output)
 }	/* END XLCWARN */
 
 /* -------------------------------------------------------------------- */
-void xlatmns(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlatmns(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
 	char	*dp = &((char *)((Lrn_blk *)p)->data4)[20];
 	char	c;

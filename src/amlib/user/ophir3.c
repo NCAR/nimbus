@@ -4,7 +4,7 @@ OBJECT NAME:	ophir3.c
 
 FULL NAME:	Ophir III
 
-ENTRY POINTS:	soat(), 
+ENTRY POINTS:	soat()
 
 STATIC FNS:	planck_rad()
 		planck_t()
@@ -22,8 +22,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "nimbus.h"
 #include "amlib.h"
 
-#define h	6.62606876e-34	/* Planck's const, J-s    */
-#define k	1.3806503e-23	/* Boltzman's const, J/K  */
+#define h	6.62607015e-34	/* Planck's const, J-s    */
+#define k	1.380649e-23	/* Boltzman's const, J/K  */
 #define lam	4.29e-6		/* Wavelength, um         */
 #define c	2.99792458e8	/* Speed of light, m/s    */
 

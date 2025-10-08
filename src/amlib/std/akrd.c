@@ -6,7 +6,7 @@ FULL NAME:	Attack Angle from the Radome
 
 DESCRIPTION:    
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2016
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2021
 -------------------------------------------------------------------------
 */
 
@@ -19,14 +19,28 @@ static int	gv_radome_ssn = 1;	// default to first radome.
 // Serial number for C130 radome.  #2 was installed in May of 2013.
 static int      c130_radome_ssn = 1;      // default to first radome.
 
+// Fallback value for Attack if it goes missing.
+static const NR_TYPE GV_ATTACK_DEFAULT_VALUE = 3.0;
+static const NR_TYPE C130_ATTACK_DEFAULT_VALUE = 2.0;
+
 static std::vector<float> akrd_coeff;		// New C130.  Three-coeff.
 static std::vector<float> akrd_coeff_old;	// Old C130.  Currently Pre-WECAN?  Two-coeff
 static std::vector<float> low, mid, high;	// Altitude specific coef's.
 
 // Coeff for aky filtering.
-static double c1 = 1.0, d0 = 1.0, d1 = 1.0, d2 = 1.0;
+static std::vector<float> aky_d;
+static std::vector<float> aky_c1;
 static double filter(double, double *);
 static double zf[nFeedBackTypes][4][6];
+
+/* -------------------------------------------------------------------- */
+NR_TYPE defaultATTACK()
+{
+  if (cfg.Aircraft() == Config::HIAPER)
+    return(GV_ATTACK_DEFAULT_VALUE);
+  else
+    return(C130_ATTACK_DEFAULT_VALUE);
+}
 
 /* -------------------------------------------------------------------- */
 static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
@@ -37,24 +51,72 @@ static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
   if ((tmp = GetDefaultsValue(name, varp->name)) != NULL)
   {
     c.clear();
-    c.push_back(tmp[0]);
-    c.push_back(tmp[1]);
-    c.push_back(tmp[2]);
+    c.push_back(tmp[0]); c.push_back(tmp[1]); c.push_back(tmp[2]);
     sprintf(buffer,
 	"akrd: %s set to %f, %f, %f from Defaults file.\n", name,
 	  c[0], c[1], c[2]);
     LogMessage(buffer);
   }
-  else
-    AddToDefaults(varp->name, "CalibrationCoefficients", c);
+  varp->addToMetadata("CalibrationCoefficients", c);
 
   return c;
 }
 
 /* -------------------------------------------------------------------- */
-void initAKRD(var_base *varp)
+void initAKY(var_base *varp)
 {
   float *tmp;
+  aky_c1.clear();
+  aky_d.clear();
+
+  /* Set default values per aircraft. */
+  switch (cfg.Aircraft())
+  {
+    case Config::C130:
+      aky_c1.push_back(10.3512);
+      aky_d.push_back(5.1531); aky_d.push_back(13.1655); aky_d.push_back(0.000252);
+      break;
+
+    case Config::HIAPER:
+      aky_c1.push_back(21.481);	// From Al Cooper
+      aky_d.push_back(4.8542); aky_d.push_back(8.9817); aky_d.push_back(-0.011126); aky_d.push_back(-0.00000753);
+      break;
+
+    default:
+      aky_c1.push_back(1.0);
+      aky_d.push_back(1.0); aky_d.push_back(1.0); aky_d.push_back(1.0); aky_d.push_back(0.0);
+      break;
+  }
+
+
+  if ((tmp = GetDefaultsValue("AKY_C1", varp->name)) != NULL)
+  {
+    aky_c1.clear();
+    aky_c1.push_back(tmp[0]);
+    sprintf(buffer,
+	"akrd: AKY_C1 set to %f from Defaults file.\n", aky_c1[0]);
+    LogMessage(buffer);
+  }
+  varp->addToMetadata("Coefficient_C1", aky_c1);
+
+  if ((tmp = GetDefaultsValue("AKY_D", varp->name)) != NULL)
+  {
+    aky_d.clear();
+    aky_d.push_back(tmp[0]); aky_d.push_back(tmp[1]);
+    aky_d.push_back(tmp[2]); aky_d.push_back(tmp[3]);
+    sprintf(buffer,
+	"akrd: AKY_D set to %f, %f, %f %f from Defaults file.\n",
+	  aky_d[0], aky_d[1], aky_d[2], aky_d[3]);
+    LogMessage(buffer);
+  }
+  varp->addToMetadata("Coefficient_D", aky_d);
+
+}
+
+/* -------------------------------------------------------------------- */
+void initAKRD(var_base *varp)
+{
+  float *tmp, ssn;
 
   memset((void *)zf, 0, sizeof(zf));
 
@@ -65,9 +127,13 @@ void initAKRD(var_base *varp)
   switch (cfg.Aircraft())
   {
     case Config::C130:
-      c1 = 10.3512, d0 = 5.1531, d1 = 13.1655, d2 = 0.000252;
+      ssn = c130_radome_ssn;
       if ( (tmp = GetDefaultsValue("C130_RADOME_SSN", varp->name)) )
+      {
         c130_radome_ssn = (int)tmp[0];
+        ssn = tmp[0];
+      }
+      varp->addToMetadata("RadomeSerialNumber", ssn);
 
       if (c130_radome_ssn == 1)
       {
@@ -100,9 +166,12 @@ void initAKRD(var_base *varp)
       break;
 
     case Config::HIAPER:
-      c1 = 21.481; d0 = 4.51107; d1 = 19.84095; d2 = -0.0018806;
       if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
+      {
         gv_radome_ssn = (int)tmp[0];
+        ssn = tmp[0];
+      }
+      varp->addToMetadata("RadomeSerialNumber", ssn);
 
       if (gv_radome_ssn == 1)
       {
@@ -115,10 +184,6 @@ void initAKRD(var_base *varp)
         akrd_coeff.push_back(4.6049);	// Cooper memo 8/15/2014; with QCF
         akrd_coeff.push_back(18.4376);
         akrd_coeff.push_back(6.7646);
-
-//        akrd_coeff.push_back(4.422);	// CONTRAST specific, get into Defaults file.
-//        akrd_coeff.push_back(20.58);
-//        akrd_coeff.push_back(1.717);
       }
       break;
 
@@ -129,9 +194,9 @@ void initAKRD(var_base *varp)
   akrd_coeff = load_AKRD_Default(varp, "AKRD_COEFF");
   if (cfg.ProjectName().compare("CSET") == 0 ||
       cfg.ProjectName().compare("ORCAS") == 0 ||
-      cfg.ProjectName().compare("SOCRATES") == 0||
-      cfg.ProjectName().compare("OTREC-TEST") == 0||
-      cfg.ProjectName().compare("OTREC") == 0)
+      cfg.ProjectName().compare("SOCRATES") == 0 ||
+      cfg.ProjectName().compare("ACCLIP") == 0 ||
+      cfg.ProjectName().compare("OTREC-TEST") == 0)
   {
     low = load_AKRD_Default(varp, "AKRD_COEFF_LOW");
     mid = load_AKRD_Default(varp, "AKRD_COEFF_MID");
@@ -158,7 +223,7 @@ void sakrd(DERTBL *varp)
       case Config::C130:
         if (varp->nDependencies == 3)  // Post IDEAS-4
         {
-          psf   = GetSample(varp, 2);	// PSF
+          psf  = GetSample(varp, 2);	// PSF
           mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
           akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach); // 15 Sept 2016 memo
         }
@@ -175,12 +240,26 @@ void sakrd(DERTBL *varp)
       case Config::HIAPER:
         psf = GetSample(varp, 2);	// PSF
         mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
-        if (varp->nDependencies == 4)
+
+        if (varp->nDependencies == 4)	// altitude based cutoff.
         {
-          NR_TYPE alt = GetSample(varp, 3);
-          if (alt < 6500) akrd_coeff = low; else
-          if (alt < 9300) akrd_coeff = mid; else
-          akrd_coeff = high;
+          if (cfg.ProjectName().compare("CSET") == 0 ||
+              cfg.ProjectName().compare("ORCAS") == 0 ||
+              cfg.ProjectName().compare("SOCRATES") == 0 ||
+              cfg.ProjectName().compare("OTREC-TEST") == 0)
+          {
+            NR_TYPE alt = GetSample(varp, 3);
+            if (alt < 6500) akrd_coeff = low; else
+            if (alt < 9300) akrd_coeff = mid; else
+            akrd_coeff = high;
+          }
+          else // RHO based.
+          {
+            NR_TYPE rho = GetSample(varp, 3);
+            if (rho < 0.35) akrd_coeff = low; else
+            if (rho < 0.7) akrd_coeff = mid; else
+            akrd_coeff = high;
+          }
         }
 
         akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach);
@@ -208,25 +287,36 @@ void sakrd(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void saky(DERTBL *varp)
 {
-  NR_TYPE qc, adif, AKY = 0.0;
+  static int timeOfFlight = 0;
+
+  NR_TYPE qc, adif, wow,  AKY = 0.0;
 
   adif	= GetSample(varp, 0);
   qc	= GetSample(varp, 1);
+  wow   = GetSample(varp, 2);
 
   if (std::isnan(adif) || std::isnan(qc))
   {
     AKY = floatNAN;
     qc = 0.1;
   }
-
+  if (std::isnan(wow))
+  {
+    wow = 1;	// Assume onground if missing..i.e. avionics not powered up yet.
+  }
+  if (FeedBack == LOW_RATE_FEEDBACK) /* Only do this in the Low-rate pass */
+  {
+    timeOfFlight +=  (1 - wow); //wow is 1 on ground
+  }
   if (qc > 5.5)	// Avoid blow-ups on the ground.
   {
     double ratio = adif / qc;
     double AQS = filter(ratio, zf[FeedBack][0]);
     double QCFS = filter(qc, zf[FeedBack][1]);
     double AQF = ratio - AQS;
+    double QCFF = qc - QCFS;
 
-    AKY = d0 + d1 * AQS + d2 * QCFS + c1 * AQF;
+    AKY = aky_d[0] + aky_d[1] * AQS + aky_d[2] * QCFS + aky_c1[0] * AQF + aky_d[3] * timeOfFlight + aky_d[2] * QCFF;
   }
 
   PutSample(varp, AKY);

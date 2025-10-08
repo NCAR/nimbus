@@ -23,11 +23,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 
 static NR_TYPE diodeDiameter = 0.2;	// 200 micron
 
 /* -------------------------------------------------------------------- */
-/* This function is used by the 260X and all 2DC probes.
+/* This function is used by the 260X and all 2DC/2DP probes.
+ * EAW is for entire-in algorithm.
  */
 void ComputePMS1DParams(
 	NR_TYPE	radius[],	// out
@@ -38,20 +40,22 @@ void ComputePMS1DParams(
 	float	resolution,	// in
 	size_t	nDiodes,	// in
 	size_t	nBins,		// in
+	float	dof_const,	// in
 	size_t	armDistance)	// in
 {
   float	mag = diodeDiameter / (resolution / 1000);
-
-  minRange += resolution / 2;	/* Create mid-points for diam. */
+  float diameter = minRange + resolution / 2;	/* Create mid-points for diam. */
+  int offset = 1 + (1 - cfg.ZeroBinOffset());
 
   diam[0] = radius[0] = eaw[0] = dof[0] = 0;
 
-  for (size_t i = 1; i < nBins; ++i, minRange += resolution)
+  for (size_t i = 0; i < nBins; ++i, diameter += resolution)
     {
-    diam[i]	= minRange;
-    radius[i]	= minRange / 2000; /* Units: mm */
-    eaw[i]	= diodeDiameter * (nDiodes - i - 1) / mag; /* Units: mm */
-    dof[i]	= 2.37 * diam[i] * diam[i] / 1000.0;
+    diam[i]	= diameter;
+    radius[i]	= diameter / 2000; /* Units: mm */
+    eaw[i]	= diodeDiameter * (nDiodes - i - offset) / mag; /* Units: mm */
+//    eaw[i]	= diodeDiameter * (nDiodes - i - 1) / mag; /* Units: mm */
+    dof[i]	= dof_const * diam[i] * diam[i] / 1000.0;
     if (dof[i] > armDistance)
       dof[i] = (NR_TYPE)armDistance;
     }
@@ -111,5 +115,13 @@ void ComputeDOF(
     }
 
 }	/* END COMPUTEDOF */
+
+void addProbeMetadata(var_base *varp, const char *technique, const char *sz_dist_type)
+{
+  varp->addToMetadata("probe_technique", technique);
+  if ( dynamic_cast<DERTBL*>(varp) )
+    ((DERTBL*)varp)->depends[0]->addToMetadata("probe_technique", technique);
+  varp->addToMetadata("size_distribution_type", sz_dist_type);
+}
 
 /* END PMS1D.C */

@@ -27,35 +27,35 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 
 
 /* -------------------------------------------------------------------- */
-void xlNOzone(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlNOzone(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = ((Ozone_blk *)input)->ozone;
 
 }	/* END XLETORQ */
 
 /* -------------------------------------------------------------------- */
-void xlJplTdl(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlJplTdl(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = ((Jpltdl_blk *)input)->vmr;
 
 }	/* END XLETORQ */
 
 /* -------------------------------------------------------------------- */
-void xllah2o(RAWTBL *varp, void *input, NR_TYPE *output)
+void xllah2o(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = ((Noaa_blk *)input)->lah2o;
 
 }	/* END XLETORQ */
 
 /* -------------------------------------------------------------------- */
-void xlfph0(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlfph0(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = ((Noaa_blk *)input)->fph0;
 
 }	/* END XLETORQ */
 
 /* -------------------------------------------------------------------- */
-void xlfph1(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlfph1(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = ((Noaa_blk *)input)->fph1;
 

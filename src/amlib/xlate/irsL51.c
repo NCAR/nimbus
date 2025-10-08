@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "amlib.h"
-#include <raf/ctape.h>
+#include "src/hdr_api/ctape.h"
 
 #define	INS_MASK	0x0003ffff
 #define MASK		0x3ffff000
@@ -30,13 +30,13 @@ NR_TYPE	angcr(NR_TYPE, NR_TYPE, float, float);
 
 
 /* -------------------------------------------------------------------- */
-void xlinssec(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlinssec(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   *output = ((Ins_blk *)input)->second + ((Ins_blk *)input)->t250 / 250.0;
 }
 
 /* -------------------------------------------------------------------- */
-void xlalat(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlalat(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	NR_TYPE	alat;
 
@@ -48,7 +48,7 @@ void xlalat(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLALAT */
 
 /* -------------------------------------------------------------------- */
-void xlalon(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlalon(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	NR_TYPE	alon;
 
@@ -60,21 +60,21 @@ void xlalon(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLALON */
 
 /* -------------------------------------------------------------------- */
-void xlgsi(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlgsi(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	*output = (NR_TYPE)((((Ins_blk *)input)->gndspd >> 12) & INS_MASK) * KNOTS_TO_MPS;
-	
+
 }	/* END XLGSI */
 
 /* -------------------------------------------------------------------- */
-void xltrki(RAWTBL *varp, void *input, NR_TYPE *output)
+void xltrki(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	*output = (NR_TYPE)fmod(angle(((Ins_blk *)input)->track)+360.0, (double)360.0);
 
 }	/* END XLTRKI */
 
 /* -------------------------------------------------------------------- */
-void xlthi(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlthi(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	output[0] = (NR_TYPE)fmod(angle(((Ins_blk *)input)->truehd1)+360.0, (double)360.0);
 	output[1] = (NR_TYPE)fmod(angle(((Ins_blk *)input)->truehd2)+360.0, (double)360.0);
@@ -85,7 +85,7 @@ void xlthi(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLTHI */
 
 /* -------------------------------------------------------------------- */
-void xlalpha(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlalpha(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	output[0] = (NR_TYPE)fmod(angle(((Ins_blk *)input)->alpha1)+360.0, (double)360.0);
 	output[1] = (NR_TYPE)fmod(angle(((Ins_blk *)input)->alpha2)+360.0, (double)360.0);
@@ -96,7 +96,7 @@ void xlalpha(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLALPHA */
 
 /* -------------------------------------------------------------------- */
-void xlxvi(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlxvi(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	output[0] = (NR_TYPE)velocity(((Ins_blk *)input)->vx1) * 0.3048;
 	output[1] = (NR_TYPE)velocity(((Ins_blk *)input)->vx2) * 0.3048;
@@ -112,7 +112,7 @@ void xlxvi(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLXVI */
 
 /* -------------------------------------------------------------------- */
-void xlyvi(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlyvi(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	output[0] = (NR_TYPE)velocity(((Ins_blk *)input)->vy1) * 0.3048;
 	output[1] = (NR_TYPE)velocity(((Ins_blk *)input)->vy2) * 0.3048;
@@ -168,7 +168,7 @@ static double velocity(long value)
 }	/* END VELOCITY */
 
 /* -------------------------------------------------------------------- */
-void xlpitch51(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlpitch51(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	short	*p = (short *)input;
 	NR_TYPE	pitch;
@@ -186,7 +186,7 @@ void xlpitch51(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 static NR_TYPE	croll[50];
 
-void xlcroll51(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlcroll51(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	short	*p = (short *)input;
 
@@ -197,7 +197,7 @@ void xlcroll51(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLCROLL51 */
 
 /* -------------------------------------------------------------------- */
-void xlroll51(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlroll51(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	short	*p = (short *)input;
 	NR_TYPE	roll;
@@ -213,7 +213,7 @@ void xlroll51(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLROLL51 */
 
 /* -------------------------------------------------------------------- */
-void xlphdg51(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlphdg51(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	short	*p = (short *)input;
 
@@ -223,7 +223,7 @@ void xlphdg51(RAWTBL *varp, void *input, NR_TYPE *output)
 }	/* END XLPHDG51 */
 
 /* -------------------------------------------------------------------- */
-void xlvzi51(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlvzi51(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
 	NR_TYPE		vzi, vzidif;
 	static bool	firstTime = TRUE;

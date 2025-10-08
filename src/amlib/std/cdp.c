@@ -13,12 +13,13 @@ DESCRIPTION:
 
 REFERENCES:	pms1d.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2025
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 static const size_t MAX_CDP = 2;
@@ -37,7 +38,7 @@ NR_TYPE		reffd3[MAX_CDP], reffd2[MAX_CDP];  /* For export to reff.c */
 
 // Probe Count.
 static int nProbes = 0;
-extern void setProbeCount(const char * location, int count);
+
 
 /* -------------------------------------------------------------------- */
 void ccdpInit(var_base *varp)
@@ -62,7 +63,7 @@ void ccdpInit(var_base *varp)
     reffd3[i] = reffd2[i] = 0.0;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     sprintf(buffer, "cdp: serial number = [%s]: FIRST_BIN not found.", serialNumber);
@@ -117,7 +118,7 @@ void ccdpInit(var_base *varp)
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
     char s[32];
-    sprintf(s, "CELL_SIZE_%zd", varp->Length - 1);
+    sprintf(s, "CELL_SIZE_%zd", varp->Length);
     if ((p = GetPMSparameter(serialNumber, s)) == NULL) {
       sprintf(buffer, "cdp: serial number = [%s]: %s not found.", serialNumber, s);
       HandleFatalError(buffer);
@@ -127,24 +128,26 @@ void ccdpInit(var_base *varp)
   strcpy(buffer, p);
   p = strtok(buffer, ", \t\n");
 
-  for (i = 0; i < varp->Length; ++i)	/* 4 "ranges"	*/
-  {       
+  for (i = 0; i < varp->Length+1; ++i)
+  {
     cell_size[probeNum][i] = p ? atof(p) : 0.0;
     p = strtok(NULL, ", \t\n");
-  }       
+  }
 
-  for (i = varp->Length-1; i > 0; --i)
+  for (i = 0; i < varp->Length; ++i)
   {
     cell_size[probeNum][i] =
-        (cell_size[probeNum][i] + cell_size[probeNum][i-1]) / 2;
+        (cell_size[probeNum][i] + cell_size[probeNum][i+1]) / 2;
 
     cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
     cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
   }
- 
+
   ReleasePMSspecs();
 
   SampleRate[probeNum] = varp->SampleRate;
+
+  addProbeMetadata(varp, "scattering", "cloud_droplet");
 
 }	/* END CCDPINIT */
 
@@ -248,6 +251,34 @@ void sreffd(DERTBL *varp)	/* Effective Radius	*/
     PutSample(varp, 0.5 * (reff3[varp->ProbeCount] / reff2[varp->ProbeCount]));
   else
     PutSample(varp, 0.0);
+}
+
+/* -------------------------------------------------------------------- */
+/* Particle By Particle sizing */
+
+void pbpInit(var_base *varp)
+{
+  // Looks like we don't need this function, but I am leaving stubbed in for now.
+  printf(" PBP Initialize\n");
+}
+
+void xlpbpsz(RAWTBL *varp, const void *p, NR_TYPE *np)
+{
+  // To disengage the sizing and view the A2D counts, just have this function return;
+
+  NR_TYPE d, *diameter = cell_size[varp->ProbeCount];
+  for (size_t i = 0; i < varp->SampleRate; ++i)
+  {
+    NR_TYPE *inp = &np[i * varp->Length];
+    for (size_t chan = 0; chan < varp->Length; ++chan)
+    {
+      for (size_t thresh = 0; thresh < varp->Length && varp->channelThresholds[thresh] < inp[chan]; ++thresh)
+      {
+        d = diameter[thresh];
+      }
+      inp[chan] = d;
+    }
+  }
 }
 
 /* END CDP.C */

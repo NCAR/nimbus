@@ -21,6 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 static const size_t MAX_260X = 1;
@@ -39,16 +40,9 @@ static NR_TYPE	radius[MAX_260X][BINS_64], cell_size[MAX_260X][BINS_64],
 
 NR_TYPE         reff63[MAX_260X], reff62[MAX_260X];  /* For export to reff.c */
 
-void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-	NR_TYPE dof[], float minRange, float resolution, size_t nDiodes,
-	size_t length, size_t armDistance),
-
-	ComputeDOF(NR_TYPE radius[], NR_TYPE tas, NR_TYPE dof[],
-	size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
-
 // Probe Count.
 static size_t nProbes = 0;
-extern void setProbeCount(const char * location, int count);
+
 
 /* -------------------------------------------------------------------- */
 void c260xInit(var_base *varp)
@@ -77,7 +71,7 @@ void c260xInit(var_base *varp)
     reff63[i] = reff62[i] = 0.0;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     fprintf(stderr, "260x: serial # = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);
@@ -134,7 +128,7 @@ void c260xInit(var_base *varp)
   SampleRate[probeNum] = varp->SampleRate;
 
   ComputePMS1DParams(radius[probeNum], eaw[probeNum], cell_size[probeNum],
-	dof, minRange, resolution[probeNum], nDiodes, varp->Length, armDistance[probeNum]);
+	dof, minRange, resolution[probeNum], nDiodes, varp->Length, 2.37, armDistance[probeNum]);
 
   /* Precompute dia squared and cubed. */
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)

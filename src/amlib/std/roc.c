@@ -38,10 +38,10 @@ void sroc(DERTBL *varp)
   if (psxc < 226.3206)
       TStdA = 216.65;
   else
-      TStdA = 288.15 - (0.0065 * palt);
+      TStdA = Tr - (0.0065 * palt);
 
   /* calculate ROC (rate of climb, m/s) */
-  roc = vspd * (atx+273.15) / TStdA;
+  roc = vspd * (atx + Kelvin) / TStdA;
 
   PutSample(varp, roc);
 

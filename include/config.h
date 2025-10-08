@@ -60,6 +60,8 @@ public:
   bool DespikeReporting() const		{ return _despikeReporting; }
   bool LagReporting() const		{ return _lagReporting; }
 
+  int ZeroBinOffset() const		{ return _zeroBinOffset; }
+
   bool isADS2() const			{ return _adsVersion == ADS_2; }
   bool isADS3() const			{ return _adsVersion == ADS_3; }
 
@@ -74,9 +76,6 @@ public:
 
   pms2dProcessing TwoDProcessingMethod() const { return _pms2dProcessing; }
   float TwoDAreaRejectRatio() const	{ return _twoDrejectRatio; }
-
-  size_t AnalyzeInterval() const        { return _analyzeInterval; }
-  size_t VacuumInterval() const         { return _vacuumInterval; }
 
   void SetInteractive(bool state)	{ _interactive = state; }
   void SetProductionRun(bool state)	{ _productionRun = state; }
@@ -112,15 +111,14 @@ public:
 
   void SetADSVersion(ADSVersion nv) { _adsVersion = nv; }
 
-  void SetAnalyzeInterval(size_t ai)              { _analyzeInterval = ai; }
-  void SetVacuumInterval(size_t vi)               { _vacuumInterval = vi; }
-
   const std::string& ProjectDirectory() const	{ return _projectDirectory; }
   const std::string& ProjectName() const	{ return _projectName; }
   const std::string& ProjectNumber() const	{ return _projectNumber; }
   const std::string& TailNumber() const		{ return _tailNumber; }
   const std::string& NIDASrevision() const	{ return _nidasRevision; }
   const std::string& ProjectDirectoryRevision() const	{ return _projDirRevision; }
+  const std::string& ProjectDirectoryStatus() const	{ return _projDirStatus; }
+  const std::string& ProjectRepoURL() const	{ return _projRepoURL; }
   const std::string& FlightNumber() const	{ return _flightNumber; }
   const std::string& FlightDate() const		{ return _flightDate; }
   const std::string& ADSfileExtension() const	{ return _adsFileExtension; }
@@ -130,11 +128,14 @@ public:
   void SetProjectName(const std::string s)	{ _projectName = s; }
   void SetProjectNumber(const std::string s)	{ _projectNumber = s; }
   void SetProjectDirectoryRevision(const std::string s)	{ _projDirRevision = s; }
+  void SetProjectDirectoryStatus(const std::string s)	{ _projDirStatus = s; }
+  void SetProjectRepoURL(const std::string s)	{ _projRepoURL = s; }
   void SetTailNumber(const std::string s)	{ _tailNumber = s; }
   void SetFlightNumber(const std::string s)	{ _flightNumber = s; }
   void SetFlightDate(const std::string s);
   void SetNIDASrevision(const std::string s)	{ _nidasRevision = s; }
   void SetChecksum(const std::string s)		{ _checksum = s; }
+  void SetLegacyZeroBin(int z)			{ _zeroBinOffset = z; }
 
   std::string CoordinateLatitude() const        { return _coordLAT; }
   std::string CoordinateLongitude() const       { return _coordLON; }
@@ -187,9 +188,6 @@ private:
 
   int _transmitRate;
 
-  size_t _analyzeInterval;
-  size_t _vacuumInterval;
-
   aircraft _aircraft;
   ADSVersion _adsVersion;
   processingMode _mode;
@@ -208,7 +206,9 @@ private:
   std::string _flightNumber;
   std::string _flightDate;
   std::string _nidasRevision;
+  std::string _projRepoURL;
   std::string _projDirRevision;
+  std::string _projDirStatus;
   std::string _adsFileExtension;
   std::string _checksum;
 
@@ -229,6 +229,13 @@ private:
 
   // Length in seconds of the nidas processed sample sorter.
   int _sorterLength;
+
+  /* Are we using legacy size distribution zeroth bin?  Refactored the zeroth bin
+   * out in 2022.  So default is 0.  Set to 1 if you need to process old style.
+   * If you enable this, you also need to go into nidas/src/nidas/dynld/raf/SppSerial.h
+   * and enable the #define ZERO_BIN_HACK.
+   */
+  int _zeroBinOffset;
 
   static const interpolationType _defaultInterp;
   static const pms2dProcessing _defaultPMS2DProcessingMethod;

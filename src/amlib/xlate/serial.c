@@ -30,7 +30,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 
 /* -------------------------------------------------------------------- */
-void xlserial(RAWTBL *varp, void *input, NR_TYPE *output)
+void xlserial(RAWTBL *varp, const void *input, NR_TYPE *output)
 {
   for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = atof(&((char *)input)[i*8]);

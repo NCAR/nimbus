@@ -26,6 +26,7 @@ public:
 
   void	CreateFile(const char fileName[], size_t nRecords);
   void	SwitchToDataMode();
+  void	WriteCoordinateVariableData();
   void	WriteNetCDF();
   void	WriteNetCDFfromMemory();
   void	ProcessFlightDate();
@@ -34,25 +35,22 @@ public:
   void	Close();
 
 
-
-
 protected:
 
-  int	writeBlank(int varid, size_t start[], size_t count[], int OutputRate);
-  void	markDependedByList(const char target[]), writeTimeUnits();
-  void	clearDependedByList(), printDependedByList(), writeMinMax();
+  void	writeTimeUnits(), writeMinMax();
   void	addCommonVariableAttributes(const var_base *var), addLandmarks();
+  void	createSizeDistributionCoordinateDimVars(var_base *var);
+  void  addVariableMetadata(const var_base *var);
 
   long	UTSeconds(double *record);
   void	SetBaseTime(double *record);
   void	WriteMissingRecords();
-  void	BlankOutBadData();
 
   void	putGlobalAttribute(const char attrName[], const float *value);
   void	putGlobalAttribute(const char attrName[], const char *value);
   void	putGlobalAttribute(const char attrName[], const std::string value);
 
-
+  bool	variableIs_a_SizeDistribution(var_base *vp) const;
 
   int _ncid;
 
@@ -71,7 +69,9 @@ protected:
   // Rate, DimID
   std::map<int, int> _rateDimIDs;
   // VectorLen, DimID
-  std::map<int, int> _vectorDimIDs;
+  // SerialNumber, DimID
+  std::map<std::string, int> _vectorDimIDs;
+  int _bnds_dimid;
 
   // Count of netcCDF write errors.
   size_t _errCnt;
@@ -91,8 +91,10 @@ struct missDat  /* (Time gap) / (missing data) information */
 
   std::queue<struct missDat *> _missingRecords;
 
-  static const std::string Source, Address, Phone, URL, EMail, ProcessorURL, Conventions,
-	ConventionsURL, NETCDF_FORMAT_VERSION;
+  static const std::string Program, Institution, Source, Address, Phone,
+	Publisher_Name, Publisher_URL, Publisher_EMail,
+	Creator_Name, Creator_URL, Creator_EMail,
+	Conventions, ConventionsURL, ProcessorURL, NETCDF_FORMAT_VERSION;
 
   static const char *ISO8601_Z;
 

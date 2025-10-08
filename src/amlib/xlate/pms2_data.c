@@ -86,7 +86,7 @@ void Add2DtoList(RAWTBL *varp)	/* Called by hdr_decode.c */
   static size_t	piCnt = 0;
 
   probes[piCnt] = CreateQueue();
-  
+
   if (strstr(varp->name, "HVPS"))
     probeIDorder[varp->ProbeCount>>1] |= 'H' << 8;
   else
@@ -141,10 +141,14 @@ void xlTwodInit(var_base *varp)
   }
   while (startTime[probeCnt] < 0 || startTime[probeCnt] > 86400);
 
+  std::vector<float> value;
+  value.push_back(cfg.TwoDAreaRejectRatio() * 100);
+  varp->addToMetadata("AreaRatioReject_%", value);
+
 }	/* END XLTWODINIT */
 
 /* -------------------------------------------------------------------- */
-void xl2dDeadTime1(RAWTBL *varp, void *in, NR_TYPE *np)
+void xl2dDeadTime1(RAWTBL *varp, const void *in, NR_TYPE *np)
 {
   size_t	probeCnt = varp->ProbeCount >> 1;
 
@@ -155,7 +159,7 @@ void xl2dDeadTime1(RAWTBL *varp, void *in, NR_TYPE *np)
 }	/* END XLTWOD */
 
 /* -------------------------------------------------------------------- */
-void xl2dDeadTime2(RAWTBL *varp, void *in, NR_TYPE *np)
+void xl2dDeadTime2(RAWTBL *varp, const void *in, NR_TYPE *np)
 {
   size_t	probeCnt = varp->ProbeCount >> 1;
 
@@ -166,7 +170,7 @@ void xl2dDeadTime2(RAWTBL *varp, void *in, NR_TYPE *np)
 }	/* END XLTWOD */
 
 /* -------------------------------------------------------------------- */
-void xlTwoD(RAWTBL *varp, void *in, NR_TYPE *np)
+void xlTwoD(RAWTBL *varp, const void *in, NR_TYPE *np)
 {
   size_t	probeCnt = varp->ProbeCount >> 1;
 
@@ -176,7 +180,7 @@ void xlTwoD(RAWTBL *varp, void *in, NR_TYPE *np)
 }	/* END XLTWOD */
 
 /* -------------------------------------------------------------------- */
-void xlOneD(RAWTBL *varp, void *in, NR_TYPE *np)
+void xlOneD(RAWTBL *varp, const void *in, NR_TYPE *np)
 {
   size_t	n, probeCount;
   int		thisTime;
@@ -319,7 +323,7 @@ return;
 }	/* END XLONED */
 
 /* -------------------------------------------------------------------- */
-void xlHVPS(RAWTBL *varp, void *in, NR_TYPE *np)
+void xlHVPS(RAWTBL *varp, const void *in, NR_TYPE *np)
 {
   size_t	probeCount;
   int		thisTime;
@@ -476,8 +480,8 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
     {
     short       *sp = (short *)rec;
 
-    for (int i = 1; i < 10; ++i, ++sp)
-      *sp = ntohs(*sp);
+    for (int i = 1; i < 10; ++i)
+      sp[i] = ntohs(sp[i]);
 
 
     p = (uint32_t *)rec->data;
@@ -485,7 +489,6 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
     for (int i = 0; i < 1024; ++i, ++p)
       *p = ntohl(*p);
     }
-
 
   endTime = rec->hour * 3600 + rec->minute * 60 + rec->second;
 
@@ -567,9 +570,9 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
       cp->timeWord = timeWord & 0x00ffffff;
       cp->deltaTime = (NR_TYPE)cp->timeWord * frequency;
       cp->w = 1;	// first slice is generally lost.
-      cp->h = 0;
+      cp->h = 1;
       cp->edge = 0;
-      cp->area = 0;	// assume at list 1 pixel hidden in sync-word.
+      cp->area = 1;	// assume at list 1 pixel hidden in sync-word.
       cp->x1 = 0;
       cp->x2 = 0;
 
@@ -986,7 +989,7 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
   for (i = 0; i < partCnt; ++i)
     {
     cp = part[i];
-                                                                                
+
     if (cp->deltaTime < DASelapsedTime)
       {
       if (cp->timeWord == OVERLOAD)

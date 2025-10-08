@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	pms2d.c
 
-FULL NAME:	Derived computations for the PMS2D C & P probes.
+FULL NAME:	Derived computations for the PMS 2DC & 2DP probes.
 
 ENTRY POINTS:	sTwodInit()
 		sTwoD()
@@ -14,12 +14,13 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2011
+COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2022
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "pms.h"
 #include <raf/pms.h>
 
 #include <cassert>
@@ -29,16 +30,13 @@ static const size_t MAX_PMS2D = 8;
 // % of a diode which must be shadowed for the diode to trigger.
 static const NR_TYPE shadowLevel = 0.55;
 
-// Use a fixed DOF, not what the manual specifies, until such time that a "research
-// project" can be done.  Al Cooper, Jorgen Jensen 6/26/06
-
 static const size_t maxBins = 130;
 
 
 static size_t	FIRST_BIN[MAX_PMS2D], LAST_BIN[MAX_PMS2D], conc50idx[MAX_PMS2D],
 		conc100idx[MAX_PMS2D], conc150idx[MAX_PMS2D];
-static NR_TYPE  responseTime[MAX_PMS2D], armDistance[MAX_PMS2D],
-		DENS[MAX_PMS2D], SampleRate[MAX_PMS2D];
+static NR_TYPE  responseTime[MAX_PMS2D], armDistance[MAX_PMS2D], dof_const[MAX_PMS2D],
+		DENS[MAX_PMS2D], SampleRate[MAX_PMS2D], basicSampleArea[MAX_PMS2D];
 static double   PLWFAC[MAX_PMS2D], DBZFAC[MAX_PMS2D];
 
 static NR_TYPE  total_concen[MAX_PMS2D], dbar[MAX_PMS2D], plwc[MAX_PMS2D],
@@ -50,30 +48,24 @@ static NR_TYPE  radius[MAX_PMS2D][maxBins], cell_size[MAX_PMS2D][maxBins],
 
 NR_TYPE         reff23[MAX_PMS2D], reff22[MAX_PMS2D];  /* For export to reff.c */
 
-void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-	NR_TYPE dof[], float minRange, float resolution, size_t nDiodes, size_t
-	length, size_t armDistance);
+bool	thisIs2Dnot1D(const char * name);
 
 // Probe Count.
 static size_t nProbes = 0;
-extern void setProbeCount(const char * location, int count);
 
 
 /* -------------------------------------------------------------------- */
-void addDOFtoAttrs(const var_base *varp, NR_TYPE eaw[], NR_TYPE dof[])
+void addDOFtoAttrs(var_base *varp, NR_TYPE eaw[], NR_TYPE dof[])
 {
   std::vector<float> dof_v, eaw_v;
-  char name[64];
-  strcpy(name, varp->name);
-  name[0] = 'C';
 
   for (size_t i = 0; i < varp->Length; ++i)
     eaw_v.push_back(eaw[i]);
-  AddToDefaults(name, "EffectiveAreaWidth", eaw_v);
+  varp->addToMetadata("EffectiveAreaWidth", eaw_v);
 
   for (size_t i = 0; i < varp->Length; ++i)
     dof_v.push_back(dof[i]);
-  AddToDefaults(name, "DepthOfField", dof_v);
+  varp->addToMetadata("DepthOfField", dof_v);
 }
 
 /* -------------------------------------------------------------------- */
@@ -106,7 +98,7 @@ void sTwodInit(var_base *varp)
     reff23[i] = reff22[i] = 0.0;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     sprintf(buffer, "pms2d: serial number = [%s]: FIRST_BIN not found.", serialNumber);
@@ -144,6 +136,11 @@ void sTwodInit(var_base *varp)
     }
   responseTime[probeNum] = atof(p);
 
+  if ((p = GetPMSparameter(serialNumber, "DOF_CONST")) == NULL)
+    dof_const[probeNum] = 2.37; // default for PMS2 probes.
+  else
+    dof_const[probeNum] = atof(p);
+
   if ((p = GetPMSparameter(serialNumber, "ARM_DISTANCE")) == NULL) {
     sprintf(buffer, "pms2d: serial number = [%s]: ARM_DISTANCE not found.", serialNumber);
     HandleFatalError(buffer);
@@ -170,16 +167,17 @@ void sTwodInit(var_base *varp)
 
   ReleasePMSspecs();
 
+  basicSampleArea[probeNum] = (armDistance[probeNum]/1000) * (resolution / 1000000) * nDiodes;
 
   /* 1DC/P has length 32, 2DC/P has length 64.
    */
   length = varp->Length;
 
-  if (strstr(varp->name, "2D"))	// Reconstruction has twice as many bins.
+  if (thisIs2Dnot1D(varp->name))	// Center-in & reconstruction has twice as many bins.
     LAST_BIN[probeNum] *= 2;
 
   ComputePMS1DParams(radius[probeNum], eaw, cell_size[probeNum], dof,
-	minRange, resolution, nDiodes, length, armDistance[probeNum]);
+	minRange, resolution, nDiodes, length, dof_const[probeNum], armDistance[probeNum]);
 
   /* Precompute dia squared and cubed. */
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
@@ -189,7 +187,7 @@ void sTwodInit(var_base *varp)
     }
 
   // For center-in algorithm use this eaw, not one from ComputePMS1DParams()
-  if (strstr(varp->name, "2D"))  /* 2DC/P only (not 1DC/P). */
+  if (thisIs2Dnot1D(varp->name))  /* 2DC/P only (not 1DC/P). */
     {
     for (i = 0; i < length; ++i)
       eaw[i] = (resolution / 1000) * nDiodes;
@@ -199,9 +197,14 @@ void sTwodInit(var_base *varp)
   for (i = 0; i < length; ++i)
     sampleArea[probeNum][i] = eaw[i] * dof[i];
 
-  conc50idx[probeNum] = 50 / (int)resolution;
-  conc100idx[probeNum] = 100 / (int)resolution;
-  conc150idx[probeNum] = 150 / (int)resolution;
+  conc50idx[probeNum] = (50 / (int)resolution) - 1;
+  conc100idx[probeNum] = (100 / (int)resolution) - 1;
+  conc150idx[probeNum] = (150 / (int)resolution) - 1;
+
+  if (resolution < 100)
+    addProbeMetadata(varp, "oap", "cloud_drop");
+  else
+    addProbeMetadata(varp, "oap", "cloud_precipitation");
 
 }	/* END STWODINIT */
 
@@ -252,12 +255,12 @@ void sTwoD(DERTBL *varp)
     {
     if (strstr(varp->name, "1DC"))
       {
-      for (i = 1; i < varp->Length; ++i)
+      for (i = 0; i < varp->Length; ++i)
         actual[i] *= std::max(1.0, (tas / 50.0) / i);
       }
     else	// 2DC is unusable due to incorrect airspeed, zero it out.
       {
-      for (i = 1; i < varp->Length; ++i)
+      for (i = 0; i < varp->Length; ++i)
         actual[i] = 0.0;
       }
     }
@@ -287,7 +290,7 @@ void sTwoD(DERTBL *varp)
     /* For mixing with FSSP/CDP, no channels below 47 micron.
      */
     reff23[varp->ProbeCount] = reff22[varp->ProbeCount] = 0.0;
-    for (i = 2; i < LAST_BIN[probeNum]; ++i)
+    for (i = 1; i < LAST_BIN[probeNum]; ++i)
       {
       reff23[varp->ProbeCount] += concentration[i] * dia3[i]; /* Export to reff.c */
       reff22[varp->ProbeCount] += concentration[i] * dia2[i];
@@ -321,6 +324,17 @@ void splwc2(DERTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
+void siwc2(DERTBL *varp)
+{
+  NR_TYPE area	= GetSample(varp, 0);
+  NR_TYPE tas	= GetSample(varp, 1);
+
+  NR_TYPE mass = 0.115 * pow(area, 1.218) * 0.001;	// grams
+  NR_TYPE iwc = mass / (tas * basicSampleArea[varp->ProbeCount]);
+  PutSample(varp, iwc);
+}
+
+/* -------------------------------------------------------------------- */
 void sdbz2(DERTBL *varp)
 {
   PutSample(varp, dbz[varp->ProbeCount]);
@@ -350,7 +364,7 @@ void sconc2dc050(DERTBL *varp)
 
   if (strstr(varp->depend[0], "1DC"))
     n = 64;
-    
+
   // 50 micron and bigger.
   for (size_t i = conc50idx[varp->ProbeCount]; i < n; ++i)
     conc += concentration[i];
@@ -417,7 +431,7 @@ void sTwodInitH(var_base *varp)
   probeNum = varp->ProbeCount;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
+  ReadPMSspecs(buffer);
 
   /* Perform twice, once for 1DC, and again for 2DC.
    */

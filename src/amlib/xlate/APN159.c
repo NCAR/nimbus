@@ -27,7 +27,7 @@ NR_TYPE angcr(NR_TYPE, NR_TYPE, float, float);
 
 
 /* -------------------------------------------------------------------- */
-void xlhgme(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlhgme(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
   ushort	*input = (ushort *)p;
   NR_TYPE	hgme;
@@ -49,7 +49,7 @@ void xlhgme(RAWTBL *varp, void *p, NR_TYPE *output)
 }	/* END XLHGME */
 
 /* -------------------------------------------------------------------- */
-void xlchgme(RAWTBL *varp, void *p, NR_TYPE *output)
+void xlchgme(RAWTBL *varp, const void *p, NR_TYPE *output)
 {
   ushort	*input = (ushort *)p;
 

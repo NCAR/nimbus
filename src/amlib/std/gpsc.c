@@ -70,6 +70,10 @@ void initLATC(var_base *varp)
   else
     ROLL_MAX = tmp[0];
 
+  std::vector<float> rollmax;
+  rollmax.push_back(ROLL_MAX);
+  varp->addToMetadata("ROLL_MAX", rollmax);
+
   // At this time do not allow over-rides in the Defaults file.  cjw 5/15
 /*
   if ((tmp = GetDefaultsValue("GPS_TAUP", varp->name)) == NULL)
@@ -140,7 +144,7 @@ void slatc(DERTBL *varp)
   NR_TYPE	alat, alon, vew, vns, roll, glat, glon, gvew, gvns;
   NR_TYPE	omegat, sinwt, coswt;
   /*NR_TYPE       gvnsf, gvewf, vnsf, vewf;*/
-  long		gstat, gmode;
+  long		nSatellites, gps_quality;
 
   double	det;
 
@@ -161,48 +165,59 @@ void slatc(DERTBL *varp)
   gvns	= GetSample(varp, 6);	// GPS NS ground speed
   gvew	= GetSample(varp, 7);	// GPS EW ground speed
   roll	= GetSample(varp, 8);	// IRS Roll
-  gstat	= (long)GetSample(varp, 9);	/* nSats for Tans & Garmin	*/
-  gmode	= (long)GetSample(varp, 10);	/* GMODE or GGMODE		*/
+  nSatellites	= (long)GetSample(varp, 9);	/* GGNSATS	*/
+  gps_quality	= (long)GetSample(varp, 10);	/* NMEA GGQUAL	*/
 
-  if (std::isnan(gmode))
-    gmode = 0;
+  returnMissingValue = false;
 
-  if (std::isnan(glat) || std::isnan(glon)|| std::isnan(gvns) || std::isnan(gvew))
+  // If any gps values are isnan(), then just force quality to invalid.
+  if (std::isnan(gps_quality) ||
+      std::isnan(glat) || std::isnan(glon)|| std::isnan(gvns) || std::isnan(gvew))
     {
-//    sprintf(buffer, "gpsc: GPS isnan(), nsats=%d, mode=%d, LRT=%d, SampleOffset=%d, goodGPS=%d", (int)gstat, (int)gmode, FeedBack == LOW_RATE_FEEDBACK, SampleOffset, goodGPS);
-//    LogStdMsg(buffer);
-    gmode = 0;
+    gps_quality = 0;
     goodGPS = 0;
     }
 
-  if (std::isnan(alat) || std::isnan(alon) || std::isnan(vns) || std::isnan(vew))
-    {
-//    LogStdMsg("gpsc: IRS isnan()");
-    returnMissingValue = true;
-    PutSample(varp, floatNAN);
-    return;
-    }
-  else
-    returnMissingValue = false;
-
   if (firstTime[FeedBack])
     {
-    old_glat[FeedBack] = glat;
-    old_glon[FeedBack] = glon;
+    if (gps_quality > 0 && nSatellites > 2)
+      {
+      old_glat[FeedBack] = glat;
+      old_glon[FeedBack] = glon;
 
-    firstTime[FeedBack] = false;
+      firstTime[FeedBack] = false;
+      }
+    else
+      returnMissingValue = true;
     }
 
 
   /* If no IRS, then bail out.
    */
-  if (alat == 0.0 && alon == 0.0)
+  if ((alat == 0.0 && alon == 0.0) ||
+      std::isnan(alat) || std::isnan(alon) || std::isnan(vns) || std::isnan(vew))
     {
-    latc[FeedBack] = lonc[FeedBack] = vewc[FeedBack] = vnsc[FeedBack] = 0.0;
-    PutSample(varp, latc[FeedBack]);
-    return;
+    if (gps_quality > 1) // differential or better, then we will return GPS values directly
+      {
+      latc[FeedBack] = glat;
+      lonc[FeedBack] = glon;
+      vewc[FeedBack] = gvew;
+      vnsc[FeedBack] = gvns;
+      PutSample(varp, latc[FeedBack]);
+      return;
+      }
+    else
+      {
+      returnMissingValue = true;
+      latc[FeedBack] = lonc[FeedBack] = vewc[FeedBack] = vnsc[FeedBack] = 0.0;
+      }
     }
 
+  if (returnMissingValue)
+    {
+    PutSample(varp, floatNAN);
+    return;
+    }
 
   time_duration[FeedBack] += deltaT[FeedBack];
   omegat = 2.0 * M_PI * time_duration[FeedBack] / 5067.0;
@@ -218,40 +233,22 @@ void slatc(DERTBL *varp)
 
     ++goodGPS;
 
-    /* Major hack to determine Garmin vs. Trimble GPS.  MODE/STAT vars
-     * are different.  Fake the Garmin variables to mimic the Trimble.
-     *  gstat = number of satellites
-     *  gmode = GPS quality indication
+    /* GPS quality indication.  We typically get, 0, 1, 2, & 5.
      *      0 = fix not available
      *      1 = non-differential GPS fix available
      *      2 = differential GPS (DGPS) fix available
+     *      3 = Military PPS
+     *      4 = RTK
+     *      5 = FRTK - Omnistar, Terrastar, etc
      *      6 = estimated
      */
-    if (varp->depend[3][1] == 'G') /* This is the Garmin */
-      {
-      if (gstat > 2)
-        gstat = 0;
-
-      if (gmode == 1 || gmode == 2)
-        {
-        gmode = 4;
-        }
-      else              /*  gmode = 0 or gmode = 6 defined as "bad" */
-        {
-        gmode = 0;
-        }
-      }
-
-    if (gstat == 0x0b00)	/* 3 satellites is also considered good	*/
-      gstat = 0;
-
 
     /* Bad Positions for using GPS?
      */
-    if (gstat > 0 || gmode < 4)
+    if (nSatellites < 3 || gps_quality < 1)
       {
-      sprintf(buffer, "latc: GPS disabled, status reject gstat=%d, gmode=%d.",
-		(int)gstat, (int)gmode);
+      sprintf(buffer, "latc: GPS disabled, status reject nSats=%d, gqual=%d.",
+		(int)nSatellites, (int)gps_quality);
       LogStdMsg(buffer);
       goodGPS = 0;
       }
