@@ -74,8 +74,10 @@ For files produced starting in 2021, visit <b><a href="netCDF.html">RAF netCDF C
 </ul>
 Check the Conventions global attribute for version number.  The "NCAR-RAF/nimbus" entry is what you want. ACDD is for data discovery.
 <pre>
-34% ncdump -h CAESARrf01.nc | grep Conventions
-                :Conventions = "NCAR-RAF/nimbus-2.0,ACDD-1.3" ;
+42% ncdump -h HIPPO-1rf03.nc | grep Conventions
+                :Conventions = "NCAR-RAF/nimbus" ;
+                :ConventionsURL = "http://www.eol.ucar.edu/raf/Software/netCDF.html" ;
+                :ConventionsVersion = "1.3" ;
 </pre>
 
 <hr>
@@ -83,7 +85,7 @@ Check the Conventions global attribute for version number.  The "NCAR-RAF/nimbus
 The goal is to support synchronous time series including the following properties:
 <p>
 <ul>
-<li>Both scalar and vector variables.
+<li>Both scalar and histogram variables.
 <li>Different sample rates among variables
 </ul>
 <p>
@@ -97,11 +99,9 @@ no data reduction would be twice that size.  Files reduced to 1 sample
 per second (sps) are typically 100-150 MB.
 <p>
 <h4>1.0.1 Histogram data</h4>
-Instruments which measure particle size distributions produce histograms or
-vector data.  These instruments include the suite of PMS-1D probes, the RDMA
-and quantitative data reduction from the PMS-2D probes.
+The primary use of histograms is from the suite of probes producing size-distributions.
 <p>
-<b>Note:</b> For <b>all</b> size-distributions (PMS1D, PMS2D, RDMA) the
+<b>Note:</b> For <b>all</b> size-distributions (PMS1D, OAP, RDMA) the
 zeroth or first (depending on how you count) bin is undefined, do not use
 this value.  Attributes for the various size distribution variables should
 include <kbd class="att">FirstBin</kbd> and <kbd class="att">LastBin</kbd>.
@@ -187,7 +187,7 @@ In our files RPO stands for "Right Pod Outboard".
 Dimension names we use are:
 <ul>
 <li><kbd>sps#</kbd> for variable data rate (sps1, sps5, sps25, sps1000, etc.)
-<li><kbd>Vector#</kbd> for vector lengths (Vector16, Vector41, etc.)
+<li><kbd>Vector#</kbd> for histogram lengths (Vector16, Vector41, etc.)
 </ul>
 although I don't believe it matters what they are called.
 <p>
@@ -208,10 +208,9 @@ per second.  The size of this dimension will vary according to the output
 rate of the variable (e.g., RAF uses 1, 5, 10, 25, 50, 250, and 1000).
 If the dimension does not exist, then there is only one sample for the second.
 <p>
-<h4>4.3 Third dimension - vector length</h4>
-The third dimension, if present, is the vector length of the data.
-(This will be present only for variables with vector data).  Only PMS-1D
-probes are producing vector data at this time.
+<h4>4.3 Third dimension - histogram length</h4>
+The third dimension, if present, is the histogram length of the data.
+(This will be present only for variables with histogram data).
 <p>
 A new dimension has been added called <b>Async</b>.  <b>Async</b> is a
 triplet containing the location of the asynchronous data in a separate
