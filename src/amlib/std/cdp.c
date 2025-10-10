@@ -267,16 +267,17 @@ void xlpbpsz(RAWTBL *varp, const void *p, NR_TYPE *np)
   // To disengage the sizing and view the A2D counts, just have this function return;
 
   NR_TYPE d, *diameter = cell_size[varp->ProbeCount];
+  size_t thresh, nThresh = varp->channelThresholds.size();
   for (size_t i = 0; i < varp->SampleRate; ++i)
   {
     NR_TYPE *inp = &np[i * varp->Length];
-    for (size_t chan = 0; chan < varp->Length; ++chan)
+    for (size_t prtcle = 0; prtcle < varp->Length; ++prtcle)
     {
-      for (size_t thresh = 0; thresh < varp->Length && varp->channelThresholds[thresh] < inp[chan]; ++thresh)
+      for (d = 0.0, thresh = 0; thresh < nThresh && varp->channelThresholds[thresh] < inp[prtcle]; ++thresh)
       {
         d = diameter[thresh];
       }
-      inp[chan] = d;
+      inp[prtcle] = d;
     }
   }
 }
