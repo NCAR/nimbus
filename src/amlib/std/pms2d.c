@@ -100,18 +100,6 @@ void sTwodInit(var_base *varp)
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
   ReadPMSspecs(buffer);
 
-  if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-    sprintf(buffer, "pms2d: serial number = [%s]: FIRST_BIN not found.", serialNumber);
-    HandleFatalError(buffer);
-    }
-  FIRST_BIN[probeNum] = atoi(p);
-
-  if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-    sprintf(buffer, "pms2d: serial number = [%s]: LAST_BIN not found.", serialNumber);
-    HandleFatalError(buffer);
-    }
-  LAST_BIN[probeNum] = atoi(p);
-
   if ((p = GetPMSparameter(serialNumber, "MIN_RANGE")) == NULL) {
     sprintf(buffer, "pms2d: serial number = [%s]: MIN_RANGE not found.", serialNumber);
     HandleFatalError(buffer);
@@ -129,6 +117,32 @@ void sTwodInit(var_base *varp)
     HandleFatalError(buffer);
     }
   nDiodes = atoi(p);
+
+  if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
+    sprintf(buffer, "pms2d: serial number = [%s]: FIRST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
+    }
+  FIRST_BIN[probeNum] = atoi(p);
+
+  if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
+    sprintf(buffer, "pms2d: serial number = [%s]: LAST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
+    }
+  LAST_BIN[probeNum] = atoi(p);
+
+  /* If BIN_EDGES (for bin consolidation) exists, then LAST_BIN is set for that
+   * so force LAST_BIN to nDiodes here.
+   * When we implement bin consolidation here, then we don't need to over-ride
+   * LAST_BIN.
+   */
+  if ((p = GetPMSparameter(serialNumber, "BIN_EDGES")) == NULL) {
+    sprintf(buffer, "pms2d: serial number = [%s]: BIN_EDGES not found.", serialNumber);
+//    HandleFatalError(buffer);
+    }
+  else
+    LAST_BIN[probeNum] = nDiodes;
+
+
 
   if ((p = GetPMSparameter(serialNumber, "RESPONSE_TIME")) == NULL) {
     sprintf(buffer, "pms2d: serial number = [%s]: RESPONSE_TIME not found.", serialNumber);
@@ -173,8 +187,7 @@ void sTwodInit(var_base *varp)
    */
   length = varp->Length;
 
-  if (thisIs2Dnot1D(varp->name))	// Center-in & reconstruction has twice as many bins.
-    LAST_BIN[probeNum] *= 2;
+LAST_BIN[probeNum] = length;
 
   ComputePMS1DParams(radius[probeNum], eaw, cell_size[probeNum], dof,
 	minRange, resolution, nDiodes, length, dof_const[probeNum], armDistance[probeNum]);
