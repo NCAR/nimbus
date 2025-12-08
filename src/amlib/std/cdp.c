@@ -277,7 +277,10 @@ void xlpbpsz(RAWTBL *varp, const void *p, NR_TYPE *np)
       {
         d = diameter[thresh];
       }
-      inp[prtcle] = d;
+      if (thresh == nThresh)
+        inp[prtcle] = 51.0;		// oversize particle.
+      else
+        inp[prtcle] = d;
     }
   }
 }
