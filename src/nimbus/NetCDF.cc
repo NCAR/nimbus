@@ -6,7 +6,7 @@ DESCRIPTION:	This file has the routines necessary to Create and write
 		data for distribution of NCAR/RAF aircraft data in netCDF
 		format.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2022
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2025
 -------------------------------------------------------------------------
 */
 
@@ -23,21 +23,24 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2022
 
 #include "trace_variables.h"
 
-const std::string NetCDF::Program = "NSF NCAR";
-const std::string NetCDF::Institution = "National Center for Atmospheric Research";
-const std::string NetCDF::Source = "airborne observations";
-const std::string NetCDF::Address = "P.O. Box 3000, Boulder, CO 80307-3000";
-const std::string NetCDF::Phone = "(303) 497-1030";
-const std::string NetCDF::Creator_Name = "NCAR EOL - Research Aviation Facility";
-const std::string NetCDF::Creator_URL = "https://www.eol.ucar.edu/who-we-are/eol-organization/research-aviation-facility-raf";
-const std::string NetCDF::Creator_EMail = "raf-pm at ucar.edu";
-const std::string NetCDF::Publisher_Name = "UCAR NCAR - Earth Observing Laboratory";
-const std::string NetCDF::Publisher_URL = "https://www.eol.ucar.edu/data-software/eol-field-data-archive";
-const std::string NetCDF::Publisher_EMail = "datahelp at eol.ucar.edu";
-const std::string NetCDF::ProcessorURL = "https://github.com/NCAR/nimbus";
-const std::string NetCDF::Conventions = "NCAR-RAF/nimbus-2.1,ACDD-1.3";
-const std::string NetCDF::ConventionsURL = "https://www.eol.ucar.edu/raf/Software/netCDF.html";
-//const std::string NetCDF::NETCDF_FORMAT_VERSION = "2.1";
+const std::string NetCDF::Program	= "NSF NCAR";
+const std::string NetCDF::Institution	= "National Center for Atmospheric Research";
+const std::string NetCDF::Source	= "airborne observations";
+const std::string NetCDF::Address	= "P.O. Box 3000, Boulder, CO 80307-3000";
+const std::string NetCDF::Phone		= "(303) 497-1030";
+const std::string NetCDF::Creator_Name	= "NCAR EOL - Research Aviation Facility";
+const std::string NetCDF::Creator_URL	= "https://www.eol.ucar.edu/who-we-are/eol-organization/research-aviation-facility-raf";
+const std::string NetCDF::Creator_EMail	= "raf-pm at ucar.edu";
+const std::string NetCDF::Publisher_Name= "UCAR NCAR - Earth Observing Laboratory";
+const std::string NetCDF::Publisher_URL	= "https://www.eol.ucar.edu/data-software/eol-field-data-archive";
+const std::string NetCDF::Publisher_EMail= "datahelp at eol.ucar.edu";
+const std::string NetCDF::ProcessorURL	= "https://github.com/NCAR/nimbus";
+const std::string NetCDF::Conventions	= "NCAR-RAF/nimbus-2.1,ACDD-1.3";
+const std::string NetCDF::ConventionsURL= "https://www.eol.ucar.edu/raf/Software/netCDF.html";
+const std::string NetCDF::TimeStampDescription = "Most data here are sampled higher than 1 Hz and averaged to 1 Hz. Timestamps indicate the beginning of averaging periods. For example, an averaged data point with a timestamp of 10:00:12.0 was averaged over 12:00:12.0 to 12:00:13.0 and is representative of the time at its timestamp + 0.5 s. However, a data point sampled at 1 Hz is representative of the time at its timestamp + 0.0 s. The SampledRate attribute can be used to determine if data were averaged and their representative times. Users interested in synchronizing 1 Hz averaged with 1 Hz sampled data in this file, or other data sets, should be mindful of this lag. Additional lags may be introduced by other factors (e.g. instrument response time), which are not accounted for here. Feel free to contact RAF scientists for further guidance.";
+
+
+const std::string NetCDF::PrelimDataWarning = "This file contains PRELIMINARY DATA that are NOT to be used for critical analysis.";
 
 const char *NetCDF::ISO8601_Z = "%FT%T %z";
 
@@ -146,6 +149,9 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
   /* Global Attributes.
    */
+  if (!cfg.ProductionRun())
+    putGlobalAttribute("WARNING", PrelimDataWarning);
+
   putGlobalAttribute("program", Program);
   putGlobalAttribute("institution", Institution);
   putGlobalAttribute("Address", Address);
@@ -224,6 +230,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   memset(buffer, ' ', DEFAULT_TI_LENGTH);
   buffer[DEFAULT_TI_LENGTH] = '\0';
   putGlobalAttribute("TimeInterval", buffer);
+  putGlobalAttribute("TimeStampDescription", TimeStampDescription);
 
   if (cfg.InterpolationType() == Config::Linear)
     putGlobalAttribute(InterpKey.c_str(), Interp_Linear);
@@ -233,10 +240,6 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   else
   if (cfg.InterpolationType() == Config::AkimaSpline)
     putGlobalAttribute(InterpKey.c_str(), Interp_Akima);
-
-  if (!cfg.ProductionRun())
-    putGlobalAttribute("WARNING",
-	"This file contains PRELIMINARY DATA that are NOT to be used for critical analysis.");
 
   putGlobalAttribute("latitude_coordinate", cfg.CoordinateLatitude());
   putGlobalAttribute("longitude_coordinate", cfg.CoordinateLongitude());
