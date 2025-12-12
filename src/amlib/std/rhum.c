@@ -42,6 +42,10 @@ void srhum(DERTBL *varp)
   if (esa != 0.0)
     rhum = 100.0 * e / esa;
 
+  // No possibility of water (super cooled drops) below -40
+  if (rhum < -40.0)
+    rhum = floatNAN;
+
   PutSample(varp, rhum);
 }
 
