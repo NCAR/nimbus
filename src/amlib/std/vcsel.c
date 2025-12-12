@@ -203,7 +203,12 @@ void sconcv(DERTBL *varp)
     li_coeff = liCoeffs[1] * pow(light_intensity, liCoeffs[2]) + liCoeffs[0];
     mr_raw = concv_raw / ((PS_vxl * 100) / Boltzmann / AT_vxl) * 1.0e12;
     abs_coeff = absCoeffs[1] * pow(mr_raw, absCoeffs[2]) + absCoeffs[0];
+/* Per Tersa starting with CAESAR - use absCoeffs[3] as an offset.
+ * older projects adsCoeffs[3] set to zero in the Deefaults, so we should be
+ * set for backwards compatability.
     mr_corr = mr_raw * p_coeff * t_coeff * li_coeff * abs_coeff;
+ */
+    mr_corr = mr_raw * p_coeff * t_coeff * li_coeff * abs_coeff + absCoeffs[3];
     concv = (mr_corr * 1.0e-12) * ((PS_vxl * 100) / Boltzmann / (AT_vxl));
   }
   else
