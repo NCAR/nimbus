@@ -26,6 +26,14 @@ void srhum(DERTBL *varp)
   NR_TYPE atx, e, esa, rhum = 0.0;
 
   atx = GetSample(varp, 0);
+
+  // No possibility of water (super cooled drops) below -40
+  if (atx < -40.0)
+  {
+    PutSample(varp, floatNAN);
+    return;
+  }
+
   if (varp->nDependencies == 3)	// Old method for computing RHUM via ESUBT.
   {
     double esubt(double, double);
@@ -41,10 +49,6 @@ void srhum(DERTBL *varp)
 
   if (esa != 0.0)
     rhum = 100.0 * e / esa;
-
-  // No possibility of water (super cooled drops) below -40
-  if (rhum < -40.0)
-    rhum = floatNAN;
 
   PutSample(varp, rhum);
 }
