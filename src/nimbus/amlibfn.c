@@ -27,7 +27,7 @@ static const char *suffix;
 /* -------------------------------------------------------------------- */
 void RunAMLIBinitializers()
 {
-  ILOG(("RunAMLIBinitializers"));
+  ILOG(("\nRunAMLIBinitializers"));
 
   for (size_t i = 0; i < raw.size(); ++i)
     if (raw[i]->Initializer)
@@ -36,6 +36,8 @@ void RunAMLIBinitializers()
   for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->Initializer)
       (*derived[i]->Initializer)(derived[i]);
+
+  ILOG(("\n\n"));
 
 }	/* END RUNAMLIBINITIALIZERS */
 
