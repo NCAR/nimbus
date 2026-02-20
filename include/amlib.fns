@@ -832,6 +832,7 @@
 	"AKDF",		NULL,		NULL,		sakdf,
 	"AKY",		(void(*)(void*))initAKY,	NULL,		saky,
 	"AKRD",		(void(*)(void*))initAKRD,	NULL,		sakrd,
+	"AKRDFLG",	NULL,		NULL,		sflapflg,
 	"ATTACK",	NULL,		NULL,		sReferAttack,
 	"AQRATIO",	NULL,		NULL,		saqratio,
 	"SSDF",		NULL,		NULL,		sssdf,

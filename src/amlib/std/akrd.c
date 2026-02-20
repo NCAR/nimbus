@@ -23,6 +23,8 @@ static int      c130_radome_ssn = 1;      // default to first radome.
 static const NR_TYPE GV_ATTACK_DEFAULT_VALUE = 3.0;
 static const NR_TYPE C130_ATTACK_DEFAULT_VALUE = 2.0;
 
+static NR_TYPE flaps_flg = 0.0;
+
 static std::vector<float> akrd_coeff;		// New C130.  Three-coeff.
 static std::vector<float> akrd_coeff_old;	// Old C130.  Currently Pre-WECAN?  Two-coeff
 static std::vector<float> low, mid, high;	// Altitude specific coef's.
@@ -202,6 +204,9 @@ void initAKRD(var_base *varp)
     mid = load_AKRD_Default(varp, "AKRD_COEFF_MID");
     high = load_AKRD_Default(varp, "AKRD_COEFF_HIGH");
   }
+
+  if (cfg.ProjectName().compare("GOTHAAM") == 0)
+    low = load_AKRD_Default(varp, "AKRD_COEFF_ALT");
 }
 
 /* -------------------------------------------------------------------- */
@@ -211,6 +216,8 @@ void sakrd(DERTBL *varp)
 
   adifr	= GetSample(varp, 0);	// ADIFR
   qc	= GetSample(varp, 1);	// QCF
+
+  flaps_flg = 0.0;	// always reset
 
   /* Blow-up protection:  output zero while on ground (QCX < 5.5 mbar)
    * installed by Ron Ruth  18 October 2001
@@ -226,6 +233,13 @@ void sakrd(DERTBL *varp)
           psf  = GetSample(varp, 2);	// PSF
           mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
           akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach); // 15 Sept 2016 memo
+
+          // alternate coefficients for Hudson river low level with flaps down.
+          if (cfg.ProjectName().compare("GOTHAAM") == 0 && mach <= 0.24)
+          {
+            flaps_flg = 1.0;
+            akrd = low[0] + ratio * (low[1] + low[2] * mach);
+          }
         }
         else
           akrd = akrd_coeff_old[0] + akrd_coeff_old[1] * ratio;
@@ -320,6 +334,12 @@ void saky(DERTBL *varp)
   }
 
   PutSample(varp, AKY);
+}
+
+/* -------------------------------------------------------------------- */
+void sflapflg(DERTBL *varp)
+{
+  PutSample(varp, flaps_flg);
 }
 
 /* -------------------------------------------------------------------- */
