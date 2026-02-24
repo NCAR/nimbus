@@ -71,5 +71,10 @@ void svisc(DERTBL *varp)
   if (fail_test)
     PutSample(varp, floatNAN);
   else
+  {
+    if (vis < 0.0)
+      vis = 0.0;
+
     PutSample(varp, vis);
+  }
 }

@@ -42,7 +42,7 @@ static std::map<std::string, float> roll_threshold;
 void initPyrgeometer(var_base *varp)
 {
   DERTBL *dp = (DERTBL *)varp;
-  
+
   roll_threshold[varp->name] = 90;
   pitch_threshold[varp->name].push_back(-90);
   pitch_threshold[varp->name].push_back(90);
@@ -57,7 +57,7 @@ void initPyrgeometer(var_base *varp)
     LogMessage(buffer);
     return;
   }
-  
+
   float	*tmp;
   char	name[100];
   std::vector<float> cal;
