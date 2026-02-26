@@ -66,9 +66,9 @@ void ReadSetValues(std::string fileName, bool chk_config)
     sv.start = mktime(&st);
     sv.end   = mktime(&et);
     if(chk_config == true)
-      sv.value = nan(""); 
+      sv.value = nan("");
     else
-      sv.value = value; 
+      sv.value = value;
 
     if (strcmp(target, "ALL") == 0)
     {
