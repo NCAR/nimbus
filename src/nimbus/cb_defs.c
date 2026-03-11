@@ -267,12 +267,12 @@ static void set_defaultText(int indx)
     }
 
   XtRemoveCallback(	defaultText[indx], XmNvalueChangedCallback,
-			MarkDirty, (XtPointer)indx);
+			MarkDirty, (XtPointer)(intptr_t)indx);
 
   XmTextFieldSetString(defaultText[indx], buffer);
 
   XtAddCallback(	defaultText[indx], XmNvalueChangedCallback,
-			MarkDirty, (XtPointer)indx);
+			MarkDirty, (XtPointer)(intptr_t)indx);
 
 }	/* END SETDEFAULTTEXT */
 

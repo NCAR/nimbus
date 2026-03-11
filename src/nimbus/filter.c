@@ -342,7 +342,7 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
     else
     if (vp->SampleRate > (size_t)cfg.HRTRate())
     {
-      float M = (float)vp->SampleRate / cfg.HRTRate();
+      float M = (float)vp->SampleRate / (float)cfg.HRTRate();
       for (int i = 0; i < cfg.HRTRate(); ++i)
         HighRateData[vp->HRstart+i] *= M;
     }

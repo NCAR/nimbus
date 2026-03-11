@@ -9,7 +9,8 @@ import eol_scons
 def nimbusbase(env):
     env.Require(['prefixoptions', 'buildmode', 'openmotif', 'nidas', 'netcdf', 'gsl', 'postgres_pq', 'boost_regex', 'bz2', 'z'])
     env.Append(CPPPATH=['#/include', '#/src/nimbus'])
-    env.Append(CXXFLAGS=['-std=c++11'])
+    env.Append(CXXFLAGS=['-std=c++20'])
+    env.Append(CXXFLAGS=['-Werror'])
     env.Append(CXXFLAGS=['-g'])
     env.Append(CXXFLAGS=Split("-Wno-write-strings -Wstrict-aliasing "))
     env['CC'] = env['CXX']

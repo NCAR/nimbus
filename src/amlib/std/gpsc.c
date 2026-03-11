@@ -125,7 +125,7 @@ void initLATC(var_base *varp)
       }
     else
       {
-      float r = (float)(cfg.ProcessingRate() - 1) / cfg.ProcessingRate();
+      float r = (float)(cfg.ProcessingRate() - 1) / (float)cfg.ProcessingRate();
       fctrf[i] = FCTRF + ((1.0 - FCTRF) * r);
       deltaT[i] = 1.0 / (float)cfg.ProcessingRate();
       }

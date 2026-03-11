@@ -635,7 +635,7 @@ void createTwoDRejectRatio(Widget parent)
     n = 0;
     twoDarrB[i] = XmCreateToggleButton(twoDarrRB, s, args,n);
     XtAddCallback(twoDarrB[i], XmNvalueChangedCallback,
-		(XtCallbackProc)SetTwoDRejectRatio, (XtPointer)value);
+		(XtCallbackProc)SetTwoDRejectRatio, (XtPointer)(intptr_t)value);
   }
 
   XtManageChildren(twoDarrB, i);
