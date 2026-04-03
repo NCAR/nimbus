@@ -86,11 +86,11 @@ void ComputeHighRateDerived(time_t thisTime)
     {
       DERTBL *dp = ComputeOrder[i];
 
-      if ((dp = ComputeOrder[i])->compute)
+      if (dp->compute)
         (*dp->compute)(dp);
 
       index = blankOutThisValue(dp, thisTime);
-      if ( index >= 0 || dp->compute == 0)
+      if (index >= 0 || dp->compute == 0)
       {
         size_t n = cfg.ProcessingRate() * dp->Length;
         for (size_t j = 0; j < n; ++j)

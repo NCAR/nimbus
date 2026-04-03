@@ -227,7 +227,7 @@ void ProcessArgv(int argc, char **argv)
 /* -------------------------------------------------------------------- */
 static char *processFileName(const char *in, char *out, size_t out_len)
 {
-  char *dollar, *p, *e, work[256];
+  char *dollar, *p, *e, work[512];
 
   memset(out, 0, out_len);
   strcpy(work, in);

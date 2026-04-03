@@ -84,10 +84,13 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
   /* Get Project Number.
    */
   {
-  char name[256];
-  fgets(buffer, 128, fp);
-  strcpy(name, strchr(buffer, '=')+1);
-  name[strlen(name)-1] = '\0';
+  char name[256], *p;
+  name[0] = '\0';
+  if ( fgets(buffer, 128, fp) && (p = strchr(buffer, '=')) )
+  {
+    strcpy(name, p+1);
+    name[strlen(name)-1] = '\0';	// remove newline
+  }
 
   if (cfg.ProjectNumber().compare(name))
   {
@@ -98,9 +101,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
   }
 
 
-  fgets(buffer, 128, fp);
-
-  if (!ProductionSetup)
+  if (fgets(buffer, 128, fp) && !ProductionSetup)
   {
     long value = atoi(strchr(buffer, '=')+1);
     switch (value)
@@ -224,10 +225,10 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
     else
     if (strcmp(target, "DEFAULT") == 0)
     {
-      char	def_name[20];
+      char	def_name[64];
       NR_TYPE	f[128];
 
-      strcpy(def_name, strtok(NULL, " \t"));
+      strncpy(def_name, strtok(NULL, " \t"), 64);
 
       size_t n = atoi(strtok(NULL, " \t"));
 

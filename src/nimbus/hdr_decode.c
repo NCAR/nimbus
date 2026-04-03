@@ -489,7 +489,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     nidas_var = const_cast<nidas::core::Variable*>(*vi);
 
     char name_sans_location[64];
-    strcpy(name_sans_location, nidas_var->getName().c_str());
+    strncpy(name_sans_location, nidas_var->getName().c_str(), 64);
     char * p = strrchr(name_sans_location, '_');
     if (p)
     {
@@ -2239,7 +2239,7 @@ static void add_file_to_DERTBL(const std::string& filename)
 
   fp = OpenProjectFile(filename, "r", EXIT);
 
-  while (fscanf(fp, "%s", buffer) != EOF)
+  while (fscanf(fp, "%1024s", buffer) != EOF)
     if (buffer[0] != COMMENT)
       add_name_to_DERTBL(buffer);
 
@@ -2255,7 +2255,7 @@ static void add_file_to_RAWTBL(const std::string& filename)
 
   fp = OpenProjectFile(filename, "r", EXIT);
 
-  while (fscanf(fp, "%s", buffer) != EOF)
+  while (fscanf(fp, "%1024s", buffer) != EOF)
     if (buffer[0] != COMMENT)
       add_name_to_RAWTBL(buffer);
 

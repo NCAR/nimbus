@@ -54,7 +54,7 @@ void ReadBlankOuts()
 
 
     // Test for hh:mm:ss vs hhmmss
-    if ( strchr(bo[0], ':') )
+    if ( strchr(bo[i], ':') )
       sscanf(bo[i], "%s %d:%d:%d %d:%d:%d", target,
 	&st.tm_hour, &st.tm_min, &st.tm_sec, &et.tm_hour, &et.tm_min, &et.tm_sec);
     else

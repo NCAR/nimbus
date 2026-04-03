@@ -40,7 +40,7 @@ void executePopenCommand(const char cmd[], char result[], int n)
   }
 
   rc = fread(result, 1, n, pp);
-  result[rc-1] = 0;
+  if (rc > 0) result[rc-1] = 0;
   pclose(pp);
 }
 
@@ -49,7 +49,11 @@ void validateGitProjectDirectory()
 {
   char cmd[200];
 
-  chdir(cfg.ProjectDirectory().c_str());
+  if (chdir(cfg.ProjectDirectory().c_str()) == -1)
+  {
+    HandleError("Failed to change to $PROJ_DIR.");
+    return;
+  }
 
   // Get repo URL
   snprintf(cmd, 200, "git config --get remote.origin.url");

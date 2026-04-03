@@ -208,9 +208,9 @@ static void readHeader()
       char *p = XmTextGetString(logText);
 
       strcat(buffer, "\n");
-      fprintf(LogFile, buffer);
+      fprintf(LogFile, "%s", buffer);
 
-      fprintf(LogFile, p);
+      fprintf(LogFile, "%s", p);
       XtFree(p);
     }
 
@@ -327,7 +327,8 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   InitAircraftDependencies();
   RunAMLIBinitializers();
   SetConfigGlobalAttributeVariables();
-  ncFile->CreateFile(OutputFileName, 0);
+  if (ncFile->CreateFile(OutputFileName, 0) == ERR)
+    return;
 //  InitAsyncModule(OutputFileName);
   ConfigurationDump();
 

@@ -24,7 +24,7 @@ public:
   NetCDF();
   ~NetCDF();
 
-  void	CreateFile(const char fileName[], size_t nRecords);
+  int	CreateFile(const char fileName[], size_t nRecords);
   void	SwitchToDataMode();
   void	WriteCoordinateVariableData();
   void	WriteNetCDF();

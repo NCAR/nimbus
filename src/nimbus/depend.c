@@ -81,8 +81,14 @@ void ReadDependencies()
 
 
     // Process dependencies.
-    for (j = 0; (s = strtok((char *)NULL, tokens)); ++j)
+    for (j = 0; j < MAXDEPEND && (s = strtok((char *)NULL, tokens)); ++j)
       strcpy(dp->depend[j], s);
+
+    if (j == MAXDEPEND)
+    {
+      fprintf(stderr, "Exceeded MAXDEPEND of 12 for variable [%s].", name);
+      HandleFatalError("Code reached MAXDEPEND of 12, increase and recompile.");
+    }
 
     dp->nDependencies = j;
   }

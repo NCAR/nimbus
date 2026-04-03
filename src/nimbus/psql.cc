@@ -972,8 +972,7 @@ PostgreSQL::outputGroundDBInitPacket()
   if (pid == 0)
   {
     char command[256];
-    strcpy(command, cfg.ProjectDirectory().c_str());
-    strcat(command, "/scripts/sendSQL");
+    snprintf(command, 256, "%s/scripts/sendSQL", cfg.ProjectDirectory().c_str());
 
     // Set up logfile in /tmp
     int fd = open("/tmp/sendSQL.log", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);

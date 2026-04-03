@@ -118,7 +118,7 @@ void NetCDF::SetBaseTime(double *record)
 
 
 /* -------------------------------------------------------------------- */
-void NetCDF::CreateFile(const char fileName[], size_t nRecords)
+int NetCDF::CreateFile(const char fileName[], size_t nRecords)
 {
   int status;
 
@@ -133,6 +133,7 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
   if (nc_create(fileName, NC_CLOBBER | NC_NETCDF4, &_ncid) != NC_NOERR)
   {
     HandleError("netcdf.c: Failed to create or open output file.");
+    return(ERR);
   }
 
   if (cfg.ProductionRun())
@@ -519,6 +520,8 @@ void NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
 int old_fill_mode;
 nc_set_fill(_ncid, NC_NOFILL, &old_fill_mode); /* set nofill */
+
+  return(OK);
 
 }	/* END CREATENETCDF */
 

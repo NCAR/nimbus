@@ -61,10 +61,10 @@ void LogMessage(std::string msg)
     XmTextSetInsertionPosition(logText, position);
   }
   else
-    fprintf(stderr, msg.c_str());
+    fprintf(stderr, "%s", msg.c_str());
 
   if (LogFile)
-    fprintf(LogFile, msg.c_str());
+    fprintf(LogFile, "%s", msg.c_str());
 
 }       /* END LOGMESSAGE */
 
@@ -91,7 +91,7 @@ void CloseLogFile()
     snprintf(msg, 128, "\n>> Can't rename logFile: %s to %s.\n",
 			logFileName, buffer);
     LogMessage(msg);
-    fprintf(stderr, msg);
+    fprintf(stderr, "%s", msg);
   }
 
 }	/* END CLOSELOGFILE */

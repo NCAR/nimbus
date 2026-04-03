@@ -51,7 +51,7 @@ void SetLookupSuffix(const char *new_suffix)
 int SearchDERIVEFTNS(const char target[])
 {
   int		i;
-  char		name[32];
+  char		name[64];
   static int	n_variables = 0;
   static bool	firstTime = true;
 
@@ -64,15 +64,12 @@ int SearchDERIVEFTNS(const char target[])
       ++n_variables;
     }
 
+  strncpy(name, target, 32);
   if (suffix)
-    {
-    strcpy(name, target);
     strcat(name, suffix);
-    target = name;
-    }
 
   for (i = 0; i < n_variables; ++i)
-    if (strcmp(target, deriveftns[i].name) == 0)
+    if (strcmp(name, deriveftns[i].name) == 0)
       return(i);
 
   return(ERR);
