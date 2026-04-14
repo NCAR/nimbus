@@ -15,7 +15,7 @@ def nimbusbase(env):
     env.Append(CXXFLAGS=Split("-Wno-write-strings -Wstrict-aliasing "))
     env['CC'] = env['CXX']
     env['CCFLAGS'] = env['CXXFLAGS']
-    env['PUBLISH_PREFIX'] = '/net/www/docs/raf/Software'
+    env['PUBLISH_PREFIX'] = '/net/www/docs/raf/Software/netCDF'
 
 
 env = Environment(platform='posix', tools=['default', 'gitinfo', nimbusbase])
