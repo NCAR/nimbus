@@ -15,7 +15,7 @@ def nimbusbase(env):
     env.Append(CXXFLAGS=Split("-Wno-write-strings -Wstrict-aliasing "))
     env['CC'] = env['CXX']
     env['CCFLAGS'] = env['CXXFLAGS']
-    env['PUBLISH_PREFIX'] = '/net/www/docs/raf/Software/netCDF'
+    env['PUBLISH_PREFIX'] = '/net/www/docs/raf/Software'
 
 
 env = Environment(platform='posix', tools=['default', 'gitinfo', nimbusbase])
@@ -61,7 +61,8 @@ variables.Update(env)
 env.SetHelp()
 
 if "publish" in COMMAND_LINE_TARGETS:
-   pub = env.Install('$PUBLISH_PREFIX', ["doc/html/netCDF.html", "doc/html/netCDF_1_3.html", "doc/html/TimeExamp.html", "doc/html/record.png"])
+   pub = env.Install('$PUBLISH_PREFIX/netCDF', ["doc/html/netCDF.html", "doc/html/netCDF_1_3.html", "doc/html/TimeExamp.html", "doc/html/record.png"])
+   pub = env.Install('$PUBLISH_PREFIX', ["doc/nimbus.pdf"])
    env.Alias('publish', pub)
 
 env.SetHelp()
