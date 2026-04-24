@@ -1036,6 +1036,7 @@
 	"ONE",		NULL,		NULL,		sone,
 	"STDP",		NULL,		NULL,		sStdP,
 	"STDT",		NULL,		NULL,		sStdT,
+	"CBLFLG",	NULL,		NULL,		sRefer,
 #
 #	CVI
 #
