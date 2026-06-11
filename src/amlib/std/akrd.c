@@ -59,7 +59,7 @@ static std::vector<float> load_AKRD_Default(var_base *varp, const char name[])
 	  c[0], c[1], c[2]);
     LogMessage(buffer);
   }
-  varp->addToMetadata("CalibrationCoefficients", c);
+  varp->addToMetadata(name, c);
 
   return c;
 }
