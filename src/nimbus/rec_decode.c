@@ -116,9 +116,11 @@ static void BlankOutRawData(NR_TYPE nlr[])
 
     if (index >= 0 || (cfg.isADS2() && rp->xlate == 0))
     {
+      NR_TYPE value = (index >= 0) ? rp->set_value[index].value : floatNAN;
+
       size_t n = rp->SampleRate * rp->Length;
       for (size_t j = 0; j < n; ++j)
-        nlr[rp->SRstart+j] = rp->set_value[index].value;
+        nlr[rp->SRstart+j] = value;
     }
   }
 }
