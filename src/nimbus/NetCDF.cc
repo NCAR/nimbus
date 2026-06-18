@@ -130,6 +130,9 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
   ncopts = NC_VERBOSE;
 
+  // Do this before any NetCDF/HDF5 calls.  The nc_create is failing on guest VMs
+  setenv("HDF5_USE_FILE_LOCKING", "FALSE", 1);
+
   if (nc_create(fileName, NC_CLOBBER | NC_NETCDF4, &_ncid) != NC_NOERR)
   {
     HandleError("netcdf.c: Failed to create or open output file.");
@@ -293,9 +296,9 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   {
     nc_def_var(_ncid, "base_time", NC_LONG, 0, 0, &_baseTimeID);
     strcpy(buffer, "seconds since 1970-01-01 00:00:00 +0000");
-    nc_put_att_text(_ncid, _baseTimeID, "units", strlen(buffer)+1, buffer);
+    nc_put_att_text(_ncid, _baseTimeID, "units", strlen(buffer), buffer);
     strcpy(buffer, "Start time of data recording.");
-    nc_put_att_text(_ncid, _baseTimeID, "long_name", strlen(buffer)+1, buffer);
+    nc_put_att_text(_ncid, _baseTimeID, "long_name", strlen(buffer), buffer);
   }
 
   nc_def_var(_ncid, "Time", NC_LONG, 1, dims, &_timeVarID);
@@ -790,7 +793,7 @@ void NetCDF::QueueMissingData(int h, int m, int s, int nRecords)
 void NetCDF::WriteMissingRecords()
 {
   size_t	i;
-  float		hour, minute, second;
+  float		hour, minute, second = -1;
   // 5000 is fastest sampling rate
   std::vector<float> d(5000, MISSING_VALUE);
   void		*ldp[MAX_VARIABLES];

@@ -47,7 +47,7 @@ void ComputeLowRateDerived(time_t thisTime)
     DERTBL *dp = ComputeOrder[i];
 
 #ifdef DEBUG
-    bool watch = (strcmp(dp->name, "EW_DPR") == 0 || 
+    bool watch = (strcmp(dp->name, "EW_DPR") == 0 ||
 		  strcmp(dp->name, "EWX") == 0 ||
 		  strcmp(dp->name, "DP_DPR") == 0);
     if (watch)
@@ -68,8 +68,10 @@ void ComputeLowRateDerived(time_t thisTime)
     index = blankOutThisValue(dp, thisTime);
     if ( index >= 0 || dp->compute == 0)
     {
+      NR_TYPE value = (index >= 0) ? dp->set_value[index].value : floatNAN;
+
       for (size_t j = 0; j < dp->Length; ++j)
-        AveragedData[dp->LRstart+j] = dp->set_value[index].value;
+        AveragedData[dp->LRstart+j] = value;
     }
   }
 }	/* END COMPUTELOWRATEDERIVED */
@@ -92,9 +94,11 @@ void ComputeHighRateDerived(time_t thisTime)
       index = blankOutThisValue(dp, thisTime);
       if (index >= 0 || dp->compute == 0)
       {
+        NR_TYPE value = (index >= 0) ? dp->set_value[index].value : floatNAN;
+
         size_t n = cfg.ProcessingRate() * dp->Length;
         for (size_t j = 0; j < n; ++j)
-          HighRateData[dp->HRstart+j] = dp->set_value[index].value;
+          HighRateData[dp->HRstart+j] = value;
       }
     }
   }
