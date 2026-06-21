@@ -145,10 +145,11 @@ void sTwodInit(var_base *varp)
 
 
   if ((p = GetPMSparameter(serialNumber, "RESPONSE_TIME")) == NULL) {
+    responseTime[probeNum] = 0.0;
     sprintf(buffer, "pms2d: serial number = [%s]: RESPONSE_TIME not found.", serialNumber);
-    HandleFatalError(buffer);
     }
-  responseTime[probeNum] = atof(p);
+  else
+    responseTime[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DOF_CONST")) == NULL)
     dof_const[probeNum] = 2.37; // default for PMS2 probes.
@@ -183,7 +184,7 @@ void sTwodInit(var_base *varp)
 
   basicSampleArea[probeNum] = (armDistance[probeNum]/1000) * (resolution / 1000000) * nDiodes;
 
-  /* 1DC/P has length 32, 2DC/P has length 64.
+  /* 1DC/P has length 32, 2DC/P has length 64, SPEC probes are 128.
    */
   length = varp->Length;
 
