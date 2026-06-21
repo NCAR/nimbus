@@ -460,11 +460,8 @@ static int getCellSizes(const var_base * rp, float cellSize[])
   if (rp->ProbeType & PROBE_260X || thisIs2Dnot1D(rp->name) || strstr(rp->name, "PIP"))
     nBins = 64;
   else
-  if (rp->ProbeType & PROBE_2DS)
+  if (rp->ProbeType & PROBE_2DS || rp-ProbeType & PROBE_HVPS)
     nBins = 128;
-  else
-  if (rp->ProbeType & PROBE_HVPS)
-    nBins = 256;
   else
   if (rp->ProbeType & PROBE_PMS2D)
   {
