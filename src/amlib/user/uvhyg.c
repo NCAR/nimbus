@@ -99,7 +99,7 @@ void sconch(DERTBL *varp)
 
   /* New UVHYG code note fully ready for NOMADSS.  nidas cal files for
    * XSIGV convert it to g/cm3.  CONCH will just convert this from g/cm3
-   * to #/cm3 with below convertion.
+   * to #/cm3 with below conversion.
    */
   if (cfg.ProjectName().compare("NOMADSS") == 0)	// NOMADSS only.
     conc = xsigv * 3.3427E+16;	// convert from g/cm3 to #/cm3.

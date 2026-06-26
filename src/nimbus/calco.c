@@ -6,7 +6,7 @@ FULL NAME:	Apply Calibration Coefficients
 
 ENTRY POINTS:	ApplyCalCoes()
 
-DESCRIPTION:	Perform application of calibration coeffiecients to the
+DESCRIPTION:	Perform application of calibration coefficients to the
 		AveragedData or SampledData records.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2012

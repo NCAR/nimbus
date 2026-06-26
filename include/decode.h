@@ -15,7 +15,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define ONE_WORD        sizeof(short)
 
 /* ProbeType field.  Bottom nibble is used for ProbeCount.  Top nibble is
- * Catagory of probe.  This method of implementation will handle up to 24
+ * Category of probe.  This method of implementation will handle up to 24
  * different probes before it needs to be re-coded.
  */
 #define ALL_ON		0xFFFFFFF1

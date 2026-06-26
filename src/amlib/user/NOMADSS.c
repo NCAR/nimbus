@@ -17,7 +17,7 @@ static const NR_TYPE denominator = 3.8235391; // exp(17.67*(20/263.5)
 
 
 /* -------------------------------------------------------------------- */
-// A calculation of cabin RH at 20 degrees celcius given to me by 
+// A calculation of cabin RH at 20 degrees celsius given to me by 
 // Jesse Ambrose of UofW during NOMADSS campaign - Tom Baltzer
 
 void srhcab(DERTBL *varp)

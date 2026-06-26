@@ -132,7 +132,7 @@ Version number is changed in version.h.
 
 11/06/96	2.4.0
 	WP3 modified.  Support for new APN159.  PMSspecs file.  New high rate
-	filters.  Fixed minor discrepencies in AMLIB.  Goff-Gratch for EDPC.
+	filters.  Fixed minor discrepancies in AMLIB.  Goff-Gratch for EDPC.
 	Transport delays for IRS.  Dynamic lags for GPS.  Option to disable
 	all lagging && despiking.
 
@@ -164,7 +164,7 @@ Version number is changed in version.h.
 	change.  Added more chemistry vars for ACE.  Added spike slope to
 	setup files & Edit window.  Async data file/storage added.
 	Reflectivity added for FSSP-100 & ????.  Community inlet pressure
-	differntial variable added.  Mod PCAS code to use FLOW for Sample
+	differential variable added.  Mod PCAS code to use FLOW for Sample
 	Volume.
 
 08/13/95	2.1.6
@@ -192,7 +192,7 @@ Version number is changed in version.h.
 02/01/95	2.1.0
 	Toggle Probe menu item. C130 PCORS.  Fixed XSO2.  New 250hz decimating
 	filter (5:1 only).  Don't HR variables that don't need it.  added
-	convertOffset.  New method of decodeing IRS data.
+	convertOffset.  New method of decoding IRS data.
 
 12/22/94	2.0.1
 	Some bug fixes, Coeff for WP3 barrel modified and fixed all Aircraft

@@ -9,7 +9,7 @@ FULL NAME:	Circular Buffer Header File
 #ifndef CIRCBUFF_H
 #define CIRCBUFF_H
 
-// n Buffers for cirular buffer.  How many records to maintain in memory for
+// n Buffers for circular buffer.  How many records to maintain in memory for
 // despiking, time-shifting, etc.
 const int NLRBUFFERS = 7;
 const int LRINDEX = -(NLRBUFFERS-3);

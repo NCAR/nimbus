@@ -282,7 +282,7 @@ void InitAircraftDependencies()
       HandleFatalError(buffer);
   }
 
-}	/* END INITAIRCRAFTDEPENDANCIES */
+}	/* END INITAIRCRAFTDEPENDENCIES */
 
 /* Electra ------------------------------------------------------------ */
 NR_TYPE pcorw8(NR_TYPE q)

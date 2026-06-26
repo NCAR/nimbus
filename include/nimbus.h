@@ -129,7 +129,7 @@ public:
   int bounds_varid;	// varid for coordinate bounds variable (size_distribution vars only)
 
   size_t ProbeType;	// Is this a probe & which one
-  size_t ProbeCount;	// For mulitple identicle probes
+  size_t ProbeCount;	// For multiple identicle probes
 			// Used by AMLIB
   bool DependedUpon;	// Is this variable depended upon?
 
@@ -151,7 +151,7 @@ public:
 
 
 /* Next 2 structs are main structures for each variable.  2 of them for the
- * 2 variable catagories we have, Raw recorded data, and Derived.
+ * 2 variable categories we have, Raw recorded data, and Derived.
  */
 
 /* Struct for raw variables (mostly block probes), some analog's come down

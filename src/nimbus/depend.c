@@ -180,7 +180,7 @@ static void setupDependencies(bool set_depends)
       }
     }
   }
-}	/* END SETUPDEPENDANCIES */
+}	/* END SETUPDEPENDENCIES */
 
 /* -------------------------------------------------------------------- */
 void CleanOutUnwantedVariables()

@@ -95,7 +95,7 @@ static void readDefs(const char varName[], const char line[],
   sprintf(name, "VXL_LILO2_%s", line);
   if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
-    // For backwards compatability, there was no LI[2], it defaulted to LI[1].
+    // For backwards compatibility, there was no LI[2], it defaulted to LI[1].
     LI_COEFF[2] = LI_COEFF[1];
   }
   else
@@ -120,7 +120,7 @@ static void readDefs(const char varName[], const char line[],
   sprintf(name, "VXL_ABS2_%s", line);
   if ((tmp = GetDefaultsValue(name, varName)) == NULL)
   {
-    // For backwards compatability, there was no ABS[2], it defaulted to ABS[0].
+    // For backwards compatibility, there was no ABS[2], it defaulted to ABS[0].
     ABS_COEFF[2] = ABS_COEFF[0];
   }
   else
@@ -263,7 +263,7 @@ void sconcv(DERTBL *varp)
     abs_coeff = absCoeffs[1] * pow(mr_raw, absCoeffs[2]) + absCoeffs[0];
 /* Per Teresa, starting with CAESAR - use absCoeffs[3] as an offset.
  * older projects adsCoeffs[3] set to zero in the Deefaults, so we should be
- * set for backwards compatability.
+ * set for backwards compatibility.
     mr_corr = mr_raw * p_coeff * t_coeff * li_coeff * abs_coeff;
  */
     mr_corr = mr_raw * p_coeff * t_coeff * li_coeff * abs_coeff + absCoeffs[3];

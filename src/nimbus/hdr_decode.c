@@ -1200,7 +1200,7 @@ static void initHDR(char vn[])
   add_raw_names("TIME");
 
   /* Long term we want to
-   * depracate TimeInterval in the global attributes and remove
+   * deprecate TimeInterval in the global attributes and remove
    * HOUR, MINUTE and SECOND from the netCDF file as they are just
    * file bloat.  As of this writing, ncplot requires TimeInterval
    * and HOUR, MINUTE & SECOND are used internally in nimbus. cjw 4/9/06

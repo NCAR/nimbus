@@ -45,7 +45,7 @@ void sGeopot(DERTBL *varp)	// This was implemented for NOAA/AOC in 1996.
 {
   NR_TYPE	msl_alt, geop_alt, lat;
 
-  NR_TYPE	G,	/* MSL value of the accelleration of gravity @ given
+  NR_TYPE	G,	/* MSL value of the acceleration of gravity @ given
 			 * latitude, cm/s**2				*/
 		R,	/* Effective earth radius @ given latitude,
 			 * fictitious quantity that does not represent the

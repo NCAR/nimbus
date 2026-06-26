@@ -292,7 +292,7 @@ static void set_edit_window_data(
   XtSetArg(args[n], XmNlabelString, ns); n++;
   XtSetValues(varNameLabel, args, n);
   XmStringFree(ns);
- 
+
 
   XmToggleButtonSetState(outputVarYes, var->Output, false);
   XmToggleButtonSetState(outputVarNo, !var->Output, false);
@@ -312,7 +312,7 @@ static void set_edit_window_data(
       break;
 
     default:
-      /* Cheesy hack to determnine if derived or raw.  Derived don't have
+      /* Cheesy hack to determine if derived or raw.  Derived don't have
        * SampleRate....
        */
       if (lag == ERR)

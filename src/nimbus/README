@@ -25,7 +25,7 @@ nimbus.c			Main
 		rd_sum.c	Look up Vars that are summed & not averaged.
 		rd_lag.c	Look up lags.
 		rd_spike.c	Look up spike slopes.
-		depend.c	Initialize dependancies.
+		depend.c	Initialize dependencies.
 
 	memalloc.c		Allocate space for global data arrays.
 	order.c			Order 'derived' into 'ComputeOrder'
@@ -76,7 +76,7 @@ DERTBL	*derived[] is the alpha sorted list of purily derived variables,
 	decode.
 
 'ComputeOrder' is the 'derived' table sorted into Compute Order based
-	on dependancies from the DependTable file.
+	on dependencies from the DependTable file.
 
 'nsdi'	= Number items in 'sdi'.
 'nraw'	= Number items in 'raw'.

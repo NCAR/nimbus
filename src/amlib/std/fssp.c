@@ -14,7 +14,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-DEPENDANCIES:	AFSSP	- Actual FSSP data
+DEPENDENCIES:	AFSSP	- Actual FSSP data
 		TAS	- True Air Speed
 		ACT	- Activity
 		FBMFR	- Beam Fraction

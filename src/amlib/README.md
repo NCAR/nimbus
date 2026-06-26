@@ -65,7 +65,7 @@ or
 
    Edit new_probe.c and add a function for each variable you want created.
 By convention each function starts with 's'.  Look at some of the other
-files to see how dependancies (input variables) are extracted.
+files to see how dependencies (input variables) are extracted.
 
    For each variable you want created, you must create a name and add it to
 the file ${NIMBUS}/include/amlib.fns.  The corresponding function name goes
@@ -88,8 +88,8 @@ cd ${LOCAL}/proj/defaults and add an entry to 'DerivedNames'.  Example entry:
 
 	OPHIR3	OAT OTDETC ODSIGC OBBCR OGAINF ODETOF
 
-cd ${NIMBUS}/proj/defaults and add appropriate dependancies to 'DependTable'.
-The dependancies you put in here will become the inputs to the functions.
+cd ${NIMBUS}/proj/defaults and add appropriate dependencies to 'DependTable'.
+The dependencies you put in here will become the inputs to the functions.
 Example entry:
 
 	OAT	OBBCOD ODETDC OTDET OTBBC ODETSG

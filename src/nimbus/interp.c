@@ -2,12 +2,12 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	interp.c
 
-FULL NAME:	Interpolation algorythms
+FULL NAME:	Interpolation algorithms
 
 ENTRY POINTS:	PolyInterp()
 		LinearInterpolate()
 
-DESCRIPTION:	These interpolation algorythms are for Phase Shifting.
+DESCRIPTION:	These interpolation algorithms are for Phase Shifting.
 
 INPUT:		
 
@@ -20,7 +20,7 @@ REFERENCED BY:	phase_shift.c
 NOTE:		variable yaxis should contain 4 points with the desired
 		value lying between yaxis[1] and yaxis[2].
 
-BIBLIOGRAPHY:	PolyInterp() algorythm is LaGrange Polynomial.
+BIBLIOGRAPHY:	PolyInterp() algorithm is LaGrange Polynomial.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------

@@ -172,7 +172,7 @@ static String fallback_resources[] =
   "*interpTitle.labelString:			Interpolation Type",
   "*twoDpmTitle.labelString:			PMS-2D Particle Acceptance Method",
   "*twoDarrTitle.labelString:			PMS-2D Area Ratio Rejection",
-  "*createFilesTitle.labelString:		Auxilary File Creation",
+  "*createFilesTitle.labelString:		Auxiliary File Creation",
   "*optionsTitle.labelString:			Processing Options",
   "*efiRC.entryAlignment:			ALIGNMENT_CENTER",
   "*efiRC.spacing:				12",

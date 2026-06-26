@@ -588,7 +588,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
         slice = ~(particle[j]);
 
         /* Potential problem/bug with computing of x1, x2.  Works good if all
-         * edge touches are contigious (water), not so good for snow, where
+         * edge touches are contiguous (water), not so good for snow, where
          * it will all get bunched up.  Counts total number of contacts for
          * each edge.
          */
@@ -933,7 +933,7 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
 
 
         /* Potential problem/bug with computing of x1, x2.  Works good if all
-         * edge touches are contigious (water), not so good for snow, where
+         * edge touches are contiguous (water), not so good for snow, where
          * it will all get bunched up.  Counts total number of contacts for
          * each edge.
          */

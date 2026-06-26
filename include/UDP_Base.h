@@ -30,7 +30,7 @@ public:
   virtual
   ~UDP_Base();
 
-  /** 
+  /**
    * Generate broadcast string and send.
    */
   virtual void
@@ -70,7 +70,7 @@ protected:
   std::vector<int> _latch_seconds;
 
   /**
-   * Deal with the occasional existance of NaNs in the data that is about to be sent.
+   * Deal with the occasional existence of NaNs in the data that is about to be sent.
    */
   std::vector< std::vector<double> > _lastGoodData;
   std::vector<nidas::core::dsm_time_t> _lastGoodTime;
