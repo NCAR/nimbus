@@ -16,7 +16,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include <stdio.h>
 #include <string.h>
 
-typedef unsigned char	bool;
+#if !defined __cplusplus && __STDC_VERSION__ < 202311L
+typedef unsigned char   bool;
+#endif
 
 #define MAX_VARS	512
 #define TAPE_BLK_SIZE	32767
