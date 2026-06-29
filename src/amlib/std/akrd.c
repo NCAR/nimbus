@@ -23,7 +23,8 @@ static int      c130_radome_ssn = 1;      // default to first radome.
 static const NR_TYPE GV_ATTACK_DEFAULT_VALUE = 3.0;
 static const NR_TYPE C130_ATTACK_DEFAULT_VALUE = 2.0;
 
-static NR_TYPE flaps_flg = 0.0;
+// Share with QCFRC.
+NR_TYPE flaps_flg = 0.0;
 
 static std::vector<float> akrd_coeff;		// New C130.  Three-coeff.
 static std::vector<float> akrd_coeff_old;	// Old C130.  Currently Pre-WECAN?  Two-coeff

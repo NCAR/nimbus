@@ -13,6 +13,10 @@
 
 extern NR_TYPE (*pcorQCFRv2)(NR_TYPE, NR_TYPE, NR_TYPE);
 
+extern NR_TYPE flaps_flg;	// from akrd.c
+
+static NR_TYPE dirty_flaps_scale = 0.9617;
+
 NR_TYPE defaultATTACK();
 
 /* -------------------------------------------------------------------- */
@@ -28,6 +32,10 @@ void sqcfrc(DERTBL *varp)
     attack = defaultATTACK();
 
   qcfc = qcf - (*pcorQCFRv2)(qcf, psf, attack);
+
+  // This is a special case for GOTHAAM.  See akrd.c for additional info.
+  if (flaps_flg == 1.0)
+    qcfc *= dirty_flaps_scale;
 
   if (qcfc < 10.0)
     qcfc = qcf;
