@@ -942,6 +942,7 @@
 	"IRTC",		(void(*)(void*))initPyrgeometer,	NULL,	sirc,
 	"VISTC",	(void(*)(void*))initVisPyrgeometer,	NULL,	svisc,
 	"VISBC",	(void(*)(void*))initVisPyrgeometer,	NULL,	svisc,
+	"VISDIR",	NULL,		NULL,		sdiff,
 	"LWCC",		NULL,		NULL,		slwcc,
 	"MR",		NULL,		NULL,		smr,
 	"MRLA",		NULL,		NULL,		smrla,
