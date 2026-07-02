@@ -72,7 +72,7 @@ void lymanInit(var_base *varp)
   {
     CX_1.clear();
     for (int i = 0; i < nCals; ++i)
-      CX_1[i] = tmp[i];
+      CX_1.push_back(tmp[i]);
   }
   varp->addToMetadata("Coefficients", CX_1);
 
@@ -117,7 +117,7 @@ void lyman1Init(var_base *varp)
   {
     CX_2.clear();
     for (int i = 0; i < nCals; ++i)
-      CX_2[i] = tmp[i];
+      CX_2.push_back(tmp[i]);
   }
   varp->addToMetadata("Coefficients", CX_2);
 

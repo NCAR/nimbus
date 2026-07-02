@@ -385,11 +385,11 @@ NR_TYPE pcorf5v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
   if (std::isnan(Attack)) Attack = 3.0;
 
-  M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  M = sqrtf( 5.0 * (powf((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * M*M*M + a[3] * Attack);
 
   // Taper if Qm is too small (take-off / landing).
-  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+  if (Qm < 40.0) deltaP *= powf(Qm/40.0, 3.0);
 
   return deltaP;
 }
@@ -415,13 +415,13 @@ NR_TYPE pcortf5(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack, NR_TYPE SSlip, NR_TYPE M
 
   // Uncomment this M calculation to overwrite MACH being dragged in and replace
   // it with MACH calculated from Pm/Qm being dragged in.
-  //M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  //M = sqrtf( 5.0 * (powf((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   //deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * M*M*M + a[3] * Attack + a[4] * SSlip); // Aug 2016
-  //deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * pow(Qm/Pm,0.5) + a[3] * pow(Qm/Pm,1.5) + a[4] * Attack + a[5] * SSlip); // Oct 20, 2017
-  deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * pow(Qm/Pm,0.5) + a[3] * pow(Qm/Pm,1.5) + a[4] * Attack); // Dec 27, 2017
+  //deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * powf(Qm/Pm,0.5) + a[3] * powf(Qm/Pm,1.5) + a[4] * Attack + a[5] * SSlip); // Oct 20, 2017
+  deltaP = Pm * (a[0] + a[1] * Qm/Pm + a[2] * powf(Qm/Pm,0.5) + a[3] * powf(Qm/Pm,1.5) + a[4] * Attack); // Dec 27, 2017
 
   // Taper if Qm is too small (take-off / landing).
-  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+  if (Qm < 40.0) deltaP *= powf(Qm/40.0, 3.0);
 
   return deltaP;
 }
@@ -430,12 +430,12 @@ NR_TYPE pcortf5(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack, NR_TYPE SSlip, NR_TYPE M
 /*
 NR_TYPE pcorf1(NR_TYPE q, NR_TYPE q1)	// For PSFD
 {
-  return (0.00163 + 0.0214 * q + 0.0145 * pow(q1,0.5));
+  return (0.00163 + 0.0214 * q + 0.0145 * powf(q1,0.5));
 }
 
 NR_TYPE pcorr1(NR_TYPE q, NR_TYPE q1)	// For QCR
 {
-  return (0.00163 + 0.0214 * q + 0.0145 * pow(q1,0.5));
+  return (0.00163 + 0.0214 * q + 0.0145 * powf(q1,0.5));
 }
 
 NR_TYPE pcorf1_3(NR_TYPE q, NR_TYPE q1)	// For new PSF
@@ -445,7 +445,7 @@ NR_TYPE pcorf1_3(NR_TYPE q, NR_TYPE q1)	// For new PSF
 
 NR_TYPE pcorf1_2(NR_TYPE q, NR_TYPE q1)	// For QCF
 {
-  return (0.00163 + 0.0214 * q + 0.0145 * pow(q1,0.5));
+  return (0.00163 + 0.0214 * q + 0.0145 * powf(q1,0.5));
 }
 */
 
@@ -459,11 +459,11 @@ NR_TYPE pcorf1v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFD
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
   if (std::isnan(Attack)) Attack = 3.0;
 
-  M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  M = sqrtf( 5.0 * (powf((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * Attack + a[2] * M);
 
   // Taper if Qm is too small (take-off / landing).
-  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+  if (Qm < 40.0) deltaP *= powf(Qm/40.0, 3.0);
 
   return deltaP;
 }
@@ -478,11 +478,11 @@ NR_TYPE pcorr1v2(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFRD
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
   if (std::isnan(Attack)) Attack = 3.0;
 
-  M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  M = sqrtf( 5.0 * (powf((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * Attack + a[2] * M);
 
   // Taper if Qm is too small (take-off / landing).
-  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+  if (Qm < 40.0) deltaP *= powf(Qm/40.0, 3.0);
 
   return deltaP;
 }
@@ -499,11 +499,11 @@ NR_TYPE pcorf1v3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFD post IDEAS-4-C1
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
   if (std::isnan(Attack)) Attack = 3.0;
 
-  M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  M = sqrtf( 5.0 * (powf((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * (Qm/Pm) + a[2] * Attack + a[3] * M + a[4] * (Qm/Pm) * Attack*Attack); // per Cooper 15 Sept 2016 memo
 
   // Taper if Qm is too small (take-off / landing).
-  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+  if (Qm < 40.0) deltaP *= powf(Qm/40.0, 3.0);
 
   return deltaP;
 }
@@ -518,11 +518,11 @@ NR_TYPE pcorr1v3(NR_TYPE Qm, NR_TYPE Pm, NR_TYPE Attack)	// PSFRD post IDEAS-4-C
   // --- Added by JAA Oct 2014 per Cooper 3 Oct memo
   if (std::isnan(Attack)) Attack = 3.0;
 
-  M = sqrt( 5.0 * (pow((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
+  M = sqrtf( 5.0 * (powf((Qm+Pm)/Pm, Rd_DIV_Cpd) - 1.0) ); // Mach #
   deltaP = Pm * (a[0] + a[1] * (Qm/Pm) + a[2] * Attack + a[3] * M + a[4] * (Qm/Pm) * Attack*Attack); // per Cooper 15 Sept 2016 memo
 
   // Taper if Qm is too small (take-off / landing).
-  if (Qm < 40.0) deltaP *= pow(Qm/40.0, 3.0);
+  if (Qm < 40.0) deltaP *= powf(Qm/40.0, 3.0);
 
   return deltaP;
 }

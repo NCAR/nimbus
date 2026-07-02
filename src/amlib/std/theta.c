@@ -1,12 +1,12 @@
 /*******      Potential Temperature (K)                                 theta
                  REQUIRES --- ATX, PSXC
- 	Input:
- 		atx - derived ambient temperature
- 		psxc - derived static pressure
- 	Output:
- 		theta - derived potential temperature
+	Input:
+		atx - derived ambient temperature
+		psxc - derived static pressure
+	Output:
+		theta - derived potential temperature
 */
- 
+
 #include "nimbus.h"
 #include "amlib.h"
 
@@ -24,5 +24,8 @@ void stheta(DERTBL *varp)
   double atx	= GetSample(varp, 0);
   double psxc	= GetSample(varp, 1);
 
-  PutSample(varp, (NR_TYPE)theta(atx + Kelvin, psxc));
+  if (psxc > 0.0)
+    PutSample(varp, (NR_TYPE)theta(atx + Kelvin, psxc));
+  else
+    PutSample(varp, floatNAN);
 }

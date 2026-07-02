@@ -78,7 +78,7 @@ void stas_flag(DERTBL *varp)
   NR_TYPE rt = GetSample(varp, 2); // If this changes from index 2, then modify tasFlgInit() above.
   NR_TYPE ewx = GetSample(varp, 3);
 
-  static NR_TYPE lastew;
+  static NR_TYPE lastew[nFeedBackTypes];
   static int countL = 0, countH = 0;
 
   setEOP(0.0);	// Set for dry constants.
@@ -99,7 +99,7 @@ void stas_flag(DERTBL *varp)
   if (!std::isnan(ewx) && ewx < 1.05 * ews)
   {
     ewt = ewx;
-    lastew = ewx;
+    lastew[FeedBack] = ewx;
     countL = countH = 0;
   }
   else
@@ -108,8 +108,7 @@ void stas_flag(DERTBL *varp)
 
     if (FeedBack == HIGH_RATE_FEEDBACK)
     {
-      countH++;
-      cntr = countH++;
+      cntr = ++countH;
       cntrN = 125;
     }
     else
@@ -127,7 +126,7 @@ void stas_flag(DERTBL *varp)
     else
     {
       // Carry over last good ewx for 5 seconds
-      ewt = lastew;
+      ewt = lastew[FeedBack];
     }
   }
 
