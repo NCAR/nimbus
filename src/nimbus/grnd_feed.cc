@@ -70,6 +70,10 @@ GroundFeed(int rate) :
 
   // compute checksum for this flight, store in cfg
   cfg.SetChecksum(calculateChecksum());
+
+  _noconnFile = "";
+  _noconnFile += getenv("XMIT_DIR");
+  _noconnFile += "/noconn";
 }
 
 /* -------------------------------------------------------------------- */
@@ -100,19 +104,20 @@ void GroundFeed::BroadcastData(nidas::core::dsm_time_t tt)
 
   rate_cntr++;
 
+  // Only send every so often.
+  if ((rate_cntr % _dataRate) != 0)
+    return;
+
   std::string timeStamp = formatTimestamp(tt);
 
   // Only send data if ground connection is verified
   struct stat stFileInfo;
-  std::string noconnFile("");
   if ( !valid_ground_conn ) {
-    noconnFile += getenv("XMIT_DIR");
-    noconnFile += "/noconn";
-    valid_ground_conn = stat(noconnFile.c_str(), &stFileInfo) != 0;
+    valid_ground_conn = stat(_noconnFile.c_str(), &stFileInfo) != 0;
   }
 
   // Compose the string to send to the ground
-  std::stringstream groundString;
+  groundString.str("");
   if (cfg.Aircraft() == Config::HIAPER)
     groundString << "GV";
   if (cfg.Aircraft() == Config::NRL_P3)
@@ -130,10 +135,6 @@ void GroundFeed::BroadcastData(nidas::core::dsm_time_t tt)
     groundString << "," << formatVariable(i);
   }
   groundString << "\n";
-
-  // Only send every so often.
-  if ((rate_cntr % _dataRate) != 0)
-    return;
 
   // compress the stream before sending it to the ground
   char buffer[8192];

@@ -43,6 +43,10 @@ protected:
    * Send data to ground this often, in seconds.
    */
   const size_t _dataRate;
+
+  std::string _noconnFile;
+
+  std::stringstream groundString;
 };
 
 #endif

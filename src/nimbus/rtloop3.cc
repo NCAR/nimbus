@@ -148,11 +148,9 @@ void RealTimeLoop3()
   nidas::dynld::raf::SyncRecordReader* syncRecReader = GetSyncReader();
   int nExpected = syncRecReader->getNumValues();
 
-  unsigned int nloop = 0;
   for (cntr = 0; ; ++cntr)
   {
-    ++nloop;
-    DLOGT("rtloop3", ("rtloop3: begin cycle %d", nloop));
+    DLOGT("rtloop3", ("rtloop3: begin cycle %d", cntr));
     int nRead;
     try {
         nRead = syncRecReader->read(&tt, SampledData, nSRvalues);
@@ -170,9 +168,11 @@ void RealTimeLoop3()
       WLOG(("short record of ") << nRead << " floats instead of " << nExpected);
       for (int i = nRead; i < nExpected; i++) SampledData[i] = floatNAN;
     }
-    processTimeADS3(SampledData, tt / USECS_PER_SEC);
 
     time_t ut = tt / USECS_PER_SEC;
+
+    processTimeADS3(SampledData, ut);
+
     struct tm tm;
     memset(&tm, 0, sizeof(struct tm));
     gmtime_r(&ut, &tm);

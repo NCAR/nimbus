@@ -31,20 +31,23 @@ void ApplyCalCoes(NR_TYPE *record)
 
     RAWTBL *sp = raw[i];
     int pos = sp->SRstart;
+    bool isAnalog = (sp->type[0] == 'A');
+    bool applyPoly = (cfg.CalibrationsAppliedBy() == Config::NIMBUS && !sp->cof.empty());
+    int nCoef = sp->cof.size();  // only used when applyPoly
+    int corder = nCoef - 1;  // only used when applyPoly
 
     for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
     {
-      if (sp->type[0] == 'A')
+      if (isAnalog)
         SRTvolts[pos] = record[pos] =
 		(record[pos] - sp->convertOffset) * sp->convertFactor;
       else
         SRTvolts[pos] = record[pos];
 
-      if (cfg.CalibrationsAppliedBy() == Config::NIMBUS && sp->cof.size() > 0)
+      if (applyPoly)
       {
-        int corder = sp->cof.size() - 1;
         NR_TYPE out = sp->cof[corder];
-        for (size_t k = 1; k < sp->cof.size(); k++)
+        for (size_t k = 1; k < nCoef; k++)
           out = sp->cof[corder-k] + record[pos] * out;
 
         record[pos] = out;

@@ -53,6 +53,8 @@ protected:
   int NOREC_ALT_INDX;
 
   std::string DataNet;
+
+  std::stringstream bcast;
 };
 
 #endif

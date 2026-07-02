@@ -866,7 +866,8 @@ PostgreSQL::submitCommand(const std::string command, bool xmit)
 
   // Submit command asynchronously.
   PQsendQuery(_conn, command.c_str());
-  fprintf(stderr, "%s", PQerrorMessage(_conn));
+  const char* err = PQerrorMessage(_conn);
+  if (err && *err) fprintf(stderr, "%s", err);
 
   if (xmit)
     _groundDBinitString << command << '\n';

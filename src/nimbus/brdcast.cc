@@ -90,7 +90,7 @@ Broadcast::~Broadcast()
 }
 
 /* -------------------------------------------------------------------- */
-void Broadcast::BroadcastData(nidas::core::dsm_time_t tt) 
+void Broadcast::BroadcastData(nidas::core::dsm_time_t tt)
 {
   std::string timeStamp = formatTimestamp(tt);
 
@@ -102,7 +102,7 @@ void Broadcast::BroadcastData(nidas::core::dsm_time_t tt)
 
   updateData(tt);
 
-  std::stringstream bcast;
+  bcast .str("");
   bcast << "IWG1," << timeStamp;
 
   for (int i = 0; i < (int)_varList.size(); ++i)
@@ -111,10 +111,11 @@ void Broadcast::BroadcastData(nidas::core::dsm_time_t tt)
   }
 
   bcast << "\r\n";
+  const std::string msg = bcast.str();
   for (size_t i = 0; i < _toList.size(); ++i)
   {
     try {
-      _socket->sendto(bcast.str().c_str(), bcast.str().length(), 0, *_toList[i]);
+      _socket->sendto(msg.c_str(), msg.length(), 0, *_toList[i]);
     }
     catch (const nidas::util::IOException& e) {
       fprintf(stderr, "nimbus::Broadcast: %s\n", e.what());
@@ -128,14 +129,14 @@ void Broadcast::BroadcastData(nidas::core::dsm_time_t tt)
   {
     _socket->setInterface(mcAddr, _mcInterfaces[i]);
     try {
-      _socket->sendto(bcast.str().c_str(), bcast.str().length(), 0, mcSockAddr);
+      _socket->sendto(msg.c_str(), msg.length(), 0, mcSockAddr);
     }
     catch (const nidas::util::IOException& e) {
       fprintf(stderr, "nimbus::Broadcast multicast: %s\n", e.what());
     }
   }
 
-  printf(bcast.str().c_str());
+  printf(msg.c_str());
 }
 
 
