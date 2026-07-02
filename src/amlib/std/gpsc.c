@@ -44,7 +44,8 @@ static NR_TYPE	latc[nFeedBackTypes], lonc[nFeedBackTypes],
 static NR_TYPE	deltaT[nFeedBackTypes], factorp[nFeedBackTypes],
 		dlat[nFeedBackTypes], dlon[nFeedBackTypes],
 		dvy[nFeedBackTypes], dvx[nFeedBackTypes],
-		time_duration[nFeedBackTypes], fctrf[nFeedBackTypes];
+		time_duration[nFeedBackTypes], fctrf[nFeedBackTypes],
+		oneMinus_fctrf[nFeedBackTypes];
 
 static double	h[NCF][NCF], zf[nFeedBackTypes][4][6];
 static double	am[2][NCF], bm[2][NCF], c[2][NCF], cp[2][NCF];
@@ -130,7 +131,9 @@ void initLATC(var_base *varp)
       deltaT[i] = 1.0 / (float)cfg.ProcessingRate();
       }
 
-    factorp[i] = 0.002 * (1000.0 / deltaT[i]) * M_PI / TAUP;
+    oneMinus_fctrf[i] = 1.0 - fctrf[i];
+
+    factorp[i] = 0.002 * (1000.0 * deltaT[i]) * M_PI / TAUP;
 
     time_duration[i] = dvy[i] = dvx[i] = dlat[i] = dlon[i] = 0.0;
     }
@@ -142,9 +145,9 @@ void slatc(DERTBL *varp)
 {
   int		i, j, k;
   NR_TYPE	alat, alon, vew, vns, roll, glat, glon, gvew, gvns;
-  NR_TYPE	omegat, sinwt, coswt;
+  NR_TYPE	omegat, sinwt, coswt, raw_gps_quality, nSatellites;
   /*NR_TYPE       gvnsf, gvewf, vnsf, vewf;*/
-  long		nSatellites, gps_quality;
+  long		gps_quality;
 
   double	det;
 
@@ -165,22 +168,24 @@ void slatc(DERTBL *varp)
   gvns	= GetSample(varp, 6);	// GPS NS ground speed
   gvew	= GetSample(varp, 7);	// GPS EW ground speed
   roll	= GetSample(varp, 8);	// IRS Roll
-  nSatellites	= (long)GetSample(varp, 9);	/* GGNSATS	*/
-  gps_quality	= (long)GetSample(varp, 10);	/* NMEA GGQUAL	*/
+  nSatellites	  = GetSample(varp, 9);	/* GGNSATS	*/
+  raw_gps_quality = GetSample(varp, 10);	/* NMEA GGQUAL	*/
 
   returnMissingValue = false;
 
   // If any gps values are isnan(), then just force quality to invalid.
-  if (std::isnan(gps_quality) ||
+  if (std::isnan(raw_gps_quality) ||
       std::isnan(glat) || std::isnan(glon)|| std::isnan(gvns) || std::isnan(gvew))
     {
     gps_quality = 0;
     goodGPS = 0;
     }
+  else
+    gps_quality = (long)raw_gps_quality;
 
   if (firstTime[FeedBack])
     {
-    if (gps_quality > 0 && nSatellites > 2)
+    if (gps_quality > 0 && (int)nSatellites > 2)
       {
       old_glat[FeedBack] = glat;
       old_glon[FeedBack] = glon;
@@ -220,7 +225,6 @@ void slatc(DERTBL *varp)
     }
 
   time_duration[FeedBack] += deltaT[FeedBack];
-  omegat = 2.0 * M_PI * time_duration[FeedBack] / 5067.0;
 
   /* Check GPS status, only do this on the Low-rate pass.
    */
@@ -230,6 +234,7 @@ void slatc(DERTBL *varp)
     dx	= glat - old_glat[FeedBack];
     dy	= glon - old_glon[FeedBack];
     dgps = dx*dx + dy*dy;
+    omegat = 2.0 * M_PI * time_duration[FeedBack] / 5067.0;
 
     ++goodGPS;
 
@@ -245,7 +250,7 @@ void slatc(DERTBL *varp)
 
     /* Bad Positions for using GPS?
      */
-    if (nSatellites < 3 || gps_quality < 1)
+    if ((int)nSatellites < 3 || gps_quality < 1)
       {
       sprintf(buffer, "latc: GPS disabled, status reject nSats=%d, gqual=%d.",
 		(int)nSatellites, (int)gps_quality);
@@ -253,13 +258,13 @@ void slatc(DERTBL *varp)
       goodGPS = 0;
       }
 
-    if (fabs(glat) > 90.0 || fabs(glon) > 180.0)
+    if (fabsf(glat) > 90.0 || fabsf(glon) > 180.0)
       {
       LogStdMsg("latc: GPS disabled, bad position.");
       goodGPS = 0;
       }
 
-    if (fabs(roll) > ROLL_MAX)
+    if (fabsf(roll) > ROLL_MAX)
       {
       sprintf(buffer, "latc: GPS disabled, ROLL_MAX of %.1f exceeded.", ROLL_MAX);
       LogStdMsg(buffer);
@@ -321,8 +326,8 @@ void slatc(DERTBL *varp)
             }
         }
 
-      sinwt = sin(omegat);
-      coswt = cos(omegat);
+      sinwt = sinf(omegat);
+      coswt = cosf(omegat);
 
       /* Want to avoid sharp transition to fit because that would
        * produce spike affecting power spectra.  Instead, slowly
@@ -333,10 +338,10 @@ void slatc(DERTBL *varp)
        */
 /*      gpsflg = 1.0;
 */
-      dvy[FeedBack] = dvy[FeedBack]*fctrf[FeedBack]+(1.0-fctrf[FeedBack])*(c[0][0]+c[0][1]*sinwt+c[0][2]*coswt);
-      dvx[FeedBack] = dvx[FeedBack]*fctrf[FeedBack]+(1.0-fctrf[FeedBack])*(c[1][0]+c[1][1]*sinwt+c[1][2]*coswt);
-      dlat[FeedBack]= dlat[FeedBack]*fctrf[FeedBack]+(1.0-fctrf[FeedBack])*(cp[0][0]+cp[0][1]*sinwt+cp[0][2]*coswt);
-      dlon[FeedBack]= dlon[FeedBack]*fctrf[FeedBack]+(1.0-fctrf[FeedBack])*(cp[1][0]+cp[1][1]*sinwt+cp[1][2]*coswt);
+      dvy[FeedBack] = dvy[FeedBack]*fctrf[FeedBack]+(oneMinus_fctrf[FeedBack])*(c[0][0]+c[0][1]*sinwt+c[0][2]*coswt);
+      dvx[FeedBack] = dvx[FeedBack]*fctrf[FeedBack]+(oneMinus_fctrf[FeedBack])*(c[1][0]+c[1][1]*sinwt+c[1][2]*coswt);
+      dlat[FeedBack]= dlat[FeedBack]*fctrf[FeedBack]+(oneMinus_fctrf[FeedBack])*(cp[0][0]+cp[0][1]*sinwt+cp[0][2]*coswt);
+      dlon[FeedBack]= dlon[FeedBack]*fctrf[FeedBack]+(oneMinus_fctrf[FeedBack])*(cp[1][0]+cp[1][1]*sinwt+cp[1][2]*coswt);
       }
     else
       {
@@ -365,17 +370,17 @@ void slatc(DERTBL *varp)
     assert(!std::isnan(gvew));
     assert(!std::isnan(gvns));
 
-    dvy[FeedBack]	+= (1.-fctrf[FeedBack])\
+    dvy[FeedBack]	+= (oneMinus_fctrf[FeedBack])\
 	   *(filter((double)(gvns-vns),zf[FeedBack][0])-dvy[FeedBack]);
-    dvx[FeedBack]	+= (1.-fctrf[FeedBack])\
+    dvx[FeedBack]	+= (oneMinus_fctrf[FeedBack])\
 	   *(filter((double)(gvew-vew),zf[FeedBack][1])-dvx[FeedBack]);
     dlat[FeedBack]	= glat - alat;
     dlon[FeedBack]	= glon - alon;
 
     if (FeedBack == LOW_RATE_FEEDBACK) /* Only do this in the Low-rate pass */
       {
-      sinwt = sin(omegat);
-      coswt = cos(omegat);
+      sinwt = sinf(omegat);
+      coswt = cosf(omegat);
 
       am[0][0] = UPFCTR * am[0][0] + dvy[FeedBack];
       am[0][1] = UPFCTR * am[0][1] + dvy[FeedBack] * sinwt;
@@ -408,16 +413,19 @@ label546:
   vnsc[FeedBack] = vns + dvy[FeedBack];
   vewc[FeedBack] = vew + dvx[FeedBack];
 
-  if (fabs(lonc[FeedBack] - alon) > 5 || fabs(latc[FeedBack] - alat) > 5)
+  if (fabsf(lonc[FeedBack] - alon) > 5 || fabsf(latc[FeedBack] - alat) > 5)
     {
     lonc[FeedBack] = alon;
     latc[FeedBack] = alat;
     }
 
-  lonc[FeedBack] += vewc[FeedBack] / (CDM * cos(alat * DEG_RAD));
-  latc[FeedBack] += vnsc[FeedBack] / CDM;
+  lonc[FeedBack] += vewc[FeedBack] * deltaT[FeedBack] / (CDM * cosf(alat * DEG_RAD));
+  latc[FeedBack] += vnsc[FeedBack] * deltaT[FeedBack] / CDM;
   lonc[FeedBack] += factorp[FeedBack] * (alon+dlon[FeedBack]-lonc[FeedBack]);
   latc[FeedBack] += factorp[FeedBack] * (alat+dlat[FeedBack]-latc[FeedBack]);
+
+  old_glat[FeedBack] = glat;
+  old_glon[FeedBack] = glon;
 
   PutSample(varp, latc[FeedBack]);
 
@@ -474,10 +482,10 @@ static NR_TYPE filter(double x, double zf[])
 {
   /* static double	a[nFeedBackTypes], a2[nFeedBackTypes],
 		a3[nFeedBackTypes], a4[nFeedBackTypes]; */
-  static double bfb[4];
-  static double bfa[4];
-  static double xf;
+  static double bfb[nFeedBackTypes][4];
+  static double bfa[nFeedBackTypes][4];
   static bool	firstTime[nFeedBackTypes] = { true, true };
+  double xf;
 
   if (firstTime[FeedBack])
     {
@@ -490,34 +498,34 @@ static NR_TYPE filter(double x, double zf[])
       /* TAU *= (float)cfg.ProcessingRate(); */
       /* These constants were calculated with tau = 25sps*600 */
       if (cfg.ProcessingRate() == 25) {
-        bfb[0] = 1.25734516578082039e-07;
-        bfb[1] = 3.77203549734246089e-07;
-        bfb[2] = 3.77203549734246089e-07;
-        bfb[3] = 1.25734516578082039e-07;
-        bfa[0] = 1.0;
-        bfa[1] = -2.97989389167679875;
-        bfa[2] =  2.95998940318073878;
-        bfa[3] = -0.980094505627807311;
+        bfb[FeedBack][0] = 1.25734516578082039e-07;
+        bfb[FeedBack][1] = 3.77203549734246089e-07;
+        bfb[FeedBack][2] = 3.77203549734246089e-07;
+        bfb[FeedBack][3] = 1.25734516578082039e-07;
+        bfa[FeedBack][0] = 1.0;
+        bfa[FeedBack][1] = -2.97989389167679875;
+        bfa[FeedBack][2] =  2.95998940318073878;
+        bfa[FeedBack][3] = -0.980094505627807311;
       } else {
 	  sprintf(buffer,"Butterworth filter not implemented for processing rate %d. Edit gpsc.c and follow instructions for generating coefficients for this rate.\n",cfg.ProcessingRate());
           LogMessage(buffer);
       }
     } else {
-      bfb[0] = 1.56701035058826933e-03;
-      bfb[1] = 4.70103105176480820e-03; 
-      bfb[2] = 4.70103105176480820e-03; 
-      bfb[3] = 1.56701035058826933e-03;
-      bfa[0] = 1.0;
-      bfa[1] = -2.49860834469117776; 
-      bfa[2] =  2.11525412700315840;
-      bfa[3] = -6.04109699507274889e-1;
+      bfb[FeedBack][0] = 1.56701035058826933e-03;
+      bfb[FeedBack][1] = 4.70103105176480820e-03;
+      bfb[FeedBack][2] = 4.70103105176480820e-03;
+      bfb[FeedBack][3] = 1.56701035058826933e-03;
+      bfa[FeedBack][0] = 1.0;
+      bfa[FeedBack][1] = -2.49860834469117776;
+      bfa[FeedBack][2] =  2.11525412700315840;
+      bfa[FeedBack][3] = -6.04109699507274889e-1;
     }
 
     firstTime[FeedBack] = false;
     }
 
-  xf =  (bfb[0] * x + bfb[1] * zf[0] + bfb[2]*zf[1] + bfb[3]*zf[2] 
-        - (bfa[1]*zf[3] + bfa[2]*zf[4] + bfa[3]*zf[5]));
+  xf =  (bfb[FeedBack][0] * x + bfb[FeedBack][1] * zf[0] + bfb[FeedBack][2]*zf[1] + bfb[FeedBack][3]*zf[2] 
+        - (bfa[FeedBack][1]*zf[3] + bfa[FeedBack][2]*zf[4] + bfa[FeedBack][3]*zf[5]));
 
   /* Store terms for the next call. */
   zf[2] = zf[1];
