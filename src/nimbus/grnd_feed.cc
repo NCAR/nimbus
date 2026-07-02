@@ -142,7 +142,7 @@ void GroundFeed::BroadcastData(nidas::core::dsm_time_t tt)
   const std::string& inputStr = groundString.str();
 
   int ret = BZ2_bzBuffToBuffCompress( buffer, &bufLen, const_cast<char*>(inputStr.data()),
-                                      inputStr.length(),9,0,0);
+                                      inputStr.length(),1,0,0);
   if (ret < 0) {
     typedef struct {     // copied from bzlib.c
       FILE*     handle;
