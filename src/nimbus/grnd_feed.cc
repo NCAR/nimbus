@@ -136,11 +136,12 @@ void GroundFeed::BroadcastData(nidas::core::dsm_time_t tt)
     return;
 
   // compress the stream before sending it to the ground
-  char buffer[32000];
-  memset(buffer, 0, 32000);
+  char buffer[8192];
   unsigned int bufLen = sizeof(buffer);
-  int ret = BZ2_bzBuffToBuffCompress( buffer, &bufLen, (char *) groundString.str().c_str(),
-                                      groundString.str().length(),9,0,0);
+  const std::string& inputStr = groundString.str();
+
+  int ret = BZ2_bzBuffToBuffCompress( buffer, &bufLen, const_cast<char*>(inputStr.data()),
+                                      inputStr.length(),9,0,0);
   if (ret < 0) {
     typedef struct {     // copied from bzlib.c
       FILE*     handle;
@@ -155,7 +156,7 @@ void GroundFeed::BroadcastData(nidas::core::dsm_time_t tt)
     b.lastErr = ret;
     int errnum;
     char msg[100];
-    snprintf(msg, 128, "Failed to compress the ground feed stream: %s\n", BZ2_bzerror(&b, &errnum) );
+    snprintf(msg, 100, "Failed to compress the ground feed stream: %s\n", BZ2_bzerror(&b, &errnum) );
     ::LogMessage(msg);
     return;
   }
