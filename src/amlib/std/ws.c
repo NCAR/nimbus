@@ -10,15 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2026
 -------------------------------------------------------------------------
 */
 
@@ -34,7 +26,7 @@ void sws(DERTBL *varp)
   ui = GetSample(varp, 0);
   vi = GetSample(varp, 1);
 
-  PutSample(varp, (NR_TYPE)sqrt((double)ui*ui + vi*vi));
+  PutSample(varp, (NR_TYPE)sqrtf(ui*ui + vi*vi));
 
 }	/* END SWS */
 

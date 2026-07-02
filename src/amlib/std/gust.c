@@ -220,14 +220,14 @@ void swi(DERTBL *varp)
 
   /* Coordinate transformation
    */
-  cs	= (NR_TYPE)cos((double)thdg);
-  ss	= (NR_TYPE)sin((double)thdg);
-  ch	= (NR_TYPE)cos((double)pitch);
-  sh	= (NR_TYPE)sin((double)pitch);
-  cr	= (NR_TYPE)cos((double)roll);
-  sr	= (NR_TYPE)sin((double)roll);
-  ta	= (NR_TYPE)tan((double)attack);
-  tb	= (NR_TYPE)tan((double)sslip);
+  cs	= (NR_TYPE)cosf(thdg);
+  ss	= (NR_TYPE)sinf(thdg);
+  ch	= (NR_TYPE)cosf(pitch);
+  sh	= (NR_TYPE)sinf(pitch);
+  cr	= (NR_TYPE)cosf(roll);
+  sr	= (NR_TYPE)sinf(roll);
+  ta	= (NR_TYPE)tanf(attack);
+  tb	= (NR_TYPE)tanf(sslip);
 
   tas_dab	= -tas * 1.0 / (NR_TYPE)sqrt((double)1.0 + ta*ta + tb*tb);
   e	= -tb * (ss * cr - cs * sh * sr);
@@ -285,8 +285,8 @@ void swi(DERTBL *varp)
 
   if (std::isnan(attack))	// no longer true with const attack above
   {
-    ui[probeCnt] = -tas * sin((thdg+sslip))+vew;
-    vi[probeCnt] = -tas * cos((thdg+sslip))+vns;
+    ui[probeCnt] = -tas * sinf((thdg+sslip))+vew;
+    vi[probeCnt] = -tas * cosf((thdg+sslip))+vns;
   }
   else
 */

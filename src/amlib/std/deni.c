@@ -84,7 +84,7 @@ void sdri(DERTBL *varp)
   dei = GetSample(varp, 0);
   dni = GetSample(varp, 1);
 
-  PutSample(varp, (NR_TYPE)sqrt(dei*dei+dni*dni));
+  PutSample(varp, (NR_TYPE)sqrtf(dei*dei+dni*dni));
 }
 
 /* -------------------------------------------------------------------- */

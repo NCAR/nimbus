@@ -36,6 +36,9 @@ static std::vector<float> aky_c1;
 static double filter(double, double *);
 static double zf[nFeedBackTypes][4][6];
 
+static bool use_alt_coeff = false;
+static bool is_gothaam = false;
+
 /* -------------------------------------------------------------------- */
 NR_TYPE defaultATTACK()
 {
@@ -201,13 +204,18 @@ void initAKRD(var_base *varp)
       cfg.ProjectName().compare("ACCLIP") == 0 ||
       cfg.ProjectName().compare("OTREC-TEST") == 0)
   {
+    use_alt_coeff = true;
     low = load_AKRD_Default(varp, "AKRD_COEFF_LOW");
     mid = load_AKRD_Default(varp, "AKRD_COEFF_MID");
     high = load_AKRD_Default(varp, "AKRD_COEFF_HIGH");
   }
 
   if (cfg.ProjectName().compare("GOTHAAM") == 0)
+  {
+    // This is for flaps at 50% plus during GOTHAAM, may expand in the future
+    is_gothaam = true;
     low = load_AKRD_Default(varp, "AKRD_COEFF_ALT");
+  }
 }
 
 /* -------------------------------------------------------------------- */
@@ -232,11 +240,11 @@ void sakrd(DERTBL *varp)
         if (varp->nDependencies == 3)  // Post IDEAS-4
         {
           psf  = GetSample(varp, 2);	// PSF
-          mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
+          mach = sqrtf( 5.0 * (powf((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
           akrd = akrd_coeff[0] + ratio * (akrd_coeff[1] + akrd_coeff[2] * mach); // 15 Sept 2016 memo
 
           // alternate coefficients for Hudson river low level with flaps down.
-          if (cfg.ProjectName().compare("GOTHAAM") == 0 && mach <= 0.24)
+          if (is_gothaam && mach <= 0.24)
           {
             flaps_flg = 1.0;
             akrd = low[0] + ratio * (low[1] + low[2] * mach);
@@ -254,14 +262,11 @@ void sakrd(DERTBL *varp)
 
       case Config::HIAPER:
         psf = GetSample(varp, 2);	// PSF
-        mach = sqrt( 5.0 * (pow((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
+        mach = sqrtf( 5.0 * (powf((qc+psf)/psf, Rd_DIV_Cpd) - 1.0) ); // Mach #
 
         if (varp->nDependencies == 4)	// altitude based cutoff.
         {
-          if (cfg.ProjectName().compare("CSET") == 0 ||
-              cfg.ProjectName().compare("ORCAS") == 0 ||
-              cfg.ProjectName().compare("SOCRATES") == 0 ||
-              cfg.ProjectName().compare("OTREC-TEST") == 0)
+          if (use_alt_coeff)
           {
             NR_TYPE alt = GetSample(varp, 3);
             if (alt < 6500) akrd_coeff = low; else

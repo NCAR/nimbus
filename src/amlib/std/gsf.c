@@ -10,14 +10,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
 */
@@ -34,7 +26,7 @@ void sgsf(DERTBL *varp)
   xvi = GetSample(varp, 0);
   yvi = GetSample(varp, 1);
 
-  PutSample(varp, (NR_TYPE)sqrt((double)xvi*xvi + (double)yvi*yvi));
+  PutSample(varp, (NR_TYPE)sqrtf(xvi*xvi + yvi*yvi));
 
 }	/* END SGSF */
 
