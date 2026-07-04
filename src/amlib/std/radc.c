@@ -10,15 +10,7 @@ ENTRY POINTS:   radcInit(), sradcf(), sradc()
 STATIC FNS:    
 
 DESCRIPTION:    Calculate aircraft attitude corrections for hemispheric
-				radiation data
-
-INPUT:          PITCH ROLL THF SOLAZ SOLZE
-
-OUTPUT:         RADCF RADC
-
-REFERENCES:    
-
-REFERENCED BY:  compute.c
+		radiation data
 
 COPYRIGHT:      University Corporation for Atmospheric Research, 1997, 1998
 
@@ -103,7 +95,7 @@ void radcInit(var_base *varp)
   printf ("          SWDIFF = %f\n",SWDIFF);
   printf ("          SWDIRF = %f\n",SWDIRF);
  */
- 
+
 }  /* END RADCINIT  */
 
 /* -------------------------------------------------------------------- */
@@ -122,18 +114,18 @@ void sradcf(DERTBL *varp)
 
 /* Check pitch and roll thresholds */
   if ( pitch > (double)PMAX || roll > (double)RMAX ||
-     pitch < (double)PMIN || roll < (double)RMIN )
+       pitch < (double)PMIN || roll < (double)RMIN )
   {
     radcf = floatNAN;
   }
   else
   {
 /* Aircraft attitude correction factor */
-      tr  = tan((roll)*DEG_RAD);
-      tp  = tan((pitch)*DEG_RAD);
-    tz  = tan(solze);
+    tr  = tanf(roll * DEG_RAD);
+    tp  = tanf(pitch * DEG_RAD);
+    tz  = tanf(solze * DEG_RAD);
 /*  Transform solar azimuth into aircraft coordinates */
-      amt = M_PI - solaz - thdg;
+    amt = M_PI - solaz * DEG_RAD - thdg;
     cf1 = sqrt(1.0 + tr*tr + tp*tp);
     cf2 =  1.0 + tr*tz*sin(amt) - tp*tz*cos(amt);
     if (cf2 != 0.0)
