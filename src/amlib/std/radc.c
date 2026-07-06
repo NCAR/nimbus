@@ -127,7 +127,7 @@ void sradcf(DERTBL *varp)
 /*  Transform solar azimuth into aircraft coordinates */
     amt = M_PI - solaz * DEG_RAD - thdg;
     cf1 = sqrt(1.0 + tr*tr + tp*tp);
-    cf2 =  1.0 + tr*tz*sin(amt) - tp*tz*cos(amt);
+    cf2 =  1.0 + tr*tz*sinf(amt) - tp*tz*cosf(amt);
     if (cf2 != 0.0)
       radcf = (NR_TYPE)(cf1/cf2);
     else
