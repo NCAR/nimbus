@@ -74,6 +74,7 @@ rhrho.c
 rhum.c
 roc.c
 solang.c
+solangac.c
 spec2udp.c
 sphum.c
 ssdf.c

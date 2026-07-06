@@ -744,8 +744,8 @@
 	"SOLAZ",	NULL,		NULL,		ssolaz,
 	"SOLDE",	NULL,		NULL,		ssolde,
 	"SOLEL",	NULL,		NULL,		ssolel,
-#	"SOLAZAC",	NULL,		NULL,		sSolarAz,
-#	"SOLELAC",	NULL,		NULL,		sSolarEl,
+	"SOLAZAC",	NULL,		NULL,		ssolazac,
+	"SOLELAC",	NULL,		NULL,		ssolelac,
 #
 #	Radiation Attitude Angle Corrections
 	"RADCF",	(void(*)(void*))radcInit,	NULL,		sradcf,
