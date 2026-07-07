@@ -319,7 +319,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   writeTimeUnits();
 
 
-  /* SDI variables.
+  /* Raw variables.
    */
 
   /* For each variable:
@@ -1046,6 +1046,9 @@ void NetCDF::addVariableMetadata(const var_base *var)
     else
       nc_put_att_text(_ncid, var->varid, mdp->_attr_name.c_str(),
                 mdp->_attr_str.length(), mdp->_attr_str.c_str());
+
+    if (mdp->_attr_name == "units" && mdp->_attr_str == "count")
+      nc_put_att_text(_ncid, var->varid, "cell_methods", 9, "time: sum");
   }
 }       /* END ADDVARIABLEMETADATA */
 
