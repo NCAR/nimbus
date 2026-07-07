@@ -37,7 +37,7 @@ static const double Lv0 = 2.501e6;
 //  Values that can be over-ridden from Defaults file.
 static NR_TYPE	tWire[nLWC] = {130.0, 130.0};		// Wire temperature (C)
 static NR_TYPE	dWire[nLWC] = {0.1805e-2, 0.1805e-2};	// Wire Diameter
-static NR_TYPE	lWire[nLWC] = {2.1e-2, 2.1e-2};		// Wire length (mm)
+static NR_TYPE	lWire[nLWC] = {2.1e-2, 2.1e-2};		// Wire length (m)
 static int	tau_Nu[nLWC] = {120, 120};		// Nusselt-number time constant.
 static NR_TYPE	cloud_conc_threshold = 1.0;		// Cloud Concentration Baseline Threshold
 static NR_TYPE	min_watt_threshold = 10.0;		// Minimum Wattage from PLWC
@@ -122,7 +122,7 @@ void splwcc(DERTBL *varp)
   NR_TYPE plwc, tasx, atx, psxc, concf = floatNAN;
   NR_TYPE plwcc;
 
-  static int resetCntr = 0;
+  static int resetCntr[nLWC] = { 0, 0 };
 
   plwc  = GetSample(varp, 0);	// Raw Liquid Water measurement
   tasx  = GetSample(varp, 1);	// True Airspeed
@@ -135,7 +135,7 @@ void splwcc(DERTBL *varp)
   if (plwc < min_watt_threshold || std::isnan(plwc))
   {
     if (plwc < 2.0) {	// power turned off.
-      resetCntr = 0;
+      resetCntr[varp->ProbeCount] = 0;
     }
 
     PutSample(varp, floatNAN);
@@ -149,9 +149,9 @@ void splwcc(DERTBL *varp)
   }
 
   // On power up, PLWC spikes too high, mask out the spike for N seconds
-  if (resetCntr < 2) {
+  if (resetCntr[varp->ProbeCount] < 2) {
     if (FeedBack == LOW_RATE_FEEDBACK)
-      ++resetCntr;
+      ++resetCntr[varp->ProbeCount];
     PutSample(varp, floatNAN);
     return;
   }
