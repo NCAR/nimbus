@@ -181,10 +181,6 @@ void scdp(DERTBL *varp)
     concentration = &AveragedData[varp->LRstart];
   }
 
-  tact[probeNum] = 0.0;
-  for (i = 0; i < varp->Length; ++i)
-    tact[probeNum] += actual[i];
-
   vol[probeNum] = tas * SAMPLE_AREA[probeNum];
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
