@@ -122,7 +122,7 @@ void casasInit(var_base *varp)
   // Add this to PFLWC
   ((DERTBL *)varp)->depends[1]->addToMetadata("std_temperature", values);
 
-  addProbeMetadata(varp, "scattering", "aerosol_course");
+  addProbeMetadata(varp, "scattering", "aerosol_coarse");
 
 }	/* END CASASINIT */
 
