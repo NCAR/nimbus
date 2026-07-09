@@ -149,6 +149,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
    */
   int TimeDim;
   nc_def_dim(_ncid, "Time", NC_UNLIMITED, &TimeDim);
+  nc_def_dim(_ncid, "bnds", 2, &_bnds_dimid);
   createSubSampleCoordinateDimVars(1);
 
   /* Global Attributes.
@@ -311,6 +312,10 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   nc_put_att_text(_ncid, _timeVarID, "axis", strlen(buffer), buffer);
   strcpy(buffer, "standard");
   nc_put_att_text(_ncid, _timeVarID, "calendar", strlen(buffer), buffer);
+
+  dims[1] = _bnds_dimid;
+  nc_def_var(_ncid, "Time_bnds", NC_LONG, 2, dims, &_timeVarID);
+
 
   if (cfg.isADS2())
   {
@@ -555,9 +560,6 @@ void NetCDF::createSizeDistributionCoordinateDimVars(var_base *vp)
   // exit if we've already created these (2DSH & 2DSV would cause two entries into here)
   if (_vectorDimIDs.count(vp->SerialNumber))
     return;
-
-  if (_bnds_dimid == -1)	// Create this only once.
-    nc_def_dim(_ncid, "bnds", 2, &_bnds_dimid);
 
   strcpy(dname, vp->SerialNumber.c_str());
 
