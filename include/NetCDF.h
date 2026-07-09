@@ -39,6 +39,7 @@ protected:
   void	writeTimeUnits(), writeMinMax();
   void	addCommonVariableAttributes(const var_base *var), addLandmarks();
   void	createSizeDistributionCoordinateDimVars(var_base *var);
+  void	createSubSampleCoordinateDimVars(int rate);
   void  addVariableMetadata(const var_base *var);
 
   long	UTSeconds(double *record);
@@ -65,7 +66,7 @@ protected:
   float	_timeOffset;
 
   // Rate, DimID
-  std::map<int, int> _rateDimIDs;
+  std::map<int, int> _rateDimIDs, _rateCoordVarIDs;
   // VectorLen, DimID
   // SerialNumber, DimID
   std::map<std::string, int> _vectorDimIDs;
