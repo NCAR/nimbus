@@ -52,9 +52,6 @@ void sdpc_GG(DERTBL *varp)	// Goff-Gratch.
 
   if (dp < 0.0)
     dp = 0.009109 + dp * (1.134055 + dp * 0.001038);
-  else
-  if (dp == 0.0)
-    dp = dp * (1.134055 + dp * 0.001038);
 
   PutSample(varp, dp);
 }
