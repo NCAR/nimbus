@@ -1075,6 +1075,20 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
   float zero[2] = { 0.0, 0.0 };
   nc_put_att_float(_ncid, var->varid, "actual_range", NC_FLOAT, 2, zero);
 
+
+  // Add coordinates
+  if (var->name != cfg.CoordinateLatitude() &&
+      var->name != cfg.CoordinateLongitude() &&
+      var->name != cfg.CoordinateAltitude())
+  {
+    char temp[64];
+    snprintf(temp, 64, "Time %s %s %s",
+	cfg.CoordinateLatitude().c_str(),
+	cfg.CoordinateLongitude().c_str(),
+	cfg.CoordinateAltitude().c_str());
+    nc_put_att_text(_ncid, var->varid, "coordinates", strlen(temp), temp);
+  }
+
   if (var->CategoryList.size() > 0)
   {
     char temp[32];
