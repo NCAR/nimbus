@@ -1081,8 +1081,8 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
       var->name != cfg.CoordinateLongitude() &&
       var->name != cfg.CoordinateAltitude())
   {
-    char temp[64];
-    snprintf(temp, 64, "Time %s %s %s",
+    char temp[128];
+    snprintf(temp, 128, "%s %s %s",
 	cfg.CoordinateLatitude().c_str(),
 	cfg.CoordinateLongitude().c_str(),
 	cfg.CoordinateAltitude().c_str());
