@@ -59,7 +59,7 @@ protected:
   struct tm _startFlight;
   long	_recordNumber;
   long	_timeVar;
-  int	_timeOffsetID, _timeVarID;
+  int	_timeOffsetID, _timeVarID, _time_bndsID;
 
   // To be deprecated.  Used in old ADS2 netCDF format.
   int	_baseTimeID;

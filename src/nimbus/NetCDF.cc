@@ -63,7 +63,7 @@ void sRefer(DERTBL *), sReferAttack(DERTBL *);
 
 /* -------------------------------------------------------------------- */
 NetCDF::NetCDF() :
-  _ncid(0), _realTimeMode(false), _recordNumber(0), _timeVar(0),
+  _ncid(0), _realTimeMode(false), _recordNumber(0), _timeVar(-1), _time_bndsID(-1),
   _timeOffset(0.0), _bnds_dimid(-1), _errCnt(0)
 {
   memset(&_startFlight, 0, sizeof(_startFlight));
@@ -314,7 +314,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   nc_put_att_text(_ncid, _timeVarID, "calendar", strlen(buffer), buffer);
 
   dims[1] = _bnds_dimid;
-  nc_def_var(_ncid, "Time_bnds", NC_LONG, 2, dims, &_timeVarID);
+  nc_def_var(_ncid, "Time_bnds", NC_LONG, 2, dims, &_time_bndsID);
 
 
   if (cfg.isADS2())
@@ -688,15 +688,20 @@ void NetCDF::WriteNetCDF()
 
   size_t start[3], count[3];
   start[0] = _recordNumber; start[1] = start[2] = 0;
-  count[0] = 1;
+  count[0] = 1; count[1] = 2;
 
   time_t stime = SampledDataTimeToSeconds(SampledData);
 
   // Output Time variable as seconds since midnight (UTSeconds).
-  long ut_seconds = UTSeconds(SampledData);
-  nc_put_var1_long(_ncid, _timeVarID, start, &ut_seconds);
+  long ut_seconds[2];
+  ut_seconds[0] = UTSeconds(SampledData);
+  ut_seconds[1] = UTSeconds(SampledData)+1;	// all means and sums are for the existing second
+  nc_put_var1_long(_ncid, _timeVarID, start, ut_seconds);
+  nc_put_vara_long(_ncid, _time_bndsID, start, count, ut_seconds);
+
   if (cfg.isADS2())
     nc_put_var1_float(_ncid, _timeOffsetID, start, &_timeOffset);
+
 
   static TraceVariables tv;
 
