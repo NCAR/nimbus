@@ -312,6 +312,8 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   nc_put_att_text(_ncid, _timeVarID, "axis", strlen(buffer), buffer);
   strcpy(buffer, "standard");
   nc_put_att_text(_ncid, _timeVarID, "calendar", strlen(buffer), buffer);
+  strcpy(buffer, "Time_bnds");
+  nc_put_att_text(_ncid, _timeVarID, "bounds", strlen(buffer), buffer);
 
   dims[1] = _bnds_dimid;
   nc_def_var(_ncid, "Time_bnds", NC_LONG, 2, dims, &_time_bndsID);
