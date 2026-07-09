@@ -149,7 +149,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
    */
   int TimeDim;
   nc_def_dim(_ncid, "Time", NC_UNLIMITED, &TimeDim);
-  nc_def_dim(_ncid, "sps1", 1, &_rateDimIDs[1]);
+  createSubSampleCoordinateDimVars(1);
 
   /* Global Attributes.
    */
@@ -245,6 +245,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   if (cfg.InterpolationType() == Config::AkimaSpline)
     putGlobalAttribute(InterpKey.c_str(), Interp_Akima);
 
+  putGlobalAttribute("featureType", "trajectory");
   putGlobalAttribute("latitude_coordinate", cfg.CoordinateLatitude());
   putGlobalAttribute("longitude_coordinate", cfg.CoordinateLongitude());
   putGlobalAttribute("zaxis_coordinate", cfg.CoordinateAltitude());
@@ -306,6 +307,10 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   nc_put_att_text(_ncid, _timeVarID, "long_name", strlen(buffer), buffer);
   strcpy(buffer, "time");
   nc_put_att_text(_ncid, _timeVarID, "standard_name", strlen(buffer), buffer);
+  strcpy(buffer, "T");
+  nc_put_att_text(_ncid, _timeVarID, "axis", strlen(buffer), buffer);
+  strcpy(buffer, "standard");
+  nc_put_att_text(_ncid, _timeVarID, "calendar", strlen(buffer), buffer);
 
   if (cfg.isADS2())
   {
@@ -317,6 +322,14 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
   // Write units for both Time & time_offset.
   writeTimeUnits();
+
+  // Create all dimensions and their coordinate variables first.
+  for (size_t i = 0; i < raw.size(); ++i)
+    createSubSampleCoordinateDimVars(raw[i]->OutputRate);
+
+  for (size_t i = 0; i < derived.size(); ++i)
+    createSubSampleCoordinateDimVars(derived[i]->OutputRate);
+
 
 
   /* Raw variables.
@@ -336,23 +349,6 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
     RAWTBL *rp;
     if ((rp = raw[i])->Output == false)
       continue;
-
-    if (rp->OutputRate == 0)
-    {
-      char msg[256];
-
-      snprintf(msg, 128, "%s: Assertion `OutputRate > 0' failed.", rp->name);
-      LogMessage(msg);
-      quit();
-    }
-
-    // Check to see if dimension exists.  If not, create it.
-    if (_rateDimIDs.find(rp->OutputRate) == _rateDimIDs.end())
-    {
-      char tmp[32];
-      snprintf(tmp, 32, "sps%zu", rp->OutputRate);
-      nc_def_dim(_ncid, tmp, rp->OutputRate, &_rateDimIDs[rp->OutputRate]);
-    }
 
     dims[1] = _rateDimIDs[rp->OutputRate];
     if (rp->OutputRate == 1)
@@ -440,23 +436,6 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
     if ((dp = derived[i])->Output == false)
       continue;
 
-    if (dp->OutputRate == 0)
-    {
-      char msg[256];
-
-      snprintf(msg, 128, "%s: Assertion `OutputRate > 0' failed.", dp->name);
-      LogMessage(msg);
-      quit();
-    }
-
-    // Check to see if dimension exists.  If not, create it.
-    if (_rateDimIDs.find(dp->OutputRate) == _rateDimIDs.end())
-    {
-      char tmp[32];
-      snprintf(tmp, 32, "sps%zu", dp->OutputRate);
-      nc_def_dim(_ncid, tmp, dp->OutputRate, &_rateDimIDs[dp->OutputRate]);
-    }
-
     dims[1] = _rateDimIDs[dp->OutputRate];
     if (dp->OutputRate == 1)
       ndims = 1;
@@ -529,6 +508,45 @@ nc_set_fill(_ncid, NC_NOFILL, &old_fill_mode); /* set nofill */
 }	/* END CREATENETCDF */
 
 /* -------------------------------------------------------------------- */
+void NetCDF::createSubSampleCoordinateDimVars(int rate)
+{
+  char dname[64], text[128];
+  int coord_dims[2], status;
+
+  if (rate == 0)
+  {
+    char msg[256];
+
+    snprintf(msg, 128, "NetCDF::createSubSampleCoordinateDimVars: Assertion `OutputRate > 0' failed.");
+    LogMessage(msg);
+    quit();
+  }
+
+  // Check to see if dimension exists.  If not, create it.
+  if (_rateDimIDs.find(rate) != _rateDimIDs.end())
+    return;
+
+  snprintf(dname, 64, "sps%d", rate);
+  status = nc_def_dim(_ncid, dname, rate, &_rateDimIDs[rate]);
+  if (status != NC_NOERR)
+  {
+    fprintf(stderr,"CreateNetCDF: error, can't create dimension %s, status = %d\n", dname, status);
+    fprintf(stderr, "%s\n", nc_strerror(status));
+  }
+  coord_dims[0] = _rateDimIDs[rate];
+
+  status = nc_def_var(_ncid, dname, NC_FLOAT, 1, coord_dims, &_rateCoordVarIDs[rate]);
+  if (status != NC_NOERR)
+  {
+    fprintf(stderr,"CreateNetCDF: error, can't create coordinate variable %s, status = %d\n", dname, status);
+    fprintf(stderr, "%s\n", nc_strerror(status));
+  }
+  nc_put_att_text(_ncid, _rateCoordVarIDs[rate], "units", 1, "s");
+  strcpy(text, "subsecond offset");
+  nc_put_att_text(_ncid, _rateCoordVarIDs[rate], "long_name", strlen(text), text);
+}
+
+/* -------------------------------------------------------------------- */
 void NetCDF::createSizeDistributionCoordinateDimVars(var_base *vp)
 {
   char dname[128], text[128];
@@ -593,6 +611,20 @@ void NetCDF::WriteCoordinateVariableData()
   float cell_size[1024], mid_points[1024], bounds[1024][2];
 
   nc_enddef(_ncid);
+
+  std::map<int, int>::iterator it;
+  for (it = _rateCoordVarIDs.begin(); it != _rateCoordVarIDs.end(); it++)
+  {
+    float values[1000];
+    int rate = it->first;
+    for (int i = 0; i < rate; ++i)
+      values[i] = i * (1.0 / rate);
+
+      if (rate == 1)	// since these are averages.
+        values[0] = 0.5;
+
+      nc_put_var_float(_ncid, it->second, values);
+  }
 
   for (size_t i = 0; i < derived.size(); ++i)
   {
@@ -1001,7 +1033,25 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
   {
     std::string std_name = vdb_var->get_attribute(VDBVar::STANDARD_NAME);
     if (std_name.size() > 0)
+    {
       nc_put_att_text(_ncid, var->varid, "standard_name", std_name.size(), std_name.c_str());
+
+      if (std_name.find("altitude") !=  std::string::npos)
+      {
+        const char *val = "Z";
+        nc_put_att_text(_ncid, var->varid, "axis", strlen(val), val);
+        val = "up";
+        nc_put_att_text(_ncid, var->varid, "positive", strlen(val), val);
+      }
+
+      if (std_name == "air_pressure")
+      {
+        const char *val = "Z";
+        nc_put_att_text(_ncid, var->varid, "axis", strlen(val), val);
+        val = "down";
+        nc_put_att_text(_ncid, var->varid, "positive", strlen(val), val);
+      }
+    }
 
     if (vdb_var->has_attribute(VDBVar::MIN_LIMIT) &&
 	vdb_var->has_attribute(VDBVar::MAX_LIMIT))
@@ -1033,6 +1083,15 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
 /* -------------------------------------------------------------------- */
 void NetCDF::addVariableMetadata(const var_base *var)
 {
+  /* Set cell_methods based on OutputRate vs SampleRate:
+   *   OutputRate < SampleRate  -> decimated/averaged  -> time:mean
+   *     (LRT from any sensor, HRT from sensors faster than 25 Hz)
+   *   OutputRate >= SampleRate -> direct or interpolated -> time:point
+   *     (SRT at native rate, HRT from sensors at or slower than 25 Hz)
+   * Counter variables (units==count) override to time:sum below.
+   */
+  const char *cm = (var->OutputRate < var->SampleRate) ? "time: mean" : "time: point";
+
   for (size_t i = 0; i < var->metadata.size(); ++i)
   {
     const Metadata *mdp = &var->metadata[i];
@@ -1048,8 +1107,11 @@ void NetCDF::addVariableMetadata(const var_base *var)
                 mdp->_attr_str.length(), mdp->_attr_str.c_str());
 
     if (mdp->_attr_name == "units" && mdp->_attr_str == "count")
-      nc_put_att_text(_ncid, var->varid, "cell_methods", 9, "time: sum");
+      cm = "time: sum";
   }
+
+  nc_put_att_text(_ncid, var->varid, "cell_methods", strlen(cm), cm);
+
 }       /* END ADDVARIABLEMETADATA */
 
 /* -------------------------------------------------------------------- */
