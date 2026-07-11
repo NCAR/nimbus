@@ -126,6 +126,12 @@ void initGust(var_base *varp)
 void initWindsFlag(var_base *varp)
 {
   std::vector<int> values;
+
+  values.push_back(0);
+  values.push_back(6);
+  varp->addToMetadata("valid_range", values);
+
+  values.clear();
   values.push_back(0);	// good
   values.push_back(1);	// bad attack
   values.push_back(2);	// bad sslip
