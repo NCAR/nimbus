@@ -711,7 +711,8 @@ static RAWTBL* initSDI_ADS3(const nidas::core::Variable* nidas_var, time_t start
   if (converter)
   {
 //    cp->AltUnits = nidas_var->getUnits();	// Do we really use AltUnits?  If I add to metadata, then it goes in the netCDF file regardless
-    cp->addToMetadata("units", converter->getUnits());
+    if (converter->getUnits().length() > 0)
+      cp->addToMetadata("units", converter->getUnits());
   }
 
   return(cp);
@@ -2484,7 +2485,8 @@ addUnitsAndLongName(var_base *vbp, const nidas::core::Variable *nidas_var)
   // null will be passed in if the variable is derived, or from ADS2.
   if (nidas_var)
   {
-    vbp->addToMetadata("units", nidas_var->getUnits());
+    if (nidas_var->getUnits().length() > 0)
+      vbp->addToMetadata("units", nidas_var->getUnits());
     vbp->addToMetadata("long_name", nidas_var->getLongName());
   }
 
@@ -2493,7 +2495,7 @@ addUnitsAndLongName(var_base *vbp, const nidas::core::Variable *nidas_var)
    */
   if (vdb_var)
   {
-    if (vbp->Units().length() == 0)
+    if (vbp->Units().length() == 0 && vdb_var->get_attribute(VDBVar::UNITS).length() > 0)
       vbp->addToMetadata("units", vdb_var->get_attribute(VDBVar::UNITS));
     if (vbp->LongName().length() == 0)
       vbp->addToMetadata("long_name", vdb_var->get_attribute(VDBVar::LONG_NAME));
