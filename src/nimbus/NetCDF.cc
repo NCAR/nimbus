@@ -1080,9 +1080,6 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
     }
   }
 
-  float zero[2] = { 0.0, 0.0 };
-  nc_put_att_float(_ncid, var->varid, "actual_range", NC_FLOAT, 2, zero);
-
 
   // Add coordinates
   if (var->name != cfg.CoordinateLatitude() &&
