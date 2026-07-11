@@ -960,6 +960,10 @@ void NetCDF::writeMinMax()
     if (!rp->Output)
       continue;
 
+    // Don't create attribute if no valid min/max - evertying is missing?
+    if (rp->max < rp->min)
+      continue;
+
     range[0] = rp->min;
     range[1] = rp->max;
     nc_put_att_float(_ncid, rp->varid, "actual_range", NC_FLOAT, 2, range);
@@ -980,6 +984,10 @@ void NetCDF::writeMinMax()
   {
     DERTBL * dp = derived[i];
     if (!dp->Output)
+      continue;
+
+    // Don't create attribute if no valid min/max - evertying is missing?
+    if (dp->max < dp->min)
       continue;
 
     range[0] = dp->min;
