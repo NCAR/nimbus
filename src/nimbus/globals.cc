@@ -65,7 +65,7 @@ const std::string MODVARS	= "%s/Configuration/ModVars";
 const std::string SUMVARS	= "%s/Configuration/SumVars";
 const std::string RAWNAMES	= "%s/Configuration/RawNames";
 const std::string DERIVEDNAMES	= "%s/Configuration/DerivedNames";
-const std::string META_DATA	= "%s/Configuration/MetaDataTable";
+const std::string META_DATA	= "%s/Configuration/MetadataTable";
 const std::string INSNAMES	= "%s/Configuration/ins.names";
 const std::string IRSNAMES	= "%s/Configuration/irs.names";
 
