@@ -1053,19 +1053,11 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
     {
       nc_put_att_text(_ncid, var->varid, "standard_name", std_name.size(), std_name.c_str());
 
-      if (std_name.find("altitude") !=  std::string::npos)
+      if (var->name == cfg.CoordinateAltitude())
       {
         const char *val = "Z";
         nc_put_att_text(_ncid, var->varid, "axis", strlen(val), val);
         val = "up";
-        nc_put_att_text(_ncid, var->varid, "positive", strlen(val), val);
-      }
-
-      if (std_name == "air_pressure")
-      {
-        const char *val = "Z";
-        nc_put_att_text(_ncid, var->varid, "axis", strlen(val), val);
-        val = "down";
         nc_put_att_text(_ncid, var->varid, "positive", strlen(val), val);
       }
     }
