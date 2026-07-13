@@ -35,7 +35,7 @@ const std::string NetCDF::Publisher_Name= "UCAR NCAR - Earth Observing Laborator
 const std::string NetCDF::Publisher_URL	= "https://www.eol.ucar.edu/data-software/eol-field-data-archive";
 const std::string NetCDF::Publisher_EMail= "datahelp at eol.ucar.edu";
 const std::string NetCDF::ProcessorURL	= "https://github.com/NCAR/nimbus";
-const std::string NetCDF::Conventions	= "NCAR-RAF/nimbus-2.1,ACDD-1.3";
+const std::string NetCDF::Conventions	= "CF-1.13, ACDD-1.3, NCAR-RAF/nimbus-2.1";
 const std::string NetCDF::ConventionsURL= "https://www.eol.ucar.edu/raf/Software/netCDF.html";
 const std::string NetCDF::TimeStampDescription = "Most data here are sampled higher than 1 Hz and averaged to 1 Hz. Timestamps indicate the beginning of averaging periods. For example, an averaged data point with a timestamp of 10:00:12.0 was averaged over 12:00:12.0 to 12:00:13.0 and is representative of the time at its timestamp + 0.5 s. However, a data point sampled at 1 Hz is representative of the time at its timestamp + 0.0 s. The SampledRate attribute can be used to determine if data were averaged and their representative times. Users interested in synchronizing 1 Hz averaged with 1 Hz sampled data in this file, or other data sets, should be mindful of this lag. Additional lags may be introduced by other factors (e.g. instrument response time), which are not accounted for here. Feel free to contact RAF scientists for further guidance.";
 
@@ -54,7 +54,7 @@ int	FlightDate[3];		// HACK: for amlib
 char	dateProcessed[64];	// For export to psql.cc
 
 
-void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetaData(int fd),
+void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetadata(int fd),
 	ReadDOI(int fd);
 
 extern "C" {
@@ -182,7 +182,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   ReadDOI(_ncid);
   putGlobalAttribute("Conventions", Conventions);
   putGlobalAttribute("ConventionsURL", ConventionsURL);
-  putGlobalAttribute("standard_name_vocabulary", "CF-1.11");
+  putGlobalAttribute("standard_name_vocabulary", "CF Standard Name Table v94");
 
   putGlobalAttribute("ProcessorRepositoryURL", ProcessorURL);
   putGlobalAttribute("ProcessorRepositoryBranch", REPO_BRANCH);
@@ -505,7 +505,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
       AddPMS1dAttrs(_ncid, dp);
   }
 
-  ReadMetaData(_ncid);
+  ReadMetadata(_ncid);
 
 int old_fill_mode;
 nc_set_fill(_ncid, NC_NOFILL, &old_fill_mode); /* set nofill */
