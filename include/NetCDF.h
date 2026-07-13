@@ -42,6 +42,9 @@ protected:
   void	createSubSampleCoordinateDimVars(int rate);
   void  addVariableMetadata(const var_base *var);
 
+  float	*copyDataFloat(const var_base *, int);
+  int	*copyDataInt(const var_base *, int);
+
   long	UTSeconds(double *record);
   void	SetBaseTime(double *record);
   void	WriteMissingRecords();

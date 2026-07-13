@@ -42,6 +42,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
 #include "sync_reader.hh"
 #include <nidas/core/NidasApp.h>
 #include <nidas/core/Project.h>
+#include <netcdf.h>
 
 #include "amlib.h"
 
@@ -2479,7 +2480,10 @@ addUnitsAndLongName(var_base *vbp, const nidas::core::Variable *nidas_var)
   std::string cat;
 
   float miss_val = (float)MISSING_VALUE;
-  vbp->addToMetadata("_FillValue", miss_val);
+  if (vbp->_type == NC_FLOAT)
+    vbp->addToMetadata("_FillValue", miss_val);
+  else
+    vbp->addToMetadata("_FillValue", (int)miss_val);
 
   // If this is a nidas raw variable, then get units/long_name from here.
   // null will be passed in if the variable is derived, or from ADS2.
@@ -2596,6 +2600,17 @@ openVariableDatabase()
 var_base::var_base(const char s[])
 {
   strcpy(name, s);
+  _type = NC_FLOAT;
+
+// This is temporary until we move ReadMetadata() into this file.
+// Then _type can be in that file.  e.g. "GGQUAL _type INT"
+if (strncmp(s, "GGQUAL", 6) == 0 || strncmp(s, "GGSTATUS", 8) == 0 ||
+    strncmp(s, "IRIG_Status", 11) == 0 || strncmp(s, "WINDSFLG", 8) == 0 ||
+    strncmp(s, "ATTACKFLG", 9) == 0 || strncmp(s, "CBLFLG", 6) == 0 ||
+    strncmp(s, "PBRDSTAT", 8) == 0 || // strncmp(s, "CBLFLG", 6) == 0 ||
+    strncmp(s, "MODE", 4) == 0 || strncmp(s, "STATUS", 6) == 0)
+  _type = NC_INT;
+
   varid = -1;
   LRstart = SRstart = HRstart = -1;
 

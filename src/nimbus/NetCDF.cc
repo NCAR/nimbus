@@ -385,7 +385,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
     }
 
 //printf("RAW: %s\n", rp->name);
-    nc_def_var(_ncid, rp->name, NC_FLOAT, ndims, dims, &rp->varid);
+    nc_def_var(_ncid, rp->name, rp->_type, ndims, dims, &rp->varid);
 
     addCommonVariableAttributes(rp);
 
@@ -463,7 +463,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
       dims[2] = _vectorDimIDs[dp->SerialNumber];
     }
 
-    status = nc_def_var(_ncid, dp->name, NC_FLOAT, ndims, dims, &dp->varid);
+    status = nc_def_var(_ncid, dp->name, dp->_type, ndims, dims, &dp->varid);
     if (status != NC_NOERR)
     {
       fprintf(stderr,"CreateNetCDF: error, derived variable %s status = %d\n", dp->name,status);
@@ -664,7 +664,6 @@ void NetCDF::WriteCoordinateVariableData()
 /* -------------------------------------------------------------------- */
 void NetCDF::WriteNetCDF()
 {
-  float *data;
   int status;
 
   static bool		firstWrite = true;
@@ -717,37 +716,25 @@ void NetCDF::WriteNetCDF()
     count[1] = rp->OutputRate;
     count[2] = rp->Length;
 
-    data = new float[N];
-
-    if (rp->OutputRate == Config::LowRate)
+    if (rp->OutputRate == Config::LowRate && tv.active())
     {
-      if (tv.active())
-      {
-        tv.trace_variable("write netcdf lowrate", rp->name, stime,
-                          &(AveragedData[rp->LRstart]), N);
-      }
-      for (size_t j = 0; j < N; ++j)
-        data[j] = (float)AveragedData[rp->LRstart + j];
+      tv.trace_variable("write netcdf lowrate", rp->name, stime,
+			&(AveragedData[rp->LRstart]), N);
+    }
+
+    if (rp->_type == NC_FLOAT)
+    {
+      float *data = copyDataFloat(rp, N);
+      status = nc_put_vara_float(_ncid, rp->varid, start, count, data);
+      delete [] data;
     }
     else
     {
-      if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
-      {
-        for (size_t j = 0; j < N; ++j)
-          data[j] = (float)SampledData[rp->SRstart + j];
-      }
-      else
-      {
-        for (size_t j = 0; j < N; ++j)
-          data[j] = (float)HighRateData[rp->HRstart + j];
-      }
+      int *data = copyDataInt(rp, N);
+      status = nc_put_vara_int(_ncid, rp->varid, start, count, data);
+      delete [] data;
     }
 
-    for (size_t j = 0; j < N; ++j)
-      if (std::isnan(data[j]))
-        data[j] = (float)MISSING_VALUE;
-
-    status = nc_put_vara_float(_ncid, rp->varid, start, count, data);
     if (status != NC_NOERR)
     {
       fprintf(stderr,
@@ -756,7 +743,6 @@ void NetCDF::WriteNetCDF()
       fprintf(stderr, "%s\n", nc_strerror(status));
       _errCnt++;
     }
-    delete [] data;
   }
 
 
@@ -770,24 +756,25 @@ void NetCDF::WriteNetCDF()
     count[1] = dp->OutputRate;
     count[2] = dp->Length;
 
-    data = new float[N];
-
-    if (dp->OutputRate == Config::LowRate)
+    if (dp->OutputRate == Config::LowRate && tv.active())
     {
-      for (size_t j = 0; j < N; ++j)
-        data[j] = (float)AveragedData[dp->LRstart + j];
+      tv.trace_variable("write netcdf lowrate", dp->name, stime,
+			&(AveragedData[dp->LRstart]), N);
+    }
+
+    if (dp->_type == NC_FLOAT)
+    {
+      float *data = copyDataFloat(dp, N);
+      status = nc_put_vara_float(_ncid, dp->varid, start, count, data);
+      delete [] data;
     }
     else
     {
-      for (size_t j = 0; j < N; ++j)
-        data[j] = (float)HighRateData[dp->HRstart + j];
+      int *data = copyDataInt(dp, N);
+      status = nc_put_vara_int(_ncid, dp->varid, start, count, data);
+      delete [] data;
     }
 
-    for (size_t j = 0; j < N; ++j)
-      if (std::isnan(data[j]))
-        data[j] = (float)MISSING_VALUE;
-
-    status = nc_put_vara_float(_ncid, dp->varid, start, count, data);
     if (status != NC_NOERR)
     {
       fprintf(stderr,
@@ -796,7 +783,6 @@ void NetCDF::WriteNetCDF()
       fprintf(stderr, "%s\n", nc_strerror(status));
       _errCnt++;
     }
-    delete [] data;
   }
 
   if (_errCnt > 10)
@@ -810,6 +796,68 @@ void NetCDF::WriteNetCDF()
   ++_recordNumber;
 
 }	/* END WRITENETCDF */
+
+/* -------------------------------------------------------------------- */
+float * NetCDF::copyDataFloat(const var_base *vp, int N)
+{
+  float *data = new float[N];
+
+  if (vp->OutputRate == Config::LowRate)
+  {
+    for (size_t j = 0; j < N; ++j)
+      data[j] = (float)AveragedData[vp->LRstart + j];
+  }
+  else
+  {
+    if (vp->OutputRate == vp->SampleRate && vp->OutputRate != (size_t)cfg.ProcessingRate())
+    {
+      for (size_t j = 0; j < N; ++j)
+        data[j] = (float)SampledData[vp->SRstart + j];
+    }
+    else
+    {
+      for (size_t j = 0; j < N; ++j)
+        data[j] = (float)HighRateData[vp->HRstart + j];
+    }
+  }
+
+  for (size_t j = 0; j < N; ++j)
+    if (std::isnan(data[j]))
+      data[j] = (float)MISSING_VALUE;
+
+  return data;
+}
+
+/* -------------------------------------------------------------------- */
+int * NetCDF::copyDataInt(const var_base *vp, int N)
+{
+  int *data = new int[N];
+
+  if (vp->OutputRate == Config::LowRate)
+  {
+    for (size_t j = 0; j < N; ++j)
+      data[j] = (int)AveragedData[vp->LRstart + j];
+  }
+  else
+  {
+    if (vp->OutputRate == vp->SampleRate && vp->OutputRate != (size_t)cfg.ProcessingRate())
+    {
+      for (size_t j = 0; j < N; ++j)
+        data[j] = (int)SampledData[vp->SRstart + j];
+    }
+    else
+    {
+      for (size_t j = 0; j < N; ++j)
+        data[j] = (int)HighRateData[vp->HRstart + j];
+    }
+  }
+
+  for (size_t j = 0; j < N; ++j)
+    if (std::isnan(data[j]))
+      data[j] = (float)MISSING_VALUE;
+
+  return data;
+}
 
 /* -------------------------------------------------------------------- */
 void NetCDF::QueueMissingData(int h, int m, int s, int nRecords)

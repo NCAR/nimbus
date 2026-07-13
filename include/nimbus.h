@@ -118,6 +118,7 @@ public:
 
   std::vector<std::string> CategoryList;
 
+  int _type;		// netCDF variable type (float or int)
   int varid;		// NetCDF variable ID
   int LRstart;		// Start indx into AveragedData
   int SRstart;		// Start indx into SampledData
