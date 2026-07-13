@@ -35,7 +35,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2012
 
 #include "nimbus.h"
 #include "amlib.h"
-#include <map>
 
 #include "Interpolator.h"
 
