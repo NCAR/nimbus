@@ -4,7 +4,7 @@ OBJECT NAME:	rd_doi.c
 
 FULL NAME:	Read DOI file.
 
-ENTRY POINTS:	ReadMetaData()
+ENTRY POINTS:	ReadDOI()
 
 DESCRIPTION:	Read the DOI file and apply as attribute in the netCDF file
 		netCDF file.
