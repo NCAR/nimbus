@@ -483,6 +483,8 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
       fprintf(stderr, "%s\n", nc_strerror(status));
       exit(1);
     }
+
+    // Set _FillValue.
     {
       float ffill = (float)MISSING_VALUE;
       int   ifill = (int)MISSING_VALUE;
