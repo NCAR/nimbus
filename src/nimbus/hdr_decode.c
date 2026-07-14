@@ -2479,12 +2479,6 @@ addUnitsAndLongName(var_base *vbp, const nidas::core::Variable *nidas_var)
   VDBVar *vdb_var = vardb->search_var(vbp->name);
   std::string cat;
 
-  float miss_val = (float)MISSING_VALUE;
-  if (vbp->_type == NC_FLOAT)
-    vbp->addToMetadata("_FillValue", miss_val);
-  else
-    vbp->addToMetadata("_FillValue", (int)miss_val);
-
   // If this is a nidas raw variable, then get units/long_name from here.
   // null will be passed in if the variable is derived, or from ADS2.
   if (nidas_var)

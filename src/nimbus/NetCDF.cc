@@ -394,10 +394,11 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
       exit(1);
     }
 
-    if (rp->_type == NC_INT)
     {
-      int fill_val = (int)MISSING_VALUE;
-      nc_def_var_fill(_ncid, rp->varid, 0, &fill_val);
+      float ffill = (float)MISSING_VALUE;
+      int   ifill = (int)MISSING_VALUE;
+      nc_def_var_fill(_ncid, rp->varid, 0,
+          rp->_type == NC_FLOAT ? (void*)&ffill : (void*)&ifill);
     }
 
     addCommonVariableAttributes(rp);
@@ -482,12 +483,12 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
       fprintf(stderr, "%s\n", nc_strerror(status));
       exit(1);
     }
-    if (dp->_type == NC_INT)
     {
-      int fill_val = (int)MISSING_VALUE;
-      nc_def_var_fill(_ncid, dp->varid, 0, &fill_val);
+      float ffill = (float)MISSING_VALUE;
+      int   ifill = (int)MISSING_VALUE;
+      nc_def_var_fill(_ncid, dp->varid, 0,
+          dp->_type == NC_FLOAT ? (void*)&ffill : (void*)&ifill);
     }
-
 
     // If this is a reference variable, copy all the metadta from the source variable.
     if (dp->compute == (void(*)(void*))sRefer ||
