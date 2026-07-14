@@ -385,7 +385,20 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
     }
 
 //printf("RAW: %s\n", rp->name);
-    nc_def_var(_ncid, rp->name, rp->_type, ndims, dims, &rp->varid);
+    status = nc_def_var(_ncid, rp->name, rp->_type, ndims, dims, &rp->varid);
+
+    if (status != NC_NOERR)
+    {
+      fprintf(stderr,"CreateNetCDF: error, raw variable %s status = %d\n", rp->name,status);
+      fprintf(stderr, "%s\n", nc_strerror(status));
+      exit(1);
+    }
+
+    if (rp->_type == NC_INT)
+    {
+      int fill_val = (int)MISSING_VALUE;
+      nc_def_var_fill(_ncid, rp->varid, 0, &fill_val);
+    }
 
     addCommonVariableAttributes(rp);
 
@@ -462,15 +475,21 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
       ndims = 3;
       dims[2] = _vectorDimIDs[dp->SerialNumber];
     }
-
     status = nc_def_var(_ncid, dp->name, dp->_type, ndims, dims, &dp->varid);
     if (status != NC_NOERR)
     {
       fprintf(stderr,"CreateNetCDF: error, derived variable %s status = %d\n", dp->name,status);
       fprintf(stderr, "%s\n", nc_strerror(status));
+      exit(1);
+    }
+    if (dp->_type == NC_INT)
+    {
+      int fill_val = (int)MISSING_VALUE;
+      nc_def_var_fill(_ncid, dp->varid, 0, &fill_val);
     }
 
 
+    // If this is a reference variable, copy all the metadta from the source variable.
     if (dp->compute == (void(*)(void*))sRefer ||
         dp->compute == (void(*)(void*))sReferAttack)
     {
@@ -604,7 +623,9 @@ void NetCDF::createSizeDistributionCoordinateDimVars(var_base *vp)
 /* -------------------------------------------------------------------- */
 void NetCDF::SwitchToDataMode()
 {
-  nc_enddef(_ncid);
+  int _enddef_status = nc_enddef(_ncid);
+  if (_enddef_status != NC_NOERR)
+    fprintf(stderr, "SwitchToDataMode: nc_enddef failed: %s\n", nc_strerror(_enddef_status));
   nc_sync(_ncid);
 
 }	/* END SWITCHNETCDFTODATAMODE */
@@ -774,7 +795,6 @@ void NetCDF::WriteNetCDF()
       status = nc_put_vara_int(_ncid, dp->varid, start, count, data);
       delete [] data;
     }
-
     if (status != NC_NOERR)
     {
       fprintf(stderr,
@@ -832,29 +852,28 @@ float * NetCDF::copyDataFloat(const var_base *vp, int N)
 int * NetCDF::copyDataInt(const var_base *vp, int N)
 {
   int *data = new int[N];
+  const int imv = (int)MISSING_VALUE;
+
+  auto safeInt = [imv](NR_TYPE v) { return std::isnan(v) ? imv : (int)v; };
 
   if (vp->OutputRate == Config::LowRate)
   {
     for (size_t j = 0; j < N; ++j)
-      data[j] = (int)AveragedData[vp->LRstart + j];
+      data[j] = safeInt(AveragedData[vp->LRstart + j]);
   }
   else
   {
     if (vp->OutputRate == vp->SampleRate && vp->OutputRate != (size_t)cfg.ProcessingRate())
     {
       for (size_t j = 0; j < N; ++j)
-        data[j] = (int)SampledData[vp->SRstart + j];
+        data[j] = safeInt(SampledData[vp->SRstart + j]);
     }
     else
     {
       for (size_t j = 0; j < N; ++j)
-        data[j] = (int)HighRateData[vp->HRstart + j];
+        data[j] = safeInt(HighRateData[vp->HRstart + j]);
     }
   }
-
-  for (size_t j = 0; j < N; ++j)
-    if (std::isnan(data[j]))
-      data[j] = (float)MISSING_VALUE;
 
   return data;
 }

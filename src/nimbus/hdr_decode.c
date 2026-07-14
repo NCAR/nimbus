@@ -2609,7 +2609,9 @@ if (strncmp(s, "GGQUAL", 6) == 0 || strncmp(s, "GGSTATUS", 8) == 0 ||
     strncmp(s, "ATTACKFLG", 9) == 0 || strncmp(s, "CBLFLG", 6) == 0 ||
     strncmp(s, "PBRDSTAT", 8) == 0 || // strncmp(s, "CBLFLG", 6) == 0 ||
     strncmp(s, "MODE", 4) == 0 || strncmp(s, "STATUS", 6) == 0)
+{
   _type = NC_INT;
+}
 
   varid = -1;
   LRstart = SRstart = HRstart = -1;
