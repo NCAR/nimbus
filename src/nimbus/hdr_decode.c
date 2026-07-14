@@ -2602,7 +2602,8 @@ if (strncmp(s, "GGQUAL", 6) == 0 || strncmp(s, "GGSTATUS", 8) == 0 ||
     strncmp(s, "IRIG_Status", 11) == 0 || strncmp(s, "WINDSFLG", 8) == 0 ||
     strncmp(s, "ATTACKFLG", 9) == 0 || strncmp(s, "CBLFLG", 6) == 0 ||
     strncmp(s, "PBRDSTAT", 8) == 0 || strncmp(s, "Stratum", 7) == 0 ||
-    strncmp(s, "MODE", 4) == 0 || strncmp(s, "STATUS", 6) == 0)
+    strncmp(s, "MODE", 4) == 0 || strncmp(s, "STATUS", 6) == 0 ||
+    strncmp(s, "TASFLG", 6) == 0)
 {
   _type = NC_INT;
 }
