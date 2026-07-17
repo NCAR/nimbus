@@ -366,6 +366,7 @@
 	"DBZ2DSV",	NULL,		NULL,		sdbz2s,
 	"DBZ2DSH",	NULL,		NULL,		sdbz2s,
 	"DBZ1DSV",	NULL,		NULL,		sdbz2,
+	"DBZ1DSH",	NULL,		NULL,		sdbz2,
 	"DBZ1DH",	NULL,		NULL,		sdbz2,
 
 # Volume
