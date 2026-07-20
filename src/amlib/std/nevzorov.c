@@ -10,17 +10,10 @@ STATIC FNS:
 
 DESCRIPTION:	Template for AMLIB std & user directories.
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	
-  equations can be found in instrument manual or -
-  Korolev, A.V., J.W. STrapp, G.A. Isaac and A.N. Nevzorov, 1998:
-  The Nevzorov airborne hot-wire LWC–TWC probe: Principle of operation and
-  performance characteristics, J. Atmos. Oceanic Techn., 15, 1495-1510
-
-REFERENCED BY:	compute.c
+NOTES:		equations can be found in instrument manual or -
+		Korolev, A.V., J.W. STrapp, G.A. Isaac and A.N. Nevzorov, 1998:
+		The Nevzorov airborne hot-wire LWC–TWC probe: Principle of operation and
+		performance characteristics, J. Atmos. Oceanic Techn., 15, 1495-1510
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 2002
 -------------------------------------------------------------------------
