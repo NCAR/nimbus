@@ -1112,8 +1112,10 @@
 	"XLWCTR",	NULL,		NULL,		srlwc,
 #
 # Nevzorov Probe
-	"NLWCC",	NULL,		NULL,		sNevLWC,
-	"NTWCC",	NULL,		NULL,		sNevTWC,
+	"NLWCCR_NEV",	NULL,		NULL,		sNevLWC,
+	"NTWCCR_NEV",	NULL,		NULL,		sNevTWC,
+	"NLWCCC_NEV",	NULL,		NULL,		sNevLWC,
+	"NTWCCC_NEV",	NULL,		NULL,		sNevTWC,
 #
 # APN-232 Radar Altimeter.
 	"HGM232",	NULL,		xlhgm232,	NULL,
