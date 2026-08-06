@@ -62,7 +62,7 @@ env.SetHelp()
 
 if "publish" in COMMAND_LINE_TARGETS:
    pub = env.Install('$PUBLISH_PREFIX/netCDF', ["doc/html/netCDF.html", "doc/html/netCDF_1_3.html", "doc/html/TimeExamp.html", "doc/html/record.png"])
-   pub = env.Install('$PUBLISH_PREFIX', ["doc/nimbus.pdf"])
+   pub = env.Install('$PUBLISH_PREFIX', ["doc/nimbus.pdf","doc/nimbus_adv.pdf"])
    env.Alias('publish', pub)
 
 env.SetHelp()
