@@ -90,7 +90,7 @@ struct missDat  /* (Time gap) / (missing data) information */
 
   static const std::string Program, Institution, Source, Address, Phone,
 	Publisher_Name, Publisher_URL, Publisher_EMail, TimeStampDescription,
-	Creator_Name, Creator_URL, Creator_EMail, PrelimDataWarning,
+	Creator_Name, Creator_URL, Creator_EMail, PrelimDataWarning, format,
 	Conventions, ConventionsURL, ProcessorURL, TimeDescription;
 
   static const char *ISO8601_Z;

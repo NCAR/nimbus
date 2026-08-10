@@ -36,6 +36,7 @@ const std::string NetCDF::Publisher_URL	= "https://www.eol.ucar.edu/data-softwar
 const std::string NetCDF::Publisher_EMail= "datahelp at eol.ucar.edu";
 const std::string NetCDF::ProcessorURL	= "https://github.com/NCAR/nimbus";
 const std::string NetCDF::Conventions	= "CF-1.13, ACDD-1.3, NCAR-RAF/nimbus-2.1";
+const std::string NetCDF::format	= "NetCDF4";
 const std::string NetCDF::ConventionsURL= "https://www.eol.ucar.edu/raf/Software/netCDF.html";
 const std::string NetCDF::TimeStampDescription = "Most data here are sampled higher than 1 Hz and averaged to 1 Hz. Timestamps indicate the beginning of averaging periods. For example, an averaged data point with a timestamp of 10:00:12.0 was averaged over 12:00:12.0 to 12:00:13.0 and is representative of the time at its timestamp + 0.5 s. However, a data point sampled at 1 Hz is representative of the time at its timestamp + 0.0 s. The SampledRate attribute can be used to determine if data were averaged and their representative times. Users interested in synchronizing 1 Hz averaged with 1 Hz sampled data in this file, or other data sets, should be mindful of this lag. Additional lags may be introduced by other factors (e.g. instrument response time), which are not accounted for here. Feel free to contact RAF scientists for further guidance.";
 
@@ -180,6 +181,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("publisher_type", "group");
 
   ReadDOI(_ncid);
+  putGlobalAttribute("format", format);
   putGlobalAttribute("Conventions", Conventions);
   putGlobalAttribute("ConventionsURL", ConventionsURL);
   putGlobalAttribute("standard_name_vocabulary", "CF Standard Name Table v94");
