@@ -165,6 +165,9 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
 
   putGlobalAttribute("source", Source);
   putGlobalAttribute("platform", cfg.TailNumber());
+  snprintf(buffer, 128, "%s %s %s", Program.c_str(), cfg.AircraftString().c_str(), cfg.TailNumber().c_str());
+  putGlobalAttribute("measurement_platform", buffer);
+  putGlobalAttribute("platform_identifier", cfg.TailNumber());
   putGlobalAttribute("platform_type", "aircraft");
   putGlobalAttribute("project", cfg.ProjectName());
 
@@ -228,6 +231,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
     strcpy(buffer, cfg.FlightDate().c_str());
 
   putGlobalAttribute("FlightDate", buffer);
+  putGlobalAttribute("flight_start_date", buffer);
 
   if (LogFile)
     fprintf(LogFile, "Flight Date: %s\n", buffer);
@@ -249,6 +253,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
     putGlobalAttribute(InterpKey.c_str(), Interp_Akima);
 
   putGlobalAttribute("featureType", "trajectory");
+  putGlobalAttribute("data_product_groups", "");
   putGlobalAttribute("latitude_coordinate", cfg.CoordinateLatitude());
   putGlobalAttribute("longitude_coordinate", cfg.CoordinateLongitude());
   putGlobalAttribute("zaxis_coordinate", cfg.CoordinateAltitude());
