@@ -158,38 +158,40 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   if (!cfg.ProductionRun())
     putGlobalAttribute("WARNING", PrelimDataWarning);
 
-  putGlobalAttribute("program", Program);
-  putGlobalAttribute("institution", Institution);
+  putGlobalAttribute("program", Program);		// ACDD
+  putGlobalAttribute("institution", Institution);	// ACDD
   putGlobalAttribute("Address", Address);
   putGlobalAttribute("Phone", Phone);
 
-  putGlobalAttribute("source", Source);
-  putGlobalAttribute("platform", cfg.TailNumber());
-  snprintf(buffer, 128, "%s %s %s", Program.c_str(), cfg.AircraftString().c_str(), cfg.TailNumber().c_str());
-  putGlobalAttribute("measurement_platform", buffer);
-  putGlobalAttribute("platform_identifier", cfg.TailNumber());
-  putGlobalAttribute("platform_type", "aircraft");
-  putGlobalAttribute("project", cfg.ProjectName());
+  putGlobalAttribute("source", Source);			// ACDD
+  putGlobalAttribute("project", cfg.ProjectName());	// ACDD
 
-  putGlobalAttribute("creator_name", Creator_Name);
+  putGlobalAttribute("platform", cfg.TailNumber());	// ACDD
+  snprintf(buffer, 128, "%s %s %s", Program.c_str(), cfg.AircraftString().c_str(), cfg.TailNumber().c_str());
+  putGlobalAttribute("measurement_platform", buffer);	// CORE-AC
+  putGlobalAttribute("platform_identifier", cfg.TailNumber());	// CORE-AC
+  putGlobalAttribute("platform_type", "aircraft");	// ACDD
+  putGlobalAttribute("featureType", "trajectory");	// ACDD
+
+  putGlobalAttribute("creator_name", Creator_Name);	// ACDD
   putGlobalAttribute("creator_email", Creator_EMail);
   putGlobalAttribute("creator_url", Creator_URL);
   putGlobalAttribute("creator_type", "group");
   snprintf(buffer, 128, "%s %s Team", Program.c_str(), cfg.AircraftString().c_str());
   putGlobalAttribute("creator_group", buffer);
 
-  putGlobalAttribute("publisher_name", Publisher_Name);
+  putGlobalAttribute("publisher_name", Publisher_Name);	// ACDD
   putGlobalAttribute("publisher_url", Publisher_URL);
   putGlobalAttribute("publisher_email", Publisher_EMail);
   putGlobalAttribute("publisher_type", "group");
 
-  ReadDOI(_ncid);
-  putGlobalAttribute("format", format);
-  putGlobalAttribute("Conventions", Conventions);
+  ReadDOI(_ncid);					// ACDD
+  putGlobalAttribute("format", format);			// CORE-AC
+  putGlobalAttribute("Conventions", Conventions);	// CF
   putGlobalAttribute("ConventionsURL", ConventionsURL);
   putGlobalAttribute("standard_name_vocabulary", "CF Standard Name Table v94");
 
-  putGlobalAttribute("ProcessorRepositoryURL", ProcessorURL);
+  putGlobalAttribute("ProcessorRepositoryURL", ProcessorURL);	// RAF
   putGlobalAttribute("ProcessorRepositoryBranch", REPO_BRANCH);
   putGlobalAttribute("ProcessorRepositoryRevision", REPO_REVISION);
   putGlobalAttribute("ProcessorRepositoryDate", REPO_DATE);
@@ -216,7 +218,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   t = time(0);
   tm = *localtime(&t);
   strftime(dateProcessed, 64, ISO8601_Z, &tm);
-  putGlobalAttribute("date_created", dateProcessed);
+  putGlobalAttribute("date_created", dateProcessed);	// ACDD
 
   if (LogFile)
     fprintf(LogFile, "Processed on: %s\n", dateProcessed);
@@ -230,8 +232,8 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   else
     strcpy(buffer, cfg.FlightDate().c_str());
 
-  putGlobalAttribute("FlightDate", buffer);
-  putGlobalAttribute("flight_start_date", buffer);
+  putGlobalAttribute("FlightDate", buffer);		// RAF, deprecate in 2027/28
+  putGlobalAttribute("flight_start_date", buffer);	// CORE-AC
 
   if (LogFile)
     fprintf(LogFile, "Flight Date: %s\n", buffer);
@@ -240,7 +242,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
    */
   memset(buffer, ' ', DEFAULT_TI_LENGTH);
   buffer[DEFAULT_TI_LENGTH] = '\0';
-  putGlobalAttribute("TimeInterval", buffer);
+  putGlobalAttribute("TimeInterval", buffer);		// RAF
   putGlobalAttribute("TimeStampDescription", TimeStampDescription);
 
   if (cfg.InterpolationType() == Config::Linear)
@@ -252,8 +254,8 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   if (cfg.InterpolationType() == Config::AkimaSpline)
     putGlobalAttribute(InterpKey.c_str(), Interp_Akima);
 
-  putGlobalAttribute("featureType", "trajectory");
-  putGlobalAttribute("data_product_groups", "");
+  putGlobalAttribute("data_product_groups", "");	// CORE-AC
+
   putGlobalAttribute("latitude_coordinate", cfg.CoordinateLatitude());
   putGlobalAttribute("longitude_coordinate", cfg.CoordinateLongitude());
   putGlobalAttribute("zaxis_coordinate", cfg.CoordinateAltitude());
@@ -268,9 +270,12 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("geospatial_vertical_max", &x);
   putGlobalAttribute("geospatial_vertical_positive", "up");
   putGlobalAttribute("geospatial_vertical_units", "m");
-  putGlobalAttribute("wind_field", cfg.WindFieldVariables());
+  putGlobalAttribute("wind_field", cfg.WindFieldVariables());	// RAF
 
-  addLandmarks();
+  addLandmarks();		// RAF
+
+  putGlobalAttribute("history", "Initial nimbus processing.");
+
 
 
   /* Write out Categories.
@@ -286,7 +291,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
       strcat(buffer, ",");
       strcat(buffer, categories[i].c_str());
     }
-    putGlobalAttribute("Categories", buffer);
+    putGlobalAttribute("Categories", buffer);	// RAF
   }
 
 
