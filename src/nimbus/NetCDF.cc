@@ -172,6 +172,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("platform_identifier", cfg.TailNumber());	// CORE-AC
   putGlobalAttribute("platform_type", "aircraft");	// ACDD
   putGlobalAttribute("featureType", "trajectory");	// ACDD
+  putGlobalAttribute("cdm_data_type", "Trajectory");	// THREDDS
 
   putGlobalAttribute("creator_name", Creator_Name);	// ACDD
   putGlobalAttribute("creator_email", Creator_EMail);
@@ -309,7 +310,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   if (cfg.isADS2())  // When you remove these 2, look TimeOffset and make sure everything Jives.
   {
     nc_def_var(_ncid, "base_time", NC_LONG, 0, 0, &_baseTimeID);
-    strcpy(buffer, "seconds since 1970-01-01 00:00:00 +0000");
+    strcpy(buffer, "seconds since 1970-01-01T00:00:00Z");
     nc_put_att_text(_ncid, _baseTimeID, "units", strlen(buffer), buffer);
     strcpy(buffer, "Start time of data recording.");
     nc_put_att_text(_ncid, _baseTimeID, "long_name", strlen(buffer), buffer);
@@ -1093,7 +1094,7 @@ void NetCDF::writeMinMax()
 /* -------------------------------------------------------------------- */
 void NetCDF::writeTimeUnits()
 {
-  const char *format = "seconds since %F %T %z";
+  const char *format = "seconds since %Y-%m-%dT%H:%M:%SZ";
   struct tm tmp, EndFlight;
 
   memset(&tmp, 0, sizeof(struct tm));
@@ -1166,7 +1167,14 @@ void NetCDF::addCommonVariableAttributes(const var_base *var)
 	cfg.CoordinateLongitude().c_str(),
 	cfg.CoordinateAltitude().c_str());
     nc_put_att_text(_ncid, var->varid, "coordinates", strlen(temp), temp);
+
+    if (var->_contentType == PhysicalMeasurement)
+      nc_put_att_text(_ncid, var->varid, "coverage_content_type", 19, "physicalMeasurement");
+    if (var->_contentType == QualityInformation)
+      nc_put_att_text(_ncid, var->varid, "coverage_content_type", 18, "qualityInformation");
   }
+  else
+    nc_put_att_text(_ncid, var->varid, "coverage_content_type", 10, "coordinate");
 
   if (var->CategoryList.size() > 0)
   {

@@ -2594,6 +2594,7 @@ openVariableDatabase()
 var_base::var_base(const char s[])
 {
   strcpy(name, s);
+  _contentType = PhysicalMeasurement;
   _type = NC_FLOAT;
 
 // This is temporary until we move ReadMetadata() into this file.
@@ -2606,6 +2607,7 @@ if (strncmp(s, "GGQUAL", 6) == 0 || strncmp(s, "GGSTATUS", 8) == 0 ||
     strncmp(s, "TASFLG", 6) == 0)
 {
   _type = NC_INT;
+  _contentType = QualityInformation;
 }
 
   varid = -1;

@@ -43,6 +43,8 @@ enum projOpenFailAction { RETURN, EXIT };
 
 enum SYNTHTYPE {sy_file, sy_constant, sy_function, sy_none};
 
+enum ContentType { PhysicalMeasurement, QualityInformation, Coordinate };
+
 typedef struct
 	{
 	int	value[2];	// Low & High wrap values
@@ -148,6 +150,7 @@ public:
 
   // Misc additional metadata to add to netCDF file.  Might replace the Defaults stuff...
   std::vector<Metadata> metadata;
+  ContentType _contentType;
 };
 
 
