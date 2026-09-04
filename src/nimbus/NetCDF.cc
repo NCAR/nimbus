@@ -310,7 +310,7 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   if (cfg.isADS2())  // When you remove these 2, look TimeOffset and make sure everything Jives.
   {
     nc_def_var(_ncid, "base_time", NC_LONG, 0, 0, &_baseTimeID);
-    strcpy(buffer, "seconds since 1970-01-01T00:00:00Z");
+    strcpy(buffer, "seconds since 1970-01-01 00:00:00 +0000");
     nc_put_att_text(_ncid, _baseTimeID, "units", strlen(buffer), buffer);
     strcpy(buffer, "Start time of data recording.");
     nc_put_att_text(_ncid, _baseTimeID, "long_name", strlen(buffer), buffer);
@@ -1120,6 +1120,27 @@ printf("%s\n", asctime(&_startFlight));
   EndFlight.tm_isdst = 0;
   strftime(buffer, 256, ISO8601_Z, &EndFlight);
   putGlobalAttribute("time_coverage_end", buffer);
+
+
+  // Put out time_coverage_resolution, if all variables are 1hz. There is no
+  // standard if we have multi-rate
+  bool all_1hz = true;
+  for (int i = 0; i < raw.size(); ++i)
+    if (raw[i]->Output && raw[i]->OutputRate != 1)
+    {
+      all_1hz = false;
+      break;
+    }
+  for (int i = 0; i < derived.size(); ++i)
+    if (derived[i]->Output && derived[i]->OutputRate != 1)
+    {
+      all_1hz = false;
+      break;
+    }
+
+  if (all_1hz == true)
+    putGlobalAttribute("time_coverage_resolution", "PT1S");
+
 }
 
 /* -------------------------------------------------------------------- */
