@@ -12,6 +12,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2025
 
 #include "NetCDF.h"
 
+#include <cctype>
 #include <sys/stat.h>
 
 #include "decode.h"
@@ -173,6 +174,8 @@ int NetCDF::CreateFile(const char fileName[], size_t nRecords)
   putGlobalAttribute("platform_type", "aircraft");	// ACDD
   putGlobalAttribute("featureType", "trajectory");	// ACDD
   putGlobalAttribute("cdm_data_type", "Trajectory");	// THREDDS
+
+  addMetaDataFile();
 
   putGlobalAttribute("creator_name", Creator_Name);	// ACDD
   putGlobalAttribute("creator_email", Creator_EMail);
@@ -1297,6 +1300,54 @@ std::string readLandmarks()
 void NetCDF::addLandmarks()
 {
   putGlobalAttribute("landmarks", readLandmarks());
+}
+
+/* -------------------------------------------------------------------- */
+// Parse a MetaData line of the form 'name=value', 'name="value"',
+// 'name = value', or 'name = "value"' into trimmed, unquoted name/value.
+static void parseMetaDataLine(const char line[], char name[], char value[])
+{
+  char rawName[64], rawValue[512];
+
+  sscanf(line, "%63[^=]=%511[^\n]", rawName, rawValue);
+
+  char *p = rawName + strlen(rawName) - 1;
+  while (p >= rawName && isspace((unsigned char)*p))
+    *p-- = '\0';
+  strcpy(name, rawName);
+
+  char *v = rawValue;
+  while (isspace((unsigned char)*v))
+    ++v;
+
+  char *e = v + strlen(v) - 1;
+  while (e >= v && isspace((unsigned char)*e))
+    *e-- = '\0';
+
+  if (e > v && *v == '"' && *e == '"')
+  {
+    ++v;
+    *e = '\0';
+  }
+
+  strcpy(value, v);
+}
+
+/* -------------------------------------------------------------------- */
+void NetCDF::addMetaDataFile()
+{
+  char *meta[512], attr_name[64], attr_value[512];
+
+  ReadTextFile(GLBL_METADATA, meta);
+
+  for (int i = 0; meta[i]; ++i)
+  {
+    parseMetaDataLine(meta[i], attr_name, attr_value);
+    putGlobalAttribute(attr_name, attr_value);
+    attr_name[0] = attr_value[0] = 0;
+  }
+
+  FreeTextFile(meta);
 }
 
 /* -------------------------------------------------------------------- */

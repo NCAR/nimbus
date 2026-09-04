@@ -41,10 +41,13 @@ const std::string TwoD_MethodKey = "TwoD_ProcessMethod";
 const std::string TwoD_MethodCenterIn = "Center_In";
 const std::string TwoD_MethodRecon = "Reconstruction";
 
+// I think we can rid of this file - and rename the two or three out there to MetaData.
+const std::string DOI_FILE      = "%s/%s/%s/DOI";
+
 const std::string PROJ_NAME     = "%s/%s/%s/ProjectName";
+const std::string GLBL_METADATA	= "%s/%s/%s/MetaData";
 const std::string DEPENDTBL     = "%s/%s/%s/DependTable";
 const std::string DEFAULTS      = "%s/%s/%s/Defaults";
-const std::string DOI_FILE      = "%s/%s/%s/DOI";
 const std::string GROUPS        = "%s/%s/%s/Production/FlightGroups";
 const std::string BLANKVARS     = "%s/%s/%s/Production/BlankOuts";
 const std::string SETVALVARS    = "%s/%s/%s/Production/SetValues";

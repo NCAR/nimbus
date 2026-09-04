@@ -40,7 +40,7 @@ protected:
   void	addCommonVariableAttributes(const var_base *var), addLandmarks();
   void	createSizeDistributionCoordinateDimVars(var_base *var);
   void	createSubSampleCoordinateDimVars(int rate);
-  void  addVariableMetadata(const var_base *var);
+  void  addVariableMetadata(const var_base *var), addMetaDataFile();
 
   float	*copyDataFloat(const var_base *, int);
   int	*copyDataInt(const var_base *, int);
