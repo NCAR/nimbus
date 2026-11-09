@@ -141,7 +141,7 @@ void initWindsFlag(var_base *varp)
   values.push_back(6);	// icing both
 
   varp->addToMetadata("flag_values", values);
-  varp->addToMetadata("flag_meanings", "good bad_attack_angle bad_sideslip_angle bad_both_angles iced_attack iced_sideslip iced_both");
+  varp->addToMetadata("flag_meanings", "good bad_attack_angle bad_sideslip_angle bad_both_angles degraded_attack degraded_sideslip degraded_both");
 
 }
 
